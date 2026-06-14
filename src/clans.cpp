@@ -45,7 +45,6 @@ void save_shop( char_data * );
 
 roster_data::roster_data(  )
 {
-   init_memory( &joined, &deaths, sizeof( deaths ) );
 }
 
 roster_data::~roster_data(  )
@@ -131,7 +130,6 @@ void remove_all_rosters( clan_data * clan )
 
 clan_data::clan_data(  )
 {
-   init_memory( &pkills, &gettwo, sizeof( gettwo ) );
 }
 
 clan_data::~clan_data(  )
@@ -538,7 +536,7 @@ void fread_memberlist( clan_data * clan, FILE * fp )
 /*
  * Save a clan's data to its data file
  */
-const int CLAN_VERSION = 1;
+constexpr int CLAN_VERSION = 1;
 void save_clan( clan_data * clan )
 {
    FILE *fp;
@@ -1518,7 +1516,7 @@ CMDF( do_outcast )
    if( victim->desc )
       act( AT_MAGIC, "$n outcasts you from $t", ch, clan->name.c_str(  ), victim, TO_VICT );
    else
-      add_loginmsg( victim->name, 6, nullptr );
+      add_loginmsg( victim->name, 6, "" );
 
    echo_all_printf( ECHOTAR_PK, "&[guildtalk]{} has been outcast from {}!", victim->name, clan->name );
    remove_roster( clan, victim->name );

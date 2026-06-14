@@ -485,17 +485,17 @@ constexpr int TRAP_SE = BV19;
 constexpr int TRAP_SW = BV20;
 constexpr int TRAPFLAG_MAX = 20;
 
-extern const char *log_flag[];   /* Used in cedit display and command saving */
-extern const char *mag_flags[];  /* Used during bootup */
+extern const char *log_flag[];               // Used in cedit display and command saving.
+extern const char *mag_flags[];              // Used during bootup.
 extern const char *npc_sex[SEX_MAX];
-extern const char *styles[];  // Combat styles
+extern const char *styles[];                 // Combat styles.
 extern const char *npc_position[POS_MAX];
-extern const char *weapon_skills[WEP_MAX];   /* Used in spell_identify */
-extern const char *projectiles[PROJ_MAX]; /* For archery weapons */
-extern const char *container_flags[];  /* Tagith */
-extern const char *furniture_flags[];  /* Zarius */
-extern const char *campgear[GEAR_MAX]; /* For OLC menus */
-extern const char *ores[ORE_MAX];   /* For OLC menus */
+extern const char *weapon_skills[WEP_MAX];   // Used in spell_identify.
+extern const char *projectiles[PROJ_MAX];    // For archery weapons.
+extern const char *container_flags[];        // Tagith
+extern const char *furniture_flags[];        // Zarius
+extern const char *campgear[GEAR_MAX];       // For OLC menus.
+extern const char *ores[ORE_MAX];            // For OLC menus.
 
 /*. OLC structs .*/
 
@@ -508,19 +508,10 @@ class olc_data
  public:
      olc_data(  );
 
-   mob_index *mob;
-   room_index *room;
-   obj_data *obj;
-   area_data *area;
-   struct shop_data *shop;
-   extra_descr_data *extradesc;
-   class affect_data *paf;
-   class exit_data *xit;
-   int mode;
-   int zone_num;
-   int number;
-   int value;
-   bool changed;
+   int mode;                              // What level of the menu you're in.
+   int number;                            // Usually the Vnum of whichever mob/obj/room is being worked on.
+   bool value;                            // Used as a toggle for editing affect_data.
+   bool changed;                          // Whether or not something has changed while working in the menus.
 };
 
 /*. Add/Remove save list types	.*/

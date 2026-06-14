@@ -32,7 +32,6 @@
 
 variable_data::variable_data()
 {
-   init_memory( &this->vardata, &this->timer, sizeof( this->timer ) );
 }
 
 variable_data::variable_data( int vtype, int vvnum, std::string_view vtag )
@@ -43,8 +42,6 @@ variable_data::variable_data( int vtype, int vvnum, std::string_view vtag )
    this->c_time = current_time;
    this->m_time = current_time;
    this->r_time = std::chrono::system_clock::time_point{};
-   this->timer = 0;
-   this->vardata = 0;
 }
 
 variable_data::~variable_data(  )

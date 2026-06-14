@@ -41,5 +41,5 @@ class wizinfo_data
    std::string name;
    std::string email;
    std::string realm;
-   short level;
+   short level = 0;
 };

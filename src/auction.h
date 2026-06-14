@@ -32,12 +32,12 @@ inline constexpr std::string_view SALES_FILE = "../aucvaults/sales.dat";
 
 struct auction_data
 {
-   obj_data *item;   /* a pointer to the item */
-   char_data *seller;   /* a pointer to the seller - which may NOT quit */
-   char_data *buyer; /* a pointer to the buyer - which may NOT quit */
-   int bet; /* last bet - or 0 if noone has bet anything */
-   int starting;
-   short going;   /* 1,2, sold */
+   obj_data *item = nullptr;      // Pointer to the item currently being auctioned.
+   char_data *seller = nullptr;   // Pointer to the seller - which may NOT quit.
+   char_data *buyer = nullptr;    // Pointer to the buyer - which may NOT quit.
+   int bet = 0;                   // Last bid - or 0 if noone has bid anything.
+   int starting = 0;              // The starting bid for the item on sale.
+   short going = 0;               // Going once... Going twice... Sold!
 };
 
 /* Holds data for sold items - Samson 6-23-99 */
@@ -105,12 +105,12 @@ class sale_data
    }
 
  private:
-   std::string aucmob;
-   std::string seller;
-   std::string buyer;
-   std::string item;
-   int bid;
-   bool collected;
+   std::string aucmob;  // Name of the mob that is conducting the auction.
+   std::string seller;  // Name of the player selling the item.
+   std::string buyer;   // Name of the buyer who won the auction.
+   std::string item;    // Name of the item being auctioned.
+   int bid = 0;         // Current bid on the item.
+   bool collected = 0;  // Weather or not the buyer has collected the item from the mob.
 };
 
 extern auction_data *auction;
@@ -119,8 +119,9 @@ void add_sale( std::string_view, std::string_view, std::string_view, std::string
 void send_auction_broadcast( std::string_view );
 
 /*
- * this function sends raw argument over the AUCTION: channel
- * I am not too sure if this method is right..
+ * This template formats a message to be sent over the auction channel.
+ * Once formatted it's then sent to the broadcast function in auction.cpp.
+ * And yes, to the previous comment that was here, this is indeed the right method.
  */
 inline void talk_auction( std::string_view fmt, auto&&... args )
 {

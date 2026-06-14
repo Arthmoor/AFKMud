@@ -65,7 +65,7 @@ bool is_valid_wear_loc( char_data *, int );
 /*
  * Increment with every major format change.
  */
-const int SAVEVERSION = 24;
+constexpr int SAVEVERSION = 24;
 // Updated to version 4 after addition of alias code. - Samson 3-23-98
 // Updated to version 5 after installation of color code. - Samson
 // Updated to version 6 for rare item tracking support. - Samson
@@ -943,15 +943,9 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   paf = fread_afk_affect( fp );
                else
                {
-                  paf = new affect_data;
-                  paf->type = -1;
-                  paf->duration = -1;
-                  paf->bit = 0;
-                  paf->modifier = 0;
-                  paf->rismod.reset(  );
-
                   int sn;
                   char *sname = fread_word( fp );
+                  paf = new affect_data;
 
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
@@ -1718,7 +1712,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( !ch->pcdata->deity_name.empty(  ) && !( ch->pcdata->deity = get_deity( ch->pcdata->deity_name ) ) )
                {
                   buf = std::format( "&R\r\nYour deity, {}, has met its demise!\r\n", ch->pcdata->deity_name );
-                  add_loginmsg( ch->name, 18, buf.c_str() );
+                  add_loginmsg( ch->name, 18, buf );
                   ch->pcdata->deity_name.clear(  );
                }
 
@@ -1728,7 +1722,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( !ch->pcdata->clan_name.empty(  ) && !( ch->pcdata->clan = get_clan( ch->pcdata->clan_name ) ) )
                {
                   buf = std::format( "&R\r\nWarning: The organization {} no longer exists, and therefore you no longer belong to that organization.\r\n", ch->pcdata->clan_name );
-                  add_loginmsg( ch->name, 18, buf.c_str() );
+                  add_loginmsg( ch->name, 18, buf );
                   ch->pcdata->clan_name.clear(  );
                }
 
@@ -1738,7 +1732,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( !ch->pcdata->realm_name.empty(  ) && !( ch->pcdata->realm = get_realm( ch->pcdata->realm_name ) ) )
                {
                   buf = std::format( "&Y\r\nWarning: The realm {} no longer exists, and therefore you no longer belong to a realm.\r\n", ch->pcdata->realm_name );
-                  add_loginmsg( ch->name, 18, buf.c_str() );
+                  add_loginmsg( ch->name, 18, buf );
                   ch->pcdata->realm_name.clear(  );
                }
 

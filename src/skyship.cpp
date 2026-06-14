@@ -503,7 +503,6 @@ CMDF( do_board )
  */
 landing_data::landing_data(  )
 {
-   init_memory( &cost, &map_y, sizeof( map_y ) );
 }
 
 landing_data::~landing_data(  )
@@ -512,12 +511,10 @@ landing_data::~landing_data(  )
 
 void continent_data::add_landing_site( short x, short y )
 {
-   landing_data *landing;
+   landing_data *landing = new landing_data;
 
-   landing = new landing_data;
    landing->map_x = x;
    landing->map_y = y;
-   landing->cost = 50000;
 
    this->landing_sites.push_back( landing );
    this->save( );

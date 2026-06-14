@@ -46,19 +46,19 @@ class ship_data
      ship_data(  );
     ~ship_data(  );
 
-   std::string name;
-   std::string owner;
-   std::bitset<MAX_SHIP_FLAG> flags;
-   class continent_data *continent;
-   int fuel;
-   int max_fuel;
-   int hull;
-   int max_hull;
-   int type;
-   int vnum;
-   int room;
-   short map_x;
-   short map_y;
+   std::string name;                            // Name of the ship.
+   std::string owner;                           // Who owns the ship.
+   std::bitset<MAX_SHIP_FLAG> flags;            // Flags to set on the ship.
+   class continent_data *continent = nullptr;   // Which continent the ship is on.
+   int fuel = 0;                                // How much fuel the ship currently has.
+   int max_fuel = 0;                            // How much fuel the ship can hold.
+   int hull = 0;                                // Current strength of the hull. If it reaches zero, it sinks.
+   int max_hull = 0;                            // Maximum hull strength.
+   int type = 0;                                // What type of ship this is.
+   int vnum = 0;                                // Ship's unique identifier.
+   int room = 0;                                // What room the ship is currently in.
+   short map_x = -1;                            // X/Y coordinates on the overland.
+   short map_y = -1;
 };
 
 enum ship_types

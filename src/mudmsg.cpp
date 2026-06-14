@@ -42,7 +42,8 @@
 void send_tochannel( char_data *, mud_channel *, std::string & );
 void free_zonedata( char_data * );
 
-/* License:
+/*
+ * License:
  * 1.  This software comes with no warranty.
  * 2.  This software is free, and may not be bought or sold.
  * 3.  This software may be redistributed in source-only form, with this
@@ -55,7 +56,8 @@ void free_zonedata( char_data * );
  * 5.  The comment below with the author's name must remain intact.
  */
 
-/* MUD-MUD Communication via SysV IPC Message Queues
+/*
+ * MUD-MUD Communication via SysV IPC Message Queues
  * Allows multiple muds on the same box to share their immtalk channel
  * (and possibly other channels)
  * Author: Jesse DeFer dotd@dotd.com
@@ -105,7 +107,7 @@ const int other_ports[] = { MAINPORT, BUILDPORT, CODEPORT, -1 };
 
 /* end customize these defines */
 
-const int MAX_MSGBUF_LENGTH = 2048;
+constexpr int MAX_MSGBUF_LENGTH = 2048;
 
 key_t keyval;
 int qid = -2;

@@ -136,7 +136,6 @@ CMDF( do_omedit )
     */
    d->character->pcdata->dest_buf = victim;
    d->connected = CON_MEDIT;
-   d->olc->changed = false;
    medit_disp_menu( d );
 
    act( AT_ACTION, "$n starts using OLC.", ch, nullptr, nullptr, TO_ROOM );

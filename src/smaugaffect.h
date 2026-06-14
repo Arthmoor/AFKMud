@@ -76,53 +76,53 @@ public:
    skill_type(  );
    ~skill_type(  );
 
-   std::list<class smaug_affect *> affects;   /* Spell affects, if any */
-   std::bitset<MAX_SF_FLAG> flags;  /* Flags */
-   SPELL_FUN *spell_fun;   /* Spell pointer (for spells) */
-   DO_FUN *skill_fun;   /* Skill pointer (for skills) */
-   char *name; /* Name of skill */
-   char *spell_fun_name;   /* Spell function name - Trax */
-   char *skill_fun_name;   /* Skill function name - Trax */
-   char *noun_damage;   /* Damage message    */
-   char *msg_off;    /* Wear off message     */
-   char *hit_char;   /* Success message to caster  */
-   char *hit_vict;   /* Success message to victim  */
-   char *hit_room;   /* Success message to room */
-   char *hit_dest;   /* Success message to dest room */
-   char *miss_char;  /* Failure message to caster  */
-   char *miss_vict;  /* Failure message to victim  */
-   char *miss_room;  /* Failure message to room */
-   char *die_char;   /* Victim death msg to caster */
-   char *die_vict;   /* Victim death msg to victim */
-   char *die_room;   /* Victim death msg to room   */
-   char *imm_char;   /* Victim immune msg to caster   */
-   char *imm_vict;   /* Victim immune msg to victim   */
-   char *imm_room;   /* Victim immune msg to room  */
-   char *dice; /* Dice roll         */
-   char *author;  /* Skill's author */
-   char *components; /* Spell components, if any   */
-   char *teachers;   /* Skill requires a special teacher */
-   char *helptext;   /* Help description for dynamic system */
-   int info;   /* Spell action/class/etc  */
-   int ego; /* Adjusted ego value used in object creation, accounts for SMAUG_AFF's */
-   int value;  /* Misc value        */
-   int spell_sector; /* Sector Spell work    */
-   short skill_level[MAX_CLASS]; /* Level needed by class */
-   short skill_adept[MAX_CLASS]; /* Max attainable % in this skill */
-   short race_level[MAX_RACE];   /* Racial abilities: level */
-   short race_adept[MAX_RACE];   /* Racial abilities: adept */
-   short target;  /* Legal targets     */
-   short minimum_position; /* Position for caster / user */
-   short slot; /* Slot for #OBJECT loading   */
-   short min_mana;   /* Minimum mana used    */
-   short beats;   /* Rounds required to use skill */
-   short guild;   /* Which guild the skill belongs to */
-   short min_level;  /* Minimum level to be able to cast */
-   short type; /* Spell/Skill/Weapon/Tongue  */
-   short range;   /* Range of spell (rooms)  */
-   short saves;   /* What saving spell applies  */
-   short difficulty; /* Difficulty of casting/learning */
-   short participants;  /* # of required participants */
+   std::list<class smaug_affect *> affects;  // Spell affects, if any.
+   std::bitset<MAX_SF_FLAG> flags;           // Flags
+   SPELL_FUN *spell_fun = nullptr;           // Spell pointer (for spells)
+   DO_FUN *skill_fun = nullptr;              // Skill pointer (for skills)
+   char *name = nullptr;                     // Name of skill.
+   char *author = nullptr;                   // Skill's author.
+   char *spell_fun_name = nullptr;           // Spell function name - Trax
+   char *skill_fun_name = nullptr;           // Skill function name - Trax
+   char *noun_damage = nullptr;              // Damage message.
+   char *msg_off = nullptr;                  // Wear off message.
+   char *hit_char = nullptr;                 // Success message to caster.
+   char *hit_vict = nullptr;                 // Success message to victim.
+   char *hit_room = nullptr;                 // Success message to room.
+   char *hit_dest = nullptr;                 // Success message to dest room.
+   char *miss_char = nullptr;                // Failure message to caster.
+   char *miss_vict = nullptr;                // Failure message to victim.
+   char *miss_room = nullptr;                // Failure message to room.
+   char *die_char = nullptr;                 // Victim death msg to caster.
+   char *die_vict = nullptr;                 // Victim death msg to victim.
+   char *die_room = nullptr;                 // Victim death msg to room.
+   char *imm_char = nullptr;                 // Victim immune msg to caster.
+   char *imm_vict = nullptr;                 // Victim immune msg to victim.
+   char *imm_room = nullptr;                 // Victim immune msg to room.
+   char *dice = nullptr;                     // Dice roll.
+   char *components = nullptr;               // Spell components, if any.
+   char *teachers = nullptr;                 // Skill requires a special teacher.
+   char *helptext = nullptr;                 // Help description for dynamic system.
+   int info = 0;                             // Spell action/class/etc.
+   int ego = -2;                             // Adjusted ego value used in object creation, accounts for SMAUG_AFF's.
+   int value = 0;                            // Misc value.
+   int spell_sector = 0;                     // Sector Spell works in.
+   short skill_level[MAX_CLASS]{0};          // Level needed by class.
+   short skill_adept[MAX_CLASS]{0};          // Max attainable % in this skill.
+   short race_level[MAX_RACE]{0};            // Racial abilities: level.
+   short race_adept[MAX_RACE]{0};            // Racial abilities: adept.
+   short target = 0;                         // Legal targets.
+   short minimum_position = POS_STANDING;    // Position for caster / user.
+   short slot = 0;                           // Slot for #OBJECT loading.
+   short min_mana = 0;                       // Minimum mana used.
+   short beats = 0;                          // Rounds required to use skill.
+   short guild = -1;                         // Which guild the skill belongs to.
+   short min_level = 0;                      // Minimum level to be able to cast.
+   short type = 0;                           // Spell/Skill/Weapon/Tongue.
+   short range = 0;                          // Range of spell (rooms).
+   short saves = 0;                          // What saving spell applies.
+   short difficulty = 0;                     // Difficulty of casting/learning.
+   short participants = 0;                   // # of required participants.
 };
 
 extern skill_type *skill_table[MAX_SKILL];
@@ -143,10 +143,10 @@ class smaug_affect
    smaug_affect();
    ~smaug_affect();
 
-   char *duration;
-   char *modifier;
-   int bit;
-   short location;
+   char *duration = nullptr;
+   char *modifier = nullptr;
+   int bit = 0;
+   short location = 0;
 };
 
 constexpr int ALL_BITS = INT_MAX;

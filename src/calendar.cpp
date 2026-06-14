@@ -36,7 +36,7 @@
 
 std::list<holiday_data *> daylist;
 
-const int MAX_TZONE = 25;
+constexpr int MAX_TZONE = 25;
 
 extern std::chrono::system_clock::time_point board_expire_time_t;
 
@@ -507,7 +507,6 @@ void calc_season( void )
 
 holiday_data::holiday_data(  )
 {
-   init_memory( &month, &day, sizeof( day ) );
 }
 
 holiday_data::~holiday_data(  )

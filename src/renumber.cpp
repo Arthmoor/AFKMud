@@ -52,8 +52,8 @@ enum { REN_ROOM, REN_OBJ, REN_MOB };
 
 struct renumber_data
 {
-   int old_vnum;
-   int new_vnum;
+   int old_vnum = 0;
+   int new_vnum = 0;
 };
 
 struct renumber_areas
@@ -66,7 +66,7 @@ struct renumber_areas
    int low_room = 0, hi_room = 0;
 };
 
-/* from db.c */
+/* from db.cpp */
 void save_sysdata(  );
 
 /* returns the new vnum using std::ranges */

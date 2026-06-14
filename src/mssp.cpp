@@ -76,6 +76,7 @@ msspinfo::msspinfo()
 {
    this->hostname = "localhost";
    this->ip = "127.0.0.1";
+   this->ipv6 = "::1";
    this->contact = "admin@example.com";
    this->language = "English";
    this->location = "USA";
@@ -93,50 +94,66 @@ msspinfo::msspinfo()
 
 void save_mssp_info( void )
 {
-   std::ofstream stream;
+   std::ofstream stream( std::filesystem::path{MSSP_FILE} );
 
-   stream.open( std::filesystem::path( MSSP_FILE ) );
-   if( !stream.is_open(  ) )
+   if( !stream.is_open( ) )
    {
       bug( "%s: Cannot open MSSP file.", __func__ );
       return;
    }
 
-   stream << "#MSSP_INFO" << std::endl;
-   stream << "Hostname          " << mssp_info->hostname << std::endl;
-   stream << "IP                " << mssp_info->ip << std::endl;
-   stream << "IPv6              " << mssp_info->ipv6 << std::endl;
-   stream << "Contact           " << mssp_info->contact << std::endl;
-   stream << "Icon              " << mssp_info->icon << std::endl;
-   stream << "Language          " << mssp_info->language << std::endl;
-   stream << "Location          " << mssp_info->location << std::endl;
-   stream << "Family            " << mssp_info->family << std::endl;
-   stream << "Genre             " << mssp_info->genre << std::endl;
-   stream << "GamePlay          " << mssp_info->gamePlay << std::endl;
-   stream << "GameSystem        " << mssp_info->gameSystem << std::endl;
-   stream << "Intermud          " << mssp_info->intermud << std::endl;
-   stream << "Status            " << mssp_info->status << std::endl;
-   stream << "SubGenre          " << mssp_info->subgenre << std::endl;
-   stream << "Created           " << mssp_info->created << std::endl;
-   stream << "MinAge            " << mssp_info->minAge << std::endl;
-   stream << "Ansi              " << mssp_info->ansi << std::endl;
-   stream << "MCCP              " << mssp_info->mccp << std::endl;
-   stream << "MCP               " << mssp_info->mcp << std::endl;
-   stream << "MSP               " << mssp_info->msp << std::endl;
-   stream << "SSL               " << mssp_info->ssl << std::endl;
-   stream << "MXP               " << mssp_info->mxp << std::endl;
-   stream << "Pueblo            " << mssp_info->pueblo << std::endl;
-   stream << "Vt100             " << mssp_info->vt100 << std::endl;
-   stream << "Xterm256          " << mssp_info->xterm256 << std::endl;
-   stream << "Pay2Play          " << mssp_info->pay2play << std::endl;
-   stream << "Pay4Perks         " << mssp_info->pay4perks << std::endl;
-   stream << "HiringBuilders    " << mssp_info->hiringBuilders << std::endl;
-   stream << "HiringCoders      " << mssp_info->hiringCoders << std::endl;
-   stream << "AdultMaterial     " << mssp_info->adultMaterial << std::endl;
-   stream << "NewbieFriendly    " << mssp_info->newbieFriendly << std::endl;
-   stream << "End" << std::endl << std::endl;
+   // For writing string values if they are actually set.
+   auto write_field = [&stream](const std::string& label, const std::string& value) {
+      if( !value.empty() )
+      {
+         stream << label << value << std::endl;
+      }
+   };
 
-   stream.close(  );
+   // For writing numerical values if they're > 0.
+   auto write_field_int = [&stream](const std::string& label, int value) {
+      if( value > 0 )
+      {
+         stream << label << value << std::endl;
+      }
+   };
+
+   stream << "#MSSP_INFO" << std::endl;
+
+   write_field( "Hostname          ", mssp_info->hostname );
+   write_field( "IP                ", mssp_info->ip );
+   write_field( "IPv6              ", mssp_info->ipv6 );
+   write_field( "Contact           ", mssp_info->contact );
+   write_field( "Icon              ", mssp_info->icon );
+   write_field( "Language          ", mssp_info->language );
+   write_field( "Location          ", mssp_info->location );
+   write_field( "Family            ", mssp_info->family );
+   write_field( "Genre             ", mssp_info->genre );
+   write_field( "GamePlay          ", mssp_info->gamePlay );
+   write_field( "GameSystem        ", mssp_info->gameSystem );
+   write_field( "Status            ", mssp_info->status );
+   write_field( "SubGenre          ", mssp_info->subgenre );
+   write_field( "Intermud          ", mssp_info->intermud );
+
+   if( mssp_info->ssl >= 1024 )
+      stream << "SSL               " << mssp_info->ssl;
+
+   write_field_int( "CrawlDelay        ", mssp_info->crawldelay );
+   write_field_int( "MinAge            ", mssp_info->minAge );
+   write_field_int( "Ansi              ", mssp_info->ansi );
+   write_field_int( "Created           ", mssp_info->created );
+   write_field_int( "MCCP              ", mssp_info->mccp );
+   write_field_int( "MCP               ", mssp_info->mcp );
+   write_field_int( "MSP               ", mssp_info->msp );
+   write_field_int( "MXP               ", mssp_info->mxp );
+   write_field_int( "Vt100             ", mssp_info->vt100 );
+   write_field_int( "Xterm256          ", mssp_info->xterm256 );
+   write_field_int( "Pay2Play          ", mssp_info->pay2play );
+   write_field_int( "Pay4Perks         ", mssp_info->pay4perks );
+   write_field_int( "HiringBuilders    ", mssp_info->hiringBuilders );
+   write_field_int( "HiringCoders      ", mssp_info->hiringCoders );
+
+   stream << "End" << std::endl << std::endl;
 }
 
 /*
@@ -168,21 +185,13 @@ void load_mssp_data( void )
 
       if( key == "#MSSP_INFO" )
          mssp_info = new msspinfo;
-      else if( key == "AdultMaterial" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->adultMaterial = atoi( value.c_str() );
-      }
       else if( key == "Ansi" )
       {
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
 
-         mssp_info->ansi = atoi( value.c_str() );
+         mssp_info->ansi = std::stoi( value );
       }
       else if( key == "Contact" )
       {
@@ -192,13 +201,21 @@ void load_mssp_data( void )
 
          mssp_info->contact = value;
       }
+      else if( key == "CrawlDelay" )
+      {
+         stream.getline( buf, MSL );
+         value = buf;
+         strip_lspace( value );
+
+         mssp_info->crawldelay = std::stoi( value );
+      }
       else if( key == "Created" )
       {
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
 
-         mssp_info->created = atoi( value.c_str() );
+         mssp_info->created = std::stoi( value );
       }
       else if( key == "Family" )
       {
@@ -254,7 +271,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->hiringBuilders = atoi( value.c_str() );
+         mssp_info->hiringBuilders = std::stoi( value );
       }
       else if( key == "HiringCoders" )
       {
@@ -262,7 +279,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->hiringCoders = atoi( value.c_str() );
+         mssp_info->hiringCoders = std::stoi( value );
       }
       else if( key == "Icon" )
       {
@@ -310,7 +327,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->mccp = atoi( value.c_str() );
+         mssp_info->mccp = std::stoi( value );
       }
       else if( key == "MCP" )
       {
@@ -318,7 +335,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->mcp = atoi( value.c_str() );
+         mssp_info->mcp = std::stoi( value );
       }
       else if( key == "MinAge" )
       {
@@ -326,7 +343,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->minAge = atoi( value.c_str() );
+         mssp_info->minAge = std::stoi( value );
       }
       else if( key == "MSP" )
       {
@@ -334,7 +351,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->msp = atoi( value.c_str() );
+         mssp_info->msp = std::stoi( value );
       }
       else if( key == "MXP" )
       {
@@ -342,15 +359,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->mxp = atoi( value.c_str() );
-      }
-      else if( key == "NewbieFriendly" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->newbieFriendly = atoi( value.c_str() );
+         mssp_info->mxp = std::stoi( value );
       }
       else if( key == "Pay2Play" )
       {
@@ -358,7 +367,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->pay2play = atoi( value.c_str() );
+         mssp_info->pay2play = std::stoi( value );
       }
       else if( key == "Pay4Perks" )
       {
@@ -366,7 +375,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->pay4perks = atoi( value.c_str() );
+         mssp_info->pay4perks = std::stoi( value );
       }
       else if( key == "SSL" )
       {
@@ -374,7 +383,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->ssl = atoi( value.c_str() );
+         mssp_info->ssl = std::stoi( value );
       }
       else if( key == "Status" )
       {
@@ -398,7 +407,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->vt100 = atoi( value.c_str() );
+         mssp_info->vt100 = std::stoi( value );
       }
       else if( key == "Xterm256" )
       {
@@ -406,7 +415,7 @@ void load_mssp_data( void )
          value = buf;
          strip_lspace( value );
 
-         mssp_info->xterm256 = atoi( value.c_str() );
+         mssp_info->xterm256 = std::stoi( value );
       }
       else if( key == "End" )
          break;
@@ -437,6 +446,7 @@ void show_mssp( char_data * ch )
 
    ch->print_fmt( "&zHostname          &W{}\r\n", mssp_info->hostname );
    ch->print_fmt( "&zIP                &W{}\r\n", mssp_info->ip );
+   ch->print_fmt( "&zIPv6              &W{}\r\n", mssp_info->ip );
    ch->print_fmt( "&zContact           &W{}\r\n", mssp_info->contact );
    ch->print_fmt( "&zIcon              &W{}\r\n", mssp_info->icon );
    ch->print_fmt( "&zLanguage          &W{}\r\n", mssp_info->language );
@@ -458,15 +468,12 @@ void show_mssp( char_data * ch )
    ch->print_fmt( "&zMSP               &W{}\r\n", MSSP_YN( mssp_info->msp ) );
    ch->print_fmt( "&zSSL               &W{}\r\n", MSSP_YN( mssp_info->ssl ) );
    ch->print_fmt( "&zMXP               &W{}\r\n", MSSP_YN( mssp_info->mxp ) );
-   ch->print_fmt( "&zPueblo            &W{}\r\n", MSSP_YN( mssp_info->pueblo ) );
    ch->print_fmt( "&zVt100             &W{}\r\n", MSSP_YN( mssp_info->vt100 ) );
    ch->print_fmt( "&zXterm256          &W{}\r\n", MSSP_YN( mssp_info->xterm256 ) );
    ch->print_fmt( "&zPay2Play          &W{}\r\n", MSSP_YN( mssp_info->pay2play ) );
    ch->print_fmt( "&zPay4Perks         &W{}\r\n", MSSP_YN( mssp_info->pay4perks ) );
    ch->print_fmt( "&zHiringBuilders    &W{}\r\n", MSSP_YN( mssp_info->hiringBuilders ) );
    ch->print_fmt( "&zHiringCoders      &W{}\r\n", MSSP_YN( mssp_info->hiringCoders ) );
-   ch->print_fmt( "&zAdultMaterial     &W{}\r\n", MSSP_YN( mssp_info->adultMaterial ) );
-   ch->print_fmt( "&zNewbieFriendly    &W{}\r\n", MSSP_YN( mssp_info->newbieFriendly ) );
 }
 
 CMDF( do_setmssp )
@@ -480,15 +487,13 @@ CMDF( do_setmssp )
       ch->print( "Syntax: setmssp show\r\n" );
       ch->print( "Syntax: setmssp <field> [value]\r\n" );
       ch->print( "Field being one of:\r\n" );
-      ch->print( "hostname       ip                contact            icon             lanuage          location\r\n" );
+      ch->print( "hostname       ip                ipv6               contact          icon\r\n" );
+      ch->print( "language       location          crawldelay\r\n" );
       ch->print( "website        family            genre              gameplay         game_system\r\n" );
       ch->print( "status         subgenre          intermud           created          min_age\r\n" );
       ch->print( "worlds         ansi              mccp               mcp              msp\r\n" );
-      ch->print( "ssl            mxp               pueblo             vt100            xterm256\r\n" );
-      ch->print( "pay2play       pay4perks         hiring_builders    hiring_coders    adult_material\r\n" );
-      ch->print( "multiclassing  newbie_friendly   player_cities      player_clans     player_crafting\r\n" );
-      ch->print( "player_guilds  equipment_system  multiplaying       player_killing   quest_system\r\n" );
-      ch->print( "roleplaying    training_system   world_originality\r\n" );
+      ch->print( "ssl            mxp               vt100              xterm256\r\n" );
+      ch->print( "pay2play       pay4perks         hiring_builders    hiring_coders\r\n" );
 
       return;
    }
@@ -505,6 +510,8 @@ CMDF( do_setmssp )
       strptr = &mssp_info->hostname;
    else if( !str_cmp( arg1, "ip" ) )
       strptr = &mssp_info->ip;
+   else if( !str_cmp( arg1, "ipv6" ) )
+      strptr = &mssp_info->ipv6;
    else if( !str_cmp( arg1, "contact" ) )
       strptr = &mssp_info->contact;
    else if( !str_cmp( arg1, "icon" ) )
@@ -531,7 +538,7 @@ CMDF( do_setmssp )
    if( strptr != nullptr )
    {
       *strptr = argument;
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
+      ch->print_fmt( "MSSP value, {} has been changed to: {}\r\n", arg1, argument );
       save_mssp_info(  );
       return;
    }
@@ -539,22 +546,18 @@ CMDF( do_setmssp )
       ynptr = &mssp_info->ansi;
    else if( !str_cmp( arg1, "mccp" ) )
       ynptr = &mssp_info->mccp;
-/* Uncomment this only if you have added MCP support to the codebase.
-   else if( !str_cmp( arg1, "mcp" ) )
-      ynptr = &mssp_info->mcp;
-*/
    else if( !str_cmp( arg1, "msp" ) )
       ynptr = &mssp_info->msp;
-/* Only uncomment these if you add support for them to the codebase.
+/* Uncomment these only if you have added support to the codebase.
+   else if( !str_cmp( arg1, "mcp" ) )
+      ynptr = &mssp_info->mcp;
    else if( !str_cmp( arg1, "mxp" ) )
       ynptr = &mssp_info->mxp;
-   else if( !str_cmp( arg1, "pueblo" ) )
-      ynptr = &mssp_info->pueblo;
    else if( !str_cmp( arg1, "vt100" ) )
       ynptr = &mssp_info->vt100;
+*/
    else if( !str_cmp( arg1, "xterm256" ) )
       ynptr = &mssp_info->xterm256;
-*/
    else if( !str_cmp( arg1, "pay2play" ) )
       ynptr = &mssp_info->pay2play;
    else if( !str_cmp( arg1, "pay4perks" ) )
@@ -563,10 +566,6 @@ CMDF( do_setmssp )
       ynptr = &mssp_info->hiringBuilders;
    else if( !str_cmp( arg1, "hiring_coders" ) )
       ynptr = &mssp_info->hiringCoders;
-   else if( !str_cmp( arg1, "adult_material" ) )
-      ynptr = &mssp_info->adultMaterial;
-   else if( !str_cmp( arg1, "newbie_friendly" ) )
-      ynptr = &mssp_info->newbieFriendly;
 
    if( ynptr != nullptr )
    {
@@ -574,7 +573,7 @@ CMDF( do_setmssp )
 
       if( str_cmp( argument, "yes" ) && str_cmp( argument, "no" ) )
       {
-         ch->printf( "You must specify 'yes' or 'no' for the %s value!\r\n", arg1.c_str() );
+         ch->print_fmt( "You must specify 'yes' or 'no' for the {} value!\r\n", arg1 );
          return;
       }
       newvalue = !str_cmp( argument, "yes" ) ? true : false;
@@ -592,35 +591,31 @@ CMDF( do_setmssp )
 
       if( !is_number( argument ) || ( value < MSSP_MINCREATED ) || ( value > MSSP_MAXCREATED ) )
       {
-         ch->printf( "The value for created must be between %d and %d\r\n", MSSP_MINCREATED, MSSP_MAXCREATED );
+         ch->print_fmt( "The value for created must be between {} and {}.%d\r\n", MSSP_MINCREATED, MSSP_MAXCREATED );
          return;
       }
       mssp_info->created = value;
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
+      ch->print_fmt( "MSSP value, {} has been changed to: {}\r\n", arg1, argument );
       save_mssp_info(  );
       return;
    }
    else if( !str_cmp( arg1, "min_age" ) )
    {
-      int value;
-
-      value = atoi( argument.c_str() );
+      int value = std::stoi( argument );
 
       if( !is_number( argument ) || ( value < MSSP_MINAGE ) || ( value > MSSP_MAXAGE ) )
       {
-         ch->printf( "The value for min_age must be between %d and %d\r\n", MSSP_MINAGE, MSSP_MAXAGE );
+         ch->print_fmt( "The value for min_age must be between {} and {}.\r\n", MSSP_MINAGE, MSSP_MAXAGE );
          return;
       }
       mssp_info->minAge = value;
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
+      ch->print_fmt( "MSSP value, {} has been changed to: {}\r\n", arg1, argument );
       save_mssp_info(  );
       return;
    }
    else if( !str_cmp( arg1, "ssl" ) )
    {
-      int value;
-
-      value = atoi( argument.c_str() );
+      int value = std::stoi( argument );
 
       if( !is_number( argument ) || ( value < 1024 ) || ( value > 65535 ) )
       {
@@ -628,6 +623,20 @@ CMDF( do_setmssp )
          return;
       }
       mssp_info->ssl = value;
+      ch->print_fmt( "MSSP value, {} has been changed to: {}\r\n", arg1, argument );
+      save_mssp_info(  );
+      return;
+   }
+   else if( !str_cmp( arg1, "crawldelay" ) )
+   {
+      int value = std::stoi( argument );
+
+      if( !is_number( argument ) || value < -1 )
+      {
+         ch->print( "The value for crawldelay must be a numeric value >= 1, or -1 to use the protocol default.\r\n" );
+         return;
+      }
+      mssp_info->crawldelay = value;
       ch->print_fmt( "MSSP value, {} has been changed to: {}\r\n", arg1, argument );
       save_mssp_info(  );
       return;
@@ -725,6 +734,7 @@ void send_mssp_data( descriptor_data * d )
       mssp_reply( d, "IPV6", "{}", mssp_info->ipv6 );
 
    mssp_reply( d, "PORT", "{}", mud_port );
+   mssp_reply( d, "CRAWL DELAY", "{}", mssp_info->crawldelay );
    mssp_reply( d, "CONTACT", "{}", mssp_info->contact );
    mssp_reply( d, "CREATED", "{}", mssp_info->created );
    mssp_reply( d, "CODEBASE", "{} {}", CODENAME, CODEVERSION );
@@ -746,15 +756,13 @@ void send_mssp_data( descriptor_data * d )
    mssp_reply( d, "GAMEPLAY", "{}", mssp_info->gamePlay );
    mssp_reply( d, "GAMESYSTEM", "{}", mssp_info->gameSystem );
 
-   if( !mssp_info->intermud.empty() )
-      mssp_reply( d, "INTERMUD", "{}", mssp_info->intermud );
+   mssp_reply( d, "INTERMUD", "{}", mssp_info->intermud );
 
    mssp_reply( d, "STATUS", "{}", mssp_info->status );
    mssp_reply( d, "AREAS", "{}", top_area );
    mssp_reply( d, "ROOMS", "{}", top_room );
    mssp_reply( d, "MOBILES", "{}", top_mob_index );
    mssp_reply( d, "OBJECTS", "{}", top_obj_index );
-   mssp_reply( d, "MUDPROGS", "{}", top_prog );
 #if defined(SQL)
    mssp_reply( d, "HELPFILES", "{}", db_help_count() );
 #else
@@ -772,16 +780,13 @@ void send_mssp_data( descriptor_data * d )
    if( mssp_info->ssl > 1024 )
       mssp_reply( d, "SSL", "{}", mssp_info->ssl );
 
-   mssp_reply( d, "MXP", "{}", 0 ); // Hardcoded 0 response because this codebase doesn't support MXP. Or any of the next 3 either.
-   mssp_reply( d, "PUEBLO", "{}", 0 );
+   mssp_reply( d, "MXP", "{}", 0 ); // Hardcoded 0 response because this codebase doesn't support MXP. Or VT100 either.
    mssp_reply( d, "VT100", "{}", 0 );
-   mssp_reply( d, "XTERM 256 COLORS", "{}", 0 );
+   mssp_reply( d, "XTERM 256 COLORS", "{}", mssp_info->xterm256 );
    mssp_reply( d, "PAY TO PLAY", "{}", mssp_info->pay2play );
    mssp_reply( d, "PAY FOR PERKS", "{}", mssp_info->pay4perks );
    mssp_reply( d, "HIRING BUILDERS", "{}", mssp_info->hiringBuilders );
    mssp_reply( d, "HIRING CODERS", "{}", mssp_info->hiringCoders );
-   mssp_reply( d, "ADULT MATERIAL", "{}", mssp_info->adultMaterial );
-   mssp_reply( d, "NEWBIE FRIENDLY", "{}", mssp_info->newbieFriendly );
 
    d->write( "MSSP-REPLY-END\r\n" );
 }

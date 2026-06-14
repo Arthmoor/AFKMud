@@ -134,7 +134,6 @@ CMDF( do_shipstat )
 
 ship_data::ship_data(  )
 {
-   init_memory( &continent, &map_y, sizeof( map_y ) );
 }
 
 ship_data::~ship_data(  )
@@ -305,9 +304,7 @@ CMDF( do_shipset )
          return;
       }
       ship = new ship_data;
-      ship->continent = nullptr;
-      ship->map_x = -1;
-      ship->map_y = -1;
+
       ship->name = arg;
       shiplist.push_back( ship );
       save_ships(  );

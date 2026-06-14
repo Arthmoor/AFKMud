@@ -103,8 +103,6 @@ game_board_data::game_board_data(  )
    this->board[7][5] = BLACK_BISHOP;
    this->board[7][6] = BLACK_KNIGHT;
    this->board[7][7] = BLACK_ROOK;
-   this->turn = 0;
-   this->type = TYPE_LOCAL;
 }
 
 bool IS_WHITE( int x )

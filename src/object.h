@@ -28,6 +28,8 @@
 
 #pragma once
 
+constexpr int MAX_OBJ_VALUE = 11; // This should always be one more than you actually have.
+
 /*
  * One object.
  */
@@ -80,43 +82,43 @@ class obj_data
    void armorgen(  );
    void weapongen(  );
 
-   std::list<obj_data *> contents;   /* Objects this object contains */
-   std::list<affect_data *> affects;
-   std::list<extra_descr_data *> extradesc;
-   std::list<class mprog_act_list *> mpact;   /* Mudprogs */
-   std::bitset<MAX_ITEM_FLAG> extra_flags;
-   std::bitset<MAX_WEAR_FLAG> wear_flags;
-   obj_data *in_obj;
-   obj_index *pIndexData;
-   room_index *in_room;
-   char_data *carried_by;
-   class continent_data *continent;  /* Which map is it on? - Samson 8-21-99 */
-   char *name;
-   char *short_descr;
-   char *objdesc;
-   char *action_desc;
-   char *owner;   /* Who owns this item? Used with personal flag for Sindhae prizes. */
-   char *seller;  /* Who put the item up for auction? */
-   char *buyer;   /* Who made the final bid on the item? */
-   char *socket[3];  /* Name of rune/gem the item has in each socket - Samson 3-31-02 */
-   int value[11]; /* Raised to 11 by Samson on 12-14-02 */
-   int bid; /* What was the amount of the final bid? */
-   int mpactnum;  /* mudprogs */
-   int ego;
-   int room_vnum; /* Track it's room vnum for hotbooting and such */
-   int cost;
-   short wear_loc;
-   short weight;
-   short level;
-   short timer;
-   short count;   /* support for object grouping */
-   short map_x;   /* Object coordinates on overland maps - Samson 8-21-99 */
-   short map_y;
-   short day;  /* What day of the week was it offered or sold? */
-   short month;   /* What month? */
-   short year; /* What year? */
-   short item_type;
-   unsigned short mpscriptpos;
+   std::list<obj_data *> contents;              // Objects this object contains.
+   std::list<affect_data *> affects;            // List of affects this object has.
+   std::list<extra_descr_data *> extradesc;     // List of extra descriptions the object has.
+   std::list<class mprog_act_list *> mpact;     // Mudprogs
+   std::bitset<MAX_ITEM_FLAG> extra_flags;      // Extra flags for the object.
+   std::bitset<MAX_WEAR_FLAG> wear_flags;       // Wear flags for the object.
+   obj_data *in_obj = nullptr;                  // Pointer to the object which this object may be contained in.
+   obj_index *pIndexData = nullptr;             // Pointer to the object's master index data.
+   room_index *in_room = nullptr;               // Pointer to the room the object may be sitting in.
+   char_data *carried_by = nullptr;             // Pointer to the character who may be carrying this object.
+   class continent_data *continent = nullptr;   // Pointer to which continent the object is on for the overland system - Samson 8-21-99
+   char *name = nullptr;                        // Keywords used to interact with this object.
+   char *short_descr = nullptr;                 // The one line description of the object when seen in inventories or equipment lists.
+   char *objdesc = nullptr;                     // Long description seen when the object is in a room.
+   char *action_desc = nullptr;                 // Message displayed when someone interacts with the object. Not fully supported in code.
+   char *owner = nullptr;                       // Who owns this item? Used with personal flag for Sindhae prizes.
+   char *seller = nullptr;                      // Who put the item up for auction?
+   char *buyer = nullptr;                       // Who made the final bid on the item?
+   char *socket[3]{nullptr, nullptr, nullptr};  // Name of rune/gem the item has in each socket - Samson 3-31-02
+   int value[MAX_OBJ_VALUE];                    // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
+   int bid = 0;                                 // What was the amount of the final bid on auction?
+   int mpactnum = 0;                            // mudprogs
+   int ego = -2;                                // The ego level the object has. This is used to determine whether a player can use or keep this object long term. -2 triggers an autocalc function.
+   int room_vnum = 0;                           // Track it's room vnum for hotbooting and such.
+   int cost = 0;                                // Base cost of the object when sold in shops.
+   short wear_loc = -1;                         // What part of the body the object is intended to be used on.
+   short weight = 0;                            // How much the object weighs in pounds.
+   short level = 0;                             // What level the object spawns at.
+   short timer = 0;                             // Countdown timer before the object despawns on its own.
+   short count = 1;                             // Support for object grouping.
+   short map_x = -1;                            // Object X/Y coordinates on overland maps - Samson 8-21-99
+   short map_y = -1;
+   short day = 0;                               // What day of the week was it offered or sold?
+   short month = 0;                             // What month?
+   short year = 0;                              // What year?
+   short item_type = 0;                         // What type of object this is.
+   unsigned short mpscriptpos = 0;              // Something to do with Mudprogs.
 };
 
 obj_data *get_objtype( char_data *, short );

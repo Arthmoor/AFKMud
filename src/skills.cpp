@@ -323,7 +323,6 @@ const char *target_type[] = { "ignore", "offensive", "defensive", "self", "objin
 
 smaug_affect::smaug_affect(  )
 {
-   init_memory( &duration, &location, sizeof( location ) );
 }
 
 smaug_affect::~smaug_affect(  )
@@ -334,8 +333,6 @@ smaug_affect::~smaug_affect(  )
 
 skill_type::skill_type(  )
 {
-   init_memory( &flags, &participants, sizeof( participants ) );
-   affects.clear(  );
 }
 
 skill_type::~skill_type(  )
@@ -1040,7 +1037,7 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
 /*
  * Save the skill table to disk
  */
-const int SKILLVERSION = 5;
+constexpr int SKILLVERSION = 5;
 /* Updated to 1 for position text - Samson 4-26-00 */
 /* Updated to 2 for std::bitset flags - Samson 7-10-04 */
 /* Updated to 3 for AFF_NONE insertion - Samson 7-27-04 */
@@ -1115,8 +1112,6 @@ skill_type *fread_skill( FILE * fp, int version )
       skill->race_level[x] = LEVEL_IMMORTAL;
       skill->race_adept[x] = 95;
    }
-   skill->guild = -1;
-   skill->ego = -2;
 
    for( ;; )
    {
@@ -2818,7 +2813,7 @@ CMDF( do_sset )
          return;
       }
       skill = new skill_type;
-      skill->slot = 0;
+
       if( type == SKILL_HERB )
       {
          int max, x;
@@ -2831,10 +2826,9 @@ CMDF( do_sset )
       }
       else
          skill_table[num_skills++] = skill;
-      skill->min_mana = 0;
+
       skill->name = strdup( argument.c_str(  ) );
       skill->spell_fun = spell_smaug;
-      skill->guild = -1;
       skill->type = type;
       skill->author = QUICKLINK( ch->name );
       if( !str_cmp( arg2, "ability" ) )
@@ -3167,10 +3161,7 @@ CMDF( do_sset )
                bit = tmpbit;
          }
          aff = new smaug_affect;
-         if( !str_cmp( duration, "0" ) )
-            duration.clear(  );
-         if( !str_cmp( modifier, "0" ) )
-            modifier.clear(  );
+
          aff->duration = strdup( duration.c_str(  ) );
          aff->location = loc;
          if( loc == APPLY_AFFECT || loc == APPLY_EXT_AFFECT )

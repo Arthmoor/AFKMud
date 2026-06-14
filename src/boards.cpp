@@ -117,7 +117,6 @@ std::string print_lngstr( std::string_view src, size_t size )
 
 board_chardata::board_chardata(  )
 {
-   init_memory( &last_read, &alert, sizeof( alert ) );
 }
 
 board_chardata::~board_chardata(  )
@@ -126,8 +125,6 @@ board_chardata::~board_chardata(  )
 
 note_data::note_data(  )
 {
-   init_memory( &parent, &expire, sizeof( expire ) );
-   rlist.clear(  );
 }
 
 note_data::~note_data(  )
@@ -149,8 +146,6 @@ note_data::~note_data(  )
 
 board_data::board_data(  )
 {
-   init_memory( &flags, &expire, sizeof( expire ) );
-   nlist.clear(  );
 }
 
 board_data::~board_data(  )
@@ -424,7 +419,7 @@ void char_data::note_attach(  )
 }
 
 // 1: Initial version.
-const int BOARDFILEVER = 1;
+constexpr int BOARDFILEVER = 1;
 
 void write_boards( void )
 {
@@ -3502,8 +3497,6 @@ void load_projects( void ) /* Copied load_boards structure for simplicity */
 
 project_data::project_data(  )
 {
-   init_memory( &name, &taken, sizeof( taken ) );
-   nlist.clear(  );
 }
 
 project_data::~project_data(  )

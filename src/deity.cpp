@@ -46,7 +46,6 @@ std::list < deity_data * >deitylist;
 
 deity_data::deity_data(  )
 {
-   init_memory( &element, &dig_corpse, sizeof( dig_corpse ) );
 }
 
 deity_data::~deity_data(  )
@@ -103,7 +102,7 @@ void write_deity_list( void )
 }
 
 /* Save a deity's data to its data file */
-const int DEITY_VERSION = 3;
+constexpr int DEITY_VERSION = 3;
 /* Added for deity file compatibility. Adjani, 1-31-04 */
 /* Raised to 2 by Samson to support multiple class/race settings - 5-17-04 */
 /* Raised to 3 by Samson to accommodate RISA flag changes - 7-12-04 */
@@ -1133,7 +1132,7 @@ CMDF( do_setdeity )
          {
             std::string buf = std::format( "&R\r\nYour deity, {}, has met its demise!\r\n", vch->pcdata->deity_name );
             if( !vch->desc )
-               add_loginmsg( vch->name, 18, buf.c_str() );
+               add_loginmsg( vch->name, 18, buf );
             else
                vch->print( buf );
 
@@ -1153,12 +1152,12 @@ CMDF( do_setdeity )
          }
       }
 
-      std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deity->filename.c_str(  ) );
+      std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deity->filename );
       deleteptr( deity );
-      ch->printf( "&YDeity information for %s deleted.\r\n", arg1.c_str(  ) );
+      ch->print_fmt( "&YDeity information for {} deleted.\r\n", arg1 );
 
       if( std::filesystem::remove( filename ) )
-         ch->printf( "&RDeity file for %s destroyed.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "&RDeity file for {} destroyed.\r\n", arg1 );
 
       write_deity_list(  );
       return;
@@ -2238,7 +2237,7 @@ CMDF( do_makedeity )
    deity->filename = argument;
    write_deity_list(  );
    save_deity( deity );
-   ch->printf( "%s deity has been created\r\n", argument.c_str(  ) );
+   ch->print_fmt( "{} deity has been created.\r\n", argument );
 }
 
 CMDF( do_devote )
@@ -2386,12 +2385,12 @@ CMDF( do_deities )
 /*
 Internal function to adjust favor.
 Fields are:
-0 = flee        5 = sac         10 = backstab
-1 = flee_npcrace    6 = bury_corpse     11 = die
-2 = kill        7 = aid_spell       12 = die_npcrace
+0 = flee            5 = sac         10 = backstab
+1 = flee_npcrace    6 = bury_corpse 11 = die
+2 = kill            7 = aid_spell   12 = die_npcrace
 3 = kill_npcrace    8 = aid         13 = spell_aid
 4 = kill_magic      9 = steal       14 = dig_corpse
-15 = die_npcfoe        16 = flee_npcfoe         17 = kill_npcfoe
+15 = die_npcfoe    16 = flee_npcfoe 17 = kill_npcfoe
 */
 void char_data::adjust_favor( int field, int mod )
 {

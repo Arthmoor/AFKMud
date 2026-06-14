@@ -45,9 +45,6 @@ CMDF( do_morphstat );
 
 char_morph::char_morph(  )
 {
-   init_memory( &timer, &cast_allowed, sizeof( cast_allowed ) );
-
-   morph = nullptr;
 }
 
 char_morph::~char_morph(  )
@@ -125,7 +122,7 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
        * i is a sanity check, just in case things go haywire so it doesn't
        * * loop forever here. -Shaddai
        */
-      for( i = 0, tmp = morph->timefrom; i < 25 && tmp != morph->timeto; ++i )
+      for( i = 0, tmp = morph->timefrom; i <= sysdata->hoursperday && tmp != morph->timeto; ++i )
       {
          if( tmp == time_info.hour )
          {
@@ -170,7 +167,8 @@ const std::string MORPHPERS( char_data * ch, char_data * looker, bool from )
    return "Someone";
 }
 
-// 1: Initial version.
+// 0: Initial version.
+// 1: Flags written as text.
 constexpr int MORPHFILEVER = 1;
 
 /* 
@@ -182,7 +180,6 @@ void fwrite_morph( FILE * fp, morph_data * morph )
    if( !morph )
       return;
 
-   fprintf( fp, "Version         %d\n", MORPHFILEVER );
    fprintf( fp, "Morph           %s\n", morph->name );
    if( morph->obj[0] != 0 || morph->obj[1] != 0 || morph->obj[2] != 0 )
       fprintf( fp, "Objs            %d %d %d\n", morph->obj[0], morph->obj[1], morph->obj[2] );
@@ -233,13 +230,13 @@ void fwrite_morph( FILE * fp, morph_data * morph )
    if( morph->race.any(  ) )
       fprintf( fp, "Race            %s~\n", bitset_string( morph->race, npc_race ) );
    if( morph->resistant.any(  ) )
-      fprintf( fp, "Resistant       %s\n", bitset_string( morph->resistant, ris_flags ) );
+      fprintf( fp, "Resistant       %s~\n", bitset_string( morph->resistant, ris_flags ) );
    if( morph->suscept.any(  ) )
       fprintf( fp, "Suscept         %s~\n", bitset_string( morph->suscept, ris_flags ) );
    if( morph->immune.any(  ) )
       fprintf( fp, "Immune          %s~\n", bitset_string( morph->immune, ris_flags ) );
    if( morph->absorb.any(  ) )
-      fprintf( fp, "Absorb		%s~\n", bitset_string( morph->absorb, ris_flags ) );
+      fprintf( fp, "Absorb          %s~\n", bitset_string( morph->absorb, ris_flags ) );
    if( morph->no_immune.any(  ) )
       fprintf( fp, "NoImmune        %s~\n", bitset_string( morph->no_immune, ris_flags ) );
    if( morph->no_resistant.any(  ) )
@@ -287,7 +284,7 @@ void fwrite_morph( FILE * fp, morph_data * morph )
    if( morph->level != 0 )
       fprintf( fp, "Level           %d\n", morph->level );
    if( morph->parry != 0 )
-      fprintf( fp, "Parry        	%d\n", morph->parry );
+      fprintf( fp, "Parry           %d\n", morph->parry );
    if( morph->saving_breath != 0 )
       fprintf( fp, "SaveBreath      %d\n", morph->saving_breath );
    if( morph->saving_para_petri != 0 )
@@ -325,6 +322,8 @@ void save_morphs( void )
       bug( "%s: Cannot open morph data file.", __func__ );
       return;
    }
+
+   fprintf( fp, "#VERSION        %d\n", MORPHFILEVER );
 
    for( auto* morph : morphlist )
       fwrite_morph( fp, morph );
@@ -1640,71 +1639,13 @@ void setup_morph_vnum( void )
 }
 
 /*
- * This function set's up all the default values for a morph
- */
-void morph_defaults( morph_data * morph )
-{
-   morph->affected_by.reset(  );
-   morph->name = nullptr;
-   morph->Class.reset(  );
-   morph->sex = -1;
-   morph->timefrom = -1;
-   morph->timeto = -1;
-   morph->dayfrom = -1;
-   morph->dayto = -1;
-   morph->pkill = 0;
-   morph->manaused = 0;
-   morph->moveused = 0;
-   morph->hpused = 0;
-   morph->favourused = 0;
-   morph->immune.reset(  );
-   morph->absorb.reset(  );
-   morph->no_affected_by.reset(  );
-   morph->no_immune.reset(  );
-   morph->no_resistant.reset(  );
-   morph->no_suscept.reset(  );
-   morph->obj[0] = 0;
-   morph->obj[1] = 0;
-   morph->obj[2] = 0;
-   morph->objuse[0] = false;
-   morph->objuse[1] = false;
-   morph->objuse[2] = false;
-   morph->race.reset(  );
-   morph->resistant.reset(  );
-   morph->suscept.reset(  );
-   morph->used = 0;
-   morph->ac = 0;
-   morph->defpos = POS_STANDING;
-   morph->dex = 0;
-   morph->dodge = 0;
-   morph->cha = 0;
-   morph->con = 0;
-   morph->inte = 0;
-   morph->lck = 0;
-   morph->level = 0;
-   morph->parry = 0;
-   morph->saving_breath = 0;
-   morph->saving_para_petri = 0;
-   morph->saving_poison_death = 0;
-   morph->saving_spell_staff = 0;
-   morph->saving_wand = 0;
-   morph->str = 0;
-   morph->tumble = 0;
-   morph->wis = 0;
-   morph->no_cast = false;
-   morph->cast_allowed = false;
-   morph->timer = -1;
-   morph->vnum = 0;
-}
-
-/*
  * Read in one morph structure
  */
-morph_data *fread_morph( FILE * fp )
+morph_data *fread_morph( FILE * fp, int file_ver )
 {
    morph_data *morph;
    std::string arg, temp;
-   int i, file_ver = 0;
+   int i;
 
    const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
@@ -1718,7 +1659,7 @@ morph_data *fread_morph( FILE * fp )
       return nullptr;
 
    morph = new morph_data;
-   morph_defaults( morph );
+
    morph->name = strdup( word );
 
    for( ;; )
@@ -1972,7 +1913,11 @@ morph_data *fread_morph( FILE * fp )
             break;
 
          case 'V':
-            KEY( "Version", file_ver, fread_number( fp ) );
+            if( !str_cmp( word, "Version" ) )
+            {
+               fread_number( fp ); // This field is obsolete.
+               break;
+            }
             KEY( "Vnum", morph->vnum, fread_number( fp ) );
             break;
 
@@ -1992,6 +1937,7 @@ void load_morphs( void )
 {
    FILE *fp = nullptr;
    bool my_continue = true;
+   int file_ver = 0;
 
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
@@ -2019,6 +1965,12 @@ void load_morphs( void )
             break;
 
          case '#':
+            if( !str_cmp( word, "#VERSION" ) )
+            {
+               file_ver = fread_number( fp );
+               break;
+            }
+
             if( !str_cmp( word, "#END" ) )
             {
                FCLOSE( fp );
@@ -2029,7 +1981,7 @@ void load_morphs( void )
 
          case 'M':
             if( !str_cmp( word, "Morph" ) )
-               morph = fread_morph( fp );
+               morph = fread_morph( fp, file_ver );
             break;
       }
       if( morph )
@@ -2147,7 +2099,7 @@ CMDF( do_morphcreate )
    }
    smash_tilde( arg1 );
    morph = new morph_data;
-   morph_defaults( morph );
+
    if( !argument.empty(  ) && !str_cmp( argument, "copy" ) && temp )
       copy_morph( morph, temp );
    else
@@ -2172,7 +2124,6 @@ void unmorph_all( morph_data * morph )
 
 morph_data::morph_data(  )
 {
-   init_memory( &damroll, &cast_allowed, sizeof( cast_allowed ) );
 }
 
 /* 
@@ -2185,6 +2136,7 @@ morph_data::~morph_data(  )
    unmorph_all( this );
 
    DISPOSE( damroll );
+   DISPOSE( deity );
    DISPOSE( description );
    DISPOSE( help );
    DISPOSE( hit );
@@ -2242,6 +2194,7 @@ CMDF( do_morphdestroy )
    ch->print( "Morph deleted.\r\n" );
 }
 
+// This data is written to the player's pfile when they save while morphed.
 void fwrite_morph_data( char_data * ch, FILE * fp )
 {
    char_morph *morph;
@@ -2359,6 +2312,7 @@ void clear_char_morph( char_morph * morph )
    morph->morph = nullptr;
 }
 
+// This is read from a player's pfile if they were morphed at the time they saved.
 void fread_morph_data( char_data * ch, FILE * fp )
 {
    char_morph *morph = new char_morph;

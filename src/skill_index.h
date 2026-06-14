@@ -52,7 +52,7 @@ class find__skill_prefix
 {
  public:
    std::string value;
-   char_data *actor;
+   char_data *actor = nullptr;
 
    find__skill_prefix( char_data *, std::string_view );
    bool operator(  ) ( std::pair < std::string_view, int > compare );
@@ -62,7 +62,7 @@ class find__skill_exact
 {
  public:
    std::string value;
-   char_data *actor;
+   char_data *actor = nullptr;
 
    find__skill_exact( char_data *, std::string_view );
    bool operator(  ) ( std::pair < std::string_view, int > compare );

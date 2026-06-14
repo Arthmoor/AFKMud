@@ -28,10 +28,7 @@
 
 #pragma once
 
-constexpr int CLASSFILEVER = 2;
-constexpr int RACEFILEVER = 1;
-
-/* race dedicated stuff */
+// Race dedicated stuff.
 class race_type
 {
  private:
@@ -42,46 +39,44 @@ class race_type
      race_type(  );
     ~race_type(  );
 
-   std::vector<std::string> bodypart_where_names; /* Body part wear messages */
-   std::bitset<MAX_AFFECTED_BY> affected; /* Default affect bitvectors  */
+   std::vector<std::string> bodypart_where_names;  // Body part wear messages.
+   std::bitset<MAX_AFFECTED_BY> affected;          // Default affect bitvectors.
    std::bitset<MAX_ATTACK_TYPE> attacks;
    std::bitset<MAX_DEFENSE_TYPE> defenses;
-   std::bitset<MAX_BPART> body_parts;  /* Bodyparts this race has */
-   std::bitset<LANG_UNKNOWN> language; /* Default racial language - can have multiples */
-   std::bitset<MAX_RIS_FLAG> resist;   /* Bugfix: Samson 5-7-99 */
-   std::bitset<MAX_RIS_FLAG> suscept;  /* Bugfix: Samson 5-7-99 */
-   std::bitset<MAX_CLASS> allowed_classes; /* Flags for allowed classes */
-   char *race_name;  /* Race name */
-   short str_plus;   /* Str bonus/penalty    */
-   short dex_plus;   /* Dex      "        */
-   short wis_plus;   /* Wis      "        */
-   short int_plus;   /* Int      "        */
-   short con_plus;   /* Con      "        */
-   short cha_plus;   /* Cha      "        */
-   short lck_plus;   /* Lck   "        */
-   short hit;
-   short mana;
-   short ac_plus;
-   short alignment;
-   short minalign;
-   short maxalign;
-   short exp_multiplier;
-   short height;
-   short weight;
-   short hunger_mod;
-   short thirst_mod;
-   short saving_poison_death;
-   short saving_wand;
-   short saving_para_petri;
-   short saving_breath;
-   short saving_spell_staff;
-   short mana_regen;
-   short hp_regen;
+   std::bitset<MAX_BPART> body_parts;              // Bodyparts this race has.
+   std::bitset<LANG_UNKNOWN> language;             // Default racial language - can have multiples
+   std::bitset<MAX_RIS_FLAG> resist;               // Bugfix: Samson 5-7-99
+   std::bitset<MAX_RIS_FLAG> suscept;              // Bugfix: Samson 5-7-99
+   std::bitset<MAX_CLASS> allowed_classes;         // Flags for allowed classes.
+   char *race_name = nullptr;                      // Race name.
+   short str_plus = 0; // Str bonus/penalty
+   short dex_plus = 0; // Dex      "
+   short wis_plus = 0; // Wis      "
+   short int_plus = 0; // Int      "
+   short con_plus = 0; // Con      "
+   short cha_plus = 0; // Cha      "
+   short lck_plus = 0; // Lck      "
+   short hit = 0;
+   short mana = 0;
+   short ac_plus = 0;
+   short alignment = 0;
+   short minalign = 0;
+   short maxalign = 0;
+   short exp_multiplier = 0;
+   short height = 0;
+   short weight = 0;
+   short hunger_mod = 0;
+   short thirst_mod = 0;
+   short saving_poison_death = 0;
+   short saving_wand = 0;
+   short saving_para_petri = 0;
+   short saving_breath = 0;
+   short saving_spell_staff = 0;
+   short mana_regen = 0;
+   short hp_regen = 0;
 };
 
-/*
- * Per-class stuff.
- */
+// Per-class stuff.
 class class_type
 {
  private:
@@ -92,25 +87,25 @@ class class_type
      class_type(  );
     ~class_type(  );
 
-   std::bitset<MAX_AFFECTED_BY> affected;
+   std::bitset<MAX_AFFECTED_BY> affected; // Default affect bitvectors.
    std::bitset<MAX_RIS_FLAG> resist;
    std::bitset<MAX_RIS_FLAG> suscept;
-   char *who_name;   /* Name for 'who' */
-   float thac0_gain; /* Thac0 amount gained per level - Dwip 5-11-01 */
-   int weapon; /* Vnum of Weapon given at creation */
-   int armor;  /* Vnum of Body Armor given at creation - Samson */
-   int legwear;   /* Vnum of Legwear given at creation - Samson 1-3-99 */
-   int headwear;  /* Vnum of Headwear given at creation - Samson 1-3-99 */
-   int armwear;   /* Vnum of Armwear given at creation - Samson 1-3-99 */
-   int footwear;  /* Vnum of Footwear given at creation - Samson 1-3-99 */
-   int shield; /* Vnum of Shield given at creation - Samson 1-3-99 */
-   int held;   /* Vnum of held item given at creation - Samson 1-3-99 */
-   int base_thac0;   /* Thac0 for level 1 - Dwip 5-11-01 */
-   short hp_min;  /* Min hp gained on leveling  */
-   short hp_max;  /* Max hp gained on leveling  */
-   short skill_adept;   /* Maximum skill level */
-   short attr_prime; /* Prime attribute */
-   bool fMana; /* Class gains mana on level  */
+   char *who_name = nullptr;  // Name for 'who'.
+   float thac0_gain = 0.0;    // Thac0 amount gained per level - Dwip 5-11-01
+   int weapon = 0;            // Vnum of Weapon given at creation.
+   int armor = 0;             // Vnum of Body Armor given at creation - Samson
+   int legwear = 0;           // Vnum of Legwear given at creation - Samson 1-3-99
+   int headwear = 0;          // Vnum of Headwear given at creation - Samson 1-3-99
+   int armwear = 0;           // Vnum of Armwear given at creation - Samson 1-3-99
+   int footwear = 0;          // Vnum of Footwear given at creation - Samson 1-3-99
+   int shield = 0;            // Vnum of Shield given at creation - Samson 1-3-99
+   int held = 0;              // Vnum of held item given at creation - Samson 1-3-99
+   int base_thac0 = 0;        // Thac0 for level 1 - Dwip 5-11-01
+   short hp_min = 0;          // Min hp gained on leveling.
+   short hp_max = 0;          // Max hp gained on leveling.
+   short skill_adept = 0;     // Maximum skill level.
+   short attr_prime = 0;      // Prime attribute.
+   bool fMana = false;        // Class gains mana on level?
 };
 
 extern race_type *race_table[MAX_RACE];

@@ -843,7 +843,6 @@ void funcf( char_data * ch, DO_FUN * cmd, const char *fmt, ... )
 
 cmd_type::cmd_type(  )
 {
-   init_memory( &fileHandle, &log, sizeof( log ) );
 }
 
 /*
@@ -941,7 +940,7 @@ cmd_type *find_command( std::string_view command )
  * Save the commands to disk
  * Added flags Aug 25, 1997 --Shaddai
  */
-const int CMDVERSION = 3;
+constexpr int CMDVERSION = 3;
 /* Updated to 1 for command position - Samson 4-26-00 */
 /* Updated to 2 for log flag - Samson 4-26-00 */
 /* Updated to 3 for command flags - Samson 7-9-00 */
@@ -1985,9 +1984,6 @@ social_type *find_social( std::string_view command )
 
 social_type::social_type(  )
 {
-   init_memory( &minposition, &minposition, sizeof( minposition ) );
-
-   minposition = POS_RESTING; // Most socials should default to this.
 }
 
 /*

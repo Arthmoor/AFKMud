@@ -100,10 +100,10 @@ class holiday_data
    }
 
  private:
-   std::string name;   /* Name of the holiday */
-   std::string announce;  /* Message to announce the holiday with */
-   short month;   /* Month the holiday falls in */
-   short day;  /* Day the holiday falls on */
+   std::string name;       // Name of the holiday.
+   std::string announce;   // Message to announce the holiday with.
+   short month = 0;        // Month the holiday falls in.
+   short day = 0;          // Day of the month the holiday falls on.
 };
 
 void check_holiday( char_data * );

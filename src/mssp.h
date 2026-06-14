@@ -80,7 +80,8 @@ struct msspinfo
    std::string gameSystem;       // The general ruleset used by the MUD, such as "D&D".
    std::string intermud;         // Type of InterMUD chat system the MUD has. Should be sent empty if it has none.
    std::string status;           // Current status of the game.
-   short ssl = 0;                // Port number for encrypted connections. If zero, will not be sent. Must be >= 1024 to be valid.
+   unsigned short ssl = 0;       // Port number for encrypted connections. If zero, will not be sent. Must be >= 1024 to be valid.
+   short crawldelay = -1;        // How often the MSSP bot will crawl the MUD, in hours.
    short created = 0;            // The year the MUD was created.
    short minAge = 0;             // Minimum age required to play the MUD. If zero, will not be sent.
    bool ansi = true;             // Does the MUD support ANSI color?
@@ -88,15 +89,12 @@ struct msspinfo
    bool mcp = false;             // Does the MUD support MCP? (No, it doesn't, because the codebase has no support for it)
    bool msp = true;              // Does the MUD support the MUD Sound Protocol?
    bool mxp = false;             // Does the MUD support MXP? (No, it doesn't, because the codebase has no support for it)
-   bool pueblo = false;
-   bool vt100 = false;
-   bool xterm256 = false;
-   bool pay2play = false;
-   bool pay4perks = false;
-   bool hiringBuilders = false;
-   bool hiringCoders = false;
-   bool adultMaterial = false;
-   bool newbieFriendly = true;
+   bool vt100 = false;           // Does the MUD support VT100 codes? (No, it doesn't, because the codebase has no support for it)
+   bool xterm256 = false;        // Does the MUD support XTerm 256 color? (Technically yes, but nothing is actually leveraging it yet)
+   bool pay2play = false;        // Do players have to pay in order to play the game?
+   bool pay4perks = false;       // Can players pay to receive extra perks?
+   bool hiringBuilders = false;  // Is the MUD hiring new builders?
+   bool hiringCoders = false;    // Is the MUD hiring new coders?
 };    
 
 inline constexpr std::string_view MSSP_FILE = "../system/mssp.dat";
@@ -104,7 +102,7 @@ inline constexpr std::string_view MSSP_FILE = "../system/mssp.dat";
 constexpr int MSSP_MINAGE = 0;
 constexpr int MSSP_MAXAGE = 21;
 
-constexpr int MSSP_MINCREATED = 2001;
+constexpr int MSSP_MINCREATED = 2001; // Set to 2001 because AFKMud was not publicly available before that.
 constexpr int MSSP_MAXCREATED = 2100;
 
 constexpr int MSSP_MAXVAL = 20000;

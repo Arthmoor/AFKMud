@@ -33,30 +33,30 @@ inline constexpr std::string_view SHOP_DIR = "../shops/";  /* Clan/PC shopkeeper
 /*
  * Shop types.
  */
-const int MAX_TRADE = 5;
+constexpr int MAX_TRADE = 5;
 
 struct shop_data
 {
-   int keeper;                // Vnum of shop keeper mob.
-   short buy_type[MAX_TRADE]; // Item types shop will buy.
-   short profit_buy;          // Cost multiplier for buying.
-   short profit_sell;         // Cost multiplier for selling.
-   short open_hour;           // First opening hour.
-   short close_hour;          // First closing hour.
+   int keeper = 0;               // Vnum of shop keeper mob.
+   short buy_type[MAX_TRADE]{0}; // Item types shop will buy.
+   short profit_buy = 120;       // Cost multiplier for buying.
+   short profit_sell = 90;       // Cost multiplier for selling.
+   short open_hour = 0;          // First opening hour.
+   short close_hour = 0;         // First closing hour.
 };
 
-const int MAX_FIX = 3;
-const int SHOP_FIX = 1;
-const int SHOP_RECHARGE = 2;
+constexpr int MAX_FIX = 3;
+constexpr int SHOP_FIX = 1;
+constexpr int SHOP_RECHARGE = 2;
 
 struct repair_data
 {
-   int keeper;                // Vnum of shop keeper mob.
-   short fix_type[MAX_FIX];   // Item types shop will fix.
-   short profit_fix;          // Cost multiplier for fixing.
-   short shop_type;           // Repair shop type.
-   short open_hour;           // First opening hour.
-   short close_hour;          // First closing hour.
+   int keeper = 0;                // Vnum of shop keeper mob.
+   short fix_type[MAX_FIX]{0};    // Item types shop will fix.
+   short profit_fix = 100;        // Cost multiplier for fixing.
+   short shop_type = SHOP_FIX;    // Repair shop type.
+   short open_hour = 0;           // First opening hour.
+   short close_hour = 0;          // First closing hour.
 };
 
 extern std::list<shop_data *> shoplist;

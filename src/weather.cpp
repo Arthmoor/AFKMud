@@ -60,13 +60,13 @@ const char *const climate_names[] = {
    "arctic" 
 };
 
-WeatherCell::~WeatherCell()
-{
-}
-
 WeatherCell::WeatherCell()
 {
-   init_memory( &this->climate, &this->windSpeedY, sizeof( this->windSpeedY ) );
+   log_string( "Looking to see if ::WeatherCell is ever called." );
+}
+
+WeatherCell::~WeatherCell()
+{
 }
 
 int get_hemisphere( std::string_view type )
@@ -2270,7 +2270,7 @@ void RandomizeCells( void )
 }
 
 // 1: The initial version.
-const int WEATHER_VERSION = 1;
+constexpr int WEATHER_VERSION = 1;
 
 void save_weathermap( void )
 {
@@ -2463,13 +2463,13 @@ bool load_weathermap( void )
 }
 
 /*
-* Weather Utility Functions
-* Designed to attempt to emulate encapsulation.
-*/
+ * Weather Utility Functions
+ * Designed to attempt to emulate encapsulation.
+ */
 WeatherCell *getWeatherCell( area_data *pArea )
 {
    return &weatherMap[pArea->weatherx][pArea->weathery];
-}	
+}
 
 void IncreaseTemp( WeatherCell *cell, int change )
 {

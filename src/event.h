@@ -33,9 +33,9 @@
 
 struct event_info
 {
-   void ( *callback ) ( void *data );
-   void *data;
-   std::chrono::system_clock::time_point when;
+   void ( *callback ) ( void *data );           // Function the event will call when it runs.
+   void *data;                                  // Data used as arguments for the event function.
+   std::chrono::system_clock::time_point when;  // When this event is scheduled for.
 };
 
 void add_event( time_t when, void ( *callback ) ( void * ), void *data );

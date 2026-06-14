@@ -36,10 +36,10 @@ enum timer_types
 
 struct timer_data
 {
-   DO_FUN *do_fun;
-   int value;
-   int count;
-   short type;
+   DO_FUN *do_fun = nullptr;
+   int value = 0;
+   int count = 0;
+   short type = 0;
 };
 
 /*
@@ -52,7 +52,7 @@ class pc_data
      pc_data & operator=( const pc_data & );
 
  protected:
-   std::bitset<MAX_PCFLAG> flags;   /* Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS */
+   std::bitset<MAX_PCFLAG> flags;                        // Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS
 
  public:
      friend class char_data;
@@ -73,88 +73,88 @@ class pc_data
    void fread_comment( FILE * );
    void fread_old_comment( FILE * );
 
-   std::map<std::string, std::string> alias_map; /* Command aliases */
-   std::map<int, std::string> qbits;  /* abit/qbit code */
-   std::list<class board_chardata *> boarddata;
-   std::list<class note_data *> comments;
-   std::list<std::string> zone; /* List of zones this PC has visited - Samson 7-11-00 */
-   std::list<std::string> ignore;  /* List of players to ignore */
-   std::vector<std::string> say_history;
-   std::vector<std::string> tell_history;
-   std::string bestowments;  // Special bestowed commands
-   std::string chan_listen;  // For dynamic channels - Samson 3-2-02
-   std::string clan_name; // Name of the clan/guild this person belongs to if any.
-   std::string realm_name; // Name of the immortal realm this person belongs to.
-   std::string deity_name;   // Name of the deity this person worships.
-   std::string lasthost;  // Stores host info so it doesn't have to depend on a descriptor, for things like finger.
-   std::string prevhost;  // Stores IP logged into prior to the lasthost field.
-   std::string homepage;  // The person's homepage in the big bad world out there.
-   std::string email;  // The person's email address.
-   std::string pwd; // The person's password
-   std::string authed_by; // The immortal who authorized this player's name.
-   std::string filename;   /* For the safe mset name -Shaddai */
-   std::chrono::system_clock::time_point release_date; /* Auto-helling.. Altrag */
-   std::chrono::system_clock::time_point motd;   /* Last time they read an MOTD - Samson 12-31-00 */
-   std::chrono::system_clock::time_point imotd;  /* Last time they read an IMOTD for immortals - 12-31-00 */
-   std::chrono::system_clock::time_point logon;  /* When they last logged on */
-   std::chrono::hours played;                    /* Total hours they have in the game so far */
+   std::map<std::string, std::string> alias_map;         // Command aliases. These are player defined aliases for the game's commands.
+   std::map<int, std::string> qbits;                     // abit/qbit code. Used for tracking quests and other things.
+   std::list<class board_chardata *> boarddata;          // Board stuff.
+   std::list<class note_data *> comments;                // Comments attached to their player file by immortals.
+   std::list<std::string> zone;                          // List of zones this PC has visited - Samson 7-11-00
+   std::list<std::string> ignore;                        // List of players to ignore. Unlike Discord or a forum, this is actually effective.
+   std::vector<std::string> say_history;                 // A running history of things they've said or heard said in a local room.
+   std::vector<std::string> tell_history;                // A running history of tells they've received.
+   std::string bestowments;                              // Special bestowed commands they would not normally have access to.
+   std::string chan_listen;                              // Which channels the person is listening to. For dynamic channels - Samson 3-2-02
+   std::string clan_name;                                // Name of the clan/guild this person belongs to if any.
+   std::string realm_name;                               // Name of the immortal realm this person belongs to.
+   std::string deity_name;                               // Name of the deity this person worships.
+   std::string lasthost;                                 // Stores host info so it doesn't have to depend on a descriptor, for things like finger.
+   std::string prevhost;                                 // Stores IP logged into prior to the lasthost field.
+   std::string homepage;                                 // The person's homepage in the big bad world out there.
+   std::string email;                                    // The person's email address.
+   std::string pwd;                                      // The person's password. This value is SHA-256 encrypted.
+   std::string authed_by;                                // The immortal who authorized this player's name.
+   std::string filename;                                 // For the safe mset name -Shaddai [The player's on disk filename]
+   std::chrono::system_clock::time_point release_date;   // Auto-helling.. Altrag [When they will be released by the game if staff does not intervene]
+   std::chrono::system_clock::time_point motd;           // Last time they read an MOTD - Samson 12-31-00
+   std::chrono::system_clock::time_point imotd;          // Last time they read an IMOTD for immortals - 12-31-00
+   std::chrono::system_clock::time_point logon;          // When they last logged on.
+   std::chrono::hours played;                            // Total hours they have in the game so far.
    std::chrono::system_clock::time_point save_time;
-   std::chrono::system_clock::time_point restore_time;   /* The last time the char did a restore all */
-   area_data *area;  /* For the area a PC has been assigned to build */
-   class clan_data *clan;
-   class realm_data *realm;
-   class deity_data *deity;
-   struct editor_data *editor;
-   class note_data *pnote;
-   class board_data *board;
-   struct game_board_data *game_board;
+   std::chrono::system_clock::time_point restore_time;   // The last time the person did a restore all.
+   area_data *area = nullptr;                            // For the area a PC has been assigned to build.
+   class clan_data *clan = nullptr;                      // What clan, guild, or order they are a member of.
+   class realm_data *realm = nullptr;                    // What immortal realm they are a part of.
+   class deity_data *deity = nullptr;                    // Which deity they worship.
+   struct editor_data *editor = nullptr;                 // Contains information on what they are currently editing.
+   class note_data *pnote = nullptr;                     // Board stuff.
+   class board_data *board = nullptr;                    // Board stuff.
+   struct game_board_data *game_board = nullptr;         // Chess board they are playing on.
  public:
-   void *spare_ptr;
-   void *dest_buf;   /* This one is to assign to different things */
-   char *bamfin;
-   char *bamfout;
-   char *rank;
-   char *title;
-   char *helled_by;
-   char *bio;  /* Personal Bio */
-   char *prompt;  /* User config prompts */
-   char *fprompt; /* Fight prompts */
-   char *subprompt;  /* Substate prompt */
-   char *afkbuf;  /* afk reason buffer - Samson 8-31-98 */
-   char *motd_buf;   /* A temp buffer for editing MOTDs - 12-31-00 */
-   int pkills; /* Number of pkills on behalf of clan */
-   int pdeaths;   /* Number of times pkilled (legally)  */
-   int mkills; /* Number of mobs killed        */
-   int mdeaths;   /* Number of deaths due to mobs       */
-   int illegal_pk;   /* Number of illegal pk's committed   */
-   int low_vnum;  /* vnum range */
-   int hi_vnum;
-   int secedit;   /* Overland Map OLC - Samson 8-1-99 */
-   int home;
-   int balance;   /* Bank balance - Samson */
-   int exgold; /* Extragold affect - Samson */
-   int one; /* Last room they rented in on primary continent - Samson 12-20-00 */
-   int spam;   /* How many times have they triggered the spamguard? - 3-18-01 */
-   int timezone;
-   int version;   /* Temporary variable to track pfile password conversion */
-   short learned[MAX_SKILL];
-   short wizinvis;   /* wizinvis level */
-   short condition[MAX_CONDS];
-   short favor;   /* deity favor */
-   short practice;
-   short pagerlen;   /* For pager (NOT menus) */
-   short camp; /* Did the player camp or rent? Samson 9-19-98 */
-   short colors[MAX_COLORS];  /* Custom color codes - Samson 9-28-98 */
-   short beacon[MAX_BEACONS]; /* For beacon spell, recall points - Samson 2-7-99 */
-   short charmies;   /* Number of Charmies */
-   short cmd_recurse;
-   short age_bonus;
-   short age;
-   short day;
-   short month;
-   short year;
-   short daysidle;
-   bool hotboot;  /* Used only to force hotboot to save keys etc that normally get stripped - Samson 6-22-01 */
+   void *spare_ptr = nullptr;                            // Um... sure.
+   void *dest_buf = nullptr;                             // This one is to assign to different things. [Um... sure]
+   char *bamfin = nullptr;                               // Message displayed when an immortal enters a room, if set.
+   char *bamfout = nullptr;                              // Message displayed when an immortal leaves a room, if set.
+   char *rank = nullptr;                                 // Rank they hold in a clan, guild, order, or realm.
+   char *title = nullptr;                                // Custom title, displayed on the who output.
+   char *helled_by = nullptr;                            // Who put this person in hell.
+   char *bio = nullptr;                                  // Personal Bio. Visible using the finger command.
+   char *prompt = nullptr;                               // User configurable general prompt.
+   char *fprompt = nullptr;                              // User configurable fight prompt.
+   char *subprompt = nullptr;                            // Substate prompt.
+   char *afkbuf = nullptr;                               // afk reason buffer - Samson 8-31-98
+   char *motd_buf = nullptr;                             // A temp buffer for editing MOTDs - 12-31-00
+   int pkills = 0;                                       // Number of pkills on behalf of clan.
+   int pdeaths = 0;                                      // Number of times pkilled (legally).
+   int mkills = 0;                                       // Number of mobs killed.
+   int mdeaths = 0;                                      // Number of deaths due to mobs.
+   int illegal_pk = 0;                                   // Number of illegal pk's committed.
+   int low_vnum = 0;                                     // Low end of vnum range for area editing.
+   int hi_vnum = 0;                                      // High end of vnum range for area editing.
+   int secedit = 0;                                      // Overland Map OLC. Which type of sector they are currently making. - Samson 8-1-99 */
+   int home = 0;                                         // Vnum of their current home. [This feature has not yet been implemented fully]
+   int balance = 0;                                      // Bank balance - Samson
+   int exgold = 0;                                       // Extragold affect - Samson
+   int one = 0;                                          // Last room they rented in on primary continent - Samson 12-20-00
+   int spam = 0;                                         // How many times have they triggered the spamguard? - 3-18-01
+   int timezone = -1;                                    // The user's current real world timezone.
+   int version = 0;                                      // Temporary variable to track pfile password conversion.
+   short learned[MAX_SKILL];                             // Skill levels they have achieved for all the skills/spells in the game.
+   short wizinvis = 0;                                   // wizinvis level
+   short condition[MAX_CONDS];                           // Current levels of drunkenness, thirst, and hunger.
+   short favor = 0;                                      // How much favor they have with their chosen deity.
+   short practice = 0;                                   // Number of remaining practice sessions available for use at a skill trainer.
+   short pagerlen = 24;                                  // For on screen pager (NOT menus)
+   short camp = 0;                                       // Did the player camp or rent? Samson 9-19-98
+   short colors[MAX_COLORS];                             // Custom color codes - Samson 9-28-98
+   short beacon[MAX_BEACONS];                            // For beacon spell, recall points - Samson 2-7-99
+   short charmies = 0;                                   // Number of Charmies.
+   short cmd_recurse = -1;                               // Command recursion check for the alias code.
+   short age_bonus = 0;                                  // Modifier to the player's in-game age.
+   short age = 0;                                        // The player's in-game age, according to the game calendar.
+   short day = 0;                                        // The in-game day the player created their character.
+   short month = 0;                                      // The in-game month the player created their character.
+   short year = 0;                                       // The in-game year the player created their character.
+   short daysidle = 0;                                   // Number of days they've been idle from the game. Counts while offline as well. Used in rare item handling.
+   bool hotboot = false;  /* Used only to force hotboot to save keys etc that normally get stripped - Samson 6-22-01 */
 };
 
 /*
@@ -506,30 +506,30 @@ class char_data
    std::list<struct variable_data *> variables;  // Quest flags
    std::vector<std::string> bodypart_where_names; /* Body part wear messages */
    std::string spec_funname;
-   char_data *master;
-   char_data *leader;
-   char_data *reply;
-   char_data *switched;
-   char_data *mount;
-   char_data *my_skyship;  /* Bond skyship to player */
-   char_data *my_rider; /* Bond player to skyship */
-   pc_data *pcdata;  /* For data only players will have */
-   descriptor_data *desc;  /* A player's connection data */
-   mob_index *pIndexData;  /* Pointer to the mob index class for an NPC */
-   obj_data *on;  /* Xerves' Furniture Code - Samson 7-20-00 */
-   room_index *in_room;
-   room_index *was_in_room;
-   room_index *orig_room;  /* Xorith's boards */
-   class ship_data *on_ship; /* Ship char is on, or nullptr if not - Samson 1-6-00 */
-   struct fighting_data *fighting;
-   struct hunt_hate_fear *hunting;
-   struct hunt_hate_fear *fearing;
-   struct hunt_hate_fear *hating;
-   class char_morph *morph;
-   class continent_data *continent;  /* Which map are they on? - Samson 8-3-99 */
-   DO_FUN *last_cmd;
-   DO_FUN *prev_cmd; /* mapping */
-   SPEC_FUN *spec_fun;
+   char_data *master = nullptr;
+   char_data *leader = nullptr;
+   char_data *reply = nullptr;
+   char_data *switched = nullptr;
+   char_data *mount = nullptr;
+   char_data *my_skyship = nullptr;  /* Bond skyship to player */
+   char_data *my_rider = nullptr; /* Bond player to skyship */
+   pc_data *pcdata = nullptr;  /* For data only players will have */
+   descriptor_data *desc = nullptr;  /* A player's connection data */
+   mob_index *pIndexData = nullptr;  /* Pointer to the mob index class for an NPC */
+   obj_data *on = nullptr;  /* Xerves' Furniture Code - Samson 7-20-00 */
+   room_index *in_room = nullptr;
+   room_index *was_in_room = nullptr;
+   room_index *orig_room = nullptr;  /* Xorith's boards */
+   class ship_data *on_ship = nullptr; /* Ship char is on, or nullptr if not - Samson 1-6-00 */
+   struct fighting_data *fighting = nullptr;
+   struct hunt_hate_fear *hunting = nullptr;
+   struct hunt_hate_fear *fearing = nullptr;
+   struct hunt_hate_fear *hating = nullptr;
+   class char_morph *morph = nullptr;
+   class continent_data *continent = nullptr;  /* Which map are they on? - Samson 8-3-99 */
+   DO_FUN *last_cmd = nullptr;
+   DO_FUN *prev_cmd = nullptr; /* mapping */
+   SPEC_FUN *spec_fun = nullptr;
  private:
    std::bitset<MAX_ACT_FLAG> actflags;
    std::bitset<MAX_AFFECTED_BY> affected_by;
@@ -546,91 +546,91 @@ class char_data
    std::bitset<MAX_RIS_FLAG> absorb;  /* Absorption flag for RIS data - Samson 3-16-00 */
    std::bitset<LANG_UNKNOWN> speaks;
  public:
-   char *name;
-   char *short_descr;
-   char *long_descr;
-   char *chardesc;
-   char *alloc_ptr;  /* Must strdup and free this one */
-   float numattacks;
-   int speaking;  /* Don't bitset this - it should only be a single language at a time */
-   int mpactnum;
-   int tempnum;
-   int gold;
-   int exp;
-   int carry_weight;
-   int carry_number;
-   int home_vnum; /* For sentinel mobs only, used during hotboot world save - Samson 4-1-01 */
-   int zzzzz;  /* skyship is idling      */
-   int dcoordx;   /* Destination X coord   */
-   int dcoordy;   /* Destination Y coord   */
-   int lcoordx;   /* Launch X coord  */
-   int lcoordy;   /* Launch Y coord  */
-   int heading;   /* The skyship's directional heading */
-   int resetvnum;
-   int resetnum;
-   short substate;
-   short num_fighting;
-   short sex;
-   short Class;
-   short race;
-   short level;
-   short trust;
-   short timer;
-   short wait;
-   short hit;
-   short max_hit;
-   short hit_regen;
-   short mana;
-   short max_mana;
-   short mana_regen;
-   short move;
-   short max_move;
-   short move_regen;
-   short spellfail;
-   short amp;
-   short saving_poison_death;
-   short saving_wand;
-   short saving_para_petri;
-   short saving_breath;
-   short saving_spell_staff;
-   short alignment;
-   short barenumdie;
-   short baresizedie;
-   short mobthac0;
-   short hitroll;
-   short damroll;
-   short hitplus;
-   short damplus;
-   short position;
-   short defposition;
-   short style;
-   short height;
-   short weight;
-   short armor;
-   short wimpy;
-   short perm_str;
-   short perm_int;
-   short perm_wis;
-   short perm_dex;
-   short perm_con;
-   short perm_cha;
-   short perm_lck;
-   short mod_str;
-   short mod_int;
-   short mod_wis;
-   short mod_dex;
-   short mod_con;
-   short mod_cha;
-   short mod_lck;
-   short mental_state;  /* simplified */
-   short mobinvis;   /* Mobinvis level SB */
-   short map_x;   /* Coordinates on the overland map - Samson 7-31-99 */
-   short map_y;
-   short sector;  /* Type of terrain to restrict a wandering mob to on overland - Samson 7-27-00 */
-   unsigned short mpscriptpos;
-   bool has_skyship; /* Identifies has skyship */
-   bool inflight; /* skyship is in flight   */
-   bool backtracking;   /* Unsafe landing flag   */
+   char *name = nullptr;
+   char *short_descr = nullptr;
+   char *long_descr = nullptr;
+   char *chardesc = nullptr;
+   char *alloc_ptr = nullptr;  /* Must strdup and free this one */
+   float numattacks = 0.0;
+   int speaking = 0;  /* Don't bitset this - it should only be a single language at a time */
+   int mpactnum = 0;
+   int tempnum = 0;
+   int gold = 0;
+   int exp = 0;
+   int carry_weight = 0;
+   int carry_number = 0;
+   int home_vnum = -1; /* For sentinel mobs only, used during hotboot world save - Samson 4-1-01 */
+   int zzzzz = 0;  /* skyship is idling      */
+   int dcoordx = 0;   /* Destination X coord   */
+   int dcoordy = 0;   /* Destination Y coord   */
+   int lcoordx = 0;   /* Launch X coord  */
+   int lcoordy = 0;   /* Launch Y coord  */
+   int heading = 0;   /* The skyship's directional heading */
+   int resetvnum = -1;
+   int resetnum = -1;
+   short substate = 0;
+   short num_fighting = 0;
+   short sex = 0;
+   short Class = 0;
+   short race = 0;
+   short level = 0;
+   short trust = 0;
+   short timer = 0;
+   short wait = 0;
+   short hit = 0;
+   short max_hit = 0;
+   short hit_regen = 0;
+   short mana = 0;
+   short max_mana = 0;
+   short mana_regen = 0;
+   short move = 0;
+   short max_move = 0;
+   short move_regen = 0;
+   short spellfail = 0;
+   short amp = 0;
+   short saving_poison_death = 0;
+   short saving_wand = 0;
+   short saving_para_petri = 0;
+   short saving_breath = 0;
+   short saving_spell_staff = 0;
+   short alignment = 0;
+   short barenumdie = 0;
+   short baresizedie = 0;
+   short mobthac0 = 0;
+   short hitroll = 0;
+   short damroll = 0;
+   short hitplus = 0;
+   short damplus = 0;
+   short position = 0;
+   short defposition = 0;
+   short style = 0;
+   short height = 0;
+   short weight = 0;
+   short armor = 0;
+   short wimpy = 0;
+   short perm_str = 0;
+   short perm_int = 0;
+   short perm_wis = 0;
+   short perm_dex = 0;
+   short perm_con = 0;
+   short perm_cha = 0;
+   short perm_lck = 0;
+   short mod_str = 0;
+   short mod_int = 0;
+   short mod_wis = 0;
+   short mod_dex = 0;
+   short mod_con = 0;
+   short mod_cha = 0;
+   short mod_lck = 0;
+   short mental_state = 0;  /* simplified */
+   short mobinvis = 0;   /* Mobinvis level SB */
+   short map_x = 0;   /* Coordinates on the overland map - Samson 7-31-99 */
+   short map_y = 0;
+   short sector = -1;  /* Type of terrain to restrict a wandering mob to on overland - Samson 7-27-00 */
+   unsigned short mpscriptpos = 0;
+   bool has_skyship = false; /* Identifies has skyship */
+   bool inflight= false; /* skyship is in flight   */
+   bool backtracking = false;   /* Unsafe landing flag   */
 };
 
 extern std::list<char_data *> charlist;

@@ -185,7 +185,7 @@ std::string one_argument( std::string_view argument, std::string & first )
 
 char *one_argument( char *argument, char *arg_first )
 {
-    return (char*) one_argument((const char*) argument, arg_first);
+    return (char*) one_argument( (const char*) argument, arg_first );
 }
 
 /*
@@ -753,7 +753,7 @@ const char *print_array_string( const char *flagarray[], size_t arraySize )
    return s.c_str();
 }
 
-const int max_buf_lines = 60;
+constexpr int max_buf_lines = 60;
 
 struct editor_data
 {
@@ -761,16 +761,14 @@ struct editor_data
    ~editor_data(  );
 
    std::string desc;
-   char line[max_buf_lines][81];
-   short numlines;
-   short on_line;
-   short size;
+   char line[max_buf_lines][81]{0};
+   short numlines = 0;
+   short on_line = 0;
+   short size = 0;
 };
 
 editor_data::editor_data(  )
 {
-   init_memory( &line, &size, sizeof( size ) );
-   desc = "";
 }
 
 editor_data::~editor_data(  )

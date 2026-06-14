@@ -119,7 +119,6 @@ mob_index::~mob_index(  )
 
 mob_index::mob_index(  )
 {
-   init_memory( &area, &saving_spell_staff, sizeof( saving_spell_staff ) );
 }
 
 /*
@@ -230,11 +229,6 @@ char_data *mob_index::create_mobile(  )
    mob->mpscriptpos = 0;
    mob->level = number_fuzzy( level );
    mob->set_actflags( actflags );
-   mob->home_vnum = -1;
-   mob->sector = -1;
-   mob->timer = 0;
-   mob->resetvnum = -1;
-   mob->resetnum = -1;
 
    if( mob->has_actflag( ACT_MOBINVIS ) )
       mob->mobinvis = mob->level;
@@ -279,8 +273,6 @@ char_data *mob_index::create_mobile(  )
    mob->max_mana = max_mana;
    mob->mana = mob->max_mana;
 
-   mob->hitroll = 0;
-   mob->damroll = 0;
    mob->race = race;
    mob->Class = Class;
    mob->set_bparts( body_parts );
@@ -331,8 +323,8 @@ char_data *mob_index::create_mobile(  )
 
    /*
     * Exp modification added by Samson - 5-15-98
-    * * Moved here because of the new exp autocalculations : Samson 5-18-01
-    * * Need to flush all the old values because the old code had a bug in it on top of everything else.
+    * Moved here because of the new exp autocalculations : Samson 5-18-01
+    * Need to flush all the old values because the old code had a bug in it on top of everything else.
     */
    if( exp < 1 )
    {
@@ -373,8 +365,6 @@ mob_index *make_mobile( int vnum, int cvnum, const std::string & name, area_data
    mob_index *pMobIndex = new mob_index;
 
    pMobIndex->vnum = vnum;
-   pMobIndex->count = 0;
-   pMobIndex->killed = 0;
    pMobIndex->player_name = STRALLOC( name.c_str(  ) );
    pMobIndex->area = area;
 
@@ -382,57 +372,9 @@ mob_index *make_mobile( int vnum, int cvnum, const std::string & name, area_data
    {
       stralloc_printf( &pMobIndex->short_descr, "A newly created %s", name.c_str(  ) );
       stralloc_printf( &pMobIndex->long_descr, "Some god abandoned a newly created %s here.\r\n", name.c_str(  ) );
-      pMobIndex->short_descr[0] = to_lower( pMobIndex->short_descr[0] );
-      pMobIndex->long_descr[0] = to_upper( pMobIndex->long_descr[0] );
-      pMobIndex->actflags.reset(  );
       pMobIndex->actflags.set( ACT_IS_NPC );
       pMobIndex->actflags.set( ACT_PROTOTYPE );
-      pMobIndex->affected_by.reset(  );
-      pMobIndex->pShop = nullptr;
-      pMobIndex->rShop = nullptr;
-      pMobIndex->spec_fun = nullptr;
-      pMobIndex->mudprogs.clear(  );
-      pMobIndex->progtypes.reset(  );
-      pMobIndex->alignment = 0;
-      pMobIndex->level = 1;
-      pMobIndex->mobthac0 = 21;
-      pMobIndex->exp = -1;
-      pMobIndex->ac = 0;
-      pMobIndex->hitnodice = 0;
-      pMobIndex->hitsizedice = 0;
-      pMobIndex->hitplus = 0;
-      pMobIndex->damnodice = 0;
-      pMobIndex->damsizedice = 0;
-      pMobIndex->damplus = 0;
-      pMobIndex->hitroll = 0;
-      pMobIndex->damroll = 0;
-      pMobIndex->max_move = 150;
-      pMobIndex->max_mana = 100;
-      pMobIndex->gold = 0;
-      pMobIndex->position = POS_STANDING;
-      pMobIndex->defposition = POS_STANDING;
-      pMobIndex->sex = SEX_NEUTRAL;
-      pMobIndex->perm_str = 13;
-      pMobIndex->perm_dex = 13;
-      pMobIndex->perm_int = 13;
-      pMobIndex->perm_wis = 13;
-      pMobIndex->perm_cha = 13;
-      pMobIndex->perm_con = 13;
-      pMobIndex->perm_lck = 13;
-      pMobIndex->race = RACE_HUMAN;
-      pMobIndex->Class = CLASS_WARRIOR;
-      pMobIndex->body_parts.reset(  );
-      pMobIndex->resistant.reset(  );
-      pMobIndex->immune.reset(  );
-      pMobIndex->susceptible.reset(  );
-      pMobIndex->absorb.reset(  );
-      pMobIndex->attacks.reset(  );
-      pMobIndex->defenses.reset(  );
-      pMobIndex->numattacks = 1;
-      pMobIndex->height = 0;
-      pMobIndex->weight = 0;
       pMobIndex->speaks.set( LANG_COMMON );
-      pMobIndex->speaking = LANG_COMMON;
    }
    else
    {
@@ -486,6 +428,11 @@ mob_index *make_mobile( int vnum, int cvnum, const std::string & name, area_data
       pMobIndex->weight = cMobIndex->weight;
       pMobIndex->speaks = cMobIndex->speaks;
       pMobIndex->speaking = cMobIndex->speaking;
+      pMobIndex->saving_poison_death = cMobIndex->saving_poison_death;
+      pMobIndex->saving_wand = cMobIndex->saving_wand;
+      pMobIndex->saving_para_petri = cMobIndex->saving_para_petri;
+      pMobIndex->saving_breath = cMobIndex->saving_breath;
+      pMobIndex->saving_spell_staff = cMobIndex->saving_breath;
    }
 
    mob_index_table.insert( std::map<int, mob_index *>::value_type( vnum, pMobIndex ) );

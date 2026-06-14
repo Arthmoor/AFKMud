@@ -55,8 +55,8 @@ class immortal_host_log
      immortal_host_log(  );
     ~immortal_host_log(  );
 
-   std::string host;
-   std::string date;
+   std::string host; // Host address of the login attempt.
+   std::string date; // Time the attempt took place.
 };
 
 class immortal_host
@@ -69,7 +69,7 @@ class immortal_host
      immortal_host(  );
     ~immortal_host(  );
 
-   std::list<immortal_host_log *> loglist;
-   std::string domain[MAX_DOMAIN];
-   std::string name;
+   std::list<immortal_host_log *> loglist; // List of logs for this host.
+   std::string domain[MAX_DOMAIN];         // List of valid domains for this host.
+   std::string name;                       // Name of the person this host is for.
 };

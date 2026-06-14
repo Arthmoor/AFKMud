@@ -71,10 +71,10 @@ class conn_data
      conn_data(  );
     ~conn_data(  );
 
-   std::string user;
-   std::string host;
-   std::string when;
-   int type;
-   int level;
-   int invis_lvl;
+   std::string user; // Username for this entry.
+   std::string host; // Their resolved DNS address or IP address.
+   std::string when; // What time the connection event happened.
+   int type;         // The type of event.
+   int level;        // The player's level.
+   int invis_lvl;    // If they are immortal, their wizinvis level.
 };

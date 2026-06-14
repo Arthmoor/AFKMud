@@ -892,9 +892,7 @@ int xp_compute( char_data * gch, char_data * victim )
 /* This has been modified to calculate based on what the mob_xp function tells it to use - Samson 5-18-01 */
 int calculate_mob_exp( char_data * mob, int exp_flags )
 {
-   int base;
-   int phit;
-   int sab;
+   int base, phit, sab;
 
    switch ( mob->level )
    {
@@ -1236,7 +1234,8 @@ int calculate_mob_exp( char_data * mob, int exp_flags )
    return ( base + ( phit * mob->max_hit ) + ( sab * exp_flags ) );
 }
 
-/* The new and improved mob xp_flag formula. Data used is according to information from Dwip.
+/*
+ * The new and improved mob xp_flag formula. Data used is according to information from Dwip.
  * Sue him if this isn't working right :)
  * This is gonna be one big, ugly set of ifchecks.
  * Samson 5-18-01

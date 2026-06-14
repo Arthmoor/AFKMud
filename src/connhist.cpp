@@ -46,7 +46,6 @@ std::list<conn_data *> connlist;
 
 conn_data::conn_data(  )
 {
-   init_memory( &type, &invis_lvl, sizeof( invis_lvl ) );
 }
 
 /* Removes a single conn entry */

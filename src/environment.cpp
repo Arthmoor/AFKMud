@@ -38,15 +38,15 @@ struct environment_data
    environment_data(  );
    // No destructor needed
 
-   class continent_data *cont;
-   short direction;
-   short map_x;
-   short map_y;
-   short type;
-   short damage_per_shake;
-   short radius;
-   short time_left;
-   short intensity;
+   class continent_data *cont = nullptr;  // Continent this event is taking place on.
+   short direction = 0;                   // General direction the event is traveling in.
+   short map_x = 0;                       // Random X and Y coordinates for where the even originated.
+   short map_y = 0;
+   short type = 0;                        // Type of event.
+   short damage_per_shake = 0;            // Amount of damage an event does per pulse.
+   short radius = 0;                      // How large of an area the event covers.
+   short time_left = 0;                   // How long the event is going to last.
+   short intensity = 0;                   // The intensity of an earthquake event. Not used by the other types.
 };
 
 std::list<environment_data *> envlist;
@@ -76,7 +76,6 @@ const char *env_distances[] = {
 
 environment_data::environment_data(  )
 {
-   init_memory( &direction, &intensity, sizeof( intensity ) );
 }
 
 void free_env( environment_data * env )
@@ -273,11 +272,11 @@ void generate_random_environment( int type )
    schance = number_range( 1, 100 );
 
    q = new environment_data;
-   envlist.push_back( q );
    q->type = type;
    q->map_x = number_range( 0, MAX_X - 1 );
    q->map_y = number_range( 0, MAX_Y - 1 );
    q->cont = pick_random_continent( );
+   envlist.push_back( q );
 
    switch ( type )
    {

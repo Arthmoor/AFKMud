@@ -112,7 +112,6 @@ obj_data::~obj_data(  )
 
 obj_data::obj_data(  )
 {
-   init_memory( &in_obj, &mpscriptpos, sizeof( mpscriptpos ) );
 }
 
 void extract_all_objs(  )

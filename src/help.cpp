@@ -42,7 +42,6 @@ int top_help;
 
 help_data::help_data(  )
 {
-   level = 0;
 }
 
 help_data::~help_data(  )
@@ -107,7 +106,7 @@ void add_help( help_data * pHelp )
 
 // Version 0: File with \xa2 delimiter.
 // Version 1: Back to tilde delimiter because the /xa2 trick doesn't work right.
-const int HELP_VERSION = 1;
+constexpr int HELP_VERSION = 1;
 
 void save_helps( void )
 {

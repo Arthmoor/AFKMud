@@ -64,14 +64,14 @@ class realm_data
 
    std::list<realm_roster_data *> memberlist;
    std::string filename;  // Realm filename. Specifies the full path on disk.
-   std::string name;      // Realm name
-   std::string realmdesc; // A brief description of the Realm
-   std::string leader;    // Head Realm leader
-   std::string badge;     // Realm badge on who/where/to_room
-   std::string leadrank;  // Leader's rank
-   int board;             // Vnum of Realm board
-   short type;            // See realm type defines
-   short members;         // Number of members
+   std::string name;      // Realm name.
+   std::string realmdesc; // A brief description of the Realm.
+   std::string leader;    // Head Realm leader.
+   std::string badge;     // Realm badge on who/where/to_room.
+   std::string leadrank;  // Leader's rank.
+   int board = 0;         // Vnum of Realm board.
+   short type = 0;        // See realm type defines.
+   short members = 0;     // Number of members.
 };
 
 extern std::list<realm_data *> realmlist;

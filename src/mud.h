@@ -62,12 +62,12 @@ class area_data;
 class mob_index;
 class obj_index;
 class room_index;
+class exit_data;
 class char_data;
 class pc_data;
 class obj_data;
 
-// Used in class headers - needs to be declared early
-void init_memory( void *, void *, unsigned int );
+// Used in class headers - needs to be declared early.
 void bug( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
 // Function types. Samson. Stop. Don't do it! NO! You have to keep these things you idiot!
@@ -434,11 +434,11 @@ class affect_data
      affect_data(  );
 
    std::bitset<MAX_RIS_FLAG> rismod;
-   int bit;
-   int duration;
-   int modifier;
-   short location;
-   short type;
+   int bit = 0;
+   int duration = -1;
+   int modifier = 0;
+   short location = 0;
+   short type = -1;
 };
 
 // Autosave flags
@@ -750,75 +750,75 @@ class system_data
    std::chrono::system_clock::time_point motd;   // Last time MOTD was edited.
    std::chrono::system_clock::time_point imotd;  // Last time IMOTD was edited.
    std::chrono::minutes save_frequency;          // How often to autosave someone. Default 20 minutes.
-   size_t maxign;                                // Maximum number of ignores a player is allowed to have. Default 10.
-   size_t maxholiday;                            // Maximum number of holidays allowed on the calendar. Default 30.
-   int maxplayers;                               // Maximum players this boot. Updated automatically.
-   int alltimemax;                               // Maximum players ever. Updated automatically.
-   int auctionseconds;                           // Seconds between auction events. Default 15.
-   int maxvnum;                                  // Defines the currently allowed highest vnum for mobs, objs, and rooms. Default 100000.
-   int minguildlevel;                            // Defined, but apparently not actually used outside of being able to change it with the cset command. Default 10.
-   int maxcondval;                               // Maximum value a condition on a player can have. Default 100.
-   int maximpact;                                // Base level of resistance an object has to being damaged. Default 30.
-   int initcond;                                 // The initial condition of a weapon when loaded or created. Default 12.
-   int minego;                                   // The minimum ego value an object can have. Value is used to determine if a player can use it based on their own ego calculation. Default 25.
-   int secpertick;                               // Number of seconds per game tick. Default 70.
-   int pulsepersec;                              // How often the game runs its main loop. Used in pulse_sync in comm.cpp. Default 4. NOTE: Altering this value will have a wide ranging impact on how the MUD behaves. Be VERY careful with this. [Previously hardcoded as PULSE_PER_SECOND]
-   int pulsetick;                                // Used in the timing of name authorizations and the main character and object updates in update.cpp. This is a calculated value: pulsetick = secpertick * pulsepersec.
-   int pulseviolence;                            // Used in cooldowns for skill use in combat. This is a calculated value: 3 * pulsepersec.
-   int pulsemobile;                              // Used for timing how often the mobile_update function runs in update.cpp. This is a calculated value: 4 * pulsepersec.
-   int pulsecalendar;                            // Used to time how often the in-game world time updates, along with how often effects like hunger and thirst update, plus the global weather system. This is a calculated value: 4 * pulsetick. This timer does not update when nobody is logged on.
-   int pulseenvironment;                         // Used to time how often major events on the overland maps take place. This is a calculated value: 15 * sysdata->pulsepersec. This timer does not update when nobody is logged on.
-   int hoursperday;                              // Number of hours in an in-game day. Default 28.
-   int daysperweek;                              // Number of days in an in-game week. Default 13.
-   int dayspermonth;                             // Number of days in an in-game month. Default 26.
-   int monthsperyear;                            // Number of months in an in-game year. Default 12.
-   int daysperyear;                              // Number of days in an in-game year. This is a calculated value: dayspermonth * monthsperyear.
-   int hoursunrise;                              // The hour when the sun rises. This is a calculated value: hoursunrise = hoursperday / 4.
-   int hourdaybegin;                             // The hour when daylight begins. This is a calculated value: hourdaybegin = hoursunrise + 1.
-   int hournoon;                                 // The hour when the sun is highest in the sky. This is a calculated value: hournoon = hoursperday / 2.
-   int hoursunset;                               // The hour when the sun sets. This is a calculated value: hoursunset = ( ( hoursperday / 4 ) * 3 ).
-   int hournightbegin;                           // The hour when nighttime begins. This is a calculated value: hournightbegin = hoursunset + 1.
-   int hourmidnight;                             // The hour when midnight occurs. Equal to the hoursperday value.
-   int rebootcount;                              // How many minutes to count down for a reboot. Default 5. - Samson 4-22-03
-   int gameloopalarm;                            // Number of seconds before game_loop() triggers an alarm due to being hung up. Default 30. - Samson 1-24-05
-   short webwho;                                 // Number of seconds between webwho refreshes, 0 for no refresh. Default 0. - Samson 5-13-06
-   short read_all_mail;                          // Read all player mail. Default LEVEL_SUPREME. Defined in mudcfg.h.
-   short read_mail_free;                         // Read mail for free. Default LEVEL_IMMORTAL. Defined in mudcfg.h.
-   short write_mail_free;                        // Write mail for free. Default 2.
-   short take_others_mail;                       // Take others mail. Default LEVEL_SUPREME. Defined in mudcfg.h.
-   short build_level;                            // Level of build channel. Default LEVEL_DEMI. Defined in mudcfg.h.
-   short level_modify_proto;                     // Level to modify prototype stuff. Default LEVEL_LESSER. Defined in mudcfg.h.
-   short level_override_private;                 // Override private flag in rooms. Default LEVEL_GOD. Defined in mudcfg.h.
-   short level_mset_player;                      // Level to mset a player. Default LEVEL_ASCENDANT. Defined in mudcfg.h.
-   short level_getobjnotake;                     // Level at which an immortal can pick up objects without a take flag. Default LEVEL_GREATER. Defined in mudcfg.h.
-   short level_forcepc;                          // The level at which an immortal can use the force command on players. Default LEVEL_ASCENDANT. Defined in mudcfg.h.
-   short bestow_dif;                             // Max # of levels between trust and command level for a bestow to work. Default 5. --Blodkai
-   short gouge_plr_vs_plr;                       // Gouge mod player vs. player. Bonus chance of being able to gouge another player in combat. Default 0.
-   short gouge_nontank;                          // Gouge mod player != primary attacker. An additional bonus to gouging if the player is not the tank in a fight. Default 0.
-   short stun_regular;                           // Base difficulty modifier to be able to stun an NPC in combat. Default 15.
-   short stun_plr_vs_plr;                        // Stun mod player vs. player. Additional difficulty modifier for stunning another player in combat. Default 65.
-   short dodge_mod;                              // Difficulty modifier for the chance to dodge an attack from another player. Divides the chances calculation by the value, thus making it more difficult. Default 2.
-   short parry_mod;                              // Difficulty modifier for the chance to parry an attack from another player. Divides the chances calculation by the value, thus making it more difficult. Default 2.
-   short tumble_mod;                             // Difficulty modifier for the chance to tumble away from an attack by another player. Divides the chances calculation by the value, thus making it more difficult. Default 4.
-   short dam_plr_vs_plr;                         // Damage modifier in player vs. player combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
-   short dam_plr_vs_mob;                         // Damage modifier in player vs. mobile combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
-   short dam_mob_vs_plr;                         // Damage modifier in mobile vs. player combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
-   short dam_mob_vs_mob;                         // Damage modifier in mobile vs. mobile combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
-   short newbie_purge;                           // Number of days before newbies get purged during pfile cleanups. Default 30. A newbie is anyone under level 10. - Samson 12-27-98
-   short regular_purge;                          // Number of days before regular players get purged during pfile cleanups. Default 90. - Samson 12-27-98
-   short mapsize;                                // Laziness feature mostly. Changes the overland map visibility radius.
-   short playersonline;                          // Number of players currently online. This starts at 0 and is tracked throughout the current booted session. Does not save.
-   bool NO_NAME_RESOLVING;                       // Whether or not to do DNS resolution on a user's IP address. Default to no DNS resolution.
-   bool DENY_NEW_PLAYERS;                        // New players cannot connect. Default to allowing new players. Does not save across reboots.
-   bool WAIT_FOR_AUTH;                           // New players must have their names authorized. Default on.
-   bool check_imm_host;                          // Do we check immortal's hosts? Default on.
-   bool save_pets;                               // Do player's pets' save? Default on.
-   bool WIZLOCK;                                 // Is the game wizlocked? Default off. - Samson 8-2-98
-   bool IMPLOCK;                                 // Is the game implocked? Default off - Samson 8-2-98
-   bool LOCKDOWN;                                // Is the game locked down? Default off. - Samson 8-23-98
-   bool CLEANPFILES;                             // Should the mud clean up pfiles daily? Default off. - Samson 12-27-98
-   bool TESTINGMODE;                             // Blocks file copies to main port when active. Default off. - Samson 1-31-99
-   bool crashhandler;                            // Do we intercept SIGSEGV? Default off. - Samson 3-11-04
+   size_t maxign = 10;                           // Maximum number of ignores a player is allowed to have. Default 10.
+   size_t maxholiday = 30;                       // Maximum number of holidays allowed on the calendar. Default 30.
+   int maxplayers = 0;                           // Maximum players this boot. Updated automatically.
+   int alltimemax = 0;                           // Maximum players ever. Updated automatically.
+   int auctionseconds = 15;                      // Seconds between auction events. Default 15.
+   int maxvnum = 100000;                         // Defines the currently allowed highest vnum for mobs, objs, and rooms. Default 100000.
+   int minguildlevel = 10;                       // Defined, but apparently not actually used outside of being able to change it with the cset command. Default 10.
+   int maxcondval = 100;                         // Maximum value a condition on a player can have. Default 100.
+   int maximpact = 30;                           // Base level of resistance an object has to being damaged. Default 30.
+   int initcond = 12;                            // The initial condition of a weapon when loaded or created. Default 12.
+   int minego = 25;                              // The minimum ego value an object can have. Value is used to determine if a player can use it based on their own ego calculation. Default 25.
+   int secpertick = 70;                          // Number of seconds per game tick. Default 70.
+   int pulsepersec = 4;                          // How often the game runs its main loop. Used in pulse_sync in comm.cpp. Default 4. NOTE: Altering this value will have a wide ranging impact on how the MUD behaves. Be VERY careful with this. [Previously hardcoded as PULSE_PER_SECOND]
+   int pulsetick = 0;                            // Used in the timing of name authorizations and the main character and object updates in update.cpp. This is a calculated value: pulsetick = secpertick * pulsepersec.
+   int pulseviolence = 0;                        // Used in cooldowns for skill use in combat. This is a calculated value: 3 * pulsepersec.
+   int pulsemobile = 0;                          // Used for timing how often the mobile_update function runs in update.cpp. This is a calculated value: 4 * pulsepersec.
+   int pulsecalendar = 0;                        // Used to time how often the in-game world time updates, along with how often effects like hunger and thirst update, plus the global weather system. This is a calculated value: 4 * pulsetick. This timer does not update when nobody is logged on.
+   int pulseenvironment = 0;                     // Used to time how often major events on the overland maps take place. This is a calculated value: 15 * sysdata->pulsepersec. This timer does not update when nobody is logged on.
+   int hoursperday = 28;                         // Number of hours in an in-game day. Default 28.
+   int daysperweek = 13;                         // Number of days in an in-game week. Default 13.
+   int dayspermonth = 26;                        // Number of days in an in-game month. Default 26.
+   int monthsperyear = 12;                       // Number of months in an in-game year. Default 12.
+   int daysperyear = 0;                          // Number of days in an in-game year. This is a calculated value: dayspermonth * monthsperyear.
+   int hoursunrise = 0;                          // The hour when the sun rises. This is a calculated value: hoursunrise = hoursperday / 4.
+   int hourdaybegin = 0;                         // The hour when daylight begins. This is a calculated value: hourdaybegin = hoursunrise + 1.
+   int hournoon = 0;                             // The hour when the sun is highest in the sky. This is a calculated value: hournoon = hoursperday / 2.
+   int hoursunset = 0;                           // The hour when the sun sets. This is a calculated value: hoursunset = ( ( hoursperday / 4 ) * 3 ).
+   int hournightbegin = 0;                       // The hour when nighttime begins. This is a calculated value: hournightbegin = hoursunset + 1.
+   int hourmidnight = 0;                         // The hour when midnight occurs. Equal to the hoursperday value.
+   int rebootcount = 5;                          // How many minutes to count down for a reboot. Default 5. - Samson 4-22-03
+   int gameloopalarm = 30;                       // Number of seconds before game_loop() triggers an alarm due to being hung up. Default 30. - Samson 1-24-05
+   short webwho = 0;                             // Number of seconds between webwho refreshes, 0 for no refresh. Default 0. - Samson 5-13-06
+   short read_all_mail = LEVEL_SUPREME;          // Read all player mail. Default LEVEL_SUPREME. Defined in mudcfg.h.
+   short read_mail_free = LEVEL_IMMORTAL;        // Read mail for free. Default LEVEL_IMMORTAL. Defined in mudcfg.h.
+   short write_mail_free = 2;                    // Write mail for free. Default 2.
+   short take_others_mail = LEVEL_SUPREME;       // Take others mail. Default LEVEL_SUPREME. Defined in mudcfg.h.
+   short build_level = LEVEL_DEMI;               // Level of build channel. Default LEVEL_DEMI. Defined in mudcfg.h.
+   short level_modify_proto = LEVEL_LESSER;      // Level to modify prototype stuff. Default LEVEL_LESSER. Defined in mudcfg.h.
+   short level_override_private = LEVEL_GOD;     // Override private flag in rooms. Default LEVEL_GOD. Defined in mudcfg.h.
+   short level_mset_player = LEVEL_ASCENDANT;    // Level to mset a player. Default LEVEL_ASCENDANT. Defined in mudcfg.h.
+   short level_getobjnotake = LEVEL_GREATER;     // Level at which an immortal can pick up objects without a take flag. Default LEVEL_GREATER. Defined in mudcfg.h.
+   short level_forcepc = LEVEL_ASCENDANT;        // The level at which an immortal can use the force command on players. Default LEVEL_ASCENDANT. Defined in mudcfg.h.
+   short bestow_dif = 5;                         // Max # of levels between trust and command level for a bestow to work. Default 5. --Blodkai
+   short gouge_plr_vs_plr = 0;                   // Gouge mod player vs. player. Bonus chance of being able to gouge another player in combat. Default 0.
+   short gouge_nontank = 0;                      // Gouge mod player != primary attacker. An additional bonus to gouging if the player is not the tank in a fight. Default 0.
+   short stun_regular = 15;                      // Base difficulty modifier to be able to stun an NPC in combat. Default 15.
+   short stun_plr_vs_plr = 65;                   // Stun mod player vs. player. Additional difficulty modifier for stunning another player in combat. Default 65.
+   short dodge_mod = 2;                          // Difficulty modifier for the chance to dodge an attack from another player. Divides the chances calculation by the value, thus making it more difficult. Default 2.
+   short parry_mod = 2;                          // Difficulty modifier for the chance to parry an attack from another player. Divides the chances calculation by the value, thus making it more difficult. Default 2.
+   short tumble_mod = 4;                         // Difficulty modifier for the chance to tumble away from an attack by another player. Divides the chances calculation by the value, thus making it more difficult. Default 4.
+   short dam_plr_vs_plr = 100;                   // Damage modifier in player vs. player combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
+   short dam_plr_vs_mob = 100;                   // Damage modifier in player vs. mobile combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
+   short dam_mob_vs_plr = 100;                   // Damage modifier in mobile vs. player combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
+   short dam_mob_vs_mob = 100;                   // Damage modifier in mobile vs. mobile combat. Value is a percentage. Default 100. [IE: 125% multiplies damage by 1.25, 25% multiplies it by 0.25 etc.]
+   short newbie_purge = 30;                      // Number of days before newbies get purged during pfile cleanups. Default 30. A newbie is anyone under level 10. - Samson 12-27-98
+   short regular_purge = 90;                     // Number of days before regular players get purged during pfile cleanups. Default 90. - Samson 12-27-98
+   short mapsize = 7;                            // Laziness feature mostly. Changes the overland map visibility radius. Default 7.
+   short playersonline = 0;                      // Number of players currently online. This starts at 0 and is tracked throughout the current booted session. Does not save.
+   bool NO_NAME_RESOLVING = true;                // Whether or not to do DNS resolution on a user's IP address. Default to no DNS resolution.
+   bool DENY_NEW_PLAYERS = false;                // New players cannot connect. Default to allowing new players. Does not save across reboots.
+   bool WAIT_FOR_AUTH = true;                    // New players must have their names authorized. Default on.
+   bool check_imm_host = true;                   // Do we check immortal's hosts? Default on.
+   bool save_pets = true;                        // Do player's pets' save? Default on.
+   bool WIZLOCK = false;                         // Is the game wizlocked? Default off. - Samson 8-2-98
+   bool IMPLOCK = false;                         // Is the game implocked? Default off - Samson 8-2-98
+   bool LOCKDOWN = false;                        // Is the game locked down? Default off. - Samson 8-23-98
+   bool CLEANPFILES = false;                     // Should the mud clean up pfiles daily? Default off. - Samson 12-27-98
+   bool TESTINGMODE = false;                     // Blocks file copies to main port when active. Default off. - Samson 1-31-99
+   bool crashhandler = false;                    // Do we intercept SIGSEGV? Default off. - Samson 3-11-04
 };
 
 // So we can have different configs for different ports -- Shaddai
@@ -885,7 +885,7 @@ extern const char *const login_msg[];
  * Global variables.
  * Stuff for area versions --Shaddai
  */
-const int HAS_SPELL_INDEX = -1;
+constexpr int HAS_SPELL_INDEX = -1;
 extern bool DONT_UPPER; // This is to tell if act uses uppercasestring or not --Shaddai
 extern bool MOBtrigger;
 extern bool MPSilent;
@@ -982,9 +982,6 @@ char *flag_string( int, const char *flagarray[] );
 const std::string c_time( std::chrono::system_clock::time_point, int );
 const std::string mini_c_time( std::chrono::system_clock::time_point, int );
 
-// comm.cpp
-void add_loginmsg( const char *, short, const char * );
-
 // commands.cpp
 int check_command_level( std::string_view, int );
 void cmdf( char_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
@@ -1021,6 +1018,7 @@ void make_wizlist( void );
 
 // descriptor.cpp
 void show_file( char_data *, std::string_view );
+void add_loginmsg( std::string_view, short, std::string_view );
 
 // editor.cpp
 bool hasname( std::string_view, std::string_view );

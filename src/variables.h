@@ -52,10 +52,10 @@ struct variable_data
    std::chrono::system_clock::time_point m_time;    // Time last modified
    std::chrono::system_clock::time_point r_time;    // Time last read
    std::chrono::system_clock::time_point expires;   // Expiry date
-   long vardata;                                    // long int value
-   int type;                                        // Variable type (string = 1, long int = 2, bits = 3)
-   int vnum;                                        // Vnum of mob that set this
-   int timer;                                       // Expiry timer
+   long vardata = 0;                                // long int value
+   int type = 0;                                    // Variable type (string = 1, long int = 2, bits = 3)
+   int vnum = 0;                                    // Vnum of mob that set this
+   int timer = 0;                                   // Expiry timer
 };
 
 variable_data *get_tag( char_data *, std::string_view, int );

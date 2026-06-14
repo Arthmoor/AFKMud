@@ -852,8 +852,6 @@ CMDF( do_resolve )
 
 shell_cmd::shell_cmd(  )
 {
-   init_memory( &_do_fun, &_log, sizeof( _log ) );
-   flags = 0;
 }
 
 shell_cmd::~shell_cmd(  )

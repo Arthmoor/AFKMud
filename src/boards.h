@@ -66,12 +66,12 @@ class note_data
    std::bitset<MAX_NOTE_FLAGS> flags; /* Note Flags */
    std::chrono::system_clock::time_point date_stamp;   /* Global Board Use */
    std::chrono::system_clock::time_point expire;  /* Global Board Use */
-   note_data *parent;
-   char *sender;
-   char *to_list;
-   char *subject;
-   char *text;
-   short reply_count;   /* Keep a count of our replies */
+   note_data *parent = nullptr;
+   char *sender = nullptr;
+   char *to_list = nullptr;
+   char *subject = nullptr;
+   char *text = nullptr;
+   short reply_count = 0;   /* Keep a count of our replies */
 };
 
 class board_data
@@ -87,18 +87,18 @@ class board_data
    std::list<note_data*> nlist; /* List of notes on the board */
    std::bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
    std::chrono::system_clock::time_point expire;  /* The time when the note will expire. */
-   char *name; /* Name of Board */
-   char *filename;   /* Filename for the board */
-   char *desc; /* Short description of the board */
-   char *readers; /* Readers */
-   char *posters; /* Posers */
-   char *moderators; /* Moderators of this board */
-   char *group;   /* In-Game organization that 'owns' the board */
-   int objvnum;   /* Object Vnum of a physical board */
-   short read_level; /* Minimum Level to read this board */
-   short post_level; /* Minimum Level to post this board */
-   short remove_level;  /* Minimum Level to remove a post */
-   short msg_count;  /* Quick count of messages */
+   char *name = nullptr;         // Name of Board
+   char *filename = nullptr;     // Filename for the board.
+   char *desc = nullptr;         // Short description of the board
+   char *readers = nullptr;      // Readers
+   char *posters = nullptr;      // Posters
+   char *moderators = nullptr;   // Moderators of this board.
+   char *group = nullptr;        // In-Game organization that 'owns' the board.
+   int objvnum = 0;              // Object Vnum of a physical board.
+   short read_level = 0;         // Minimum Level to read this board.
+   short post_level = 0;         // Minimum Level to post this board.
+   short remove_level = 0;       // Minimum Level to remove a post.
+   short msg_count = 0;          // Quick count of messages.
 };
 
 /* Project Data */
@@ -115,12 +115,12 @@ class project_data
    std::list<note_data*> nlist; /* List of note logs for the project */
    std::string realm_name; // Realm this project belongs to.
    std::chrono::system_clock::time_point date_stamp;
-   char *name;
-   char *owner;
-   char *coder;
-   char *status;
-   char *description;
-   bool taken;        // Has someone taken project?
+   char *name = nullptr;
+   char *owner = nullptr;
+   char *coder = nullptr;
+   char *status = nullptr;
+   char *description = nullptr;
+   bool taken = false;        // Has someone taken project?
 };
 
 class board_chardata
@@ -135,5 +135,5 @@ class board_chardata
 
    std::string board_name;
    std::chrono::system_clock::time_point last_read;
-   short alert;
+   short alert = 0;
 };

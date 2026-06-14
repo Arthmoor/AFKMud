@@ -58,42 +58,42 @@ class area_data
    void fold( const std::string &, bool );
    void wipe_resets(  );
 
-   std::list<room_index *> rooms;    // The list of room indexes for this area
-   std::list<mob_index *> mobs;      // The list of mob indexes for this area
-   std::list<obj_index *> objects;   // The list of object indexes for this area
-   std::bitset<AFLAG_MAX> flags;
-   std::chrono::system_clock::time_point creation_date;            // Timestamp for when this area was first created. Samson 1/20/07
-   std::chrono::system_clock::time_point install_date;             // Timestamp for when this area was "live" installed. Samson 1/20/07
-   std::chrono::system_clock::time_point last_resettime;           // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
+   std::list<room_index *> rooms;         // The list of room indexes for this area.
+   std::list<mob_index *> mobs;           // The list of mob indexes for this area.
+   std::list<obj_index *> objects;        // The list of object indexes for this area.
+   std::bitset<AFLAG_MAX> flags;          // The flags for this area.
+   std::chrono::system_clock::time_point creation_date;   // Timestamp for when this area was first created. Samson 1/20/07
+   std::chrono::system_clock::time_point install_date;    // Timestamp for when this area was "live" installed. Samson 1/20/07
+   std::chrono::system_clock::time_point last_resettime;  // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
 
-   class continent_data *continent; // Continent data structure this area is associated with.
-   char *name;
-   char *filename;
-   char *author;                    /* Scryn */
-   char *credits;
-   char *resetmsg;                  /* Rennard */
-   int low_vnum;
-   int hi_vnum;
-   int low_soft_range;
-   int hi_soft_range;
-   int low_hard_range;
-   int hi_hard_range;
-   short weatherx;                  // X Coordinate for this area's weather data.
-   short weathery;                  // Y Coordinate for this area's weather data.
-   short age;
-   short nplayer;
-   short reset_frequency;
-   short map_x;                     // Coordinates of a zone on the overland, for recall/death purposes - Samson 12-25-00
-   short map_y;
-   unsigned short version;          // Replaces the file_ver method of tracking - Samson 12-23-02
-   unsigned short tg_nothing;       // TG Values are for area-specific random treasure chances - Samson 11-25-04
-   unsigned short tg_gold;
-   unsigned short tg_item;
-   unsigned short tg_gem;           // Runes come after gems and go up to 100%
-   unsigned short tg_scroll;        // These are for specific chances of a particular item type - Samson 11-25-04
-   unsigned short tg_potion;
-   unsigned short tg_wand;
-   unsigned short tg_armor;         // Weapons come after armors and go up to 100%
+   class continent_data *continent = nullptr; // Continent data structure this area is associated with.
+   char *name = nullptr;                  // The name of the area.
+   char *filename = nullptr;              // The area's filename on disk.
+   char *author = nullptr;                // The person who wrote the area. - Scryn
+   char *credits = nullptr;               // Additional credits for the area.
+   char *resetmsg = nullptr;              // Message shown to players when an area resets.     /* Rennard */
+   int low_vnum = 0;                      // First Vnum for this area.
+   int hi_vnum = 0;                       // Last Vnum for this area.
+   int low_soft_range = 0;                // Recommended minimum level for this area.
+   int hi_soft_range = MAX_LEVEL;         // Maximum recommended level for this area.
+   int low_hard_range = 0;                // Enforced minimum level for this area. Players who do not meet this cannot enter.
+   int hi_hard_range = MAX_LEVEL;         // Enforced maximum level for this area. Players who exceed this cannot enter.
+   short weatherx = 0;                    // X Coordinate for this area's weather data.
+   short weathery = 0;                    // Y Coordinate for this area's weather data.
+   short age = 15;                        // Crude timer that counts up how long it's been since the last reset. This does not save to the .are file.
+   short nplayer = 0;                     // Number of players currently in the area. This does not save to the .are file.
+   short reset_frequency = 15;            // Time in minutes before this area will reset.
+   short map_x = 0;                       // Coordinates of a zone on the overland, for recall/death purposes - Samson 12-25-00
+   short map_y = 0;
+   unsigned short version = 0;            // Replaces the file_ver method of tracking - Samson 12-23-02
+   unsigned short tg_nothing = 20;        // TG Values are for area-specific random treasure chances - Samson 11-25-04
+   unsigned short tg_gold = 74;
+   unsigned short tg_item = 85;
+   unsigned short tg_gem = 93;
+   unsigned short tg_scroll = 20;         // These are for specific chances of a particular item type - Samson 11-25-04
+   unsigned short tg_potion = 50;
+   unsigned short tg_wand = 60;
+   unsigned short tg_armor = 75;          // Weapons come after armors and go up to 100%
 };
 
 area_data *create_area(  );

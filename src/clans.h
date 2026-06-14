@@ -48,10 +48,10 @@ class roster_data
 
    std::string name;
    std::chrono::system_clock::time_point joined;
-   int kills;
-   int deaths;
-   short Class;
-   short level;
+   int kills = 0;    // Number of mobs killed by this member. Taken from ch->pcdata->mkills.
+   int deaths = 0;   // Number of times this member was killed by mobs. Taken from ch->pcdata->mdeaths.
+   short Class = 0;  // Class of this member.
+   short level = 0;  // Level of this member.
 };
 
 class clan_data

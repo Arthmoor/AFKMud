@@ -68,7 +68,7 @@ std::mt19937 global_rng( std::random_device{}() );
  * Change this alarm timer to whatever you think is appropriate.
  * Adjust if you are getting infinite loop warnings that are shutting down bootup.
  */
-const int AREA_FILE_ALARM = 45;
+constexpr int AREA_FILE_ALARM = 45;
 
 system_data *sysdata;
 
@@ -177,7 +177,6 @@ void load_deity(  );
 void load_boards(  );
 void load_projects(  );
 void assign_gsn_data(  );
-int mob_xp( char_data * );
 void load_connhistory(  );
 void sort_skill_table(  );
 void load_classes(  );
@@ -198,7 +197,6 @@ void load_reserved_names( );
 
 affect_data::affect_data(  )
 {
-   init_memory( &rismod, &type, sizeof( type ) );
 }
 
 void shutdown_mud( std::string_view reason )
@@ -598,7 +596,7 @@ void load_buildlist( void )
    }
 }
 
-const int SYSFILEVER = 1;
+constexpr int SYSFILEVER = 1;
 /*
  * Save system info to data file
  */
@@ -1098,7 +1096,6 @@ CMDF( do_makewizlist )
 
 system_data::system_data(  )
 {
-   init_memory( &this->motd, &this->crashhandler, sizeof( this->crashhandler ) );
 }
 
 system_data::~system_data(  )
@@ -1128,56 +1125,10 @@ void boot_db( bool fCopyOver )
    // See class system_data in mud.h for details on each setting.
    sysdata = new system_data;
 
-   sysdata->playersonline = 0;
-   sysdata->newbie_purge =
-   sysdata->NO_NAME_RESOLVING = true;
-   sysdata->WAIT_FOR_AUTH = true;
-   sysdata->read_all_mail = LEVEL_SUPREME;
-   sysdata->read_mail_free = LEVEL_IMMORTAL;
-   sysdata->write_mail_free = 2;
-   sysdata->take_others_mail = LEVEL_SUPREME;
-   sysdata->build_level = LEVEL_DEMI;
-   sysdata->level_modify_proto = LEVEL_LESSER;
-   sysdata->level_override_private = LEVEL_GOD;
-   sysdata->level_mset_player = LEVEL_ASCENDANT;
-   sysdata->level_getobjnotake = LEVEL_GREATER;
-   sysdata->level_forcepc = LEVEL_ASCENDANT;
-   sysdata->bestow_dif = 5;
-   sysdata->check_imm_host = true;
-   sysdata->dodge_mod = 2;
-   sysdata->parry_mod = 2;
-   sysdata->tumble_mod = 4;
-   sysdata->dam_plr_vs_plr = 100;
-   sysdata->dam_plr_vs_mob = 100;
-   sysdata->dam_mob_vs_plr = 100;
-   sysdata->dam_mob_vs_mob = 100;
-   sysdata->stun_plr_vs_plr = 65;
-   sysdata->stun_regular = 15;
    sysdata->save_frequency = std::chrono::minutes( 20 );
-   sysdata->save_pets = true;
-   sysdata->save_flags.reset(  );
    sysdata->save_flags.set(  );  // This defaults to turning on every save_flag
    sysdata->motd = current_time;
    sysdata->imotd = current_time;
-   sysdata->mapsize = 7;
-   sysdata->maxvnum = 100000;
-   sysdata->minguildlevel = 10;
-   sysdata->maxcondval = 100;
-   sysdata->maxign = 10;
-   sysdata->maximpact = 30;
-   sysdata->maxholiday = 30;
-   sysdata->initcond = 12;
-   sysdata->minego = 25;
-   sysdata->secpertick = 70;
-   sysdata->pulsepersec = 4;
-   sysdata->hoursperday = 28;
-   sysdata->daysperweek = 13;
-   sysdata->dayspermonth = 26;
-   sysdata->monthsperyear = 12;
-   sysdata->rebootcount = 5;
-   sysdata->auctionseconds = 15;
-   sysdata->gameloopalarm = 30;
-   sysdata->webwho = 0;
    sysdata->dbserver = "localhost";
    sysdata->dbname = "afkdb";
    sysdata->dbuser = "dbuser";

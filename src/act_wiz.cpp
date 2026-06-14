@@ -3773,7 +3773,7 @@ CMDF( do_freeze )
          do_return( victim->switched, "" );
       victim->set_pcflag( PCFLAG_FREEZE );
       if( !victim->desc )
-         add_loginmsg( victim->name, 15, nullptr );
+         add_loginmsg( victim->name, 15, "" );
       else
          victim->print( "&CA godly force turns your body to ice!\r\n" );
       ch->printf( "&CYou have frozen %s.\r\n", victim->name );
@@ -3879,7 +3879,7 @@ CMDF( do_nobio )
    {
       victim->set_pcflag( PCFLAG_NOBIO );
       if( !victim->desc )
-         add_loginmsg( victim->name, 9, nullptr );
+         add_loginmsg( victim->name, 9, "" );
       else
          victim->print( "You can't set a bio!\r\n" );
       ch->printf( "NOBIO applied to %s.\r\n", victim->name );
@@ -3912,7 +3912,7 @@ CMDF( do_nodesc )
    {
       victim->set_pcflag( PCFLAG_NODESC );
       if( !victim->desc )
-         add_loginmsg( victim->name, 11, nullptr );
+         add_loginmsg( victim->name, 11, "" );
       else
          victim->print( "You can't set a description!\r\n" );
       ch->printf( "NODESC applied to %s.\r\n", victim->name );
@@ -3945,7 +3945,7 @@ CMDF( do_noemote )
    {
       victim->set_pcflag( PCFLAG_NO_EMOTE );
       if ( !victim->desc )
-         add_loginmsg( victim->name, 16, nullptr );
+         add_loginmsg( victim->name, 16, "" );
       else
          victim->print( "You can't emote!\r\n" );
       ch->printf( "NOEMOTE applied to %s.\r\n", victim->name );
@@ -3978,7 +3978,7 @@ CMDF( do_notell )
    {
       victim->set_pcflag( PCFLAG_NO_TELL );
       if( !victim->desc )
-         add_loginmsg( victim->name, 14, nullptr );
+         add_loginmsg( victim->name, 14, "" );
       else
          victim->print( "You can't send tells!\r\n" );
       ch->printf( "NOTELL applied to %s.\r\n", victim->name );
@@ -4014,7 +4014,7 @@ CMDF( do_notitle )
       buf = std::format( "the {}", title_table[victim->Class][victim->level][victim->sex] );
       victim->set_title( buf );
       if( !victim->desc )
-         add_loginmsg( victim->name, 8, nullptr );
+         add_loginmsg( victim->name, 8, "" );
       else
          victim->print( "You can't set your own title!\r\n" );
       ch->printf( "NOTITLE set on %s.\r\n", victim->name );
@@ -4048,7 +4048,7 @@ CMDF( do_nourl )
       victim->set_pcflag( PCFLAG_NO_URL );
       victim->pcdata->homepage.clear();
       if( !victim->desc )
-         add_loginmsg( victim->name, 12, nullptr );
+         add_loginmsg( victim->name, 12, "" );
       else
          victim->print( "You can't set a homepage!\r\n" );
       ch->printf( "NOURL applied to %s.\r\n", victim->name );
@@ -4112,7 +4112,7 @@ CMDF( do_nobeep )
    {
       victim->set_pcflag( PCFLAG_NO_BEEP );
       if( !victim->desc )
-         add_loginmsg( victim->name, 13, nullptr );
+         add_loginmsg( victim->name, 13, "" );
       else
          victim->print( "You can't send beeps anymore!\r\n" );
       ch->printf( "NOBEEP applied to %s.\r\n", victim->name );
@@ -4145,7 +4145,7 @@ CMDF( do_silence )
    {
       victim->set_pcflag( PCFLAG_SILENCE );
       if( !victim->desc )
-         add_loginmsg( victim->name, 7, nullptr );
+         add_loginmsg( victim->name, 7, "" );
       else
          victim->print( "You can't use channels!\r\n" );
       ch->printf( "You SILENCE %s.\r\n", victim->name );
@@ -5314,7 +5314,7 @@ CMDF( do_hell )
    act( AT_MAGIC, "$n appears in a could of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    interpret( victim, "look" );
    if( !victim->desc )
-      add_loginmsg( victim->name, 10, nullptr );
+      add_loginmsg( victim->name, 10, "" );
    else
       victim->printf( "The immortals are not pleased with your actions.\r\n"
                    "You shall remain in hell for %d %s%s.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );
@@ -6220,7 +6220,6 @@ void free_all_titles( void )
 
 class_type::class_type(  )
 {
-   init_memory( &affected, &fMana, sizeof( fMana ) );
 }
 
 class_type::~class_type(  )
@@ -6479,6 +6478,10 @@ void load_classes(  )
       }
    }
 }
+
+// 1: Initial version.
+// 2: ???
+constexpr int CLASSFILEVER = 2;
 
 void write_class_file( int cl )
 {
@@ -7091,7 +7094,6 @@ CMDF( do_setclass )
 
 race_type::race_type(  )
 {
-   init_memory( &affected, &hp_regen, sizeof( hp_regen ) );
 }
 
 race_type::~race_type(  )
@@ -7503,6 +7505,9 @@ void load_races(  )
    }
    FCLOSE( fpList );
 }
+
+// 1: Initial version.
+constexpr int RACEFILEVER = 1;
 
 void write_race_file( int ra )
 {

@@ -85,8 +85,6 @@ void free_teleports( void )
 
 reset_data::reset_data(  )
 {
-   init_memory( &resetobj, &sreset, sizeof( sreset ) );
-   resets.clear(  );
 }
 
 room_index::~room_index(  )
@@ -252,7 +250,6 @@ room_index::~room_index(  )
 
 room_index::room_index(  )
 {
-   init_memory( &area, &mpscriptpos, sizeof( mpscriptpos ) );
 }
 
 /*
@@ -370,7 +367,6 @@ void room_index::randomize_exits( short maxdir )
 
 exit_data::exit_data(  )
 {
-   init_memory( &rexit, &map_y, sizeof( map_y ) );
 }
 
 exit_data::~exit_data(  )
@@ -392,10 +388,6 @@ exit_data *room_index::make_exit( room_index * to_room, short door )
    pexit->vdir = door;
    pexit->rvnum = vnum;
    pexit->to_room = to_room;
-   pexit->flags.reset(  );
-   pexit->key = -1;
-   pexit->map_x = -1;
-   pexit->map_y = -1;
 
    if( to_room )
    {
@@ -509,25 +501,12 @@ void room_index::wipe_resets(  )
  */
 room_index *make_room( int vnum, area_data * area )
 {
-   room_index *pRoomIndex;
+   room_index *pRoomIndex = new room_index;
 
-   pRoomIndex = new room_index;
-   pRoomIndex->exits.clear(  );
-   pRoomIndex->extradesc.clear(  );
-   pRoomIndex->resets.clear(  );
-   pRoomIndex->affects.clear(  );
-   pRoomIndex->permaffects.clear(  );
    pRoomIndex->area = area;
    pRoomIndex->vnum = vnum;
-   pRoomIndex->winter_sector = -1;
-   pRoomIndex->name = STRALLOC( "Suspended in the great inky blackness" );
-   pRoomIndex->flags.reset(  );
+   pRoomIndex->name = STRALLOC( "Suspended in the great inky blackness..." );
    pRoomIndex->flags.set( ROOM_PROTOTYPE );
-   pRoomIndex->sector_type = 0;
-   pRoomIndex->baselight = 0;
-   pRoomIndex->light = 0;
-   pRoomIndex->weight = 0;
-   pRoomIndex->max_weight = 100000;
 
    room_index_table.insert( std::map<int, room_index *>::value_type( vnum, pRoomIndex ) );
    area->rooms.push_back( pRoomIndex );
@@ -554,7 +533,7 @@ void room_index::rprog_read_programs( FILE * fp )
       if( letter != '>' )
       {
          bug( "%s: vnum %d MUDPROG char", __func__, vnum );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
       mprg = new mud_prog_data;
       mudprogs.push_back( mprg );

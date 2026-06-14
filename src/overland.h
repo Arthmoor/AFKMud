@@ -29,8 +29,8 @@
 
 #pragma once
 
-const int MAX_X = 1000;
-const int MAX_Y = 1000;
+constexpr int MAX_X = 1000;
+constexpr int MAX_Y = 1000;
 
 inline constexpr std::string_view CONT_LIST = "../maps/continent.lst";
 
@@ -44,13 +44,13 @@ class mapexit_data
      mapexit_data(  );
     ~mapexit_data(  );
 
-   std::string tomap; // Target map name if the exit goes to another continent.
-   int vnum;          // Target vnum if it goes to a regular zone.
-   short herex;       // Coordinates the entrance is at. This should never hold negative values.
-   short herey;
-   short therex;      // Coordinates the entrance goes to. Value of -1 means it goes to a standard room.
-   short therey;
-   short prevsector;  // Previous sector type to restore with when an exit is deleted.
+   std::string tomap;      // Target map name if the exit goes to another continent.
+   int vnum = 0;           // Target vnum if it goes to a regular zone.
+   short herex = 0;        // Coordinates the entrance is at. This should never hold negative values.
+   short herey = 0;
+   short therex = 0;       // Coordinates the entrance goes to. Value of -1 means it goes to a standard room.
+   short therey = 0;
+   short prevsector = 0;   // Previous sector type to restore with when an exit is deleted.
 };
 
 class landmark_data
@@ -64,10 +64,10 @@ class landmark_data
     ~landmark_data(  );
 
    std::string description;  // Description of the landmark.
-   int distance;             // Distance the landmark is visible from.
-   short map_x;              // X coordinate of landmark.
-   short map_y;              // Y coordinate of landmark.
-   bool Isdesc;              // If true is room desc. If not is landmark.
+   int distance = 0;         // Distance the landmark is visible from.
+   short map_x = 0;          // X coordinate of landmark.
+   short map_y = 0;          // Y coordinate of landmark.
+   bool Isdesc = false;      // If true is room desc. If not is landmark.
 };
 
 class landing_data
@@ -80,10 +80,10 @@ class landing_data
      landing_data(  );
     ~landing_data(  );
 
-   std::string area;
-   int cost;
-   short map_x;
-   short map_y;
+   std::string area;    // Name of the area the landing site serves.
+   int cost = 50000;    // How much the skyship operator charges.
+   short map_x = 0;     // X/Y coordinates on the overland where this landing site is placed.
+   short map_y = 0;
 };
 
 class continent_data
@@ -127,10 +127,10 @@ class continent_data
    std::string mapfile;                           // .png file where the map data will be loaded from.
    std::string areafile;                          // The area file associated with this map where all of its mobs, objs, and special rooms will go.
    std::string filename;                          // The map's filename. Used during online editing.
-   class area_data *area;                         // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
+   class area_data *area = nullptr;               // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
    unsigned char grid[MAX_X][MAX_Y];              // Grid of sector types. Not stored in the continent's data file. This is loaded indirectly through the .png file.
-   int vnum;                                      // VNUM for the master room that controls this map.
-   bool nogrid;                                   // If this is set to true, the continent will have no map grid. This allows continents to be treated as planes. For places like the Astral Plane etc.
+   int vnum = -1;                                 // VNUM for the master room that controls this map.
+   bool nogrid = false;                           // If this is set to true, the continent will have no map grid. This allows continents to be treated as planes. For places like the Astral Plane etc.
 };
 
 extern const char *sect_types[];
@@ -138,13 +138,13 @@ extern const struct sect_color_type sect_show[];
 
 struct sect_color_type
 {
-   short sector;        // Terrain sector
-   const char *color;   // Color to display as
-   const char *symbol;  // Symbol you see for the sector
-   const char *desc;    // Description of sector type
-   bool canpass;        // Impassable terrain
-   int move;            // Movement loss
-   short graph1;        // Color numbers for graphic conversion
+   short sector;        // Terrain sector.
+   const char *color;   // Color to display as.
+   const char *symbol;  // Symbol you see for the sector.
+   const char *desc;    // Description of sector type.
+   bool canpass;        // Impassable terrain.
+   int move;            // Movement loss.
+   short graph1;        // Color numbers for graphic conversion.
    short graph2;
    short graph3;
 };

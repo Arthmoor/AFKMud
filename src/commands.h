@@ -51,13 +51,13 @@ class cmd_type
     ~cmd_type(  );
 
    std::string name;
-   std::string fun_name;  /* Added to hold the func name and dump some functions totally - Trax */
-   std::bitset<MAX_CMD_FLAG> flags; /* Added for Checking interpret stuff -Shaddai */
-   void *fileHandle;
-   DO_FUN *do_fun;
-   short position;
-   short level;
-   short log;
+   std::string fun_name;            // Added to hold the func name and dump some functions totally - Trax
+   std::bitset<MAX_CMD_FLAG> flags; // Added for Checking interpret stuff -Shaddai
+   void *fileHandle = nullptr;      // File handle for a module file loaded from disk. This feature has not been fully implemented yet. [DEPRECATED - Will likely be removed at some point]
+   DO_FUN *do_fun = nullptr;        // What function this command points to in the code.
+   short position = POS_STANDING;   // Minimum position the player must be in to use this command.
+   short level = 0;                 // Level the person needs to be in order to use this command.
+   short log = LOG_NORMAL;          // What log level the command uses for the logs.
 };
 
 /*
@@ -73,17 +73,17 @@ class social_type
      social_type(  );
     ~social_type(  );
 
-   std::string name;
-   std::string char_no_arg;
-   std::string others_no_arg;
-   std::string char_found;
-   std::string others_found;
-   std::string vict_found;
-   std::string char_auto;
-   std::string others_auto;
-   std::string obj_self;
-   std::string obj_others;
-   short minposition;
+   std::string name;                   // Name of the social.
+   std::string char_no_arg;            // What the player sees if no target is specified.
+   std::string others_no_arg;          // What other people in the room see if no target is specified.
+   std::string char_found;             // What the player sees when a target is specified.
+   std::string others_found;           // What other people in the room see when a target is specified.
+   std::string vict_found;             // What the person being targeted sees.
+   std::string char_auto;              // What the player sees when targeting themselves.
+   std::string others_auto;            // What other people in the room see if the player targets themselves.
+   std::string obj_self;               // What the player sees if they target an object.
+   std::string obj_others;             // What other people in the room see if the player targets an object.
+   short minposition = POS_RESTING;    // Minimum position the social can be used in. Will almost always be from the resting state.
 };
 
 /*

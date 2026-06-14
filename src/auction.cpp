@@ -73,7 +73,6 @@ void save_sales( void )
 
 sale_data::sale_data(  )
 {
-   init_memory( &bid, &collected, sizeof( collected ) );
 }
 
 sale_data::~sale_data(  )

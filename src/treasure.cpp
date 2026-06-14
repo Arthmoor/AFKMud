@@ -47,7 +47,8 @@ std::list<rune_data *> runelist;
 std::list<runeword_data *> rwordlist;
 std::vector<weapontable *> w_table;
 
-/* AGH! *BONK BONK BONK* Why didn't any of us think of THIS before!? So much NICER!
+/*
+ * AGH! *BONK BONK BONK* Why didn't any of us think of THIS before!? So much NICER!
  * This table is also used in generating weapons.
  * If you edit this table, adjust TMAT_MAX in treasure.h by the number of entries you add/remove.
  */
@@ -159,7 +160,6 @@ const char *gems6[11] = {
 
 weapontable::weapontable(  )
 {
-   init_memory( &name, &damtype, sizeof( damtype ) );
 }
 
 void save_weapontable(  )
@@ -221,19 +221,19 @@ void load_weapontable(  )
       if( key == "#WTYPE" )
          wt = new weapontable;
       else if( key == "Type" )
-         wt->type = atoi( value.c_str(  ) );
+         wt->type = std::stoi( value );
       else if( key == "Name" )
          wt->name = STRALLOC( value.c_str(  ) );
       else if( key == "BaseDam" )
-         wt->basedam = atoi( value.c_str(  ) );
+         wt->basedam = std::stoi( value );
       else if( key == "Weight" )
-         wt->weight = atoi( value.c_str(  ) );
+         wt->weight = std::stoi( value );
       else if( key == "Cost" )
-         wt->cost = atoi( value.c_str(  ) );
+         wt->cost = std::stoi( value );
       else if( key == "Skill" )
-         wt->skill = atoi( value.c_str(  ) );
+         wt->skill = std::stoi( value );
       else if( key == "DamType" )
-         wt->damtype = atoi( value.c_str(  ) );
+         wt->damtype = std::stoi( value );
       else if( key == "Flags" )
          wt->flags = STRALLOC( value.c_str(  ) );
       else if( key == "End" )
@@ -259,14 +259,13 @@ CMDF( do_wtload )
    {
       weapontable *w = w_table[x];
 
-      ch->printf( "Type %d, Name %s, BaseDam %d, Weight %f, Cost %f, Skill %d, DamType %d, Flags %s\r\n",
+      ch->print_fmt( "Type {}, Name {}, BaseDam {}, Weight {}, Cost {}, Skill {}, DamType {}, Flags {}\r\n",
                   w->type, w->name, w->basedam, w->weight, w->cost, w->skill, w->damtype, w->flags );
    }
 }
 
 rune_data::rune_data(  )
 {
-   init_memory( &_rarity, &stat2, sizeof( stat2 ) );
 }
 
 rune_data::~rune_data(  )
@@ -276,7 +275,6 @@ rune_data::~rune_data(  )
 
 runeword_data::runeword_data(  )
 {
-   init_memory( &_type, &stat4, sizeof( stat4 ) );
 }
 
 runeword_data::~runeword_data(  )
@@ -360,7 +358,7 @@ void load_runewords( void )
       else if( key == "Name" )
          rword->set_name( value );
       else if( key == "Type" )
-         rword->set_type( atoi( value.c_str(  ) ) );
+         rword->set_type( std::stoi( value ) );
       else if( key == "Rune1" )
          rword->set_rune1( value );
       else if( key == "Rune2" )
@@ -372,36 +370,36 @@ void load_runewords( void )
          std::string rstat;
 
          value = one_argument( value, rstat );
-         rword->stat1[0] = atoi( rstat.c_str(  ) );
+         rword->stat1[0] = std::stoi( rstat );
 
-         rword->stat1[1] = atoi( value.c_str(  ) );
+         rword->stat1[1] = std::stoi( value );
       }
       else if( key == "Stat2" )
       {
          std::string rstat;
 
          value = one_argument( value, rstat );
-         rword->stat2[0] = atoi( rstat.c_str(  ) );
+         rword->stat2[0] = std::stoi( rstat );
 
-         rword->stat2[1] = atoi( value.c_str(  ) );
+         rword->stat2[1] = std::stoi( value );
       }
       else if( key == "Stat3" )
       {
          std::string rstat;
 
          value = one_argument( value, rstat );
-         rword->stat3[0] = atoi( rstat.c_str(  ) );
+         rword->stat3[0] = std::stoi( rstat );
 
-         rword->stat3[1] = atoi( value.c_str(  ) );
+         rword->stat3[1] = std::stoi( value );
       }
       else if( key == "Stat4" )
       {
          std::string rstat;
 
          value = one_argument( value, rstat );
-         rword->stat4[0] = atoi( rstat.c_str(  ) );
+         rword->stat4[0] = std::stoi( rstat );
 
-         rword->stat4[1] = atoi( value.c_str(  ) );
+         rword->stat4[1] = std::stoi( value );
       }
       else if( key == "End" )
       {
@@ -465,24 +463,24 @@ void load_runes( void )
       else if( key == "Name" )
          rune->set_name( value );
       else if( key == "Rarity" )
-         rune->set_rarity( atoi( value.c_str(  ) ) );
+         rune->set_rarity( std::stoi( value ) );
       else if( key == "Stat1" )
       {
          std::string rstat;
 
          value = one_argument( value, rstat );
-         rune->stat1[0] = atoi( rstat.c_str(  ) );
+         rune->stat1[0] = std::stoi( rstat );
 
-         rune->stat1[1] = atoi( value.c_str(  ) );
+         rune->stat1[1] = std::stoi( value );
       }
       else if( key == "Stat2" )
       {
          std::string rstat;
 
          value = one_argument( value, rstat );
-         rune->stat2[0] = atoi( rstat.c_str(  ) );
+         rune->stat2[0] = std::stoi( rstat );
 
-         rune->stat2[1] = atoi( value.c_str(  ) );
+         rune->stat2[1] = std::stoi( value );
       }
       else if( key == "End" )
       {
@@ -578,13 +576,12 @@ CMDF( do_makerune )
 
    if( ( rune = check_rune( argument ) ) != nullptr )
    {
-      ch->printf( "A rune called %s already exists. Choose another name.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "A rune called {} already exists. Choose another name.\r\n", argument );
       return;
    }
 
    rune = new rune_data;
    rune->set_name( argument );
-   rune->set_rarity( RUNE_COMMON );
 
    bool found = false;
    std::list<rune_data *>::iterator rn;
@@ -602,7 +599,7 @@ CMDF( do_makerune )
    if( !found )
       runelist.push_back( rune );
 
-   ch->printf( "New rune %s has been created.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "New rune {} has been created.\r\n", argument );
    save_runes(  );
 }
 
@@ -624,14 +621,14 @@ CMDF( do_destroyrune )
 
    if( !( rune = check_rune( argument ) ) )
    {
-      ch->printf( "No rune called %s exists.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "No rune called {} exists.\r\n", argument );
       return;
    }
 
    deleteptr( rune );
    save_runes(  );
 
-   ch->printf( "Rune %s has been destroyed.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "Rune {} has been destroyed.\r\n", argument );
 }
 
 CMDF( do_setrune )

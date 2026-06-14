@@ -92,7 +92,6 @@ const char *item_w_flags[] = {
 
 mud_prog_data::mud_prog_data(  )
 {
-   init_memory( &arglist, &triggered, sizeof( triggered ) );
 }
 
 mud_prog_data::~mud_prog_data(  )
@@ -103,7 +102,6 @@ mud_prog_data::~mud_prog_data(  )
 
 mprog_act_list::mprog_act_list(  )
 {
-   init_memory( &ch, &target, sizeof( target ) );
 }
 
 mprog_act_list::~mprog_act_list(  )
@@ -121,19 +119,19 @@ struct mpsleep_data
    mpsleep_data(  );
    ~mpsleep_data(  );
 
-   char_data *mob;
-   char_data *actor;
-   obj_data *obj;
-   room_index *room; /* Room when type is MP_ROOM */
-   char_data *victim;
-   obj_data *target;
-   char *com_list;
-   mp_types type; /* Mob, Room or Obj prog */
-   int timer;  /* Pulses to sleep */
-   int ignorelevel;
-   int iflevel;
+   char_data *mob = nullptr;
+   char_data *actor = nullptr;
+   obj_data *obj = nullptr;
+   room_index *room = nullptr; /* Room when type is MP_ROOM */
+   char_data *victim = nullptr;
+   obj_data *target = nullptr;
+   char *com_list = nullptr;
+   mp_types type = MP_MOB; /* Mob, Room or Obj prog */
+   int timer = 0;  /* Pulses to sleep */
+   int ignorelevel = 0;
+   int iflevel = 0;
    bool ifstate[MAX_IFS][DO_ELSE + 1];
-   bool single_step;
+   bool single_step = false;
 };
 
 void uphold_supermob( int *curr_serial, int serial, room_index ** supermob_room, obj_data * true_supermob_obj )
@@ -177,7 +175,6 @@ std::list<mpsleep_data *> sleeplist;
 
 mpsleep_data::mpsleep_data(  )
 {
-   init_memory( &mob, &single_step, sizeof( single_step ) );
 }
 
 mpsleep_data::~mpsleep_data(  )
@@ -2849,7 +2846,8 @@ bool mprog_keyword_check( std::string_view argu, const char *argl )
    return false;
 }
 
-/* The next two routines are the basic trigger types. Either trigger
+/*
+ * The next two routines are the basic trigger types. Either trigger
  *  on a certain percent, or trigger on a keyword or word phrase.
  *  To see how this works, look at the various trigger routines..
  */
@@ -4221,7 +4219,7 @@ void rprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
       if( mprg->type == type && number_percent(  ) <= atoi( mprg->arglist ) )
       {
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-         if( type != ENTER_PROG )
+         if( type != ENTRY_PROG )
             break;
       }
    }
@@ -4283,10 +4281,10 @@ void rprog_void_trigger( char_data *ch )
 
 void rprog_enter_trigger( char_data * ch )
 {
-   if( HAS_PROG( ch->in_room, ENTER_PROG ) )
+   if( HAS_PROG( ch->in_room, ENTRY_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, ENTER_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, ENTRY_PROG );
       release_supermob(  );
    }
 }
@@ -4313,20 +4311,20 @@ void rprog_rest_trigger( char_data * ch )
 
 void rprog_rfight_trigger( char_data * ch )
 {
-   if( HAS_PROG( ch->in_room, RFIGHT_PROG ) )
+   if( HAS_PROG( ch->in_room, FIGHT_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, RFIGHT_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, FIGHT_PROG );
       release_supermob(  );
    }
 }
 
 void rprog_death_trigger( char_data * ch )
 {
-   if( HAS_PROG( ch->in_room, RDEATH_PROG ) )
+   if( HAS_PROG( ch->in_room, DEATH_PROG ) )
    {
       rset_supermob( ch->in_room );
-      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, RDEATH_PROG );
+      rprog_percent_check( supermob, ch, nullptr, nullptr, nullptr, DEATH_PROG );
       release_supermob(  );
    }
 }

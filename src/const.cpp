@@ -167,10 +167,10 @@ short gsn_tan;
 short gsn_dragon_ride;
 
 /* Global Skill Numbers */
-void ASSIGN_GSN( short gsn, const std::string & name )
+void ASSIGN_GSN( short gsn, const std::string_view name )
 {
    if( ( gsn = skill_lookup( name ) ) == -1 )
-      log_printf( "%s: Skill %s not found.\n", __func__, name.c_str( ) );
+      log_printf( "%s: Skill %s not found.\n", __func__, name.data( ) );
 }
 
 void assign_gsn_data( void )
@@ -368,7 +368,8 @@ const struct str_app_type str_app[26] = {
    {10, 12, 800, 60} /* 25   */
 };
 
-/* Intelligence tables converted to 3rd Edition AD&D rules - determines skill % you learn when practicing.
+/*
+ * Intelligence tables converted to 3rd Edition AD&D rules - determines skill % you learn when practicing.
  * Base increase is 4, then add modifier for total learned per practice.
  */
 const struct int_app_type int_app[26] = {
@@ -400,8 +401,9 @@ const struct int_app_type int_app[26] = {
    {7}   /* 25 */
 };
 
-/* Wisdom tables changed to 3rd Edition AD&D rules - determines number of practices per level gained.
- * Base increase is 4, then add the modifer for total gained per level.
+/*
+ * Wisdom tables changed to 3rd Edition AD&D rules - determines number of practices per level gained.
+ * Base increase is 4, then add the modifier for total gained per level.
  * Also affect the amount of mana gained during regeneration.
  */
 const struct wis_app_type wis_app[26] = {
@@ -433,7 +435,8 @@ const struct wis_app_type wis_app[26] = {
    {7}   /* 25 */
 };
 
-/* Deterity table: Not converted. Bonuses here are adequate.
+/*
+ * Dexterity table: Not converted. Bonuses here are adequate.
  * Adds the modifier to armor Class.
  */
 const struct dex_app_type dex_app[26] = {
@@ -465,7 +468,8 @@ const struct dex_app_type dex_app[26] = {
    {-120}   /* 25 */
 };
 
-/* Constitution tables: Converted to 3rd Edition AD&D rules.
+/*
+ * Constitution tables: Converted to 3rd Edition AD&D rules.
  * Left side bonus adds to hit points gained at level up, and regeneration rates during rest.
  * Unsure what Smaug had in mind for the right side, it's not used anywhere yet.
  */

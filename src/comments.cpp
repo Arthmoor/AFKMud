@@ -409,8 +409,6 @@ void pc_data::fread_old_comment( FILE * fp )
       ungetc( letter, fp );
 
       pcnote = new note_data;
-      pcnote->rlist.clear(  );
-      init_memory( &pcnote->parent, &pcnote->expire, sizeof( pcnote->expire ) );
 
       if( !str_cmp( fread_word( fp ), "sender" ) )
          pcnote->sender = fread_string( fp );

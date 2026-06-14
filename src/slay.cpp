@@ -126,7 +126,7 @@ void load_slays( )
    }
 }
 
-// 0: Original format with tilde delmiter.
+// 0: Original format with tilde delimiter.
 // 1: Modified to use that stupid \xa2 thing as a delimiter.
 // 2: Back to the tilde since the \xa2 delimiter was not reliable.
 constexpr int SLAY_VERSION = 2;
@@ -142,26 +142,31 @@ void save_slays( )
       return;
    }
 
-   stream << "#VERSION " << SLAY_VERSION << "\n";
+   stream << "#VERSION " << SLAY_VERSION << "\n\n";
 
    for( const auto& slay : slaylist )
    {
-      stream << std::format(
-         "#SLAY\n"
-         "Type      {}\n"
-         "Owner     {}\n"
-         "Color     {}\n"
-         "Cmessage  {}~\n"
-         "Vmessage  {}~\n"
-         "Rmessage  {}~\n"
-         "End\n\n",
-         slay->get_type(),
-         slay->get_owner(),
-         slay->get_color(),
-         slay->get_cmsg(),
-         slay->get_vmsg(),
-         slay->get_rmsg()
-      );
+      stream << "#SLAY\n";
+
+      if( !slay->get_type().empty() )
+         stream << "Type      " << slay->get_type() << "\n";
+
+      if( !slay->get_owner().empty() )
+         stream << "Owner     " << slay->get_owner() << "\n";
+
+      if( slay->get_color() > 0 && slay->get_color() < MAX_COLORS )
+         stream << "Color     " << slay->get_color() << "\n";
+
+      if( !slay->get_cmsg().empty() )
+         stream << "Cmessage  " << slay->get_cmsg() << "~\n";
+
+      if( !slay->get_vmsg().empty() )
+         stream << "Vmessage  " << slay->get_vmsg() << "~\n";
+
+      if( !slay->get_rmsg().empty() )
+         stream << "Rmessage  " << slay->get_rmsg() << "~\n";
+
+      stream << "End\n\n";
    }
 }
 

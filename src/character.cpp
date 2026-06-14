@@ -92,24 +92,15 @@ pc_data::~pc_data(  )
  */
 pc_data::pc_data(  )
 {
-   init_memory( &this->area, &this->hotboot, sizeof( this->hotboot ) );
-
-   this->flags.reset(  );
-   this->alias_map.clear(  );
-   this->zone.clear(  );
-   this->ignore.clear(  );
-   this->say_history.clear();
-   this->tell_history.clear();
    for( int sn = 0; sn < MAX_BEACONS; ++sn )
       this->beacon[sn] = 0;
+   this->condition[COND_DRUNK] = 0;
    this->condition[COND_THIRST] = ( int )( sysdata->maxcondval * .75 );
    this->condition[COND_FULL] = ( int )( sysdata->maxcondval * .75 );
-   this->pagerlen = 24;
    this->secedit = SECT_OCEAN;   /* Initialize Map OLC sector - Samson 8-1-99 */
    this->one = ROOM_VNUM_TEMPLE;
    this->lasthost = "Unknown-Host";
    this->logon = current_time;
-   this->timezone = -1;
    for( int sn = 0; sn < num_skills; ++sn )
       this->learned[sn] = 0;
 }
@@ -206,8 +197,6 @@ char_data::~char_data(  )
  */
 char_data::char_data(  )
 {
-   init_memory( &this->master, &this->backtracking, sizeof( this->backtracking ) );
-
    this->armor = 100;
    this->position = POS_STANDING;
    this->hit = 20;
@@ -222,7 +211,6 @@ char_data::char_data(  )
    this->race = RACE_HUMAN;
    this->Class = CLASS_WARRIOR;
    this->speaking = LANG_COMMON;
-   this->speaks.reset(  );
    this->barenumdie = 1;
    this->baresizedie = 4;
    this->perm_str = 13;
@@ -235,7 +223,6 @@ char_data::char_data(  )
    this->map_x = -1; /* Overland Map - Samson 7-31-99 */
    this->map_y = -1;
    this->wait = 0;
-   this->variables.clear(  );
 }
 
 void extract_all_chars( void )

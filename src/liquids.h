@@ -103,12 +103,12 @@ class liquid_data
      liquid_data(  );
     ~liquid_data(  );
 
-   std::string name;
-   std::string shortdesc;
-   std::string color;
-   int mod[MAX_CONDS];
-   int vnum;
-   int type;
+   std::string name;                // Name of the liquid.
+   std::string shortdesc;           // A short description of the liquid.
+   std::string color;               // What color is it?
+   int mod[MAX_CONDS]{-1, -1, -1};  // Conditional effects it can have on the player.
+   int vnum = -1;                   // It's position in the liquid table.
+   int type = -1;                   // Type of liquid this is.
 };
 
 class mixture_data
@@ -121,9 +121,9 @@ class mixture_data
      mixture_data(  );
     ~mixture_data(  );
 
-   std::string name;
-   int data[3];
-   bool object;
+   std::string name;          // Name of the mixture.
+   int data[3]{-1, -1, -1};   // Components that make up the mixture.
+   bool object = false;       // Is this mixture an object or not?
 };
 
 extern liquid_data *liquid_table[MAX_LIQUIDS];

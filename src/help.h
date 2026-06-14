@@ -33,14 +33,19 @@ inline constexpr std::string_view HELP_FILE = "../system/helps.dat";  // Data fi
 /*
  * Help table types.
  */
-struct help_data
+class help_data
 {
+private:
+   help_data( const help_data & m );
+   help_data & operator=( const help_data & );
+
+public:
    help_data(  );
    ~help_data(  );
 
-   std::string keyword;
-   std::string related;
-   std::string text;
-   short level;
-   short webinvis;
+   std::string keyword;    // Keywords used to look up the help entry.
+   std::string related;    // Other entries that are related to this one.
+   std::string text;       // Detailed text of the help entry.
+   short level = 0;        // Level at which the entry first becomes visible to players.
+   bool webinvis = false;  // Whether or not the entry is visible to the web. Only useful with a MyQSL database.
 };

@@ -60,7 +60,6 @@ chan_history::~chan_history(  )
 
 chan_history::chan_history(  )
 {
-   init_memory( &this->level, &this->invis, sizeof( this->invis ) );
 }
 
 void purge_channel_history( mud_channel *channel )
@@ -77,7 +76,6 @@ void purge_channel_history( mud_channel *channel )
 
 mud_channel::mud_channel(  )
 {
-   init_memory( &level, &type, sizeof( type ) );
 }
 
 mud_channel::~mud_channel(  )
@@ -166,7 +164,7 @@ void load_mudchannels( void )
 }
 
 // 1: Initial version.
-const int CHANNEL_VERSION = 1;
+constexpr int CHANNEL_VERSION = 1;
 
 void save_mudchannels( void )
 {
@@ -227,11 +225,8 @@ CMDF( do_makechannel )
    channel = new mud_channel;
    channel->name = argument;
    channel->colorname = "chat";
-   channel->level = LEVEL_IMMORTAL;
-   channel->type = CHAN_GLOBAL;
-   channel->flags.reset(  );
    chanlist.push_back( channel );
-   ch->printf( "&YNew channel &G%s &Ycreated.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "&YNew channel &G{} &Ycreated.\r\n", argument );
    save_mudchannels(  );
 }
 

@@ -52,7 +52,6 @@ extern const char *alarm_section;
 
 mapexit_data::mapexit_data(  )
 {
-   init_memory( &vnum, &prevsector, sizeof( prevsector ) );
 }
 
 mapexit_data::~mapexit_data(  )
@@ -61,7 +60,6 @@ mapexit_data::~mapexit_data(  )
 
 landmark_data::landmark_data(  )
 {
-   init_memory( &distance, &Isdesc, sizeof( Isdesc ) );
 }
 
 landmark_data::~landmark_data(  )
@@ -103,12 +101,12 @@ void continent_data::free_landing_sites( void )
 
 continent_data::continent_data(  )
 {
-   init_memory( &grid, &nogrid, sizeof( nogrid ) );
-
-   area = nullptr;
-   exits.clear( );
-   landmarks.clear( );
-   landing_sites.clear( );
+   // Seed all newly created continents with ocean sectors before populating them with actual data.
+   for( short x = 0; x < MAX_X; ++x )
+   {
+      for( short y = 0; y < MAX_Y; ++y )
+         putterr( x, y, SECT_OCEAN );
+   }
 }
 
 continent_data::~continent_data(  )
@@ -194,7 +192,8 @@ void continent_data::load_png_file( void )
    gdImageDestroy( im );
 }
 
-/* As it implies, this saves the map you are currently standing on to disk.
+/*
+ * As it implies, this saves the map you are currently standing on to disk.
  * Output is in graphic format, making it easily edited with most paint programs.
  * Could also be used as a method for filtering bad color data out of your source
  * image if it had any at loadup. This code should only be called from the mapedit
@@ -408,7 +407,7 @@ void load_continent( std::string_view continent_file )
       if( key == "#CONTINENT" )
          continent = new continent_data;
       else if( key == "Version" )
-         file_version = atoi( value.c_str(  ) );
+         file_version = std::stoi( value );
       else if( key == "Name" )
          continent->name = value;
       else if( key == "Mapfile" )
@@ -416,9 +415,9 @@ void load_continent( std::string_view continent_file )
       else if( key == "Areafile" )
          continent->areafile = value;
       else if( key == "NoGrid" )
-         continent->nogrid = atoi( value.c_str(  ) );
+         continent->nogrid = std::stoi( value );
       else if( key == "Vnum" )
-         continent->vnum = atoi( value.c_str(  ) );
+         continent->vnum = std::stoi( value );
       else if( key == "#ENTRANCE" )
          continent->fread_mapexit( stream );
       else if( key == "#LANDMARK" )
@@ -439,7 +438,7 @@ void load_continent( std::string_view continent_file )
          continent_list.push_back( continent );
       }
       else
-         log_printf( "%s: Bad line in ships file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "%s: Bad line in continent file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -1460,7 +1459,7 @@ CMDF( do_landmarks )
 
       if( continent->landmarks.empty(  ) && continent->nogrid == false )
       {
-         ch->pagerf( "%s: No landmarks defined.\r\n", continent->name.c_str( ) );
+         ch->pager_fmt( "{}: No landmarks defined.\r\n", continent->name );
          continue;
       }
 
@@ -1468,7 +1467,7 @@ CMDF( do_landmarks )
       {
          landmark_data *landmark = *imark;
 
-         ch->pagerf( "%-10s  %-4dX %-4dY   %-4d       %s\r\n", continent->name.c_str( ), landmark->map_x, landmark->map_y, landmark->distance, landmark->description.c_str(  ) );
+         ch->pager_fmt( "{:<10}  {:<4}X {:<4}Y   {:<4}       {}\r\n", continent->name, landmark->map_x, landmark->map_y, landmark->distance, landmark->description );
       }
    }
 }
@@ -3149,11 +3148,11 @@ void reload_map( char_data * ch )
 {
    if( !ch->continent )
    {
-      ch->printf( "This can only be called from an overland map.\r\n" );
+      ch->print( "This can only be called from an overland map.\r\n" );
       return;
    }
 
-   ch->printf( "&GReinitializing map grid for %s...\r\n", ch->continent->name.c_str( ) );
+   ch->print_fmt( "&GReinitializing map grid for {}...\r\n", ch->continent->name );
 
    for( short x = 0; x < MAX_X; ++x )
    {
@@ -3162,7 +3161,7 @@ void reload_map( char_data * ch )
    }
 
    ch->continent->load_png_file( );
-   ch->printf( "Map for %s has been reinitialized from .png file.\r\n", ch->continent->name.c_str( ) );
+   ch->print_fmt( "Map for {} has been reinitialized from .png file.\r\n", ch->continent->name );
 }
 
 CMDF( do_mapcreate )
@@ -3193,20 +3192,22 @@ CMDF( do_mapcreate )
    continent_data *continent = find_continent_by_name( argument );
    if( continent )
    {
-      ch->printf( "&YA map named '%s' already exists.&D\r\n", argument.c_str( ) );
+      ch->print_fmt( "&YA map named '{}' already exists.&D\r\n", argument );
       return;
    }
 
+   area_data *pArea = nullptr;
    std::filesystem::path area_file = std::format( "{}.are", argument );
-   if( !find_area( argument ) )
+   if( !( pArea = find_area( argument ) ) )
    {
-      ch->printf( "&YNo area file named '%s' exists. You must create this before setting up the map.&D\r\n", area_file.c_str() );
+      ch->print_fmt( "&YNo area file named '{}' exists. You must create this before setting up the map.&D\r\n", area_file.string() );
       return;
    }
 
    continent = new continent_data;
 
    continent->name = argument;
+   continent->area = pArea;
    continent->areafile = area_file;
 
    std::filesystem::path cont_file = std::format( "{}.cont", argument );
@@ -3219,7 +3220,7 @@ CMDF( do_mapcreate )
    continent_list.push_back( continent );
    write_continent_list( );
 
-   ch->printf( "&YMap '%s' created. Associated area file '%s'. Filename '%s'.&D\r\n", argument.c_str( ), area_file.c_str(), cont_file.c_str() );
+   ch->print_fmt( "&YMap '{}' created. Associated area file '{}'. Filename '{}'.&D\r\n", argument, area_file.string(), cont_file.string() );
 }
 
 /*
@@ -3272,11 +3273,11 @@ CMDF( do_mapedit )
 
       if( !continent )
       {
-         ch->printf( "There is no such map as '%s'.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "There is no such map as '{}'.\r\n", argument );
          return;
       }
 
-      ch->printf( "Saving map of %s...\r\n", continent->name.c_str(  ) );
+      ch->print_fmt( "Saving map of {}...\r\n", continent->name );
       continent->save( );
 
       if( continent->nogrid == false )
@@ -3297,27 +3298,27 @@ CMDF( do_mapedit )
 
          if( !continent )
          {
-            ch->printf( "There is no continent named %s.\r\n", continent->name.c_str( ) );
+            ch->print_fmt( "There is no continent named {}.\r\n", continent->name );
             return;
          }
 
          ch->print( "&RSTOP!!!\r\n\r\n" );
          ch->print( "&YThe operation you are requesting is highly disruptive and could lead to a game crash!\r\n" );
-         ch->printf( "You are requesting the deletion of continent data for: %s\r\n", continent->name.c_str( ) );
+         ch->print_fmt( "You are requesting the deletion of continent data for: {}\r\n", continent->name );
          ch->print( "The following files will be permanently removed from the game:\r\n\r\n" );
-         ch->printf( "Continent file: %s\r\n", continent->filename.c_str( ) );
-         ch->printf( "The associated area file: %s\r\n", continent->areafile.c_str( ) );
+         ch->print_fmt( "Continent file: {}\r\n", continent->filename );
+         ch->print_fmt( "The associated area file: {}\r\n", continent->areafile );
 
          if( continent->nogrid == false )
          {
-            ch->printf( "The associated .png file: %s\r\n", continent->mapfile.c_str( ) );
-            ch->printf( "%zu entrance points stored in the continent data.\r\n", continent->exits.size() );
-            ch->printf( "%zu landmarks stored in the continent file.\r\n", continent->landmarks.size() );
-            ch->printf( "%zu skyship landing sites in the continent file.\r\n", continent->landing_sites.size() );
+            ch->print_fmt( "The associated .png file: {}\r\n", continent->mapfile );
+            ch->print_fmt( "{} entrance points stored in the continent data.\r\n", continent->exits.size() );
+            ch->print_fmt( "{} landmarks stored in the continent file.\r\n", continent->landmarks.size() );
+            ch->print_fmt( "{} skyship landing sites in the continent file.\r\n", continent->landing_sites.size() );
          }
 
          ch->print( "If you need to make backups of any of the above, please do so before committing to this operation.\r\n" );
-         ch->printf( "To confirm your intent, you must enter the following command: &Rmapedit delete confirm %s\r\n", continent->name.c_str( ) );
+         ch->print_fmt( "To confirm your intent, you must enter the following command: &Rmapedit delete confirm {}\r\n", continent->name );
          ch->print( "&YOnce this is done, the files will be removed. The in-game data will not be fully affected until the next reboot.&D\r\n" );
          return;
       }
@@ -3326,7 +3327,7 @@ CMDF( do_mapedit )
 
       if( !continent )
       {
-         ch->printf( "&YWhat are you even doing? There is no continent called %s.&D\r\n", argument.c_str( ) );
+         ch->print_fmt( "&YWhat are you even doing? There is no continent called {}.&D\r\n", argument );
          return;
       }
 
@@ -3336,7 +3337,7 @@ CMDF( do_mapedit )
          return;
       }
 
-      ch->printf( "&RHold on to your butts! Deletion of '%s' has begun!&D\r\n", continent->name.c_str( ) );
+      ch->print_fmt( "&RHold on to your butts! Deletion of '{}' has begun!&D\r\n", continent->name );
 
       std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, continent->filename );
       std::filesystem::path area_file = continent->areafile;
@@ -3366,7 +3367,7 @@ CMDF( do_mapedit )
       write_continent_list();
 
       // If we're still here, cool. Hopefully everything worked out?
-      ch->printf( "&YWell. You're seeing this message. Continent %s has been deleted from the game.&D\r\n", argument.c_str( ) );
+      ch->print_fmt( "&YWell. You're seeing this message. Continent {} has been deleted from the game.&D\r\n", argument );
       return;
    }
 
@@ -3382,7 +3383,7 @@ CMDF( do_mapedit )
 
       if( !continent )
       {
-         ch->printf( "There is no such map as '%s'.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "There is no such map as '{}'.\r\n", arg2 );
          return;
       }
 
@@ -3390,26 +3391,26 @@ CMDF( do_mapedit )
 
       if( !( room = get_room_index( vnum ) ) )
       {
-         ch->printf( "Room vnum %d does not exist.\r\n", vnum );
+         ch->print_fmt( "Room vnum {} does not exist.\r\n", vnum );
          return;
       }
 
       if( !( area = find_area( continent->areafile ) ) )
       {
-         ch->printf( "The area associated with this continent seems to be missing? Looking for: %s.\r\n", continent->areafile.c_str( ) );
+         ch->print_fmt( "The area associated with this continent seems to be missing? Looking for: {}.\r\n", continent->areafile );
          return;
       }
 
       if( vnum < area->low_vnum || vnum > area->hi_vnum )
       {
-         ch->printf( "%d is not within the vnum assignment for %s. Valid range is: %d to %d.\r\n", vnum, continent->areafile.c_str( ), area->low_vnum, area->hi_vnum );
+         ch->print_fmt( "{} is not within the vnum assignment for {}. Valid range is: {} to {}.\r\n", vnum, continent->areafile, area->low_vnum, area->hi_vnum );
          return;
       }
 
       continent->vnum = vnum;
       continent->save( );
 
-      ch->printf( "%s has been assigned vnum %d.\r\n", continent->name.c_str( ), vnum );
+      ch->print_fmt( "{} has been assigned vnum {}.\r\n", continent->name, vnum );
       return;
    }
 
@@ -3422,13 +3423,13 @@ CMDF( do_mapedit )
 
       if( !continent )
       {
-         ch->printf( "There is no such map as '%s'.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "There is no such map as '{}'.\r\n", arg2 );
          return;
       }
 
       if( continent->nogrid == false )
       {
-         ch->printf( "%s already has an assigned png file: %s. This cannot be changed once set.\r\n", continent->name.c_str( ), continent->mapfile.c_str( ) );
+         ch->print_fmt( "{} already has an assigned png file: {}. This cannot be changed once set.\r\n", continent->name, continent->mapfile );
          return;
       }
 
@@ -3440,7 +3441,7 @@ CMDF( do_mapedit )
 
       if( !str_cmp( argument, ".png" ) )
       {
-         ch->printf( "The filename must be more than just the .png extension.\r\n" );
+         ch->print( "The filename must be more than just the .png extension.\r\n" );
          return;
       }
 
@@ -3452,11 +3453,11 @@ CMDF( do_mapedit )
 
          if( con_check )
          {
-            ch->printf( "%s is already using %s for its map.\r\n", con_check->name.c_str( ), argument.c_str( ) );
+            ch->print_fmt( "{} is already using {} for its map.\r\n", con_check->name, argument );
             return;
          }
 
-         ch->printf( "Assigning file %s to %s.\r\n", argument.c_str( ), continent->name.c_str( ) );
+         ch->print_fmt( "Assigning file {} to {}.\r\n", argument, continent->name );
 
          for( short x = 0; x < MAX_X; ++x )
          {
@@ -3469,7 +3470,7 @@ CMDF( do_mapedit )
       }
       else
       {
-         ch->printf( "&GInitializing new map grid for %s...\r\n", continent->name.c_str( ) );
+         ch->print_fmt( "&GInitializing new map grid for {}...\r\n", continent->name );
 
          for( short x = 0; x < MAX_X; ++x )
          {
@@ -3483,10 +3484,10 @@ CMDF( do_mapedit )
 
       continent->nogrid = false;
 
-      ch->printf( "Saving map of %s...\r\n", continent->name.c_str(  ) );
+      ch->print_fmt( "Saving map of {}...\r\n", continent->name );
       continent->save( );
 
-      ch->printf( "Map file %s has been assigned to %s.\r\n", argument.c_str( ), continent->name.c_str( ) );
+      ch->print_fmt( "Map file {} has been assigned to {}.\r\n", argument, continent->name );
       return;
    }
 
@@ -3507,7 +3508,7 @@ CMDF( do_mapedit )
 
       ch->set_pcflag( PCFLAG_MAPEDIT );
       ch->print( "&RMap editing mode is now ON.\r\n" );
-      ch->printf( "&YYou are currently creating %s sectors.&z\r\n", sect_types[ch->pcdata->secedit] );
+      ch->print_fmt( "&YYou are currently creating {} sectors.&z\r\n", sect_types[ch->pcdata->secedit] );
       return;
    }
 
@@ -3516,7 +3517,7 @@ CMDF( do_mapedit )
       if( str_cmp( argument, "confirm" ) )
       {
          ch->print( "This is a dangerous command if used improperly.\r\n" );
-         ch->printf( "You would be reloading the map for %s\r\n", ch->continent->name.c_str( ) ); 
+         ch->print_fmt( "You would be reloading the map for {}\r\n", ch->continent->name );
          ch->print( "Are you sure about this? Confirm by typing: mapedit reload confirm\r\n" );
          return;
       }
@@ -3554,7 +3555,7 @@ CMDF( do_mapedit )
       if( fill == 0 )
       {
          display_map( ch );
-         ch->printf( "&RFooodfill with %s sectors successful.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "&RFooodfill with {} sectors successful.\r\n", argument );
          return;
       }
 
@@ -3598,7 +3599,7 @@ CMDF( do_mapedit )
       }
 
       ch->pcdata->secedit = value;
-      ch->printf( "&YYou are now creating %s sectors.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "&YYou are now creating {} sectors.\r\n", argument );
       return;
    }
 

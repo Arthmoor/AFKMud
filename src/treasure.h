@@ -42,57 +42,56 @@ enum rune_rarities
 };
 
 /* Materials for Armor Generator and Weapon Generator */
-/* Materials for Armor Generator and Weapon Generator */
 struct armorgenM
 {
-   short material;   /* Type of material */
-   const char *name; /* Descriptive name */
-   float weight;  /* Modification to weight */
-   short ac;   /* Modification to armor class */
-   short wd;   /* Modification to weapon damage */
-   float cost; /* Modification to item value or cost */
-   short minlevel;   /* Minimum mob level before this material will drop */
-   short maxlevel;   /* Maximum mob level this material will drop for */
+   short material;   // Type of material.
+   const char *name; // Descriptive name.
+   float weight;     // Modification to weight.
+   short ac;         // Modification to armor class.
+   short wd;         // Modification to weapon damage.
+   float cost;       // Modification to item value or cost.
+   short minlevel;   // Minimum mob level before this material will drop.
+   short maxlevel;   // Maximum mob level this material will drop for.
 };
 
 /* Armor types for Armor Generator */
 struct armorgenT
 {
-   short type; /* Armor type */
-   const char *name; /* Descriptive name */
-   float weight;  /* Base weight */
-   short ac;   /* Base armor class */
-   float cost; /* Base value or cost */
-   short minlevel;   /* Minimum mob level before this armor type will drop */
-   short maxlevel;   /* Maximum mob level this armor type will drop for */
-   std::string flags;   /* Default flag set */
+   short type;          // Armor type.
+   const char *name;    // Descriptive name.
+   float weight;        // Base weight.
+   short ac;            // Base armor class.
+   float cost;          // Base value or cost.
+   short minlevel;      // Minimum mob level before this armor type will drop.
+   short maxlevel;      // Maximum mob level this armor type will drop for.
+   std::string flags;   // Default flag set.
 };
 
 /* Weapon types for Weapon Generator */
 struct weaponT
 {
-   short type; /* Weapon type */
-   const char *name; /* Descriptive name */
-   short wd;   /* Base damage */
-   float weight;  /* Base weight */
-   float cost; /* Base cost/value */
-   short skill;   /* Skill type */
-   short damage;  /* Damage type */
-   std::string flags;   /* Default flag set */
+   short type;          // Weapon type.
+   const char *name;    // Descriptive name.
+   short wd;            // Base damage.
+   float weight;        // Base weight.
+   float cost;          // Base cost/value.
+   short skill;         // Skill type.
+   short damage;        // Damage type.
+   std::string flags;   // Default flag set.
 };
 
 struct weapontable
 {
    weapontable(  );
 
-   const char *name; /* Descriptive name */
-   char *flags;   /* Default flag set */
-   float weight;  /* Base weight */
-   float cost; /* Base cost/value */
-   short type; /* Weapon type */
-   short basedam; /* Base damage */
-   short skill;   /* Skill type */
-   short damtype; /* Damage type */
+   const char *name = nullptr;   // Descriptive name.
+   char *flags = nullptr;        // Default flag set.
+   float weight = 0.0;           // Base weight.
+   float cost = 0;               // Base cost/value.
+   short type = 0;               // Weapon type.
+   short basedam = 0;            // Base damage.
+   short skill = 0;              // Skill type.
+   short damtype = 0;            // Damage type.
 };
 
 class rune_data
@@ -125,11 +124,11 @@ class rune_data
 
  private:
    std::string _name;
-   short _rarity; /* Common, Rare, Ultrarare */
+   short _rarity = RUNE_COMMON; /* Common, Rare, Ultrarare */
 
  public:
-   int stat1[2];  /* The stat to modify goes in the first spot, modifier value in the second. */
-   int stat2[2];  /* Stat1 is for weapons, Stat2 is for armors */
+   int stat1[2]{0};  /* The stat to modify goes in the first spot, modifier value in the second. */
+   int stat2[2]{0};  /* Stat1 is for weapons, Stat2 is for armors */
 };
 
 class runeword_data
@@ -190,14 +189,14 @@ class runeword_data
    std::string _name;  /* The runeword name */
    std::string _rune1; /* 1st required rune */
    std::string _rune2; /* 2nd required rune */
-   std::string _rune3; /* 3rd required rune - nullptr if not required */
-   short _type;   /* Weapon(1) or Armor(0) ? */
+   std::string _rune3; /* 3rd required rune - empty if not required */
+   short _type = 0;   /* Weapon(1) or Armor(0) ? */
 
  public:
-   int stat1[2];  /* Affects the runeword transfers to the item */
-   int stat2[2];
-   int stat3[2];
-   int stat4[2];
+   int stat1[2]{0};  /* Affects the runeword transfers to the item */
+   int stat2[2]{0};
+   int stat3[2]{0};
+   int stat4[2]{0};
 };
 
 extern const struct weaponT weapon_type[];

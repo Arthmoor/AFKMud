@@ -108,7 +108,6 @@ int file_version;
 /* liquid i/o functions */
 liquid_data::liquid_data(  )
 {
-   init_memory( &mod, &type, sizeof( type ) );
 }
 
 liquid_data::~liquid_data(  )
@@ -127,7 +126,6 @@ liquid_data::~liquid_data(  )
 
 mixture_data::mixture_data(  )
 {
-   init_memory( &data, &object, sizeof( object ) );
 }
 
 mixture_data::~mixture_data(  )
@@ -175,11 +173,6 @@ void save_liquids( void )
 liquid_data *fread_liquid( FILE * fp )
 {
    liquid_data *liq = new liquid_data;
-
-   liq->vnum = -1;
-   liq->type = -1;
-   for( int i = 0; i < MAX_CONDS; ++i )
-      liq->mod[i] = -1;
 
    for( ;; )
    {
@@ -318,7 +311,7 @@ void load_liquids( void )
 // 1: ???
 // 2: ???
 // 3: ???
-const int MIX_VERSION = 3;
+constexpr int MIX_VERSION = 3;
 
 /* save the mixtures to the mixture table -Nopey */
 void save_mixtures( void )
@@ -349,11 +342,6 @@ void save_mixtures( void )
 mixture_data *fread_mixture( FILE * fp )
 {
    mixture_data *mix = new mixture_data;
-
-   mix->data[0] = -1;
-   mix->data[1] = -1;
-   mix->data[2] = -1;
-   mix->object = false;
 
    for( ;; )
    {
@@ -480,7 +468,7 @@ static int figure_liq_vnum( void )
    int i;
 
    /*
-    * incase a liquid gets removed; we can fill it's place 
+    * in case a liquid gets removed; we can fill it's place
     */
    for( i = 0; liquid_table[i] != nullptr; ++i );
 
@@ -635,7 +623,6 @@ CMDF( do_setliquid )
    if( !str_cmp( arg, "create" ) )
    {
       liquid_data *liq = nullptr;
-      int i;
 
       if( liq_count >= MAX_LIQUIDS )
       {
@@ -653,9 +640,7 @@ CMDF( do_setliquid )
       liq->name = argument;
       liq->shortdesc = argument;
       liq->vnum = figure_liq_vnum(  );
-      liq->type = -1;
-      for( i = 0; i < MAX_CONDS; ++i )
-         liq->mod[i] = -1;
+
       liquid_table[liq->vnum] = liq;
       ++liq_count;
       ch->print( "Done.\r\n" );
@@ -954,10 +939,7 @@ CMDF( do_setmixture )
 
       mix = new mixture_data;
       mix->name = argument;
-      mix->data[0] = -1;
-      mix->data[1] = -1;
-      mix->data[2] = -1;
-      mix->object = false;
+
       mixlist.push_back( mix );
       ch->print( "Done.\r\n" );
       save_mixtures(  );

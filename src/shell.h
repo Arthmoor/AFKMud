@@ -148,10 +148,10 @@ class shell_cmd
  private:
    std::string _name;
    std::string _func_name; // Added to hold the func name and dump some functions totally - Trax
-   DO_FUN *_do_fun;
-   short _position;
-   short _level;
-   short _log;
+   DO_FUN *_do_fun = nullptr;
+   short _position = 0;
+   short _level = 0;
+   short _log = 0;
 };
 
 extern std::list<shell_cmd *> shellcmdlist;

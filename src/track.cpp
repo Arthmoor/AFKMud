@@ -47,9 +47,9 @@ int IsHumanoid( char_data * );
 
 struct bfs_data
 {
-   room_index *room;
-   char dir;
-   bfs_data *next;
+   room_index *room = nullptr;
+   char dir = 0;
+   bfs_data *next = nullptr;
 };
 
 static bfs_data *queue_head = nullptr, *queue_tail = nullptr, *room_queue = nullptr;
@@ -69,7 +69,6 @@ void bfs_enqueue( room_index * room, char dir )
    curr = new bfs_data;
    curr->room = room;
    curr->dir = dir;
-   curr->next = nullptr;
 
    if( queue_tail )
    {

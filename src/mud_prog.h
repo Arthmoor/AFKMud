@@ -108,16 +108,7 @@ int mprog_name_to_type( std::string_view );
 constexpr int ERROR_PROG = -1;
 constexpr int IN_FILE_PROG = -2;
 
-/*
- * For backwards compatibility
- */
-constexpr int RDEATH_PROG = DEATH_PROG;
-constexpr int ENTER_PROG = ENTRY_PROG;
-constexpr int RFIGHT_PROG = FIGHT_PROG;
-constexpr int RGREET_PROG = GREET_PROG;
-constexpr int OGREET_PROG = GREET_PROG;
-
-/* Mob program structures */
+// Mob program structures
 class mprog_act_list
 {
  private:
@@ -129,10 +120,10 @@ class mprog_act_list
     ~mprog_act_list(  );
 
    std::string buf;
-   char_data *ch;
-   obj_data *obj;
-   char_data *victim;
-   obj_data *target;
+   char_data *ch = nullptr;
+   obj_data *obj = nullptr;
+   char_data *victim = nullptr;
+   obj_data *target = nullptr;
 };
 
 struct mud_prog_data
@@ -145,12 +136,12 @@ struct mud_prog_data
      mud_prog_data(  );
     ~mud_prog_data(  );
 
-   char *arglist;
-   char *comlist;
-   int resetdelay;
-   short type;
-   bool triggered;
-   bool fileprog;
+   char *arglist = nullptr;
+   char *comlist = nullptr;
+   int resetdelay = 0;
+   short type = 0;
+   bool triggered = false;
+   bool fileprog = false;
 };
 
 extern std::list<room_index *> room_act_list;

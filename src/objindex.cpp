@@ -131,7 +131,6 @@ obj_index::~obj_index(  )
 
 obj_index::obj_index(  )
 {
-   init_memory( &area, &layers, sizeof( layers ) );
 }
 
 /*
@@ -222,14 +221,7 @@ obj_data *obj_index::create_object( int olevel )
    obj = new obj_data;
    obj->pIndexData = this;
 
-   obj->in_room = nullptr;
-   obj->in_obj = nullptr;
-   obj->carried_by = nullptr;
-   obj->extradesc.clear(  );
-   obj->affects.clear(  );
    obj->level = olevel;
-   obj->wear_loc = -1;
-   obj->count = 1;
    obj->name = QUICKLINK( name );
    if( short_descr && short_descr[0] != '\0' )
       obj->short_descr = QUICKLINK( short_descr );
@@ -237,10 +229,6 @@ obj_data *obj_index::create_object( int olevel )
       obj->objdesc = QUICKLINK( objdesc );
    if( action_desc && action_desc[0] != '\0' )
       obj->action_desc = QUICKLINK( action_desc );
-   obj->owner = nullptr;
-   obj->buyer = nullptr;
-   obj->seller = nullptr;
-   obj->bid = 0;
    obj->socket[0] = QUICKLINK( socket[0] );
    obj->socket[1] = QUICKLINK( socket[1] );
    obj->socket[2] = QUICKLINK( socket[2] );
@@ -251,18 +239,11 @@ obj_data *obj_index::create_object( int olevel )
       obj->value[x] = value[x];
    obj->weight = weight;
    obj->cost = cost;
-   obj->timer = 0;
+
    if( ego == -2 )   /* Calculate */
       obj->ego = set_ego(  );
    else
       obj->ego = ego;
-
-   obj->map_x = -1;
-   obj->map_y = -1;
-   obj->continent = nullptr;
-   obj->day = 0;
-   obj->month = 0;
-   obj->year = 0;
 
    /*
     * Mess with object properties.

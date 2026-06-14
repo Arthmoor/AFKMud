@@ -95,10 +95,10 @@ class slay_data
    }
 
  private:
-   std::string owner;
-   std::string type;
-   std::string cmsg;
-   std::string vmsg;
-   std::string rmsg;
-   int color;
+   std::string owner;   // Name of the immortal who created it.
+   std::string type;    // Name of the slay being used.
+   std::string cmsg;    // Message seen by the player when the slay is used.
+   std::string vmsg;    // Message the victim sees before they die.
+   std::string rmsg;    // Message other people in the room see when the victim dies.
+   int color;           // Default color setting for the displayed content of the slay.
 };

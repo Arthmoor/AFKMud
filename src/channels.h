@@ -52,11 +52,11 @@ class chan_history
      chan_history(  );
     ~chan_history(  );
 
-   std::string name;
-   std::string format;
-   std::chrono::system_clock::time_point timestamp;
-   int level;
-   int invis;
+   std::string name;    // Name of the person who sent the message.
+   std::string format;  // Formatting of how the channel is displayed.
+   std::chrono::system_clock::time_point timestamp; // Time when the message was sent.
+   int level = 0;       // Level of the person who sent the message.
+   int invis = 0;       // Whether or not the person who sent the message was invisible at the time.
 };
 
 class mud_channel
@@ -69,12 +69,12 @@ class mud_channel
      mud_channel(  );
     ~mud_channel(  );
 
-   std::bitset<CHAN_MAXFLAG> flags;
-   std::string name;
-   std::string colorname;
-   std::list<chan_history *> history;
-   int level;
-   int type;
+   std::bitset<CHAN_MAXFLAG> flags;    // Flags for this channel.
+   std::string name;                   // The channel's name.
+   std::string colorname;              // Custom color tag the channel uses.
+   std::list<chan_history *> history;  // List of recent messages on the channel.
+   int level = LEVEL_IMMORTAL;         // Minimum level allowed to use the channel.
+   int type = CHAN_GLOBAL;             // The type of channel.
 };
 
 mud_channel *find_channel( std::string_view );

@@ -47,7 +47,7 @@ class IPADDR
       typedef unsigned long decimal_t;
 
    private:
-      decimal_t _decimal;
+      decimal_t _decimal = 0;
 
    public:
       IPADDR( const std::string & ip );
@@ -63,8 +63,8 @@ class IPADDR
 class CIDR
 {
  private:
-   IPADDR::decimal_t _lower;
-   IPADDR::decimal_t _upper;
+   IPADDR::decimal_t _lower = 0;
+   IPADDR::decimal_t _upper = 0;
 
  public:
    CIDR( const std::string & cidr );
@@ -114,8 +114,8 @@ class ban_data
 
    std::string name;      // Name of the person being banned.
    std::string ipaddress; // Single IP x.x.x.x or CIDR in the form of x.x.x.x/y
-   std::chrono::system_clock::time_point expires;   // Time this ban expires. -1 indicates it won't.
-   short type;       // The ban type.
+   std::chrono::system_clock::time_point expires; // Time this ban expires. -1 indicates it won't.
+   short type = BAN_NAME; // The ban type.
 };
 
 bool is_banned( descriptor_data * );

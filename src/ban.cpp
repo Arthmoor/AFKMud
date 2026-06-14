@@ -156,10 +156,7 @@ void load_banlist( void )
       strip_lspace( value );
 
       if( key == "#BAN" )
-      {
          ban = new ban_data;
-         init_memory( &ban->expires, &ban->type, sizeof( ban->type ) );
-      }
       else if( key == "Name" )
          ban->name = value;
       else if( key == "IP" )
@@ -170,7 +167,7 @@ void load_banlist( void )
          ban->expires = std::chrono::system_clock::from_time_t( exp_time );
       }
       else if( key == "Type" )
-        ban->type = atoi( value.c_str() );
+        ban->type = std::stoi( value );
       else if( key == "End" )
       {
          banlist.push_back( ban );

@@ -45,26 +45,21 @@ int falling;
 
 struct extracted_char_data
 {
-   extracted_char_data *next;
-   char_data *ch;
-   room_index *room;
-   ch_ret retcode;
-   bool extract;
+   extracted_char_data *next = nullptr;
+   char_data *ch = nullptr;
+   room_index *room = nullptr;
+   ch_ret retcode = rCHAR_DIED;
+   bool extract = false;
 };
 
 struct extracted_obj_data
 {
-   extracted_obj_data *next;
-   obj_data *obj;
+   extracted_obj_data *next = nullptr;
+   obj_data *obj = nullptr;
 };
 
 extracted_obj_data *extracted_obj_queue;
 extracted_char_data *extracted_char_queue;
-
-void init_memory( void *start, void *end, unsigned int size )
-{
-   memset( start, 0, ( int )( ( char * )end + size - ( char * )start ) );
-}
 
 // These 3 functions replace the UMIN, UMAX, and URANGE macros.
 int umin( int check, int ncheck )
@@ -328,7 +323,6 @@ void queue_extracted_char( char_data * ch, bool extract )
    ccd->ch = ch;
    ccd->room = ch->in_room;
    ccd->extract = extract;
-   ccd->retcode = rCHAR_DIED;
    ccd->next = extracted_char_queue;
    extracted_char_queue = ccd;
    ++cur_qchars;

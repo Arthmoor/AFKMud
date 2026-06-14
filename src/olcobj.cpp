@@ -568,7 +568,6 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
 
 olc_data::olc_data(  )
 {
-   init_memory( &mob, &changed, sizeof( changed ) );
 }
 
 void cleanup_olc( descriptor_data * d )

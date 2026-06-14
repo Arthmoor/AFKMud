@@ -30,12 +30,12 @@
 
 struct fighting_data
 {
-   char_data *who;
-   short timeskilled;
+   char_data *who = nullptr;
+   short timeskilled = 0;
 };
 
 struct hunt_hate_fear
 {
-   char_data *who;
+   char_data *who = nullptr;
    std::string name;
 };

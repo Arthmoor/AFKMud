@@ -59,22 +59,6 @@ struct dns_data
    std::chrono::system_clock::time_point time;
 };
 
-// Login Messages
-class lmsg_data
-{
-private:
-   lmsg_data( const lmsg_data & p );
-   lmsg_data & operator=( const lmsg_data & );
-
-public:
-   lmsg_data(  );
-   ~lmsg_data(  );
-
-   char *name;
-   char *text;
-   short type;
-};
-
 int maxdesc, newdesc;
 std::list<descriptor_data *> dlist;
 std::list<dns_data *> dnslist;
@@ -97,7 +81,7 @@ auth_data *get_auth_name( std::string_view );
 void save_sysdata(  );
 void save_auth_list(  );
 void check_holiday( char_data * );
-void update_connhistory( descriptor_data *, int ); /* connhist.c */
+void update_connhistory( descriptor_data *, int ); /* connhist.cpp */
 void check_auth_state( char_data * );
 void oedit_parse( descriptor_data *, std::string & );
 void medit_parse( descriptor_data *, std::string & );
@@ -216,7 +200,6 @@ descriptor_data::descriptor_data(  ) : inbuf( MAX_INBUF_SIZE, 0 )
 
 mccp_data::mccp_data(  )
 {
-   init_memory( &out_compress, &out_compress_buf, sizeof( out_compress_buf ) );
 }
 
 void free_all_descs( void )
@@ -233,20 +216,8 @@ void free_all_descs( void )
 
 void descriptor_data::init(  )
 {
-   descriptor = -1;
-   idle = 0;
-   repeat = 0;
-   connected = CON_GET_NAME;
-   prevcolor = 0x08;
-   ifd = -1;   /* Descriptor pipes, used for DNS resolution and such */
-   ipid = -1;
-   client = "Unidentified";   // Terminal detect
-   msp_detected = false;
-   can_compress = false;
-   is_compressing = false;
-   outbuf.clear(  );
-   pagebuf.clear(  );
-   pageindex = 0;
+   client = "Unidentified";   // Terminal detection.
+
    mccp = new mccp_data;
 }
 
@@ -313,13 +284,10 @@ const char *const login_msg[] = {
 
 lmsg_data::~lmsg_data(  )
 {
-   STRFREE( this->name );
-   STRFREE( this->text );
 }
 
 lmsg_data::lmsg_data(  )
 {
-   init_memory( &name, &type, sizeof( type ) );
 }
 
 void fread_loginmsg( FILE * fp )
@@ -346,9 +314,9 @@ void fread_loginmsg( FILE * fp )
          case 'E':
             if( !str_cmp( word, "End" ) )
             {
-               if( !lmsg->name || lmsg->name[0] == '\0' )
+               if( lmsg->name.empty() )
                {
-                  bug( "%s: Login message with no name", __func__ );
+                  bug( "%s: Login message with no name.", __func__ );
                   deleteptr( lmsg );
                   return;
                }
@@ -356,7 +324,7 @@ void fread_loginmsg( FILE * fp )
                {
                   if( !exists_player( lmsg->name ) )
                   {
-                     bug( "%s: Login message expired - %s no longer exists", __func__, lmsg->name );
+                     bug( "%s: Login message expired - %s no longer exists.", __func__, lmsg->name.c_str() );
 
                      deleteptr( lmsg );
                      return;
@@ -447,9 +415,9 @@ void save_loginmsg(  )
    for( auto* lmsg : login_messages )
    {
       fprintf( fp, "%s", "#LOGINMSG\n" );
-      fprintf( fp, "Name  %s~\n", lmsg->name );
-      if( lmsg->text )
-         fprintf( fp, "Text  %s~\n", lmsg->text );
+      fprintf( fp, "Name  %s~\n", lmsg->name.c_str() );
+      if( !lmsg->text.empty() )
+         fprintf( fp, "Text  %s~\n", lmsg->text.c_str() );
       fprintf( fp, "Type  %d\n", lmsg->type );
       fprintf( fp, "%s", "End\n" );
    }
@@ -458,22 +426,22 @@ void save_loginmsg(  )
    FCLOSE( fp );
 }
 
-void add_loginmsg( const char *name, short type, const char *argument )
+void add_loginmsg( std::string_view name, short type, std::string_view argument )
 {
    lmsg_data *lmsg;
 
-   if( type < 0 || !name || name[0] == '\0' )
+   if( type < 0 || name.empty() )
    {
-      bug( "%s: bad name or type", __func__ );
+      bug( "%s: bad name or type.", __func__ );
       return;
    }
 
    lmsg = new lmsg_data;
 
    lmsg->type = type;
-   lmsg->name = STRALLOC( name );
-   if( argument && argument[0] != '\0' )
-      lmsg->text = STRALLOC( argument );
+   lmsg->name = name;
+   if( !argument.empty() )
+      lmsg->text = argument;
 
    login_messages.push_back( lmsg );
    save_loginmsg(  );
@@ -498,44 +466,44 @@ void check_loginmsg( char_data * ch )
          {
             case 0: /* Imm sent message */
             {
-               if( !lmsg->text || lmsg->text[0] == '\0' )
+               if( lmsg->text.empty() )
                {
-                  bug( "%s: nullptr loginmsg text for type 0", __func__ );
+                  bug( "%s: Empty loginmsg text for type 0.", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
                   continue;
                }
-               ch->printf( "\r\n&YThe game administrators have left you the following message:\r\n%s\r\n", lmsg->text );
+               ch->print_fmt( "\r\n&YThe game administrators have left you the following message:\r\n{}\r\n", lmsg->text );
                break;
             }
 
             case 17:   /* Death message */
             {
-               if( !lmsg->text || lmsg->text[0] == '\0' )
+               if( lmsg->text.empty() )
                {
-                  bug( "%s: nullptr loginmsg text for type 17", __func__ );
+                  bug( "%s: Empty loginmsg text for type 17.", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
                   continue;
                }
-               ch->printf( "\r\n&RYou were killed by %s while your character was link-dead.\r\n", lmsg->text );
+               ch->print_fmt( "\r\n&RYou were killed by {} while your character was link-dead.\r\n", lmsg->text );
                ch->print( "You should look for your corpse immediately.\r\n" );
                break;
             }
 
             case 18:   /* Code-sent message for 'World change' notice */
             {
-               if( !lmsg->text || lmsg->text[0] == '\0' )
+               if( lmsg->text.empty() )
                {
-                  bug( "%s: nullptr loginmsg text for type 18", __func__ );
+                  bug( "%s: Empty loginmsg text for type 18.", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
                   continue;
                }
-               ch->printf( "\r\n&GA change in the Realms has affected you personally:\r\n%s\r\n", lmsg->text );
+               ch->print_fmt( "\r\n&GA change in the Realms has affected you personally:\r\n{}\r\n", lmsg->text );
                break;
             }
 
@@ -911,7 +879,7 @@ void descriptor_data::read_from_buffer( )
       {
          if( std::memcmp( &inbuf[i], term_call_back_str.data(), term_call_back_str.size() ) == 0 )
          {
-            char tmp[100];
+            char tmp[100]{0};
             size_t pos = i;
             size_t p_idx = i + sizeof( term_call_back_str );
             size_t x = 0;
@@ -2277,7 +2245,15 @@ short descriptor_data::check_playing( std::string_view name, bool kick )
 void char_to_game( char_data * ch )
 {
    if( str_cmp( ch->desc->client, "Unidentified" ) )
+   {
+      if( !str_cmp( ch->desc->client, "Xterm-256color" ) )
+         ch->desc->xterm256 = true;
+      else if( ch->desc->client.contains( "MUDLET" ) )
+         ch->desc->xterm256 = true;
+      else if( ch->desc->client.contains( "256" ) ) // Probably a bit of a leap of faith here.
+         ch->desc->xterm256 = true;
       log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name );
+   }
    if( ch->desc->can_compress )
       log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name );
    if( ch->desc->msp_detected )
@@ -3382,7 +3358,7 @@ CMDF( do_message )
       {
          ch->print_fmt( "&CName: &c{:<20} &CType: &c{}\r\n", capitalize( lmsg->name ), lmsg->type );
 
-         if( lmsg->text )
+         if( !lmsg->text.empty() )
             ch->print_fmt( "&CText:\r\n  &c{}\r\n", lmsg->text );
 
          ch->print( "\r\n" );
@@ -3430,7 +3406,7 @@ CMDF( do_message )
          return;
       }
 
-      add_loginmsg( name.c_str(), type, argument.c_str() );
+      add_loginmsg( name, type, argument );
       ch->print_fmt( "You have sent {} the following message:\r\n", capitalize( name ) );
 
       if( type == 0 )

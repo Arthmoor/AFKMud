@@ -28,20 +28,6 @@
 
 #pragma once
 
-struct game_board_data
-{
-   ~game_board_data(  );
-   game_board_data(  );
-
-   std::string player1;
-   std::string player2;
-   int board[8][8];
-   int turn;
-   int type;
-};
-
-void free_game( game_board_data * );
-
 constexpr int NO_PIECE = 0;
 
 constexpr int WHITE_PAWN = 1;
@@ -73,3 +59,17 @@ constexpr int MOVE_WRONGCOLOR = 9;
 constexpr int MOVE_INCHECK = 10;
 
 constexpr int TYPE_LOCAL = 1;
+
+struct game_board_data
+{
+   ~game_board_data(  );
+   game_board_data(  );
+
+   std::string player1;    // Name of Player 1.
+   std::string player2;    // Name of Player 2.
+   int board[8][8];        // The actual board.
+   int turn = 0;           // How many moves have been played so far.
+   int type = TYPE_LOCAL;  // The type of game. This module used to be IMC2 aware until those networks all went offline.
+};
+
+void free_game( game_board_data * );

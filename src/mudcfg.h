@@ -42,23 +42,23 @@
  */
 extern const char *SPELL_SILENT_MARKER;
 
-constexpr int MAX_LAYERS = 8;  /* maximum clothing layers */
-constexpr int MAX_NEST = 100;  /* maximum container nesting */
-constexpr int MAX_REXITS = 20; /* Maximum exits allowed in 1 room */
-constexpr int MAX_CLASS = 20;  /* Be careful with these two figures - alot depends on them being only available to PCs */
+constexpr int MAX_LAYERS = 8;             // Maximum clothing layers.
+constexpr int MAX_NEST = 100;             // Maximum container nesting.
+constexpr int MAX_REXITS = 20;            // Maximum exits allowed in one room.
+constexpr int MAX_CLASS = 20;             // Be careful with these two figures - a lot depends on them being only available to PCs.
 constexpr int MAX_RACE = 20;
-constexpr int MAX_NPC_CLASS = 26;
-constexpr int MAX_NPC_RACE = 162; /* Good God almighty! If a race your looking for isn't available, you have problems!!! */
-constexpr int MAX_BEACONS = 10;
-constexpr int MAX_SAYHISTORY = 25;
-constexpr int MAX_TELLHISTORY = 25;
-constexpr int MAX_OINVOKE_QUANTITY = 20;   // Limit on how many copies of an object can be loaded by an imm at one time.
-constexpr int MAX_FIGHT = 8;
-constexpr int MAX_SKILL = 500; /* Raised during 1.4a patch */
-constexpr int MAX_HERB = 100;
-constexpr int MAX_DISEASE = 20;
-constexpr int MAX_RGRID_ROOMS = 30000;
-constexpr int MAX_MSG = 18;
+constexpr int MAX_NPC_CLASS = 26;         // Maximum number of classes available to use with NPCs.
+constexpr int MAX_NPC_RACE = 162;         // Good God almighty! If a race your looking for isn't available, you have problems!!!
+constexpr int MAX_BEACONS = 10;           // Maximum number of beacons a player can place with the beacon spell.
+constexpr int MAX_SAYHISTORY = 25;        // Maximum number of entries in the sayhistory table per player.
+constexpr int MAX_TELLHISTORY = 25;       // Maximum number of tell entries in the tellhistory table per player.
+constexpr int MAX_OINVOKE_QUANTITY = 20;  // Limit on how many copies of an object can be loaded by an imm at one time.
+constexpr int MAX_FIGHT = 8;              //
+constexpr int MAX_SKILL = 500;            // Maximum number of skills the game can have. Raised during Smaug 1.4a patch.
+constexpr int MAX_HERB = 100;             // Maximum number of herbs the game can have.
+constexpr int MAX_DISEASE = 20;           // Maximum number of diseases the game can have.
+constexpr int MAX_RGRID_ROOMS = 30000;    // Maximum number of rooms you can generate in a grid with the rgrid command.
+constexpr int MAX_MSG = 18;               // Maximum number of message types that can be used with the login messages code.
 
 extern int MAX_PC_RACE;
 extern int MAX_PC_CLASS;
@@ -175,7 +175,7 @@ constexpr int OBJ_VNUM_OVFIRE = 11005;         // Overland environmental fire
 constexpr int OBJ_VNUM_CAMPGEAR = 11006;       // Generic camping gear object
 constexpr int OBJ_VNUM_FIRESEED = 11007;       // Fireseed object for spell_fireseed - Samson 10-13-98
 constexpr int OBJ_VNUM_FORAGE = 11027;         // This is the start of a range of 10 vnums - Samson 5-1-04
-                                           //  ( 11027 -> 11037 )
+                                               //  ( 11027 -> 11037 )
 constexpr int OBJ_VNUM_FLAMETHROWER = 11039;   // Gnomish Flamethrower - for the Tinker skill
 constexpr int OBJ_VNUM_LADDER = 11040;         // Gnomish Ladder - for the Tinker skill
 constexpr int OBJ_VNUM_DIGGER = 11041;         // Gnomish Differ - for the Tinker skill
@@ -186,7 +186,7 @@ constexpr int OBJ_VNUM_RUNE = 11045;           // Base object used to generate r
 constexpr int OBJ_VNUM_MAPS = 11046;           // Object used for mapout - Samson 1/28/06
 constexpr int OBJ_VNUM_ORE_BASE = 11299;       // This object does not actually exist, it's used by the blacksmithing code in treasure.cpp
 constexpr int OBJ_VNUM_MINING = 11300;         // This is the start of a range of 5 vnums - Samson 5-1-04
-                                           // 11300 -> 11304 [11305 and 11306 are special cases]
+                                               // 11300 -> 11304 [11305 and 11306 are special cases]
 constexpr int OBJ_VNUM_TAN_JACKET = 11368;     // Block of objects used by the Tan skill in skills.cpp
 constexpr int OBJ_VNUM_TAN_BOOTS = 11369;
 constexpr int OBJ_VNUM_TAN_GLOVES = 11370;
@@ -266,20 +266,21 @@ constexpr int OBJ_VNUM_NEWBIE_GUIDE = 11479;
  * Well known room virtual numbers.
  * Defined in #ROOMS.
  */
-constexpr int ROOM_AUTH_START = 100;       /* Pregame Entry, auth system on */
-constexpr int ROOM_NOAUTH_START = 102;     /* Pregame Entry, auth system off */
-constexpr int ROOM_VNUM_LIMBO = 11401;
+constexpr int ROOM_AUTH_START = 100;         // Pregame Entry, auth system on.
+constexpr int ROOM_NOAUTH_START = 102;       // Pregame Entry, auth system off.
+constexpr int ROOM_VNUM_LIMBO = 11401;       // The last resort, if you can't be transported to any other valid room, the MUD will try this one before giving up.
 constexpr int ROOM_VNUM_POLY = 11402;
-constexpr int ROOM_VNUM_RAREUPDATE = 11402;   /* Room where players get scanned for rare items - Samson 1-24-00 */
-constexpr int ROOM_VNUM_HELL = 11405;   /* Vnum for Hell - Samson */
-constexpr int ROOM_VNUM_CHAT = 11406;   /* Parlour of the Immortals */
-constexpr int ROOM_VNUM_TEMPLE = 11407; /* Primary continent recall */
-constexpr int ROOM_VNUM_ALTAR = 11407;  /* Primary continent death */
-constexpr int ROOM_VNUM_DONATION = 11410;  /* First donation room - Samson 2-6-98 */
-constexpr int ROOM_VNUM_REDEEM = 11411; /* Sindhae prize redemption start room - Samson 6-2-00 */
-constexpr int ROOM_VNUM_ENDREDEEM = 11412; /* Sindhae prize redemption ending room - Samson 6-2-00 */
+constexpr int ROOM_VNUM_RAREUPDATE = 11402;  // Room where players get scanned for rare items - Samson 1-24-00
+constexpr int ROOM_VNUM_HELL = 11405;        // Vnum for Hell - Samson
+constexpr int ROOM_VNUM_CHAT = 11406;        // Parlour of the Immortals.
+constexpr int ROOM_VNUM_TEMPLE = 11407;      // Primary continent recall.
+constexpr int ROOM_VNUM_ALTAR = 11407;       // Primary continent death.
+constexpr int ROOM_VNUM_DONATION = 11410;    // First donation room - Samson 2-6-98
+constexpr int ROOM_VNUM_REDEEM = 11411;      // Sindhae prize redemption start room - Samson 6-2-00
+constexpr int ROOM_VNUM_ENDREDEEM = 11412;   // Sindhae prize redemption ending room - Samson 6-2-00
 
-/* New continent and plane support - Samson 3-28-98
+/*
+ * New continent and plane support - Samson 3-28-98
  * Name of continent or plane is followed by the recall and death zone.
  * Area continent flags for continent and plane system, revised format - Samson 8-8-98
  */

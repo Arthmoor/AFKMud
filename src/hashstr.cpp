@@ -52,7 +52,7 @@ void bug( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
 extern bool mud_down;
 
-const int STR_HASH_SIZE = 1024;
+constexpr int STR_HASH_SIZE = 1024;
 
 struct hashstr_data
 {

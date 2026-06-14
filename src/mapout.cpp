@@ -42,7 +42,7 @@ struct map_data   /* contains per-room data */
 
 struct map_index
 {
-   int vnum;                  // Vnum of the map.
+   int vnum = 0;              // Vnum of the map.
    int map_of_vnums[49][81];  // Room vnums arranged as a map.
 };
 

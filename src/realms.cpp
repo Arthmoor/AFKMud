@@ -92,7 +92,6 @@ void remove_all_realm_rosters( realm_data * realm )
 
 realm_data::realm_data(  )
 {
-   init_memory( &board, &members, sizeof( members ) );
 }
 
 realm_data::~realm_data(  )
@@ -261,7 +260,7 @@ void fread_realm_memberlist( realm_data * realm, FILE * fp )
 /*
  * Save a realm's data to its data file
  */
-const int REALM_VERSION = 1;
+constexpr int REALM_VERSION = 1;
 void save_realm( realm_data * realm )
 {
    FILE *fp;

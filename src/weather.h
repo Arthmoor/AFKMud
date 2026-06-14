@@ -49,17 +49,16 @@
  * sure as hell better than the crap that used to be there. -Kayle
  */
 
-//Change these values to expand or contract your weather map according to your world size.
+// Change these values to expand or contract your weather map according to your world size.
 constexpr int WEATHER_SIZE_X      = 3; //number of cells wide
 constexpr int WEATHER_SIZE_Y      = 3; //number of cells tall
 
-//Hemisphere defines.
+// Hemisphere defines.
 constexpr int HEMISPHERE_NORTH    = 0;
 constexpr int HEMISPHERE_SOUTH    = 1;
 constexpr int HEMISPHERE_MAX      = 2;
 
-//Climate defines - Add more if you want, but make sure you add appropriate data to the
-// system itself in EnforceClimateConditions()
+// Climate defines - Add more if you want, but make sure you add appropriate data to the system itself in EnforceClimateConditions()
 constexpr int CLIMATE_RAINFOREST  = 0;
 constexpr int CLIMATE_SAVANNA     = 1;
 constexpr int CLIMATE_DESERT      = 2;
@@ -83,14 +82,14 @@ class WeatherCell
      WeatherCell(  );
     ~WeatherCell(  );
 
-   int climate;        // Climate flag for the cell
-   int hemisphere;     // Hemisphere flag for the cell
-   int temperature;    // Fahrenheit because I'm American, by god
-   int pressure;       // 0..100 for now, later change to barometric pressures
-   int cloudcover;     // 0..100, amount of clouds in the sky
-   int humidity;       // 0+
-   int precipitation;  // 0..100
-   int energy;         // 0..100 Storm Energy, chance of storm.
+   int climate = 0;        // Climate flag for the cell
+   int hemisphere = 0;     // Hemisphere flag for the cell
+   int temperature = 0;    // Fahrenheit because I'm American, by god
+   int pressure = 0;       // 0..100 for now, later change to barometric pressures
+   int cloudcover = 0;     // 0..100, amount of clouds in the sky
+   int humidity = 0;       // 0+
+   int precipitation = 0;  // 0..100
+   int energy = 0;         // 0..100 Storm Energy, chance of storm.
    /*
    *  Instead of a wind direction we use an X/Y speed
    *  It makes the math below much simpler this way.
@@ -100,8 +99,8 @@ class WeatherCell
    *  if you have speed X = 15 and speed Y = 3, the wind is obviously
    *  to the east.  If X = 15 and Y = 10, then its a south-east wind. 
    */
-   int windSpeedX;    //  < 0 = west, > 0 = east
-   int windSpeedY;    //  < 0 = north, > 0 = south
+   int windSpeedX = 0;    //  < 0 = west, > 0 = east
+   int windSpeedY = 0;    //  < 0 = north, > 0 = south
 };
 
 // File that stores Weather Information 

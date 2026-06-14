@@ -63,7 +63,6 @@ CMDF( do_areaconvert );
 
 area_data::area_data(  )
 {
-   init_memory( &continent, &tg_armor, sizeof( tg_armor ) );
 }
 
 area_data::~area_data(  )
@@ -256,23 +255,6 @@ area_data *create_area( void )
    area_data *pArea;
 
    pArea = new area_data;
-
-   pArea->version = 0;
-   pArea->rooms.clear(  );
-   pArea->age = 15;
-   pArea->reset_frequency = 15;
-   pArea->hi_soft_range = MAX_LEVEL;
-   pArea->hi_hard_range = MAX_LEVEL;
-   pArea->tg_nothing = 20;
-   pArea->tg_gold = 74;
-   pArea->tg_item = 85;
-   pArea->tg_gem = 93;
-   pArea->tg_scroll = 20;
-   pArea->tg_potion = 50;
-   pArea->tg_wand = 60;
-   pArea->tg_armor = 75;
-   pArea->weatherx = 0;
-   pArea->weathery = 0;
 
    arealist.push_back( pArea );
    ++top_area;
@@ -2337,7 +2319,7 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
  *
  * Version 1: Initial construction of new format -- Samson 10/28/06
  */
-const int AREA_VERSION_WRITE = 1;
+constexpr int AREA_VERSION_WRITE = 1;
 
 void area_data::fold( const std::string & fname, bool install )
 {

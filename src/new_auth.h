@@ -53,7 +53,7 @@ class auth_data
    std::string name;      // Name of character awaiting authorization
    std::string authed_by; // Name of immortal who authorized the name
    std::string change_by; // Name of immortal requesting name change
-   short state;           // Current state of authed
+   short state = 0;       // Current state of authed
 };
 
 bool NOT_AUTHED( char_data * );

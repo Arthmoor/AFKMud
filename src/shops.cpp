@@ -1482,13 +1482,12 @@ CMDF( do_makeshop )
       return;
    }
    shop = new shop_data;
+
    shop->keeper = vnum;
-   shop->profit_buy = 120;
-   shop->profit_sell = 90;
-   shop->open_hour = 0;
    shop->close_hour = sysdata->hoursperday;
    shoplist.push_back( shop );
    mob->pShop = shop;
+
    ch->print( "Done.\r\n" );
 }
 
@@ -1818,13 +1817,12 @@ CMDF( do_makerepair )
    }
 
    repair = new repair_data;
+
    repair->keeper = vnum;
-   repair->profit_fix = 100;
-   repair->shop_type = SHOP_FIX;
-   repair->open_hour = 0;
    repair->close_hour = sysdata->hoursperday;
    repairlist.push_back( repair );
    mob->rShop = repair;
+
    ch->print( "Done.\r\n" );
 }
 

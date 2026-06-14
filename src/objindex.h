@@ -28,8 +28,6 @@
 
 #pragma once
 
-constexpr int MAX_OBJ_VALUE = 11; // This should always be one more than you actually have
-
 /*
  * Prototype for an object.
  */
@@ -48,28 +46,28 @@ class obj_index
    int set_ego(  );
    void oprog_read_programs( FILE * );
 
-   std::list<affect_data *> affects;
-   std::list<extra_descr_data *> extradesc;
-   std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
-   std::bitset<MAX_PROG> progtypes; /* objprogs */
-   std::bitset<MAX_ITEM_FLAG> extra_flags;
-   std::bitset<MAX_WEAR_FLAG> wear_flags;
-   area_data *area;
-   char *name;
-   char *short_descr;
-   char *objdesc;
-   char *action_desc;
-   char *socket[3];  /* Name of rune/gem the item has in each socket - Samson 3-31-02 */
-   int value[MAX_OBJ_VALUE];
-   int vnum;
-   int cost;
-   int ego;
-   int limit;  /* Limit on how many of these are allowed to load - Samson 1-9-00 */
-   short level;
-   short item_type;
-   short count;
-   short weight;
-   short layers;
+   std::list<affect_data *> affects;            // List of affects the object has.
+   std::list<extra_descr_data *> extradesc;     // List of extra descriptions the object has.
+   std::list<struct mud_prog_data *> mudprogs;  // Mudprogs
+   std::bitset<MAX_PROG> progtypes;             // objprogs
+   std::bitset<MAX_ITEM_FLAG> extra_flags;      // Extra flags for the object.
+   std::bitset<MAX_WEAR_FLAG> wear_flags;       // Wear flags for the object.
+   area_data *area = nullptr;                   // Area this objindex is associated with.
+   char *name = nullptr;                        // Keywords used to interact with this object.
+   char *short_descr = nullptr;                 // The one line description of the object when seen in inventories or equipment lists.
+   char *objdesc = nullptr;                     // Long description seen when the object is in a room.
+   char *action_desc = nullptr;                 // Message displayed when someone interacts with the object. Not fully supported in code.
+   char *socket[3]{nullptr, nullptr, nullptr};  // Name of rune/gem the item has in each socket - Samson 3-31-02
+   int value[MAX_OBJ_VALUE];                    // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
+   int vnum = 0;                                // Vnum of the objindex. Must be unique.
+   int cost = 0;                                // Base cost of the object when sold in shops.
+   int ego = -2;                                // The ego level the object has. This is used to determine whether a player can use or keep this object long term. -2 triggers an autocalc function.
+   int limit = 0;                               // Limit on how many of these are allowed to load - Samson 1-9-00
+   short level = 0;                             // What level the object spawns at.
+   short item_type = 0;                         // What type of object this is.
+   short count = 1;                             // Support for object grouping.
+   short weight = 0;                            // How much the object weighs in pounds.
+   short layers = 0;                            // Bitvector value for which layers the object occupies.
 };
 
 extern std::map<int, obj_index *> obj_index_table;

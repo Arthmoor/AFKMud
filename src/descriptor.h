@@ -54,6 +54,22 @@ struct mccp_data
 constexpr int TELOPT_MSP = 90; /* Mud Sound Protocol */
 constexpr int MSP_DEFAULT = -99;
 
+// Login Messages
+class lmsg_data
+{
+private:
+   lmsg_data( const lmsg_data & p );
+   lmsg_data & operator=( const lmsg_data & );
+
+public:
+   lmsg_data(  );
+   ~lmsg_data(  );
+
+   std::string name; // Name of the person the message is for.
+   std::string text; // Text of the message.
+   short type = 0;   // Type of message.
+};
+
 class descriptor_data
 {
  private:
@@ -104,37 +120,38 @@ class descriptor_data
    // bool check_total_bans(  );
    void send_msp_startup(  );
 
-   std::string ipaddress;
-   std::string hostname;
-   std::string outbuf;
-   std::string pagebuf;
-   std::string incomm;
-   std::string inlast;
-   std::string client;                    // Client detection
-   std::vector<char> inbuf;
-   descriptor_data *snoop_by = nullptr;
-   char_data *character = nullptr;
-   char_data *original = nullptr;
+   std::string ipaddress;                 // Current IP address they connected from.
+   std::string hostname;                  // Resolved DNS address if DNS resolution is enabled.
+   std::string outbuf;                    // The standard output buffer to send to the client.
+   std::string pagebuf;                   // The page-paused output buffer to send to the client.
+   std::string incomm;                    // Pending command the client sent.
+   std::string inlast;                    // Previous command the client sent.
+   std::string client;                    // Telnet client type.
+   std::vector<char> inbuf;               // The incoming buffer of text from the client.
+   descriptor_data *snoop_by = nullptr;   // Target this person is snooping.
+   char_data *character = nullptr;        // The character data attached to this connection.
+   char_data *original = nullptr;         // The true character data for someone who is switched.
    olc_data *olc = nullptr;               // Tagith - Oasis OLC
    struct mccp_data *mccp = nullptr;      // Mud Client Compression Protocol
-   int pageindex = 0;                         // Location of index value for pager vector<>
-   int client_port = 0;
-   int descriptor = 0;
-   int newstate = 0;
-   int repeat = 0;
-   int ifd = 0;
-   pid_t ipid = 0;
-   pid_t process = 0; /* Samson 4-16-98 - For new command shell code */
-   short connected = 0;
-   short idle = 0;
-   char pagecmd = '\0';
-   char pagecolor = '\0';
-   unsigned char prevcolor ='\0';
-   bool fcommand = false;
-   bool msp_detected = false;
-   bool can_compress = false;
-   bool is_compressing = false;
-   bool disconnect = false;
+   int pageindex = 0;                     // Location of index value for pager vector<>
+   int client_port = 0;                   // Remote port the client connected on.
+   int descriptor = -1;                   // The connection's file descriptor.
+   int newstate = 0;                      // Whether or not this is a new player connecting.
+   int repeat = 0;                        // Number of times that the same input has been sent. Used by the spam guard.
+   int ifd = -1;                          // Descriptor ID for forked processes.
+   pid_t ipid = -1;                       // Process ID for forked processes.
+   pid_t process = 0;                     // Samson 4-16-98 - For new command shell code
+   short connected = CON_GET_NAME;        // The connection state of the client.
+   short idle = 0;                        // How long the client has been idling with no input.
+   char pagecmd = '\0';                   // The command sent to the pager output system.
+   char pagecolor = '\0';                 // What color the current pager prompt is using.
+   unsigned char prevcolor = 0x08;        // ?
+   bool fcommand = false;                 // Whether or not actual input was received and not just a blank line.
+   bool msp_detected = false;             // Does the client support the use of MSP?
+   bool can_compress = false;             // Can the client support MCCP?
+   bool is_compressing = false;           // Is the client currently using MCCP?
+   bool xterm256 = false;                 // Can the client support XTerm 256 color?
+   bool disconnect = false;               // Is this connection scheduled to be disconnected?
 };
 
 extern std::list<descriptor_data*> dlist;

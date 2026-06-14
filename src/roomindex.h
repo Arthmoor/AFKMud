@@ -45,20 +45,20 @@ class reset_data
    char command;
    // Attention at the keyboard: Don't go setting these back to shorts. Charlana.are will drain your soul!
    // Cause, ya know, this shit loads vnums all over the place and you'll break stuff. Badly.
-   int arg1;
-   int arg2;
-   int arg3;
+   int arg1 = 0;
+   int arg2 = 0;
+   int arg3 = 0;
 
    // Values from here onward added by AFKMud.
-   int arg4;
-   int arg5;
-   int arg6;
-   int arg7;
-   int arg8;
-   int arg9;
-   int arg10;
-   int arg11;
-   bool sreset;
+   int arg4 = 0;
+   int arg5 = 0;
+   int arg6 = 0;
+   int arg7 = 0;
+   int arg8 = 0;
+   int arg9 = 0;
+   int arg10 = 0;
+   int arg11 = 0;
+   bool sreset = false; // Purpose of this bool is unclear.
 };
 
 /*
@@ -74,19 +74,19 @@ class exit_data
      exit_data(  );
     ~exit_data(  );
 
-   std::bitset<MAX_EXFLAG> flags; // door states & other flags
-   exit_data *rexit;       // Reverse exit pointer
-   room_index *to_room;    // Pointer to destination room
-   char *keyword;          // Keywords for exit or door
-   char *exitdesc;         // Description of exit
-   int vnum;               // Vnum of room exit leads to
-   int rvnum;              // Vnum of room in opposite dir
-   int key;                // Key vnum
-   short vdir;             // Physical "direction"
-   short pull;             // pull of direction (current)
-   short pulltype;         // type of pull (current, wind)
-   short map_x;            // Coordinates to Overland Map - Samson 7-31-99
-   short map_y;
+   std::bitset<MAX_EXFLAG> flags;   // door states & other flags
+   exit_data *rexit = nullptr;      // Reverse exit pointer
+   room_index *to_room = nullptr;   // Pointer to destination room
+   char *keyword = nullptr;         // Keywords for exit or door
+   char *exitdesc = nullptr;        // Description of exit
+   int vnum = 0;                    // Vnum of room exit leads to
+   int rvnum = 0;                   // Vnum of room in opposite dir
+   int key = -1;                    // Key vnum
+   short vdir = 0;                  // Physical "direction"
+   short pull = 0;                  // pull of direction (current)
+   short pulltype = 0;              // type of pull (current, wind)
+   short map_x = -1;                // Coordinates to Overland Map - Samson 7-31-99
+   short map_y = -1;
 };
 
 /*
@@ -124,35 +124,36 @@ class room_index
    void renumber_put_resets(  );
    void load_reset( FILE *, bool );
 
-   std::list<reset_data *> resets;   /* Things that get loaded in this room */
-   std::list<char_data *> people; /* People in the room  */
-   std::list<obj_data *> objects; /* Objects on the floor */
-   std::list<affect_data *> permaffects;   // Permanent affects on the room set via the area file or OLC
-   std::list<affect_data *> affects; /* Affects on the room */
-   std::list<exit_data *> exits;  /* Exits from the room */
-   std::list<extra_descr_data *> extradesc;   /* Extra descriptions */
-   std::list<struct mud_prog_data *> mudprogs; /* Mudprogs */
-   std::list<mprog_act_list *> mpact;   /* Mudprogs */
-   std::bitset<ROOM_MAX> flags;
-   std::bitset<MAX_PROG> progtypes; /* mudprogs */
-   area_data *area;
-   reset_data *last_mob_reset;
-   reset_data *last_obj_reset;
-   char *name;
-   char *roomdesc;   /* So that it can now be more easily grep'd - Samson 10-16-03 */
-   char *nitedesc;   /* added NiteDesc -- Dracones */
-   int vnum;
-   int tele_vnum;
-   int weight; // Current amount of weight present in the room. - Taken from Smaug 1.8
-   int max_weight;   // Limit for how much weight the room can hold.  - Taken from Smaug 1.8
-   int mpactnum;  /* mudprogs */
-   short baselight;  /* Preset light amount in this room */
-   short light;   /* Modified amount of light in the room */
-   short sector_type;
-   short winter_sector; /* Stores the original sector type for stuff that freezes in winter - Samson 7-19-00 */
-   short tele_delay;
-   short tunnel;  /* max people that will fit */
-   unsigned short mpscriptpos;
+   std::list<reset_data *> resets;              // Things that get loaded in this room.
+   std::list<char_data *> people;               // People in the room.
+   std::list<obj_data *> objects;               // Objects on the floor.
+   std::list<affect_data *> permaffects;        // Permanent affects on the room set via the area file or OLC.
+   std::list<affect_data *> affects;            // Affects on the room.
+   std::list<exit_data *> exits;                // Exits from the room.
+   std::list<extra_descr_data *> extradesc;     // Extra descriptions.
+   std::list<struct mud_prog_data *> mudprogs;  // Mudprogs
+   std::list<mprog_act_list *> mpact;           // Mudprogs
+   std::bitset<ROOM_MAX> flags;                 // Flags on the room.
+   std::bitset<MAX_PROG> progtypes;             // Mudprogs
+   area_data *area = nullptr;                   // Area this room belongs to.
+   reset_data *last_mob_reset = nullptr;
+   reset_data *last_obj_reset = nullptr;
+   char *name = nullptr;                        // The room's name.
+   char *roomdesc = nullptr;                    // Detailed description of the room. Pointer name changed so that it can now be more easily grep'd - Samson 10-16-03
+   char *nitedesc = nullptr;                    // Detailed description of this room at night. Added NiteDesc -- Dracones
+   int vnum = 0;                                // The room's unique Vnum.
+   int tele_vnum = 0;                           // Where players get teleported to once the delay timer runs out.
+   int weight = 0;                              // Current amount of weight present in the room. - Taken from Smaug 1.8
+   int max_weight = 100000;                     // Limit for how much weight the room can hold.  - Taken from Smaug 1.8
+   int mpactnum = 0;                            // Mudprogs
+   unsigned short mpscriptpos;                  // Mudprogs
+   short baselight = 0;                         // Preset light amount in this room.
+   short light = 0;                             // Modified amount of light in the room.
+   short sector_type = 0;                       // What type of terrain this room is set to.
+   short winter_sector = -1;                    // Stores the original sector type for stuff that freezes in winter - Samson 7-19-00
+   short tele_delay = 0;                        // Delay timer before players are teleported from the room.
+   short tunnel = 0;                            // Max people that will fit in the room.
+
 };
 
 extern std::map<int, room_index *> room_index_table;
@@ -161,6 +162,17 @@ room_index *get_room_index( int );
 room_index *make_room( int, area_data * );
 int get_dirnum( std::string_view );
 std::string rev_exit( short );
+
+/*
+ * Delayed teleport type.
+ */
+struct teleport_data
+{
+   room_index *room = nullptr;
+   short timer = 0;
+};
+
+extern std::list<teleport_data *> teleportlist;
 
 template <typename T>
 bool CAN_GO( const T* x, int door )
@@ -172,14 +184,3 @@ bool CAN_GO( const T* x, int door )
 
    return exit != nullptr && exit->to_room != nullptr && !IS_EXIT_FLAG( exit, EX_CLOSED );
 }
-
-/*
- * Delayed teleport type.
- */
-struct teleport_data
-{
-   room_index *room;
-   short timer;
-};
-
-extern std::list<teleport_data *> teleportlist;
