@@ -42,7 +42,7 @@
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
-#include "sha256.h"
+#include "sha512.h"
 #include "weather.h"
 
 constexpr std::string_view HISTORY_FILE = "../system/history.txt"; // Used in do_history - Samson 2-12-98
@@ -2194,9 +2194,10 @@ CMDF( do_wimpy )
    ch->printf( "&YWimpy set to %d hit points.\r\n", wimpy );
 }
 
-/* Encryption upgraded to MD5 - Samson 7-10-00 */
-/* Upgraded again to use OS independent MD5 algorithm - Samson 6-26-04 */
-/* Upgraded yet again to OS independent SHA-256 encryption - Samson 1-7-06 */
+// Encryption upgraded to MD5 - Samson 7-10-00
+// Upgraded again to use OS independent MD5 algorithm - Samson 6-26-04
+// Upgraded yet again to OS independent SHA-256 encryption - Samson 1-7-06
+// And one more time to OS independent SHA-512 encryption - Samson 6/14/2026
 CMDF( do_password )
 {
    std::string arg1;
@@ -2234,7 +2235,7 @@ CMDF( do_password )
       return;
    }
 
-   pwdnew = sha256_crypt( argument.c_str(  ) ); /* SHA-256 Encryption */
+   pwdnew = password_hash( argument ); // SHA-512 Encryption
    ch->pcdata->pwd = pwdnew;
    ch->save(  );
    ch->print( "Ok.\r\n" );

@@ -46,7 +46,7 @@
 #include "pfiles.h"
 #include "raceclass.h"
 #include "roomindex.h"
-#include "sha256.h"
+#include "sha512.h"
 #include "smaugaffect.h"
 #include "variables.h"
 
@@ -115,9 +115,10 @@ char_data *get_wizvictim( char_data * ch, std::string_view argument, bool nonpc 
    return victim;
 }
 
-/* Password resetting command, added by Samson 2-11-98
-   Code courtesy of John Strange - Triad Mud */
-/* Upgraded for OS independent SHA-256 encryption - Samson 1-7-06 */
+// Password resetting command, added by Samson 2-11-98
+// Code courtesy of John Strange - Triad Mud
+// Upgraded for OS independent SHA-256 encryption - Samson 1-7-06
+// And one more time to OS independent SHA-512 encryption - Samson 6/14/2026
 CMDF( do_newpassword )
 {
    std::string arg1;
@@ -161,7 +162,7 @@ CMDF( do_newpassword )
       return;
    }
 
-   std::string pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
+   std::string pwdnew = password_hash( argument ); // SHA-512 Encryption
 
    victim->pcdata->pwd = pwdnew;
    victim->save(  );
@@ -4898,8 +4899,8 @@ CMDF( do_form_password )
       return;
    }
 
-   pwcheck = sha256_crypt( argument );
-   ch->printf( "%s results in the encrypted string: %s\r\n", argument.c_str(  ), pwcheck.c_str(  ) );
+   pwcheck = password_hash( argument );
+   ch->print_fmt( "{} results in the encrypted string: {}\r\n", argument, pwcheck );
 }
 
 /*
@@ -5554,7 +5555,7 @@ CMDF( do_cset )
          return;
       }
 
-      pwdnew = sha256_crypt( argument ); /* SHA-256 Encryption */
+      pwdnew = password_hash( argument ); // SHA-512 Encryption
       sysdata->password = pwdnew;
       ch->print( "Mud password changed.\r\n" );
       save_sysdata(  );
