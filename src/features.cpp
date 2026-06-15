@@ -213,7 +213,7 @@ void char_data::sound( std::string_view fname, int volume, bool toroom )
    if( sysdata->http.empty(  ) )
       return;
 
-   std::string url = std::format( "{}/sounds/", sysdata->http );
+   std::string url = std::format( "{}/sounds/{}", sysdata->http, fname );
 
    if( !toroom )
    {

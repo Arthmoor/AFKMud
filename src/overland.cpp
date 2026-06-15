@@ -2930,7 +2930,7 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, std::string_vie
     * Turn on the overland music 
     */
    if( !maproom->flags.test( ROOM_WATCHTOWER ) )
-      ch->music( "wilderness.mid", 100, false );
+      ch->music( "wilderness.mp3", 100, false );
 }
 
 /*

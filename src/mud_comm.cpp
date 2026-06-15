@@ -3984,7 +3984,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
       ch->set_pcflag( PCFLAG_UNAUTHED );
       add_to_auth( ch );   /* new auth */
    }
-   ch->music( "creation.mid", 100, false );
+   ch->music( "creation.mp3", 100, false );
    addname( ch->pcdata->chan_listen, "chat" );
 
    ch->set_color( AT_PLAIN );

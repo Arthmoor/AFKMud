@@ -952,7 +952,7 @@ void hotboot_recover( void )
             if( d->character->has_pcflag( PCFLAG_ONMAP ) )
             {
                if( !d->character->in_room->flags.test( ROOM_WATCHTOWER ) )
-                  d->character->music( "wilderness.mid", 100, false );
+                  d->character->music( "wilderness.mp3", 100, false );
             }
 
             if( ++num_descriptors > sysdata->maxplayers )
