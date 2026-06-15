@@ -49,8 +49,8 @@
 /*
  * Global variables.
  */
-int num_descriptors = 0;
-int num_logins = 0;
+int num_descriptors = 0;                                 // Tracks the current number of people connected to the game.
+int num_logins = 0;                                      // Tracks the number of people who have logged on since the MUD rebooted.
 bool mud_down = false;                                   // Whether or not the MUD considered itself online and running. Changing to "true" causes a graceful shutdown.
 std::chrono::system_clock::time_point current_time;      // Time of this game pulse. current_time is considered a MUD-wide authority on what time it is in the real world.
 std::chrono::system_clock::time_point mud_start_time;    // Used only by MSSP for now. Records the MUD's start time.
@@ -736,7 +736,7 @@ void pulse_sync( )
 {
    using namespace std::chrono_literals;
 
-   // Use steady_clock to ensure timing is monotonic and unaffected by NTP syncs
+   // Use steady_clock to ensure timing is monotonic and unaffected by NTP syncs.
    static auto next_pulse = std::chrono::steady_clock::now();
 
    // Calculate the duration of one pulse based on pulses per second. Defaults to 4 per second.
@@ -744,8 +744,8 @@ void pulse_sync( )
    auto pulse_duration = std::chrono::nanoseconds( 1'000'000'000 / sysdata->pulsepersec );
    next_pulse += pulse_duration;
 
-   // Sleep until the exact time the next pulse should occur
-   // If the system is running behind, this will return immediately
+   // Sleep until the exact time the next pulse should occur.
+   // If the system is running behind, this will return immediately.
    std::this_thread::sleep_until( next_pulse );
 
    // Update global time
@@ -791,8 +791,8 @@ void game_loop( void )
       // Dunno if it needs to be reset, but I'll do it anyway. End of the loop here. 
       set_alarm( 0 );
    }
-   // End of main game loop 
-   // Returns back to 'main', and will result in mud shutdown
+   // End of main game loop.
+   // Returns back to 'main', and will result in MUD shutdown.
 }
 
 /*
@@ -1054,9 +1054,7 @@ int main( int argc, char **argv )
    // Initialize all startup functions of the mud. 
    init_mud( fCopyOver, mud_port );
 
-   /*
-    * standard termination signals
-    */
+   // Interrupt signal from terminal. Like if you use the qstart script and hit CTRL+C. This will call the bailout function above and gracefully shut down.
    signal( SIGINT, bailout );
 
    /*

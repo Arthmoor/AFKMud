@@ -43,6 +43,7 @@
 
 #include <filesystem>
 #include <format>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -62,7 +63,6 @@ const char *const climate_names[] = {
 
 WeatherCell::WeatherCell()
 {
-   log_string( "Looking to see if ::WeatherCell is ever called." );
 }
 
 WeatherCell::~WeatherCell()
@@ -2275,158 +2275,129 @@ constexpr int WEATHER_VERSION = 1;
 void save_weathermap( void )
 {
    int x, y;
-   FILE *fp;
 
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, WEATHER_FILE );
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( filename );
+   if( !stream )
    {
-      bug( "%s: fopen", __func__ );
-      perror( filename.c_str() );
+      bug( "%s: Cannot open weather file for writing.", __func__ );
       return;
    }
 
-   fprintf( fp, "#VERSION %d\n\n", WEATHER_VERSION );
+   stream << "#VERSION " << WEATHER_VERSION << "\n\n";
 
-   for ( y = 0; y < WEATHER_SIZE_Y; y++)
+   for( y = 0; y < WEATHER_SIZE_Y; y++ )
    {
-      for ( x = 0; x < WEATHER_SIZE_X; x++)
+      for( x = 0; x < WEATHER_SIZE_X; x++ )
       {
          WeatherCell *cell = &weatherMap[x][y];
 
-         fprintf( fp, "#CELL		%d %d\n", x, y );
-         fprintf( fp, "Climate     %s~\n", climate_names[cell->climate] );
-         fprintf( fp, "Hemisphere  %s~\n", hemisphere_name[cell->hemisphere] ); 
-         fprintf( fp, "State       %d %d %d %d %d %d %d %d\n", cell->cloudcover, cell->energy, cell->humidity, 
-            cell->precipitation, cell->pressure, cell->temperature, cell->windSpeedX, cell->windSpeedY );
-         fprintf( fp, "End\n\n" );
+         stream << std::format(
+            "#CELL         {} {}\n"
+            "Climate       {}~\n"
+            "Hemisphere    {}~\n"
+            "State         {} {} {} {} {} {} {} {}\n"
+            "End\n\n",
+               x, y,
+               climate_names[cell->climate],
+               hemisphere_name[cell->hemisphere],
+               cell->cloudcover, cell->energy, cell->humidity, cell->precipitation, cell->pressure, cell->temperature, cell->windSpeedX, cell->windSpeedY
+         );
       }
    }
-   fprintf( fp, "#END\n\n" );
-   FCLOSE( fp );
+   stream << "#END\n";
 }
 
-void fread_cell( FILE * fp, int x, int y, int file_ver )
+void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
 {
-   bool fMatch = false;
-
    WeatherCell *cell = &weatherMap[x][y];
+   std::string word;
 
-   for( ;; )
+   auto read_line = [&]( char delimiter = '\n' ) -> std::string
    {
-      const char *word = feof( fp ) ? "End" : fread_word( fp );
-      std::string flag;
-      int value = 0;
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
 
-      switch ( to_upper( word[0] ) )
+      return line;
+   };
+
+   while( stream >> word )
+   {
+      if( word == "End" )
+         return;
+
+      if( word == "Climate" )
       {
-         default:
-            bug( "%s: no match: %s", __func__, word );
-            fread_to_eol( fp );
-            break;
+         if( file_ver == 0 )
+            cell->climate = std::stoi( read_line() );
+         else
+         {
+            std::string climate_str = read_line( '~' );
+            int value = get_climate( climate_str );
 
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            if( !str_cmp( word, "Climate" ) )
-            {
-               if( file_ver >= 1 )
-               {
-                  std::string climate;
-
-                  fread_string( climate, fp );
-
-                  value = get_climate( climate );
-
-                  if( value < 0 || value >= MAX_CLIMATE )
-                     bug( "%s: Unknown climate: %s", __func__, flag.c_str() );
-                  else
-                     cell->climate = value;
-               }
-               else
-                  cell->climate = fread_number( fp );
-               fMatch = true;
-               break;
-            }
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-
-         case 'H':
-            if( !str_cmp( word, "Hemisphere" ) )
-            {
-               if( file_ver >= 1 )
-               {
-                  std::string hemisphere;
-
-                  fread_string( hemisphere, fp );
-
-                  value = get_hemisphere( hemisphere );
-
-                  if( value < 0 || value >= HEMISPHERE_MAX )
-                     bug( "%s: Unknown hemisphere: %s", __func__, hemisphere.c_str() );
-                  else
-                     cell->hemisphere = value;
-               }
-               else
-                  cell->hemisphere = fread_number( fp );
-
-               fMatch = true;
-               break;
-            }
-            break;
-
-         case 'S':
-            if( !str_cmp( word, "State" ) )
-            {
-               cell->cloudcover = fread_number( fp );
-               cell->energy = fread_number( fp );
-               cell->humidity = fread_number( fp );
-               cell->precipitation = fread_number( fp );
-               cell->pressure = fread_number( fp );
-               cell->temperature = fread_number( fp );
-               cell->windSpeedX = fread_number( fp );
-               cell->windSpeedY = fread_number( fp );
-               fMatch = true;
-               break;
-            }
-            break;
+            if( value < 0 || value >= MAX_CLIMATE )
+               bug( "%s: Unknown climate: %s", __func__, climate_str.c_str() );
+            else
+               cell->climate = value;
+         }
       }
-
-      if( !fMatch )
+      else if( word == "Hemisphere" )
       {
-         bug( "%s: no match for %s", __func__, word );
-         fread_to_eol( fp );
+         if( file_ver == 0 )
+            cell->hemisphere = std::stoi( read_line() );
+         else
+         {
+            std::string hemi_str = read_line( '~' );
+            int value = get_hemisphere( hemi_str );
+
+            if( value < 0 || value >= HEMISPHERE_MAX )
+               bug( "%s: Unknown hemisphere: %s", __func__, hemi_str.c_str() );
+            else
+               cell->hemisphere = value;
+         }
+      }
+      else if( word == "State" )
+      {
+         stream >> cell->cloudcover
+         >> cell->energy
+         >> cell->humidity
+         >> cell->precipitation
+         >> cell->pressure
+         >> cell->temperature
+         >> cell->windSpeedX
+         >> cell->windSpeedY;
+      }
+      else
+      {
+         bug( "%s: no match for %s", __func__, word.c_str() );
+         std::string dummy;
+         std::getline( stream, dummy );
       }
    }
 }
 
 bool load_weathermap( void )
 {
-   FILE *fp = NULL;
-   int x, y;
-
+   int x = 0, y = 0;
    int file_ver = 0;
 
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, WEATHER_FILE );
-   if( !( fp = fopen( filename.c_str(), "r" ) ) )
+
+   std::ifstream stream(filename);
+   if( !stream.is_open() )
    {
       bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
       return false;
    }
 
-   for( ;; )
+   char letter;
+   while( stream >> std::ws && stream.get( letter ) )
    {
-      char letter = fread_letter( fp );
-      char *word;
-
       if( letter == '*' )
       {
-         fread_to_eol( fp );
+         std::string dummy;
+         std::getline( stream, dummy );
          continue;
       }
 
@@ -2436,29 +2407,31 @@ bool load_weathermap( void )
          return false;
       }
 
-      word = fread_word( fp );
-      if( !str_cmp( word, "VERSION" ) ) 
-      { 
-         file_ver = fread_number( fp );
+      std::string word;
+      stream >> word;
+
+      if( word == "VERSION" )
+      {
+         stream >> file_ver;
          continue;
       }
 
-      if( !str_cmp( word, "CELL" ) ) 
-      { 
-         x = fread_number( fp );
-         y = fread_number( fp );
-         fread_cell( fp, x, y, file_ver );
+      if( word == "CELL" )
+      {
+         stream >> x >> y;
+         fread_cell( stream, x, y, file_ver );
          continue;
       }
-      else if( !str_cmp( word, "END" ) )
+      else if( word == "END" )
          break;
       else
       {
-         bug( "%s: no match for %s", __func__, word );
+         bug( "%s: no match for %s", __func__, word.c_str() );
+         std::string dummy;
+         std::getline( stream, dummy );
          continue;
       }
    }
-   FCLOSE( fp );
    return true;
 }
 
