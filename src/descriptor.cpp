@@ -43,8 +43,6 @@
 #include "new_auth.h"
 #include "raceclass.h"
 #include "roomindex.h"
-#include "sha256.h"
-#include "sha512.h"
 #ifdef MULTIPORT
 #include "shell.h"
 #endif
@@ -101,6 +99,10 @@ void rprog_login_trigger( char_data * );
 CMDF( do_help );
 CMDF( do_destroy );
 bool check_parse_name( std::string, bool );
+std::string sha256_crypt( const std::string & ); // Old SHA-256 support.
+std::string password_hash( std::string_view );// SHA-512 encryption
+bool password_verify( std::string_view, std::string_view ); // SHA-512 encryption
+std::string check_hash_update( std::string_view, std::string_view ); // SHA-512 encryption
 
 /* Terminal detection stuff start */
 constexpr unsigned char IS            = '\x00';
@@ -2717,7 +2719,7 @@ void descriptor_data::nanny( std::string & argument )
       {
          write_to_buffer( "\r\n" );
 
-         if( !ch->pcdata->pwd.contains( "$" ) ) // No dollar signs. Was encrypted with SHA-256
+         if( !ch->pcdata->pwd.starts_with( "$sha512$" ) ) // Was encrypted with SHA-256.
          {
             if( str_cmp( sha256_crypt( argument ), ch->pcdata->pwd ) )
             {
@@ -2775,9 +2777,10 @@ void descriptor_data::nanny( std::string & argument )
 
          log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, hostname.c_str(  ) );
 
-         if( !ch->pcdata->pwd.contains( "$" ) )
+         std::string hash_check = check_hash_update( argument, ch->pcdata->pwd );
+         if( hash_check != ch->pcdata->pwd )
          {
-            ch->pcdata->pwd = password_hash( argument ); // Update encryption method.
+            ch->pcdata->pwd = hash_check; // Update encryption method.
             ch->save();
          }
 

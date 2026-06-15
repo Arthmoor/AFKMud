@@ -740,7 +740,7 @@ class system_data
    std::string time_of_max;                      // Time of max ever.
    std::string mud_name;                         // Name of mud.
    std::string admin_email;                      // Email address for admin. Not set by default. - Samson 10-17-98
-   std::string password;                         // Port access code. NOTE: THIS IS NOT ENCRYPTED!!!!
+   std::string password;                         // Port access code. Encrypted with SHA-512.
    std::string telnet;                           // Store telnet address for who/webwho.
    std::string http;                             // Store web address for who/webwho.
    std::string dbserver;                         // Database server address for SQL support, usually localhost.

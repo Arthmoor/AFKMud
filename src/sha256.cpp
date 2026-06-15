@@ -203,7 +203,7 @@ void SHA256::final( unsigned char *digest )
    }
 }
 
-std::string sha256_crypt( std::string input )
+std::string sha256_crypt( const std::string & input )
 {
    unsigned char digest[SHA256::DIGEST_SIZE];
    char buf[2 * SHA256::DIGEST_SIZE + 1];

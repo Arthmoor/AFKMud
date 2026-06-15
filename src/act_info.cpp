@@ -42,7 +42,6 @@
 #include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
-#include "sha512.h"
 #include "weather.h"
 
 constexpr std::string_view HISTORY_FILE = "../system/history.txt"; // Used in do_history - Samson 2-12-98
@@ -61,6 +60,7 @@ CMDF( do_detrap );
 void save_sysdata(  );
 void display_map( char_data * );
 void draw_map( char_data *, std::string_view );
+std::string password_hash( std::string_view );
 
 bool is_valid_wear_loc( char_data *, int );
 bool check_parse_name( std::string, bool );

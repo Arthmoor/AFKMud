@@ -91,11 +91,6 @@ protected:
     uint64 m_h[8];
 };
 
-
-std::string sha512( std::string );
-std::string password_hash( std::string_view ); // Added by Samson 6/14/2026
-bool password_verify( std::string_view, std::string_view ); // Added by Samson 6/14/2026
-
 #define SHA2_SHFR(x, n)    (x >> n)
 #define SHA2_ROTR(x, n)   ((x >> n) | (x << ((sizeof(x) << 3) - n)))
 #define SHA2_ROTL(x, n)   ((x << n) | (x >> ((sizeof(x) << 3) - n)))

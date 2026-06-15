@@ -46,7 +46,6 @@
 #include "pfiles.h"
 #include "raceclass.h"
 #include "roomindex.h"
-#include "sha512.h"
 #include "smaugaffect.h"
 #include "variables.h"
 
@@ -73,6 +72,7 @@ void stop_hunting( char_data * );
 void stop_fearing( char_data * );
 void check_clan_storeroom( char_data * );
 bool check_parse_name( std::string, bool );
+std::string password_hash( std::string_view );
 
 /*
  * Global variables.
@@ -166,8 +166,8 @@ CMDF( do_newpassword )
 
    victim->pcdata->pwd = pwdnew;
    victim->save(  );
-   ch->printf( "&R%s's password has been changed to: %s\r\n&w", victim->name, argument.c_str(  ) );
-   victim->printf( "&R%s has changed your password to: %s\r\n&w", ch->name, argument.c_str(  ) );
+   ch->print_fmt( "&R{}'s password has been changed to: {}\r\n&w", victim->name, argument );
+   victim->print_fmt( "&R{} has changed your password to: {}\r\n&w", ch->name, argument );
 }
 
 /* Immortal highfive, added by Samson 2-15-98 Inspired by the version used on Crystal Shard */

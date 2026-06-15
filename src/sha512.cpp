@@ -63,7 +63,10 @@
  * SUCH DAMAGE.
  */
 
+#include <array>
+#include <charconv>
 #include <cstring>
+#include <iomanip>
 #include <fstream>
 #include <random>
 #include "sha512.h"
@@ -222,79 +225,206 @@ std::string sha512(std::string input)
 
 // This section added by AFKMud on 6/14/2026 by Samson. Took Zedwood's advice and added "work factor" and salting.
 
-constexpr int rounds = 1 << 12; // 2^12 rounds. e.g., work factor of 12 = 4096 rounds. This can be raised at any point in the future without disturbing the pfiles.
-extern std::mt19937 global_rng; // The MUD's random number generator.
+constexpr int compute_rounds = 210000; // Modern baseline security.
+extern std::mt19937 global_rng;
+
+void binary_hmac_sha512( const uint8_t* key, size_t key_len, const uint8_t* msg, size_t msg_len, uint8_t* out_digest )
+{
+   uint8_t k_ipad[128] = {0};
+   uint8_t k_opad[128] = {0};
+   uint8_t hashed_key[64];
+
+   if( key_len > 128 )
+   {
+      SHA512 ctx;
+      ctx.init();
+      ctx.update(key, key_len);
+      ctx.final(hashed_key);
+      key = hashed_key;
+      key_len = 64;
+   }
+
+   std::memcpy( k_ipad, key, key_len );
+   std::memcpy( k_opad, key, key_len );
+
+   for( size_t i = 0; i < 128; ++i )
+   {
+      k_ipad[i] ^= 0x36;
+      k_opad[i] ^= 0x5C;
+   }
+
+   SHA512 inner_ctx;
+   inner_ctx.init();
+   inner_ctx.update(k_ipad, 128);
+   if( msg_len > 0 )
+   {
+      inner_ctx.update( msg, msg_len );
+   }
+   uint8_t inner_digest[64];
+   inner_ctx.final(inner_digest);
+
+   SHA512 outer_ctx;
+   outer_ctx.init();
+   outer_ctx.update( k_opad, 128 );
+   outer_ctx.update( inner_digest, 64 );
+   outer_ctx.final( out_digest );
+}
 
 std::string password_hash( std::string_view plaintext )
 {
-   // Generate a secure salt.
    constexpr std::string_view chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
    std::uniform_int_distribution<> dis( 0, chars.size() - 1 );
-   std::string salt;
 
+   // Generate the random salt, using the MUD's random number generator.
+   char salt[16];
    for( int i = 0; i < 16; ++i )
    {
-      salt += chars[dis(global_rng)];
+      salt[i] = chars[dis(global_rng)];
    }
 
-   // "Hash stretching" to make it harder to crack.
-   std::string computational_hash = std::string( plaintext ) + salt;
-   for( int i = 0; i < rounds; ++i )
+   uint8_t salt_block[20];
+   std::memcpy(salt_block, salt, 16);
+   salt_block[16] = 0; salt_block[17] = 0; salt_block[18] = 0; salt_block[19] = 1;
+
+   const uint8_t* pass_bytes = reinterpret_cast<const uint8_t*>( plaintext.data() );
+   size_t pass_len = plaintext.length();
+
+   uint8_t u[64];
+   uint8_t t[64];
+
+   // HMAC binary compilation.
+   binary_hmac_sha512( pass_bytes, pass_len, salt_block, 20, u );
+   std::memcpy( t, u, 64 );
+
+   // Apply the work factor rounds.
+   for( int i = 1; i < compute_rounds; ++i )
    {
-      computational_hash = sha512( computational_hash + std::string( plaintext ) + salt );
+      binary_hmac_sha512( pass_bytes, pass_len, u, 64, u );
+      for( size_t j = 0; j < 64; ++j ) { t[j] ^= u[j]; }
    }
 
-   // Returns the complete password string.
-   return "$sha512$" + std::to_string( rounds ) + "$" + salt + "$" + computational_hash;
+   // Format: $sha512$rounds$salt$hash
+   // Size: 8 + rounds_str + 1 + 16 + 1 + 128 = ~155+ bytes
+   std::string rounds_str = std::to_string( compute_rounds );
+   std::string result;
+   result.reserve( 160 + rounds_str.size() );
+
+   result += "$sha512$";
+   result += rounds_str;
+   result += "$";
+   result.append( salt, 16 );
+   result += "$";
+
+   const char hex_digits[] = "0123456789abcdef";
+   for( int i = 0; i < 64; ++i )
+   {
+      result += hex_digits[(t[i] >> 4) & 0x0F];
+      result += hex_digits[t[i] & 0x0F];
+   }
+
+   return result;
+}
+
+int get_rounds_from_hash( std::string_view hashed_string )
+{
+   if( !hashed_string.starts_with( "$sha512$" ) )
+      return -1;
+
+   size_t second_dollar = hashed_string.find( '$', 8 );
+   if( second_dollar == std::string_view::npos )
+      return -1;
+
+   int check_rounds = 0;
+   std::string_view rounds_sv = hashed_string.substr( 8, second_dollar - 8 );
+
+   // Use std::from_chars for efficient, non-throwing conversion
+   auto [ptr, ec] = std::from_chars( rounds_sv.data(), rounds_sv.data() + rounds_sv.size(), check_rounds );
+
+   if( ec != std::errc() )
+      return -1;
+
+   return check_rounds;
+}
+
+// This may not be the most efficient thing, but it mimics the behavior of PHP's password_needs_rehash functionality.
+std::string check_hash_update( std::string_view plaintext, std::string_view hashed_string )
+{
+   // Covers case of old pfile with SHA-256.
+   if( !hashed_string.starts_with( "$sha512$" ) )
+      return( password_hash( plaintext ) );
+
+   // Covers case where the rounds check may have changed over time.
+   if( get_rounds_from_hash( hashed_string ) != compute_rounds )
+      return( password_hash( plaintext ) );
+
+   // Return their original hashed string back since it doesn't need changing.
+   return( std::string{hashed_string} );
 }
 
 bool password_verify( std::string_view plaintext, std::string_view hashed_string )
 {
-   // It's not SHA-512
-   if( hashed_string.substr( 0, 8 ) != "$sha512$" )
+   if( !hashed_string.starts_with( "$sha512$" ) )
       return false;
 
-   // Find the second dollar sign (marks the end of the rounds value).
    size_t second_dollar = hashed_string.find( '$', 8 );
-   if( second_dollar == std::string_view::npos )
-      return false;
-
-   // Find the third dollar sign (marks the end of the salt).
    size_t third_dollar = hashed_string.find( '$', second_dollar + 1 );
-   if( third_dollar == std::string_view::npos )
+   if( second_dollar == std::string_view::npos || third_dollar == std::string_view::npos )
       return false;
 
-   // Extract and parse the rounds.
    int hashed_rounds = 0;
-   try
-   {
-      std::string rounds_str( hashed_string.substr( 8, second_dollar - 8 ) );
-      hashed_rounds = std::stoi( rounds_str );
-   }
-   catch (...)
-   {
-      return false; // Failed to parse integer.
-   }
-
-   // Extract salt and expected hash.
-   std::string salt = std::string( hashed_string.substr( second_dollar + 1, third_dollar - second_dollar - 1 ) );
-   std::string_view expected_hash = hashed_string.substr( third_dollar + 1 );
-
-   // Recompute the hash using the extracted rounds and salt.
-   std::string computational_hash = std::string( plaintext ) + salt;
-   for( int i = 0; i < hashed_rounds; ++i )
-   {
-      computational_hash = sha512( computational_hash + std::string( plaintext ) + salt );
-   }
-
-   // Constant-time execution check to prevent side-channel leaks.
-   if( computational_hash.size() != expected_hash.size() )
+   auto rounds_sv = hashed_string.substr( 8, second_dollar - 8 );
+   auto [ptr, ec] = std::from_chars( rounds_sv.data(), rounds_sv.data() + rounds_sv.size(), hashed_rounds );
+   if( ec != std::errc() )
       return false;
+
+   std::string_view salt = hashed_string.substr( second_dollar + 1, third_dollar - second_dollar - 1 );
+   std::string_view expected_hex = hashed_string.substr( third_dollar + 1 );
+
+   if( expected_hex.size() != 128 )
+      return false;
+
+   const uint8_t* pass_bytes = reinterpret_cast<const uint8_t*>( plaintext.data() );
+   size_t pass_len = plaintext.length();
+
+   uint8_t salt_block[132];
+   size_t salt_len = salt.size();
+   std::memcpy( salt_block, salt.data(), salt_len );
+   salt_block[salt_len++] = 0; salt_block[salt_len++] = 0;
+   salt_block[salt_len++] = 0; salt_block[salt_len++] = 1;
+
+   uint8_t u[64];
+   uint8_t t[64];
+
+   binary_hmac_sha512( pass_bytes, pass_len, salt_block, salt_len, u );
+   std::memcpy( t, u, 64 );
+
+   for( int i = 1; i < hashed_rounds; ++i )
+   {
+      binary_hmac_sha512( pass_bytes, pass_len, u, 64, u );
+      for( size_t j = 0; j < 64; ++j )
+      {
+         t[j] ^= u[j];
+      }
+   }
+
+   auto hex_to_byte = [](char c) -> int {
+      if( c >= '0' && c <= '9' )
+         return c - '0';
+      if( c >= 'a' && c <= 'f' )
+         return c - 'a' + 10;
+      return -1;
+   };
 
    volatile int diff = 0;
-   for( size_t i = 0; i < computational_hash.size(); ++i )
+   for( size_t i = 0; i < 64; ++i )
    {
-      diff |= ( computational_hash[i] ^ expected_hash[i]) ;
+      int hi = hex_to_byte( expected_hex[i * 2] );
+      int lo = hex_to_byte( expected_hex[i * 2 + 1] );
+      if( hi == -1 || lo == -1 )
+         return false;
+
+      uint8_t expected_byte = static_cast<uint8_t>( ( hi << 4 ) | lo );
+      diff |= ( t[i] ^ expected_byte );
    }
    return diff == 0;
 }
