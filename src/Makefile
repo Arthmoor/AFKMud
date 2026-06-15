@@ -13,7 +13,7 @@ ifeq ($(findstring CYGWIN, $(shell uname -s)), CYGWIN)
 endif
 
 # Check if libdl is available on the system
-HAS_DL := $(shell ld -ldl --verbose >/dev/null 2>&1 && echo yes)
+HAS_DL := $(shell echo 'int main(){}' | $(CC) -x c++ - -ldl -o /dev/null 2>/dev/null && echo yes)
 
 ifeq ($(HAS_DL),yes)
     NEED_DL = -ldl
@@ -100,16 +100,16 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           update.cpp variables.cpp weather.cpp web.cpp
 
 ifdef LIB_MYSQL
-   C_FILES := sql.cpp $(C_FILES)
-   C_FLAGS := $(C_FLAGS) -DSQL
+	C_FILES := sql.cpp $(C_FILES)
+	C_FLAGS := $(C_FLAGS) -DSQL
 endif
 
 ifdef MULTIPORT
-   C_FILES := shell.cpp $(C_FILES)
-   C_FLAGS := $(C_FLAGS) -DMULTIPORT
-   #Sorry folks, this doesn't work in Cygwin
+	C_FILES := shell.cpp $(C_FILES)
+	C_FLAGS := $(C_FLAGS) -DMULTIPORT
+	#Sorry folks, this doesn't work in Cygwin
    ifndef IS_CYGWIN
-      C_FILES := mudmsg.cpp $(C_FILES)
+	C_FILES := mudmsg.cpp $(C_FILES)
    endif
 endif
 
@@ -118,11 +118,11 @@ O_FILES := $(patsubst %.cpp,o/%.o,$(C_FILES))
 H_FILES = $(wildcard *.h) 
 
 ifdef IS_CYGWIN
-   AFKMUD = afkmud.exe
-   RESOLVER = resolver.exe
+	AFKMUD = afkmud.exe
+	RESOLVER = resolver.exe
 else
-   AFKMUD = afkmud
-   RESOLVER = resolver
+	AFKMUD = afkmud
+	RESOLVER = resolver
 endif
 
 all:
@@ -133,7 +133,6 @@ all:
 	@echo "Buidling DNS Resolver...";
 	$(info    Resolver using C-Flags: $(D_FLAGS))
 	$(MAKE) -s resolver
-	@rm -f a.out
 
 # pull in dependency info for *existing* .o files
 -include dependencies.d
@@ -171,11 +170,11 @@ resolver: resolver.o
 	@chmod g+w resolver.o
 
 clean:
-	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o a.out
+	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o
 	$(MAKE) all
 
 purge:
-	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o a.out
+	@rm -f o/*.o $(AFKMUD) afkmud.def afkmud.exp core dependencies.d $(RESOLVER) resolver.o
 
 o/%.o: %.cpp
 	@echo "  Compiling $@...";
