@@ -49,25 +49,23 @@
 /*
  * Global variables.
  */
-int num_descriptors;
-int num_logins;
-bool mud_down; /* Shutdown       */
-std::string str_boot_time;
-std::string lastplayercmd;
-std::chrono::system_clock::time_point current_time;   // Time of this pulse
-std::chrono::system_clock::time_point mud_start_time; // Used only by MSSP for now
-int control;   /* Controlling descriptor  */
-fd_set in_set; /* Set of desc's for reading  */
-fd_set out_set;   /* Set of desc's for writing  */
-fd_set exc_set;   /* Set of desc's with errors  */
-const char *alarm_section = "(unknown)";
-bool winter_freeze = false;
-int mud_port;
-bool DONTSAVE = false;  /* For reboots, shutdowns, etc. */
-bool bootlock = false;
-bool sigsegv = false;
-int crash_count = 0;
-bool DONT_UPPER;
+int num_descriptors = 0;
+int num_logins = 0;
+bool mud_down = false;                                   // Whether or not the MUD considered itself online and running. Changing to "true" causes a graceful shutdown.
+std::chrono::system_clock::time_point current_time;      // Time of this game pulse. current_time is considered a MUD-wide authority on what time it is in the real world.
+std::chrono::system_clock::time_point mud_start_time;    // Used only by MSSP for now. Records the MUD's start time.
+std::string str_boot_time;                               // A string representation of the MUD's startup time.
+std::string lastplayercmd = "No commands issued yet.";   // Global buffer to hold the last command a player used.
+int control = -1;                                        // Controlling descriptor the MUD uses to accept new connections on.
+fd_set in_set;                                           // Set of descriptors for reading on each pass through game_loop().
+fd_set out_set;                                          // Set of descriptors for writing on each pass through game_loop().
+fd_set exc_set;                                          // Set of descriptors with exceptions on each pass through game_loop(). These will be flagged for disconnection.
+const char *alarm_section = "(unknown)";                 // Message sent when the "lag alarm" goes off to help identify where it happened.
+bool winter_freeze = false;                              // Whether or not the MUD has entered the winter season and if flagged rooms should switch to their frozen states.
+int mud_port = 7500;                                     // The default port the MUD listens on for new connections.
+bool DONTSAVE = false;                                   // Flag to decide whether or not players get saved during reboots, shutdowns, etc. The only two places it gets changed are in do_reboot() and do_shutdown().
+bool bootlock = false;                                   // Lock flag to prevent people from logging on while a reboot or shutdown count is running.
+bool DONT_UPPER = false;                                 // Weird flag that prevents capitalization in act_string() and in several places in mud_comm.cpp().
 
 extern int newdesc;
 #ifdef MULTIPORT
@@ -96,8 +94,8 @@ void save_timedata(  );
 void save_weathermap(  );
 void save_morphs(  );
 void hotboot_recover(  );
-void update_connhistory( descriptor_data *, int ); /* connhist.c */
-void free_connhistory( int ); /* connhist.c */
+void update_connhistory( descriptor_data *, int ); /* connhist.cpp */
+void free_connhistory( int ); /* connhist.cpp */
 
 /* Used during memory cleanup */
 void free_immhosts();
@@ -239,7 +237,7 @@ void open_mud_log()
    std::filesystem::path log_path;
    bool found = false;
 
-   // Use filesystem iterator or simple loop to find the next available file
+   // Look for the current logfile that's been opened by the startup script.
    for( int logindex = 1000; logindex < 100000; ++logindex )
    {
       log_path = log_dir / ( std::to_string( logindex ) + ".log" );
@@ -251,21 +249,22 @@ void open_mud_log()
       }
    }
 
+   // Dude, if you have over 100000 logs you have problems!
    if( !found )
    {
       fprintf( stderr, "You have too damn many log files! Clean them up!\n" );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 
-   // Open file using the path object
+   // Open log file for appending.
    FILE* error_log = fopen( log_path.c_str(), "a" );
    if( !error_log )
    {
       fprintf( stderr, "Unable to append to %s.\n", log_path.c_str() );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 
-   // Redirect stderr
+   // Redirect stderr.
    dup2( fileno( error_log ), STDERR_FILENO );
    FCLOSE( error_log );
 }
@@ -298,7 +297,7 @@ struct SocketGuard
  * On a server which only has one type of address, it will still bind to both.
  * Every major operating system these days supports both, even if they only have one type of address.
  */
-int init_socket( int mudport )
+int init_socket( const int mudport )
 {
    std::string port_str = std::to_string( mudport );
    struct addrinfo hints{}, *res;
@@ -396,7 +395,8 @@ void init_mud( bool fCopyOver, int gameport )
    }
 }
 
-/* This function is called from 'main' or 'SigTerm'. Its purpose is to clean up
+/*
+ * This function is called from 'main' or 'SigTerm'. Its purpose is to clean up
  * the various loose ends the mud will have running before it shuts down. Put anything
  * which needs to be added to the shutdown procedures in here.
  */
@@ -434,40 +434,6 @@ void close_mud( void )
    fflush( stderr ); /* make sure stderr is flushed */
 
    close( control );
-}
-
-static void SegVio( int signum )
-{
-   bug( "%s", "}RSEGMENTATION FAULT: Invalid Memory Access&D" );
-   log_string( lastplayercmd );
-
-   if( !pclist.empty(  ) )
-   {
-      for( auto* ch : pclist )
-      {
-         if( ch && ch->name && ch->in_room )
-            log_printf( "%-20s in room: %d", ch->name, ch->in_room->vnum );
-      }
-   }
-
-   if( sigsegv == true )
-      abort(  );
-   else
-      sigsegv = true;
-
-   ++crash_count;
-
-   signal( SIGSEGV, SegVio ); // Have to reset the signal handler or the next one raised will crash
-   game_loop(  );
-
-   // Clean up the loose ends... hey wait... why is this here? Because: When game_loop returns now, it will come here instead of main()
-   close_mud(  );
-
-   // That's all, folks.
-   log_string( "Normal termination of game." );
-   log_string( "Cleaning up Memory.\033[0m" );
-   cleanup_memory(  );
-   exit( 0 );
 }
 
 static void SigUser1( int signum )
@@ -535,7 +501,7 @@ static void SigTerm( int signum )
    /*
     * Using exit here instead of mud_down because the thing sometimes failed to kill when asked!! 
     */
-   exit( 0 );
+   std::exit( EXIT_SUCCESS );
 }
 
 /*
@@ -562,7 +528,7 @@ static void caught_alarm( int signum )
    }
 
    log_string( "&RPossible infinite loop detected during game operation. Restarting game_loop()." );
-   signal( SIGALRM, caught_alarm ); // Have to reset the signal handler or the next hit will deadlock
+   signal( SIGALRM, caught_alarm ); // Have to reset the signal handler or the next hit will deadlock.
    game_loop(  );
 
    /*
@@ -576,7 +542,7 @@ static void caught_alarm( int signum )
    log_string( "Normal termination of game." );
    log_string( "Cleaning up Memory.\033[0m" );
    cleanup_memory(  );
-   exit( 0 );
+   std::exit( EXIT_SUCCESS );
 }
 
 #ifdef MULTIPORT
@@ -824,12 +790,6 @@ void game_loop( void )
 
       // Dunno if it needs to be reset, but I'll do it anyway. End of the loop here. 
       set_alarm( 0 );
-
-      /*
-       * This will be the very last thing done here, because if you can't make it through
-       * one lousy loop without crashing a second time.....
-       */
-      sigsegv = false;
    }
    // End of main game loop 
    // Returns back to 'main', and will result in mud shutdown
@@ -1031,16 +991,6 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Memory cleanup complete, exiting.\n" );
 }
 
-void set_chandler( void )
-{
-   signal( SIGSEGV, SegVio );
-}
-
-void unset_chandler( void )
-{
-   signal( SIGSEGV, SIG_DFL );
-}
-
 void bailout( int sig )
 {
    log_string( "Bailout signal received. Shutting down gracefully..." );
@@ -1051,7 +1001,7 @@ void bailout( int sig )
    close_mud();
    cleanup_memory();
 
-   exit( 0 );
+   std::exit( EXIT_SUCCESS );
 }
 
 // Heh, nice one Darien :)
@@ -1062,42 +1012,34 @@ void moron_check( void )
    if( ( uid = getuid(  ) ) == 0 )
    {
       log_string( "Warning, you are a moron. Do not run as root." );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 }
 
 int main( int argc, char **argv )
 {
-   bool fCopyOver = false;
-
-   moron_check(  ); // Don't let someone run as root, cause that's dumb.
-
-   DONT_UPPER = false;
-   num_descriptors = 0;
-   num_logins = 0;
-   dlist.clear(  );
-   lastplayercmd = "No commands issued yet";
-
    // Init time.
    current_time = std::chrono::system_clock::now(); // This is used throughout the codebase to represent the current time. Saves on a whole lot of calls to std::chrono this way. Updated in pulse_sync().
    str_boot_time = c_time( current_time, -1 );      // Records when the mud was last rebooted.
-
    new_pfile_time_t = current_time + std::chrono::hours( 24 ); // For the pfile cleanup. Starts 24 hours after bootup.
    mud_start_time = current_time;
 
+   moron_check(  ); // Don't let someone run as root, cause that's dumb.
+
+   bool fCopyOver = false;
+
    // Get the port number.
-   mud_port = 9500;
    if( argc > 1 )
    {
       if( !is_number( argv[1] ) )
       {
          fprintf( stderr, "Usage: %s [port #]\n", argv[0] );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
       else if( ( mud_port = atoi( argv[1] ) ) <= 1024 )
       {
          fprintf( stderr, "%s", "Port number must be above 1024.\n" );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
 
       if( argv[2] && argv[2][0] )
@@ -1131,15 +1073,6 @@ int main( int argc, char **argv )
    signal( SIGCHLD, SigChld );
 #endif
 
-   /*
-    * If this setting is active, intercept SIGSEGV and keep the mud running.
-    * Doing so sets a flag variable which if true will cause SegVio to abort()
-    * If game_loop is restarted and makes it through once without crashing again,
-    * then the flag is unset and SIGSEGV will continue to be intercepted. Samson 3-11-04
-    */
-   if( sysdata->crashhandler == true )
-      set_chandler(  );
-
    // Descriptor list will be populated if this was a hotboot.
    if( dlist.empty(  ) )
       log_string( "No people online yet. Suspending autonomous update handlers." );
@@ -1154,5 +1087,5 @@ int main( int argc, char **argv )
    log_string( "Normal termination of game." );
    log_string( "Cleaning up Memory.\033[0m" );
    cleanup_memory(  );
-   exit( 0 );
+   std::exit( EXIT_SUCCESS );
 }

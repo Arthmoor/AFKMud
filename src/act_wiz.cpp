@@ -1946,7 +1946,7 @@ CMDF( do_reboot )
    {
       if( bootlock )
       {
-         ch->print( "Reboot will be cancelled at the next event poll.\r\n" );
+         ch->print( "Reboot will be canceled at the next event poll.\r\n" );
          reboot_counter = -5;
          bootlock = false;
          sysdata->DENY_NEW_PLAYERS = false;
@@ -5478,8 +5478,8 @@ CMDF( do_cset )
       ch->pager( "------------\r\n" );
       ch->pagerf( "&BNameauth&c: %s &BImmhost Checking&c: %s &BTestmode&c: %s &BMinimum Ego&c: %d\r\n",
                   sysdata->WAIT_FOR_AUTH ? "Enabled" : "Disabled", sysdata->check_imm_host ? "Enabled" : "Disabled", sysdata->TESTINGMODE ? "On" : "Off", sysdata->minego );
-      ch->pagerf( "&BPet Save&c: %s &BCrashhandler&c: %s &BPfile Pruning&c: %s\r\n",
-                  sysdata->save_pets ? "On" : "Off", sysdata->crashhandler ? "Enabled" : "Disabled", sysdata->CLEANPFILES ? "Enabled" : "Disabled" );
+      ch->pagerf( "&BPet Save&c: %s &BPfile Pruning&c: %s\r\n",
+                  sysdata->save_pets ? "On" : "Off", sysdata->CLEANPFILES ? "Enabled" : "Disabled" );
 
       if( sysdata->CLEANPFILES )
       {
@@ -5752,24 +5752,6 @@ CMDF( do_cset )
          ch->print( "Pet saving enabled.\r\n" );
       else
          ch->print( "Pet saving disabled.\r\n" );
-      save_sysdata(  );
-      return;
-   }
-
-   if( !str_cmp( arg, "crashhandler" ) )
-   {
-      sysdata->crashhandler = !sysdata->crashhandler;
-
-      if( sysdata->crashhandler )
-      {
-         set_chandler(  );
-         ch->print( "Crash handling will be enabled at next reboot.\r\n" );
-      }
-      else
-      {
-         unset_chandler(  );
-         ch->print( "Crash handling disabled.\r\n" );
-      }
       save_sysdata(  );
       return;
    }

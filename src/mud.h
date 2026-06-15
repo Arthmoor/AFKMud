@@ -818,7 +818,6 @@ class system_data
    bool LOCKDOWN = false;                        // Is the game locked down? Default off. - Samson 8-23-98
    bool CLEANPFILES = false;                     // Should the mud clean up pfiles daily? Default off. - Samson 12-27-98
    bool TESTINGMODE = false;                     // Blocks file copies to main port when active. Default off. - Samson 1-31-99
-   bool crashhandler = false;                    // Do we intercept SIGSEGV? Default off. - Samson 3-11-04
 };
 
 // So we can have different configs for different ports -- Shaddai

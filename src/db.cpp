@@ -682,7 +682,6 @@ void save_sysdata( void )
       fprintf( fp, "Minego         %d\n", sysdata->minego );
       fprintf( fp, "Rebootcount    %d\n", sysdata->rebootcount );
       fprintf( fp, "Auctionseconds %d\n", sysdata->auctionseconds );
-      fprintf( fp, "Crashhandler   %d\n", sysdata->crashhandler );
       fprintf( fp, "Gameloopalarm  %d\n", sysdata->gameloopalarm );
       fprintf( fp, "Webwho         %d\n", sysdata->webwho );
       fprintf( fp, "%s", "End\n\n" );
@@ -723,7 +722,6 @@ void fread_sysdata( FILE * fp )
 
          case 'C':
             KEY( "CheckImmHost", sysdata->check_imm_host, fread_number( fp ) );
-            KEY( "Crashhandler", sysdata->crashhandler, fread_number( fp ) );
             break;
 
          case 'D':

@@ -70,7 +70,6 @@ extern fd_set in_set;
 extern fd_set out_set;
 extern fd_set exc_set;
 extern bool bootlock;
-extern int crash_count;
 extern int num_logins;
 #ifdef MULTIPORT
 extern bool compilelock;
@@ -2084,9 +2083,6 @@ void show_stateflags( char_data * ch )
 
    if( sysdata->WIZLOCK )
       ch->print( "\r\n&YNOTE: The game is wizlocked. No mortals can log on.\r\n" );
-
-   if( crash_count > 0 && ch->is_imp(  ) )
-      ch->printf( "\r\n}RThere ha%s been %d intercepted SIGSEGV since reboot. Check the logs.\r\n", crash_count == 1 ? "s" : "ve", crash_count );
 }
 
 void show_status( char_data * ch )
@@ -2113,7 +2109,7 @@ void show_status( char_data * ch )
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       if( !ch->in_room->flags.test( ROOM_WATCHTOWER ) )
-         ch->music( "wilderness.mid", 100, false );
+         ch->music( "wilderness.mp3", 100, false );
    }
 
    ch->print( "&R\r\n" );
@@ -2347,7 +2343,7 @@ void char_to_game( char_data * ch )
    if( ch->has_pcflag( PCFLAG_ONMAP ) )
    {
       if( !ch->in_room->flags.test( ROOM_WATCHTOWER ) )
-         ch->music( "wilderness.mid", 100, false );
+         ch->music( "wilderness.mp3", 100, false );
    }
 
    quotes( ch );
