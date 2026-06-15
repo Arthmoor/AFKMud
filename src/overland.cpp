@@ -1871,7 +1871,7 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
 
    // Pre-allocate buffer to prevent reallocations on the heap. They slow things down by quite a bit.
    std::string secbuf;
-   secbuf.reserve( ( ( endx - startx + 1 ) * ( endy - starty + 1 ) ) * 16 );
+   secbuf.reserve( ( static_cast<std::size_t>( endx - startx + 1 ) * static_cast<std::size_t>( endy - starty + 1 ) ) * 16 );
    secbuf.append( "\r\n" );
 
    // Pre-cache entities at specific coordinates for O(1) retrieval during drawing. This provides even more performance in dealing with other people near you.
