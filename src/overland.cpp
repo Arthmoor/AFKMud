@@ -30,7 +30,6 @@
 #include <gd.h>
 #include <cmath>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <unordered_map>
 #include "mud.h"

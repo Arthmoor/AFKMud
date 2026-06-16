@@ -40,7 +40,6 @@
 */
 
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include "mud.h"
 #include "bits.h"

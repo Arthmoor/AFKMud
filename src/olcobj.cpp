@@ -55,7 +55,6 @@
  *                                                                        *
 \**************************************************************************/
 
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "descriptor.h"

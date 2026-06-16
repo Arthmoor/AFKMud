@@ -46,7 +46,6 @@ to the above email address.
 ----------------------------------------------------------------------- */
 
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <memory>
 #include "mud.h"

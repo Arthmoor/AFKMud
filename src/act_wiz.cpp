@@ -27,7 +27,6 @@
  ****************************************************************************/
 
 #include <filesystem>
-#include <format>
 #include <sstream>
 #include <system_error>
 #include "mud.h"

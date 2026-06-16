@@ -26,6 +26,8 @@
  *                           Descriptor Class Info                          *
  ****************************************************************************/
 
+#pragma once
+
 #include <zlib.h>
 
 inline constexpr std::string_view DNS_FILE = "../system/dns.dat";

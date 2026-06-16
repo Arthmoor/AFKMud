@@ -32,11 +32,11 @@
  https://dotd.mudservices.com  dotd@dotd.mudservices.com 
  ******************************************************/
 
-/* Any spec_fun added here needs to be added to specfuns.dat as well.
+/*
+ * Any spec_fun added here needs to be added to specfuns.dat as well.
  * If you don't know what that means, ask Samson to take care of it.
  */
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "fight.h"

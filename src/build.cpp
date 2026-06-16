@@ -26,7 +26,6 @@
  *                   Online Building and Editing Module                     *
  ****************************************************************************/
 
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"

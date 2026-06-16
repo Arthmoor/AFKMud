@@ -48,7 +48,6 @@ telnet://northwind.kilnar.com:5555/    +
 */
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"

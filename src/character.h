@@ -100,7 +100,7 @@ class pc_data
    std::chrono::hours played;                            // Total hours they have in the game so far.
    std::chrono::system_clock::time_point save_time;
    std::chrono::system_clock::time_point restore_time;   // The last time the person did a restore all.
-   area_data *area = nullptr;                            // For the area a PC has been assigned to build.
+   class area_data *area = nullptr;                      // For the area a PC has been assigned to build.
    class clan_data *clan = nullptr;                      // What clan, guild, or order they are a member of.
    class realm_data *realm = nullptr;                    // What immortal realm they are a part of.
    class deity_data *deity = nullptr;                    // Which deity they worship.

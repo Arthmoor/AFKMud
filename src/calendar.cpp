@@ -26,7 +26,6 @@
  *                      Calendar Handler/Seasonal Updates                   *
  ****************************************************************************/
 
-#include <format>
 #include <filesystem>
 #include <fstream>
 #include "mud.h"

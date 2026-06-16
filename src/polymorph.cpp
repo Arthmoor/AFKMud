@@ -27,7 +27,6 @@
  ****************************************************************************/
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "deity.h"
 #include "objindex.h"

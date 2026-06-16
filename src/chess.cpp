@@ -26,7 +26,6 @@
  *                              Chess Module                                *
  ****************************************************************************/
 
-#include <format>
 #include "mud.h"
 #include "chess.h"
 

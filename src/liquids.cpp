@@ -81,7 +81,6 @@
  */
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "liquids.h"
 #include "mud_prog.h"

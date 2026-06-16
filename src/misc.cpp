@@ -27,7 +27,6 @@
  *                               getting big.                               *
  ****************************************************************************/
 
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "liquids.h"

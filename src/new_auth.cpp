@@ -39,6 +39,7 @@
  */
 #include <filesystem>
 #include <fstream>
+#include <random>
 #include <unordered_map>
 #include <unordered_set>
 #include "mud.h"
@@ -52,6 +53,15 @@ bool can_use_mprog( char_data * );
 
 std::list<auth_data *> authlist;
 std::unordered_set<std::string> reserved_names;
+
+extern std::mt19937 global_rng;
+
+template <typename T>
+const T& pick_random( const std::vector<T>& vec )
+{
+   std::uniform_int_distribution<size_t> dist( 0, vec.size() - 1 );
+   return vec[dist(global_rng)];
+}
 
 struct NameGenLists
 {

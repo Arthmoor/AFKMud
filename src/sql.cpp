@@ -26,7 +26,6 @@
  *                      MySQL Database management module                    *
  ****************************************************************************/
 
-#include <format>
 #include <stdexcept>
 #include "mud.h"
 #include "sql.h"

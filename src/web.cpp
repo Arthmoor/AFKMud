@@ -27,7 +27,6 @@
  ****************************************************************************/
 
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <memory>
 #include <sstream>

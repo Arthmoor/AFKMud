@@ -7,6 +7,11 @@
 CC      = g++
 #CC      = clang++
 
+# Only use ccache if it's found
+CCACHE := $(shell command -v ccache 2>/dev/null)
+# This creates a safe command for compiling, but not for linking
+CXX_COMPILE = $(CCACHE) $(CC)
+
 # Automatically detect if we are running in a Cygwin environment
 ifeq ($(findstring CYGWIN, $(shell uname -s)), CYGWIN)
     IS_CYGWIN = 1
@@ -178,4 +183,4 @@ purge:
 
 o/%.o: %.cpp
 	@echo "  Compiling $@...";
-	$(CC) -c $(C_FLAGS) $< -o $@
+	@$(CXX_COMPILE) -c $(C_FLAGS) $< -o $@

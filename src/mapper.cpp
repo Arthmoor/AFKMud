@@ -61,7 +61,6 @@
    1. Add a way of displaying up and down directions effectively
  */
 #include <algorithm>
-#include <format>
 #include "mud.h"
 #include "descriptor.h"
 #include "mapper.h"

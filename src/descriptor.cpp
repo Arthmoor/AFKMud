@@ -31,7 +31,6 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include "mud.h"
 #include "ban.h"
@@ -103,6 +102,7 @@ std::string sha256_crypt( const std::string & ); // Old SHA-256 support.
 std::string password_hash( std::string_view );// SHA-512 encryption
 bool password_verify( std::string_view, std::string_view ); // SHA-512 encryption
 std::string check_hash_update( std::string_view, std::string_view ); // SHA-512 encryption
+std::vector<std::string> string_explode( std::string_view, char );
 
 /* Terminal detection stuff start */
 constexpr unsigned char IS            = '\x00';

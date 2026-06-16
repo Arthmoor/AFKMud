@@ -31,11 +31,10 @@
 #include <bitset>
 #include <chrono>
 #include <cstring> // Can't be rid of me until you've converted every last string in the code to std::string, or at least move it to any files still needing it for things like strdup.
+#include <format>
 #include <list>
 #include <map>
-#include <random>
 #include <typeinfo>
-#include <vector>
 
 /*
  * Used in basereport and world commands - don't remove these!
@@ -990,7 +989,6 @@ void check_switches(  );
 void check_switch( char_data * );
 
 // db.cpp
-extern std::mt19937 global_rng; // Mersenne Twister algorithm for random numbers. Produces better results than the rand() and srand() functions.
 bool is_valid_filename( char_data *, std::string_view, std::string_view );
 void shutdown_mud( std::string_view );
 bool exists_file( std::string_view );
@@ -1062,7 +1060,6 @@ const std::string escape_formatting( std::string );
 void string_erase( std::string &, char );
 void string_erase( std::string &, std::string_view );
 void string_replace( std::string &, std::string_view, std::string_view );
-std::vector<std::string> string_explode( std::string_view, char );
 const char *print_array_string( const char *flagarray[], size_t );
 
 // fight.cpp
@@ -1318,6 +1315,13 @@ inline short fread_short( FILE *fp )  { return fread_numeric<short>( fp ); }
 inline int   fread_number( FILE *fp ) { return fread_numeric<int>( fp ); }
 inline long  fread_long( FILE *fp )   { return fread_numeric<long>( fp ); }
 inline float fread_float( FILE *fp )  { return fread_numeric<float>( fp ); }
+
+// This only exists to correct a legit mistake on the part of the C++ committee. Boolean values are not WORDS, they are NUMBERS. Treat them as such.
+template <>
+struct std::formatter<bool> : std::formatter<int>
+{
+   auto format(bool b, format_context& ctx) const { return std::formatter<int>::format( b ? 1 : 0, ctx ); }
+};
 
 /*
  * Append a string to a file.

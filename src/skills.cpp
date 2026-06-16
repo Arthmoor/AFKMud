@@ -28,7 +28,6 @@
 
 #include <algorithm>
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "mudcfg.h"
 #include "fight.h"

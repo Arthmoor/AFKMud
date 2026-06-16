@@ -27,7 +27,6 @@
  ****************************************************************************/
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "clans.h"
 #include "descriptor.h"

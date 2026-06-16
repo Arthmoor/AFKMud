@@ -57,10 +57,3 @@ class auth_data
 };
 
 bool NOT_AUTHED( char_data * );
-
-template <typename T>
-const T& pick_random( const std::vector<T>& vec )
-{
-   std::uniform_int_distribution<size_t> dist( 0, vec.size() - 1 );
-   return vec[dist(global_rng)];
-}

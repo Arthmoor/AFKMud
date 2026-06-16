@@ -27,7 +27,6 @@
  ****************************************************************************/
 
 #include <filesystem>
-#include <format>
 #include <sstream>
 #include "mud.h"
 #include "realms.h"

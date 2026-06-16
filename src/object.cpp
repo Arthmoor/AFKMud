@@ -26,7 +26,6 @@
  *                           Object Support Functions                       *
  ****************************************************************************/
 
-#include <format>
 #include "mud.h"
 #include "mobindex.h"
 #include "mud_prog.h"

@@ -35,24 +35,16 @@
 #include <dlfcn.h> // For libdl - Trax
 #include <cstdarg>
 #include <filesystem>
-#include <format>
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <random>
 #include <stacktrace>
+#include <unordered_map>
 #include "mud.h"
 #include "area.h"
-#include "bits.h"
-#include "connhist.h"
 #include "event.h"
-#include "mobindex.h"
-#include "mud_prog.h"
-#include "objindex.h"
-#include "overland.h"
-#include "pfiles.h"
 #include "roomindex.h"
-#include "shops.h"
-#include "smaugaffect.h"
-#include "weather.h"
 
 #if defined(SQL)
  #include "sql.h"
@@ -194,6 +186,8 @@ std::string hash_stats( );
 void init_auction( );
 void load_name_generator( );
 void load_reserved_names( );
+bool load_weathermap( );
+void InitializeWeatherMap( );
 
 affect_data::affect_data(  )
 {
@@ -201,13 +195,17 @@ affect_data::affect_data(  )
 
 void shutdown_mud( std::string_view reason )
 {
-   FILE *fp;
+   std::ofstream stream;
 
-   if( ( fp = fopen( SHUTDOWN_FILE.data(), "a" ) ) != nullptr )
+   stream.open( std::filesystem::path( SHUTDOWN_FILE ), std::ios::app );
+   if( !stream.is_open() )
    {
-      fprintf( fp, "%s\n", reason.data() );
-      FCLOSE( fp );
+      bug( "%s: Cannot open shutdown file for writing.", __func__ );
+      return;
    }
+
+   stream << reason << "\n";
+   stream.close();
 }
 
 bool exists_file( std::string_view name )
@@ -543,7 +541,6 @@ char* fread_word( FILE* fp )
 void boot_log( const char *str, ... )
 {
    char buf[MSL];
-   FILE *fp;
    va_list param;
 
    va_start( param, str );
@@ -552,11 +549,16 @@ void boot_log( const char *str, ... )
 
    log_printf( "[*****] BOOT: %s", buf );
 
-   if( ( fp = fopen( BOOTLOG_FILE.data(), "a" ) ) != nullptr )
+   std::ofstream stream;
+   stream.open( std::filesystem::path( BOOTLOG_FILE ), std::ios::app );
+   if( !stream.is_open() )
    {
-      fprintf( fp, "%s\n", buf );
-      FCLOSE( fp );
+      bug( "%s: Cannot open boot log file.", __func__ );
+      return;
    }
+
+   stream << buf << "\n";
+   stream.close();
 }
 
 /* Build list of in progress areas. Do not load areas.
@@ -602,273 +604,94 @@ constexpr int SYSFILEVER = 1;
  */
 void save_sysdata( void )
 {
-   FILE *fp;
    std::filesystem::path filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
+   std::ofstream stream( filename );
 
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   if( !stream.is_open() )
    {
-      bug( "%s: fopen", __func__ );
-      perror( filename.c_str() );
+      bug( "%s: Cannot open sysdata file for writing.", __func__ );
+      return;
    }
    else
    {
       auto motd = std::chrono::system_clock::to_time_t( sysdata->motd );
       auto imotd = std::chrono::system_clock::to_time_t( sysdata->imotd );
 
-      fprintf( fp, "%s", "#SYSTEM\n" );
-      fprintf( fp, "Version        %d\n", SYSFILEVER );
-      fprintf( fp, "MudName        %s~\n", sysdata->mud_name.c_str(  ) );
-      fprintf( fp, "Password       %s~\n", sysdata->password.c_str(  ) );
-      fprintf( fp, "Dbserver       %s~\n", sysdata->dbserver.c_str(  ) );
-      fprintf( fp, "Dbname         %s~\n", sysdata->dbname.c_str(  ) );
-      fprintf( fp, "Dbuser         %s~\n", sysdata->dbuser.c_str(  ) );
-      fprintf( fp, "Dbpass         %s~\n", sysdata->dbpass.c_str(  ) );
-      fprintf( fp, "Highplayers    %d\n", sysdata->alltimemax );
-      fprintf( fp, "Highplayertime %s~\n", sysdata->time_of_max.c_str(  ) );
-      fprintf( fp, "CheckImmHost   %d\n", sysdata->check_imm_host );
-      fprintf( fp, "Nameresolving  %d\n", sysdata->NO_NAME_RESOLVING );
-      fprintf( fp, "Waitforauth    %d\n", sysdata->WAIT_FOR_AUTH );
-      fprintf( fp, "Readallmail    %d\n", sysdata->read_all_mail );
-      fprintf( fp, "Readmailfree   %d\n", sysdata->read_mail_free );
-      fprintf( fp, "Writemailfree  %d\n", sysdata->write_mail_free );
-      fprintf( fp, "Takeothersmail %d\n", sysdata->take_others_mail );
-      fprintf( fp, "Getnotake      %d\n", sysdata->level_getobjnotake );
-      fprintf( fp, "Build          %d\n", sysdata->build_level );
-      fprintf( fp, "Protoflag      %d\n", sysdata->level_modify_proto );
-      fprintf( fp, "Overridepriv   %d\n", sysdata->level_override_private );
-      fprintf( fp, "Msetplayer     %d\n", sysdata->level_mset_player );
-      fprintf( fp, "Stunplrvsplr   %d\n", sysdata->stun_plr_vs_plr );
-      fprintf( fp, "Stunregular    %d\n", sysdata->stun_regular );
-      fprintf( fp, "Gougepvp       %d\n", sysdata->gouge_plr_vs_plr );
-      fprintf( fp, "Gougenontank   %d\n", sysdata->gouge_nontank );
-      fprintf( fp, "Dodgemod       %d\n", sysdata->dodge_mod );
-      fprintf( fp, "Parrymod       %d\n", sysdata->parry_mod );
-      fprintf( fp, "Tumblemod      %d\n", sysdata->tumble_mod );
-      fprintf( fp, "Damplrvsplr    %d\n", sysdata->dam_plr_vs_plr );
-      fprintf( fp, "Damplrvsmob    %d\n", sysdata->dam_plr_vs_mob );
-      fprintf( fp, "Dammobvsplr    %d\n", sysdata->dam_mob_vs_plr );
-      fprintf( fp, "Dammobvsmob    %d\n", sysdata->dam_mob_vs_mob );
-      fprintf( fp, "Forcepc        %d\n", sysdata->level_forcepc );
-      fprintf( fp, "Saveflags      %s~\n", bitset_string( sysdata->save_flags, save_flag ) );
-      fprintf( fp, "Savefreq       %ld\n", sysdata->save_frequency.count() );
-      fprintf( fp, "Bestowdif      %d\n", sysdata->bestow_dif );
-      fprintf( fp, "PetSave        %d\n", sysdata->save_pets );
-      fprintf( fp, "Wizlock        %d\n", sysdata->WIZLOCK );
-      fprintf( fp, "Implock        %d\n", sysdata->IMPLOCK );
-      fprintf( fp, "Lockdown       %d\n", sysdata->LOCKDOWN );
-      fprintf( fp, "Admin_Email    %s~\n", sysdata->admin_email.c_str(  ) );
-      fprintf( fp, "Newbie_purge   %d\n", sysdata->newbie_purge );
-      fprintf( fp, "Regular_purge  %d\n", sysdata->regular_purge );
-      fprintf( fp, "Autopurge      %d\n", sysdata->CLEANPFILES );
-      fprintf( fp, "Testmode       %d\n", sysdata->TESTINGMODE );
-      fprintf( fp, "Mapsize        %d\n", sysdata->mapsize );
-      fprintf( fp, "Motd           %ld\n", motd );
-      fprintf( fp, "Imotd          %ld\n", imotd );
-      fprintf( fp, "Telnet         %s~\n", sysdata->telnet.c_str(  ) );
-      fprintf( fp, "HTTP           %s~\n", sysdata->http.c_str(  ) );
-      fprintf( fp, "Maxvnum        %d\n", sysdata->maxvnum );
-      fprintf( fp, "Minguild       %d\n", sysdata->minguildlevel );
-      fprintf( fp, "Maxcond        %d\n", sysdata->maxcondval );
-      fprintf( fp, "Maxignore      %zu\n", sysdata->maxign );
-      fprintf( fp, "Maximpact      %d\n", sysdata->maximpact );
-      fprintf( fp, "Maxholiday     %zu\n", sysdata->maxholiday );
-      fprintf( fp, "Initcond       %d\n", sysdata->initcond );
-      fprintf( fp, "Secpertick     %d\n", sysdata->secpertick );
-      fprintf( fp, "Pulsepersec    %d\n", sysdata->pulsepersec );
-      fprintf( fp, "Hoursperday    %d\n", sysdata->hoursperday );
-      fprintf( fp, "Daysperweek    %d\n", sysdata->daysperweek );
-      fprintf( fp, "Dayspermonth   %d\n", sysdata->dayspermonth );
-      fprintf( fp, "Monthsperyear  %d\n", sysdata->monthsperyear );
-      fprintf( fp, "Minego         %d\n", sysdata->minego );
-      fprintf( fp, "Rebootcount    %d\n", sysdata->rebootcount );
-      fprintf( fp, "Auctionseconds %d\n", sysdata->auctionseconds );
-      fprintf( fp, "Gameloopalarm  %d\n", sysdata->gameloopalarm );
-      fprintf( fp, "Webwho         %d\n", sysdata->webwho );
-      fprintf( fp, "%s", "End\n\n" );
-      fprintf( fp, "%s", "#END\n" );
+      stream << "#SYSTEM\n";
+      stream << std::format( "Version        {}\n", SYSFILEVER );
+      stream << std::format( "Mudname        {}~\n", sysdata->mud_name );
+
+      if( !sysdata->password.empty() )
+         stream << std::format( "Password       {}~\n", sysdata->password );
+
+      stream << std::format( "Dbserver       {}~\n", sysdata->dbserver );
+      stream << std::format( "Dbname         {}~\n", sysdata->dbname );
+      stream << std::format( "Dbuser         {}~\n", sysdata->dbuser );
+      stream << std::format( "Dbpass         {}~\n", sysdata->dbpass );
+      stream << std::format( "Highplayers    {}\n", sysdata->alltimemax );
+      stream << std::format( "Highplayertime {}~\n", sysdata->time_of_max );
+      stream << std::format( "CheckImmHost   {}\n", sysdata->check_imm_host );
+      stream << std::format( "Nameresolving  {}\n", sysdata->NO_NAME_RESOLVING );
+      stream << std::format( "Waitforauth    {}\n", sysdata->WAIT_FOR_AUTH );
+      stream << std::format( "Readallmail    {}\n", sysdata->read_all_mail );
+      stream << std::format( "Readmailfree   {}\n", sysdata->read_mail_free );
+      stream << std::format( "Writemailfree  {}\n", sysdata->write_mail_free );
+      stream << std::format( "Takeothersmail {}\n", sysdata->take_others_mail );
+      stream << std::format( "Getnotake      {}\n", sysdata->level_getobjnotake );
+      stream << std::format( "Build          {}\n", sysdata->build_level );
+      stream << std::format( "Protoflag      {}\n", sysdata->level_modify_proto );
+      stream << std::format( "Overridepriv   {}\n", sysdata->level_override_private );
+      stream << std::format( "Msetplayer     {}\n", sysdata->level_mset_player );
+      stream << std::format( "Stunplrvsplr   {}\n", sysdata->stun_plr_vs_plr );
+      stream << std::format( "Stunregular    {}\n", sysdata->stun_regular );
+      stream << std::format( "Gougepvp       {}\n", sysdata->gouge_plr_vs_plr );
+      stream << std::format( "Gougenontank   {}\n", sysdata->gouge_nontank );
+      stream << std::format( "Dodgemod       {}\n", sysdata->dodge_mod );
+      stream << std::format( "Parrymod       {}\n", sysdata->parry_mod );
+      stream << std::format( "Tumblemod      {}\n", sysdata->tumble_mod );
+      stream << std::format( "Damplrvsplr    {}\n", sysdata->dam_plr_vs_plr );
+      stream << std::format( "Damplrvsmob    {}\n", sysdata->dam_plr_vs_mob );
+      stream << std::format( "Dammobvsplr    {}\n", sysdata->dam_mob_vs_plr );
+      stream << std::format( "Dammobvsmob    {}\n", sysdata->dam_mob_vs_mob );
+      stream << std::format( "Forcepc        {}\n", sysdata->level_forcepc );
+      stream << std::format( "Saveflags      {}~\n", bitset_string( sysdata->save_flags, save_flag ) );
+      stream << std::format( "Savefreq       {}\n", sysdata->save_frequency.count() );
+      stream << std::format( "Bestowdif      {}\n", sysdata->bestow_dif) ;
+      stream << std::format( "PetSave        {}\n", sysdata->save_pets );
+      stream << std::format( "Wizlock        {}\n", sysdata->WIZLOCK );
+      stream << std::format( "Implock        {}\n", sysdata->IMPLOCK );
+      stream << std::format( "Lockdown       {}\n", sysdata->LOCKDOWN );
+      stream << std::format( "Admin_Email    {}~\n", sysdata->admin_email );
+      stream << std::format( "Newbie_purge   {}\n", sysdata->newbie_purge );
+      stream << std::format( "Regular_purge  {}\n", sysdata->regular_purge );
+      stream << std::format( "Autopurge      {}\n", sysdata->CLEANPFILES );
+      stream << std::format( "Testmode       {}\n", sysdata->TESTINGMODE );
+      stream << std::format( "Mapsize        {}\n", sysdata->mapsize );
+      stream << std::format( "Motd           {}\n", motd );
+      stream << std::format( "Imotd          {}\n", imotd );
+      stream << std::format( "Telnet         {}~\n", sysdata->telnet );
+      stream << std::format( "HTTP           {}~\n", sysdata->http );
+      stream << std::format( "Maxvnum        {}\n", sysdata->maxvnum );
+      stream << std::format( "Minguild       {}\n", sysdata->minguildlevel );
+      stream << std::format( "Maxcond        {}\n", sysdata->maxcondval );
+      stream << std::format( "Maxignore      {}\n", sysdata->maxign );
+      stream << std::format( "Maximpact      {}\n", sysdata->maximpact );
+      stream << std::format( "Maxholiday     {}\n", sysdata->maxholiday );
+      stream << std::format( "Initcond       {}\n", sysdata->initcond );
+      stream << std::format( "Secpertick     {}\n", sysdata->secpertick );
+      stream << std::format( "Pulsepersec    {}\n", sysdata->pulsepersec );
+      stream << std::format( "Hoursperday    {}\n", sysdata->hoursperday );
+      stream << std::format( "Daysperweek    {}\n", sysdata->daysperweek );
+      stream << std::format( "Dayspermonth   {}\n", sysdata->dayspermonth );
+      stream << std::format( "Monthsperyear  {}\n", sysdata->monthsperyear );
+      stream << std::format( "Minego         {}\n", sysdata->minego );
+      stream << std::format( "Rebootcount    {}\n", sysdata->rebootcount );
+      stream << std::format( "Auctionseconds {}\n", sysdata->auctionseconds );
+      stream << std::format( "Gameloopalarm  {}\n", sysdata->gameloopalarm );
+      stream << std::format( "Webwho         {}\n", sysdata->webwho );
+      stream << "\n#END\n";
    }
-   FCLOSE( fp );
-}
-
-void fread_sysdata( FILE * fp )
-{
-   int file_ver = 0;
-
-   for( ;; )
-   {
-      const char *word = feof( fp ) ? "End" : fread_word( fp );
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'A':
-            STDSKEY( "Admin_Email", sysdata->admin_email );
-            KEY( "Auctionseconds", sysdata->auctionseconds, fread_number( fp ) );
-            KEY( "Autopurge", sysdata->CLEANPFILES, fread_number( fp ) );
-            break;
-
-         case 'B':
-            KEY( "Bestowdif", sysdata->bestow_dif, fread_number( fp ) );
-            KEY( "Build", sysdata->build_level, fread_number( fp ) );
-            break;
-
-         case 'C':
-            KEY( "CheckImmHost", sysdata->check_imm_host, fread_number( fp ) );
-            break;
-
-         case 'D':
-            KEY( "Damplrvsplr", sysdata->dam_plr_vs_plr, fread_number( fp ) );
-            KEY( "Damplrvsmob", sysdata->dam_plr_vs_mob, fread_number( fp ) );
-            KEY( "Dammobvsplr", sysdata->dam_mob_vs_plr, fread_number( fp ) );
-            KEY( "Dammobvsmob", sysdata->dam_mob_vs_mob, fread_number( fp ) );
-            KEY( "Dodgemod", sysdata->dodge_mod, fread_number( fp ) );
-            KEY( "Daysperweek", sysdata->daysperweek, fread_number( fp ) );
-            KEY( "Dayspermonth", sysdata->dayspermonth, fread_number( fp ) );
-            STDSKEY( "Dbserver", sysdata->dbserver );
-            STDSKEY( "Dbname", sysdata->dbname );
-            STDSKEY( "Dbuser", sysdata->dbuser );
-            STDSKEY( "Dbpass", sysdata->dbpass );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( sysdata->time_of_max.empty(  ) )
-                  sysdata->time_of_max = "(not recorded)";
-               if( sysdata->mud_name.empty(  ) )
-                  sysdata->mud_name = "(Name Not Set)";
-               if( sysdata->http.empty(  ) )
-                  sysdata->http = "No page set";
-               if( sysdata->telnet.empty(  ) )
-                  sysdata->telnet = "Not set";
-               return;
-            }
-            break;
-
-         case 'F':
-            KEY( "Forcepc", sysdata->level_forcepc, fread_number( fp ) );
-            break;
-
-         case 'G':
-            KEY( "Gameloopalarm", sysdata->gameloopalarm, fread_number( fp ) );
-            KEY( "Getnotake", sysdata->level_getobjnotake, fread_number( fp ) );
-            KEY( "Gougepvp", sysdata->gouge_plr_vs_plr, fread_number( fp ) );
-            KEY( "Gougenontank", sysdata->gouge_nontank, fread_number( fp ) );
-            break;
-
-         case 'H':
-            KEY( "Highplayers", sysdata->alltimemax, fread_number( fp ) );
-            STDSKEY( "Highplayertime", sysdata->time_of_max );
-            STDSKEY( "HTTP", sysdata->http );
-            KEY( "Hoursperday", sysdata->hoursperday, fread_number( fp ) );
-            break;
-
-         case 'I':
-            if( !str_cmp( word, "Imotd" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               sysdata->imotd = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-            KEY( "Implock", sysdata->IMPLOCK, fread_number( fp ) );
-            KEY( "Initcond", sysdata->initcond, fread_number( fp ) );
-            break;
-
-         case 'L':
-            KEY( "Lockdown", sysdata->LOCKDOWN, fread_number( fp ) );
-            break;
-
-         case 'M':
-            KEY( "Mapsize", sysdata->mapsize, fread_number( fp ) );
-            if( !str_cmp( word, "Motd" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               sysdata->motd = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-            KEY( "Msetplayer", sysdata->level_mset_player, fread_number( fp ) );
-            STDSKEY( "MudName", sysdata->mud_name );
-            KEY( "Maxvnum", sysdata->maxvnum, fread_number( fp ) );
-            KEY( "Minguild", sysdata->minguildlevel, fread_number( fp ) );
-            KEY( "Maxcond", sysdata->maxcondval, fread_number( fp ) );
-            KEY( "Maxignore", sysdata->maxign, fread_number( fp ) );
-            KEY( "Maximpact", sysdata->maximpact, fread_number( fp ) );
-            KEY( "Maxholiday", sysdata->maxholiday, fread_number( fp ) );
-            KEY( "Monthsperyear", sysdata->monthsperyear, fread_number( fp ) );
-            KEY( "Minego", sysdata->minego, fread_number( fp ) );
-            break;
-
-         case 'N':
-            KEY( "Nameresolving", sysdata->NO_NAME_RESOLVING, fread_number( fp ) );
-            KEY( "Newbie_purge", sysdata->newbie_purge, fread_number( fp ) );
-            break;
-
-         case 'O':
-            KEY( "Overridepriv", sysdata->level_override_private, fread_number( fp ) );
-            break;
-
-         case 'P':
-            KEY( "Parrymod", sysdata->parry_mod, fread_number( fp ) );
-            STDSKEY( "Password", sysdata->password ); /* Samson 2-8-01 */
-            KEY( "PetSave", sysdata->save_pets, fread_number( fp ) );
-            KEY( "Protoflag", sysdata->level_modify_proto, fread_number( fp ) );
-            KEY( "Pulsepersec", sysdata->pulsepersec, fread_number( fp ) );
-            break;
-
-         case 'R':
-            KEY( "Readallmail", sysdata->read_all_mail, fread_number( fp ) );
-            KEY( "Readmailfree", sysdata->read_mail_free, fread_number( fp ) );
-            KEY( "Rebootcount", sysdata->rebootcount, fread_number( fp ) );
-            KEY( "Regular_purge", sysdata->regular_purge, fread_number( fp ) );
-            break;
-
-         case 'S':
-            KEY( "Stunplrvsplr", sysdata->stun_plr_vs_plr, fread_number( fp ) );
-            KEY( "Stunregular", sysdata->stun_regular, fread_number( fp ) );
-            if( !str_cmp( word, "Saveflags" ) )
-            {
-               if( file_ver < 1 )
-                  sysdata->save_flags = fread_number( fp );
-               else
-                  flag_set( fp, sysdata->save_flags, save_flag );
-               break;
-            }
-            if( !str_cmp( word, "Savefreq" ) )
-            {
-               int freq = fread_long( fp );
-               sysdata->save_frequency = std::chrono::minutes( freq );
-               break;
-            }
-            KEY( "Secpertick", sysdata->secpertick, fread_number( fp ) );
-            break;
-
-         case 'T':
-            KEY( "Takeothersmail", sysdata->take_others_mail, fread_number( fp ) );
-            STDSKEY( "Telnet", sysdata->telnet );
-            KEY( "Testmode", sysdata->TESTINGMODE, fread_number( fp ) );
-            KEY( "Tumblemod", sysdata->tumble_mod, fread_number( fp ) );
-            break;
-
-         case 'V':
-            KEY( "Version", file_ver, fread_number( fp ) );
-            break;
-
-         case 'W':
-            KEY( "Waitforauth", sysdata->WAIT_FOR_AUTH, fread_number( fp ) );
-            KEY( "Wizlock", sysdata->WIZLOCK, fread_number( fp ) );
-            KEY( "Writemailfree", sysdata->write_mail_free, fread_number( fp ) );
-            KEY( "Webwho", sysdata->webwho, fread_number( fp ) );
-            break;
-      }
-   }
+   stream.close();
 }
 
 /*
@@ -876,51 +699,144 @@ void fread_sysdata( FILE * fp )
  */
 bool load_systemdata( void )
 {
-   FILE *fp;
+   int file_ver = 0;
 
-   bool found = false;
    std::filesystem::path filename = std::format( "{}sysdata.dat", SYSTEM_DIR );
+   std::ifstream stream( filename );
 
-   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
+   if( !stream.is_open() )
+      return false;
+
+   auto read_line = [&]( char delimiter = '\n' ) -> std::string
    {
-      found = true;
-      for( ;; )
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
+
+      return line;
+   };
+
+   static const std::unordered_map<std::string, std::function<void()>> loaders = {
+      { "Version",        [&](){ stream >> file_ver; } },
+      { "Mudname",        [&](){ sysdata->mud_name = read_line('~'); } },
+      { "Password",       [&](){ sysdata->password = read_line('~'); } },
+      { "Dbserver",       [&](){ sysdata->dbserver = read_line('~'); } },
+      { "Dbname",         [&](){ sysdata->dbname = read_line('~'); } },
+      { "Dbuser",         [&](){ sysdata->dbuser = read_line('~'); } },
+      { "Dbpass",         [&](){ sysdata->dbpass = read_line('~'); } },
+      { "Highplayers",    [&](){ stream >> sysdata->alltimemax; } },
+      { "Highplayertime", [&](){ sysdata->time_of_max = read_line('~'); } },
+      { "CheckImmHost",   [&](){ stream >> sysdata->check_imm_host; } },
+      { "Nameresolving",  [&](){ stream >> sysdata->NO_NAME_RESOLVING; } },
+      { "Waitforauth",    [&](){ stream >> sysdata->WAIT_FOR_AUTH; } },
+      { "Readallmail",    [&](){ stream >> sysdata->read_all_mail; } },
+      { "Readmailfree",   [&](){ stream >> sysdata->read_mail_free; } },
+      { "Writemailfree",  [&](){ stream >> sysdata->write_mail_free; } },
+      { "Takeothersmail", [&](){ stream >> sysdata->take_others_mail; } },
+      { "Getnotake",      [&](){ stream >> sysdata->level_getobjnotake; } },
+      { "Build",          [&](){ stream >> sysdata->build_level; } },
+      { "Protoflag",      [&](){ stream >> sysdata->level_modify_proto; } },
+      { "Overridepriv",   [&](){ stream >> sysdata->level_override_private; } },
+      { "Msetplayer",     [&](){ stream >> sysdata->level_mset_player; } },
+      { "Stunplrvsplr",   [&](){ stream >> sysdata->stun_plr_vs_plr; } },
+      { "Stunregular",    [&](){ stream >> sysdata->stun_regular; } },
+      { "Gougepvp",       [&](){ stream >> sysdata->gouge_plr_vs_plr; } },
+      { "Gougenontank",   [&](){ stream >> sysdata->gouge_nontank; } },
+      { "Dodgemod",       [&](){ stream >> sysdata->dodge_mod; } },
+      { "Parrymod",       [&](){ stream >> sysdata->parry_mod; } },
+      { "Tumblemod",      [&](){ stream >> sysdata->tumble_mod; } },
+      { "Damplrvsplr",    [&](){ stream >> sysdata->dam_plr_vs_plr; } },
+      { "Damplrvsmob",    [&](){ stream >> sysdata->dam_plr_vs_mob; } },
+      { "Dammobvsplr",    [&](){ stream >> sysdata->dam_mob_vs_plr; } },
+      { "Dammobvsmob",    [&](){ stream >> sysdata->dam_mob_vs_mob; } },
+      { "Forcepc",        [&](){ stream >> sysdata->level_forcepc; } },
+      { "Bestowdif",      [&](){ stream >> sysdata->bestow_dif; } },
+      { "PetSave",        [&](){ stream >> sysdata->save_pets; } },
+      { "Wizlock",        [&](){ stream >> sysdata->WIZLOCK; } },
+      { "Implock",        [&](){ stream >> sysdata->IMPLOCK; } },
+      { "Lockdown",       [&](){ stream >> sysdata->LOCKDOWN; } },
+      { "Admin_Email",    [&](){ sysdata->admin_email = read_line('~'); } },
+      { "Newbie_purge",   [&](){ stream >> sysdata->newbie_purge; } },
+      { "Regular_purge",  [&](){ stream >> sysdata->regular_purge; } },
+      { "Autopurge",      [&](){ stream >> sysdata->CLEANPFILES; } },
+      { "Testmode",       [&](){ stream >> sysdata->TESTINGMODE; } },
+      { "Mapsize",        [&](){ stream >> sysdata->mapsize; } },
+      { "Telnet",         [&](){ sysdata->telnet = read_line('~'); } },
+      { "HTTP",           [&](){ sysdata->http = read_line('~'); } },
+      { "Maxvnum",        [&](){ stream >> sysdata->maxvnum; } },
+      { "Minguild",       [&](){ stream >> sysdata->minguildlevel; } },
+      { "Maxcond",        [&](){ stream >> sysdata->maxcondval; } },
+      { "Maxignore",      [&](){ stream >> sysdata->maxign; } },
+      { "Maximpact",      [&](){ stream >> sysdata->maximpact; } },
+      { "Maxholiday",     [&](){ stream >> sysdata->maxholiday; } },
+      { "Initcond",       [&](){ stream >> sysdata->initcond; } },
+      { "Secpertick",     [&](){ stream >> sysdata->secpertick; } },
+      { "Pulsepersec",    [&](){ stream >> sysdata->pulsepersec; } },
+      { "Hoursperday",    [&](){ stream >> sysdata->hoursperday; } },
+      { "Daysperweek",    [&](){ stream >> sysdata->daysperweek; } },
+      { "Dayspermonth",   [&](){ stream >> sysdata->dayspermonth; } },
+      { "Monthsperyear",  [&](){ stream >> sysdata->monthsperyear; } },
+      { "Minego",         [&](){ stream >> sysdata->minego; } },
+      { "Rebootcount",    [&](){ stream >> sysdata->rebootcount; } },
+      { "Auctionseconds", [&](){ stream >> sysdata->auctionseconds; } },
+      { "Gameloopalarm",  [&](){ stream >> sysdata->gameloopalarm; } },
+      { "Webwho",         [&](){ stream >> sysdata->webwho; } }
+   };
+
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "#SYSTEM" )
+         continue;
+
+      if( key == "#END" || key == "End" )
+         break;
+
+      if( key == "Motd" )
       {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "%s: # not found.", __func__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "SYSTEM" ) )
-         {
-            fread_sysdata( fp );
-            break;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
+         std::time_t t;
+         stream >> t;
+         sysdata->motd = std::chrono::system_clock::from_time_t(t);
+      }
+      else if( key == "Imotd" )
+      {
+         std::time_t t;
+         stream >> t;
+         sysdata->imotd = std::chrono::system_clock::from_time_t(t);
+      }
+      else if( key == "Savefreq" )
+      {
+         int f;
+         stream >> f;
+         sysdata->save_frequency = std::chrono::minutes(f);
+      }
+      else if( key == "Saveflags" )
+      {
+         if( file_ver < 1 )
+            stream >> sysdata->save_flags;
          else
          {
-            bug( "%s: bad section: %s", __func__, word );
-            break;
+            std::string flags = read_line( '~' );
+
+            flag_string_set( flags, sysdata->save_flags, save_flag );
          }
       }
-      FCLOSE( fp );
-      update_timers(  );
-      update_calendar(  );
+      else if( loaders.contains( key ) )
+      {
+         loaders.at( key )();
+      }
+      else
+      {
+         bug( "%s: Invalid key in sysdata file: %s", __func__, key.c_str() );
+         continue;
+      }
    }
-   return found;
+   stream.close();
+
+   update_timers(  );
+   update_calendar(  );
+
+   return true;
 }
 
 /*
@@ -1135,7 +1051,6 @@ void boot_db( bool fCopyOver )
    if( !load_systemdata(  ) )
    {
       log_string( "Not found. Creating new configuration." );
-      sysdata->alltimemax = 0;
       sysdata->mud_name = "(Name not set)";
       update_timers(  );
       update_calendar(  );
@@ -1231,14 +1146,6 @@ void boot_db( bool fCopyOver )
    nummobsloaded = 0;
    numobjsloaded = 0;
    physicalobjects = 0;
-   objlist.clear(  );
-   charlist.clear(  );
-   shoplist.clear(  );
-   repairlist.clear(  );
-   teleportlist.clear(  );
-   room_act_list.clear(  );
-   obj_act_list.clear(  );
-   mob_act_list.clear(  );
    cur_qobjs = 0;
    cur_qchars = 0;
    extracted_obj_queue = nullptr;
@@ -1826,129 +1733,4 @@ void log_printf( const char *fmt, ... )
 void log_string( std::string_view txt )
 {
    log_string_plus( LOG_NORMAL, LEVEL_LOG, txt );
-}
-
-/*
- *  Dump command...This command creates a text file with the stats of every  *
- *  mob, or object in the mud, depending on the argument given.              *
- *  Obviously, this will tend to create HUGE files, so it is recommended     *
- *  that it be only given to VERY high level imms, and preferably those      *
- *  with shell access, so that they may clean it out when they are done      *
- *  with it.
- */
-CMDF( do_dump )
-{
-   if( ch->isnpc(  ) )
-      return;
-
-   if( !ch->is_imp(  ) )
-   {
-      ch->print( "Sorry, only an Implementer may use this command!\r\n" );
-      return;
-   }
-
-   if( !str_cmp( argument, "mobs" ) )
-   {
-      FILE *fp = fopen( "../mobdata.txt", "w" );
-      ch->print( "Writing to file...\r\n" );
-
-      for( int counter = 0; counter < sysdata->maxvnum; ++counter )
-      {
-         mob_index *mob;
-
-         if( ( mob = get_mob_index( counter ) ) != nullptr )
-         {
-            fprintf( fp, "VNUM:  %d\n", mob->vnum );
-            fprintf( fp, "S_DESC:  %s\n", mob->short_descr );
-            fprintf( fp, "LEVEL:  %d\n", mob->level );
-            fprintf( fp, "HITROLL:  %d\n", mob->hitroll );
-            fprintf( fp, "DAMROLL:  %d\n", mob->damroll );
-            fprintf( fp, "HITDIE:  %dd%d+%d\n", mob->hitnodice, mob->hitsizedice, mob->hitplus );
-            fprintf( fp, "DAMDIE:  %dd%d+%d\n", mob->damnodice, mob->damsizedice, mob->damplus );
-            fprintf( fp, "ACT FLAGS:  %s\n", bitset_string( mob->actflags, act_flags ) );
-            fprintf( fp, "AFFECTED_BY:  %s\n", bitset_string( mob->affected_by, aff_flags ) );
-            fprintf( fp, "RESISTS:  %s\n", bitset_string( mob->resistant, ris_flags ) );
-            fprintf( fp, "SUSCEPTS:  %s\n", bitset_string( mob->susceptible, ris_flags ) );
-            fprintf( fp, "IMMUNE:  %s\n", bitset_string( mob->immune, ris_flags ) );
-            fprintf( fp, "ABSORB:  %s\n", bitset_string( mob->absorb, ris_flags ) );
-            fprintf( fp, "ATTACKS:  %s\n", bitset_string( mob->attacks, attack_flags ) );
-            fprintf( fp, "DEFENSES:  %s\n\n\n", bitset_string( mob->defenses, defense_flags ) );
-         }
-      }
-      FCLOSE( fp );
-      ch->print( "Done.\r\n" );
-      return;
-   }
-
-   if( !str_cmp( argument, "rooms" ) )
-   {
-      FILE *fp = fopen( "../roomdata.txt", "w" );
-      ch->print( "Writing to file...\r\n" );
-
-      for( int counter = 0; counter < sysdata->maxvnum; ++counter )
-      {
-         room_index *room;
-
-         if( ( room = get_room_index( counter ) ) != nullptr )
-         {
-            fprintf( fp, "VNUM:  %d\n", room->vnum );
-            fprintf( fp, "NAME:  %s\n", room->name );
-            fprintf( fp, "SECTOR:  %s\n", sect_types[room->sector_type] );
-            fprintf( fp, "FLAGS:  %s\n\n\n", bitset_string( room->flags, r_flags ) );
-         }
-      }
-      FCLOSE( fp );
-      ch->print( "Done.\r\n" );
-      return;
-   }
-
-   if( !str_cmp( argument, "objects" ) )
-   {
-      FILE *fp = fopen( "../objdata.txt", "w" );
-      ch->print( "Writing objects to file...\r\n" );
-
-      for( int counter = 0; counter < sysdata->maxvnum; ++counter )
-      {
-         obj_index *obj;
-
-         if( ( obj = get_obj_index( counter ) ) != nullptr )
-         {
-            fprintf( fp, "VNUM: %d\n", obj->vnum );
-            fprintf( fp, "KEYWORDS: %s\n", obj->name );
-            fprintf( fp, "TYPE: %s\n", o_types[obj->item_type] );
-            fprintf( fp, "SHORT DESC: %s\n", obj->short_descr );
-            fprintf( fp, "FLAGS: %s\n", bitset_string( obj->extra_flags, o_flags ) );
-            fprintf( fp, "WEARFLAGS: %s\n", bitset_string( obj->wear_flags, w_flags ) );
-            fprintf( fp, "WEIGHT: %d\n", obj->weight );
-            fprintf( fp, "COST: %d\n", obj->cost );
-            fprintf( fp, "EGO: %d\n", obj->ego );
-            fprintf( fp, "ZONE: %s\n", obj->area->name );
-            fprintf( fp, "%s", "AFFECTS:\n" );
-
-            for( auto* af: obj->affects )
-            {
-               if( af->location == APPLY_AFFECT )
-                  fprintf( fp, "%s by %s\n", a_types[af->location], aff_flags[af->modifier] );
-               else if( af->location == APPLY_WEAPONSPELL
-                        || af->location == APPLY_WEARSPELL
-                        || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
-                  fprintf( fp, "%s '%s'\n", a_types[af->location], IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN" );
-               else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
-                  fprintf( fp, "%s %s\n", a_types[af->location], bitset_string( af->rismod, ris_flags ) );
-               else
-                  fprintf( fp, "%s %d\n", a_types[af->location], af->modifier );
-            }
-
-            if( obj->layers > 0 )
-               fprintf( fp, "Layerable - Wear layer: %d\n", obj->layers );
-
-            for( int x = 0; x < MAX_OBJ_VALUE; ++x )
-               fprintf( fp, "VAL%d: %d\n", x, obj->value[x] );
-         }
-      }
-      FCLOSE( fp );
-      ch->print( "Done.\r\n" );
-      return;
-   }
-   ch->print( "Syntax: dump <mobs/objects>\r\n" );
 }

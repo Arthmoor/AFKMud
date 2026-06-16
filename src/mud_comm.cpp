@@ -27,7 +27,6 @@
  *                       was written by N'Atas-ha.                          *
  ****************************************************************************/
 
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "bits.h"

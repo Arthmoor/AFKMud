@@ -27,7 +27,6 @@
  ****************************************************************************/
 
 #include <algorithm>
-#include <format>
 #include <ranges>
 #include "mud.h"
 #include "descriptor.h"

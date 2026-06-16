@@ -1,7 +1,6 @@
 #SYSTEM
 Version        1
-MudName        AFKMud~
-Password       ~
+Mudname        AFKMud~
 Dbserver       localhost~
 Dbname         dbname~
 Dbuser         dbuser~
@@ -67,6 +66,5 @@ Rebootcount    5
 Auctionseconds 15
 Gameloopalarm  30
 Webwho         0
-End
 
 #END

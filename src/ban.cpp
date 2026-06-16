@@ -35,7 +35,6 @@
 #include <arpa/inet.h>
 #include <cmath>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include "mud.h"
 #include "ban.h"

@@ -29,7 +29,6 @@
 #include <dlfcn.h>   /* Required for libdl - Trax */
 #include <cassert>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include "mud.h"
 #include "descriptor.h"

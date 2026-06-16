@@ -30,7 +30,6 @@
 #include <netdb.h>
 #include <sys/wait.h>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <thread>
 #include "mud.h"

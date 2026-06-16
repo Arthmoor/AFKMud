@@ -30,7 +30,6 @@
  ****************************************************************************/
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "boards.h"
 #include "clans.h"

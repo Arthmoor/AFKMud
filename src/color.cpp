@@ -63,7 +63,6 @@
  */
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "descriptor.h"
 

@@ -26,7 +26,6 @@
  *                             Map reading module                           *
  ****************************************************************************/
 
-#include <format>
 #include "mud.h"
 #include "boards.h"
 #include "objindex.h"

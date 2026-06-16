@@ -26,7 +26,6 @@
  *                           Area Support Functions                         *
  ****************************************************************************/
 
-#include <format>
 #include <filesystem>
 #include "mud.h"
 #include "area.h"

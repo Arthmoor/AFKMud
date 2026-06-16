@@ -44,7 +44,6 @@
 
 #include <arpa/telnet.h>
 #include <sys/socket.h>
-#include <format>
 #include "mud.h"
 #include "descriptor.h"
 #include "mud_prog.h"

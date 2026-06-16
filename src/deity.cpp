@@ -29,7 +29,6 @@
 /* Put together by Rennard for Realms of Despair.  Brap on... */
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "deity.h"
 #include "mobindex.h"

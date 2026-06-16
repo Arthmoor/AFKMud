@@ -30,7 +30,6 @@
 /* Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03 */
 
 #include <filesystem>
-#include <format>
 #include "mud.h"
 #include "area.h"
 #include "areaconvert.h"

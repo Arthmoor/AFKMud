@@ -28,7 +28,6 @@
 
 #include <dlfcn.h> // For libdl -- Trax
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include "mud.h"
 #include "clans.h"
