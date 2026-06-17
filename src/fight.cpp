@@ -87,7 +87,7 @@ bool in_arena( char_data * ch )
 
    if( !ch->in_room )
    {
-      bug( "%s: %s in nullptr room. Only The Wedgy knows how though.", __func__, ch->name );
+      bug( "%s: %s in nullptr room. Only The Wedgy knows how though.", __func__, ch->name.c_str() );
       log_string( "Going to attempt to move them to Limbo to prevent a crash." );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -123,7 +123,7 @@ void make_blood( char_data * ch )
  */
 void make_corpse( char_data * ch, char_data * killer )
 {
-   const char *name;
+   std::string name;
    obj_data *corpse;
 
    if( ch->isnpc(  ) )
@@ -195,14 +195,14 @@ void make_corpse( char_data * ch, char_data * killer )
    }
 
    if( ch->CAN_PKILL(  ) && killer->CAN_PKILL(  ) && ch != killer )
-      stralloc_printf( &corpse->action_desc, "%s", killer->name );
+      stralloc_printf( &corpse->action_desc, "%s", killer->name.c_str() );
 
    /*
     * Added corpse name - make locate easier, other skills 
     */
-   stralloc_printf( &corpse->name, "corpse %s", name );
-   stralloc_printf( &corpse->short_descr, corpse->short_descr, name );
-   stralloc_printf( &corpse->objdesc, corpse->objdesc, name );
+   stralloc_printf( &corpse->name, "corpse %s", name.c_str() );
+   stralloc_printf( &corpse->short_descr, corpse->short_descr, name.c_str() );
+   stralloc_printf( &corpse->objdesc, corpse->objdesc, name.c_str() );
 
    /*
     * Used in spell_animate_dead to check for dragons, currently. -- Tarl 29 July 2002 
@@ -309,16 +309,16 @@ void class_monitor( char_data * ch )
    }
 
    if( ch->Class == CLASS_RANGER && ( ch->alignment < -249 && ch->alignment >= -350 ) )
-      ch->printf( "You are straying from your cause against evil %s!", ch->name );
+      ch->print_fmt( "You are straying from your cause against evil {}!", ch->name );
 
    if( ch->Class == CLASS_ANTIPALADIN && ( ch->alignment > -449 && ch->alignment <= -351 ) )
-      ch->printf( "You are straying from your evil ways %s!", ch->name );
+      ch->print_fmt( "You are straying from your evil ways {}!", ch->name );
 
    if( ch->Class == CLASS_PALADIN && ( ch->alignment < 449 && ch->alignment >= 350 ) )
-      ch->printf( "You are straying from your rightious ways %s!", ch->name );
+      ch->print_fmt( "You are straying from your rightious ways {}!", ch->name );
 
    if( ch->Class == CLASS_DRUID && ( ch->alignment < -249 || ch->alignment > 249 ) )
-      ch->printf( "You are straying from the balanced path %s!", ch->name );
+      ch->print_fmt( "You are straying from the balanced path {}!", ch->name );
 }
 
 char_data *char_data::who_fighting(  )
@@ -360,7 +360,7 @@ CMDF( do_ageattack )
    if( agechance < 92 )
       return;
 
-   victim->printf( "%s touches you, and you feel yourself aging!\r\n", ch->short_descr );
+   victim->print_fmt( "{} touches you, and you feel yourself aging!\r\n", ch->short_descr );
    victim->pcdata->age_bonus += 1;
 }
 
@@ -448,7 +448,7 @@ CMDF( do_gfighting )
    else if( !str_cmp( argument, "hunting" ) )
       phunting = true;
 
-   ch->pagerf( "\r\n&cGlobal %s conflict:\r\n", pmobs ? "mob" : "character" );
+   ch->pager_fmt( "\r\n&cGlobal {} conflict:\r\n", pmobs ? "mob" : "character" );
    if( !pmobs && !phating && !phunting )
    {
       for( auto* d : dlist )
@@ -457,7 +457,7 @@ CMDF( do_gfighting )
              && ( victim = d->character ) != nullptr && !victim->isnpc(  ) && victim->in_room
              && ch->can_see( victim, false ) && victim->fighting && victim->level >= low && victim->level <= high )
          {
-            ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
+            ch->pager_fmt( "&w{:<12.12} &C|{:2} &wvs &C{:2}| &w{:<16.16} [{:5}]  &c{:<20.20} [{:5}]\r\n",
                         victim->name, victim->level, victim->fighting->who->level,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->short_descr : victim->fighting->who->name,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->pIndexData->vnum : 0,
@@ -474,7 +474,7 @@ CMDF( do_gfighting )
 
          if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->fighting && victim->level >= low && victim->level <= high )
          {
-            ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
+            ch->pager_fmt( "&w{:<12.12} &C|{:2} &wvs &C{:2}| &w{:<16.16} [{:5}]  &c{:<20.20} [{:5}]\r\n",
                         victim->name, victim->level, victim->fighting->who->level,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->short_descr : victim->fighting->who->name,
                         victim->fighting->who->isnpc(  )? victim->fighting->who->pIndexData->vnum : 0,
@@ -491,7 +491,7 @@ CMDF( do_gfighting )
 
          if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->hating && victim->level >= low && victim->level <= high )
          {
-            ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
+            ch->pager_fmt( "&w{:<12.12} &C|{:2} &wvs &C{:2}| &w{:<16.16} [{:5}]  &c{:<20.20} [{:5}]\r\n",
                         victim->name, victim->level, victim->hating->who->level, victim->hating->who->isnpc(  )?
                         victim->hating->who->short_descr : victim->hating->who->name, victim->hating->who->isnpc(  )?
                         victim->hating->who->pIndexData->vnum : 0, victim->in_room->area->name, victim->in_room == nullptr ? 0 : victim->in_room->vnum );
@@ -507,7 +507,7 @@ CMDF( do_gfighting )
 
          if( victim->isnpc(  ) && victim->in_room && ch->can_see( victim, false ) && victim->hunting && victim->level >= low && victim->level <= high )
          {
-            ch->pagerf( "&w%-12.12s &C|%2d &wvs &C%2d| &w%-16.16s [%5d]  &c%-20.20s [%5d]\r\n",
+            ch->pager_fmt( "&w{:<12.12} &C|{:2} &wvs &C{:2}| &w{:<16.16} [{:5}]  &c{:<20.20} [{:5}]\r\n",
                         victim->name, victim->level, victim->hunting->who->level, victim->hunting->who->isnpc(  )?
                         victim->hunting->who->short_descr : victim->hunting->who->name,
                         victim->hunting->who->isnpc(  )? victim->hunting->who->pIndexData->vnum : 0,
@@ -516,7 +516,7 @@ CMDF( do_gfighting )
          }
       }
    }
-   ch->pagerf( "&c%d %s conflicts located.\r\n", count, pmobs ? "mob" : "character" );
+   ch->pager_fmt( "&c{} {} conflicts located.\r\n", count, pmobs ? "mob" : "character" );
 }
 
 /*
@@ -652,7 +652,7 @@ bool check_illegal_pk( char_data * ch, char_data * victim )
           && !in_arena( ch ) && ch != victim && !( ch->is_immortal(  ) && victim->is_immortal(  ) ) )
       {
          log_printf( "&p%s on %s%s in &W***&rILLEGAL PKILL&W*** &pattempt at %d",
-                     ( lastplayercmd.c_str() ), ( victim->isnpc(  )? victim->short_descr : victim->name ), ( victim->isnpc(  )? victim->name : "" ), victim->in_room->vnum );
+                     ( lastplayercmd.c_str() ), ( victim->isnpc(  ) ? victim->short_descr.c_str() : victim->name.c_str() ), ( victim->isnpc(  ) ? victim->name.c_str() : "" ), victim->in_room->vnum );
          last_pkroom = victim->in_room->vnum;
          return true;
       }
@@ -673,13 +673,13 @@ bool is_safe( char_data * ch, char_data * victim )
 
    if( !victim )  /*Gonna find this is_safe crash bug -Blod */
    {
-      bug( "%s: %s opponent does not exist!", __func__, ch->name );
+      bug( "%s: %s opponent does not exist!", __func__, ch->name.c_str() );
       return true;
    }
 
    if( !victim->in_room )
    {
-      bug( "%s: %s has no physical location!", __func__, victim->name );
+      bug( "%s: %s has no physical location!", __func__, victim->name.c_str() );
       return true;
    }
 
@@ -1556,7 +1556,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       w_index = dt - TYPE_HIT;
    else
    {
-      bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
+      bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name.c_str(), ch->in_room->vnum );
       dt = TYPE_HIT;
       w_index = 0;
    }
@@ -1605,7 +1605,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          attack = attack_table[dt - TYPE_HIT];
       else
       {
-         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
+         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name.c_str(), ch->in_room->vnum );
          dt = TYPE_HIT;
          attack = attack_table[0];
       }
@@ -1668,7 +1668,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       }
       else
       {
-         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name, ch->in_room->vnum );
+         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name.c_str(), ch->in_room->vnum );
          attack = attack_table[0];
       }
       buf1 = std::format( "$n's {} {} $N{}", attack, vp, punct );
@@ -1718,7 +1718,7 @@ void check_attacker( char_data * ch, char_data * victim )
    {
       if( !ch->master )
       {
-         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  )? ch->short_descr : ch->name );
+         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  ) ? ch->short_descr.c_str() : ch->name.c_str() );
          ch->affect_strip( gsn_charm_person );
          ch->unset_aflag( AFF_CHARM );
          return;
@@ -1746,7 +1746,7 @@ void set_fighting( char_data * ch, char_data * victim )
 
    if( ch->fighting )
    {
-      bug( "%s: %s -> %s (already fighting %s)", __func__, ch->name, victim->name, ch->fighting->who->name );
+      bug( "%s: %s -> %s (already fighting %s)", __func__, ch->name.c_str(), victim->name.c_str(), ch->fighting->who->name.c_str() );
       return;
    }
 
@@ -1946,8 +1946,8 @@ void check_killer( char_data * ch, char_data * victim )
          victim->update_pos(  );
          if( victim != ch )
          {
-            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into $n.", ch, victim->name, nullptr, TO_ROOM );
-            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into you.", ch, victim->name, nullptr, TO_CHAR );
+            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into $n.", ch, victim->name.c_str(), nullptr, TO_ROOM );
+            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into you.", ch, victim->name.c_str(), nullptr, TO_CHAR );
          }
          if( victim->pcdata->clan )
          {
@@ -1988,7 +1988,7 @@ void check_killer( char_data * ch, char_data * victim )
    {
       if( !ch->master )
       {
-         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  )? ch->short_descr : ch->name );
+         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  ) ? ch->short_descr.c_str() : ch->name.c_str() );
          ch->affect_strip( gsn_charm_person );
          ch->unset_aflag( AFF_CHARM );
          return;
@@ -2336,7 +2336,7 @@ void death_cry( char_data * ch )
    if( vnum )
    {
       obj_data *obj;
-      char *name;
+      std::string name;
 
       if( !get_obj_index( vnum ) )
       {
@@ -2344,7 +2344,7 @@ void death_cry( char_data * ch )
          return;
       }
 
-      name = ch->isnpc(  )? ch->short_descr : ch->name;
+      name = ch->isnpc(  ) ? ch->short_descr : ch->name;
       if( !( obj = get_obj_index( vnum )->create_object( 1 ) ) )
       {
          log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -2354,8 +2354,8 @@ void death_cry( char_data * ch )
       if( ch->has_aflag( AFF_POISON ) )
          obj->value[3] = 10;
 
-      stralloc_printf( &obj->short_descr, obj->short_descr, name );
-      stralloc_printf( &obj->objdesc, obj->objdesc, name );
+      stralloc_printf( &obj->short_descr, obj->short_descr, name.c_str() );
+      stralloc_printf( &obj->objdesc, obj->objdesc, name.c_str() );
       obj->to_room( ch->in_room, ch );
    }
 }
@@ -2364,7 +2364,7 @@ void raw_kill( char_data * ch, char_data * victim )
 {
    if( !victim )
    {
-      bug( "%s: null victim! CH: %s", __func__, ch->name );
+      bug( "%s: null victim! CH: %s", __func__, ch->name.c_str() );
       return;
    }
 
@@ -2383,9 +2383,9 @@ void raw_kill( char_data * ch, char_data * victim )
    {
       room_index *location = nullptr;
 
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s bested %s in the arena.", ch->name, victim->name );
-      ch->printf( "You bested %s in arena combat!\r\n", victim->name );
-      victim->printf( "%s bested you in arena combat!\r\n", ch->name );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s bested %s in the arena.", ch->name.c_str(), victim->name.c_str() );
+      ch->print_fmt( "You bested {} in arena combat!\r\n", victim->name );
+      victim->print_fmt( "{} bested you in arena combat!\r\n", ch->name );
       victim->hit = 1;
       victim->position = POS_RESTING;
 
@@ -2764,7 +2764,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
    if( dam > maxdam )
    {
       bug( "%s: %d more than %d points!", __func__, ( int )dam, maxdam );
-      log_printf( "** %s (lvl %d) -> %s **", ch->name, ch->level, victim->name );
+      log_printf( "** %s (lvl %d) -> %s **", ch->name.c_str(), ch->level, victim->name.c_str() );
       dam = maxdam;
    }
 
@@ -3048,7 +3048,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             add_loginmsg( victim->name, 17, ( ch->isnpc() ? ch->short_descr : ch->name ) );
 
          log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s (%d) killed by %s at %d",
-                          victim->name, victim->level, ( ch->isnpc(  )? ch->short_descr : ch->name ), victim->in_room->vnum );
+                          victim->name.c_str(), victim->level, ( ch->isnpc(  ) ? ch->short_descr.c_str() : ch->name.c_str() ), victim->in_room->vnum );
 
          if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->clan && ch->pcdata->clan->clan_type != CLAN_GUILD && victim != ch )
          {
@@ -3735,7 +3735,7 @@ ch_ret multi_hit( char_data * ch, char_data * victim, int dt )
          {
             if( !ch->get_eq( WEAR_WIELD ) )
             {
-               bug( "%s: !WEAR_WIELD in multi_hit in fight.c: %s", __func__, ch->name );
+               bug( "%s: !WEAR_WIELD in multi_hit in fight.c: %s", __func__, ch->name.c_str() );
                return rNONE;
             }
             /*

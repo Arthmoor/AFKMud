@@ -105,7 +105,7 @@ CMDF( do_oredit )
    }
 
    /*
-    * Make sure the room isnt already being edited 
+    * Make sure the room isn't already being edited
     */
    std::list<descriptor_data *>::iterator ds;
    descriptor_data *d;
@@ -116,7 +116,7 @@ CMDF( do_oredit )
       if( d->connected == CON_REDIT )
          if( d->olc && d->olc->number == room->vnum )
          {
-            ch->printf( "That room is currently being edited by %s.\r\n", d->character->name );
+            ch->print_fmt( "That room is currently being edited by {}.\r\n", d->character->name );
             return;
          }
    }
@@ -283,17 +283,17 @@ void olc_log( descriptor_data * d, const char *format, ... )
    va_end( args );
 
    if( d->connected == CON_REDIT )
-      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s ROOM(%d): ", d->character->name, room->vnum );
+      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s ROOM(%d): ", d->character->name.c_str(), room->vnum );
 
    else if( d->connected == CON_OEDIT )
-      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s OBJ(%d): ", d->character->name, obj->pIndexData->vnum );
+      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s OBJ(%d): ", d->character->name.c_str(), obj->pIndexData->vnum );
 
    else if( d->connected == CON_MEDIT )
    {
       if( victim->isnpc(  ) )
-         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s MOB(%d): ", d->character->name, victim->pIndexData->vnum );
+         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s MOB(%d): ", d->character->name.c_str(), victim->pIndexData->vnum );
       else
-         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s PLR(%s): ", d->character->name, victim->name );
+         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s PLR(%s): ", d->character->name.c_str(), victim->name.c_str() );
    }
    else
       bug( "%s: called with a bad connected state", __func__ );

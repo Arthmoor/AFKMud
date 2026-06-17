@@ -55,10 +55,10 @@ class pc_data
    std::bitset<MAX_PCFLAG> flags;                        // Whether the player is deadly and whatever else we add. Also covers the old PLR_FLAGS
 
  public:
-     friend class char_data;
+   friend class char_data;                             // This lets char_data have access to pc_data's private class functions and members.
 
-     pc_data(  );
-    ~pc_data(  );
+   pc_data(  );
+   ~pc_data(  );
 
    /*
     * External references 
@@ -97,9 +97,20 @@ class pc_data
    std::chrono::system_clock::time_point motd;           // Last time they read an MOTD - Samson 12-31-00
    std::chrono::system_clock::time_point imotd;          // Last time they read an IMOTD for immortals - 12-31-00
    std::chrono::system_clock::time_point logon;          // When they last logged on.
-   std::chrono::hours played;                            // Total hours they have in the game so far.
-   std::chrono::system_clock::time_point save_time;
+   std::chrono::system_clock::time_point save_time;      // Tracks the last time the player saved in the session.
    std::chrono::system_clock::time_point restore_time;   // The last time the person did a restore all.
+   std::chrono::hours played;                            // Total hours they have in the game so far.
+   std::string bamfin;                                   // Message displayed when an immortal enters a room, if set.
+   std::string bamfout;                                  // Message displayed when an immortal leaves a room, if set.
+   std::string rank;                                     // This is where titles from the class table get assigned, and also for special ranks for high level immortals.
+   std::string title;                                    // Custom title, displayed on the who output.
+   std::string helled_by;                                // Who put this person in hell.
+   std::string bio;                                      // Personal Bio. Visible using the finger command.
+   std::string prompt;                                   // User configurable general prompt.
+   std::string fprompt;                                  // User configurable fight prompt.
+   std::string subprompt;                                // Substate prompt.
+   std::string afkbuf;                                   // afk reason buffer - Samson 8-31-98
+   std::string motd_buf;                                 // A temp buffer for editing MOTDs - 12-31-00
    class area_data *area = nullptr;                      // For the area a PC has been assigned to build.
    class clan_data *clan = nullptr;                      // What clan, guild, or order they are a member of.
    class realm_data *realm = nullptr;                    // What immortal realm they are a part of.
@@ -108,20 +119,8 @@ class pc_data
    class note_data *pnote = nullptr;                     // Board stuff.
    class board_data *board = nullptr;                    // Board stuff.
    struct game_board_data *game_board = nullptr;         // Chess board they are playing on.
- public:
-   void *spare_ptr = nullptr;                            // Um... sure.
-   void *dest_buf = nullptr;                             // This one is to assign to different things. [Um... sure]
-   char *bamfin = nullptr;                               // Message displayed when an immortal enters a room, if set.
-   char *bamfout = nullptr;                              // Message displayed when an immortal leaves a room, if set.
-   char *rank = nullptr;                                 // Rank they hold in a clan, guild, order, or realm.
-   char *title = nullptr;                                // Custom title, displayed on the who output.
-   char *helled_by = nullptr;                            // Who put this person in hell.
-   char *bio = nullptr;                                  // Personal Bio. Visible using the finger command.
-   char *prompt = nullptr;                               // User configurable general prompt.
-   char *fprompt = nullptr;                              // User configurable fight prompt.
-   char *subprompt = nullptr;                            // Substate prompt.
-   char *afkbuf = nullptr;                               // afk reason buffer - Samson 8-31-98
-   char *motd_buf = nullptr;                             // A temp buffer for editing MOTDs - 12-31-00
+   void *spare_ptr = nullptr;                            // Um... sure. It appears to be used as a swapping point in tandem with the dest_buf pointer when dealing with things in the editor.
+   void *dest_buf = nullptr;                             // This one is to assign to different things. [What it is is a hackish way to pass pointers through the editor system]
    int pkills = 0;                                       // Number of pkills on behalf of clan.
    int pdeaths = 0;                                      // Number of times pkilled (legally).
    int mkills = 0;                                       // Number of mobs killed.
@@ -137,15 +136,15 @@ class pc_data
    int spam = 0;                                         // How many times have they triggered the spamguard? - 3-18-01
    int timezone = -1;                                    // The user's current real world timezone.
    int version = 0;                                      // Temporary variable to track pfile password conversion.
-   short learned[MAX_SKILL];                             // Skill levels they have achieved for all the skills/spells in the game.
+   short learned[MAX_SKILL]{0};                          // Skill levels they have achieved for all the skills/spells in the game.
    short wizinvis = 0;                                   // wizinvis level
-   short condition[MAX_CONDS];                           // Current levels of drunkenness, thirst, and hunger.
+   short condition[MAX_CONDS]{0};                        // Current levels of drunkenness, thirst, and hunger.
    short favor = 0;                                      // How much favor they have with their chosen deity.
    short practice = 0;                                   // Number of remaining practice sessions available for use at a skill trainer.
    short pagerlen = 24;                                  // For on screen pager (NOT menus)
    short camp = 0;                                       // Did the player camp or rent? Samson 9-19-98
    short colors[MAX_COLORS];                             // Custom color codes - Samson 9-28-98
-   short beacon[MAX_BEACONS];                            // For beacon spell, recall points - Samson 2-7-99
+   short beacon[MAX_BEACONS]{0};                         // For beacon spell, recall points - Samson 2-7-99
    short charmies = 0;                                   // Number of Charmies.
    short cmd_recurse = -1;                               // Command recursion check for the alias code.
    short age_bonus = 0;                                  // Modifier to the player's in-game age.
@@ -154,7 +153,7 @@ class pc_data
    short month = 0;                                      // The in-game month the player created their character.
    short year = 0;                                       // The in-game year the player created their character.
    short daysidle = 0;                                   // Number of days they've been idle from the game. Counts while offline as well. Used in rare item handling.
-   bool hotboot = false;  /* Used only to force hotboot to save keys etc that normally get stripped - Samson 6-22-01 */
+   bool hotboot = false;                                 // Used only to force hotboot to save keys etc that normally get stripped - Samson 6-22-01
 };
 
 /*
@@ -167,8 +166,8 @@ class char_data
      char_data & operator=( const char_data & );
 
  public:
-     char_data(  );
-    ~char_data(  );
+   char_data(  );
+   ~char_data(  );
 
    /*
     * Internal to character.cpp
@@ -497,140 +496,139 @@ class char_data
       }
    }
 
-   std::map<int, std::string> abits; /* abit/qbit code */
-   std::list<char_data *> pets;
-   std::list<obj_data *> carrying;
-   std::list<affect_data *> affects;
-   std::list<timer_data *> timers;
-   std::list<class mprog_act_list *> mpact;  /* Mudprogs */
-   std::list<struct variable_data *> variables;  // Quest flags
-   std::vector<std::string> bodypart_where_names; /* Body part wear messages */
-   std::string spec_funname;
-   char_data *master = nullptr;
-   char_data *leader = nullptr;
-   char_data *reply = nullptr;
-   char_data *switched = nullptr;
-   char_data *mount = nullptr;
-   char_data *my_skyship = nullptr;  /* Bond skyship to player */
-   char_data *my_rider = nullptr; /* Bond player to skyship */
-   pc_data *pcdata = nullptr;  /* For data only players will have */
-   descriptor_data *desc = nullptr;  /* A player's connection data */
-   mob_index *pIndexData = nullptr;  /* Pointer to the mob index class for an NPC */
-   obj_data *on = nullptr;  /* Xerves' Furniture Code - Samson 7-20-00 */
-   room_index *in_room = nullptr;
-   room_index *was_in_room = nullptr;
-   room_index *orig_room = nullptr;  /* Xorith's boards */
-   class ship_data *on_ship = nullptr; /* Ship char is on, or nullptr if not - Samson 1-6-00 */
-   struct fighting_data *fighting = nullptr;
-   struct hunt_hate_fear *hunting = nullptr;
-   struct hunt_hate_fear *fearing = nullptr;
-   struct hunt_hate_fear *hating = nullptr;
-   class char_morph *morph = nullptr;
-   class continent_data *continent = nullptr;  /* Which map are they on? - Samson 8-3-99 */
-   DO_FUN *last_cmd = nullptr;
-   DO_FUN *prev_cmd = nullptr; /* mapping */
-   SPEC_FUN *spec_fun = nullptr;
+   std::map<int, std::string> abits;               // abit/qbit code - Tracks what bits are set.
+   std::list<char_data *> pets;                    // List of pets this person or NPC has.
+   std::list<obj_data *> carrying;                 // List of objects they are carrying.
+   std::list<affect_data *> affects;               // List of active effects on the character.
+   std::list<timer_data *> timers;                 // Timers...
+   std::list<class mprog_act_list *> mpact;        // Mudprogs
+   std::list<struct variable_data *> variables;    // Quest flags added by the variables system.
+   std::vector<std::string> bodypart_where_names;  // Body part wear messages.
+   std::string spec_funname;                       // Name of a special function the NPC has.
+   char_data *master = nullptr;                    // Pointer to which character is this NPC's master, Mainly for charmies.
+   char_data *leader = nullptr;                    // Group leader for a group this character is in.
+   char_data *reply = nullptr;                     // ...
+   char_data *switched = nullptr;                  // What NPC an immortal is switched into.
+   char_data *mount = nullptr;                     // Mount that belongs to this character.
+   char_data *my_skyship = nullptr;                // Bond skyship to player for flight on the overland.
+   char_data *my_rider = nullptr;                  // Bond player to skyship for flight on the overland.
+   pc_data *pcdata = nullptr;                      // For data only players will have.
+   descriptor_data *desc = nullptr;                // A player's network connection data.
+   mob_index *pIndexData = nullptr;                // Pointer to the mob index class for an NPC.
+   obj_data *on = nullptr;                         // Xerves' Furniture Code - Samson 7-20-00
+   room_index *in_room = nullptr;                  // What room the character is currently in.
+   room_index *was_in_room = nullptr;              // What room the character was previously in.
+   room_index *orig_room = nullptr;                // Xorith's boards.
+   class ship_data *on_ship = nullptr;             // Ship char is on, or nullptr if not - Samson 1-6-00
+   struct fighting_data *fighting = nullptr;       // Who the character is currently in combat with.
+   struct hunt_hate_fear *hunting = nullptr;       // Who the character is currently hunting/tracking.
+   struct hunt_hate_fear *fearing = nullptr;       // Who the character is supposed to be afraid of.
+   struct hunt_hate_fear *hating = nullptr;        // Who the character currently hates.
+   class char_morph *morph = nullptr;              // If they are polymorphed, which form they're in.
+   class continent_data *continent = nullptr;      // Which overland map are they on? - Samson 8-3-99
+   DO_FUN *last_cmd = nullptr;                     // ...
+   DO_FUN *prev_cmd = nullptr;                     // ...
+   SPEC_FUN *spec_fun = nullptr;                   // Pointer to the spec_fun function in use by this NPC.
  private:
-   std::bitset<MAX_ACT_FLAG> actflags;
-   std::bitset<MAX_AFFECTED_BY> affected_by;
-   std::bitset<MAX_AFFECTED_BY> no_affected_by;
-   std::bitset<MAX_ATTACK_TYPE> attacks;
-   std::bitset<MAX_DEFENSE_TYPE> defenses;
-   std::bitset<MAX_BPART> body_parts;
-   std::bitset<MAX_RIS_FLAG> resistant;
-   std::bitset<MAX_RIS_FLAG> no_resistant;
-   std::bitset<MAX_RIS_FLAG> immune;
-   std::bitset<MAX_RIS_FLAG> no_immune;
-   std::bitset<MAX_RIS_FLAG> susceptible;
-   std::bitset<MAX_RIS_FLAG> no_susceptible;
-   std::bitset<MAX_RIS_FLAG> absorb;  /* Absorption flag for RIS data - Samson 3-16-00 */
-   std::bitset<LANG_UNKNOWN> speaks;
+   std::bitset<MAX_ACT_FLAG> actflags;             // ACT Flags the character has on it.
+   std::bitset<MAX_AFFECTED_BY> affected_by;       // Allowed affect flags.
+   std::bitset<MAX_AFFECTED_BY> no_affected_by;    // Disallowed affect flags.
+   std::bitset<MAX_ATTACK_TYPE> attacks;           // Types of attacks an NPC is allowed to use.
+   std::bitset<MAX_DEFENSE_TYPE> defenses;         // Types of defenses an NPC can use.
+   std::bitset<MAX_BPART> body_parts;              // What body parts an NPC has.
+   std::bitset<MAX_RIS_FLAG> resistant;            // What the character is resistant to.
+   std::bitset<MAX_RIS_FLAG> no_resistant;         // Resistances the character is not allowed to have.
+   std::bitset<MAX_RIS_FLAG> immune;               // Immunities the character has.
+   std::bitset<MAX_RIS_FLAG> no_immune;            // Immunities the character is not allowed to have.
+   std::bitset<MAX_RIS_FLAG> susceptible;          // Susceptibilities the character can have.
+   std::bitset<MAX_RIS_FLAG> no_susceptible;       // Susceptibilities the character is not allowed to have.
+   std::bitset<MAX_RIS_FLAG> absorb;               // Things the character is allowed to absorb damage from - Samson 3-16-00
+   std::bitset<LANG_UNKNOWN> speaks;               // What languages the character can speak.
  public:
-   char *name = nullptr;
-   char *short_descr = nullptr;
-   char *long_descr = nullptr;
-   char *chardesc = nullptr;
-   char *alloc_ptr = nullptr;  /* Must strdup and free this one */
-   float numattacks = 0.0;
-   int speaking = 0;  /* Don't bitset this - it should only be a single language at a time */
-   int mpactnum = 0;
-   int tempnum = 0;
-   int gold = 0;
-   int exp = 0;
-   int carry_weight = 0;
-   int carry_number = 0;
-   int home_vnum = -1; /* For sentinel mobs only, used during hotboot world save - Samson 4-1-01 */
-   int zzzzz = 0;  /* skyship is idling      */
-   int dcoordx = 0;   /* Destination X coord   */
-   int dcoordy = 0;   /* Destination Y coord   */
-   int lcoordx = 0;   /* Launch X coord  */
-   int lcoordy = 0;   /* Launch Y coord  */
-   int heading = 0;   /* The skyship's directional heading */
-   int resetvnum = -1;
-   int resetnum = -1;
-   short substate = 0;
-   short num_fighting = 0;
-   short sex = 0;
-   short Class = 0;
-   short race = 0;
-   short level = 0;
-   short trust = 0;
-   short timer = 0;
-   short wait = 0;
-   short hit = 0;
-   short max_hit = 0;
-   short hit_regen = 0;
-   short mana = 0;
-   short max_mana = 0;
-   short mana_regen = 0;
-   short move = 0;
-   short max_move = 0;
-   short move_regen = 0;
-   short spellfail = 0;
-   short amp = 0;
-   short saving_poison_death = 0;
-   short saving_wand = 0;
-   short saving_para_petri = 0;
-   short saving_breath = 0;
-   short saving_spell_staff = 0;
-   short alignment = 0;
-   short barenumdie = 0;
-   short baresizedie = 0;
-   short mobthac0 = 0;
+   std::string name;                               // For NPCs, the keywords used to interact with them. For players, their name.
+   std::string short_descr;                        // The NPCs name.
+   std::string long_descr;                         // The one line description of an NPC you see in a room.
+   std::string chardesc;                           // The detailed description you get when looking at an NPC.
+   std::string alloc_ptr;                          // String used for commands that have timers, such as digging or disarming a trap.
+   float numattacks = 0.0;                         // Number of attacks an NPC has.
+   int speaking = LANG_COMMON;                     // What language an NPC is currently speaking. Don't bitset this - it should only be a single language at a time.
+   int mpactnum = 0;                               // Mudprogs
+   int tempnum = 0;                                // Temporary state value used when dealing with stuff in the editor.
+   int gold = 0;                                   // Amount of gold the character has.
+   int exp = -1;                                   // Amount of experience an NPC is worth when killed.
+   int carry_weight = 0;                           // Inventory weight they are allowed to carry.
+   int carry_number = 0;                           // Number of items they are allowed to carry in inventory.
+   int home_vnum = -1;                             // For sentinel mobs only, used during hotboot world save - Samson 4-1-01
+   int zzzzz = 0;                                  // Skyship idle timer while it is waiting on a player to board.
+   int dcoordx = 0;                                // Destination X coordinate for skyship flights.
+   int dcoordy = 0;                                // Destination Y coordinate for skyship flights.
+   int lcoordx = 0;                                // X Coordinate where the skyship launched from.
+   int lcoordy = 0;                                // Y Coordinate where the skyship launched from.
+   int heading = 0;                                // The skyship's directional heading.
+   int resetvnum = -1;                             // Used in updating resets and during hotboots.
+   int resetnum = -1;                              // Used in updating resets and during hotboots.
+   short substate = 0;                             // Substate the player is in when using an editor.
+   short num_fighting = 0;                         // Number of others the character is currently fighting.
+   short sex = 0;                                  // The gender of the character.
+   short Class = CLASS_WARRIOR;                    // The class of the character.
+   short race = RACE_HUMAN;                        // The race of the character.
+   short level = 0;                                // The character's level.
+   short trust = 0;                                // Trust level given by the imms that allows them to use commands normally above their heads.
+   short timer = 0;                                // Used for timed commands like digging or disarming traps.
+   short wait = 0;                                 // Timer generally used as a cooldown and/or punishment for players.
+   short hit = 20;                                 // Current hit points the character has.
+   short max_hit = 20;                             // Maximum hit points the character can have.
+   short hit_regen = 0;                            // Base level of hit points they regenerate outside of combat.
+   short mana = 100;                               // Current amount of mana the character has.
+   short max_mana = 100;                           // Maximum mana the character can have.
+   short mana_regen = 0;                           // Base level of mana they regenerate outside of combat.
+   short move = 150;                               // Current number of movement points the character has.
+   short max_move = 150;                           // Maximum number of movement points the character can have.
+   short move_regen = 0;                           // Base level of movement points they regenerate while resting outside of combat.
+   short spellfail = 101;                          // Difficulty modifier when casting spells.
+   short saving_poison_death = 0;                  // Save vs Poison or Death.
+   short saving_wand = 0;                          // Save vs damage from wands.
+   short saving_para_petri = 0;                    // Save vs petrification.
+   short saving_breath = 0;                        // Save vs breath attacks.
+   short saving_spell_staff = 0;                   // Save vs spells and staves.
+   short alignment = 0;                            // Alignment of the character.
+   short barenumdie = 1;                           // Number of damage dice a character has.
+   short baresizedie = 4;                          // Size of the dice the character has.
+   short mobthac0 = 0;                             // D&D Thac0 stuff.
    short hitroll = 0;
    short damroll = 0;
    short hitplus = 0;
    short damplus = 0;
-   short position = 0;
-   short defposition = 0;
-   short style = 0;
-   short height = 0;
-   short weight = 0;
-   short armor = 0;
-   short wimpy = 0;
-   short perm_str = 0;
-   short perm_int = 0;
-   short perm_wis = 0;
-   short perm_dex = 0;
-   short perm_con = 0;
-   short perm_cha = 0;
-   short perm_lck = 0;
-   short mod_str = 0;
-   short mod_int = 0;
-   short mod_wis = 0;
-   short mod_dex = 0;
-   short mod_con = 0;
-   short mod_cha = 0;
-   short mod_lck = 0;
-   short mental_state = 0;  /* simplified */
-   short mobinvis = 0;   /* Mobinvis level SB */
-   short map_x = 0;   /* Coordinates on the overland map - Samson 7-31-99 */
-   short map_y = 0;
-   short sector = -1;  /* Type of terrain to restrict a wandering mob to on overland - Samson 7-27-00 */
-   unsigned short mpscriptpos = 0;
-   bool has_skyship = false; /* Identifies has skyship */
-   bool inflight= false; /* skyship is in flight   */
-   bool backtracking = false;   /* Unsafe landing flag   */
+   short position = POS_STANDING;                  // Current position a character is in.
+   short defposition = POS_STANDING;               // Default position a character spawns in.
+   short style = 0;                                // Current combat style being used by the character.
+   short height = 0;                               // Height of the character. For NPCs, 0 triggers an autocalc function.
+   short weight = 0;                               // Weight of the character. For NPCs, 0 triggers an autocalc function.
+   short armor = 100;                              // Default armor class of the character.
+   short wimpy = 0;                                // Hit point level at which an NPC will start looking to flee from combat.
+   short perm_str = 13;                            // Permanent default STR.
+   short perm_int = 13;                            // Permanent default INT.
+   short perm_wis = 13;                            // Permanent default WIS.
+   short perm_dex = 13;                            // Permanent default DEX.
+   short perm_con = 13;                            // Permanent default CON.
+   short perm_cha = 13;                            // Permanent default CHA.
+   short perm_lck = 13;                            // Permanent default LCK.
+   short mod_str = 0;                              // Modifier to STR.
+   short mod_int = 0;                              // Modifier to INT.
+   short mod_wis = 0;                              // Modifier to WIS.
+   short mod_dex = 0;                              // Modifier to DEX.
+   short mod_con = 0;                              // Modifier to CON.
+   short mod_cha = 0;                              // Modifier to CHA.
+   short mod_lck = 0;                              // Modifier to LCK.
+   short mental_state = 0;                         // The simulated mental state of the character - simplified.
+   short mobinvis = 0;                             // Mobinvis level SB.
+   short map_x = -1;                               // Coordinates on the overland map - Samson 7-31-99
+   short map_y = -1;
+   short sector = -1;                              // Type of terrain to restrict a wandering mob to on overland - Samson 7-27-00
+   unsigned short mpscriptpos = 0;                 // Mudprogs
+   bool has_skyship = false;                       // Identifies if the character is bound to a skyship.
+   bool inflight= false;                           // Skyship is in flight.
+   bool backtracking = false;                      // Unsafe landing flag. The skyship pilot will find another landing site. Usually the one they came from.
 };
 
 extern std::list<char_data *> charlist;

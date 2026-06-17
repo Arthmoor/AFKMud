@@ -176,7 +176,7 @@ void delete_realm( char_data * ch, realm_data * realm )
    if( std::filesystem::remove( filename ) )
    {
       ch->printf( "&RRealm data for %s has been destroyed.\r\n", realmname.c_str(  ) );
-      log_printf( "Realm data for %s has been destroyed by %s.", realmname.c_str(  ), ch->name );
+      log_printf( "Realm data for %s has been destroyed by %s.", realmname.c_str(  ), ch->name.c_str() );
    }
 }
 

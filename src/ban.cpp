@@ -413,7 +413,7 @@ CMDF( do_ban )
 
       for( auto* pban : banlist )
       {
-         ch->printf( "%-14s %-20s ", pban->name.c_str(), pban->ipaddress.c_str() );
+         ch->print_fmt( "{:<14} {:<20} ", pban->name, pban->ipaddress );
 
          if( pban->expires == PERMANENT_BAN )
          {
@@ -426,12 +426,12 @@ CMDF( do_ban )
             if( duration > std::chrono::days(1) )
             {
                auto days = std::chrono::duration_cast<std::chrono::days>( duration );
-               ch->printf( "%ld days\r\n", days.count() );
+               ch->print_fmt( "{} days\r\n", days.count() );
             }
             else if( duration > std::chrono::seconds(0) )
             {
                auto hours = std::chrono::duration_cast<std::chrono::hours>( duration );
-               ch->printf( "%ld hours\r\n", hours.count() );
+               ch->print_fmt( "{} hours\r\n", hours.count() );
             }
             else
                ch->print( "Expired\r\n" );
@@ -453,9 +453,9 @@ CMDF( do_ban )
       argument = one_argument( argument, arg2 );
 
       if( is_ip_range( arg2, argument ) )
-         ch->printf( "&w%s is in CIDR %s\r\n", arg2.c_str(), argument.c_str() );
+         ch->print_fmt( "&w{} is in CIDR {}\r\n", arg2, argument );
       else
-         ch->printf( "&w%s is not within CIDR %s\r\n", arg2.c_str(), argument.c_str() );
+         ch->print_fmt( "&w{} is not within CIDR {}\r\n", arg2, argument );
 
       return;
    }
@@ -466,14 +466,14 @@ CMDF( do_ban )
 
       if( !ban )
       {
-         ch->printf( "&wNo ban exists for %s\r\n", argument.c_str() );
+         ch->print_fmt( "&wNo ban exists for {}\r\n", argument );
          return;
       }
 
       deleteptr( ban );
       save_banlist();
 
-      ch->printf( "&wBan lifted for %s\r\n", argument.c_str() );
+      ch->print_fmt( "&wBan lifted for {}\r\n", argument );
       return;
    }
 
@@ -493,7 +493,7 @@ CMDF( do_ban )
 
          if( victim->level >= ch->level )
          {
-            ch->printf( "You do not have sufficient access to affect %s.\r\n", victim->name );
+            ch->print_fmt( "You do not have sufficient access to affect {}.\r\n", victim->name );
             return;
          }
       }
@@ -534,9 +534,9 @@ CMDF( do_ban )
       }
 
       if( inlist )
-         ch->printf( "&wBan for %s has been updated.\r\n", arg1.c_str() );
+         ch->print_fmt( "&wBan for {} has been updated.\r\n", arg1 );
       else
-         ch->printf( "&w%s has been added to the ban list.\r\n", arg1.c_str() );
+         ch->print_fmt( "&w{} has been added to the ban list.\r\n", arg1 );
       return;
    }
    else
@@ -554,7 +554,7 @@ CMDF( do_ban )
          type = BAN_IP;
       else
       {
-         ch->printf( "&w%s is not a valid IP or CIDR value.\r\n", arg1.c_str() );
+         ch->print_fmt( "&w{} is not a valid IP or CIDR value.\r\n", arg1 );
          return;
       }
 
@@ -598,9 +598,9 @@ CMDF( do_ban )
       }
 
       if( inlist )
-         ch->printf( "&wBan for %s has been updated.\r\n", arg1.c_str() );
+         ch->print_fmt( "&wBan for {} has been updated.\r\n", arg1 );
       else
-         ch->printf( "&w%s has been added to the ban list.\r\n", arg1.c_str() );
+         ch->print_fmt( "&w{} has been added to the ban list.\r\n", arg1 );
       return;
    }
 }

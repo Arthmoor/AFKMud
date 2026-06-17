@@ -2567,17 +2567,17 @@ void assign_area( char_data * ch )
          tarea = find_area( taf );
       if( !tarea )
       {
-         log_printf_plus( LOG_BUILD, ch->level, "Creating area entry for %s", ch->name );
+         log_printf_plus( LOG_BUILD, ch->level, "Creating area entry for %s", ch->name.c_str() );
 
          tarea = create_area(  );
-         strdup_printf( &tarea->name, "[PROTO] %s's area in progress", ch->name );
+         strdup_printf( &tarea->name, "[PROTO] %s's area in progress", ch->name.c_str() );
          tarea->filename = strdup( taf.c_str() );
-         stralloc_printf( &tarea->author, "%s", ch->name );
+         stralloc_printf( &tarea->author, "%s", ch->name.c_str() );
          tarea->sort_name(  );
          tarea->sort_vnums(  );
       }
       else
-         log_printf_plus( LOG_BUILD, ch->level, "Updating area entry for %s", ch->name );
+         log_printf_plus( LOG_BUILD, ch->level, "Updating area entry for %s", ch->name.c_str() );
 
       tarea->low_vnum = ch->pcdata->low_vnum;
       tarea->hi_vnum = ch->pcdata->hi_vnum;
@@ -2625,19 +2625,19 @@ CMDF( do_aassign )
 
    if( !( tarea = find_area( argument ) ) )
    {
-      ch->printf( "The area '%s' does not exsist. Please use the 'zones' command for a list.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "The area '{}' does not exsist. Please use the 'zones' command for a list.\r\n", argument );
       return;
    }
 
    if( !tarea->flags.test( AFLAG_PROTOTYPE ) && ch->get_trust(  ) < sysdata->level_modify_proto )
    {
-      ch->printf( "The area '%s' is not a proto area, and you're not authorized to work on non-proto areas.\r\n", tarea->name );
+      ch->print_fmt( "The area '{}' is not a proto area, and you're not authorized to work on non-proto areas.\r\n", tarea->name );
       return;
    }
 
    ch->pcdata->area = tarea;
-   ch->printf( "Assigning you: %s\r\n", tarea->name );
-   log_printf( "Assigning %s to %s.", tarea->name, ch->name );
+   ch->print_fmt( "Assigning you: {}\r\n", tarea->name );
+   log_printf( "Assigning %s to %s.", tarea->name, ch->name.c_str() );
 }
 
 /*

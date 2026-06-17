@@ -72,7 +72,7 @@ void ev_violence( void *data )
    }
    char_data *victim = ch->who_fighting(  );
 
-   if( !victim || !ch->in_room || !ch->name || ( ch->in_room != victim->in_room ) )
+   if( !victim || !ch->in_room || ch->name.empty() || ( ch->in_room != victim->in_room ) )
    {
       ch->stop_fighting( true );
       return;
@@ -97,7 +97,7 @@ void ev_violence( void *data )
 
    if( ch->in_room->flags.test( ROOM_SAFE ) )
    {
-      log_printf( "%s: %s fighting %s in a SAFE room.", __func__, ch->name, victim->name );
+      log_printf( "%s: %s fighting %s in a SAFE room.", __func__, ch->name.c_str(), victim->name.c_str() );
       ch->stop_fighting( true );
    }
    else if( ch->IS_AWAKE(  ) && ch->in_room == victim->in_room )
@@ -501,7 +501,7 @@ void ev_auction( void *data )
             if( auction->item->buyer ) /* Set final buyer for item - Samson 6-23-99 */
             {
                STRFREE( auction->item->buyer );
-               auction->item->buyer = STRALLOC( auction->buyer->name );
+               auction->item->buyer = STRALLOC( auction->buyer->name.c_str() );
             }
 
             auction->item->bid = auction->bet;  /* Set final bid for item - Samson 6-23-99 */

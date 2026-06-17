@@ -462,7 +462,7 @@ void check_loginmsg( char_data * ch )
       if( !str_cmp( lmsg->name, ch->name ) )
       {
          if( lmsg->type > MAX_MSG )
-            bug( "%s: Error: Unknown login msg: %d for %s.", __func__, lmsg->type, ch->name );
+            bug( "%s: Error: Unknown login msg: %d for %s.", __func__, lmsg->type, ch->name.c_str() );
 
          switch ( lmsg->type )
          {
@@ -523,29 +523,23 @@ void check_loginmsg( char_data * ch )
 }
 
 /*Prompt, fprompt made to include exp and victim's condition, prettyfied too - Adjani, 12-07-2002*/
-char *default_fprompt( char_data * ch )
+std::string default_fprompt( char_data * ch )
 {
-   static char buf[60];
+   std::string buf;
 
-   strlcpy( buf, "&z[&W%h&whp ", 60 );
-   strlcat( buf, "&W%m&wm", 60 );
-   strlcat( buf, " &W%v&wmv&z] ", 60 );
-   strlcat( buf, " [&R%c&z] ", 60 );
+   buf = "&z[&W%h&whp &W%m&wm &W%v&wmv&z] [&R%c&z] ";
    if( ch->isnpc(  ) || ch->is_immortal(  ) )
-      strlcat( buf, "&W%i%R&D", 60 );
+      buf.append( "&W%i%R&D" );
    return buf;
 }
 
-char *default_prompt( char_data * ch )
+std::string default_prompt( char_data * ch )
 {
-   static char buf[60];
+   std::string buf;
 
-   strlcpy( buf, "&z[&W%h&whp ", 60 );
-   strlcat( buf, "&W%m&wm", 60 );
-   strlcat( buf, " &W%v&wmv&z] ", 60 );
-   strlcat( buf, " [&c%X&wexp&z]&D ", 60 );
+   buf = "&z[&W%h&whp &W%m&wm &W%v&wmv&z] [&c%X&wexp&z]&D ";
    if( ch->isnpc(  ) || ch->is_immortal(  ) )
-      strlcat( buf, "&W%i%R&D", 60 );
+      buf.append( "&W%i%R&D" );
    return buf;
 }
 
@@ -761,7 +755,7 @@ bool descriptor_data::read( )
             break; // Kernel buffer empty
 
          log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __func__, this->descriptor );
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && this->character->name ) ? this->character->name : this->hostname.c_str(  ) );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && !this->character->name.empty() ) ? this->character->name.c_str() : this->hostname.c_str(  ) );
          perror( __func__ );
          return false;
       }
@@ -786,9 +780,9 @@ bool descriptor_data::flush_buffer( bool fPrompt )
 
       if( snoop_by )
       {
-         if( character && character->name )
+         if( character && !character->name.empty() )
          {
-            if( original && original->name )
+            if( original && !original->name.empty() )
                snoop_by->buffer_printf( "{} ({})", character->name, original->name );
             else
                snoop_by->write_to_buffer( character->name );
@@ -835,12 +829,12 @@ bool descriptor_data::flush_buffer( bool fPrompt )
       /*
        * without check, 'force mortal quit' while snooped caused crash, -h 
        */
-      if( character && character->name )
+      if( character && !character->name.empty() )
       {
          /*
           * Show original snooped names. -- Altrag 
           */
-         if( original && original->name )
+         if( original && !original->name.empty() )
             snoop_by->buffer_printf( "{} ({})", character->name, original->name );
          else
             snoop_by->write_to_buffer( character->name );
@@ -1048,8 +1042,8 @@ void descriptor_data::read_from_buffer( )
 
             ++this->character->pcdata->spam;
 
-            log_printf( "%s was autofrozen by the spamguard - spamming: %s", this->character->name, this->incomm.c_str(  ) );
-            log_printf( "%s has spammed %d times this login.", this->character->name, this->character->pcdata->spam );
+            log_printf( "%s was autofrozen by the spamguard - spamming: %s", this->character->name.c_str(), this->incomm.c_str(  ) );
+            log_printf( "%s has spammed %d times this login.", this->character->name.c_str(), this->character->pcdata->spam );
 
             this->write( "\r\n*** PUT A LID ON IT!!! ***\r\nYou cannot enter the same command more than 10 consecutive times!\r\n" );
             this->write( "The Spamguard has spoken!\r\n" );
@@ -1768,12 +1762,12 @@ void descriptor_data::prompt(  )
 
    if( !ch->has_pcflag( PCFLAG_HELPSTART ) )
       cprompt = "&w[Type HELP START]";
-   else if( !ch->isnpc() && ch->substate != SUB_NONE && ch->pcdata->subprompt && *ch->pcdata->subprompt )
+   else if( !ch->isnpc() && ch->substate != SUB_NONE && !ch->pcdata->subprompt.empty() )
       cprompt = ch->pcdata->subprompt;
-   else if( ch->isnpc() || ( !ch->fighting && ( !ch->pcdata->prompt || !*ch->pcdata->prompt ) ) )
+   else if( ch->isnpc() || ( !ch->fighting && ( ch->pcdata->prompt.empty() ) ) )
       cprompt = default_prompt( ch );
    else if( ch->fighting )
-      cprompt = ( ch->pcdata->fprompt && *ch->pcdata->fprompt) ? ch->pcdata->fprompt : default_fprompt( ch );
+      cprompt = ( !ch->pcdata->fprompt.empty() ) ? ch->pcdata->fprompt : default_fprompt( ch );
    else
       cprompt = ch->pcdata->prompt;
 
@@ -1997,7 +1991,7 @@ void close_socket( descriptor_data * d, bool force )
          interpret( ch, "return" );
       else
       {
-         bug( "%s: original without character %s", __func__, ( d->original->name ? d->original->name : "unknown" ) );
+         bug( "%s: original without character %s", __func__, ( !d->original->name.empty() ? d->original->name.c_str() : "unknown" ) );
          d->character = d->original;
          d->original = nullptr;
       }
@@ -2119,11 +2113,11 @@ void show_status( char_data * ch )
       interpret( ch, "checkboards" );
 
    if( str_cmp( ch->desc->client, "Unidentified" ) )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name.c_str() );
    if( ch->desc->can_compress )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name.c_str() );
    if( ch->desc->msp_detected )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name.c_str() );
    quotes( ch );
    show_stateflags( ch );
 }
@@ -2174,7 +2168,7 @@ short descriptor_data::check_reconnect( std::string_view name, bool fConn )
             mprog_login_trigger( ch );
 
             act( AT_ACTION, "$n has reconnected.", ch, nullptr, nullptr, TO_CANSEE );
-            log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name, hostname.c_str(  ) );
+            log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name.c_str(), hostname.c_str(  ) );
             connected = CON_PLAYING;
             check_auth_state( ch ); /* Link dead support -- Rantic */
             show_status( ch );
@@ -2197,7 +2191,7 @@ short descriptor_data::check_playing( std::string_view name, bool kick )
       {
          int cstate = d->connected;
          char_data *ch = d->original ? d->original : d->character;
-         if( !ch->name
+         if( ch->name.empty()
              || ( cstate != CON_PLAYING && cstate != CON_EDITING && cstate != CON_DELETE
                   && cstate != CON_ROLL_STATS && cstate != CON_PRIZENAME && cstate != CON_CONFIRMPRIZENAME
                   && cstate != CON_PRIZEKEY && cstate != CON_CONFIRMPRIZEKEY && cstate != CON_RAISE_STAT ) )
@@ -2229,7 +2223,7 @@ short descriptor_data::check_playing( std::string_view name, bool kick )
          mprog_login_trigger( ch );
 
          act( AT_ACTION, "$n has reconnected, kicking off old link.", ch, nullptr, nullptr, TO_CANSEE );
-         log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name, hostname.c_str(  ) );
+         log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name.c_str(), hostname.c_str(  ) );
          connected = cstate;
          check_auth_state( ch ); /* Link dead support -- Rantic */
          show_status( ch );
@@ -2251,12 +2245,12 @@ void char_to_game( char_data * ch )
          ch->desc->xterm256 = true;
       else if( ch->desc->client.contains( "256" ) ) // Probably a bit of a leap of faith here.
          ch->desc->xterm256 = true;
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name.c_str() );
    }
    if( ch->desc->can_compress )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name.c_str() );
    if( ch->desc->msp_detected )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name.c_str() );
 
    charlist.push_back( ch );
    pclist.push_back( ch );
@@ -2646,7 +2640,7 @@ void descriptor_data::nanny( std::string & argument )
          {
             write_to_buffer( "The game is wizlocked. Only immortals can connect now.\r\n" );
             write_to_buffer( "Please try back later.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to %s.", ch->name,
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to %s.", ch->name.c_str(),
                              sysdata->WIZLOCK ? "wizlock" : sysdata->IMPLOCK ? "implock" : "lockdown" );
             close_socket( this, false );
             return;
@@ -2655,7 +2649,7 @@ void descriptor_data::nanny( std::string & argument )
          {
             write_to_buffer( "The game is locked down. Only the head implementor can connect now.\r\n" );
             write_to_buffer( "Please try back later.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_SUPREME, "Immortal: %s disconnected due to lockdown.", ch->name );
+            log_printf_plus( LOG_COMM, LEVEL_SUPREME, "Immortal: %s disconnected due to lockdown.", ch->name.c_str() );
             close_socket( this, false );
             return;
          }
@@ -2663,14 +2657,14 @@ void descriptor_data::nanny( std::string & argument )
          {
             write_to_buffer( "The game is implocked. Only implementors can connect now.\r\n" );
             write_to_buffer( "Please try back later.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_KL, "Immortal: %s disconnected due to implock.", ch->name );
+            log_printf_plus( LOG_COMM, LEVEL_KL, "Immortal: %s disconnected due to implock.", ch->name.c_str() );
             close_socket( this, false );
             return;
          }
          else if( bootlock && !ch->is_immortal(  ) )
          {
             write_to_buffer( "The game is preparing to reboot. Please try back in about 5 minutes.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to bootlock.", ch->name );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to bootlock.", ch->name.c_str() );
             close_socket( this, false );
             return;
          }
@@ -2708,8 +2702,7 @@ void descriptor_data::nanny( std::string & argument )
             }
             strlower( argument );   /* Added to force names to display properly */
             argument = capitalize( argument );  /* Samson 5-22-98 */
-            STRFREE( ch->name );
-            ch->name = STRALLOC( argument.c_str(  ) );
+            ch->name = argument;
             buffer_printf( "Did I get that right, {} (Y/N)? ", argument );
             connected = CON_CONFIRM_NEW_NAME;
             return;
@@ -2775,7 +2768,7 @@ void descriptor_data::nanny( std::string & argument )
          if( ch->position > POS_SITTING && ch->position < POS_STANDING )
             ch->position = POS_STANDING;
 
-         log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name, hostname.c_str(  ) );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name.c_str(), hostname.c_str(  ) );
 
          std::string hash_check = check_hash_update( argument, ch->pcdata->pwd );
          if( hash_check != ch->pcdata->pwd )
@@ -3019,7 +3012,7 @@ void descriptor_data::nanny( std::string & argument )
          if( argument.empty(  ) )
          {
             write_to_buffer( "You must specify a name for your prize.\r\n\r\n" );
-            ch->printf( "You are editing %s.\r\n", prize->short_descr );
+            ch->print_fmt( "You are editing {}.\r\n", prize->short_descr );
             write_to_buffer( "[SINDHAE] Prizename: " );
             return;
          }
@@ -3027,7 +3020,7 @@ void descriptor_data::nanny( std::string & argument )
          if( !str_cmp( argument, "help" ) )
          {
             do_help( ch, "prizenaming" );
-            ch->printf( "\r\n&RYou are editing %s&R.\r\n", prize->short_descr );
+            ch->print_fmt( "\r\n&RYou are editing {}&R.\r\n", prize->short_descr );
             write_to_buffer( "[SINDHAE] Prizename: " );
             return;
          }
@@ -3035,7 +3028,7 @@ void descriptor_data::nanny( std::string & argument )
          if( !str_cmp( argument, "help pcolors" ) )
          {
             do_help( ch, "pcolors" );
-            ch->printf( "\r\n&RYou are editing %s&R.\r\n", prize->short_descr );
+            ch->print_fmt( "\r\n&RYou are editing {}&R.\r\n", prize->short_descr );
             write_to_buffer( "[SINDHAE] Prizename: " );
             return;
          }
@@ -3080,7 +3073,7 @@ void descriptor_data::nanny( std::string & argument )
                write_to_buffer( "You will now select at least one keyword for your prize.\r\n" );
                write_to_buffer( "A keyword is a word you use to manipulate the object.\r\n" );
                write_to_buffer( "Your keywords many NOT contain any color tags.\r\n\r\n" );
-               ch->printf( "&RYou are editing %s&R.\r\n", prize->short_descr );
+               ch->print_fmt( "&RYou are editing {}&R.\r\n", prize->short_descr );
                write_to_buffer( "[SINDHAE] Prizekey: " );
                ch->pcdata->spare_ptr = prize;
                connected = CON_PRIZEKEY;
@@ -3089,7 +3082,7 @@ void descriptor_data::nanny( std::string & argument )
             case 'n':
             case 'N':
                write_to_buffer( "\r\nOk, then please enter the correct name.\r\n" );
-               ch->printf( "\r\n&RYou are editing %s&R.\r\n", prize->short_descr );
+               ch->print_fmt( "\r\n&RYou are editing {}&R.\r\n", prize->short_descr );
                write_to_buffer( "[SINDHAE] Prizename: " );
                ch->pcdata->spare_ptr = prize;
                connected = CON_PRIZENAME;
@@ -3110,7 +3103,7 @@ void descriptor_data::nanny( std::string & argument )
          if( !prize )
          {
             bug( "%s: Prize object turned nullptr somehow!", __func__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
+            write_to_buffer( "A fatal internal error has occurred. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -3121,7 +3114,7 @@ void descriptor_data::nanny( std::string & argument )
          if( argument.empty(  ) )
          {
             write_to_buffer( "You must specify keywords for your prize.\r\n\r\n" );
-            ch->printf( "&RYou are editing %s&R.\r\n", prize->short_descr );
+            ch->print_fmt( "&RYou are editing {}&R.\r\n", prize->short_descr );
             write_to_buffer( "[SINDHAE] Prizekey: " );
             return;
          }
@@ -3129,12 +3122,12 @@ void descriptor_data::nanny( std::string & argument )
          if( !str_cmp( argument, "help" ) )
          {
             do_help( ch, "prizekey" );
-            ch->printf( "\r\n&RYou are editing %s&R.", prize->short_descr );
+            ch->print_fmt( "\r\n&RYou are editing {}&R.", prize->short_descr );
             write_to_buffer( "\r\n[SINDHAE] Prizekey: " );
             return;
          }
-         stralloc_printf( &prize->name, "%s %s", ch->name, argument.c_str(  ) );
-         ch->printf( "\r\nYou chose these keywords: %s\r\n", prize->name );
+         stralloc_printf( &prize->name, "%s %s", ch->name.c_str(), argument.c_str(  ) );
+         ch->print_fmt( "\r\nYou chose these keywords: {}\r\n", prize->name );
          write_to_buffer( "Is this correct? (Y/N)" );
          ch->pcdata->spare_ptr = prize;
          connected = CON_CONFIRMPRIZEKEY;
@@ -3199,7 +3192,7 @@ void descriptor_data::nanny( std::string & argument )
       {
          if( ch->tempnum < 1 )
          {
-            bug( "%s: CON_RAISE_STAT: ch loop counter is < 1 for %s", __func__, ch->name );
+            bug( "%s: CON_RAISE_STAT: ch loop counter is < 1 for %s", __func__, ch->name.c_str() );
             connected = CON_PLAYING;
             return;
          }
@@ -3211,7 +3204,7 @@ void descriptor_data::nanny( std::string & argument )
              && ch->perm_con >= 18 + race_table[ch->race]->con_plus
              && ch->perm_cha >= 18 + race_table[ch->race]->cha_plus && ch->perm_lck >= 18 + race_table[ch->race]->lck_plus )
          {
-            bug( "%s: CON_RAISE_STAT: %s is unable to raise anything.", __func__, ch->name );
+            bug( "%s: CON_RAISE_STAT: %s is unable to raise anything.", __func__, ch->name.c_str() );
             write_to_buffer( "All of your stats are already at their maximum values!\r\n" );
             connected = CON_PLAYING;
             return;

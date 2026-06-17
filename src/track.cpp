@@ -305,7 +305,7 @@ void found_prey( char_data * ch, char_data * victim )
 
    if( victim->in_room == nullptr )
    {
-      bug( "%s: null victim->in_room: %s", __func__, victim->name );
+      bug( "%s: null victim->in_room: %s", __func__, victim->name.c_str() );
       return;
    }
 
@@ -318,7 +318,7 @@ void found_prey( char_data * ch, char_data * victim )
          switch ( number_bits( 3 ) )
          {
             case 0:
-               cmdf( ch, "say Don't make me find you, %s!", victim->name );
+               cmdf( ch, "say Don't make me find you, %s!", victim->name.c_str() );
                break;
             case 1:
                act( AT_ACTION, "$n sniffs around the room for $N.", ch, nullptr, victim, TO_NOTVICT );
@@ -327,7 +327,7 @@ void found_prey( char_data * ch, char_data * victim )
                interpret( ch, "say I can smell your blood!" );
                break;
             case 2:
-               cmdf( ch, "yell I'm going to tear %s apart!", victim->name );
+               cmdf( ch, "yell I'm going to tear %s apart!", victim->name.c_str() );
                break;
             case 3:
                interpret( ch, "say Just wait until I find you..." );
@@ -349,13 +349,13 @@ void found_prey( char_data * ch, char_data * victim )
          {
             case 0:
                interpret( ch, "say C'mon out, you coward!" );
-               cmdf( ch, "yell %s is a bloody coward!", victim->name );
+               cmdf( ch, "yell %s is a bloody coward!", victim->name.c_str() );
                break;
             case 1:
-               cmdf( ch, "say Let's take this outside, %s", victim->name );
+               cmdf( ch, "say Let's take this outside, %s", victim->name.c_str() );
                break;
             case 2:
-               cmdf( ch, "yell %s is a yellow-bellied wimp!", victim->name );
+               cmdf( ch, "yell %s is a yellow-bellied wimp!", victim->name.c_str() );
                break;
             case 3:
                act( AT_ACTION, "$n takes a few swipes at $N.", ch, nullptr, victim, TO_NOTVICT );
@@ -374,13 +374,13 @@ void found_prey( char_data * ch, char_data * victim )
       switch ( number_bits( 2 ) )
       {
          case 0:
-            cmdf( ch, "yell Your blood is mine, %s!", victim->name );
+            cmdf( ch, "yell Your blood is mine, %s!", victim->name.c_str() );
             break;
          case 1:
-            cmdf( ch, "say Alas, we meet again, %s!", victim->name );
+            cmdf( ch, "say Alas, we meet again, %s!", victim->name.c_str() );
             break;
          case 2:
-            cmdf( ch, "say What do you want on your tombstone, %s?", victim->name );
+            cmdf( ch, "say What do you want on your tombstone, %s?", victim->name.c_str() );
             break;
          case 3:
             act( AT_ACTION, "$n lunges at $N from out of nowhere!", ch, nullptr, victim, TO_NOTVICT );
@@ -511,7 +511,7 @@ void hunt_vic( char_data * ch )
       {
          if( !ch->in_room )
          {
-            bug( "%s: no ch->in_room! Name: %s. Placing mob in limbo.", __func__, ch->name );
+            bug( "%s: no ch->in_room! Name: %s. Placing mob in limbo.", __func__, ch->name.c_str() );
             if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
                log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
             return;

@@ -280,13 +280,13 @@ char_data *find_keeper( char_data * ch )
    if( ( number_percent(  ) % 65 ) > speakswell )
    {
       if( speakswell > 60 )
-         cmdf( keeper, "say %s, Could you repeat that? I didn't quite catch it.", ch->name );
+         cmdf( keeper, "say %s, Could you repeat that? I didn't quite catch it.", ch->name.c_str() );
       else if( speakswell > 50 )
-         cmdf( keeper, "say %s, Could you say that a little more clearly please?", ch->name );
+         cmdf( keeper, "say %s, Could you say that a little more clearly please?", ch->name.c_str() );
       else if( speakswell > 40 )
-         cmdf( keeper, "say %s, Sorry... What was that you wanted?", ch->name );
+         cmdf( keeper, "say %s, Sorry... What was that you wanted?", ch->name.c_str() );
       else
-         cmdf( keeper, "say %s, I can't understand you.", ch->name );
+         cmdf( keeper, "say %s, I can't understand you.", ch->name.c_str() );
       return nullptr;
    }
    return keeper;
@@ -507,13 +507,13 @@ char_data *find_fixer( char_data * ch )
    if( ( number_percent(  ) % 65 ) > speakswell )
    {
       if( speakswell > 60 )
-         cmdf( keeper, "say %s, Could you repeat that? I didn't quite catch it.", ch->name );
+         cmdf( keeper, "say %s, Could you repeat that? I didn't quite catch it.", ch->name.c_str() );
       else if( speakswell > 50 )
-         cmdf( keeper, "say %s, Could you say that a little more clearly please?", ch->name );
+         cmdf( keeper, "say %s, Could you say that a little more clearly please?", ch->name.c_str() );
       else if( speakswell > 40 )
-         cmdf( keeper, "say %s, Sorry... What was that you wanted?", ch->name );
+         cmdf( keeper, "say %s, Sorry... What was that you wanted?", ch->name.c_str() );
       else
-         cmdf( keeper, "say %s I can't understand you.", ch->name );
+         cmdf( keeper, "say %s I can't understand you.", ch->name.c_str() );
       return nullptr;
    }
    return keeper;
@@ -731,9 +731,9 @@ CMDF( do_buy )
 
       argument = one_argument( argument, arg );
       if( !arg.empty(  ) )
-         stralloc_printf( &pet->name, "%s %s", pet->name, arg.c_str(  ) );
+         pet->name = std::format( "{} {}", pet->name, arg );
 
-      stralloc_printf( &pet->chardesc, "%sA neck tag says 'I belong to %s'.\r\n", pet->chardesc, ch->name );
+      pet->chardesc = std::format( "{}A neck tag says 'I belong to {}'.\r\n", pet->chardesc, ch->name );
 
       if( !pet->to_room( ch->in_room ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
@@ -991,7 +991,7 @@ CMDF( do_list )
                found = true;
                ch->pager( "Pets for sale:\r\n" );
             }
-            ch->pagerf( "[%2d] %8d - %s\r\n", pet->level, 10 * pet->level * pet->level, pet->short_descr );
+            ch->pager_fmt( "[{:2}] {:8} - {}\r\n", pet->level, 10 * pet->level * pet->level, pet->short_descr );
          }
       }
       if( !found )
@@ -1012,7 +1012,7 @@ CMDF( do_list )
 
          if( obj->wear_loc == WEAR_NONE && ch->can_see_obj( obj, false ) && ( cost = get_cost( ch, keeper, obj, true ) ) > 0 )
          {
-            ch->pagerf( "[%6d] %s%s\r\n", cost, obj->short_descr, can_wear_obj( ch, obj ) ? "" : " &R*&w" );
+            ch->pager_fmt( "[{:6}] {}{}\r\n", cost, obj->short_descr, can_wear_obj( ch, obj ) ? "" : " &R*&w" );
          }
       }
       ch->pager( "A &R*&w indicates an item you are not able to use.\r\n" );

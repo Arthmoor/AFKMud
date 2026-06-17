@@ -620,7 +620,7 @@ CMDF( do_ooedit )
       if( d->connected == CON_OEDIT )
          if( d->olc && d->olc->number == obj->pIndexData->vnum )
          {
-            ch->printf( "That object is currently being edited by %s.\r\n", d->character->name );
+            ch->print_fmt( "That object is currently being edited by {}.\r\n", d->character->name );
             return;
          }
    }

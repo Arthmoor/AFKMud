@@ -413,7 +413,7 @@ void char_data::note_attach(  )
    }
 
    pcnote = new note_data;
-   pcnote->sender = QUICKLINK( name );
+   pcnote->sender = STRALLOC( name.c_str() );
    pcdata->pnote = pcnote;
 }
 
@@ -1328,9 +1328,9 @@ void board_announce( char_data * ch, board_data * board, note_data * pnote )
 
       // Changed this so no matter what, if the note's to you,  you get a personal message. --X (9/21/07)
       if( is_note_to( vch, pnote ) )
-         vch->printf( "&G[&wBoard Announce&G] &w%s has posted a message for you on the %s board.\r\n", ch->name, board->name );
+         vch->print_fmt( "&G[&wBoard Announce&G] &w{} has posted a message for you on the {} board.\r\n", ch->name, board->name );
       else if( !IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
-         vch->printf( "&G[&wBoard Announce&G] &w%s has posted a message on the %s board.\r\n", ch->name, board->name );
+         vch->print_fmt( "&G[&wBoard Announce&G] &w{} has posted a message on the {} board.\r\n", ch->name, board->name );
    }
 }
 
@@ -1733,7 +1733,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             if( !ch->pcdata->pnote )
             {
-               bug( "%s: nullptr (ch)%s->pcdata->pnote!", __func__, ch->name );
+               bug( "%s: nullptr (ch)%s->pcdata->pnote!", __func__, ch->name.c_str() );
                d->connected = CON_PLAYING;
                ch->substate = SUB_NONE;
                return;
@@ -2039,13 +2039,13 @@ CMDF( do_note_write )
       case SUB_BOARD_TEXT:
          if( ch->pcdata->pnote == nullptr )
          {
-            bug( "%s: SUB_BOARD_TEXT: Null pnote on character (%s)!", __func__, ch->name );
+            bug( "%s: SUB_BOARD_TEXT: Null pnote on character (%s)!", __func__, ch->name.c_str() );
             ch->stop_editing(  );
             return;
          }
          if( ch->pcdata->board == nullptr )
          {
-            bug( "%s: SUB_BOARD_TEXT: Null board on character (%s)!", __func__, ch->name );
+            bug( "%s: SUB_BOARD_TEXT: Null board on character (%s)!", __func__, ch->name.c_str() );
             ch->stop_editing(  );
             return;
          }
@@ -2063,7 +2063,7 @@ CMDF( do_note_write )
             return;
          }
          note_to_char( ch, ch->pcdata->pnote, nullptr, 0 );
-         ch->printf( "%sIs this correct? %s(%sY%s/%sN%s)&D   ", s1.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s2.c_str(), s3.c_str() );
+         ch->print_fmt( "{}Is this correct? {}({}Y{}/{}N{})&D   ", s1, s3, s2, s3, s2, s3 );
          ch->desc->connected = CON_BOARD;
          ch->substate = SUB_BOARD_CONFIRM;
          return;
@@ -2082,20 +2082,20 @@ CMDF( do_note_write )
    {
       if( argument.empty(  ) )
       {
-         ch->printf( "%sWrites a new message for a board.\r\n%sSyntax: %swrite %s<%sboard%s> [%ssubject%s/%snote#%s]&D\r\n", s1.c_str(), s3.c_str(), s1.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s2.c_str(), s3.c_str() );
-         ch->printf( "%sNote: Subject and Note# are optional, but you can not specify both.&D\r\n", s1.c_str() );
+         ch->print_fmt( "{}Writes a new message for a board.\r\n{}Syntax: {}write {}<{}board{}> [{}subject{}/{}note#{}]&D\r\n", s1, s3, s1, s3, s2, s3, s2, s3, s2, s3 );
+         ch->print_fmt( "{}Note: Subject and Note# are optional, but you can not specify both.&D\r\n", s1 );
          return;
       }
 
       argument = one_argument( argument, arg );
       if( !( board = get_board( ch, arg ) ) )
       {
-         ch->printf( "%sNo board found!&D\r\n", s1.c_str() );
+         ch->print_fmt( "{}No board found!&D\r\n", s1 );
          return;
       }
    }
    else
-      ch->printf( "%sUsing current board in room: %s%s&D\r\n", s1.c_str(), s2.c_str(), board->name );
+      ch->print_fmt( "{}Using current board in room: {}{}&D\r\n", s1, s2, board->name );
 
    if( !can_post( ch, board ) )
    {
@@ -2114,7 +2114,7 @@ CMDF( do_note_write )
       bug( "%s: Missing board room: Vnum %d", __func__, ROOM_VNUM_LIMBO );
       return;
    }
-   ch->printf( "%sTyping '%s/a%s' at any time will abort the note.&D\r\n", s3.c_str(), s2.c_str(), s3.c_str() );
+   ch->print_fmt( "{}Typing '{}/a{}' at any time will abort the note.&D\r\n", s3, s2, s3 );
 
    if( n_num )
    {
@@ -2144,7 +2144,7 @@ CMDF( do_note_write )
          return;
       }
 
-      ch->printf( "%sYou begin to write a reply for %s%s's%s note '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), pnote->sender, s1.c_str(), s2.c_str(), pnote->subject, s1.c_str() );
+      ch->print_fmt( "{}You begin to write a reply for {}{}'s{} note '{}{}{}'.&D\r\n", s1, s2, pnote->sender, s1, s2, pnote->subject, s1 );
       act( AT_GREY, "$n departs for a moment, replying to a note.", ch, nullptr, nullptr, TO_ROOM );
       ch->note_attach(  );
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
@@ -2159,9 +2159,9 @@ CMDF( do_note_write )
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
          ch->substate = SUB_BOARD_TEXT;
-         ch->printf( "%sTo: %s%-15s %sFrom: %s%s&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->to_list, s1.c_str(), s2.c_str(), ch->pcdata->pnote->sender );
-         ch->printf( "%sSubject: %s%s&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->subject );
-         ch->printf( "%sPlease enter the text for your message:&D\r\n", s1.c_str() );
+         ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
+         ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
+         ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
          if( !ch->pcdata->pnote->text )
             ch->pcdata->pnote->text = strdup( "" );
          ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
@@ -2169,7 +2169,7 @@ CMDF( do_note_write )
       }
       else
       {
-         ch->printf( "%sTo whom is this note addressed? %s(%sDefault: %s%s%s)&D   ", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), pnote->sender, s3.c_str() );
+         ch->print_fmt( "{}To whom is this note addressed? {}({}Default: {}{}{})&D   ", s1, s3, s1, s2, pnote->sender, s3 );
          ch->substate = SUB_BOARD_TO;
       }
       ch->orig_room = ch->in_room;
@@ -2184,14 +2184,14 @@ CMDF( do_note_write )
    {
       DISPOSE( ch->pcdata->pnote->subject );
       ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
-      ch->printf( "%sYou begin to write a new note for the %s%s%s board, titled '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), ch->pcdata->pnote->subject, s1.c_str() );
+      ch->print_fmt( "{}You begin to write a new note for the {}{}{} board, titled '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, ch->pcdata->pnote->subject, s1 );
    }
    else
-      ch->printf( "%sYou begin to write a new note for the %s%s%s board.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str() );
+      ch->print_fmt( "{}You begin to write a new note for the {}{}{} board.&D\r\n", s1, s2, board->name, s1 );
 
    if( can_remove( ch, board ) && !IS_BOARD_FLAG( board, BOARD_PRIVATE ) && ch->pcdata->board->expire > std::chrono::system_clock::time_point{} )
    {
-      ch->printf( "%sIs this a sticky note? %s(%sY%s/%sN%s)  (%sDefault: %sN%s)&D   ", s1.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), s3.c_str() );
+      ch->print_fmt( "{}Is this a sticky note? {}({}Y{}/{}N{})  ({}Default: {}N{})&D   ", s1, s3, s2, s3, s2, s3, s1, s2, s3 );
       ch->substate = SUB_BOARD_STICKY;
    }
    else
@@ -2202,9 +2202,9 @@ CMDF( do_note_write )
          ch->pcdata->pnote->expire = ch->pcdata->board->expire;
       ch->substate = SUB_BOARD_TO;
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !can_remove( ch, board ) )
-         ch->printf( "%sTo whom is this note addressed?&D   ", s1.c_str() );
+         ch->print_fmt( "{}To whom is this note addressed?&D   ", s1 );
       else
-         ch->printf( "%sTo whom is this note addressed? %s(%sDefault: %sAll%s)&D   ", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), s3.c_str() );
+         ch->print_fmt( "{}To whom is this note addressed? {}({}Default: {}All{})&D   ", s1, s3, s1, s2, s3 );
    }
    act( AT_GREY, "$n begins to write a new note.", ch, nullptr, nullptr, TO_ROOM );
    ch->desc->connected = CON_BOARD;
@@ -2950,7 +2950,7 @@ CMDF( do_board_set )
 
    if( !str_cmp( arg1, "purge" ) )
    {
-      log_printf( "Manual board pruning started by %s.", ch->name );
+      log_printf( "Manual board pruning started by %s.", ch->name.c_str() );
       check_boards(  );
       return;
    }
@@ -3806,7 +3806,7 @@ CMDF( do_project )
          ch->printf( "Taking Project: '%s' from Owner: '%s'!\r\n", pproject->name, pproject->owner ? pproject->owner : "nullptr" );
 
       STRFREE( pproject->owner );
-      pproject->owner = QUICKLINK( ch->name );
+      pproject->owner = STRALLOC( ch->name.c_str() );
       pproject->taken = true;
       write_projects(  );
       ch->printf( "You're now the owner of Project '%s'.\r\n", pproject->name );
@@ -3836,7 +3836,7 @@ CMDF( do_project )
          return;
       }
 
-      pproject->coder = QUICKLINK( ch->name );
+      pproject->coder = STRALLOC( ch->name.c_str() );
       write_projects(  );
       ch->printf( "You are now the %s of %s.\r\n", arg.c_str(), pproject->name );
       return;

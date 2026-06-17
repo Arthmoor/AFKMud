@@ -619,7 +619,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
        */
       act( AT_DEAD, "$n falls prey to a terrible death!", ch, nullptr, nullptr, TO_ROOM );
       act( AT_DEAD, "Oopsie... you're dead!\r\n", ch, nullptr, nullptr, TO_CHAR );
-      log_printf( "%s hit a DEATH TRIGGER in room %d!", ch->name, ch->in_room->vnum );
+      log_printf( "%s hit a DEATH TRIGGER in room %d!", ch->name.c_str(), ch->in_room->vnum );
 
       /*
        * Personally I figured if we wanted it to be a full DT we could just have it send them into a DT.

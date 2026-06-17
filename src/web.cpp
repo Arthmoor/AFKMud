@@ -459,11 +459,11 @@ void room_to_html( room_index * room, bool complete )
          for( auto* rch : room->people )
          {
             if( rch->isnpc(  ) )
-               fprintf( fp, "<font color=\"#FF00FF\">%s</font><br />\n", rch->long_descr );
+               fprintf( fp, "<font color=\"#FF00FF\">%s</font><br />\n", rch->long_descr.c_str() );
             else
             {
                std::string pctitle = web_colourconv( rch->pcdata->title );
-               fprintf( fp, "<font color=\"#FF00FF\">%s %s</font><br />\n", rch->name, pctitle.c_str() );
+               fprintf( fp, "<font color=\"#FF00FF\">%s %s</font><br />\n", rch->name.c_str(), pctitle.c_str() );
             }
          }
       }

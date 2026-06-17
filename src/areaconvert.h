@@ -54,7 +54,7 @@ struct extended_bitvector
 };
 
 EXT_BV fread_bitvector( FILE * );
-char *ext_flag_string( EXT_BV *, char *const flagarray[] );
+std::string ext_flag_string( const EXT_BV & bitvector, const char * const flagarray[] );
 
 extern int top_affect;
 extern int top_exit;

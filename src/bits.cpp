@@ -336,19 +336,19 @@ CMDF( do_showabit )
    if( !str_cmp( argument, "all" ) )
    {
       for( bit = abits.begin(  ); bit != abits.end(  ); ++bit )
-         ch->printf( "&RABIT: &Y%d &G%s\r\n", bit->first, bit->second.c_str(  ) );
+         ch->print_fmt( "&RABIT: &Y{} &G{}\r\n", bit->first, bit->second );
       return;
    }
 
-   number = atoi( argument.c_str(  ) );
+   number = std::stoi( argument );
 
    if( number < 0 || number > MAX_xBITS )
       return;
 
    if( ( bit = abits.find( number ) ) != abits.end(  ) )
    {
-      ch->printf( "&RABIT: &Y%d\r\n", bit->first );
-      ch->printf( "&G%s\r\n", bit->second.c_str(  ) );
+      ch->print_fmt( "&RABIT: &Y{}\r\n", bit->first );
+      ch->print_fmt( "&G{}\r\n", bit->second );
       return;
    }
    ch->print( "That abit does not exist.\r\n" );
@@ -373,15 +373,15 @@ CMDF( do_showqbit )
       return;
    }
 
-   number = atoi( argument.c_str(  ) );
+   number = std::stoi( argument );
 
    if( number < 0 || number > MAX_xBITS )
       return;
 
    if( ( bit = qbits.find( number ) ) != qbits.end(  ) )
    {
-      ch->printf( "&RQBIT: &Y%d\r\n", bit->first );
-      ch->printf( "&G %s\r\n", bit->second.c_str(  ) );
+      ch->print_fmt( "&RQBIT: &Y{}\r\n", bit->first );
+      ch->print_fmt( "&G {}\r\n", bit->second );
       return;
    }
    ch->print( "That qbit does not exist.\r\n" );
@@ -408,7 +408,7 @@ CMDF( do_setabit )
       ch->print( "You must specify a numerical bit value.\r\n" );
       return;
    }
-   number = atoi( arg.c_str(  ) );
+   number = std::stoi( arg );
 
    if( argument.empty(  ) )
    {
@@ -436,16 +436,16 @@ CMDF( do_setabit )
       if( !str_cmp( arg, "delete" ) )
       {
          abits.erase( number );
-         ch->printf( "Abit %d has been destroyed.\r\n", number );
+         ch->print_fmt( "Abit {} has been destroyed.\r\n", number );
          return;
       }
       abits[number] = arg;
-      ch->printf( "Description for abit %d set to '%s'.\r\n", number, arg.c_str(  ) );
+      ch->print_fmt( "Description for abit {} set to '{}'.\r\n", number, arg );
       return;
    }
    abits[number] = arg;
-   ch->printf( "Abit %d created.\r\n", number );
-   ch->printf( "Description for abit %d set to '%s'.\r\n", number, arg.c_str(  ) );
+   ch->print_fmt( "Abit {} created.\r\n", number );
+   ch->print_fmt( "Description for abit {} set to '{}'.\r\n", number, arg );
    save_bits(  );
 }
 
@@ -470,7 +470,7 @@ CMDF( do_setqbit )
       ch->print( "You must specify a numerical bit value.\r\n" );
       return;
    }
-   number = atoi( arg.c_str(  ) );
+   number = std::stoi( arg );
 
    if( argument.empty(  ) )
    {
@@ -498,16 +498,16 @@ CMDF( do_setqbit )
       if( !str_cmp( arg, "delete" ) )
       {
          qbits.erase( number );
-         ch->printf( "Qbit %d has been destroyed.\r\n", number );
+         ch->print_fmt( "Qbit {} has been destroyed.\r\n", number );
          return;
       }
       qbits[number] = arg;
-      ch->printf( "Description for qbit %d set to '%s'.\r\n", number, arg.c_str(  ) );
+      ch->print_fmt( "Description for qbit {} set to '{}'.\r\n", number, arg );
       return;
    }
    qbits[number] = arg;
-   ch->printf( "Qbit %d created.\r\n", number );
-   ch->printf( "Description for qbit %d set to '%s'.\r\n", number, arg.c_str(  ) );
+   ch->print_fmt( "Qbit {} created.\r\n", number );
+   ch->print_fmt( "Description for qbit {} set to '{}'.\r\n", number, arg );
    save_bits(  );
 }
 
@@ -541,17 +541,17 @@ CMDF( do_abit )
          return;
       }
 
-      ch->printf( "&RABITS for %s:\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
+      ch->print_fmt( "&RABITS for {}:\r\n", victim->isnpc(  ) ? victim->short_descr : victim->name );
 
       std::map<int, std::string>::iterator bit;
       for( bit = victim->abits.begin(  ); bit != victim->abits.end(  ); ++bit )
-         ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str(  ) );
+         ch->print_fmt( "&Y{:4}: &G{}\r\n", bit->first, bit->second );
    }
    else
    {
       int abit;
 
-      abit = atoi( buf.c_str(  ) );
+      abit = std::stoi( buf );
 
       if( abit < 0 || abit > MAX_xBITS )
       {
@@ -562,17 +562,17 @@ CMDF( do_abit )
       if( victim->abits.find( abit ) != victim->abits.end(  ) )
       {
          remove_abit( victim, abit );
-         ch->printf( "Removed abit %d from %s.\r\n", abit, victim->isnpc(  )? victim->short_descr : victim->name );
+         ch->print_fmt( "Removed abit {} from {}.\r\n", abit, victim->isnpc(  ) ? victim->short_descr : victim->name );
       }
       else
       {
          if( abits.find( abit ) == abits.end(  ) )
          {
-            ch->printf( "Abit %d is not a valid number.\r\n", abit );
+            ch->print_fmt( "Abit {} is not a valid number.\r\n", abit );
             return;
          }
          set_abit( victim, abit );
-         ch->printf( "Added abit %d to %s.\r\n", abit, victim->isnpc(  )? victim->short_descr : victim->name );
+         ch->print_fmt( "Added abit {} to {}.\r\n", abit, victim->isnpc(  ) ? victim->short_descr : victim->name );
       }
    }
 }
@@ -613,17 +613,17 @@ CMDF( do_qbit )
          return;
       }
 
-      ch->printf( "&RQBITS for %s:\r\n", victim->name );
+      ch->print_fmt( "&RQBITS for {}:\r\n", victim->name );
 
       std::map<int, std::string>::iterator bit;
       for( bit = victim->pcdata->qbits.begin(  ); bit != victim->pcdata->qbits.end(  ); ++bit )
-         ch->printf( "&Y%4.4d: &G%s\r\n", bit->first, bit->second.c_str(  ) );
+         ch->print_fmt( "&Y{:4}: &G{}\r\n", bit->first, bit->second );
    }
    else
    {
       int qbit;
 
-      qbit = atoi( buf.c_str(  ) );
+      qbit = std::stoi( buf );
 
       if( qbit < 0 || qbit > MAX_xBITS )
       {
@@ -634,17 +634,17 @@ CMDF( do_qbit )
       if( victim->pcdata->qbits.find( qbit ) != victim->pcdata->qbits.end(  ) )
       {
          remove_qbit( victim, qbit );
-         ch->printf( "Removed qbit %d from %s.\r\n", qbit, victim->name );
+         ch->print_fmt( "Removed qbit {} from {}.\r\n", qbit, victim->name );
       }
       else
       {
          if( qbits.find( qbit ) == qbits.end(  ) )
          {
-            ch->printf( "Qbit %d is not a valid number.\r\n", qbit );
+            ch->print_fmt( "Qbit {} is not a valid number.\r\n", qbit );
             return;
          }
          set_qbit( victim, qbit );
-         ch->printf( "Added qbit %d to %s.\r\n", qbit, victim->name );
+         ch->print_fmt( "Added qbit {} to {}.\r\n", qbit, victim->name );
       }
    }
 }
@@ -688,7 +688,7 @@ CMDF( do_mpaset )
       return;
    }
 
-   number = atoi( arg2.c_str(  ) );
+   number = std::stoi( arg2 );
    if( victim->abits.find( number ) != victim->abits.end(  ) )
       remove_abit( victim, number );
    else
@@ -743,7 +743,7 @@ CMDF( do_mpqset )
       return;
    }
 
-   number = atoi( arg2.c_str(  ) );
+   number = std::stoi( arg2 );
    if( victim->pcdata->qbits.find( number ) != victim->pcdata->qbits.end(  ) )
       remove_qbit( victim, number );
    else

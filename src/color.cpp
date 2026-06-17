@@ -249,7 +249,7 @@ void reset_colors( char_data * ch )
          memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
    }
    else
-      log_printf( "%s: Attempting to reset NPC colors: %s", __func__, ch->short_descr );
+      log_printf( "%s: Attempting to reset NPC colors: %s", __func__, ch->short_descr.c_str() );
 }
 
 CMDF( do_color )

@@ -430,7 +430,7 @@ CMDF( do_morphset )
          ch->print( "Morphset mode off.\r\n" );
          ch->substate = SUB_NONE;
          ch->pcdata->dest_buf = nullptr;
-         STRFREE( ch->pcdata->subprompt );
+         ch->pcdata->subprompt.clear();
          return;
       }
    }
@@ -513,7 +513,7 @@ CMDF( do_morphset )
       ch->printf( "Morphset mode on. (Editing %s).\r\n", morph->name );
       ch->substate = SUB_REPEATCMD;
       ch->pcdata->dest_buf = morph;
-      stralloc_printf( &ch->pcdata->subprompt, "<&CMorphset &W%s&w> %%i", morph->name );
+      ch->pcdata->subprompt = std::format( "<&CMorphset &W{}&w> %i", morph->name );
       return;
    }
 

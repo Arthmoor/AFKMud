@@ -414,7 +414,7 @@ void close_mud( void )
          if( !vch->isnpc(  ) )
          {
             vch->save(  );
-            log_printf( "%s saved.", vch->name );
+            log_printf( "%s saved.", vch->name.c_str(  ) );
             d->write( "You have been saved to disk.\033[0m\r\n" );
          }
       }

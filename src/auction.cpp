@@ -258,7 +258,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
 
    if( !aucvault )
    {
-      bug( "Ooops! The vault room for %s's auction house is missing!", aucmob->short_descr );
+      bug( "Ooops! The vault room for %s's auction house is missing!", aucmob->short_descr.c_str() );
       return;
    }
 
@@ -282,7 +282,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found. %s", __func__, aucmob->short_descr );
+            bug( "%s: # not found. %s", __func__, aucmob->short_descr.c_str() );
             break;
          }
 
@@ -296,7 +296,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
             break;
          else
          {
-            bug( "%s: bad section. %s", __func__, aucmob->short_descr );
+            bug( "%s: bad section. %s", __func__, aucmob->short_descr.c_str() );
             break;
          }
       }
@@ -564,12 +564,12 @@ void bid( char_data * ch, char_data * buyer, std::string_view argument )
           * show item data here 
           */
          if( auction->bet > 0 )
-            ch->printf( "\r\nCurrent bid on this item is %d gold.\r\n", auction->bet );
+            ch->print_fmt( "\r\nCurrent bid on this item is {} gold.\r\n", auction->bet );
          else
-            ch->printf( "\r\nNo bids on this item have been received.\r\n" );
+            ch->print( "\r\nNo bids on this item have been received.\r\n" );
 
          if( ch->is_immortal(  ) )
-            ch->printf( "Seller: %s.  Bidder: %s.  Round: %d.\r\n", auction->seller->name, auction->buyer->name, ( auction->going + 1 ) );
+            ch->print_fmt( "Seller: {}.  Bidder: {}.  Round: {}.\r\n", auction->seller->name, auction->buyer->name, ( auction->going + 1 ) );
          return;
       }
       else
@@ -602,7 +602,7 @@ void bid( char_data * ch, char_data * buyer, std::string_view argument )
 
          auction->item = nullptr;
          if( auction->buyer != nullptr && auction->buyer != auction->seller )
-            auction->buyer->print( "Your bid has been cancelled.\r\n" );
+            auction->buyer->print( "Your bid has been canceled.\r\n" );
          return;
       }
    }
@@ -703,7 +703,7 @@ void bid( char_data * ch, char_data * buyer, std::string_view argument )
 
    if( !( obj = ch->get_obj_carry( arg1 ) ) )   /* does char have the item ? */
    {
-      bug( "%s: Auctioneer %s isn't carrying the item!", __func__, ch->short_descr );
+      bug( "%s: Auctioneer %s isn't carrying the item!", __func__, ch->short_descr.c_str() );
       return;
    }
 
@@ -712,7 +712,7 @@ void bid( char_data * ch, char_data * buyer, std::string_view argument )
       switch ( obj->item_type )
       {
          default:
-            log_printf( "%s: Auctioneer %s tried to auction invalid item type!", __func__, ch->short_descr );
+            log_printf( "%s: Auctioneer %s tried to auction invalid item type!", __func__, ch->short_descr.c_str() );
             return;
 
             /*
@@ -1394,7 +1394,7 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
    obj->separate(  );
 
    STRFREE( obj->seller );
-   obj->seller = STRALLOC( ch->name );
+   obj->seller = STRALLOC( ch->name.c_str() );
    STRFREE( obj->buyer );
    obj->bid = minbid;
    act( AT_AUCTION, "$n offers $p up for auction.", ch, obj, nullptr, TO_ROOM );

@@ -255,15 +255,15 @@ void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
 
    if( ( cfound && clan != ch->pcdata->clan ) || obj->extra_flags.test( ITEM_PERSONAL ) || obj->ego >= sysdata->minego )
    {
-      ch->printf( "%s says 'I cannot accept this from you.'\r\n", victim->short_descr );
-      ch->printf( "%s hands %s back to you.\r\n", victim->short_descr, obj->short_descr );
+      ch->print_fmt( "{} says 'I cannot accept this from you.'\r\n", victim->short_descr );
+      ch->print_fmt( "{} hands {} back to you.\r\n", victim->short_descr, obj->short_descr );
       obj->from_char(  );
       obj = obj->to_char( ch );
       ch->save(  );
       return;
    }
 
-   ch->printf( "%s puts %s into inventory.\r\n", victim->short_descr, obj->short_descr );
+   ch->print_fmt( "{} puts {} into inventory.\r\n", victim->short_descr, obj->short_descr );
    save_shop( victim );
 }
 
@@ -301,7 +301,7 @@ void delete_clan( char_data * ch, clan_data * clan )
       {
          vch->pcdata->clan_name.clear(  );
          vch->pcdata->clan = nullptr;
-         vch->printf( "The %s known as &W%s&D has been destroyed by the gods!\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->name.c_str(  ) );
+         vch->print_fmt( "The {} known as &W{}&D has been destroyed by the gods!\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->name );
       }
    }
 
@@ -419,8 +419,8 @@ void delete_clan( char_data * ch, clan_data * clan )
 
    if( std::filesystem::remove( filename ) )
    {
-      ch->printf( "&RClan data for %s has been destroyed.\r\n", clanname.c_str(  ) );
-      log_printf( "Clan data for %s has been destroyed by %s.", clanname.c_str(  ), ch->name );
+      ch->print_fmt( "&RClan data for {} has been destroyed.\r\n", clanname );
+      log_printf( "Clan data for %s has been destroyed by %s.", clanname.c_str(  ), ch->name.c_str(  ) );
    }
 }
 
@@ -1375,7 +1375,7 @@ CMDF( do_induct )
          if( skill_table[sn]->guild == clan->Class && skill_table[sn]->name != nullptr )
          {
             victim->pcdata->learned[sn] = victim->GET_ADEPT( sn );
-            victim->printf( "%s instructs you in the ways of %s.\r\n", ch->name, skill_table[sn]->name );
+            victim->print_fmt( "{} instructs you in the ways of {}.\r\n", ch->name, skill_table[sn]->name );
          }
       }
    }
@@ -1611,7 +1611,7 @@ void pcsetclan( char_data * ch, std::string argument )
          }
       }
       echo_all_printf( ECHOTAR_ALL, "&[guildtalk]{} has dissolved {}!", ch->name, clan->name );
-      log_printf( "%s has dissolved %s", ch->name, clan->name.c_str(  ) );
+      log_printf( "%s has dissolved %s", ch->name.c_str(  ), clan->name.c_str(  ) );
       delete_clan( ch, clan );
       write_clan_list(  );
       return;

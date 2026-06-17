@@ -378,8 +378,7 @@ CMDF( do_pcrename )
    if( victim->pcdata->clan )
       remove_roster( victim->pcdata->clan, victim->name );
 
-   STRFREE( victim->name );
-   victim->name = STRALLOC( capitalize( argument ).c_str(  ) );
+   victim->name = capitalize( argument );
    victim->pcdata->filename = capitalize( argument );
    if( !std::filesystem::remove( oldname ) )
    {
@@ -807,7 +806,7 @@ CMDF( do_pfiles )
 
    if( argument.empty(  ) )
    {
-      log_printf( "Manual pfile cleanup started by %s.", ch->name );
+      log_printf( "Manual pfile cleanup started by %s.", ch->name.c_str() );
 
       /*
        * Makes a backup copy of existing pfiles just in case - Samson
@@ -833,7 +832,7 @@ CMDF( do_pfiles )
 
    if( !str_cmp( argument, "count" ) )
    {
-      log_printf( "Pfile count started by %s.", ch->name );
+      log_printf( "Pfile count started by %s.", ch->name.c_str() );
       pfile_scan( true );
       return;
    }

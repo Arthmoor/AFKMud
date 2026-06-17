@@ -2564,8 +2564,8 @@ CMDF( do_socket )
          add_rune_affect( ch, item, rune );
          return;
       }
-      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name, item->short_descr );
-      ch->print( "Ooops. Something bad happened. Contact the immortals for assitance.\r\n" );
+      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name.c_str(), item->short_descr );
+      ch->print( "Ooops. Something bad happened. Contact the immortals for assistance.\r\n" );
       return;
    }
 
@@ -2603,8 +2603,8 @@ CMDF( do_socket )
          add_rune_affect( ch, item, rune );
          return;
       }
-      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name, item->short_descr );
-      ch->print( "Ooops. Something bad happened. Contact the immortals for assitance.\r\n" );
+      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name.c_str(), item->short_descr );
+      ch->print( "Ooops. Something bad happened. Contact the immortals for assistance.\r\n" );
       return;
    }
    ch->printf( "%s cannot be socketed. Only weapons, body armors, and shields are valid.\r\n", item->short_descr );

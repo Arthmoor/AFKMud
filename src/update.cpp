@@ -437,7 +437,7 @@ void drunk_randoms( char_data * ch )
          if( number_percent(  ) < 10 )
             rvch = *ich;
       if( rvch )
-         cmdf( ch, "puke %s", rvch->name );
+         cmdf( ch, "puke %s", rvch->name.c_str() );
       else
          interpret( ch, "puke" );
    }
@@ -659,7 +659,7 @@ void mobile_update( void )
                if( ch->master && ch->master->mount == ch )
                {
                   ch->master->position = POS_SITTING;
-                  ch->master->printf( "%s bucks you off, and then gallops away into the wilds!\r\n", ch->short_descr );
+                  ch->master->print_fmt( "{} bucks you off, and then gallops away into the wilds!\r\n", ch->short_descr );
                }
                else
                {
@@ -747,7 +747,7 @@ void mobile_update( void )
 
       if( !ch->in_room->area )
       {
-         log_printf( "Room %d for mob %s is not associated with an area?", ch->in_room->vnum, ch->name );
+         log_printf( "Room %d for mob %s is not associated with an area?", ch->in_room->vnum, ch->name.c_str() );
          if( ch->was_in_room )
             log_printf( "Was in room %d", ch->was_in_room->vnum );
          ch->extract( true );
@@ -944,16 +944,16 @@ void mobile_update( void )
                {
                   default:
                   case 0:
-                     cmdf( ch, "yell Get away from me, %s!", rch->name );
+                     cmdf( ch, "yell Get away from me, %s!", rch->name.c_str() );
                      break;
                   case 1:
-                     cmdf( ch, "yell Leave me be, %s!", rch->name );
+                     cmdf( ch, "yell Leave me be, %s!", rch->name.c_str() );
                      break;
                   case 2:
-                     cmdf( ch, "yell %s is trying to kill me!  Help!", rch->name );
+                     cmdf( ch, "yell %s is trying to kill me!  Help!", rch->name.c_str() );
                      break;
                   case 3:
-                     cmdf( ch, "yell Someone save me from %s!", rch->name );
+                     cmdf( ch, "yell Someone save me from %s!", rch->name.c_str() );
                      break;
                }
                found = true;
@@ -1258,8 +1258,7 @@ void char_update( void )
             log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
          ch->print( "The gods have released you from hell as your sentence is up!\r\n" );
          interpret( ch, "look" );
-         STRFREE( ch->pcdata->helled_by );
-         ch->pcdata->helled_by = nullptr;
+         ch->pcdata->helled_by.clear();
          ch->pcdata->release_date = std::chrono::system_clock::time_point{};
          ch->save(  );
       }
@@ -2165,7 +2164,7 @@ void aggr_update( void )
 
          if( !victim )
          {
-            bug( "%s: null victim. Aggro: %s", __func__, ch->name );
+            bug( "%s: null victim. Aggro: %s", __func__, ch->name.c_str() );
             log_printf( "Breaking %s loop and transferring aggressor to Limbo.", __func__ );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )

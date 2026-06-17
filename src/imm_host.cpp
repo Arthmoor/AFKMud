@@ -337,7 +337,7 @@ bool check_immortal_domain( char_data * ch, std::string_view lhost )
       if( ( prefix && suffix && !str_infix( ch->desc->ipaddress, chost ) )
           || ( prefix && !str_suffix( chost, ch->desc->ipaddress.c_str(  ) ) ) || ( suffix && !str_prefix( chost, ch->desc->ipaddress ) ) || ( !str_cmp( chost, ch->desc->ipaddress ) ) )
       {
-         log_printf( "&C&GImmotal_Host: %s's host authorized.", ch->name );
+         log_printf( "&C&GImmotal_Host: %s's host authorized.", ch->name.c_str() );
          return true;
       }
    }
@@ -345,7 +345,7 @@ bool check_immortal_domain( char_data * ch, std::string_view lhost )
    /*
     * denied attempts now get logged 
     */
-   log_printf( "&C&RImmortal_Host: %s's host denied. This hacking attempt has been logged.", ch->name );
+   log_printf( "&C&RImmortal_Host: %s's host denied. This hacking attempt has been logged.", ch->name.c_str() );
 
    immortal_host_log *nlog = new immortal_host_log;
    nlog->host = lhost;

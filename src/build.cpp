@@ -884,7 +884,7 @@ void goto_char( char_data * ch, char_data * wch )
    /*
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
-   if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
+   if( ch->pcdata && !ch->pcdata->bamfout.empty() )
       act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, nullptr, nullptr, TO_CANSEE );
@@ -894,13 +894,13 @@ void goto_char( char_data * ch, char_data * wch )
    /*
     * Bamfin processing by Altrag, installed by Samson 12-10-97 
     */
-   if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
+   if( ch->pcdata && !ch->pcdata->bamfin.empty() )
       act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, nullptr, nullptr, TO_CANSEE );
 }
 
-void goto_obj( char_data * ch, obj_data * obj, const std::string & argument )
+void goto_obj( char_data * ch, obj_data * obj, std::string_view argument )
 {
    room_index *location;
 
@@ -911,7 +911,7 @@ void goto_obj( char_data * ch, obj_data * obj, const std::string & argument )
       location = obj->carried_by->in_room;
    else  /* It's in a container, this becomes too much hassle to recursively locate */
    {
-      ch->printf( "%s is inside a container. Try locating that container first.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "{} is inside a container. Try locating that container first.\r\n", argument );
       return;
    }
 
@@ -944,7 +944,7 @@ void goto_obj( char_data * ch, obj_data * obj, const std::string & argument )
    /*
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
-   if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
+   if( ch->pcdata && !ch->pcdata->bamfout.empty() )
       act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, nullptr, nullptr, TO_CANSEE );
@@ -954,7 +954,7 @@ void goto_obj( char_data * ch, obj_data * obj, const std::string & argument )
    /*
     * Bamfin processing by Altrag, installed by Samson 12-10-97 
     */
-   if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
+   if( ch->pcdata && !ch->pcdata->bamfin.empty() )
       act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
    else
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, nullptr, nullptr, TO_CANSEE );
@@ -999,7 +999,7 @@ CMDF( do_goto )
 
       if( !continent )
       {
-         ch->printf( "There isn't a map for '%s'.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "There isn't a map for '{}'.\r\n", arg1 );
          return;
       }
 
@@ -1015,18 +1015,18 @@ CMDF( do_goto )
          return;
       }
 
-      x = atoi( arg2.c_str(  ) );
-      y = atoi( argument.c_str(  ) );
+      x = std::stoi( arg2 );
+      y = std::stoi( argument );
 
       if( !is_valid_x( x ) )
       {
-         ch->printf( "Valid x coordinates are 0 to %d.\r\n", MAX_X - 1 );
+         ch->print_fmt( "Valid x coordinates are 0 to {}.\r\n", MAX_X - 1 );
          return;
       }
 
       if( !is_valid_y( y ) )
       {
-         ch->printf( "Valid y coordinates are 0 to %d.\r\n", MAX_Y - 1 );
+         ch->print_fmt( "Valid y coordinates are 0 to {}.\r\n", MAX_Y - 1 );
          return;
       }
 
@@ -1083,7 +1083,7 @@ CMDF( do_goto )
 
       if( vnum < 1 || vnum > sysdata->maxvnum )
       {
-         ch->printf( "Invalid vnum. Allowable range is 1 to %d\r\n", sysdata->maxvnum );
+         ch->print_fmt( "Invalid vnum. Allowable range is 1 to {}\r\n", sysdata->maxvnum );
          return;
       }
 
@@ -1119,8 +1119,8 @@ CMDF( do_goto )
    /*
     * Bamfout processing by Altrag, installed by Samson 12-10-97 
     */
-   if( ch->pcdata && ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfout, ch ).c_str(  ), TO_CANSEE );
+   if( ch->pcdata && !ch->pcdata->bamfout.empty() )
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfout, ch ).c_str(), TO_CANSEE );
    else
       act( AT_IMMORT, "$n vanishes suddenly into thin air.", ch, nullptr, nullptr, TO_CANSEE );
 
@@ -1129,8 +1129,8 @@ CMDF( do_goto )
     */
    leave_map( ch, nullptr, location );
 
-   if( ch->pcdata && ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
-      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfin, ch ).c_str(  ), TO_CANSEE );
+   if( ch->pcdata && !ch->pcdata->bamfin.empty() )
+      act( AT_IMMORT, "$T", ch, nullptr, bamf_print( ch->pcdata->bamfin, ch ).c_str(), TO_CANSEE );
    else
       act( AT_IMMORT, "$n appears suddenly out of thin air.", ch, nullptr, nullptr, TO_CANSEE );
 }
@@ -1179,12 +1179,11 @@ CMDF( do_mset )
             ch->stop_editing(  );
             return;
          }
-         STRFREE( victim->chardesc );
          victim->chardesc = ch->copy_buffer( true );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->chardesc );
-            victim->pIndexData->chardesc = QUICKLINK( victim->chardesc );
+            victim->pIndexData->chardesc = STRALLOC( victim->chardesc.c_str() );
          }
          tmpmob = ( char_data * ) ch->pcdata->spare_ptr;
          ch->stop_editing(  );
@@ -1232,7 +1231,7 @@ CMDF( do_mset )
          ch->print( "Mset mode off.\r\n" );
          ch->substate = SUB_NONE;
          ch->pcdata->dest_buf = nullptr;
-         STRFREE( ch->pcdata->subprompt );
+         ch->pcdata->subprompt.clear();
          return;
       }
    }
@@ -1313,7 +1312,7 @@ CMDF( do_mset )
    {
       if( !( victim = ch->get_char_world( arg1 ) ) )
       {
-         ch->printf( "Sorry, %s doesn't seem to exist in this universe.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "Sorry, {} doesn't seem to exist in this universe.\r\n", arg1 );
          return;
       }
    }
@@ -1345,26 +1344,26 @@ CMDF( do_mset )
    if( !str_cmp( arg2, "on" ) )
    {
       ch->CHECK_SUBRESTRICTED(  );
-      ch->printf( "Mset mode on. (Editing %s).\r\n", victim->name );
+      ch->print_fmt( "Mset mode on. (Editing {}).\r\n", victim->name );
       ch->substate = SUB_REPEATCMD;
       ch->pcdata->dest_buf = victim;
       if( victim->isnpc(  ) )
-         stralloc_printf( &ch->pcdata->subprompt, "<&CMset &W#%d&w> %%i", victim->pIndexData->vnum );
+         ch->pcdata->subprompt = std::format( "<&CMset &W#{}&w> %i", victim->pIndexData->vnum );
       else
-         stralloc_printf( &ch->pcdata->subprompt, "<&CMset &W%s&w> %%i", victim->name );
+         ch->pcdata->subprompt = std::format( "<&CMset &W{}&w> %i", victim->name );
       RelCreate( relMSET_ON, ch, victim );
       return;
    }
    value = is_number( arg3 ) ? atoi( arg3.c_str(  ) ) : -1;
 
-   if( atoi( arg3.c_str(  ) ) < -1 && value == -1 )
-      value = atoi( arg3.c_str(  ) );
+   if( std::stoi( arg3 ) < -1 && value == -1 )
+      value = std::stoi( arg3 );
 
    if( !str_cmp( arg2, "str" ) )
    {
       if( value < minattr || value > maxattr )
       {
-         ch->printf( "Strength range is %d to %d.\r\n", minattr, maxattr );
+         ch->print_fmt( "Strength range is {} to {}.\r\n", minattr, maxattr );
          return;
       }
       victim->perm_str = value;
@@ -1378,7 +1377,7 @@ CMDF( do_mset )
    {
       if( value < minattr || value > maxattr )
       {
-         ch->printf( "Intelligence range is %d to %d.\r\n", minattr, maxattr );
+         ch->print_fmt( "Intelligence range is {} to {}.\r\n", minattr, maxattr );
          return;
       }
       victim->perm_int = value;
@@ -1392,7 +1391,7 @@ CMDF( do_mset )
    {
       if( value < minattr || value > maxattr )
       {
-         ch->printf( "Wisdom range is %d to %d.\r\n", minattr, maxattr );
+         ch->print_fmt( "Wisdom range is {} to {}.\r\n", minattr, maxattr );
          return;
       }
       victim->perm_wis = value;
@@ -1406,7 +1405,7 @@ CMDF( do_mset )
    {
       if( value < minattr || value > maxattr )
       {
-         ch->printf( "Dexterity range is %d to %d.\r\n", minattr, maxattr );
+         ch->print_fmt( "Dexterity range is {} to {}.\r\n", minattr, maxattr );
          return;
       }
       victim->perm_dex = value;
@@ -1420,7 +1419,7 @@ CMDF( do_mset )
    {
       if( value < minattr || value > maxattr )
       {
-         ch->printf( "Constitution range is %d to %d.\r\n", minattr, maxattr );
+         ch->print_fmt( "Constitution range is {} to {}.\r\n", minattr, maxattr );
          return;
       }
       victim->perm_con = value;
@@ -1434,7 +1433,7 @@ CMDF( do_mset )
    {
       if( value < minattr || value > maxattr )
       {
-         ch->printf( "Charisma range is %d to %d.\r\n", minattr, maxattr );
+         ch->print_fmt( "Charisma range is {} to {}.\r\n", minattr, maxattr );
          return;
       }
       victim->perm_cha = value;
@@ -1448,7 +1447,7 @@ CMDF( do_mset )
    {
       if( value < minattr || value > maxattr )
       {
-         ch->printf( "Luck range is %d to %d.\r\n", minattr, maxattr );
+         ch->print_fmt( "Luck range is {} to {}.\r\n", minattr, maxattr );
          return;
       }
       victim->perm_lck = value;
@@ -1522,12 +1521,12 @@ CMDF( do_mset )
 
       if( !victim->isnpc(  ) && ( value < 0 || value >= MAX_CLASS ) )
       {
-         ch->printf( "%s is not a valid player class.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is not a valid player class.\r\n", arg3 );
          return;
       }
       if( victim->isnpc(  ) && ( value < 0 || value >= MAX_NPC_CLASS ) )
       {
-         ch->printf( "%s is not a valid NPC class.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is not a valid NPC class.\r\n", arg3 );
          return;
       }
       victim->Class = value;
@@ -1546,12 +1545,12 @@ CMDF( do_mset )
 
       if( !victim->isnpc(  ) && ( value < 0 || value >= MAX_PC_RACE ) )
       {
-         ch->printf( "%s is not a valid player race.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is not a valid player race.\r\n", arg3 );
          return;
       }
       if( victim->isnpc(  ) && ( value < 0 || value >= MAX_NPC_RACE ) )
       {
-         ch->printf( "%s is not a valid NPC race.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is not a valid NPC race.\r\n", arg3 );
          return;
       }
 
@@ -1703,9 +1702,9 @@ CMDF( do_mset )
          return;
       }
       smash_tilde( argument );
-      STRFREE( victim->pcdata->rank );
+      victim->pcdata->rank.clear();
       if( !argument.empty(  ) && str_cmp( argument, "none" ) )
-         victim->pcdata->rank = STRALLOC( argument.c_str(  ) );
+         victim->pcdata->rank = argument;
       ch->print( "Rank set.\r\n" );
       return;
    }
@@ -1998,12 +1997,11 @@ CMDF( do_mset )
 
    if( !str_cmp( arg2, "short" ) )
    {
-      STRFREE( victim->short_descr );
-      victim->short_descr = STRALLOC( arg3.c_str(  ) );
+      victim->short_descr = arg3;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
          STRFREE( victim->pIndexData->short_descr );
-         victim->pIndexData->short_descr = QUICKLINK( victim->short_descr );
+         victim->pIndexData->short_descr = STRALLOC( victim->short_descr.c_str() );
       }
       ch->print( "Short description set.\r\n" );
       return;
@@ -2011,11 +2009,11 @@ CMDF( do_mset )
 
    if( !str_cmp( arg2, "long" ) )
    {
-      stralloc_printf( &victim->long_descr, "%s\r\n", arg3.c_str(  ) );
+      victim->long_descr = std::format( "{}\r\n", arg3 );
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
          STRFREE( victim->pIndexData->long_descr );
-         victim->pIndexData->long_descr = QUICKLINK( victim->long_descr );
+         victim->pIndexData->long_descr = STRALLOC( victim->long_descr.c_str() );
       }
       ch->print( "Long description set.\r\n" );
       return;
@@ -2025,12 +2023,11 @@ CMDF( do_mset )
    {
       if( !arg3.empty(  ) )
       {
-         STRFREE( victim->chardesc );
-         victim->chardesc = STRALLOC( arg3.c_str(  ) );
+         victim->chardesc = arg3;
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->chardesc );
-            victim->pIndexData->chardesc = QUICKLINK( victim->chardesc );
+            victim->pIndexData->chardesc = STRALLOC( victim->chardesc.c_str() );
          }
          ch->print( "Detailed description set.\r\n" );
          return;
@@ -2048,10 +2045,10 @@ CMDF( do_mset )
 
       ch->substate = SUB_MOB_DESC;
       ch->pcdata->dest_buf = victim;
-      if( !victim->chardesc || victim->chardesc[0] == '\0' )
-         victim->chardesc = STRALLOC( "" );
+      if( !victim->chardesc.empty() )
+         victim->chardesc.clear();
       if( victim->isnpc(  ) )
-         ch->editor_desc_printf( "Description of mob, vnum %d (%s).", victim->pIndexData->vnum, victim->name );
+         ch->editor_desc_printf( "Description of mob, vnum %d (%s).", victim->pIndexData->vnum, victim->name.c_str() );
       else
          ch->editor_desc_printf( "Description of player %s.", capitalize( victim->name ).c_str() );
       ch->start_editing( victim->chardesc );
@@ -2098,7 +2095,7 @@ CMDF( do_mset )
             value = get_actflag( arg3 );
 
             if( value < 0 || value >= MAX_ACT_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
             else if( value == ACT_PROTOTYPE && ch->level < sysdata->level_modify_proto )
                ch->print( "You cannot change the prototype flag.\r\n" );
             else if( value == ACT_IS_NPC )
@@ -2111,7 +2108,7 @@ CMDF( do_mset )
             value = get_pcflag( arg3 );
 
             if( value < 0 || value >= MAX_PCFLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
             else
                victim->toggle_pcflag( value );
          }
@@ -2141,7 +2138,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_aflag( value );
       }
@@ -2249,7 +2246,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_resist( value );
       }
@@ -2278,7 +2275,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_immune( value );
       }
@@ -2307,7 +2304,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_suscep( value );
       }
@@ -2336,7 +2333,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_absorb( value );
       }
@@ -2365,7 +2362,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_partflag( arg3 );
          if( value < 0 || value >= MAX_BPART )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_bpart( value );
       }
@@ -2433,11 +2430,11 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_langnum( arg3 );
          if( value < 0 || value >= LANG_UNKNOWN )
-            ch->printf( "Unknown language: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown language: {}\r\n", arg3 );
          else if( !victim->isnpc(  ) )
          {
             if( !( value &= VALID_LANGS ) )
-               ch->printf( "Players may not know %s.\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Players may not know {}.\r\n", arg3 );
             else
                victim->toggle_lang( value );
          }
@@ -2461,7 +2458,7 @@ CMDF( do_mset )
       argument = one_argument( argument, arg3 );
       value = get_langnum( arg3 );
       if( value < 0 || value >= LANG_UNKNOWN )
-         ch->printf( "Unknown language: %s\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "Unknown language: {}\r\n", arg3 );
       else
          victim->speaking = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
@@ -2486,7 +2483,7 @@ CMDF( do_mset )
 
    if( !victim->isnpc(  ) )
    {
-      ch->printf( "Cannot change %s on PC's.\r\n", arg2.c_str(  ) );
+      ch->print_fmt( "Cannot change {} on PC's.\r\n", arg2 );
       return;
    }
 
@@ -2494,7 +2491,7 @@ CMDF( do_mset )
    {
       if( value < 0 || value > LEVEL_AVATAR + 10 )
       {
-         ch->printf( "Level range is 0 to %d.\r\n", LEVEL_AVATAR + 10 );
+         ch->print_fmt( "Level range is 0 to {}.\r\n", LEVEL_AVATAR + 10 );
          return;
       }
       victim->level = value;
@@ -2538,12 +2535,11 @@ CMDF( do_mset )
          return;
       }
 
-      STRFREE( victim->name );
-      victim->name = STRALLOC( arg3.c_str(  ) );
+      victim->name = arg3;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
          STRFREE( victim->pIndexData->player_name );
-         victim->pIndexData->player_name = QUICKLINK( victim->name );
+         victim->pIndexData->player_name = STRALLOC( victim->name.c_str() );
       }
       ch->print( "Keywords set.\r\n" );
       return;
@@ -2574,7 +2570,7 @@ CMDF( do_mset )
 
       if( !validate_spec_fun( arg3 ) )
       {
-         ch->printf( "%s is not a valid spec_fun for mobiles.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "{} is not a valid spec_fun for mobiles.\r\n", arg3 );
          return;
       }
 
@@ -2602,7 +2598,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_attackflag( arg3 );
          if( value < 0 || value >= MAX_ATTACK_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_attack( value );
       }
@@ -2625,7 +2621,7 @@ CMDF( do_mset )
          argument = one_argument( argument, arg3 );
          value = get_defenseflag( arg3 );
          if( value < 0 || value >= MAX_DEFENSE_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             victim->toggle_defense( value );
       }
@@ -2899,7 +2895,7 @@ CMDF( do_oset )
          ch->print( "Oset mode off.\r\n" );
          ch->substate = SUB_NONE;
          ch->pcdata->dest_buf = nullptr;
-         STRFREE( ch->pcdata->subprompt );
+         ch->pcdata->subprompt.clear();
          return;
       }
    }
@@ -2983,7 +2979,7 @@ CMDF( do_oset )
       ch->printf( "Oset mode on. (Editing '%s' vnum %d).\r\n", obj->name, obj->pIndexData->vnum );
       ch->substate = SUB_REPEATCMD;
       ch->pcdata->dest_buf = obj;
-      stralloc_printf( &ch->pcdata->subprompt, "<&COset &W#%d&w> %%i", obj->pIndexData->vnum );
+      ch->pcdata->subprompt = std::format( "<&COset &W#{}&w> %i", obj->pIndexData->vnum );
       RelCreate( relOSET_ON, ch, obj );
       return;
    }
@@ -4331,7 +4327,7 @@ CMDF( do_redit )
       if( !str_cmp( arg, "done" ) || !str_cmp( arg, "off" ) )
       {
          ch->print( "Redit mode off.\r\n" );
-         STRFREE( ch->pcdata->subprompt );
+         ch->pcdata->subprompt.clear();
          ch->substate = SUB_NONE;
          return;
       }
@@ -4360,8 +4356,7 @@ CMDF( do_redit )
       ch->CHECK_SUBRESTRICTED(  );
       ch->print( "Redit mode on.\r\n" );
       ch->substate = SUB_REPEATCMD;
-      STRFREE( ch->pcdata->subprompt );
-      ch->pcdata->subprompt = STRALLOC( "<&CRedit &W#%r&w> %i" );
+      ch->pcdata->subprompt = "<&CRedit &W#%r&w> %i";
       return;
    }
 
@@ -7158,14 +7153,14 @@ CMDF( do_vassign )
       victim->pcdata->area = nullptr;
       victim->pcdata->low_vnum = 0;
       victim->pcdata->hi_vnum = 0;
-      victim->printf( "%s has removed your vnum range.\r\n", ch->name );
+      victim->print_fmt( "{} has removed your vnum range.\r\n", ch->name );
       victim->save(  );
       return;
    }
 
    if( lo >= sysdata->maxvnum || hi >= sysdata->maxvnum )
    {
-      ch->printf( "Cannot assign this range, maximum allowable vnum is currently %d.\r\n", sysdata->maxvnum );
+      ch->print_fmt( "Cannot assign this range, maximum allowable vnum is currently {}.\r\n", sysdata->maxvnum );
       return;
    }
 
@@ -7197,7 +7192,7 @@ CMDF( do_vassign )
    victim->pcdata->hi_vnum = hi;
    assign_area( victim );
    ch->print( "Done.\r\n" );
-   victim->printf( "&Y%s has assigned you the vnum range %d - %d.\r\n", ch->name, lo, hi );
+   victim->print_fmt( "&Y{} has assigned you the vnum range {} - {}.\r\n", ch->name, lo, hi );
 
    if( !victim->pcdata->area )
    {
@@ -7287,5 +7282,5 @@ CMDF( do_vassign )
    tarea->fold( filename.c_str(), false );
 
    ch->set_color( AT_IMMORT );
-   ch->printf( "Vnum range set for %s and initialized.\r\n", victim->name );
+   ch->print_fmt( "Vnum range set for {} and initialized.\r\n", victim->name );
 }

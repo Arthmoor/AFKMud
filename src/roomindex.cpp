@@ -1130,7 +1130,7 @@ void room_index::reset(  )
              * occurrences of namegen in the long_descr and description will be
              * replaced with the name.
              */
-            std::string namegenCheckString = ( mob->name ? mob->name : "" );
+            std::string namegenCheckString = ( !mob->name.empty() ? mob->name : "" );
 
             /*
              * Modified by Tarl 5 Dec 02 to add extra namegen options. ie, namegen_gr will pick a name
@@ -1180,27 +1180,22 @@ void room_index::reset(  )
                   pick_name( nameg, file );
                }
 
-               STRFREE( mob->name );
-               STRFREE( mob->short_descr );
-
                std::string new_keywords = namegenCheckString + " " + nameg;
-               mob->name = STRALLOC( new_keywords.c_str() );
-               mob->short_descr = STRALLOC( nameg.c_str() );
+               mob->name = new_keywords;
+               mob->short_descr = nameg;
 
-               if( mob->long_descr )
+               if( !mob->long_descr.empty() )
                {
                   std::string long_desc = mob->long_descr;
                   string_replace( long_desc, namegen_tag, nameg );
-                  STRFREE( mob->long_descr );
-                  mob->long_descr = STRALLOC( long_desc.c_str() );
+                  mob->long_descr = long_desc;
                }
 
-               if( mob->chardesc )
+               if( !mob->chardesc.empty() )
                {
                   std::string char_desc = mob->chardesc;
                   string_replace( char_desc, namegen_tag, nameg );
-                  STRFREE( mob->chardesc );
-                  mob->chardesc = STRALLOC( char_desc.c_str() );
+                  mob->chardesc = char_desc;
                }
             } // End Namegen code.
 

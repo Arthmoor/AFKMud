@@ -1763,7 +1763,7 @@ CMDF( do_setexit )
 
       if( !ch->continent )
       {
-         bug( "%s -> %s:%d: %s is not on a valid map!", __func__, __FILE__, __LINE__, ch->name );
+         bug( "%s -> %s:%d: %s is not on a valid map!", __func__, __FILE__, __LINE__, ch->name.c_str() );
          ch->print( "Can't do that - your on an invalid map.\r\n" );
          return;
       }
@@ -2035,7 +2035,7 @@ void display_map( char_data * ch )
 
    if( !ch->continent )
    {
-      bug( "%s -> %s:%d: Player %s on invalid map! Moving them to Bywater recall room.", __func__, __FILE__, __LINE__, ch->name );
+      bug( "%s -> %s:%d: Player %s on invalid map! Moving them to Bywater recall room.", __func__, __FILE__, __LINE__, ch->name.c_str() );
       ch->print( "&RYou were found on an invalid map and have been moved to the recall room in Bywater.\r\n" );
       toroom = get_room_index( ROOM_VNUM_ALTAR );
       leave_map( ch, nullptr, toroom );
@@ -2347,9 +2347,9 @@ void map_scan( char_data * ch )
             iMes = 10;
 
          if( dir == -1 )
-            ch->printf( "&[skill]Here with you: %s.\r\n", gch->name );
+            ch->print_fmt( "&[skill]Here with you: {}.\r\n", gch->name );
          else
-            ch->printf( "&[skill]To the %s, %s, %s.\r\n", dir_name[dir], landmark_distances[iMes], gch->name );
+            ch->print_fmt( "&[skill]To the {}, {}, {}.\r\n", dir_name[dir], landmark_distances[iMes], gch->name );
       }
    }
    if( !found )
@@ -2367,13 +2367,13 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
 
    if( !from )
    {
-      bug( "%s -> %s:%d: %s nullptr source room!", __func__, __FILE__, __LINE__, ch->name );
+      bug( "%s -> %s:%d: %s nullptr source room!", __func__, __FILE__, __LINE__, ch->name.c_str() );
       return;
    }
 
    if( !to )
    {
-      bug( "%s -> %s:%d: %s nullptr target room!", __func__, __FILE__, __LINE__, ch->name );
+      bug( "%s -> %s:%d: %s nullptr target room!", __func__, __FILE__, __LINE__, ch->name.c_str() );
       return;
    }
 

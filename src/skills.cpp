@@ -2829,7 +2829,7 @@ CMDF( do_sset )
       skill->name = strdup( argument.c_str(  ) );
       skill->spell_fun = spell_smaug;
       skill->type = type;
-      skill->author = QUICKLINK( ch->name );
+      skill->author = STRALLOC( ch->name.c_str() );
       if( !str_cmp( arg2, "ability" ) )
          skill->type = SKILL_RACIAL;
       if( !str_cmp( arg2, "lore" ) )
@@ -3656,7 +3656,7 @@ CMDF( do_gouge )
          {
             if( number_bits( 1 ) == 0 )
             {
-               ch->printf( "%s looks momentarily dazed.\r\n", victim->name );
+               ch->print_fmt( "{} looks momentarily dazed.\r\n", victim->name );
                victim->print( "You are momentarily dazed ...\r\n" );
                victim->WAIT_STATE( sysdata->pulseviolence );
             }
@@ -3732,25 +3732,25 @@ CMDF( do_detrap )
          }
          act( AT_ACTION, "You carefully begin your attempt to remove a trap from $p...", ch, obj, nullptr, TO_CHAR );
          act( AT_ACTION, "$n carefully attempts to remove a trap from $p...", ch, obj, nullptr, TO_ROOM );
-         ch->alloc_ptr = strdup( obj->name );
+         ch->alloc_ptr = obj->name;
          ch->add_timer( TIMER_DO_FUN, 3, do_detrap, 1 );
-/*	    ch->WAIT_STATE( skill_table[gsn_detrap]->beats ); */
+         // ch->WAIT_STATE( skill_table[gsn_detrap]->beats );
          return;
 
       case 1:
-         if( !ch->alloc_ptr )
+         if( ch->alloc_ptr.empty() )
          {
             ch->print( "Your detrapping was interrupted!\r\n" );
             bug( "%s: ch->alloc_ptr nullptr!", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          ch->substate = SUB_NONE;
          break;
 
       case SUB_TIMER_DO_ABORT:
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          ch->substate = SUB_NONE;
          ch->print( "You carefully stop what you were doing.\r\n" );
          return;
@@ -3868,13 +3868,13 @@ CMDF( do_dig )
             }
          }
          ch->add_timer( TIMER_DO_FUN, umin( skill_table[gsn_dig]->beats / 10, 3 ), do_dig, 1 );
-         ch->alloc_ptr = strdup( arg.c_str(  ) );
+         ch->alloc_ptr = arg;
          ch->print( "You begin digging...\r\n" );
          act( AT_PLAIN, "$n begins digging...", ch, nullptr, nullptr, TO_ROOM );
          return;
 
       case 1:
-         if( !ch->alloc_ptr )
+         if( ch->alloc_ptr.empty() )
          {
             ch->print( "Your digging was interrupted!\r\n" );
             act( AT_PLAIN, "$n's digging was interrupted!", ch, nullptr, nullptr, TO_ROOM );
@@ -3882,11 +3882,11 @@ CMDF( do_dig )
             return;
          }
          arg = ch->alloc_ptr;
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          break;
 
       case SUB_TIMER_DO_ABORT:
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          ch->substate = SUB_NONE;
          ch->print( "You stop digging...\r\n" );
          act( AT_PLAIN, "$n stops digging...", ch, nullptr, nullptr, TO_ROOM );
@@ -4016,22 +4016,22 @@ CMDF( do_search )
          ch->add_timer( TIMER_DO_FUN, umin( skill_table[gsn_search]->beats / 10, 3 ), do_search, 1 );
          ch->print( "You begin your search...\r\n" );
          act( AT_MAGIC, "$n begins searching the room.....", ch, nullptr, nullptr, TO_ROOM );
-         ch->alloc_ptr = strdup( arg.c_str(  ) );
+         ch->alloc_ptr = arg;
          return;
 
       case 1:
-         if( !ch->alloc_ptr )
+         if( ch->alloc_ptr.empty() )
          {
             ch->print( "Your search was interrupted!\r\n" );
             bug( "%s: alloc_ptr nullptr", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          break;
 
       case SUB_TIMER_DO_ABORT:
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          ch->substate = SUB_NONE;
          ch->print( "You stop your search...\r\n" );
          return;
@@ -4185,7 +4185,7 @@ CMDF( do_steal )
       act( AT_ACTION, "$n tried to steal from you!\r\n", ch, nullptr, victim, TO_VICT );
       act( AT_ACTION, "$n tried to steal from $N.\r\n", ch, nullptr, victim, TO_NOTVICT );
 
-      cmdf( victim, "yell %s is a bloody thief!", ch->name );
+      cmdf( victim, "yell %s is a bloody thief!", ch->name.c_str() );
 
       ch->learn_from_failure( gsn_steal );
       if( !ch->isnpc(  ) )
@@ -4323,7 +4323,7 @@ CMDF( do_backstab )
 
    if( victim->hit < victim->max_hit )
    {
-      ch->printf( "%s is hurt and suspicious, you'll never get close enough.\r\n", victim->short_descr );
+      ch->print_fmt( "{} is hurt and suspicious, you'll never get close enough.\r\n", victim->short_descr );
       return;
    }
 
@@ -4350,7 +4350,8 @@ CMDF( do_backstab )
    else
       base = 4;
 
-/* ==4/3/95== Gives the backstab a chance to paralysis it's victim.
+/*
+ * ==4/3/95== Gives the backstab a chance to paralysis it's victim.
  * This chance is increased and is mainly dependent upon
  * the fact that the thief is sneaking.  There is also a
  * chance that the mob will not even notice thief has missed
@@ -5562,7 +5563,7 @@ CMDF( do_mount )
    {
       act( AT_SKILL, "$N snarls and attacks!", ch, nullptr, victim, TO_CHAR );
       act( AT_SKILL, "As $n tries to mount $N, $N attacks $n!", ch, nullptr, victim, TO_NOTVICT );
-      cmdf( victim, "kill %s", ch->name );
+      cmdf( victim, "kill %s", ch->name.c_str() );
       return;
    }
    else if( check > -1 )
@@ -6360,7 +6361,7 @@ static void scanroom( char_data * ch, room_index * room, int dir, int maxdist, i
    for( auto* tch : room->people )
    {
       if( ch->can_see( tch, false ) && !is_ignoring( tch, ch ) )
-         ch->printf( "%-30s : %s %s\r\n", tch->isnpc(  )? tch->short_descr : tch->name, rng_desc[dist], dist == 0 ? "" : dir_desc[dir] );
+         ch->print_fmt( "{:<30} : {} {}\r\n", tch->isnpc(  ) ? tch->short_descr : tch->name, rng_desc[dist], dist == 0 ? "" : dir_desc[dir] );
    }
 
    std::list<exit_data *>::iterator ex;
@@ -6824,7 +6825,7 @@ CMDF( do_tinker )
 
    if( !pobj && !pmob )
    {
-      ch->printf( "You cannot construct a %s.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "You cannot construct a {}.\r\n", argument );
       return;
    }
 
@@ -6852,7 +6853,7 @@ CMDF( do_tinker )
       obj = pobj->create_object( 1 );
       obj = obj->to_char( ch );
 
-      ch->printf( "You tinker around awhile and construct %s!\r\n", obj->short_descr );
+      ch->print_fmt( "You tinker around awhile and construct {}!\r\n", obj->short_descr );
       return;
    }
    if( pmob )
@@ -6861,7 +6862,7 @@ CMDF( do_tinker )
       if( !mob->to_room( ch->in_room ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
 
-      ch->printf( "You tinker around awhile and construct a %s!\r\n", mob->short_descr );
+      ch->print_fmt( "You tinker around awhile and construct a {}!\r\n", mob->short_descr );
       return;
    }
    bug( "%s: Somehow reached the end of the function!!!", __func__ );
@@ -7458,7 +7459,7 @@ CMDF( do_woodcall )
       mob = call->create_mobile(  );
       if( !mob->to_room( ch->in_room ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-      ch->printf( "&[skill]Your calls attract %s to your side!\r\n", mob->short_descr );
+      ch->print_fmt( "&[skill]Your calls attract {} to your side!\r\n", mob->short_descr );
       bind_follower( mob, ch, gsn_woodcall, ch->level * 10 );
       return;
    }

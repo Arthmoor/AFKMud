@@ -409,7 +409,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
       buf.append( std::format( "({})", victim->desc->original->name ) );
    if( victim->has_pcflag( PCFLAG_AFK ) )
    {
-      if( victim->pcdata->afkbuf && victim->pcdata->afkbuf[0] != '\0' )
+      if( !victim->pcdata->afkbuf.empty() )
          buf.append( std::format( "[AFK {}] ", victim->pcdata->afkbuf ) );
       else
          buf.append( "[AFK] " );
@@ -454,7 +454,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
       buf.append( "(Writing) " );
 
    ch->set_color( AT_PERSON );
-   if( ( victim->position == victim->defposition && victim->long_descr && victim->long_descr[0] != '\0' )
+   if( ( victim->position == victim->defposition && !victim->long_descr.empty() )
        || ( victim->morph && victim->morph->morph && victim->morph->morph->defpos == victim->position ) )
    {
       if( victim->morph != nullptr )
@@ -722,7 +722,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
          act( AT_ACTION, "$n looks at $mself.", ch, nullptr, victim, TO_NOTVICT );
    }
 
-   if( victim->chardesc && victim->chardesc[0] != '\0' )
+   if( !victim->chardesc.empty() )
    {
       if( victim->morph != nullptr && victim->morph->morph != nullptr )
       {
@@ -781,7 +781,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
          else
             ch->print( where_names[iWear] );
 
-         ch->printf( "%s\r\n", obj->format_to_char( ch, true, 1 ).c_str(  ) );
+         ch->print_fmt( "{}\r\n", obj->format_to_char( ch, true, 1 ) );
       }
    }
 
@@ -794,11 +794,11 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
    if( ch->is_immortal(  ) )
    {
       if( victim->isnpc(  ) )
-         ch->printf( "\r\nMobile #%d '%s' ", victim->pIndexData->vnum, victim->name );
+         ch->print_fmt( "\r\nMobile #{} '{}' ", victim->pIndexData->vnum, victim->name );
       else
-         ch->printf( "\r\n%s ", victim->name );
+         ch->print_fmt( "\r\n{} ", victim->name );
 
-      ch->printf( "is a level %d %s %s.\r\n",
+      ch->print_fmt( "is a level {} {} {}.\r\n",
                   victim->level,
                   victim->isnpc(  )? victim->race < MAX_NPC_RACE && victim->race >= 0 ?
                   npc_race[victim->race] : "unknown" : victim->race < MAX_PC_RACE &&
@@ -812,7 +812,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
 
    if( number_percent(  ) < ch->LEARNED( gsn_peek ) )
    {
-      ch->printf( "\r\nYou peek at %s inventory:\r\n", victim->sex == SEX_MALE ? "his" : victim->sex == SEX_FEMALE ? "her" : "its" );
+      ch->print_fmt( "\r\nYou peek at {} inventory:\r\n", victim->sex == SEX_MALE ? "his" : victim->sex == SEX_FEMALE ? "her" : "its" );
 
       show_list_to_char( ch, victim->carrying, true, true );
    }
@@ -828,7 +828,9 @@ bool is_same_mob( char_data * i, char_data * j )
    if( i->pIndexData == j->pIndexData && i->position == j->position &&
        i->get_aflags(  ) == j->get_aflags(  ) && i->get_actflags(  ) == j->get_actflags(  ) &&
        !str_cmp( i->name, j->name ) && !str_cmp( i->short_descr, j->short_descr ) &&
-       !str_cmp( i->long_descr, j->long_descr ) && ( ( i->chardesc && j->chardesc ) && !str_cmp( i->chardesc, j->chardesc ) ) && is_same_char_map( i, j ) )
+       !str_cmp( i->long_descr, j->long_descr ) &&
+       ( ( !i->chardesc.empty() && !j->chardesc.empty() ) &&
+       !str_cmp( i->chardesc, j->chardesc ) ) && is_same_char_map( i, j ) )
       return true;
 
    return false;
@@ -1741,10 +1743,10 @@ CMDF( do_glance )
       if( ch->is_immortal(  ) && victim != ch )
       {
          if( victim->isnpc(  ) )
-            ch->printf( "Mobile #%d '%s' ", victim->pIndexData->vnum, victim->name );
+            ch->print_fmt( "Mobile #{} '{}' ", victim->pIndexData->vnum, victim->name );
          else
-            ch->printf( "%s ", victim->name );
-         ch->printf( "is a level %d %s %s.\r\n", victim->level,
+            ch->print_fmt( "{} ", victim->name );
+         ch->print_fmt( "is a level {} {} {}.\r\n", victim->level,
                      victim->isnpc(  )? victim->race < MAX_NPC_RACE && victim->race >= 0 ?
                      npc_race[victim->race] : "unknown" : victim->race < MAX_PC_RACE &&
                      race_table[victim->race]->race_name &&
@@ -1760,7 +1762,7 @@ CMDF( do_glance )
 
 CMDF( do_examine )
 {
-   char buf[MSL];
+   std::string buf;
    obj_data *obj;
    short dam;
 
@@ -1792,46 +1794,46 @@ CMDF( do_examine )
             break;
 
          case ITEM_ARMOR:
-            ch->printf( "Condition: %s\r\n", condtxt( obj->value[1], obj->value[0] ).c_str(  ) );
+            ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[1], obj->value[0] ) );
             if( obj->value[2] > 0 )
-               ch->printf( "Available sockets: %d\r\n", obj->value[2] );
+               ch->print_fmt( "Available sockets: {}\r\n", obj->value[2] );
             if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
-               ch->printf( "Socket 1: %s Rune\r\n", obj->socket[0] );
+               ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
             if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
-               ch->printf( "Socket 2: %s Rune\r\n", obj->socket[1] );
+               ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
             if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
-               ch->printf( "Socket 3: %s Rune\r\n", obj->socket[2] );
+               ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
             break;
 
          case ITEM_WEAPON:
          case ITEM_MISSILE_WEAPON:
-            ch->printf( "Condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
+            ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ) );
             if( obj->value[7] > 0 )
-               ch->printf( "Available sockets: %d\r\n", obj->value[7] );
+               ch->print_fmt( "Available sockets: {}\r\n", obj->value[7] );
             if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
-               ch->printf( "Socket 1: %s Rune\r\n", obj->socket[0] );
+               ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
             if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
-               ch->printf( "Socket 2: %s Rune\r\n", obj->socket[1] );
+               ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
             if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
-               ch->printf( "Socket 3: %s Rune\r\n", obj->socket[2] );
+               ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
             break;
 
          case ITEM_PROJECTILE:
-            ch->printf( "Condition: %s\r\n", condtxt( obj->value[5], obj->value[0] ).c_str(  ) );
+            ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[5], obj->value[0] ) );
             break;
 
          case ITEM_COOK:
-            strlcpy( buf, "As you examine it carefully you notice that it ", MSL );
+            buf = "As you examine it carefully you notice that it ";
             dam = obj->value[2];
             if( dam >= 3 )
-               strlcat( buf, "is burned to a crisp.", MSL );
+               buf += "is burned to a crisp.";
             else if( dam == 2 )
-               strlcat( buf, "is a little over cooked.", MSL );   /* Bugfix 5-18-99 */
+               buf += "is a little over cooked.";   /* Bugfix 5-18-99 */
             else if( dam == 1 )
-               strlcat( buf, "is perfectly roasted.", MSL );
+               buf += "is perfectly roasted.";
             else
-               strlcat( buf, "is raw.", MSL );
-            strlcat( buf, "\r\n", MSL );
+               buf += "is raw.";
+            buf += "\r\n";
             ch->print( buf );
 
          case ITEM_FOOD:
@@ -1840,32 +1842,32 @@ CMDF( do_examine )
             else
                dam = 10;
             if( obj->item_type == ITEM_FOOD )
-               strlcpy( buf, "As you examine it carefully you notice that it ", MSL );
+               buf = "As you examine it carefully you notice that it ";
             else
-               strlcpy( buf, "Also it ", MSL );
+               buf = "Also it ";
             if( dam >= 10 )
-               strlcat( buf, "is fresh.", MSL );
+               buf += "is fresh.";
             else if( dam == 9 )
-               strlcat( buf, "is nearly fresh.", MSL );
+               buf += "is nearly fresh.";
             else if( dam == 8 )
-               strlcat( buf, "is perfectly fine.", MSL );
+               buf += "is perfectly fine.";
             else if( dam == 7 )
-               strlcat( buf, "looks good.", MSL );
+               buf += "looks good.";
             else if( dam == 6 )
-               strlcat( buf, "looks ok.", MSL );
+               buf += "looks ok.";
             else if( dam == 5 )
-               strlcat( buf, "is a little stale.", MSL );
+               buf += "is a little stale.";
             else if( dam == 4 )
-               strlcat( buf, "is a bit stale.", MSL );
+               buf += "is a bit stale.";
             else if( dam == 3 )
-               strlcat( buf, "smells slightly off.", MSL );
+               buf += "smells slightly off.";
             else if( dam == 2 )
-               strlcat( buf, "smells quite rank.", MSL );
+               buf += "smells quite rank.";
             else if( dam == 1 )
-               strlcat( buf, "smells revolting!", MSL );
+               buf += "smells revolting!";
             else if( dam <= 0 )
-               strlcat( buf, "is crawling with maggots!", MSL );
-            strlcat( buf, "\r\n", MSL );
+               buf += "is crawling with maggots!";
+            buf += "\r\n";
             ch->print( buf );
             break;
 
@@ -1931,7 +1933,7 @@ CMDF( do_examine )
          {
             short count = obj->extradesc.size();
 
-            ch->printf( "%s has %d %s written in out of a possible %d.\r\n",
+            ch->print_fmt( "{} has {} {} written in out of a possible {}.\r\n",
                        obj->short_descr, count, count == 1 ? "page" : "pages", obj->value[0] );
             break;
          }
@@ -2047,7 +2049,7 @@ CMDF( do_oldwhere )
 
    if( argument.empty(  ) )
    {
-      ch->pagerf( "\r\nPlayers near you in %s:\r\n", ch->in_room->area->name );
+      ch->pager_fmt( "\r\nPlayers near you in {}:\r\n", ch->in_room->area->name );
       for( auto* d : dlist )
       {
          if( ( d->connected == CON_PLAYING || d->connected == CON_EDITING )
@@ -2058,14 +2060,14 @@ CMDF( do_oldwhere )
          {
             found = true;
 
-            ch->pagerf( "&[people]%-13s  ", victim->name );
+            ch->pager_fmt( "&[people]{:<13}  ", victim->name );
             if( victim->CAN_PKILL(  ) && victim->pcdata->clan && victim->pcdata->clan->clan_type != CLAN_GUILD )
-               ch->pagerf( "%-18s\t", victim->pcdata->clan->badge.c_str(  ) );
+               ch->pager_fmt( "{:<18}\t", victim->pcdata->clan->badge.c_str(  ) );
             else if( victim->CAN_PKILL(  ) )
                ch->pager( "(&wUnclanned&[people])\t" );
             else
                ch->pager( "\t\t\t" );
-            ch->pagerf( "&[rmname]%s\r\n", victim->in_room->name );
+            ch->pager_fmt( "&[rmname]{}\r\n", victim->in_room->name );
          }
       }
       if( !found )
@@ -2082,12 +2084,12 @@ CMDF( do_oldwhere )
              && !victim->has_aflag( AFF_SNEAK ) && ch->can_see( victim, true ) && hasname( victim->name, argument ) )
          {
             found = true;
-            ch->pagerf( "&[people]%-28s &[rmname]%s\r\n", PERS( victim, ch, true ).c_str(), victim->in_room->name );
+            ch->pager_fmt( "&[people]{:<28} &[rmname]{}\r\n", PERS( victim, ch, true ), victim->in_room->name );
             break;
          }
       }
       if( !found )
-         ch->printf( "You didn't fine any %s.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "You didn't fine any {}.\r\n", argument );
    }
 }
 
@@ -2524,16 +2526,16 @@ CMDF( do_afk )
    {
       ch->unset_pcflag( PCFLAG_AFK );
       ch->print( "You are no longer afk.\r\n" );
-      DISPOSE( ch->pcdata->afkbuf );
+      ch->pcdata->afkbuf.clear();
       act( AT_GREY, "$n is no longer afk.", ch, nullptr, nullptr, TO_ROOM );
    }
    else
    {
       ch->set_pcflag( PCFLAG_AFK );
       ch->print( "You are now afk.\r\n" );
-      DISPOSE( ch->pcdata->afkbuf );
+      ch->pcdata->afkbuf.clear();
       if( argument.empty(  ) )
-         ch->pcdata->afkbuf = strdup( argument.c_str(  ) );
+         ch->pcdata->afkbuf = argument;
       act( AT_GREY, "$n is now afk.", ch, nullptr, nullptr, TO_ROOM );
    }
 }
@@ -2622,8 +2624,7 @@ void load_motd( char_data * ch, std::string_view name )
       buf[num] = '\0';
    }
    FCLOSE( fp );
-   DISPOSE( ch->pcdata->motd_buf );
-   ch->pcdata->motd_buf = strdup( buf );
+   ch->pcdata->motd_buf = buf;
 }
 
 /* Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00 */
@@ -2647,7 +2648,6 @@ CMDF( do_motdedit )
          return;
 
       case SUB_EDMOTD:
-         DISPOSE( ch->pcdata->motd_buf );
          ch->pcdata->motd_buf = ch->copy_buffer( false );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
@@ -2672,12 +2672,7 @@ CMDF( do_motdedit )
 
    if( !str_cmp( arg1, "save" ) )
    {
-      if( ch->pcdata->motd_buf == nullptr )
-      {
-         ch->print( "Nothing to save.\r\n" );
-         return;
-      }
-      if( !str_cmp( ch->pcdata->motd_buf, "" ) )
+      if( ch->pcdata->motd_buf.empty() )
       {
          ch->print( "Nothing to save.\r\n" );
          return;
@@ -2686,7 +2681,7 @@ CMDF( do_motdedit )
       {
          save_motd( MOTD_FILE, ch->pcdata->motd_buf );
          ch->print( "MOTD Message updated.\r\n" );
-         DISPOSE( ch->pcdata->motd_buf );
+         ch->pcdata->motd_buf.clear();
          sysdata->motd = current_time;
          save_sysdata(  );
          return;
@@ -2695,7 +2690,7 @@ CMDF( do_motdedit )
       {
          save_motd( IMOTD_FILE, ch->pcdata->motd_buf );
          ch->print( "IMOTD Message updated.\r\n" );
-         DISPOSE( ch->pcdata->motd_buf );
+         ch->pcdata->motd_buf.clear();
          sysdata->imotd = current_time;
          save_sysdata(  );
          return;
@@ -2716,8 +2711,7 @@ CMDF( do_motdedit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_EDMOTD;
       ch->pcdata->dest_buf = ch;
-      if( !ch->pcdata->motd_buf || ch->pcdata->motd_buf[0] == '\0' )
-         ch->pcdata->motd_buf = strdup( "" );
+      ch->pcdata->motd_buf.clear();
       ch->start_editing( ch->pcdata->motd_buf );
       ch->set_editor_desc( "An MOTD." );
       return;

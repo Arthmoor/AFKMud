@@ -208,7 +208,7 @@ CMDF( do_ask )
       if( !ch->is_immortal(  ) || victim->get_trust(  ) > ch->get_trust(  ) )
          return;
       else
-         victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", ch->name );
+         victim->print_fmt( "&[ignore]You attempt to ignore {}, but are unable to do so.\r\n", ch->name );
    }
 
    sbuf = argument;
@@ -268,10 +268,10 @@ CMDF( do_say )
          return;
       }
 
-      ch->printf( "&cThe last %d things you heard said:\r\n", MAX_SAYHISTORY );
+      ch->print_fmt( "&cThe last {} things you heard said:\r\n", MAX_SAYHISTORY );
 
       for( size_t x = 0; x < ch->pcdata->say_history.size(); ++x )
-         ch->printf( "%s\r\n", ch->pcdata->say_history[x].c_str() );
+         ch->print_fmt( "{}\r\n", ch->pcdata->say_history[x] );
 
       return;
    }
@@ -313,7 +313,7 @@ CMDF( do_say )
          if( !ch->is_immortal(  ) || vch->level > ch->level )
             continue;
          else
-            vch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !vch->can_see( ch, false ) ? "Someone" : ch->name );
+            vch->print_fmt( "&[ignore]You attempt to ignore {}, but are unable to do so.\r\n", !vch->can_see( ch, false ) ? "Someone" : ch->name );
       }
 
       if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
@@ -442,8 +442,8 @@ CMDF( do_whisper )
       /* If the sender is an imm then they can bypass this check */
       if( !ch->is_immortal( ) || victim->get_trust( ) > ch->get_trust( ) )
       {
-         ch->printf( "&[ignore]You are currently ignoring %s.\r\n"
-            "Please type 'ignore %s' to stop ignoring them, then try whispering to them again.\r\n", victim->name, victim->name );
+         ch->print_fmt( "&[ignore]You are currently ignoring {}.\r\n"
+            "Please type 'ignore {}' to stop ignoring them, then try whispering to them again.\r\n", victim->name, victim->name );
          return;
    	}
    }
@@ -459,7 +459,7 @@ CMDF( do_whisper )
       if( !ch->is_immortal(  ) || victim->get_trust(  ) > ch->get_trust(  ) )
          return;
       else
-         victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !victim->can_see( ch, false ) ? "Someone" : ch->name );
+         victim->print_fmt( "&[ignore]You attempt to ignore {}, but are unable to do so.\r\n", !victim->can_see( ch, false ) ? "Someone" : ch->name );
    }
 
    // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
@@ -709,8 +709,8 @@ CMDF( do_tell )
       /* If the sender is an imm then they can bypass this check */
       if( !ch->is_immortal( ) || victim->get_trust( ) > ch->get_trust( ) )
       {
-         ch->printf( "&[ignore]You are currently ignoring %s.\r\n"
-            "Please type 'ignore %s' to stop ignoring them, then try sending your tell to them again.\r\n", victim->name, victim->name );
+         ch->print_fmt( "&[ignore]You are currently ignoring {}.\r\n"
+            "Please type 'ignore {}' to stop ignoring them, then try sending your tell to them again.\r\n", victim->name, victim->name );
          return;
    	}
    }
@@ -732,7 +732,7 @@ CMDF( do_tell )
          return;
       }
       else
-         victim->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !victim->can_see( ch, false ) ? "Someone" : ch->name );
+         victim->print_fmt( "&[ignore]You attempt to ignore {}, but are unable to do so.\r\n", !victim->can_see( ch, false ) ? "Someone" : ch->name );
    }
 
    if( switched_victim )
@@ -855,14 +855,14 @@ CMDF( do_reply )
 
    if( argument.empty(  ) )
    {
-      ch->printf( "And what would you like to say in reply to %s?\r\n", victim->name );
+      ch->print_fmt( "And what would you like to say in reply to {}?\r\n", victim->name );
       return;
    }
 
    /*
     * This is a bit shorter than what was here before, no? Accomplished the same bloody thing too. -- Xorith 
     */
-   cmdf( ch, "tell %s %s", victim->name, argument.c_str(  ) );
+   cmdf( ch, "tell %s %s", victim->name.c_str(), argument.c_str(  ) );
 }
 
 CMDF( do_emote )
@@ -925,7 +925,7 @@ CMDF( do_emote )
          if( !ch->is_immortal(  ) || vch->level > ch->level )
             continue;
          else
-            vch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", !vch->can_see( ch, false ) ? "Someone" : ch->name );
+            vch->print_fmt( "&[ignore]You attempt to ignore {}, but are unable to do so.\r\n", !vch->can_see( ch, false ) ? "Someone" : ch->name );
       }
 
       if( speaking != -1 && ( !ch->isnpc(  ) || ch->speaking ) )
@@ -1056,24 +1056,24 @@ CMDF( do_gtell )
             if( speakswell < 85 )
             {
                if( gch == ch )
-                  gch->printf( "&[gtells]You tell the group '%s'\r\n", translate( speakswell, argument, lang_names[speaking] ).c_str(  ) );
+                  gch->print_fmt( "&[gtells]You tell the group '{}'\r\n", translate( speakswell, argument, lang_names[speaking] ) );
                else
-                  gch->printf( "&[gtells]%s tells the group '%s'\r\n", ch->name, translate( speakswell, argument, lang_names[speaking] ).c_str(  ) );
+                  gch->print_fmt( "&[gtells]{} tells the group '{}'\r\n", ch->name, translate( speakswell, argument, lang_names[speaking] ) );
             }
             else
             {
                if( gch == ch )
-                  gch->printf( "&[gtells]You tell the group '%s'\r\n", argument.c_str(  ) );
+                  gch->print_fmt( "&[gtells]You tell the group '{}'\r\n", argument );
                else
-                  gch->printf( "&[gtells]%s tells the group '%s'\r\n", ch->name, argument.c_str(  ) );
+                  gch->print_fmt( "&[gtells]{} tells the group '%s'\r\n", ch->name, argument );
             }
          }
          else
          {
             if( gch == ch )
-               gch->printf( "&[gtells]You tell the group '%s'\r\n", argument.c_str(  ) );
+               gch->print_fmt( "&[gtells]You tell the group '{}'\r\n", argument );
             else
-               gch->printf( "&[gtells]%s tells the group '%s'\r\n", ch->name, argument.c_str(  ) );
+               gch->print_fmt( "&[gtells]%s tells the group '{}'\r\n", ch->name, argument );
          }
       }
    }
@@ -1339,7 +1339,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
       if( !arg2 && *ptr >= 'A' && *ptr <= 'Z' )
       {
          bug( "%s: missing arg2 for code %c:", __func__, *ptr );
-         log_printf( "Missing arg2 came from %s", ch->name );
+         log_printf( "Missing arg2 came from %s", ch->name.c_str() );
          if( ch->isnpc(  ) )
             log_printf( "NPC vnum: %d", ch->pIndexData->vnum );
          log_string( format );
@@ -1351,7 +1351,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
          {
             default:
                bug( "%s: bad code %c.", __func__, *ptr );
-               log_printf( "Bad code came from %s", ch->name );
+               log_printf( "Bad code came from %s", ch->name.c_str() );
                buf.append( " <@@@> " );
                break;
 
@@ -1501,7 +1501,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
    std::string txt;
    char_data *to = nullptr;
 
-   // Safely cast the const void* pointers
+   // Safely cast the const void* pointers.
    auto *third = const_cast<char_data*>(static_cast<const char_data*>(arg1));
    auto *vch = const_cast<char_data*>(static_cast<const char_data*>(arg2));
    auto *obj1 = const_cast<obj_data*>(static_cast<const obj_data*>(arg1));
@@ -1525,7 +1525,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
 
    // Do some proper type checking here..  Sort of.  We base it on the $* params.
    // This is kinda lame really, but I suppose in some weird sense it beats having
-   // to pass like 8 different nullptr parameters every time we need to call act()..
+   // to pass like 8 different nullptr parameters every time we need to call act().
    for( auto ptr = format.begin(); ptr != format.end(); ++ptr )
    {
       if( *ptr == '$' )
@@ -1586,7 +1586,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
 
    if( !ch->in_room )
    {
-      bug( "%s: nullptr ch->in_room! (%s:%s)", __func__, ch->name, format.data() );
+      bug( "%s: nullptr ch->in_room! (%s:%s)", __func__, ch->name.c_str(), format.data() );
       return;
    }
    else if( type == TO_CHAR )
@@ -1611,13 +1611,13 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
       if( !vch )
       {
          bug( "%s: null vch with TO_VICT.", __func__ );
-         log_printf( "%s (%s)", ch->name, format.data() );
+         log_printf( "%s (%s)", ch->name.c_str(), format.data() );
          return;
       }
       if( !vch->in_room )
       {
          bug( "%s: vch in nullptr room!", __func__ );
-         log_printf( "%s -> %s (%s)", ch->name, vch->name, format.data() );
+         log_printf( "%s -> %s (%s)", ch->name.c_str(), vch->name.c_str(), format.data() );
          return;
       }
 
@@ -1629,7 +1629,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
          if( !vch->is_immortal() || ch->level > vch->level )
             return;
          else
-            ch->printf( "&[ignore]You attempt to ignore %s, but are unable to do so.\r\n", vch->name );
+            ch->print_fmt( "&[ignore]You attempt to ignore {}, but are unable to do so.\r\n", vch->name );
       }
       to = vch;
    }
@@ -1654,7 +1654,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
 
    /*
     * Anyone feel like telling me the point of looping through the whole
-    * room when we're only sending to one char anyways..? -- Alty
+    * room when we're only sending to one char anyway..? -- Alty
     *
     * Because, silly, now we can use this sweet little bit of code to make
     * sure that messages to people on the maps go where they need to :P - Samson

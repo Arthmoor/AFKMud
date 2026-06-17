@@ -226,7 +226,6 @@ char_data *mob_index::create_mobile(  )
       mob->chardesc = QUICKLINK( chardesc );
    mob->spec_fun = spec_fun;
    mob->spec_funname = spec_funname;
-   mob->mpscriptpos = 0;
    mob->level = number_fuzzy( level );
    mob->set_actflags( actflags );
 
@@ -286,6 +285,7 @@ char_data *mob_index::create_mobile(  )
    mob->saving_breath = umax( 20 - mob->level, 2 );
    mob->saving_spell_staff = umax( 20 - mob->level, 2 );
 
+   // Taken from the index values. Overrides what the constructor for char_data already did.
    if( height == 0 )
       mob->height = mob->calculate_race_height(  );
    else
@@ -306,7 +306,7 @@ char_data *mob_index::create_mobile(  )
    /*
     * Samson 5-6-99 
     */
-   if( numattacks )
+   if( numattacks > 0.0 )
       mob->numattacks = numattacks;
    else
       mob->set_numattacks(  );

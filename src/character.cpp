@@ -62,20 +62,6 @@ pc_data::~pc_data(  )
    if( this->pnote )
       deleteptr( this->pnote );
 
-   STRFREE( this->prompt );
-   STRFREE( this->fprompt );
-   DISPOSE( this->bamfin );   /* no hash */
-   DISPOSE( this->bamfout );  /* no hash */
-   STRFREE( this->rank );
-   STRFREE( this->title );
-   DISPOSE( this->bio );   /* no hash */
-   STRFREE( this->prompt );
-   STRFREE( this->fprompt );
-   STRFREE( this->helled_by );
-   STRFREE( this->subprompt );
-   DISPOSE( this->afkbuf );
-   DISPOSE( this->motd_buf );
-
    this->alias_map.clear(  );
    this->free_comments(  );
    this->free_pcboards(  );
@@ -91,17 +77,12 @@ pc_data::~pc_data(  )
  */
 pc_data::pc_data(  )
 {
-   for( int sn = 0; sn < MAX_BEACONS; ++sn )
-      this->beacon[sn] = 0;
-   this->condition[COND_DRUNK] = 0;
    this->condition[COND_THIRST] = ( int )( sysdata->maxcondval * .75 );
    this->condition[COND_FULL] = ( int )( sysdata->maxcondval * .75 );
    this->secedit = SECT_OCEAN;   /* Initialize Map OLC sector - Samson 8-1-99 */
    this->one = ROOM_VNUM_TEMPLE;
    this->lasthost = "Unknown-Host";
    this->logon = current_time;
-   for( int sn = 0; sn < num_skills; ++sn )
-      this->learned[sn] = 0;
 }
 
 /*
@@ -142,12 +123,6 @@ char_data::~char_data(  )
 
       this->extract_timer( ctimer );
    }
-
-   STRFREE( this->name );
-   STRFREE( this->short_descr );
-   STRFREE( this->long_descr );
-   STRFREE( this->chardesc );
-   DISPOSE( this->alloc_ptr );
 
    stop_hunting( this );
    stop_hating( this );
@@ -196,32 +171,15 @@ char_data::~char_data(  )
  */
 char_data::char_data(  )
 {
-   this->armor = 100;
-   this->position = POS_STANDING;
-   this->hit = 20;
-   this->max_hit = 20;
-   this->mana = 100;
-   this->max_mana = 100;
-   this->move = 150;
-   this->max_move = 150;
-   this->height = 72;
-   this->weight = 180;
-   this->spellfail = 101;
-   this->race = RACE_HUMAN;
-   this->Class = CLASS_WARRIOR;
-   this->speaking = LANG_COMMON;
-   this->barenumdie = 1;
-   this->baresizedie = 4;
-   this->perm_str = 13;
-   this->perm_dex = 13;
-   this->perm_int = 13;
-   this->perm_wis = 13;
-   this->perm_cha = 13;
-   this->perm_con = 13;
-   this->perm_lck = 13;
-   this->map_x = -1; /* Overland Map - Samson 7-31-99 */
-   this->map_y = -1;
-   this->wait = 0;
+   // Basic height and weight variations. Affects players as well as NPCs. NPCs will override this in ::create_mobile from their index values.
+   if( race < MAX_PC_RACE )
+   {
+      if( height == 0 )
+         height = calculate_race_height(  );
+
+      if( weight == 0 )
+         weight = calculate_race_weight(  );
+   }
 }
 
 void extract_all_chars( void )
@@ -325,7 +283,7 @@ void char_data::pager( std::string_view txt )
    }
 }
 
-// Legacy C-style printf calls.
+// Legacy C-style printf calls. You may yet live once everything has been handed over to ch->print_fmt...
 void char_data::printf( const char *fmt, ... )
 {
    char buf[MSL * 2];
@@ -361,7 +319,7 @@ void char_data::set_color( short AType )
    this->desc->write_to_buffer( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: nullptr descriptor after WTB! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
+      bug( "%s: nullptr descriptor after WTB! CH: %s", __func__, !this->name.empty() ? this->name.c_str() : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -378,7 +336,7 @@ void char_data::set_pager_color( short AType )
    this->desc->pager( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: nullptr descriptor after WTP! CH: %s", __func__, this->name ? this->name : "Unknown?!?" );
+      bug( "%s: nullptr descriptor after WTP! CH: %s", __func__, !this->name.empty() ? this->name.c_str() : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -388,14 +346,13 @@ void char_data::set_title( std::string_view title )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: NPC %s", __func__, this->name );
+      bug( "%s: NPC %s", __func__, this->name.c_str() );
       return;
    }
 
    if( title.empty() )
    {
-      STRFREE( pcdata->title );
-      pcdata->title = STRALLOC( "" );
+      pcdata->title.clear();
       return;
    }
 
@@ -403,13 +360,11 @@ void char_data::set_title( std::string_view title )
    {
       std::string buf = " ";
       buf += title;
-      STRFREE( pcdata->title );
-      pcdata->title = STRALLOC( buf.c_str() );
+      pcdata->title = buf;
    }
    else
    {
-      STRFREE( pcdata->title );
-      pcdata->title = STRALLOC( std::string( title ).c_str() );
+      pcdata->title = std::string{title};
    }
 }
 
@@ -420,7 +375,7 @@ int char_data::calculate_race_height(  )
    if( this->race < MAX_RACE )
       Height = number_range( ( int )( race_table[this->race]->height * 0.75 ), ( int )( race_table[this->race]->height * 1.25 ) );
    else
-      Height = 72;   // FIXME: There's got to be some kind of randomness we can spin on this later.
+      Height = 72;
 
    return Height;
 }
@@ -432,7 +387,7 @@ int char_data::calculate_race_weight(  )
    if( this->race < MAX_RACE )
       Weight = number_range( ( int )( race_table[this->race]->weight * 0.75 ), ( int )( race_table[this->race]->weight * 1.25 ) );
    else
-      Weight = 180;  // FIXME: There's got to be some kind of randomness we can spin on this later.
+      Weight = 180;
 
    return Weight;
 }
@@ -621,7 +576,7 @@ bool char_data::can_see( char_data * victim, bool override )
 {
    if( !victim )  /* Gorog - panicked attempt to stop crashes */
    {
-      bug( "%s: nullptr victim! CH %s tried to see it.", __func__, name );
+      bug( "%s: nullptr victim! CH %s tried to see it.", __func__, name.c_str() );
       return false;
    }
 
@@ -1198,7 +1153,7 @@ void char_data::equip( obj_data * obj, int iWear )
 
    if( obj->carried_by != this )
    {
-      bug( "%s: obj (%s) not being carried by ch (%s)!", __func__, obj->name, this->name );
+      bug( "%s: obj (%s) not being carried by ch (%s)!", __func__, obj->name, this->name.c_str() );
       return;
    }
 
@@ -1257,7 +1212,7 @@ void char_data::unequip( obj_data * obj )
 
    if( obj->wear_loc == WEAR_NONE )
    {
-      bug( "%s: %s already unequipped.", __func__, name );
+      bug( "%s: %s already unequipped.", __func__, name.c_str() );
       return;
    }
 
@@ -1585,7 +1540,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    {
       if( paf->bit < 0 || paf->bit >= MAX_AFFECTED_BY )
       {
-         bug( "%s: %s: Unknown bitflag: '%d' for location %d, with modifier %d", __func__, name, paf->bit, paf->location, paf->modifier );
+         bug( "%s: %s: Unknown bitflag: '%d' for location %d, with modifier %d", __func__, name.c_str(), paf->bit, paf->location, paf->modifier );
          return;
       }
       mod2 = mod;
@@ -1602,7 +1557,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != nullptr && skill->type == SKILL_SPELL )
             this->set_aflag( AFF_RECURRINGSPELL );
          else
-            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name, mod );
+            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name.c_str(), mod );
          return;
       }
    }
@@ -1619,7 +1574,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       {
          mod = abs( mod );
          if( !IS_VALID_SN( mod ) || ( skill = skill_table[mod] ) == nullptr || skill->type != SKILL_SPELL )
-            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name, mod );
+            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name.c_str(), mod );
          this->unset_aflag( AFF_RECURRINGSPELL );
          return;
       }
@@ -1661,7 +1616,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    switch ( location )
    {
       default:
-         bug( "%s: unknown location %d. (%s)", __func__, paf->location, this->name );
+         bug( "%s: unknown location %d. (%s)", __func__, paf->location, this->name.c_str() );
          return;
 
       case APPLY_NONE:
@@ -1746,9 +1701,6 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          break;
       case APPLY_MOVE_REGEN:
          this->move_regen += mod;
-         break;
-      case APPLY_ANTIMAGIC:
-         this->amp += mod;
          break;
       case APPLY_AC:
          this->armor += mod;
@@ -2010,7 +1962,7 @@ void char_data::affect_to_char( affect_data * paf )
 
    if( !paf )
    {
-      bug( "%s: (%s, nullptr)", __func__, name );
+      bug( "%s: (%s, nullptr)", __func__, name.c_str() );
       return;
    }
 
@@ -2033,7 +1985,7 @@ void char_data::affect_remove( affect_data * paf )
 {
    if( affects.empty(  ) )
    {
-      bug( "%s: (%s, %d): no affect.", __func__, name, paf ? paf->type : 0 );
+      bug( "%s: (%s, %d): no affect.", __func__, name.c_str(), paf ? paf->type : 0 );
       return;
    }
 
@@ -2348,7 +2300,7 @@ void char_data::from_room(  )
 
    if( !this->in_room )
    {
-      bug( "%s: %s not in a room!", __func__, this->name );
+      bug( "%s: %s not in a room!", __func__, this->name.c_str() );
       return;
    }
 
@@ -2409,7 +2361,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    // Ok, asshole code, lets see you get past this!
    if( !pRoomIndex || !get_room_index( pRoomIndex->vnum ) )
    {
-      bug( "%s: %s -> nullptr room!  Putting char in limbo (%d)", __func__, this->name, ROOM_VNUM_LIMBO );
+      bug( "%s: %s -> nullptr room!  Putting char in limbo (%d)", __func__, this->name.c_str(), ROOM_VNUM_LIMBO );
       if( pRoomIndex )
          log_printf( "Supposedly from Vnum: %d", pRoomIndex->vnum );
 
@@ -3186,7 +3138,7 @@ void stop_follower( char_data * ch )
 {
    if( !ch->master )
    {
-      bug( "%s: %s has null master.", __func__, ch->name );
+      bug( "%s: %s has null master.", __func__, ch->name.c_str() );
       return;
    }
 
@@ -3410,7 +3362,7 @@ void char_data::extract( bool fPull )
 {
    if( !this->in_room )
    {
-      bug( "%s: %s in nullptr room. Transferring to Limbo.", __func__, this->name ? this->name : "???" );
+      bug( "%s: %s in nullptr room. Transferring to Limbo.", __func__, !this->name.empty() ? this->name.c_str() : "???" );
       if( !this->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
    }
@@ -3423,7 +3375,7 @@ void char_data::extract( bool fPull )
 
    if( this->char_died(  ) )
    {
-      bug( "%s: %s already died!", __func__, this->name );
+      bug( "%s: %s already died!", __func__, this->name.c_str() );
       /*
        * return; This return is commented out in the hops of allowing the dead mob to be extracted anyway 
        */
@@ -3615,7 +3567,7 @@ void char_data::extract( bool fPull )
    if( this->desc )
    {
       if( this->desc->character != this )
-         bug( "%s: %s's descriptor points to another char", __func__, this->name );
+         bug( "%s: %s's descriptor points to another char", __func__, this->name.c_str() );
       else
          close_socket( this->desc, false );
    }
@@ -3765,14 +3717,12 @@ void advance_level( char_data * ch )
    ch->max_mana += add_mana;
    ch->pcdata->practice += add_prac;
 
-   STRFREE( ch->pcdata->rank );
-   ch->pcdata->rank = STRALLOC( class_table[ch->Class]->who_name );
+   ch->pcdata->rank = class_table[ch->Class]->who_name;
 
    if( ch->level == LEVEL_AVATAR )
    {
       echo_all_printf( ECHOTAR_ALL, "&[immortal]{} has attained the rank of Avatar!", ch->name );
-      STRFREE( ch->pcdata->rank );
-      ch->pcdata->rank = STRALLOC( "Avatar" );
+      ch->pcdata->rank = "Avatar";
       interpret( ch, "help M_ADVHERO_" );
    }
    if( ch->level < LEVEL_IMMORTAL )
@@ -5184,7 +5134,7 @@ CMDF( do_follow )
       /* If the person trying to follow is an imm, then they can still follow */
       if( !ch->is_immortal() || victim->get_trust( ) > ch->get_trust( ) )
       {
-         ch->printf( "&[ignore]%s is ignoring you.\r\n", victim->name );
+         ch->print_fmt( "&[ignore]{} is ignoring you.\r\n", victim->name );
          return;
       }
    }
@@ -5276,7 +5226,7 @@ CMDF( do_levelup )
 
    ++ch->level;
    advance_level( ch );
-   log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s has advanced to level %d!", ch->name, ch->level );
+   log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s has advanced to level %d!", ch->name.c_str(), ch->level );
    cmdf( ch, "gtell I just reached level %d!", ch->level );
 
    if( ch->level == 4 )

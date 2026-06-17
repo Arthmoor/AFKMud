@@ -1262,12 +1262,12 @@ CMDF( do_cast )
          ch->add_timer( TIMER_DO_FUN, umin( skill->beats / 10, 3 ), do_cast, 1 );
          act( AT_MAGIC, "You begin to chant...", ch, nullptr, nullptr, TO_CHAR );
          act( AT_MAGIC, "$n begins to chant...", ch, nullptr, nullptr, TO_ROOM );
-         strdup_printf( &ch->alloc_ptr, "%s %s", arg2.c_str(  ), target_name.c_str(  ) );
+         ch->alloc_ptr = std::format( "{} {}", arg2, target_name );
          ch->tempnum = sn;
          return;
 
       case SUB_TIMER_DO_ABORT:
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          if( IS_VALID_SN( ( sn = ch->tempnum ) ) )
          {
             if( !( skill = get_skilltype( sn ) ) )
@@ -1295,7 +1295,7 @@ CMDF( do_cast )
             bug( "%s: substate 1: bad sn %d", __func__, sn );
             return;
          }
-         if( !ch->alloc_ptr || !IS_VALID_SN( sn ) || skill->type != SKILL_SPELL )
+         if( ch->alloc_ptr.empty() || !IS_VALID_SN( sn ) || skill->type != SKILL_SPELL )
          {
             ch->print( "Something cancels out the spell!\r\n" );
             bug( "%s: ch->alloc_ptr nullptr or bad sn (%d)", __func__, sn );
@@ -1304,7 +1304,7 @@ CMDF( do_cast )
          mana = ch->isnpc(  )? 0 : umax( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
          staticbuf = ch->alloc_ptr;
          target_name = one_argument( staticbuf, arg2 );
-         DISPOSE( ch->alloc_ptr );
+         ch->alloc_ptr.clear();
          ch->substate = SUB_NONE;
          if( skill->participants > 1 )
          {
@@ -1318,7 +1318,7 @@ CMDF( do_cast )
                tmp = *ich;
 
                if( tmp != ch && ( t = tmp->get_timerptr( TIMER_DO_FUN ) ) != nullptr
-                   && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && tmp->alloc_ptr && !str_cmp( tmp->alloc_ptr, staticbuf ) )
+                   && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && !tmp->alloc_ptr.empty() && !str_cmp( tmp->alloc_ptr, staticbuf ) )
                   ++cnt;
             }
             if( cnt >= skill->participants )
@@ -1328,7 +1328,7 @@ CMDF( do_cast )
                   tmp = *ich;
 
                   if( tmp != ch && ( t = tmp->get_timerptr( TIMER_DO_FUN ) ) != nullptr
-                      && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && tmp->alloc_ptr && !str_cmp( tmp->alloc_ptr, staticbuf ) )
+                      && t->count >= 1 && t->do_fun == do_cast && tmp->tempnum == sn && !tmp->alloc_ptr.empty() && !str_cmp( tmp->alloc_ptr, staticbuf ) )
                   {
                      tmp->extract_timer( t );
                      act( AT_MAGIC, "Channeling your energy into $n, you help cast the spell!", ch, nullptr, tmp, TO_VICT );
@@ -1337,7 +1337,7 @@ CMDF( do_cast )
                      tmp->mana -= mana;
                      tmp->substate = SUB_NONE;
                      tmp->tempnum = -1;
-                     DISPOSE( tmp->alloc_ptr );
+                     tmp->alloc_ptr.clear();
                   }
                }
                dont_wait = true;
@@ -2233,7 +2233,7 @@ SPELLF( spell_dispel_magic )
       victim->unset_aflag( AFF_SLOW );
 
    ch->set_color( AT_MAGIC );
-   ch->printf( "You weave arcane gestures, and %s's spells are negated!\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
+   ch->print_fmt( "You weave arcane gestures, and {}'s spells are negated!\r\n", victim->isnpc(  ) ? victim->short_descr : victim->name );
 
    /*
     * Have to reset victim's racial and eq affects etc 
@@ -2851,7 +2851,7 @@ SPELLF( spell_summon )
     */
    if( !victim->has_visited( ch->in_room->area ) )
    {
-      ch->printf( "%s has not yet formed a magical bond with this area!\r\n", victim->name );
+      ch->print_fmt( "{} has not yet formed a magical bond with this area!\r\n", victim->name );
       return rSPELL_FAILED;
    }
 
@@ -3531,7 +3531,7 @@ SPELLF( spell_portal )
       return rSPELL_FAILED;
    }
    portalObj->timer = 3;
-   stralloc_printf( &portalObj->short_descr, "a portal created by %s", ch->name );
+   stralloc_printf( &portalObj->short_descr, "a portal created by %s", ch->name.c_str() );
 
    /*
     * support for new casting messages 
@@ -3561,7 +3561,7 @@ SPELLF( spell_portal )
 
    portalObj = get_obj_index( OBJ_VNUM_PORTAL )->create_object( 1 );
    portalObj->timer = 3;
-   stralloc_printf( &portalObj->short_descr, "a portal created by %s", ch->name );
+   stralloc_printf( &portalObj->short_descr, "a portal created by %s", ch->name.c_str() );
    portalObj = portalObj->to_room( targetRoom, victim );
    return rNONE;
 }
@@ -4023,9 +4023,9 @@ SPELLF( spell_animate_dead )
       act( AT_MAGIC, "$n makes $T rise from the grave!", ch, nullptr, pMobIndex->short_descr, TO_ROOM );
       act( AT_MAGIC, "You make $T rise from the grave!", ch, nullptr, pMobIndex->short_descr, TO_CHAR );
 
-      stralloc_printf( &mob->name, "%s %s", corpse_name, pMobIndex->player_name );
-      stralloc_printf( &mob->short_descr, "The %s", corpse_name );
-      stralloc_printf( &mob->long_descr, "A %s struggles with the horror of its undeath.\r\n", corpse_name );
+      mob->name = std::format( "{} {}", corpse_name, pMobIndex->player_name );
+      mob->short_descr = std::format( "The {}", corpse_name );
+      mob->long_descr = std::format( "A {} struggles with the horror of its undeath.\r\n", corpse_name );
       bind_follower( mob, ch, sn, ( number_fuzzy( ( ( level + 1 ) / 4 ) + 1 ) * DUR_CONV ) );
 
       if( !corpse->contents.empty(  ) )
@@ -5453,7 +5453,7 @@ SPELLF( spell_rejuv )
             act( AT_MAGIC, "Your heart gives out from the strain.", ch, nullptr, victim, TO_VICT );
             act( AT_MAGIC, "$n's heart gives out from the strain.", victim, nullptr, nullptr, TO_ROOM );
             raw_kill( ch, victim ); /* Ooops. The target died :) */
-            log_printf( "%s killed during rejuvenation by %s", victim->name, ch->name );
+            log_printf( "%s killed during rejuvenation by %s", victim->name.c_str(), ch->name.c_str() );
             break;
          case 4:
          case 5: /* Age */

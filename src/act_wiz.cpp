@@ -231,8 +231,7 @@ CMDF( do_bamfin )
    if( !ch->isnpc(  ) )
    {
       smash_tilde( argument );
-      DISPOSE( ch->pcdata->bamfin );
-      ch->pcdata->bamfin = strdup( argument.c_str(  ) );
+      ch->pcdata->bamfin = argument;
       ch->print( "&YBamfin set.\r\n" );
    }
 }
@@ -242,8 +241,7 @@ CMDF( do_bamfout )
    if( !ch->isnpc(  ) )
    {
       smash_tilde( argument );
-      DISPOSE( ch->pcdata->bamfout );
-      ch->pcdata->bamfout = strdup( argument.c_str(  ) );
+      ch->pcdata->bamfout = argument;
       ch->print( "&YBamfout set.\r\n" );
    }
 }
@@ -260,10 +258,10 @@ CMDF( do_rank )
       return;
    }
    smash_tilde( argument );
-   STRFREE( ch->pcdata->rank );
+   ch->pcdata->rank.clear();
    if( str_cmp( argument, "none" ) )
-      ch->pcdata->rank = STRALLOC( argument.c_str(  ) );
-   ch->printf( "&[immortal]Rank set to: %s\r\n", ch->pcdata->rank ? ch->pcdata->rank : "None" );
+      ch->pcdata->rank = argument;
+   ch->print_fmt( "&[immortal]Rank set to: {}\r\n", !ch->pcdata->rank.empty() ? ch->pcdata->rank : "None" );
 }
 
 CMDF( do_retire )
@@ -290,14 +288,14 @@ CMDF( do_retire )
    if( victim->has_pcflag( PCFLAG_RETIRED ) )
    {
       victim->unset_pcflag( PCFLAG_RETIRED );
-      ch->printf( "%s returns from retirement.\r\n", victim->name );
-      victim->printf( "%s brings you back from retirement.\r\n", ch->name );
+      ch->print_fmt( "{} returns from retirement.\r\n", victim->name );
+      victim->print_fmt( "{} brings you back from retirement.\r\n", ch->name );
    }
    else
    {
       victim->set_pcflag( PCFLAG_RETIRED );
-      ch->printf( "%s is now a retired immortal.\r\n", victim->name );
-      victim->printf( "Courtesy of %s, you are now a retired immortal.\r\n", ch->name );
+      ch->print_fmt( "{} is now a retired immortal.\r\n", victim->name );
+      victim->print_fmt( "Courtesy of {}, you are now a retired immortal.\r\n", ch->name );
    }
 }
 
@@ -325,7 +323,7 @@ CMDF( do_delay )
       victim->wait = 0;
       return;
    }
-   delay = atoi( argument.c_str(  ) );
+   delay = std::stoi( argument );
    if( delay < 1 )
    {
       ch->print( "Pointless. Try a positive number.\r\n" );
@@ -335,7 +333,7 @@ CMDF( do_delay )
       ch->print( "You cruel bastard. Just kill them.\r\n" );
 
    victim->WAIT_STATE( delay * sysdata->pulseviolence );
-   ch->printf( "You've delayed %s for %d rounds.\r\n", victim->name, delay );
+   ch->print_fmt( "You've delayed {} for {} rounds.\r\n", victim->name, delay );
 }
 
 CMDF( do_deny )
@@ -356,7 +354,7 @@ CMDF( do_deny )
    victim->set_pcflag( PCFLAG_DENY );
    victim->set_color( AT_IMMORT );
    victim->print( "You are denied access!\r\n" );
-   ch->printf( "You have denied access to %s.\r\n", victim->name );
+   ch->print_fmt( "You have denied access to {}.\r\n", victim->name );
    if( victim->fighting )
       victim->stop_fighting( true );   /* Blodkai, 97 */
    victim->save(  );
@@ -383,7 +381,7 @@ CMDF( do_disconnect )
    {
       if( victim->desc == nullptr )
       {
-         ch->printf( "%s does not have a desriptor.\r\n", victim->name );
+         ch->print_fmt( "{} does not have a descriptor.\r\n", victim->name );
          return;
       }
       else
@@ -391,7 +389,7 @@ CMDF( do_disconnect )
    }
    else
    {
-      ch->printf( "Disconnect: '%s' was not found!\r\n", argument.c_str(  ) );
+      ch->print_fmt( "Disconnect: '{}' was not found!\r\n", argument );
       return;
    }
 
@@ -404,13 +402,13 @@ CMDF( do_disconnect )
          if( victim && victim->get_trust(  ) >= ch->get_trust(  ) )
          {
             ch->print( "You cannot disconnect that person.\r\n" );
-            log_printf( "%s tried to disconnect %s but failed.", ch->name, victim->name ? victim->name : "Someone" );
+            log_printf( "%s tried to disconnect %s but failed.", ch->name.c_str(), !victim->name.empty() ? victim->name.c_str() : "Someone" );
             return;
          }
          if( victim )
-            log_printf( "%s will be disconnected %s", ch->name, victim->name ? victim->name : "Someone" );
+            log_printf( "%s will be disconnected %s", ch->name.c_str(), !victim->name.empty() ? victim->name.c_str() : "Someone" );
          else
-            log_printf( "%s will be disconnected desc #%d", ch->name, desc );
+            log_printf( "%s will be disconnected desc #%d", ch->name.c_str(), desc );
          d->disconnect = true;
          ch->print( "Ok.\r\n" );
          return;
@@ -505,7 +503,7 @@ void transfer_char( char_data * ch, char_data * victim, room_index * location )
 {
    if( !victim->in_room )
    {
-      bug( "%s: victim in nullptr room: %s", __func__, victim->name );
+      bug( "%s: victim in nullptr room: %s", __func__, victim->name.c_str() );
       return;
    }
 
@@ -602,7 +600,7 @@ CMDF( do_transfer )
 
    if( victim == ch )
    {
-      ch->printf( "Are you feeling alright today %s?\r\n", ch->name );
+      ch->print_fmt( "Are you feeling alright today {}?\r\n", ch->name );
       return;
    }
    transfer_char( ch, victim, location );
@@ -816,15 +814,15 @@ CMDF( do_rstat )
    {
       location = ch->in_room;
 
-      ch->printf( "&wExits for room '&G%s.&w' vnum &G%d&w\r\n", location->name, location->vnum );
+      ch->print_fmt( "&wExits for room '&G{}.&w' vnum &G{}&w\r\n", location->name, location->vnum );
 
       int cnt = 0;
       for( auto* pexit : location->exits )
       {
-         ch->printf( "%2d) &G%2s&w to &G%-5d&w.  Key: &G%d  &wKeywords: '&G%s&w'  &wFlags: &G%s&w.\r\n",
+         ch->print_fmt( "{:2}) &G{:2}&w to &G{:<5}&w.  Key: &G{}  &wKeywords: '&G{}&w'  &wFlags: &G{}&w.\r\n",
                      ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0, pexit->key, pexit->keyword, bitset_string( pexit->flags, ex_flags ) );
 
-         ch->printf( "Description: &G%s&wExit links back to vnum: &G%d  &wExit's RoomVnum: &G%d&w\r\n\r\n",
+         ch->print_fmt( "Description: &G{}&wExit links back to vnum: &G{}  &wExit's RoomVnum: &G{}&w\r\n\r\n",
                      ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(NONE)\r\n", pexit->rexit ? pexit->rexit->vnum : 0, pexit->rvnum );
       }
       return;
@@ -855,21 +853,21 @@ CMDF( do_rstat )
       return;
    }
 
-   ch->printf( "&wName: &G%s\r\n&wArea: &G%s  ", location->name, location->area ? location->area->name : "None????" );
-   ch->printf( "&wFilename: &G%s\r\n", location->area ? location->area->filename : "None????" );
-   ch->printf( "&wVnum: &G%d&w  Light: &G%d&w  TeleDelay: &G%d&w  TeleVnum: &G%d&w  Tunnel: &G%d&w  Max Weight: &G%d&w\r\n",
+   ch->print_fmt( "&wName: &G{}\r\n&wArea: &G{}  ", location->name, location->area ? location->area->name : "None????" );
+   ch->print_fmt( "&wFilename: &G{}\r\n", location->area ? location->area->filename : "None????" );
+   ch->print_fmt( "&wVnum: &G{}&w  Light: &G{}&w  TeleDelay: &G{}&w  TeleVnum: &G{}&w  Tunnel: &G{}&w  Max Weight: &G{}&w\r\n",
                location->vnum, location->light, location->tele_delay, location->tele_vnum, location->tunnel, location->max_weight );
 
-   ch->printf( "Room flags: &G%s&w\r\n", bitset_string( location->flags, r_flags ) );
-   ch->printf( "Sector type: &G%s&w\r\n", sect_types[location->sector_type] );
+   ch->print_fmt( "Room flags: &G%s&w\r\n", bitset_string( location->flags, r_flags ) );
+   ch->print_fmt( "Sector type: &G%s&w\r\n", sect_types[location->sector_type] );
 
-   ch->printf( "Description:&w\r\n%s&w", location->roomdesc );
+   ch->print_fmt( "Description:&w\r\n%s&w", location->roomdesc );
 
    /*
     * NiteDesc rstat added by Dracones 
     */
    if( location->nitedesc && location->nitedesc[0] != '\0' )
-      ch->printf( "NiteDesc:&w\r\n%s&w", location->nitedesc );
+      ch->print_fmt( "NiteDesc:&w\r\n{}&w", location->nitedesc );
 
    if( !location->extradesc.empty(  ) )
    {
@@ -900,7 +898,7 @@ CMDF( do_rstat )
       ch->print( "Roomprogs: &G" );
 
       for( auto* mprog : ch->in_room->mudprogs )
-         ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
+         ch->print_fmt( "{} ", mprog_type_to_name( mprog->type ) );
 
       ch->print( "&w\r\n" );
    }
@@ -912,7 +910,7 @@ CMDF( do_rstat )
       for( auto* rch : location->people )
       {
          if( ch->can_see( rch, false ) )
-            ch->printf( "(&G%d&w)&G%s&w\r\n", ( rch->isnpc(  ) ? rch->pIndexData->vnum : 0 ), rch->name );
+            ch->print_fmt( "(&G{}&w)&G{}&w\r\n", ( rch->isnpc(  ) ? rch->pIndexData->vnum : 0 ), rch->name );
       }
    }
 
@@ -923,7 +921,7 @@ CMDF( do_rstat )
       for( auto* obj : location->objects )
       {
          if( ch->can_see_obj( obj, false ) )
-            ch->printf( "(&G%d&w)&G%s&w\r\n", obj->pIndexData->vnum, obj->name );
+            ch->print_fmt( "(&G{}&w)&G{}&w\r\n", obj->pIndexData->vnum, obj->name );
       }
       ch->print( "\r\n" );
    }
@@ -937,12 +935,12 @@ CMDF( do_rstat )
 
       for( auto* pexit : location->exits )
       {
-         ch->printf( "%2d) &G%-2s &wto &G%-5d  &wKey: &G%-5d  &wKeywords: &G%-12s&w  Flags: &G%s&w\r\n",
+         ch->print_fmt( "{:2}) &G{:<2} &wto &G{:<5}  &wKey: &G{:<5}  &wKeywords: &G{:<12}&w  Flags: &G{}&w\r\n",
                      ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
                      pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
 
          if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
-            ch->printf( "    &wExit coordinates: &G%d&wX &G%d&wY\r\n", pexit->map_x, pexit->map_y );
+            ch->print_fmt( "    &wExit coordinates: &G{}&wX &G{}&wY\r\n", pexit->map_x, pexit->map_y );
       }
    }
 }
@@ -950,7 +948,7 @@ CMDF( do_rstat )
 /* Rewritten by Whir to be viewer friendly - 8/26/98 */
 CMDF( do_ostat )
 {
-   const char *suf;
+   std::string suf;
    obj_data *obj;
 
    if( !( obj = ch->get_obj_world( argument ) ) )
@@ -972,48 +970,48 @@ CMDF( do_ostat )
    else
       suf = "th";
 
-   ch->printf( "&w|Name   : &G%s&w\r\n", obj->name );
+   ch->print_fmt( "&w|Name   : &G{}&w\r\n", obj->name );
 
-   ch->printf( "|Short  : &G%s&w\r\n|Long   : &G%s&w\r\n", obj->short_descr, ( obj->objdesc && obj->objdesc[0] != '\0' ) ? obj->objdesc : "" );
+   ch->print_fmt( "|Short  : &G{}&w\r\n|Long   : &G{}&w\r\n", obj->short_descr, ( obj->objdesc && obj->objdesc[0] != '\0' ) ? obj->objdesc : "" );
 
    if( obj->action_desc && obj->action_desc[0] != '\0' )
-      ch->printf( "|Action : &G%s&w\r\n", obj->action_desc );
+      ch->print_fmt( "|Action : &G{}&w\r\n", obj->action_desc );
 
-   ch->printf( "|Area   : %s\r\n", obj->pIndexData->area ? obj->pIndexData->area->name : "(NONE)" );
+   ch->print_fmt( "|Area   : {}\r\n", obj->pIndexData->area ? obj->pIndexData->area->name : "(NONE)" );
 
-   ch->printf( "|Vnum   : &G%5d&w |Type  :     &G%9s&w |Count     : &G%3.3d&w |Gcount: &G%3.3d&w\r\n",
+   ch->print_fmt( "|Vnum   : &G{:5}&w |Type  :     &G{:9}&w |Count     : &G{:3}&w |Gcount: &G{:3}&w\r\n",
                obj->pIndexData->vnum, obj->item_type_name(  ).c_str(  ), obj->pIndexData->count, obj->count );
 
-   ch->printf( "|Number : &G%2.2d&w/&G%2.2d&w |Weight:     &G%4.4d&w/&G%4.4d&w |Wear_loc  : &G%3.2d&w |Layers: &G%d&w\r\n",
+   ch->print_fmt( "|Number : &G{:2}&w/&G{:2}&w |Weight:     &G{:4}&w/&G{:4}&w |Wear_loc  : &G{:3}&w |Layers: &G{}&w\r\n",
                1, obj->get_number(  ), obj->weight, obj->get_weight(  ), obj->wear_loc, obj->pIndexData->layers );
 
-   ch->printf( "|Cost   : &G%5d&w |Ego*  : &G%6d&w |Ego   : &G%6d&w |Timer: &G%d&w\r\n", obj->cost, obj->pIndexData->ego, obj->ego, obj->timer );
+   ch->print_fmt( "|Cost   : &G{:5}&w |Ego*  : &G{:6}&w |Ego   : &G{:6}&w |Timer: &G{}&w\r\n", obj->cost, obj->pIndexData->ego, obj->ego, obj->timer );
 
-   ch->printf( "|In room: &G%5d&w |In obj: &G%s&w |Level :  &G%5d&w |Limit: &G%5d&w\r\n",
+   ch->print_fmt( "|In room: &G{:5}&w |In obj: &G{}&w |Level :  &G{:5}&w |Limit: &G{:5}&w\r\n",
                obj->in_room == nullptr ? 0 : obj->in_room->vnum, obj->in_obj == nullptr ? "(NONE)" : obj->in_obj->short_descr, obj->level, obj->pIndexData->limit );
 
-   ch->printf( "|On map       : &G%s&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? obj->continent->name.c_str( ) : "(NONE)" );
+   ch->print_fmt( "|On map       : &G{}&w\r\n", obj->extra_flags.test( ITEM_ONMAP ) ? obj->continent->name : "(NONE)" );
 
-   ch->printf( "|Object Coords: &G%d %d&w\r\n", obj->map_x, obj->map_y );
-   ch->printf( "|Wear flags   : &G%s&w\r\n", bitset_string( obj->wear_flags, w_flags ) );
-   ch->printf( "|Extra flags  : &G%s&w\r\n", bitset_string( obj->extra_flags, o_flags ) );
-   ch->printf( "|Carried by   : &G%s&w\r\n", obj->carried_by == nullptr ? "(NONE)" : obj->carried_by->name );
-   ch->printf( "|Prizeowner   : &G%s&w\r\n", obj->owner == nullptr ? "(NONE)" : obj->owner );
-   ch->printf( "|Seller       : &G%s&w\r\n", obj->seller == nullptr ? "(NONE)" : obj->seller );
-   ch->printf( "|Buyer        : &G%s&w\r\n", obj->buyer == nullptr ? "(NONE)" : obj->buyer );
-   ch->printf( "|Current bid  : &G%d&w\r\n", obj->bid );
+   ch->print_fmt( "|Object Coords: &G{} {}&w\r\n", obj->map_x, obj->map_y );
+   ch->print_fmt( "|Wear flags   : &G{}&w\r\n", bitset_string( obj->wear_flags, w_flags ) );
+   ch->print_fmt( "|Extra flags  : &G{}&w\r\n", bitset_string( obj->extra_flags, o_flags ) );
+   ch->print_fmt( "|Carried by   : &G{}&w\r\n", obj->carried_by == nullptr ? "(NONE)" : obj->carried_by->name );
+   ch->print_fmt( "|Prizeowner   : &G{}&w\r\n", obj->owner == nullptr ? "(NONE)" : obj->owner );
+   ch->print_fmt( "|Seller       : &G{}&w\r\n", obj->seller == nullptr ? "(NONE)" : obj->seller );
+   ch->print_fmt( "|Buyer        : &G{}&w\r\n", obj->buyer == nullptr ? "(NONE)" : obj->buyer );
+   ch->print_fmt( "|Current bid  : &G{}&w\r\n", obj->bid );
 
    if( obj->year == 0 )
       ch->print( "|Scheduled donation date: &G(NONE)&w\r\n" );
    else
-      ch->printf( "|Scheduled donation date: &G %d%s day in the Month of %s, in the year %d.&w", day, suf, month_name[obj->month], obj->year );
+      ch->print_fmt( "|Scheduled donation date: &G %d%s day in the Month of %s, in the year %d.&w", day, suf, month_name[obj->month], obj->year );
 
-   ch->printf( "|Index Values : &G%2d %2d %2d %2d %2d %2d %2d %2d %2d %2d %2d&w\r\n",
+   ch->print_fmt( "|Index Values : &G{:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2}&w\r\n",
                obj->pIndexData->value[0], obj->pIndexData->value[1], obj->pIndexData->value[2], obj->pIndexData->value[3],
                obj->pIndexData->value[4], obj->pIndexData->value[5], obj->pIndexData->value[6], obj->pIndexData->value[7],
                obj->pIndexData->value[8], obj->pIndexData->value[9], obj->pIndexData->value[10] );
 
-   ch->printf( "|Object Values: &G%2d %2d %2d %2d %2d %2d %2d %2d %2d %2d %2d&w\r\n",
+   ch->print_fmt( "|Object Values: &G{:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2}&w\r\n",
                obj->value[0], obj->value[1], obj->value[2], obj->value[3],
                obj->value[4], obj->value[5], obj->value[6], obj->value[7], obj->value[8], obj->value[9], obj->value[10] );
 
@@ -1044,7 +1042,7 @@ CMDF( do_ostat )
       ch->print( "|Objprogs     : &G" );
 
       for( auto* mprog : obj->pIndexData->mudprogs )
-         ch->printf( "%s ", mprog_type_to_name( mprog->type ).c_str(  ) );
+         ch->print_fmt( "{} ", mprog_type_to_name( mprog->type ) );
 
       ch->print( "&w\r\n" );
    }
@@ -1335,9 +1333,9 @@ CMDF( do_mstat )
       ch->print_fmt( "|Death : &G{:10} &w|Petri : &G{:10} &w|Breath: &G{:10} &w|Staves: &G{}&w\r\n",
                      victim->saving_poison_death, victim->saving_para_petri, victim->saving_breath, victim->saving_spell_staff );
 
-      ch->print_fmt( "|Short : &G{}&w\r\n", ( victim->short_descr && victim->short_descr[0] != '\0' ) ? victim->short_descr : "(NONE)" );
+      ch->print_fmt( "|Short : &G{}&w\r\n", ( !victim->short_descr.empty() ) ? victim->short_descr : "(NONE)" );
 
-      ch->print_fmt( "|Long  : &G{}&w\r\n", ( victim->long_descr && victim->long_descr[0] != '\0' ) ? victim->long_descr : "(NONE)" );
+      ch->print_fmt( "|Long  : &G{}&w\r\n", ( !victim->long_descr.empty() ) ? victim->long_descr : "(NONE)" );
 
       ch->print_fmt( "|Languages: &[score]" );
       for( iLang = 0; iLang < LANG_UNKNOWN; ++iLang )
@@ -1427,7 +1425,7 @@ CMDF( do_stat )
 
       if( !victim->isnpc(  ) )
       {
-         ch->printf( "%s is not a mob!\r\n", victim->name );
+         ch->print_fmt( "{} is not a mob!\r\n", victim->name );
          return;
       }
       do_mstat( ch, argument );
@@ -1444,7 +1442,7 @@ CMDF( do_stat )
 
       if( victim->isnpc(  ) )
       {
-         ch->printf( "%s is not a player!\r\n", argument.c_str(  ) );
+         ch->print_fmt( "{} is not a player!\r\n", argument );
          return;
       }
       do_mstat( ch, argument );
@@ -1567,13 +1565,13 @@ CMDF( do_mwhere )
       {
          found = true;
          if( victim->has_actflag( ACT_ONMAP ) )
-            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &YOverland: &C%s %d %d\r\n", victim->pIndexData->vnum, victim->short_descr, victim->continent->name.c_str( ), victim->map_x, victim->map_y );
+            ch->pager_fmt( "&Y[&W{:5}&Y] &G{:<28} &YOverland: &C{} {} {}\r\n", victim->pIndexData->vnum, victim->short_descr, victim->continent->name, victim->map_x, victim->map_y );
          else
-            ch->pagerf( "&Y[&W%5d&Y] &G%-28s &Y[&W%5d&Y] &C%s\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
+            ch->pager_fmt( "&Y[&W{:5}&Y] &G{:<28} &Y[&W{:5}&Y] &C{}\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
       }
    }
    if( !found )
-      ch->printf( "You didn't find any %s.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "You didn't find any {}.\r\n", argument );
 }
 
 /* Added 'show' argument for lowbie imms without ostat -- Blodkai */
@@ -1765,9 +1763,9 @@ CMDF( do_pwhere )
          {
             found = true;
             if( victim->has_pcflag( PCFLAG_ONMAP ) )
-               ch->pagerf( "&G%-28s &Y[&WOverland&Y] &C%s %d %d\r\n", victim->name, victim->continent->name.c_str( ), victim->map_x, victim->map_y );
+               ch->pager_fmt( "&G{:<28} &Y[&WOverland&Y] &C{} {} {}\r\n", victim->name, victim->continent->name.c_str( ), victim->map_x, victim->map_y );
             else
-               ch->pagerf( "&G%-28s &Y[&W%5d&Y]&C %s\r\n", victim->name, victim->in_room->vnum, victim->in_room->name );
+               ch->pager_fmt( "&G{:<28} &Y[&W{:5}&Y]&C {}\r\n", victim->name, victim->in_room->vnum, victim->in_room->name );
          }
       }
       if( !found )
@@ -1782,7 +1780,7 @@ CMDF( do_pwhere )
          if( victim->in_room && ch->can_see( victim, true ) && hasname( victim->name, argument ) )
          {
             found = true;
-            ch->pagerf( "&Y%-28s &G[&W%5d&G]&C %s\r\n", PERS( victim, ch, true ).c_str(), victim->in_room->vnum, victim->in_room->name );
+            ch->pager_fmt( "&Y{:<28} &G[&W{:5}&G]&C {}\r\n", PERS( victim, ch, true ), victim->in_room->vnum, victim->in_room->name );
             break;
          }
       }
@@ -1817,14 +1815,14 @@ void where_mobile( char_data * ch, const std::string & argument )
       {
          found = true;
          ++mobcnt;
-         ch->pagerf( "[%5d] %-28s [%5d] %s\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
+         ch->pager_fmt( "[{:5}] {:<28} [{:5}] {}\r\n", victim->pIndexData->vnum, victim->short_descr, victim->in_room->vnum, victim->in_room->name );
       }
    }
 
    if( !found )
-      ch->pagerf( "No copies of vnum %d are loaded.\r\n", vnum );
+      ch->pager_fmt( "No copies of vnum {} are loaded.\r\n", vnum );
    else
-      ch->pagerf( "%d matches for vnum %d are loaded.\r\n", mobcnt, vnum );
+      ch->pager_fmt( "{} matches for vnum {} are loaded.\r\n", mobcnt, vnum );
 }
 
 /* Consolidated Where command - Samson 3-21-98 */
@@ -2032,7 +2030,7 @@ CMDF( do_snoop )
          d = *ds;
 
          if( d->snoop_by == ch->desc )
-            ch->printf( "%s ", d->original ? d->original->name : d->character->name );
+            ch->print_fmt( "{} ", d->original ? d->original->name : d->character->name );
       }
       return;
    }
@@ -2218,7 +2216,7 @@ void objinvoke( char_data * ch, std::string & argument )
       quantity = atoi( argument.c_str(  ) );
       if( quantity < 1 || quantity > MAX_OINVOKE_QUANTITY )
       {
-         ch->printf( "You must oinvoke between 1 and %d items.\r\n", MAX_OINVOKE_QUANTITY );
+         ch->print_fmt( "You must oinvoke between 1 and {} items.\r\n", MAX_OINVOKE_QUANTITY );
          return;
       }
    }
@@ -2285,15 +2283,15 @@ void objinvoke( char_data * ch, std::string & argument )
       }
       else
       {
-         ch->printf( "WARNING: This item has ego exceeding %d! Destroy this item when finished!\r\n", sysdata->minego );
+         ch->print_fmt( "WARNING: This item has ego exceeding {}! Destroy this item when finished!\r\n", sysdata->minego );
          log_printf( "%s: %s has loaded a copy of vnum %d.", __func__, ch->name, pObjIndex->vnum );
       }
    }
 #else
    if( obj->ego >= sysdata->minego )
    {
-      ch->printf( "WARNING: This item has ego exceeding %d! Destroy this item when finished!\r\n", sysdata->minego );
-      log_printf( "%s: %s has loaded a copy of vnum %d.", __func__, ch->name, pObjIndex->vnum );
+      ch->print_fmt( "WARNING: This item has ego exceeding {}! Destroy this item when finished!\r\n", sysdata->minego );
+      log_printf( "%s: %s has loaded a copy of vnum %d.", __func__, ch->name.c_str(), pObjIndex->vnum );
    }
 #endif
 
@@ -2319,7 +2317,7 @@ void objinvoke( char_data * ch, std::string & argument )
    /*
     * I invoked what? --Blodkai 
     */
-   ch->printf( "&Y(&W#%d &Y- &W%s &Y- &Wlvl %d&Y)\r\n", pObjIndex->vnum, pObjIndex->name, obj->level );
+   ch->print_fmt( "&Y(&W#{} &Y- &W{} &Y- &Wlvl {}&Y)\r\n", pObjIndex->vnum, pObjIndex->name, obj->level );
 }
 
 void mobinvoke( char_data * ch, std::string & argument )
@@ -2407,8 +2405,8 @@ void mobinvoke( char_data * ch, std::string & argument )
    /*
     * How about seeing what we're invoking for a change. -Blodkai
     */
-   ch->printf( "&YYou peer into the ether.... and pluck out %s!\r\n", pMobIndex->short_descr );
-   ch->printf( "(&W#%d &Y- &W%s &Y- &Wlvl %d&Y)\r\n", pMobIndex->vnum, pMobIndex->player_name, victim->level );
+   ch->print_fmt( "&YYou peer into the ether.... and pluck out {}!\r\n", pMobIndex->short_descr );
+   ch->print_fmt( "(&W#{} &Y- &W{} &Y- &Wlvl {}&Y)\r\n", pMobIndex->vnum, pMobIndex->player_name, victim->level );
 }
 
 /* Shard-like load command spliced off of ROT codebase - Samson 3-21-98 */
@@ -2737,7 +2735,7 @@ CMDF( do_advance )
 
    if( ( level = atoi( argument.c_str(  ) ) ) < 1 || level > LEVEL_AVATAR )
    {
-      ch->printf( "Level range is 1 to %d.\r\n", LEVEL_AVATAR );
+      ch->print_fmt( "Level range is 1 to {}.\r\n", LEVEL_AVATAR );
       return;
    }
 
@@ -2754,13 +2752,13 @@ CMDF( do_advance )
    {
       ch->print( "If your trying to raise an immortal's level, use the promote command.\r\n" );
       ch->print( "If your trying to lower an immortal's level, use the demote command.\r\n" );
-      ch->printf( "If your trying to immortalize %s, use the immortalize command.\r\n", victim->name );
+      ch->print_fmt( "If your trying to immortalize {}, use the immortalize command.\r\n", victim->name );
       return;
    }
 
    if( level == victim->level )
    {
-      ch->printf( "What would be the point? %s is already level %d.\r\n", victim->name, level );
+      ch->print_fmt( "What would be the point? {} is already level {}.\r\n", victim->name, level );
       return;
    }
 
@@ -2786,12 +2784,12 @@ CMDF( do_advance )
          check_switch( victim );
          victim->level = tmp;
 
-         ch->printf( "Demoting %s from level %d to level %d!\r\n", victim->name, victim->level, level );
+         ch->print_fmt( "Demoting {} from level {} to level {}!\r\n", victim->name, victim->level, level );
          victim->print( "Cursed and forsaken!  The gods have lowered your level...\r\n" );
       }
       else
       {
-         ch->printf( "%s is already level %d.  Re-advancing...\r\n", victim->name, level );
+         ch->print_fmt( "{} is already level {}.  Re-advancing...\r\n", victim->name, level );
          victim->print( "Deja vu! Your mind reels as you re-live your past levels!\r\n" );
       }
       victim->level = 1;
@@ -2809,7 +2807,7 @@ CMDF( do_advance )
       /*
        * Rank fix added by Narn. 
        */
-      STRFREE( victim->pcdata->rank );
+      victim->pcdata->rank.clear();
       /*
        * Stuff added to make sure character's wizinvis level doesn't stay
        * higher than actual level, take wizinvis away from advance < 50 
@@ -2824,7 +2822,7 @@ CMDF( do_advance )
    }
    else
    {
-      ch->printf( "Raising %s from level %d to level %d!\r\n", victim->name, victim->level, level );
+      ch->print_fmt( "Raising {} from level {} to level {}!\r\n", victim->name, victim->level, level );
       victim->print( "The gods feel fit to raise your level!\r\n" );
    }
    for( iLevel = victim->level; iLevel < level; ++iLevel )
@@ -2985,7 +2983,7 @@ CMDF( do_immortalize )
     */
    if( victim->level >= LEVEL_IMMORTAL )
    {
-      ch->printf( "Don't be silly, %s is already immortal.\r\n", victim->name );
+      ch->print_fmt( "Don't be silly, {} is already immortal.\r\n", victim->name );
       return;
    }
 
@@ -3043,7 +3041,7 @@ CMDF( do_immortalize )
 
    victim->set_pcflag( PCFLAG_HOLYLIGHT );
    victim->set_pcflag( PCFLAG_PASSDOOR );
-   STRFREE( victim->pcdata->rank );
+   victim->pcdata->rank.clear();
    victim->save(  );
    make_wizlist(  );
    build_wizinfo(  );
@@ -3458,7 +3456,7 @@ CMDF( do_scatter )
       }
       else
       {
-         ch->printf( "No valid continents to scatter %s to.\r\n", victim->name );
+         ch->print_fmt( "No valid continents to scatter {} to.\r\n", victim->name );
          return;
       }
    }
@@ -3765,7 +3763,7 @@ CMDF( do_freeze )
    {
       victim->unset_pcflag( PCFLAG_FREEZE );
       victim->print( "&CYour frozen form suddenly thaws.\r\n" );
-      ch->printf( "&C%s is now unfrozen.\r\n", victim->name );
+      ch->print_fmt( "&C{} is now unfrozen.\r\n", victim->name );
    }
    else
    {
@@ -3776,7 +3774,7 @@ CMDF( do_freeze )
          add_loginmsg( victim->name, 15, "" );
       else
          victim->print( "&CA godly force turns your body to ice!\r\n" );
-      ch->printf( "&CYou have frozen %s.\r\n", victim->name );
+      ch->print_fmt( "&CYou have frozen {}.\r\n", victim->name );
    }
    victim->save(  );
 }
@@ -3814,12 +3812,12 @@ CMDF( do_log )
    if( victim->has_pcflag( PCFLAG_LOG ) )
    {
       victim->unset_pcflag( PCFLAG_LOG );
-      ch->printf( "LOG removed from %s.\r\n", victim->name );
+      ch->print_fmt( "LOG removed from {}.\r\n", victim->name );
    }
    else
    {
       victim->set_pcflag( PCFLAG_LOG );
-      ch->printf( "LOG applied to %s.\r\n", victim->name );
+      ch->print_fmt( "LOG applied to {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -3843,13 +3841,13 @@ CMDF( do_litterbug )
    {
       victim->unset_pcflag( PCFLAG_LITTERBUG );
       victim->print( "You can drop items again.\r\n" );
-      ch->printf( "LITTERBUG removed from %s.\r\n", victim->name );
+      ch->print_fmt( "LITTERBUG removed from {}.\r\n", victim->name );
    }
    else
    {
       victim->set_pcflag( PCFLAG_LITTERBUG );
       victim->print( "A strange force prevents you from dropping any more items!\r\n" );
-      ch->printf( "LITTERBUG set on %s.\r\n", victim->name );
+      ch->print_fmt( "LITTERBUG set on {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -3873,7 +3871,7 @@ CMDF( do_nobio )
    {
       victim->unset_pcflag( PCFLAG_NOBIO );
       victim->print( "You can set a bio again.\r\n" );
-      ch->printf( "NOBIO removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NOBIO removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -3882,7 +3880,7 @@ CMDF( do_nobio )
          add_loginmsg( victim->name, 9, "" );
       else
          victim->print( "You can't set a bio!\r\n" );
-      ch->printf( "NOBIO applied to %s.\r\n", victim->name );
+      ch->print_fmt( "NOBIO applied to {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -3906,7 +3904,7 @@ CMDF( do_nodesc )
    {
       victim->unset_pcflag( PCFLAG_NODESC );
       victim->print( "You can set a description again.\r\n" );
-      ch->printf( "NODESC removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NODESC removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -3915,7 +3913,7 @@ CMDF( do_nodesc )
          add_loginmsg( victim->name, 11, "" );
       else
          victim->print( "You can't set a description!\r\n" );
-      ch->printf( "NODESC applied to %s.\r\n", victim->name );
+      ch->print_fmt( "NODESC applied to {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -3939,7 +3937,7 @@ CMDF( do_noemote )
    {
       victim->unset_pcflag( PCFLAG_NO_EMOTE );
       victim->print( "You can emote again.\r\n" );
-      ch->printf( "NOEMOTE removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NOEMOTE removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -3948,7 +3946,7 @@ CMDF( do_noemote )
          add_loginmsg( victim->name, 16, "" );
       else
          victim->print( "You can't emote!\r\n" );
-      ch->printf( "NOEMOTE applied to %s.\r\n", victim->name );
+      ch->print_fmt( "NOEMOTE applied to {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -3972,7 +3970,7 @@ CMDF( do_notell )
    {
       victim->unset_pcflag( PCFLAG_NO_TELL );
       victim->print( "You can send tells again.\r\n" );
-      ch->printf( "NOTELL removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NOTELL removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -3981,7 +3979,7 @@ CMDF( do_notell )
          add_loginmsg( victim->name, 14, "" );
       else
          victim->print( "You can't send tells!\r\n" );
-      ch->printf( "NOTELL applied to %s.\r\n", victim->name );
+      ch->print_fmt( "NOTELL applied to {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -4006,7 +4004,7 @@ CMDF( do_notitle )
    {
       victim->unset_pcflag( PCFLAG_NOTITLE );
       victim->print( "You can set your own title again.\r\n" );
-      ch->printf( "NOTITLE removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NOTITLE removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -4017,7 +4015,7 @@ CMDF( do_notitle )
          add_loginmsg( victim->name, 8, "" );
       else
          victim->print( "You can't set your own title!\r\n" );
-      ch->printf( "NOTITLE set on %s.\r\n", victim->name );
+      ch->print_fmt( "NOTITLE set on {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -4041,7 +4039,7 @@ CMDF( do_nourl )
    {
       victim->unset_pcflag( PCFLAG_NO_URL );
       victim->print( "You can set a homepage again.\r\n" );
-      ch->printf( "NOURL removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NOURL removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -4051,7 +4049,7 @@ CMDF( do_nourl )
          add_loginmsg( victim->name, 12, "" );
       else
          victim->print( "You can't set a homepage!\r\n" );
-      ch->printf( "NOURL applied to %s.\r\n", victim->name );
+      ch->print_fmt( "NOURL applied to {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -4075,14 +4073,14 @@ CMDF( do_noemail )
    {
       victim->unset_pcflag( PCFLAG_NO_EMAIL );
       victim->print( "You can set an email address again.\r\n" );
-      ch->printf( "NOEMAIL removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NOEMAIL removed from {}.\r\n", victim->name );
    }
    else
    {
       victim->set_pcflag( PCFLAG_NO_EMAIL );
       victim->pcdata->email.clear();
       victim->print( "You can't set an email address!\r\n" );
-      ch->printf( "NOEMAIL applied to %s.\r\n", victim->name );
+      ch->print_fmt( "NOEMAIL applied to {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -4106,7 +4104,7 @@ CMDF( do_nobeep )
    {
       victim->unset_pcflag( PCFLAG_NO_BEEP );
       victim->print( "You can send beeps again.\r\n" );
-      ch->printf( "NOBEEP removed from %s.\r\n", victim->name );
+      ch->print_fmt( "NOBEEP removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -4115,7 +4113,7 @@ CMDF( do_nobeep )
          add_loginmsg( victim->name, 13, "" );
       else
          victim->print( "You can't send beeps anymore!\r\n" );
-      ch->printf( "NOBEEP applied to %s.\r\n", victim->name );
+      ch->print_fmt( "NOBEEP applied to {}.\r\n", victim->name );
    }
    victim->save();
 }
@@ -4139,7 +4137,7 @@ CMDF( do_silence )
    {
       victim->unset_pcflag( PCFLAG_SILENCE );
       victim->print( "You can use channels again.\r\n" );
-      ch->printf( "SILENCE removed from %s.\r\n", victim->name );
+      ch->print_fmt( "SILENCE removed from {}.\r\n", victim->name );
    }
    else
    {
@@ -4148,7 +4146,7 @@ CMDF( do_silence )
          add_loginmsg( victim->name, 7, "" );
       else
          victim->print( "You can't use channels!\r\n" );
-      ch->printf( "You SILENCE %s.\r\n", victim->name );
+      ch->print_fmt( "You SILENCE {}.\r\n", victim->name );
    }
    victim->save( );
 }
@@ -4317,8 +4315,8 @@ CMDF( do_users )
          if( ch->is_imp(  ) || ( d->character && ch->can_see( d->character, true ) && !is_ignoring( d->character, ch ) ) )
          {
             ++count;
-            ch->pagerf( " %3d| %-17s |%4d| %-12s | %-15s | %s\r\n", d->descriptor, st.c_str(), d->idle / 4,
-                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->ipaddress.c_str(), d->hostname.c_str(  ) );
+            ch->pager_fmt( " {:3}| {:<17} |{:4}| {:<12} | {:<15} | {}\r\n", d->descriptor, st, d->idle / 4,
+                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->ipaddress, d->hostname );
          }
       }
       else
@@ -4327,12 +4325,12 @@ CMDF( do_users )
              && ( !str_prefix( argument, d->hostname ) || ( d->character && !str_prefix( argument, d->character->name ) ) ) )
          {
             ++count;
-            ch->pagerf( " %3d| %2d|%4d| %-12s | %-15s | %s \r\n", d->descriptor, d->connected, d->idle / 4,
-                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->ipaddress.c_str(), d->hostname.c_str(  ) );
+            ch->pager_fmt( " {:3}| {:2}|{:4}| {:<12} | {:<15} | {} \r\n", d->descriptor, d->connected, d->idle / 4,
+                        d->original ? d->original->name : d->character ? d->character->name : "(None!)", d->ipaddress, d->hostname );
          }
       }
    }
-   ch->pagerf( "%d user%s.\r\n", count, count == 1 ? "" : "s" );
+   ch->pager_fmt( "{} user{}.\r\n", count, count == 1 ? "" : "s" );
 }
 
 CMDF( do_invis )
@@ -4484,8 +4482,8 @@ CMDF( do_loadup )
    if( d->character->get_trust(  ) >= ch->get_trust(  ) )
    {
       interpret( d->character, "say How dare you load my Pfile!" );
-      cmdf( d->character, "dino %s", ch->name );
-      ch->printf( "I think you'd better leave %s alone!\r\n", argument.c_str(  ) );
+      cmdf( d->character, "dino %s", ch->name.c_str() );
+      ch->print_fmt( "I think you'd better leave {} alone!\r\n", argument );
       d->character->desc = nullptr;
       interpret( d->character, "quit auto" );
       return;
@@ -4496,7 +4494,7 @@ CMDF( do_loadup )
    deleteptr( d );
 
    ch->print_fmt( "&R{} loaded from room {}.\r\n", capitalize( argument ), old_room_vnum );
-   act_printf( AT_IMMORT, ch, nullptr, nullptr, TO_ROOM, "%s appears from nowhere, eyes glazed over.", capitalize( argument ).c_str(  ) );
+   act_printf( AT_IMMORT, ch, nullptr, nullptr, TO_ROOM, "{} appears from nowhere, eyes glazed over.", capitalize( argument ) );
    ch->print( "Done.\r\n" );
 }
 
@@ -4600,7 +4598,7 @@ CMDF( do_bestowarea )
 
    if( victim->get_trust(  ) < LEVEL_IMMORTAL )
    {
-      ch->printf( "%s is not an immortal and may not have an area bestowed.\r\n", victim->name );
+      ch->print_fmt( "{} is not an immortal and may not have an area bestowed.\r\n", victim->name );
       return;
    }
 
@@ -4608,14 +4606,14 @@ CMDF( do_bestowarea )
    {
       if( victim->pcdata->bestowments.empty(  ) )
       {
-         ch->printf( "%s does not have any areas bestowed upon them.\r\n", victim->name );
+         ch->print_fmt( "{} does not have any areas bestowed upon them.\r\n", victim->name );
          return;
       }
       buf = extract_area_names( victim );
       if( buf.empty(  ) )
-         ch->printf( "%s does not have any areas bestowed upon them.\r\n", victim->name );
+         ch->print_fmt( "{} does not have any areas bestowed upon them.\r\n", victim->name );
       else
-         ch->printf( "%s's bestowed areas: %s\r\n", victim->name, buf.c_str(  ) );
+         ch->print_fmt( "{}'s bestowed areas: %s\r\n", victim->name, buf );
       return;
    }
 
@@ -4628,11 +4626,11 @@ CMDF( do_bestowarea )
          argument = one_argument( argument, arg );
          if( !hasname( victim->pcdata->bestowments, arg ) )
          {
-            ch->printf( "%s does not have an area named %s bestowed.\r\n", victim->name, arg.c_str(  ) );
+            ch->print_fmt( "{} does not have an area named %s bestowed.\r\n", victim->name, arg );
             return;
          }
          removename( victim->pcdata->bestowments, arg );
-         ch->printf( "Removed area %s from %s.\r\n", arg.c_str(  ), victim->name );
+         ch->print_fmt( "Removed area {} from {}.\r\n", arg, victim->name );
          victim->save(  );
       }
       return;
@@ -4642,12 +4640,12 @@ CMDF( do_bestowarea )
    {
       if( victim->pcdata->bestowments.empty(  ) || victim->pcdata->bestowments.find( ".are" ) == std::string::npos )
       {
-         ch->printf( "%s has no areas bestowed!\r\n", victim->name );
+         ch->print_fmt( "{} has no areas bestowed!\r\n", victim->name );
          return;
       }
       remove_area_names( victim );
       victim->save(  );
-      ch->printf( "All of %s's bestowed areas have been removed.\r\n", victim->name );
+      ch->print_fmt( "All of {}'s bestowed areas have been removed.\r\n", victim->name );
       return;
    }
 
@@ -4655,7 +4653,7 @@ CMDF( do_bestowarea )
    {
       if( arg.find( ".are" ) == std::string::npos )
       {
-         ch->printf( "'%s' is not a valid area to bestow.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "'{}' is not a valid area to bestow.\r\n", arg );
          ch->print( "You can only bestow an area name\r\n" );
          ch->print( "E.G. bestow joe sam.are\r\n" );
          return;
@@ -4663,14 +4661,14 @@ CMDF( do_bestowarea )
 
       if( hasname( victim->pcdata->bestowments, arg ) )
       {
-         ch->printf( "%s already has the area %s bestowed.\r\n", victim->name, arg.c_str(  ) );
+         ch->print_fmt( "{} already has the area %s bestowed.\r\n", victim->name, arg );
          return;
       }
 
       smash_tilde( arg );
       addname( victim->pcdata->bestowments, arg );
-      victim->printf( "%s has bestowed on you the area: %s\r\n", ch->name, arg.c_str(  ) );
-      ch->printf( "%s has been bestowed: %s\r\n", victim->name, arg.c_str(  ) );
+      victim->print_fmt( "{} has bestowed on you the area: %s\r\n", ch->name, arg );
+      ch->print_fmt( "{} has been bestowed: %s\r\n", victim->name, arg );
       victim->save(  );
 
       argument = one_argument( argument, arg );
@@ -4699,7 +4697,7 @@ CMDF( do_demote )
 
    if( victim->level < LEVEL_IMMORTAL )
    {
-      ch->printf( "%s is not immortal, and cannot be demoted. Use the advance command.\r\n", victim->name );
+      ch->print_fmt( "{} is not immortal, and cannot be demoted. Use the advance command.\r\n", victim->name );
       return;
    }
 
@@ -4711,7 +4709,7 @@ CMDF( do_demote )
    /*
     * Rank fix added by Narn. 
     */
-   STRFREE( victim->pcdata->rank );
+   victim->pcdata->rank.clear();
 
    advance_level( victim );
    victim->exp = exp_level( victim->level );
@@ -4741,7 +4739,7 @@ CMDF( do_demote )
       victim->pcdata->realm = nullptr;
       victim->pcdata->realm_name.clear();
    }
-   funcf( ch, do_bestow, "%s none", victim->name );
+   funcf( ch, do_bestow, "%s none", victim->name.c_str() );
    victim->save(  );
    make_wizlist(  );
    build_wizinfo(  );
@@ -4770,20 +4768,20 @@ CMDF( do_promote )
 
    if( victim->level < LEVEL_AVATAR )
    {
-      ch->printf( "%s is not immortal, and cannot be promoted. Use the advance command.\r\n", victim->name );
+      ch->print_fmt( "{} is not immortal, and cannot be promoted. Use the advance command.\r\n", victim->name );
       return;
    }
 
    if( victim->level == LEVEL_AVATAR )
    {
-      ch->printf( "You must use the immortalize command to make %s an immortal.\r\n", victim->name );
+      ch->print_fmt( "You must use the immortalize command to make {} an immortal.\r\n", victim->name );
       return;
    }
 
    level = victim->level + 1;
    if( level > MAX_LEVEL )
    {
-      ch->printf( "Cannot promote %s past the max level of %d.\r\n", victim->name, MAX_LEVEL );
+      ch->print_fmt( "Cannot promote {} past the max level of {}.\r\n", victim->name, MAX_LEVEL );
       return;
    }
 
@@ -4846,8 +4844,7 @@ CMDF( do_promote )
    advance_level( victim );
    victim->exp = exp_level( victim->level );
    victim->trust = 0;
-   STRFREE( victim->pcdata->rank );
-   victim->pcdata->rank = STRALLOC( "Immortal" );
+   victim->pcdata->rank = "Immortal";
    victim->save(  );
    make_wizlist(  );
    build_wizinfo(  );
@@ -5267,7 +5264,7 @@ CMDF( do_hell )
 
    if( victim->pcdata->release_date != std::chrono::system_clock::time_point{} )
    {
-      ch->printf( "They are already in hell until %24.24s, by %s.\r\n", c_time( victim->pcdata->release_date, ch->pcdata->timezone ).c_str(), victim->pcdata->helled_by );
+      ch->print_fmt( "They are already in hell until {:24.24}, by {}.\r\n", c_time( victim->pcdata->release_date, ch->pcdata->timezone ), victim->pcdata->helled_by );
       return;
    }
 
@@ -5305,8 +5302,8 @@ CMDF( do_hell )
    else
       tms += std::chrono::days( htime );
    victim->pcdata->release_date = tms;
-   victim->pcdata->helled_by = STRALLOC( ch->name );
-   ch->printf( "%s will be released from hell at %24.24s.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone ).c_str() );
+   victim->pcdata->helled_by = ch->name;
+   ch->print_fmt( "{} will be released from hell at {:24.24}.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone ) );
    act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
@@ -5316,8 +5313,8 @@ CMDF( do_hell )
    if( !victim->desc )
       add_loginmsg( victim->name, 10, "" );
    else
-      victim->printf( "The immortals are not pleased with your actions.\r\n"
-                   "You shall remain in hell for %d %s%s.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );
+      victim->print_fmt( "The immortals are not pleased with your actions.\r\n"
+                   "You shall remain in hell for {} {}{}.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );
    victim->save(  ); /* used to save ch, fixed by Thoric 09/17/96 */
 }
 
@@ -5360,11 +5357,11 @@ CMDF( do_unhell )
    interpret( victim, "look" );
    if( victim != ch )
       ch->print( "They have been released.\r\n" );
-   if( victim->pcdata->helled_by )
+   if( !victim->pcdata->helled_by.empty() )
    {
       if( str_cmp( ch->name, victim->pcdata->helled_by ) )
-         ch->printf( "(You should probably write a note to %s, explaining the early release.)\r\n", victim->pcdata->helled_by );
-      STRFREE( victim->pcdata->helled_by );
+         ch->print_fmt( "(You should probably write a note to {}, explaining the early release.)\r\n", victim->pcdata->helled_by );
+      victim->pcdata->helled_by.clear();
    }
    MOBtrigger = false;
    act( AT_MAGIC, "$n appears in a cloud of godly light.", victim, nullptr, ch, TO_NOTVICT );
@@ -8237,7 +8234,7 @@ CMDF( do_forgefind )
       if( smith->has_actflag( ACT_SMITH ) || smith->has_actflag( ACT_GUILDFORGE ) )
       {
          found = true;
-         ch->pagerf( "Forge: *%5d* %-30s at *%5d*, %s.\r\n", smith->pIndexData->vnum, smith->short_descr, smith->in_room->vnum, smith->in_room->name );
+         ch->pager_fmt( "Forge: *{:5}* {:<30} at *{:5}*, {}.\r\n", smith->pIndexData->vnum, smith->short_descr, smith->in_room->vnum, smith->in_room->name );
       }
    }
    if( !found )

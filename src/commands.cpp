@@ -434,7 +434,7 @@ void interpret( char_data * ch, std::string argument )
 
    if( !ch->in_room )
    {
-      bug( "%s: %s null in_room!", __func__, ch->name );
+      bug( "%s: %s null in_room!", __func__, ch->name.c_str(  ) );
       return;
    }
 
@@ -446,7 +446,7 @@ void interpret( char_data * ch, std::string argument )
       if( !( fun = ch->last_cmd ) )
       {
          ch->substate = SUB_NONE;
-         bug( "%s: %s SUB_REPEATCMD with nullptr last_cmd", __func__, ch->name );
+         bug( "%s: %s SUB_REPEATCMD with nullptr last_cmd", __func__, ch->name.c_str(  ) );
          return;
       }
       else
@@ -526,7 +526,7 @@ void interpret( char_data * ch, std::string argument )
          {
             ch->unset_pcflag( PCFLAG_AFK );
             ch->unset_pcflag( PCFLAG_IDLING );
-            DISPOSE( ch->pcdata->afkbuf );
+            ch->pcdata->afkbuf.clear();
             act( AT_GREY, "$n is no longer afk.", ch, nullptr, nullptr, TO_CANSEE );
             ch->print( "You are no longer afk.\r\n" );
          }
@@ -595,7 +595,7 @@ void interpret( char_data * ch, std::string argument )
       {
          ch->unset_pcflag( PCFLAG_AFK );
          ch->unset_pcflag( PCFLAG_IDLING );
-         DISPOSE( ch->pcdata->afkbuf );
+         ch->pcdata->afkbuf.clear();
          act( AT_GREY, "$n is no longer afk.", ch, nullptr, nullptr, TO_CANSEE );
          ch->print( "You are no longer afk.\r\n" );
       }
@@ -651,9 +651,9 @@ void interpret( char_data * ch, std::string argument )
       if( !ch->isnpc(  ) )
       {
          if( ch->desc && ch->desc->original )
-            log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline.c_str() );
+            log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name.c_str(  ), ch->desc->original->name.c_str(), logline.c_str() );
          else
-            log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline.c_str() );
+            log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name.c_str(  ), logline.c_str() );
       }
    }
 
@@ -801,7 +801,7 @@ void interpret( char_data * ch, std::string argument )
       long long seconds = tmptime / 1000000;
       long long microseconds = tmptime % 1000000;
 
-      log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%lld.%06lld)", ch->name,
+      log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%lld.%06lld)", ch->name.c_str(  ),
                        cmd->name.c_str(  ), ( cmd->log == LOG_NEVER ? "XXX" : argument.c_str(  ) ), ch->in_room ? ch->in_room->vnum : 0, seconds, microseconds );
    }
    lastplayercmd = "No commands pending";
@@ -1388,7 +1388,7 @@ CMDF( do_restrict )
 
    cmd->level = level;
    ch->printf( "You restrict %s to level %d\r\n", cmd->name.c_str(  ), level );
-   log_printf( "%s restricting %s to level %d", ch->name, cmd->name.c_str(  ), level );
+   log_printf( "%s restricting %s to level %d", ch->name.c_str(  ), cmd->name.c_str(  ), level );
 }
 
 std::string extract_command_names( char_data * ch )
@@ -1448,17 +1448,17 @@ CMDF( do_bestow )
    {
       if( victim->pcdata->bestowments.empty(  ) )
       {
-         ch->printf( "%s has no bestowed commands.\r\n", victim->name );
+         ch->print_fmt( "{} has no bestowed commands.\r\n", victim->name );
          return;
       }
 
       buf = extract_command_names( victim );
       if( buf.empty(  ) )
       {
-         ch->printf( "%s has no bestowed commands.\r\n", victim->name );
+         ch->print_fmt( "{} has no bestowed commands.\r\n", victim->name );
          return;
       }
-      ch->printf( "Current bestowed commands on %s: %s.\r\n", victim->name, buf.c_str(  ) );
+      ch->print_fmt( "Current bestowed commands on {}: {}.\r\n", victim->name, buf );
       return;
    }
 
@@ -1471,11 +1471,11 @@ CMDF( do_bestow )
          argument = one_argument( argument, arg );
          if( !hasname( victim->pcdata->bestowments, arg ) )
          {
-            ch->printf( "%s does not have a command named %s bestowed.\r\n", victim->name, arg.c_str(  ) );
+            ch->print_fmt( "{} does not have a command named {} bestowed.\r\n", victim->name, arg );
             return;
          }
          removename( victim->pcdata->bestowments, arg );
-         ch->printf( "Removed command %s from %s.\r\n", arg.c_str(  ), victim->name );
+         ch->print_fmt( "Removed command {} from {}.\r\n", arg, victim->name );
       }
       victim->save(  );
       return;
@@ -1486,15 +1486,15 @@ CMDF( do_bestow )
       buf = extract_command_names( victim );
       if( victim->pcdata->bestowments.empty(  ) )
       {
-         ch->printf( "%s has no commands bestowed!\r\n", victim->name );
+         ch->print_fmt( "{} has no commands bestowed!\r\n", victim->name );
          return;
       }
 
       buf = extract_area_names( victim );
       victim->pcdata->bestowments = buf;
 
-      ch->printf( "Command bestowments removed from %s.\r\n", victim->name );
-      victim->printf( "%s has removed your bestowed commands.\r\n", ch->name );
+      ch->print_fmt( "Command bestowments removed from {}.\r\n", victim->name );
+      victim->print_fmt( "{} has removed your bestowed commands.\r\n", ch->name );
       check_switch( victim );
       victim->save(  );
       return;
@@ -1504,33 +1504,33 @@ CMDF( do_bestow )
    {
       if( strstr( arg.c_str(  ), ".are" ) )
       {
-         ch->printf( "'%s' is not a valid command to bestow.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "'{}' is not a valid command to bestow.\r\n", arg );
          ch->print( "You cannot bestow an area with 'bestow'. Use 'bestowarea'.\r\n" );
          return;
       }
 
       if( hasname( victim->pcdata->bestowments, arg ) )
       {
-         ch->printf( "%s already has '%s' bestowed.\r\n", victim->name, arg.c_str(  ) );
+         ch->print_fmt( "{} already has '{}' bestowed.\r\n", victim->name, arg );
          return;
       }
 
       if( !( cmd = find_command( arg ) ) )
       {
-         ch->printf( "'%s' is not a valid command.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "'{}' is not a valid command.\r\n", arg );
          return;
       }
 
       if( cmd->level > ch->get_trust(  ) )
       {
-         ch->printf( "The command '%s' is beyond you, thus you cannot bestow it.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "The command '{}' is beyond you, thus you cannot bestow it.\r\n", arg );
          return;
       }
 
       smash_tilde( arg );
       addname( victim->pcdata->bestowments, arg );
-      victim->printf( "%s has bestowed on you the command: %s\r\n", ch->name, arg.c_str(  ) );
-      ch->printf( "%s has been bestowed: %s\r\n", victim->name, arg.c_str(  ) );
+      victim->print_fmt( "{} has bestowed on you the command: %s\r\n", ch->name, arg );
+      ch->print_fmt( "{} has been bestowed: {}\r\n", victim->name, arg );
 
       argument = one_argument( argument, arg );
    }
@@ -1571,7 +1571,7 @@ CMDF( do_force )
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
          ch->printf( "You cannot force anyone to %s\r\n", cmd->name.c_str(  ) );
-         log_printf( "%s attempted to force all to %s - command is flagged noforce", ch->name, cmd->name.c_str(  ) );
+         log_printf( "%s attempted to force all to %s - command is flagged noforce", ch->name.c_str(  ), cmd->name.c_str(  ) );
          return;
       }
 
@@ -1612,7 +1612,7 @@ CMDF( do_force )
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
          ch->printf( "You cannot force anyone to %s\r\n", cmd->name.c_str(  ) );
-         log_printf( "%s attempted to force %s to %s - command is flagged noforce", ch->name, victim->name, cmd->name.c_str(  ) );
+         log_printf( "%s attempted to force %s to %s - command is flagged noforce", ch->name.c_str(  ), victim->name.c_str(  ), cmd->name.c_str(  ) );
          return;
       }
 

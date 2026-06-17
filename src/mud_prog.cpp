@@ -148,17 +148,15 @@ void uphold_supermob( int *curr_serial, int serial, room_index ** supermob_room,
       if( true_supermob_obj && true_supermob_obj != supermob_obj )
       {
          supermob_obj = true_supermob_obj;
-         STRFREE( supermob->short_descr );
-         supermob->short_descr = QUICKLINK( supermob_obj->short_descr );
-         stralloc_printf( &supermob->chardesc, "Object #%d", supermob_obj->pIndexData->vnum );
+         supermob->short_descr = supermob_obj->short_descr;
+         supermob->chardesc = std::format( "Object #{}", supermob_obj->pIndexData->vnum );
       }
       else
       {
          if( !true_supermob_obj )
             supermob_obj = nullptr;
-         STRFREE( supermob->short_descr );
-         supermob->short_descr = QUICKLINK( ( *supermob_room )->name );
-         stralloc_printf( &supermob->chardesc, "Room #%d", ( *supermob_room )->vnum );
+         supermob->short_descr = (*supermob_room)->name;
+         supermob->chardesc = std::format( "Room #{}", (*supermob_room)->vnum );
       }
       *curr_serial = serial;
    }
@@ -1814,7 +1812,8 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
 
 #undef isoperator
 
-/* This routine handles the variables for command expansion.
+/*
+ * This routine handles the variables for command expansion.
  * If you want to add any go right ahead, it should be fairly
  * clear how it is done and they are quite easy to do, so you
  * can be as creative as you want. The only catch is to check
@@ -1845,8 +1844,8 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
       case 'i':
          if( mob && !mob->char_died(  ) )
          {
-            if( mob->name )
-               one_argument( mob->name, t );
+            if( !mob->name.empty() )
+               one_argument( mob->name.c_str(), t );
          }
          else
             strcpy( t, "someone" );
@@ -1855,9 +1854,9 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
       case 'I':
          if( mob && !mob->char_died(  ) )
          {
-            if( mob->short_descr )
+            if( !mob->short_descr.empty() )
             {
-               strcpy( t, mob->short_descr );
+               strcpy( t, mob->short_descr.c_str() );
             }
             else
             {
@@ -1872,7 +1871,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
          if( actor && !actor->char_died(  ) )
          {
             if( mob->can_see( actor, false ) )
-               one_argument( actor->name, t );
+               one_argument( actor->name.c_str(), t );
             else
                strcpy( t, "someone" );
             if( !actor->isnpc(  ) )
@@ -1888,11 +1887,11 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
             if( mob->can_see( actor, false ) )
             {
                if( actor->isnpc(  ) )
-                  strcpy( t, actor->short_descr );
+                  strcpy( t, actor->short_descr.c_str() );
                else
                {
-                  strcpy( t, actor->name );
-                  strcat( t, actor->pcdata->title );
+                  strcpy( t, actor->name.c_str() );
+                  strcat( t, actor->pcdata->title.c_str() );
                }
             }
             else
@@ -1906,7 +1905,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
          if( vict && !vict->char_died(  ) )
          {
             if( mob->can_see( vict, false ) )
-               one_argument( vict->name, t );
+               one_argument( vict->name.c_str(), t );
             if( !vict->isnpc(  ) )
                *t = to_upper( *t );
          }
@@ -1921,11 +1920,11 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
             if( mob->can_see( vict, false ) )
             {
                if( vict->isnpc(  ) )
-                  strcpy( t, vict->short_descr );
+                  strcpy( t, vict->short_descr.c_str() );
                else
                {
-                  strcpy( t, vict->name );
-                  strcat( t, vict->pcdata->title );
+                  strcpy( t, vict->name.c_str() );
+                  strcat( t, vict->pcdata->title.c_str() );
                }
             }
             else
@@ -1940,7 +1939,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
          {
             if( mob->can_see( rndm, false ) )
             {
-               one_argument( rndm->name, t );
+               one_argument( rndm->name.c_str(), t );
             }
             if( !rndm->isnpc(  ) )
             {
@@ -1957,11 +1956,11 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
             if( mob->can_see( rndm, false ) )
             {
                if( rndm->isnpc(  ) )
-                  strcpy( t, rndm->short_descr );
+                  strcpy( t, rndm->short_descr.c_str() );
                else
                {
-                  strcpy( t, rndm->name );
-                  strcat( t, rndm->pcdata->title );
+                  strcpy( t, rndm->name.c_str() );
+                  strcat( t, rndm->pcdata->title.c_str() );
                }
             }
             else
@@ -3630,7 +3629,7 @@ void mprog_greet_trigger( char_data * ch )
 {
    if( !ch->in_room )
    {
-      bug( "%s: ch '%s' not in room. Transferring to Limbo.", __func__, ch->name );
+      bug( "%s: ch '%s' not in room. Transferring to Limbo.", __func__, ch->name.c_str() );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
       return;
@@ -3867,14 +3866,13 @@ void set_supermob( obj_data * obj )
    if( !room )
       return;
 
-   STRFREE( supermob->short_descr );
-   supermob->short_descr = QUICKLINK( obj->short_descr );
+   supermob->short_descr = obj->short_descr;
    supermob->mpscriptpos = obj->mpscriptpos;
 
    /*
     * Added by Jenny to allow bug messages to show the vnum of the object, and not just supermob's vnum 
     */
-   stralloc_printf( &supermob->chardesc, "Object #%d", obj->pIndexData->vnum );
+   supermob->chardesc = std::format( "Object #{}", obj->pIndexData->vnum );
 
    if( room != nullptr )
    {
@@ -4191,17 +4189,15 @@ void rset_supermob( room_index * room )
 {
    if( room )
    {
-      STRFREE( supermob->short_descr );
-      supermob->short_descr = QUICKLINK( room->name );
-      STRFREE( supermob->name );
-      supermob->name = QUICKLINK( room->name );
+      supermob->short_descr = room->name;
+      supermob->name = room->name;
       supermob->mpscriptpos = room->mpscriptpos;
 
       /*
        * Added by Jenny to allow bug messages to show the vnum
        * of the room, and not just supermob's vnum 
        */
-      stralloc_printf( &supermob->chardesc, "Room #%d", room->vnum );
+      supermob->chardesc = std::format( "Room #{}", room->vnum );
 
       supermob->from_room(  );
       if( !supermob->to_room( room ) )
@@ -4480,7 +4476,7 @@ void progbug( std::string_view str, char_data * mob )
        * was set to indicate the object or room, so we just need to show
        * the description in the bug message.
        */
-      bug( "%s, %s.", str.data(), mob->chardesc == nullptr ? "(unknown)" : mob->chardesc );
+      bug( "%s, %s.", str.data(), mob->chardesc.empty() ? "(unknown)" : mob->chardesc.c_str() );
    }
    else
       bug( "%s, Mob #%d.", str.data(), vnum );

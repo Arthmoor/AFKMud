@@ -186,7 +186,7 @@ CMDF( do_finger )
    {
       if( victim->has_pcflag( PCFLAG_PRIVACY ) && !ch->is_immortal(  ) )
       {
-         ch->print_fmt( "%s has privacy enabled.\r\n", victim->name );
+         ch->print_fmt( "{} has privacy enabled.\r\n", victim->name );
          return;
       }
 
@@ -208,7 +208,7 @@ CMDF( do_finger )
       // Bug fix here provided by Senir to stop /dev/null crash
       if( !std::filesystem::exists( fingload ) || !check_parse_name( argument, false ) )
       {
-         ch->print_fmt( "&YNo such player named '%s'.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "&YNo such player named '{}'.\r\n", argument );
          return;
       }
 
@@ -242,7 +242,7 @@ CMDF( do_finger )
 
       if( victim->has_pcflag( PCFLAG_PRIVACY ) && !ch->is_immortal(  ) )
       {
-         ch->printf( "%s has privacy enabled.\r\n", victim->name );
+         ch->print_fmt( "{} has privacy enabled.\r\n", victim->name );
          skip = true;
       }
 
@@ -304,10 +304,10 @@ CMDF( do_finger )
          {
             level = check_command_level( "comment", LEVEL_IMMORTAL );
             if( level != -1 )
-               cmdf( ch, "comment list %s", victim->name );
+               cmdf( ch, "comment list %s", victim->name.c_str() );
          }
       }
-      ch->print_fmt( "&wBio:\r\n&G{}\r\n", victim->pcdata->bio ? victim->pcdata->bio : "Not created" );
+      ch->print_fmt( "&wBio:\r\n&G{}\r\n", !victim->pcdata->bio.empty() ? victim->pcdata->bio : "Not created" );
    }
 
    if( loaded )

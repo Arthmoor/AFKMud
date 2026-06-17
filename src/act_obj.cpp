@@ -177,7 +177,7 @@ CMDF( do_get )
    if( ch->carry_number < 0 || ch->carry_weight < 0 )
    {
       ch->print( "Uh oh ... better contact an immortal about your number or weight of items carried.\r\n" );
-      log_printf( "%s has negative carry_number or carry_weight!", ch->name );
+      log_printf( "%s has negative carry_number or carry_weight!", ch->name.c_str() );
       return;
    }
 
@@ -1266,8 +1266,8 @@ CMDF( do_give )
     */
    if( ( obj->extra_flags.test( ITEM_PERSONAL ) || obj->ego >= sysdata->minego ) && victim->is_pet(  ) )
    {
-      ch->printf( "%s says 'I'm sorry master, but I can't carry this.'\r\n", victim->short_descr );
-      ch->printf( "%s hands %s back to you.\r\n", victim->short_descr, obj->short_descr );
+      ch->print_fmt( "{} says 'I'm sorry master, but I can't carry this.'\r\n", victim->short_descr );
+      ch->print_fmt( "{} hands {} back to you.\r\n", victim->short_descr, obj->short_descr );
       obj->separate(  );
       obj->from_char(  );
       obj->to_char( ch );

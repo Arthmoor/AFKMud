@@ -57,13 +57,13 @@ void comment_remove( char_data * ch, note_data * pnote )
 
    if( ch->pcdata->comments.empty(  ) )
    {
-      bug( "%s: %s has an empty comment list already.", __func__, ch->name );
+      bug( "%s: %s has an empty comment list already.", __func__, ch->name.c_str(  ) );
       return;
    }
 
    if( !pnote )
    {
-      bug( "%s: Null pnote, removing comment from %s!", __func__, ch->name );
+      bug( "%s: Null pnote, removing comment from %s!", __func__, ch->name.c_str(  ) );
       return;
    }
 
@@ -170,8 +170,8 @@ CMDF( do_comment )
       for( auto* note : victim->pcdata->comments )
       {
          ++vnum;
-         ch->printf( "%2d) %-10s [%s] %s\r\n", vnum, note->sender ? note->sender : "--Error--",
-                     mini_c_time( note->date_stamp, -1 ).c_str(), note->subject ? note->subject : "--Error--" );
+         ch->print_fmt( "{:2}) {:<10} [{}] {}\r\n", vnum, note->sender ? note->sender : "--Error--",
+                     mini_c_time( note->date_stamp, -1 ), note->subject ? note->subject : "--Error--" );
          /*
           * Brittany added date to comment list and whois with above change 
           */
@@ -302,7 +302,7 @@ CMDF( do_comment )
       if( victim->get_trust(  ) > ch->get_trust(  ) )
       {
          ch->print( "You failed, and they saw!\r\n" );
-         victim->printf( "%s has just tried to comment your character!\r\n", ch->name );
+         victim->print_fmt( "{} has just tried to comment your character!\r\n", ch->name );
          return;
       }
 

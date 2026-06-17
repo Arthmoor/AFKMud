@@ -121,7 +121,7 @@ CMDF( do_omedit )
       if( d->connected == CON_MEDIT )
          if( d->olc && d->olc->number == victim->pIndexData->vnum )
          {
-            ch->printf( "That mob is currently being edited by %s.\r\n", d->character->name );
+            ch->print_fmt( "That mob is currently being edited by {}.\r\n", d->character->name );
             return;
          }
    }
@@ -441,35 +441,35 @@ void medit_disp_menu( descriptor_data * d )
    char_data *mob = ( char_data * ) d->character->pcdata->dest_buf;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
-   ch->printf( "&w-- Mob Number:  [&c%d&w]\r\n", mob->pIndexData->vnum );
-   ch->printf( "&g1&w) Sex: &O%s          &g2&w) Name: &O%s\r\n", npc_sex[mob->sex], mob->name );
-   ch->printf( "&g3&w) Shortdesc: &O%s\r\n", mob->short_descr[0] == '\0' ? "(none set)" : mob->short_descr );
-   ch->printf( "&g4&w) Longdesc:\r\n&O%s\r\n", mob->long_descr[0] == '\0' ? "(none set)" : mob->long_descr );
-   ch->printf( "&g5&w) Description:\r\n&O%-74.74s\r\n\r\n", mob->chardesc ? mob->chardesc : "(none set)" );
-   ch->printf( "&g6&w) Class: [&c%-11.11s&w], &g7&w) Race:   [&c%-11.11s&w]\r\n", npc_class[mob->Class], npc_race[mob->race] );
-   ch->printf( "&g8&w) Level:       [&c%5d&w], &g9&w) Alignment:    [&c%5d&w]\r\n\r\n", mob->level, mob->alignment );
+   ch->print_fmt( "&w-- Mob Number:  [&c{}&w]\r\n", mob->pIndexData->vnum );
+   ch->print_fmt( "&g1&w) Sex: &O{}          &g2&w) Name: &O{}\r\n", npc_sex[mob->sex], mob->name );
+   ch->print_fmt( "&g3&w) Shortdesc: &O{}\r\n", mob->short_descr[0] == '\0' ? "(none set)" : mob->short_descr );
+   ch->print_fmt( "&g4&w) Longdesc:\r\n&O{}\r\n", mob->long_descr.empty() ? "(none set)" : mob->long_descr );
+   ch->print_fmt( "&g5&w) Description:\r\n&O{:<74.74}\r\n\r\n", !mob->chardesc.empty() ? mob->chardesc : "(none set)" );
+   ch->print_fmt( "&g6&w) Class: [&c{:<11.11}&w], &g7&w) Race:   [&c{:<11.11}&w]\r\n", npc_class[mob->Class], npc_race[mob->race] );
+   ch->print_fmt( "&g8&w) Level:       [&c{:5}&w], &g9&w) Alignment:    [&c{:5}&w]\r\n\r\n", mob->level, mob->alignment );
 
-   ch->printf( " &w) Calc Thac0:      [&c%5d&w]\r\n", calc_thac0( mob, nullptr, 0 ) );
-   ch->printf( "&gA&w) Real Thac0:  [&c%5d&w]\r\n\r\n", mob->mobthac0 );
+   ch->print_fmt( " &w) Calc Thac0:      [&c{:5}&w]\r\n", calc_thac0( mob, nullptr, 0 ) );
+   ch->print_fmt( "&gA&w) Real Thac0:  [&c{:5}&w]\r\n\r\n", mob->mobthac0 );
 
-   ch->printf( " &w) Calc Experience: [&c%10d&w]\r\n", mob->exp );
-   ch->printf( "&gB&w) Real Experience: [&c%10d&w]\r\n\r\n", mob->pIndexData->exp );
-   ch->printf( "&gC&w) DamNumDice:  [&c%5d&w], &gD&w) DamSizeDice:  [&c%5d&w], &gE&w) DamPlus:  [&c%5d&w]\r\n",
+   ch->print_fmt( " &w) Calc Experience: [&c{:10}&w]\r\n", mob->exp );
+   ch->print_fmt( "&gB&w) Real Experience: [&c{:10}&w]\r\n\r\n", mob->pIndexData->exp );
+   ch->print_fmt( "&gC&w) DamNumDice:  [&c{:5}&w], &gD&w) DamSizeDice:  [&c{:5}&w], &gE&w) DamPlus:  [&c{:5}&w]\r\n",
                mob->pIndexData->damnodice, mob->pIndexData->damsizedice, mob->pIndexData->damplus );
-   ch->printf( "&gF&w) HitDice:  [&c%dd%d+%d&w]\r\n", mob->pIndexData->hitnodice, mob->pIndexData->hitsizedice, mob->pIndexData->hitplus );
-   ch->printf( "&gG&w) Gold:     [&c%8d&w], &gH&w) Spec: &O%-22.22s\r\n", mob->gold, !mob->spec_funname.empty(  )? mob->spec_funname.c_str(  ) : "None" );
-   ch->printf( "&gI&w) Resistant   : &O%s\r\n", bitset_string( mob->get_resists(  ), ris_flags ) );
-   ch->printf( "&gJ&w) Immune      : &O%s\r\n", bitset_string( mob->get_immunes(  ), ris_flags ) );
-   ch->printf( "&gK&w) Susceptible : &O%s\r\n", bitset_string( mob->get_susceps(  ), ris_flags ) );
-   ch->printf( "&gL&w) Absorb      : &O%s\r\n", bitset_string( mob->get_absorbs(  ), ris_flags ) );
-   ch->printf( "&gM&w) Position    : &O%s\r\n", npc_position[mob->position] );
-   ch->printf( "&gN&w) Default Pos : &O%s\r\n", npc_position[mob->defposition] );
-   ch->printf( "&gO&w) Attacks     : &c%s\r\n", bitset_string( mob->get_attacks(  ), attack_flags ) );
-   ch->printf( "&gP&w) Defenses    : &c%s\r\n", bitset_string( mob->get_defenses(  ), defense_flags ) );
-   ch->printf( "&gR&w) Body Parts  : &c%s\r\n", bitset_string( mob->get_bparts(  ), part_flags ) );
-   ch->printf( "&gS&w) Act Flags   : &c%s\r\n", bitset_string( mob->get_actflags(  ), act_flags ) );
-   ch->printf( "&gT&w) Affected    : &c%s\r\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
-   ch->printf( "&gQ&w) Quit\r\n" );
+   ch->print_fmt( "&gF&w) HitDice:  [&c{}d{}+{}&w]\r\n", mob->pIndexData->hitnodice, mob->pIndexData->hitsizedice, mob->pIndexData->hitplus );
+   ch->print_fmt( "&gG&w) Gold:     [&c{:8}&w], &gH&w) Spec: &O{:<22.22}\r\n", mob->gold, !mob->spec_funname.empty(  )? mob->spec_funname : "None" );
+   ch->print_fmt( "&gI&w) Resistant   : &O{}\r\n", bitset_string( mob->get_resists(  ), ris_flags ) );
+   ch->print_fmt( "&gJ&w) Immune      : &O{}\r\n", bitset_string( mob->get_immunes(  ), ris_flags ) );
+   ch->print_fmt( "&gK&w) Susceptible : &O{}\r\n", bitset_string( mob->get_susceps(  ), ris_flags ) );
+   ch->print_fmt( "&gL&w) Absorb      : &O{}\r\n", bitset_string( mob->get_absorbs(  ), ris_flags ) );
+   ch->print_fmt( "&gM&w) Position    : &O{}\r\n", npc_position[mob->position] );
+   ch->print_fmt( "&gN&w) Default Pos : &O{}\r\n", npc_position[mob->defposition] );
+   ch->print_fmt( "&gO&w) Attacks     : &c{}\r\n", bitset_string( mob->get_attacks(  ), attack_flags ) );
+   ch->print_fmt( "&gP&w) Defenses    : &c{}\r\n", bitset_string( mob->get_defenses(  ), defense_flags ) );
+   ch->print_fmt( "&gR&w) Body Parts  : &c{}\r\n", bitset_string( mob->get_bparts(  ), part_flags ) );
+   ch->print_fmt( "&gS&w) Act Flags   : &c{}\r\n", bitset_string( mob->get_actflags(  ), act_flags ) );
+   ch->print_fmt( "&gT&w) Affected    : &c{}\r\n", bitset_string( mob->get_aflags(  ), aff_flags ) );
+   ch->print( "&gQ&w) Quit\r\n" );
    ch->print( "Enter choice : " );
 
    d->olc->mode = MEDIT_NPC_MAIN_MENU;
@@ -496,12 +496,11 @@ CMDF( do_medit_reset )
             ch->substate = SUB_NONE;
             return;
          }
-         STRFREE( victim->chardesc );
          victim->chardesc = ch->copy_buffer( true );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->chardesc );
-            victim->pIndexData->chardesc = QUICKLINK( victim->chardesc );
+            victim->pIndexData->chardesc = STRALLOC( victim->chardesc.c_str() );
          }
          ch->stop_editing(  );
          ch->pcdata->dest_buf = victim;
@@ -552,8 +551,6 @@ void medit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_medit_reset;
 
                d->character->print( "Enter new mob description:\r\n" );
-               if( !victim->chardesc )
-                  victim->chardesc = STRALLOC( "" );
                d->character->editor_desc_printf( "Mob description for vnum %d", victim->pIndexData->vnum );
                d->character->start_editing( victim->chardesc );
                return;
@@ -656,33 +653,30 @@ void medit_parse( descriptor_data * d, std::string & arg )
          break;
 
       case MEDIT_NAME:
-         STRFREE( victim->name );
-         victim->name = STRALLOC( arg.c_str(  ) );
+         victim->name = arg;
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->player_name );
-            victim->pIndexData->player_name = QUICKLINK( victim->name );
+            victim->pIndexData->player_name = STRALLOC( victim->name.c_str() );
          }
          olc_log( d, "Changed name to %s", arg.c_str(  ) );
          break;
 
       case MEDIT_S_DESC:
-         STRFREE( victim->short_descr );
-         victim->short_descr = STRALLOC( arg.c_str(  ) );
+         victim->short_descr = arg;
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->short_descr );
-            victim->pIndexData->short_descr = QUICKLINK( victim->short_descr );
+            victim->pIndexData->short_descr = STRALLOC( victim->short_descr.c_str() );
          }
          olc_log( d, "Changed short desc to %s", arg.c_str(  ) );
          break;
 
       case MEDIT_L_DESC:
-         stralloc_printf( &victim->long_descr, "%s\r\n", arg.c_str(  ) );
+         victim->long_descr = std::format( "{}\r\n", arg );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            STRFREE( victim->pIndexData->long_descr );
-            victim->pIndexData->long_descr = QUICKLINK( victim->long_descr );
+            victim->pIndexData->long_descr = STRALLOC( victim->long_descr.c_str() );
          }
          olc_log( d, "Changed long desc to %s", arg.c_str(  ) );
          break;

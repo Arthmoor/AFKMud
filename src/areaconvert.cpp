@@ -178,11 +178,10 @@ const char *stock_sect[] = {
  */
 EXT_BV fread_bitvector( FILE * fp )
 {
-   EXT_BV ret;
+   EXT_BV ret{0};
    int c, x = 0;
    int num = 0;
 
-   memset( &ret, '\0', sizeof( ret ) );
    for( ;; )
    {
       num = fread_number( fp );
@@ -198,27 +197,23 @@ EXT_BV fread_bitvector( FILE * fp )
    return ret;
 }
 
-char *ext_flag_string( EXT_BV * bitvector, const char *flagarray[] )
+std::string ext_flag_string( const EXT_BV & bitvector, const char * const flagarray[] )
 {
-   static char buf[MSL];
-   int x;
+   std::string result;
 
-   buf[0] = '\0';
-   for( x = 0; x < MAX_BITS; ++x )
-      if( xIS_SET( *bitvector, x ) )
+   for ( int x = 0; x < MAX_BITS; ++x )
+   {
+      if ( xIS_SET( bitvector, x ) )
       {
-         strlcat( buf, flagarray[x], MSL );
-         /*
-          * don't catenate a blank if the last char is blank  --Gorog 
-          */
-         if( buf[0] != '\0' && ' ' != buf[strlen( buf ) - 1] )
-            strlcat( buf, " ", MSL );
+         if ( !result.empty() )
+         {
+            result += " ";
+         }
+         result += flagarray[x];
       }
+   }
 
-   if( ( x = strlen( buf ) ) > 0 )
-      buf[--x] = '\0';
-
-   return buf;
+   return result;
 }
 
 void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
@@ -346,35 +341,35 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
       if( pMobIndex->long_descr != nullptr )
          pMobIndex->long_descr[0] = to_upper( pMobIndex->long_descr[0] );
+
       {
-         char *sact, *saff;
-         char flag[MIL];
+         std::string sact, saff, flag;
          EXT_BV temp;
          int value;
 
          temp = fread_bitvector( fp );
-         sact = ext_flag_string( &temp, stock_act );
+         sact = ext_flag_string( temp, stock_act );
 
          while( sact[0] != '\0' )
          {
             sact = one_argument( sact, flag );
             value = get_actflag( flag );
             if( value < 0 || value >= MAX_ACT_FLAG )
-               bug( "%s: Unsupported act_flag dropped: %s", __func__, flag );
+               bug( "%s: Unsupported act_flag dropped: %s", __func__, flag.c_str() );
             else
                pMobIndex->actflags.set( value );
          }
          pMobIndex->actflags.set( ACT_IS_NPC );
 
          temp = fread_bitvector( fp );
-         saff = ext_flag_string( &temp, stock_aff );
+         saff = ext_flag_string( temp, stock_aff );
 
          while( saff[0] != '\0' )
          {
             saff = one_argument( saff, flag );
             value = get_aflag( flag );
             if( value < 0 || value >= MAX_AFFECTED_BY )
-               bug( "Unsupported aff_flag dropped: %s", flag );
+               bug( "Unsupported aff_flag dropped: %s", flag.c_str() );
             else
                pMobIndex->affected_by.set( value );
          }
@@ -387,7 +382,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
       pMobIndex->level = fread_number( fp );
 
       fread_number( fp );
-      pMobIndex->mobthac0 = 21;  /* Autovonvert to the autocomputation value */
+      pMobIndex->mobthac0 = 21;  /* Autoconvert to the autocomputation value */
       pMobIndex->ac = fread_number( fp );
       pMobIndex->hitnodice = fread_number( fp );
       /*
@@ -680,33 +675,32 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          pMobIndex->susceptible = fread_number( fp );
 
          {
-            char *attacks, *defenses;
-            char flag[MIL];
+            std::string attacks, defenses, flag;
             EXT_BV temp;
             int value;
 
             temp = fread_bitvector( fp );
-            attacks = ext_flag_string( &temp, stock_attack_flags );
+            attacks = ext_flag_string( temp, stock_attack_flags );
 
             while( attacks[0] != '\0' )
             {
                attacks = one_argument( attacks, flag );
                value = get_attackflag( flag );
                if( value < 0 || value >= MAX_ATTACK_TYPE )
-                  bug( "Unsupported attack flag dropped: %s", flag );
+                  bug( "Unsupported attack flag dropped: %s", flag.c_str() );
                else
                   pMobIndex->attacks.set( value );
             }
 
             temp = fread_bitvector( fp );
-            defenses = ext_flag_string( &temp, stock_defense_flags );
+            defenses = ext_flag_string( temp, stock_defense_flags );
 
             while( defenses[0] != '\0' )
             {
                defenses = one_argument( defenses, flag );
                value = get_defenseflag( flag );
                if( value < 0 || value >= MAX_DEFENSE_TYPE )
-                  bug( "Unsupported defense flag dropped: %s", flag );
+                  bug( "Unsupported defense flag dropped: %s", flag.c_str() );
                else
                   pMobIndex->defenses.set( value );
             }
@@ -917,9 +911,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       if( pObjIndex->objdesc != nullptr )
          pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
       {
-         const char *sotype;
-         char *eflags, *wflags;
-         char flag[MIL];
+         std::string sotype, eflags, wflags, flag;
          EXT_BV temp;
          int value;
 
@@ -927,14 +919,14 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          pObjIndex->item_type = get_otype( sotype );
 
          temp = fread_bitvector( fp );
-         eflags = ext_flag_string( &temp, stock_oflags );
+         eflags = ext_flag_string( temp, stock_oflags );
 
          while( eflags[0] != '\0' )
          {
             eflags = one_argument( eflags, flag );
             value = get_oflag( flag );
             if( value < 0 || value >= MAX_ITEM_FLAG )
-               bug( "Unsupported item flag dropped: %s", flag );
+               bug( "Unsupported item flag dropped: %s", flag.c_str() );
             else
                pObjIndex->extra_flags.set( value );
          }
@@ -950,7 +942,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             wflags = one_argument( wflags, flag );
             value = get_wflag( flag );
             if( value < 0 || value >= MAX_WEAR_FLAG )
-               bug( "Unsupported wear flag dropped: %s", flag );
+               bug( "Unsupported wear flag dropped: %s", flag.c_str() );
             else
                pObjIndex->wear_flags.set( value );
          }

@@ -85,7 +85,7 @@ bool will_fall( char_data * ch, int fall )
 
    if( !ch->in_room )
    {
-      bug( "%s: Character in nullptr room: %s", __func__, ch->name ? ch->name : "Unknown?!?" );
+      bug( "%s: Character in nullptr room: %s", __func__, !ch->name.empty() ? ch->name.c_str() : "Unknown?!?" );
       return false;
    }
 
@@ -1056,7 +1056,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       act( AT_DEAD, "$n falls prey to a terrible death!", ch, nullptr, nullptr, TO_ROOM );
       ch->print( "&[dead]Oopsie... you're dead!\r\n" );
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s hit a DEATH TRAP in room %d!", ch->name, ch->in_room->vnum );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s hit a DEATH TRAP in room %d!", ch->name.c_str(), ch->in_room->vnum );
       if( ch->isnpc(  ) )
          ch->extract( true );
       else
@@ -2530,7 +2530,7 @@ void teleportch( char_data * ch, room_index * room, bool show )
    if( ch->in_room->flags.test( ROOM_DEATH ) && !ch->is_immortal(  ) )
    {
       ch->print( "&[dead]Oopsie... you're dead!\r\n" );
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s hit a DEATH TRAP in room %d!", ch->name, ch->in_room->vnum );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s hit a DEATH TRAP in room %d!", ch->name.c_str(), ch->in_room->vnum );
       if( ch->isnpc(  ) )
          ch->extract( true );
       else
@@ -2761,7 +2761,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
 
    if( !( room = ch->in_room ) )
    {
-      bug( "%s: %s not in a room?!?", __func__, ch->name );
+      bug( "%s: %s not in a room?!?", __func__, ch->name.c_str() );
       return rNONE;
    }
 

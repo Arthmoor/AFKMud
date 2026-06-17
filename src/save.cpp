@@ -54,8 +54,8 @@ void fwrite_morph_data( char_data *, FILE * );
 void fread_morph_data( char_data *, FILE * );
 void fread_variable( char_data *, FILE * );
 void fwrite_variables( char_data *, FILE * );
-char *default_fprompt( char_data * );
-char *default_prompt( char_data * );
+std::string default_fprompt( char_data * );
+std::string default_prompt( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 void assign_area( char_data * );
 affect_data *fread_afk_affect( FILE * );
@@ -128,7 +128,7 @@ void char_data::de_equip(  )
             {
                if( x == MAX_LAYERS )
                {
-                  bug( "%s: %s had on more than %d layers of clothing in one location (%d): %s", __func__, name, MAX_LAYERS, obj->wear_loc, obj->name );
+                  bug( "%s: %s had on more than %d layers of clothing in one location (%d): %s", __func__, name.c_str(), MAX_LAYERS, obj->wear_loc, obj->name );
                   break;
                }
 
@@ -205,32 +205,32 @@ void fwrite_char( char_data * ch, FILE * fp )
 
    fprintf( fp, "%s", "#PLAYER\n" );
    fprintf( fp, "Version      %d\n", SAVEVERSION );
-   fprintf( fp, "Name         %s~\n", ch->name );
+   fprintf( fp, "Name         %s~\n", ch->name.c_str() );
    fprintf( fp, "Password     %s~\n", ch->pcdata->pwd.c_str(  ) );
    fprintf( fp, "Site         %s~\n", ch->pcdata->lasthost.c_str(  ) );
    if( !ch->pcdata->email.empty(  ) )  /* Samson 4-19-98 */
       fprintf( fp, "Email        %s~\n", ch->pcdata->email.c_str(  ) );
    if( !ch->pcdata->homepage.empty(  ) )
       fprintf( fp, "Homepage     %s~\n", ch->pcdata->homepage.c_str(  ) );
-   if( ch->pcdata->bio && ch->pcdata->bio[0] != '\0' )
-      fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ) );
-   if( ch->chardesc && ch->chardesc[0] != '\0' )
-      fprintf( fp, "Description  %s~\n", strip_cr( ch->chardesc ) );
+   if( !ch->pcdata->bio.empty() )
+      fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ).c_str() );
+   if( !ch->chardesc.empty() )
+      fprintf( fp, "Description  %s~\n", strip_cr( ch->chardesc ).c_str() );
    fprintf( fp, "Sex          %s~\n", npc_sex[ch->sex] );
    fprintf( fp, "Race         %s~\n", npc_race[ch->race] );
    fprintf( fp, "Class        %s~\n", npc_class[ch->Class] );
-   if( ch->pcdata->title && ch->pcdata->title[0] != '\0' )
-      fprintf( fp, "Title        %s~\n", ch->pcdata->title );
-   if( ch->pcdata->rank && ch->pcdata->rank[0] != '\0' )
-      fprintf( fp, "Rank         %s~\n", ch->pcdata->rank );
+   if( !ch->pcdata->title.empty() )
+      fprintf( fp, "Title        %s~\n", ch->pcdata->title.c_str() );
+   if( !ch->pcdata->rank.empty() )
+      fprintf( fp, "Rank         %s~\n", ch->pcdata->rank.c_str() );
    if( !ch->pcdata->bestowments.empty(  ) )
       fprintf( fp, "Bestowments  %s~\n", ch->pcdata->bestowments.c_str(  ) );
    if( !ch->pcdata->authed_by.empty(  ) )
       fprintf( fp, "AuthedBy     %s~\n", ch->pcdata->authed_by.c_str(  ) );
-   if( ch->pcdata->prompt && ch->pcdata->prompt[0] != '\0' )
-      fprintf( fp, "Prompt       %s~\n", ch->pcdata->prompt );
-   if( ch->pcdata->fprompt && ch->pcdata->fprompt[0] != '\0' )
-      fprintf( fp, "FPrompt      %s~\n", ch->pcdata->fprompt );
+   if( !ch->pcdata->prompt.empty() )
+      fprintf( fp, "Prompt       %s~\n", ch->pcdata->prompt.c_str() );
+   if( !ch->pcdata->fprompt.empty() )
+      fprintf( fp, "FPrompt      %s~\n", ch->pcdata->fprompt.c_str() );
    if( !ch->pcdata->deity_name.empty(  ) )
       fprintf( fp, "Deity        %s~\n", ch->pcdata->deity_name.c_str(  ) );
    if( !ch->pcdata->clan_name.empty(  ) )
@@ -246,7 +246,7 @@ void fwrite_char( char_data * ch, FILE * fp )
    if( ch->pcdata->release_date > std::chrono::system_clock::time_point{} )
    {
       auto release_date = std::chrono::system_clock::to_time_t( ch->pcdata->release_date );
-      fprintf( fp, "Helled       %ld %s~\n", release_date, ch->pcdata->helled_by );
+      fprintf( fp, "Helled       %ld %s~\n", release_date, ch->pcdata->helled_by.c_str() );
    }
    fprintf( fp, "Status       %d %d %d %d %d %d %d\n", ch->level, ch->gold, ch->exp, ch->height, ch->weight, ch->spellfail, ch->mental_state );
    fprintf( fp, "Status2      %d %d %d %d %d %d %d %d\n", ch->style, ch->pcdata->practice, ch->alignment, ch->pcdata->favor, ch->hitroll, ch->damroll, ch->armor, ch->wimpy );
@@ -324,10 +324,10 @@ void fwrite_char( char_data * ch, FILE * fp )
    {
       if( ch->pcdata->realm && !ch->pcdata->realm_name.empty() )
          fprintf( fp, "ImmRealm     %s~\n", ch->pcdata->realm_name.c_str() );
-      if( ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' )
-         fprintf( fp, "Bamfin       %s~\n", ch->pcdata->bamfin );
-      if( ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' )
-         fprintf( fp, "Bamfout      %s~\n", ch->pcdata->bamfout );
+      if( !ch->pcdata->bamfin.empty() )
+         fprintf( fp, "Bamfin       %s~\n", ch->pcdata->bamfin.c_str() );
+      if( !ch->pcdata->bamfout.empty() )
+         fprintf( fp, "Bamfout      %s~\n", ch->pcdata->bamfout.c_str() );
 
       auto restore_time = std::chrono::system_clock::to_time_t( ch->pcdata->restore_time );
       fprintf( fp, "ImmData      %d %ld %d %d %d\n",
@@ -685,14 +685,14 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
    else
       fprintf( fp, "Room      %d\n", ROOM_VNUM_ALTAR );
    fprintf( fp, "Coordinates  %d %d\n", mob->map_x, mob->map_y );
-   if( mob->name && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
-      fprintf( fp, "Name     %s~\n", mob->name );
-   if( mob->short_descr && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
-      fprintf( fp, "Short	%s~\n", mob->short_descr );
-   if( mob->long_descr && mob->pIndexData->long_descr && str_cmp( mob->long_descr, mob->pIndexData->long_descr ) )
-      fprintf( fp, "Long	%s~\n", mob->long_descr );
-   if( mob->chardesc && mob->pIndexData->chardesc && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
-      fprintf( fp, "Description %s~\n", mob->chardesc );
+   if( !mob->name.empty() && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
+      fprintf( fp, "Name     %s~\n", mob->name.c_str() );
+   if( !mob->short_descr.empty() && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
+      fprintf( fp, "Short	%s~\n", mob->short_descr.c_str() );
+   if( !mob->long_descr.empty() && mob->pIndexData->long_descr && str_cmp( mob->long_descr, mob->pIndexData->long_descr ) )
+      fprintf( fp, "Long	%s~\n", mob->long_descr.c_str() );
+   if( !mob->chardesc.empty() && mob->pIndexData->chardesc && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
+      fprintf( fp, "Description %s~\n", mob->chardesc.c_str() );
    fprintf( fp, "Position        %d\n", mob->position );
    if( mob->has_actflag( ACT_MOUNTED ) )
       mob->unset_actflag( ACT_MOUNTED );
@@ -1018,8 +1018,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'B':
-            KEY( "Bamfin", ch->pcdata->bamfin, fread_string_nohash( fp ) );
-            KEY( "Bamfout", ch->pcdata->bamfout, fread_string_nohash( fp ) );
+            STDSKEY( "Bamfin", ch->pcdata->bamfin );
+            STDSKEY( "Bamfout", ch->pcdata->bamfout );
 
             /*
              * Load beacons - Samson 9-29-98 
@@ -1032,7 +1032,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             }
 
             STDSKEY( "Bestowments", ch->pcdata->bestowments );
-            KEY( "Bio", ch->pcdata->bio, fread_string_nohash( fp ) );
+            STDSKEY( "Bio", ch->pcdata->bio );
 
             if( !str_cmp( word, "Board_Data" ) )
             {
@@ -1042,7 +1042,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                word = fread_flagstring( fp );
                if( !( board = get_board( nullptr, word ) ) )
                {
-                  log_printf( "Player %s has board %s which apparently doesn't exist?", ch->name, word );
+                  log_printf( "Player %s has board %s which apparently doesn't exist?", ch->name.c_str(), word );
                   ch->printf( "Warning: the board %s no longer exsists.\r\n", word );
                   fread_to_eol( fp );
                   break;
@@ -1075,7 +1075,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: Player %s has invalid Class! Defaulting to warrior.", __func__, ch->name );
+                  bug( "%s: Player %s has invalid Class! Defaulting to warrior.", __func__, ch->name.c_str() );
                   Class = CLASS_WARRIOR;
                }
                ch->Class = Class;
@@ -1194,7 +1194,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
          case 'D':
             STDSKEY( "Deity", ch->pcdata->deity_name );
-            KEY( "Description", ch->chardesc, fread_string( fp ) );
+            STDSKEY( "Description", ch->chardesc );
             break;
 
             /*
@@ -1203,8 +1203,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'F':
             if( !str_cmp( word, "FPrompt" ) )
             {
-               STRFREE( ch->pcdata->fprompt );
-               ch->pcdata->fprompt = fread_string( fp );
+               fread_string( ch->pcdata->fprompt, fp );
                break;
             }
             break;
@@ -1215,7 +1214,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                time_t loaded_time = fread_long( fp );
                ch->pcdata->release_date = std::chrono::system_clock::from_time_t( loaded_time );
 
-               ch->pcdata->helled_by = fread_string( fp );
+               fread_string( ch->pcdata->helled_by, fp );
                break;
             }
             STDSKEY( "Homepage", ch->pcdata->homepage );
@@ -1319,7 +1318,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'N':
-            KEY( "Name", ch->name, fread_string( fp ) );
+            STDSKEY( "Name", ch->name );
             if( !str_cmp( word, "NoAffectedBy" ) )
             {
                ch->set_file_noaflags( fp );
@@ -1346,11 +1345,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'P':
-            if( !str_cmp( word, "Password" ) )
-            {
-               fread_string( ch->pcdata->pwd, fp );
-               break;
-            }
+            STDSKEY( "Password", ch->pcdata->pwd );
 
             if( !str_cmp( word, "PCFlags" ) )
             {
@@ -1364,19 +1359,14 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: Player %s has invalid position! Defaulting to standing.", __func__, ch->name );
+                  bug( "%s: Player %s has invalid position! Defaulting to standing.", __func__, ch->name.c_str() );
                   position = POS_STANDING;
                }
                ch->position = position;
                break;
             }
 
-            if( !str_cmp( word, "Prompt" ) )
-            {
-               STRFREE( ch->pcdata->prompt );
-               ch->pcdata->prompt = fread_string( fp );
-               break;
-            }
+            STDSKEY( "Prompt", ch->pcdata->prompt );
 
             if( !str_cmp( word, "PTimer" ) )
             {
@@ -1415,13 +1405,13 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( race < 0 || race >= MAX_NPC_RACE )
                {
-                  bug( "%s: Player %s has invalid race! Defaulting to human.", __func__, ch->name );
+                  bug( "%s: Player %s has invalid race! Defaulting to human.", __func__, ch->name.c_str() );
                   race = RACE_HUMAN;
                }
                ch->race = race;
                break;
             }
-            KEY( "Rank", ch->pcdata->rank, fread_string( fp ) );
+            STDSKEY( "Rank", ch->pcdata->rank );
 
             if( !str_cmp( word, "RentData" ) )
             {
@@ -1497,7 +1487,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( sex < 0 || sex >= SEX_MAX )
                {
-                  bug( "%s: Player %s has invalid sex! Defaulting to Neuter.", __func__, ch->name );
+                  bug( "%s: Player %s has invalid sex! Defaulting to Neuter.", __func__, ch->name.c_str() );
                   sex = SEX_NEUTRAL;
                }
                ch->sex = sex;
@@ -1766,13 +1756,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                break;
             }
 
-            if( !str_cmp( word, "Title" ) )
-            {
-               ch->pcdata->title = fread_string( fp );
-               if( ch->pcdata->title != nullptr && ( isalpha( ch->pcdata->title[0] ) || isdigit( ch->pcdata->title[0] ) ) )
-                  stralloc_printf( &ch->pcdata->title, " %s", ch->pcdata->title );
-               break;
-            }
+            STDSKEY( "Title", ch->pcdata->title );
             break;
 
          case 'V':
@@ -1943,7 +1927,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                   if( !obj->action_desc && obj->pIndexData->action_desc != nullptr )
                      obj->action_desc = QUICKLINK( obj->pIndexData->action_desc );
                   if( obj->extra_flags.test( ITEM_PERSONAL ) && !obj->owner && ch )
-                     obj->owner = QUICKLINK( ch->name );
+                     obj->owner = STRALLOC( ch->name.c_str() );
                   if( obj->ego > 90 )
                      obj->ego = obj->pIndexData->set_ego(  );
                   objlist.push_back( obj );
@@ -2372,8 +2356,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
          case 'D':
             if( !str_cmp( word, "Description" ) )
             {
-               STRFREE( mob->chardesc );
-               mob->chardesc = fread_string( fp );
+               fread_string( mob->chardesc, fp );
                break;
             }
             break;
@@ -2427,8 +2410,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             KEY( "Level", mob->level, fread_number( fp ) );
             if( !str_cmp( word, "Long" ) )
             {
-               STRFREE( mob->long_descr );
-               mob->long_descr = fread_string( fp );
+               fread_string( mob->long_descr, fp );
                break;
             }
             break;
@@ -2436,8 +2418,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
          case 'N':
             if( !str_cmp( word, "Name" ) )
             {
-               STRFREE( mob->name );
-               mob->name = fread_string( fp );
+               fread_string( mob->name, fp );
                break;
             }
             break;
@@ -2453,8 +2434,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
          case 'S':
             if( !str_cmp( word, "Short" ) )
             {
-               STRFREE( mob->short_descr );
-               mob->short_descr = fread_string( fp );
+               fread_string( mob->short_descr, fp );
                break;
             }
             break;
@@ -2508,8 +2488,8 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
       ch->pcdata->lasthost = d->ipaddress;
    ch->style = STYLE_FIGHTING;
    ch->mental_state = -10;
-   ch->pcdata->prompt = STRALLOC( default_prompt( ch ) );
-   ch->pcdata->fprompt = STRALLOC( default_fprompt( ch ) );
+   ch->pcdata->prompt = default_prompt( ch );
+   ch->pcdata->fprompt = default_fprompt( ch );
    ch->pcdata->version = 0;
    ch->set_langs( 0 );
    ch->set_lang( LANG_COMMON );
@@ -2615,12 +2595,12 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
          if( d->msp_detected )
             ch->set_pcflag( PCFLAG_MSP );
       }
-      ch->name = STRALLOC( name.data(  ) );
+      ch->name = name;
    }
    else
    {
-      if( !ch->name )
-         ch->name = STRALLOC( name.data(  ) );
+      if( ch->name.empty() )
+         ch->name = name;
 
       if( ch->is_immortal(  ) )
       {

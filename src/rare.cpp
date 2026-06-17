@@ -96,7 +96,7 @@ void expire_items( char_data * ch )
       // If the player is less powerful than the object, it has a chance of simply disappearing without notice.
       if( ch->char_ego(  ) < obj->ego && number_bits( 3 ) > 4 )
       {
-         log_printf( "obj %d, %s, removed from %s. Random ego check.", obj->pIndexData->vnum, obj->short_descr, ch->name );
+         log_printf( "obj %d, %s, removed from %s. Random ego check.", obj->pIndexData->vnum, obj->short_descr, ch->name.c_str() );
          rare_purge( ch, obj );
          continue;
       }
@@ -104,7 +104,7 @@ void expire_items( char_data * ch )
       // The larger the item's ego, the larger it's implied worth. So you get less time to stash it offline.
       if( ch->pcdata->daysidle > 100 - obj->ego )
       {
-         log_printf( "obj %d, %s, removed from %s. Exceeded ego idle time.", obj->pIndexData->vnum, obj->short_descr, ch->name );
+         log_printf( "obj %d, %s, removed from %s. Exceeded ego idle time.", obj->pIndexData->vnum, obj->short_descr, ch->name.c_str() );
          rare_purge( ch, obj );
          continue;
       }
@@ -196,7 +196,7 @@ CMDF( do_quit )
 
    if( !str_cmp( argument, "auto" ) )
    {
-      log_printf_plus( LOG_COMM, level, "%s has idled out.", ch->name );
+      log_printf_plus( LOG_COMM, level, "%s has idled out.", ch->name.c_str() );
       char_leaving( ch, 3 );
       return;
    }
@@ -251,7 +251,7 @@ CMDF( do_quit )
    ch->print( "&d\r\n" );
    act( AT_BYE, "$n has left the game.", ch, nullptr, nullptr, TO_ROOM );
 
-   log_printf_plus( LOG_COMM, ch->level, "%s has quit.", ch->name );
+   log_printf_plus( LOG_COMM, ch->level, "%s has quit.", ch->name.c_str() );
    char_leaving( ch, 3 );
 }
 
@@ -278,19 +278,19 @@ void scan_rares( char_data * ch )
          default:
             break;
          case 0:
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s checks out of the inn.", ch->name );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s checks out of the inn.", ch->name.c_str() );
             break;
          case 2:
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s reconnecting after idling out.", ch->name );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s reconnecting after idling out.", ch->name.c_str() );
             break;
          case 3:
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s reconnecting after quitting.", ch->name );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s reconnecting after quitting.", ch->name.c_str() );
             break;
       }
    }
    else
    {
-      log_printf_plus( LOG_COMM, ch->level, "%s returns from beyond the void.", ch->name );
+      log_printf_plus( LOG_COMM, ch->level, "%s returns from beyond the void.", ch->name.c_str() );
       show_stateflags( ch );
    }
 }
@@ -323,7 +323,7 @@ CMDF( do_rent )
    ch->print( "&d\r\n" );
    act( AT_BYE, "$n shows $N to $S room, and stores $S equipment.", innkeeper, nullptr, ch, TO_NOTVICT );
 
-   log_printf_plus( LOG_COMM, level, "%s rented in: %s, %s", ch->name, ch->in_room->name, ch->in_room->area->name );
+   log_printf_plus( LOG_COMM, level, "%s rented in: %s, %s", ch->name.c_str(), ch->in_room->name, ch->in_room->area->name );
 
    char_leaving( ch, 0 );
 }
@@ -512,7 +512,7 @@ CMDF( do_camp )
    ch->print( "After tending to your fire and securing your belongings, you make camp for the night.\r\n" );
    act( AT_GREEN, "$n secures $s belongings and makes camp for the night.\r\n", ch, nullptr, nullptr, TO_ROOM );
 
-   log_printf( "%s has made camp for the night in %s.", ch->name, ch->in_room->area->name );
+   log_printf( "%s has made camp for the night in %s.", ch->name.c_str(), ch->in_room->area->name );
    char_leaving( ch, 1 );
 }
 
@@ -524,7 +524,7 @@ int thief_raid( char_data * ch, obj_data * obj, int robbed )
       if( obj->ego >= sysdata->minego )
       {
          ch->printf( "&YThe thieves stole %s!\r\n", obj->short_descr );
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves stole %s from %s!", obj->short_descr, ch->name );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves stole %s from %s!", obj->short_descr, ch->name.c_str() );
          obj->separate(  );
          obj->extract(  );
          robbed = 1;
@@ -541,7 +541,7 @@ int bandit_raid( char_data * ch, obj_data * obj, int robbed )
    if( obj->ego >= sysdata->minego )
    {
       ch->printf( "&YThe bandits stole %s!\r\n", obj->short_descr );
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits stole %s from %s!", obj->short_descr, ch->name );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits stole %s from %s!", obj->short_descr, ch->name.c_str() );
       obj->extract(  );
       robbed = 1;
    }
@@ -563,7 +563,7 @@ void break_camp( char_data * ch )
       std::list<obj_data *>::iterator iobj;
       if( robchance < 98 )
       {
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves raided %s's camp!", ch->name );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves raided %s's camp!", ch->name.c_str() );
          ch->print( "&RYour camp was visited by thieves while you were away!\r\n" );
          ch->print( "&RYour belongings have been rummaged through....\r\n" );
 
@@ -575,7 +575,7 @@ void break_camp( char_data * ch )
       }
       else
       {
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits raided %s's camp!", ch->name );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits raided %s's camp!", ch->name.c_str() );
          ch->print( "&RYour camp was visited by bandits while you were away!\r\n" );
          ch->print( "&RYour belongings have been rummaged through....\r\n" );
 
@@ -586,7 +586,7 @@ void break_camp( char_data * ch )
          }
       }
    }
-   log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s breaks camp and enters the game.", ch->name );
+   log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s breaks camp and enters the game.", ch->name.c_str() );
    ch->pcdata->camp = 0;
 }
 
@@ -601,10 +601,10 @@ void adjust_pfile( const std::string & name )
    {
       if( !str_cmp( name, temp->name ) )
       {
-         log_printf( "Skipping rare item adjustments for %s, player is online.", temp->name );
+         log_printf( "Skipping rare item adjustments for %s, player is online.", temp->name.c_str() );
          if( temp->is_immortal(  ) )   /* Get the rare items off the immortals */
          {
-            log_printf( "Immortal: Removing rare items from %s.", temp->name );
+            log_printf( "Immortal: Removing rare items from %s.", temp->name.c_str() );
             for( auto it = temp->carrying.begin(); it != temp->carrying.end(); )
             {
                obj_data *tobj = *it;
@@ -643,7 +643,7 @@ void adjust_pfile( const std::string & name )
       d->character = nullptr;
       deleteptr( d );
 
-      log_printf( "Updating rare items for %s", ch->name );
+      log_printf( "Updating rare items for %s", ch->name.c_str() );
 
       ++ch->pcdata->daysidle;
       expire_items( ch );

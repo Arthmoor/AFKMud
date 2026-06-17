@@ -45,8 +45,8 @@
 #include "skill_index.h"
 #include "smaugaffect.h"
 
-char *default_fprompt( char_data * );
-char *default_prompt( char_data * );
+std::string default_fprompt( char_data * );
+std::string default_prompt( char_data * );
 
 extern int num_logins;
 extern const std::array<unsigned char, 4> echo_off_str;
@@ -77,14 +77,14 @@ std::string rankbuffer( char_data * ch )
 
    if( ch->is_immortal(  ) )
    {
-      if( ch->pcdata->rank && ch->pcdata->rank[0] != '\0' )
+      if( !ch->pcdata->rank.empty() )
          rbuf << "&Y" << ch->pcdata->rank;
       else
          rbuf << "&Y" << ch->pcdata->realm_name;
    }
    else
    {
-      if( ch->pcdata->rank && ch->pcdata->rank[0] != '\0' )
+      if( !ch->pcdata->rank.empty() )
          rbuf << "&B" << ch->pcdata->rank;
       else if( ch->pcdata->clan )
       {
@@ -427,7 +427,7 @@ CMDF( do_visits )
          ch->pagerf( "%s\r\n", zn.c_str(  ) );
          ++visits;
       }
-      ch->pagerf( "&YTotal areas visited: %d\r\n", visits );
+      ch->pager_fmt( "&YTotal areas visited: {}\r\n", visits );
       return;
    }
 
@@ -448,7 +448,7 @@ CMDF( do_visits )
       do_visits( ch, "" );
       return;
    }
-   ch->pagerf( "%s has visited the following areas:\r\n", victim->name );
+   ch->pager_fmt( "{} has visited the following areas:\r\n", victim->name );
    ch->pager( "-------------------------------------------\r\n" );
 
    for( auto& zn : victim->pcdata->zone )
@@ -456,7 +456,7 @@ CMDF( do_visits )
       ch->pagerf( "%s\r\n", zn.c_str(  ) );
       ++visits;
    }
-   ch->pagerf( "&YTotal areas visited: %d\r\n", visits );
+   ch->pager_fmt( "&YTotal areas visited: {}\r\n", visits );
 }
 
 /* -Thoric
@@ -699,13 +699,13 @@ CMDF( do_inventory )
    {
       if( !( victim = ch->get_char_world( argument ) ) )
       {
-         ch->printf( "There is nobody named %s online.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "There is nobody named {} online.\r\n", argument );
          return;
       }
    }
 
    if( victim != ch )
-      ch->printf( "&R%s is carrying:\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
+      ch->print_fmt( "&R{} is carrying:\r\n", victim->isnpc(  ) ? victim->short_descr : victim->name );
    else
       ch->print( "&RYou are carrying:\r\n" );
    show_list_to_char( ch, victim->carrying, true, true );
@@ -802,13 +802,13 @@ CMDF( do_equipment )
    {
       if( !( victim = ch->get_char_world( argument ) ) )
       {
-         ch->printf( "There is nobody named %s online.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "There is nobody named {} online.\r\n", argument );
          return;
       }
    }
 
    if( victim != ch )
-      ch->printf( "&R%s is using:\r\n", victim->isnpc(  )? victim->short_descr : victim->name );
+      ch->print_fmt( "&R{} is using:\r\n", victim->isnpc(  ) ? victim->short_descr : victim->name );
    else
       ch->print( "&RYou are using:\r\n" );
    ch->set_color( AT_OBJECT );
@@ -943,7 +943,7 @@ CMDF( do_description )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: %s illegal substate %d", __func__, ch->name, ch->substate );
+         bug( "%s: %s illegal substate %d", __func__, ch->name.c_str(), ch->substate );
          return;
 
       case SUB_RESTRICTED:
@@ -953,14 +953,11 @@ CMDF( do_description )
       case SUB_NONE:
          ch->substate = SUB_PERSONAL_DESC;
          ch->pcdata->dest_buf = ch;
-         if( !ch->chardesc || ch->chardesc[0] == '\0' )
-            ch->chardesc = STRALLOC( "" );
-         ch->editor_desc_printf( "Your description (%s)", ch->name );
+         ch->editor_desc_printf( "Your description (%s)", ch->name.c_str() );
          ch->start_editing( ch->chardesc );
          return;
 
       case SUB_PERSONAL_DESC:
-         STRFREE( ch->chardesc );
          ch->chardesc = ch->copy_buffer( true );
          ch->stop_editing(  );
          return;
@@ -996,7 +993,7 @@ CMDF( do_bio )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: %s illegal substate %d", __func__, ch->name, ch->substate );
+         bug( "%s: %s illegal substate %d", __func__, ch->name.c_str(), ch->substate );
          return;
 
       case SUB_RESTRICTED:
@@ -1006,14 +1003,11 @@ CMDF( do_bio )
       case SUB_NONE:
          ch->substate = SUB_PERSONAL_BIO;
          ch->pcdata->dest_buf = ch;
-         if( !ch->pcdata->bio || ch->pcdata->bio[0] == '\0' )
-            ch->pcdata->bio = strdup( "" );
-         ch->editor_desc_printf( "Your bio (%s).", ch->name );
+         ch->editor_desc_printf( "Your bio (%s).", ch->name.c_str() );
          ch->start_editing( ch->pcdata->bio );
          return;
 
       case SUB_PERSONAL_BIO:
-         DISPOSE( ch->pcdata->bio );
          ch->pcdata->bio = ch->copy_buffer( false );
          ch->stop_editing(  );
          return;
@@ -1056,14 +1050,14 @@ CMDF( do_fprompt )
    if( argument.empty(  ) || !str_cmp( argument, "display" ) )
    {
       ch->print( "Your current fighting prompt string:\r\n" );
-      ch->printf( "&W%s\r\n", ch->pcdata->fprompt );
+      ch->print_fmt( "&W{}\r\n", ch->pcdata->fprompt );
       ch->print( "&wType 'help prompt' for information on changing your prompt.\r\n" );
       return;
    }
 
    ch->print( "&wReplacing old prompt of:\r\n" );
-   ch->printf( "&W%s\r\n", ch->pcdata->fprompt );
-   STRFREE( ch->pcdata->fprompt );
+   ch->print_fmt( "&W{}\r\n", ch->pcdata->fprompt );
+   ch->pcdata->fprompt.clear();
 
    if( argument.length(  ) > 128 )
       argument = argument.substr( 0, 128 );
@@ -1073,9 +1067,9 @@ CMDF( do_fprompt )
     * 'prompt 1' brings up a different, pre-set prompt 
     */
    if( !str_cmp( argument, "default" ) )
-      ch->pcdata->fprompt = STRALLOC( default_fprompt( ch ) );
+      ch->pcdata->fprompt = default_fprompt( ch );
    else
-      ch->pcdata->fprompt = STRALLOC( argument.c_str(  ) );
+      ch->pcdata->fprompt = argument;
 }
 
 CMDF( do_prompt )
@@ -1091,14 +1085,14 @@ CMDF( do_prompt )
    if( argument.empty(  ) || !str_cmp( argument, "display" ) )
    {
       ch->print( "&wYour current prompt string:\r\n" );
-      ch->printf( "&W%s\r\n", ch->pcdata->prompt );
+      ch->print_fmt( "&W{}\r\n", ch->pcdata->prompt );
       ch->print( "&wType 'help prompt' for information on changing your prompt.\r\n" );
       return;
    }
 
    ch->print( "&wReplacing old prompt of:\r\n" );
-   ch->printf( "&W%s\r\n", !str_cmp( ch->pcdata->prompt, "" ) ? "(default prompt)" : ch->pcdata->prompt );
-   STRFREE( ch->pcdata->prompt );
+   ch->print_fmt( "&W{}\r\n", ch->pcdata->prompt.empty() ? "(default prompt)" : ch->pcdata->prompt );
+   ch->pcdata->prompt.clear();
 
    if( argument.length(  ) > 128 )
       argument = argument.substr( 0, 128 );
@@ -1108,9 +1102,9 @@ CMDF( do_prompt )
     * 'prompt 1' brings up a different, pre-set prompt 
     */
    if( !str_cmp( argument, "default" ) )
-      ch->pcdata->prompt = STRALLOC( default_prompt( ch ) );
+      ch->pcdata->prompt = default_prompt( ch );
    else
-      ch->pcdata->prompt = STRALLOC( argument.c_str(  ) );
+      ch->pcdata->prompt = argument;
 }
 
 /* Alternate Self delete command provided by Waldemar Thiel (Swiv) */
@@ -1144,7 +1138,7 @@ CMDF( do_delete )
     */
    if( ch->is_immortal(  ) )
    {
-      ch->printf( "Consider this carefuly %s, if you delete, you will not\r\nbe reinstated as an immortal!\r\n", ch->name );
+      ch->print_fmt( "Consider this carefully {}, if you delete, you will not\r\nbe reinstated as an immortal!\r\n", ch->name );
       ch->print( "Any area data you have will also be lost if you proceed.\r\n" );
    }
    ch->print( "\r\n&RType your password if you wish to delete your character.\r\n" );
@@ -1181,7 +1175,7 @@ CMDF( do_deadly )
 
    ch->set_pcflag( PCFLAG_DEADLY );
    ch->print( "&YYou have joined the ranks of the deadly. The gods cease to protect you!\r\n" );
-   log_printf( "%s has become a pkiller!", ch->name );
+   log_printf( "%s has become a pkiller!", ch->name.c_str() );
 }
 
 const std::string output_person( char_data * ch, char_data * player )
@@ -2027,8 +2021,8 @@ CMDF( do_score )
                      s2, s1, s3, ch->pcdata->wizinvis, s1,
                      s2, s1, s3, ch->pcdata->realm_name, s1 );
 
-      ch->print_fmt( "{}Bamfin:  {}{}\r\n", s2, s1, ( ch->pcdata->bamfin && ch->pcdata->bamfin[0] != '\0' ) ? ch->pcdata->bamfin : "appears in a swirling mist." );
-      ch->print_fmt( "{}Bamfout: {}{}\r\n", s2, s1, ( ch->pcdata->bamfout && ch->pcdata->bamfout[0] != '\0' ) ? ch->pcdata->bamfout : "leaves in a swirling mist." );
+      ch->print_fmt( "{}Bamfin:  {}{}\r\n", s2, s1, ( !ch->pcdata->bamfin.empty() ) ? ch->pcdata->bamfin : "appears in a swirling mist." );
+      ch->print_fmt( "{}Bamfout: {}{}\r\n", s2, s1, ( !ch->pcdata->bamfout.empty() ) ? ch->pcdata->bamfout : "leaves in a swirling mist." );
 
       /*
        * Area Loaded info - Scryn 8/11
@@ -2107,7 +2101,7 @@ CMDF( do_journal )
       case SUB_JOURNAL_WRITE:
          if( ( journal = ch->get_eq( WEAR_HOLD ) ) == nullptr || journal->item_type != ITEM_JOURNAL )
          {
-            bug( "%s: Player not holding journal. (Player: %s)", __func__, ch->name );
+            bug( "%s: Player not holding journal. (Player: %s)", __func__, ch->name.c_str() );
             ch->stop_editing( );
             return;
          }
@@ -2172,7 +2166,7 @@ CMDF( do_journal )
       if( journal->value[0] > 50 )
       {
          journal->value[0] = 50;
-         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name );
+         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name.c_str() );
       }
 
       ch->set_color( AT_GREY );
@@ -2221,7 +2215,7 @@ CMDF( do_journal )
          if( journal->value[0] > 50 )
          {
             journal->value[0] = 50;
-            bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name );
+            bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name.c_str() );
          }
          ch->set_color( AT_GREY );
          ch->printf( "There are %d pages in this journal.\r\n", journal->value[0] );
@@ -2261,7 +2255,7 @@ CMDF( do_journal )
       if( journal->value[0] > 50 )
       {
          journal->value[0] = 50;
-         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name );
+         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name.c_str() );
       }
 
       ch->set_color( AT_GREY );

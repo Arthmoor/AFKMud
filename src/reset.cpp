@@ -822,7 +822,7 @@ CMDF( do_reset )
    do_reset( ch, "" );
 }
 
-// Update the mobile resets to let it know to reset it again
+// Update the mobile resets to let it know to reset it again.
 void update_room_reset( char_data * ch, bool setting )
 {
    room_index *room;

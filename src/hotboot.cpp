@@ -101,14 +101,14 @@ void save_mobile( FILE * fp, char_data * mob )
       fprintf( fp, "Continent    %s\n", mob->continent->name.c_str( ) );
       fprintf( fp, "Coordinates  %d %d\n", mob->map_x, mob->map_y );
    }
-   if( mob->name && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
-      fprintf( fp, "Name     %s~\n", mob->name );
-   if( mob->short_descr && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
-      fprintf( fp, "Short	%s~\n", mob->short_descr );
-   if( mob->long_descr && mob->pIndexData->long_descr && str_cmp( mob->long_descr, mob->pIndexData->long_descr ) )
-      fprintf( fp, "Long	%s~\n", mob->long_descr );
-   if( mob->chardesc && mob->pIndexData->chardesc && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
-      fprintf( fp, "Description %s~\n", mob->chardesc );
+   if( !mob->name.empty() && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
+      fprintf( fp, "Name     %s~\n", mob->name.c_str() );
+   if( !mob->short_descr.empty() && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
+      fprintf( fp, "Short	%s~\n", mob->short_descr.c_str() );
+   if( !mob->long_descr.empty() && mob->pIndexData->long_descr && str_cmp( mob->long_descr, mob->pIndexData->long_descr ) )
+      fprintf( fp, "Long	%s~\n", mob->long_descr.c_str() );
+   if( !mob->chardesc.empty() && mob->pIndexData->chardesc && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
+      fprintf( fp, "Description %s~\n", mob->chardesc.c_str() );
    fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
    fprintf( fp, "Position %d\n", mob->position );
    if( mob->has_actflags(  ) )
@@ -342,7 +342,10 @@ char_data *load_mobile( FILE * fp )
          case 'C':
             if( !str_cmp( word, "Continent" ) )
             {
-               continent_data *continent = find_continent_by_name( fread_string( fp ) );
+               std::string temp;
+
+               fread_string( temp, fp );
+               continent_data *continent = find_continent_by_name( temp );
 
                if( continent )
                   mob->continent = continent;
@@ -360,8 +363,7 @@ char_data *load_mobile( FILE * fp )
          case 'D':
             if( !str_cmp( word, "Description" ) )
             {
-               STRFREE( mob->chardesc );
-               mob->chardesc = fread_string( fp );
+               fread_string( mob->chardesc, fp );
                break;
             }
             break;
@@ -419,8 +421,7 @@ char_data *load_mobile( FILE * fp )
          case 'L':
             if( !str_cmp( word, "Long" ) )
             {
-               STRFREE( mob->long_descr );
-               mob->long_descr = fread_string( fp );
+               fread_string( mob->long_descr, fp );
                break;
             }
             KEY( "Level", mob->level, fread_number( fp ) );
@@ -429,8 +430,7 @@ char_data *load_mobile( FILE * fp )
          case 'N':
             if( !str_cmp( word, "Name" ) )
             {
-               STRFREE( mob->name );
-               mob->name = fread_string( fp );
+               fread_string( mob->name, fp );
                break;
             }
             break;
@@ -448,8 +448,7 @@ char_data *load_mobile( FILE * fp )
          case 'S':
             if( !str_cmp( word, "Short" ) )
             {
-               STRFREE( mob->short_descr );
-               mob->short_descr = fread_string( fp );
+               fread_string( mob->short_descr, fp );
                break;
             }
             break;
@@ -663,7 +662,7 @@ CMDF( do_hotboot )
       }
    }
 
-   log_printf( "Hotboot initiated by %s.", ch->name );
+   log_printf( "Hotboot initiated by %s.", ch->name.c_str() );
 
    stream.open( std::filesystem::path( HOTBOOT_FILE ) );
 

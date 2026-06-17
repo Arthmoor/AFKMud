@@ -731,7 +731,7 @@ void ApplyDeltaChanges( void )
                      if( DropsBelowThreshold( cell->temperature, delta->temperature, -20 ) )
                         WeatherMessage( "&CThe already very cold temperature drops making it unbearable.&D\r\n", x, y );
                      else
-                        WeatherMessage( "&CIt is unbearablly cold.&D\r\n", x, y );
+                        WeatherMessage( "&CIt is unbearably cold.&D\r\n", x, y );
                   }
             }
          }
@@ -751,7 +751,7 @@ void ApplyDeltaChanges( void )
 //  Clear delta map
 void ClearWeatherDeltas( void )
 {
-   memset( weatherDelta, 0, sizeof( weatherDelta ) );
+   std::memset( weatherDelta, 0, sizeof( weatherDelta ) );
 }
 
 void CalculateCellToCellChanges( void )

@@ -565,8 +565,7 @@ CMDF( do_mpmset )
          return;
       }
 
-      STRFREE( victim->name );
-      victim->name = STRALLOC( arg3.c_str(  ) );
+      victim->name = arg3;
       return;
    }
 
@@ -600,14 +599,13 @@ CMDF( do_mpmset )
 
    if( !str_cmp( arg2, "short" ) )
    {
-      STRFREE( victim->short_descr );
-      victim->short_descr = STRALLOC( arg3.c_str(  ) );
+      victim->short_descr = arg3;
       return;
    }
 
    if( !str_cmp( arg2, "long" ) )
    {
-      stralloc_printf( &victim->long_descr, "%s\r\n", arg3.c_str(  ) );
+      victim->long_descr = std::format( "{}\r\n", arg3 );
       return;
    }
 
@@ -1228,8 +1226,7 @@ CMDF( do_mposet )
       obj->short_descr = STRALLOC( arg3.c_str(  ) );
       if( obj == supermob_obj )
       {
-         STRFREE( supermob->short_descr );
-         supermob->short_descr = QUICKLINK( obj->short_descr );
+         supermob->short_descr = obj->short_descr;
       }
 
       /*
@@ -1642,21 +1639,21 @@ CMDF( do_mpstat )
 
    if( victim->pIndexData->progtypes.none(  ) )
    {
-      ch->printf( "No programs on mobile: %s - #%d\r\n", victim->name, victim->pIndexData->vnum );
+      ch->print_fmt( "No programs on mobile: {} - #{}\r\n", victim->name, victim->pIndexData->vnum );
       return;
    }
 
-   ch->printf( "Name: %s.  Vnum: %d.\r\n", victim->name, victim->pIndexData->vnum );
+   ch->print_fmt( "Name: {}.  Vnum: {}.\r\n", victim->name, victim->pIndexData->vnum );
 
-   ch->printf( "Short description: %s.\r\nLong  description: %s", victim->short_descr, victim->long_descr[0] != '\0' ? victim->long_descr : "(none).\r\n" );
+   ch->print_fmt( "Short description: {}.\r\nLong  description: {}", victim->short_descr, !victim->long_descr.empty() ? victim->long_descr : "(none).\r\n" );
 
-   ch->printf( "Hp: %d/%d.  Mana: %d/%d.  Move: %d/%d. \r\n", victim->hit, victim->max_hit, victim->mana, victim->max_mana, victim->move, victim->max_move );
+   ch->print_fmt( "Hp: {}/{}.  Mana: {}/{}.  Move: {}/{}. \r\n", victim->hit, victim->max_hit, victim->mana, victim->max_mana, victim->move, victim->max_move );
 
-   ch->printf( "Lv: %d.  Class: %d.  Align: %d.  AC: %d.  Gold: %d.  Exp: %d.\r\n",
+   ch->print_fmt( "Lv: {}.  Class: {}.  Align: {}.  AC: {}.  Gold: {}.  Exp: {}.\r\n",
                victim->level, victim->Class, victim->alignment, victim->GET_AC(  ), victim->gold, victim->exp );
 
    for( auto* prg : victim->pIndexData->mudprogs )
-      ch->printf( "%d%s>%s %s\r\n%s\r\n", ++cnt, ( prg->fileprog ? "(FILEPROG) " : "" ), mprog_type_to_name( prg->type ).c_str(  ), prg->arglist, prg->comlist );
+      ch->print_fmt( "{}{}>{} {}\r\n{}\r\n", ++cnt, ( prg->fileprog ? "(FILEPROG) " : "" ), mprog_type_to_name( prg->type ), prg->arglist, prg->comlist );
 }
 
 /* Opstat - Scryn 8/12*/
@@ -2996,7 +2993,7 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
       if( !npcvict )
       {
          log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s (%d) killed by %s at %d",
-                          victim->name, victim->level, ( ch->isnpc(  )? ch->short_descr : ch->name ), victim->in_room->vnum );
+                          victim->name.c_str(), victim->level, ( ch->isnpc(  ) ? ch->short_descr.c_str() : ch->name.c_str() ), victim->in_room->vnum );
 
          /*
           * Dying penalty:
@@ -3075,7 +3072,7 @@ CMDF( do_mp_damage )
          ++it;
 
          if( victim != ch && ch->can_see( victim, false ) ) /* Could go either way */
-            funcf( ch, do_mp_damage, "'%s' %s", victim->name, argument.c_str(  ) );
+            funcf( ch, do_mp_damage, "'%s' %s", victim->name.c_str(), argument.c_str(  ) );
       }
       return;
    }
@@ -3661,13 +3658,13 @@ CMDF( do_mpsindhae )
    for( int x = tokenstart; x < tokenstart + 9; ++x )
       remove_qbit( victim, x );
 
-   log_printf( "%s is beginning redemption for %s %s Sindhae prize.", victim->name, argument.c_str(  ), Class );
+   log_printf( "%s is beginning redemption for %s %s Sindhae prize.", victim->name.c_str(), argument.c_str(  ), Class );
 
    victim->print_fmt( "&[magic]{} appears from the mists of the void.\r\r\n\n", prize->short_descr );
 
    prize->extra_flags.set( ITEM_PERSONAL );
    STRFREE( prize->owner );
-   prize->owner = STRALLOC( victim->name );
+   prize->owner = STRALLOC( victim->name.c_str() );
 
    victim->print( "&GYou will now be asked to name your prize.\r\n" );
    victim->print( "When the command prompt appears, enter the name you want your prize to have.\r\n" );
@@ -3695,14 +3692,14 @@ char_data *make_doppleganger( char_data * ch )
 
    mob->pIndexData = pMobIndex;
 
-   stralloc_printf( &mob->name, "%s doppleganger", ch->name );
-   stralloc_printf( &mob->short_descr, "%s", ch->name );
-   stralloc_printf( &mob->long_descr, "%s%s is here before you.", ch->name, ch->pcdata->title );
+   mob->name = std::format( "{} doppleganger", ch->name );
+   mob->short_descr = ch->name;
+   mob->long_descr = std::format( "{}{} is here before you.", ch->name, ch->pcdata->title );
 
-   if( ch->chardesc && ch->chardesc[0] != '\0' )
-      mob->chardesc = QUICKLINK( ch->chardesc );
+   if( !ch->chardesc.empty() )
+      mob->chardesc = ch->chardesc;
    else
-      mob->chardesc = STRALLOC( "Boring generic something." );
+      mob->chardesc = "Boring generic something.";
    mob->race = ch->race;
    mob->Class = ch->Class;
    mob->set_specfun(  );
@@ -4044,7 +4041,7 @@ CMDF( do_mpredo )
       return;
    }
 
-   log_printf( "%s is restarting creation from end room.\r\n", victim->name );
+   log_printf( "%s is restarting creation from end room.\r\n", victim->name.c_str() );
 
    for( auto it = victim->carrying.begin(); it != victim->carrying.end(); )
    {
@@ -4341,7 +4338,7 @@ CMDF( do_mptrlook )
          ++ich;
 
          if( victim != ch && victim->level > 1 && ch->can_see( victim, true ) )
-            funcf( ch, do_mptrlook, "%s %s", victim->name, arg2.c_str(  ) );
+            funcf( ch, do_mptrlook, "%s %s", victim->name.c_str(), arg2.c_str(  ) );
       }
       return;
    }

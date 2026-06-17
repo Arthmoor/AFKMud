@@ -830,7 +830,7 @@ CMDF( do_chess )
       ch->print( "You have joined a game of chess.\r\n" );
 
       vch = ch->get_char_world( board->player1 );
-      vch->printf( "%s has joined your game.\r\n", ch->name );
+      vch->print_fmt( "{} has joined your game.\r\n", ch->name );
       return;
    }
 
@@ -855,7 +855,7 @@ CMDF( do_chess )
       else if( !str_cmp( board->player1, ch->name ) )
          ch->print( "You are black.\r\n" );
       else
-         ch->printf( "%s is black.\r\n", board->player1.c_str(  ) );
+         ch->print_fmt( "{} is black.\r\n", board->player1 );
 
       if( king_in_checkmate( board, BLACK_KING ) )
          ch->print( "The black king is in checkmate!\r\n" );
@@ -867,7 +867,7 @@ CMDF( do_chess )
       else if( !str_cmp( board->player2, ch->name ) )
          ch->print( "You are white.\r\n" );
       else
-         ch->printf( "%s is white.\r\n", board->player2.c_str(  ) );
+         ch->print_fmt( "{} is white.\r\n", board->player2 );
 
       if( king_in_checkmate( board, WHITE_KING ) )
          ch->print( "The white king is in checkmate!\r\n" );
@@ -877,15 +877,15 @@ CMDF( do_chess )
       if( board->player2.empty(  ) || board->player1.empty(  ) )
          return;
 
-      ch->printf( "%d turns.\r\n", board->turn );
+      ch->print_fmt( "{} turns.\r\n", board->turn );
       if( board->turn % 2 == 1 && !str_cmp( board->player1, ch->name ) )
       {
-         ch->printf( "It is %s's turn.\r\n", board->player2.c_str(  ) );
+         ch->print_fmt( "It is {}'s turn.\r\n", board->player2 );
          return;
       }
       else if( board->turn % 2 == 0 && !str_cmp( board->player2, ch->name ) )
       {
-         ch->printf( "It is %s's turn.\r\n", board->player1.c_str(  ) );
+         ch->print_fmt( "It is {}'s turn.\r\n", board->player1 );
          return;
       }
       else
