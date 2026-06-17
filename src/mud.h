@@ -982,8 +982,6 @@ const std::string mini_c_time( std::chrono::system_clock::time_point, int );
 
 // commands.cpp
 int check_command_level( std::string_view, int );
-void cmdf( char_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-void funcf( char_data *, DO_FUN *, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 void interpret( char_data *, std::string );
 void check_switches(  );
 void check_switch( char_data * );
@@ -1389,6 +1387,45 @@ void echo_all_printf( short tar, std::format_string<Args...> fmt, Args&&... args
       return;
 
    echo_to_all( formatted, tar );
+}
+
+template <typename... Args>
+void cmdf( char_data * ch, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   interpret( ch, formatted );
+}
+
+/* Be damn sure the function you pass here is valid, or Bad Things(tm) will happen. */
+template <typename... Args>
+void funcf( char_data * ch, DO_FUN * cmd, std::format_string<Args...> fmt, Args&&... args )
+{
+   if( !cmd )
+   {
+      bug( "%s: Bad function passed to funcf!", __func__ );
+      return;
+   }
+
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   ( cmd ) ( ch, formatted );
+}
+
+template <typename... Args>
+void log_printf_plus( short log_type, short level, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   log_string_plus( log_type, level, formatted );
+}
+
+template <typename... Args>
+void log_printf( std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   log_string_plus( LOG_NORMAL, LEVEL_LOG, formatted );
 }
 
 // Thanks to David Haley for this little trick. A nifty little template that behaves like DISPOSE used to.

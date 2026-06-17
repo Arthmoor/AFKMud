@@ -204,9 +204,9 @@ bool summon_if_hating( char_data * ch )
       return false;
 
    if( !victim->isnpc(  ) )
-      cmdf( ch, "cast summon 0.%s", name.c_str() );
+      cmdf( ch, "cast summon 0.{}", name );
    else
-      cmdf( ch, "cast summon %s", name.c_str() );
+      cmdf( ch, "cast summon {}", name );
    return true;
 }
 
@@ -765,16 +765,16 @@ void submit( char_data * ch, char_data * t )
    switch ( number_range( 1, 8 ) )
    {
       case 1:
-         cmdf( ch, "bow %s", t->name.c_str() );
+         cmdf( ch, "bow {}", t->name );
          break;
       case 2:
-         cmdf( ch, "smile %s", t->name.c_str() );
+         cmdf( ch, "smile {}", t->name );
          break;
       case 3:
-         cmdf( ch, "wink %s", t->name.c_str() );
+         cmdf( ch, "wink {}", t->name );
          break;
       case 4:
-         cmdf( ch, "wave %s", t->name.c_str() );
+         cmdf( ch, "wave {}", t->name );
          break;
       default:
          act( AT_PLAIN, "$n nods $s head at you", ch, 0, t, TO_VICT );
@@ -804,7 +804,7 @@ void sayhello( char_data * ch, char_data * t )
             break;
          case 4:
             if( t->sex == SEX_FEMALE )
-               cmdf( ch, "say Make way! Make way for me, %s!", t->name.c_str() );
+               cmdf( ch, "say Make way! Make way for me, {}!", t->name );
             break;
          case 5:
             interpret( ch, "say May the evil godling Ixzuul grin evily at you." );
@@ -820,13 +820,13 @@ void sayhello( char_data * ch, char_data * t )
             break;
          case 9:
             if( time_info.hour > sysdata->hoursunrise && time_info.hour < sysdata->hournoon )
-               cmdf( ch, "say It's morning, %s, do you know where your brains are?", t->name.c_str() );
+               cmdf( ch, "say It's morning, {}, do you know where your brains are?", t->name );
             else if( time_info.hour >= sysdata->hournoon && time_info.hour < sysdata->hoursunset )
-               cmdf( ch, "say It's afternoon, %s, do you know where your parents are?", t->name.c_str() );
+               cmdf( ch, "say It's afternoon, {}, do you know where your parents are?", t->name );
             else if( time_info.hour >= sysdata->hoursunset && time_info.hour <= sysdata->hourmidnight )
-               cmdf( ch, "say It's evening, %s, do you know where your kids are?", t->name.c_str() );
+               cmdf( ch, "say It's evening, {}, do you know where your kids are?", t->name );
             else
-               cmdf( ch, "say Up for a midnight stroll, %s?\n", t->name.c_str() );
+               cmdf( ch, "say Up for a midnight stroll, {}?\n", t->name );
             break;
          case 10:
          {
@@ -843,16 +843,16 @@ void sayhello( char_data * ch, char_data * t )
                buf2 = "evening";
 
             if( getCloudCover( cell ) > 0 )
-               cmdf( ch, "say Nice %s to go for a walk, %s, I hate it.", buf2.c_str(), t->name.c_str() );
+               cmdf( ch, "say Nice {} to go for a walk, {}, I hate it.", buf2, t->name );
             else if( isRaining( getPrecip( cell ) ) || isRainingSteadily( getPrecip( cell ) ) || isDownpour( getPrecip( cell ) ) || isRaingingHeavily( getPrecip( cell ) ) || isPouring( getPrecip( cell ) ) || isRainingCatsAndDogs( getPrecip( cell ) ) || isTorrentialDownpour( getPrecip( cell ) ) )
             {
                if( getTemp( cell ) <= 32 )
-                  cmdf( ch, "say What a wonderful miserable %s, %s!", buf2.c_str(), t->name.c_str() );
+                  cmdf( ch, "say What a wonderful miserable {}, {}!", buf2, t->name );
                else
-                  cmdf( ch, "say I hope %s's rain never clears up.. don't you %s?", buf2.c_str(), t->name.c_str() );
+                  cmdf( ch, "say I hope {}'s rain never clears up.. don't you {}?", buf2, t->name );
             }
             else
-               cmdf( ch, "say Such a terrible %s, don't you think?", buf2.c_str() );
+               cmdf( ch, "say Such a terrible {}, don't you think?", buf2 );
             break;
          }
       }
@@ -879,9 +879,9 @@ void sayhello( char_data * ch, char_data * t )
             break;
          case 4:
             if( t->sex == SEX_FEMALE )
-               cmdf( ch, "say Make way! Make way for the lady %s!", t->name.c_str() );
+               cmdf( ch, "say Make way! Make way for the lady {}!", t->name );
             else
-               cmdf( ch, "say Make way! Make way for the lord %s!", t->name.c_str() );
+               cmdf( ch, "say Make way! Make way for the lord {}!", t->name );
             break;
          case 5:
             interpret( ch, "say May the prophet smile upon you" );
@@ -897,13 +897,13 @@ void sayhello( char_data * ch, char_data * t )
             break;
          case 9:
             if( time_info.hour > sysdata->hoursunrise && time_info.hour < sysdata->hournoon )
-               cmdf( ch, "say Good morning, %s", t->name.c_str() );
+               cmdf( ch, "say Good morning, {}", t->name );
             else if( time_info.hour >= sysdata->hournoon && time_info.hour < sysdata->hoursunset )
-               cmdf( ch, "say Good afternoon, %s", t->name.c_str() );
+               cmdf( ch, "say Good afternoon, {}", t->name );
             else if( time_info.hour >= sysdata->hoursunset && time_info.hour <= sysdata->hourmidnight )
-               cmdf( ch, "say Good evening, %s", t->name.c_str() );
+               cmdf( ch, "say Good evening, {}", t->name );
             else
-               cmdf( ch, "say Up for a midnight stroll, %s?", t->name.c_str() );
+               cmdf( ch, "say Up for a midnight stroll, {}?", t->name );
             break;
          case 10:
          {
@@ -919,16 +919,16 @@ void sayhello( char_data * ch, char_data * t )
             else
                buf2 = "evening";
             if( getCloudCover( cell ) > 0 )
-               cmdf( ch, "say Nice %s to go for a walk, %s.", buf2.c_str(), t->name.c_str() );
+               cmdf( ch, "say Nice {} to go for a walk, {}.", buf2, t->name );
             else if( isRaining( getPrecip( cell ) ) || isRainingSteadily( getPrecip( cell ) ) || isDownpour( getPrecip( cell ) ) || isRaingingHeavily( getPrecip( cell ) ) || isPouring( getPrecip( cell ) ) || isRainingCatsAndDogs( getPrecip( cell ) ) || isTorrentialDownpour( getPrecip( cell ) ) )
             {
                if( getTemp( cell ) <= 32 )
-                  cmdf( ch, "say How can you be out on such a miserable %s, %s!", buf2.c_str(), t->name.c_str() );
+                  cmdf( ch, "say How can you be out on such a miserable {}, {}!", buf2, t->name );
                else
-                  cmdf( ch, "say I hope %s's rain clears up.. don't you %s?", buf2.c_str(), t->name.c_str() );
+                  cmdf( ch, "say I hope {}'s rain clears up.. don't you {}?", buf2, t->name );
             }
             else
-               cmdf( ch, "say Such a pleasant %s, don't you think?", buf2.c_str() );
+               cmdf( ch, "say Such a pleasant {}, don't you think?", buf2 );
             break;
          }
       }
@@ -1110,16 +1110,16 @@ void MakeNiftyAttack( char_data * ch )
    num = number_range( 1, 4 );
 
    if( num <= 2 )
-      cmdf( ch, "bash %s", fighting->name.c_str() );
+      cmdf( ch, "bash {}", fighting->name );
    else if( num == 3 )
    {
       if( ch->get_eq( WEAR_WIELD ) && fighting->get_eq( WEAR_WIELD ) )
-         cmdf( ch, "disarm %s", fighting->name.c_str() );
+         cmdf( ch, "disarm {}", fighting->name );
       else
-         cmdf( ch, "kick %s", fighting->name.c_str() );
+         cmdf( ch, "kick {}", fighting->name );
    }
    else
-      cmdf( ch, "kick %s", fighting->name.c_str() );
+      cmdf( ch, "kick {}", fighting->name );
 }
 
 bool FighterMove( char_data * ch )
@@ -1136,7 +1136,7 @@ bool FighterMove( char_data * ch )
       return false;
 
    if( mfriend->race == ch->race && mfriend->hit < ch->hit )
-      cmdf( ch, "rescue %s", mfriend->name.c_str() );
+      cmdf( ch, "rescue {}", mfriend->name );
    else
       MakeNiftyAttack( ch );
 
@@ -1406,7 +1406,7 @@ bool cast_ranger( char_data * ch )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }
 
@@ -1475,7 +1475,7 @@ bool cast_paladin( char_data * ch )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }
 
@@ -1575,7 +1575,7 @@ SPECF( spec_druid )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }
 
@@ -1621,7 +1621,7 @@ bool cast_antipaladin( char_data * ch )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }
 
@@ -1718,6 +1718,6 @@ SPECF( spec_bard )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }

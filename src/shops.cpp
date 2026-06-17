@@ -225,9 +225,9 @@ char_data *find_keeper( char_data * ch )
       if( time_info.hour < pShop->open_hour && time_info.hour > pShop->close_hour )
       {
          if( pShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at {}am.", ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
          else
-            cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
+            cmdf( keeper, "say Sorry, come back later. I open at {}pm.",
                   ( pShop->open_hour == sysdata->hournoon ) ? ( pShop->open_hour ) : ( pShop->open_hour - sysdata->hournoon ) );
          return nullptr;
       }
@@ -237,18 +237,18 @@ char_data *find_keeper( char_data * ch )
       if( time_info.hour < pShop->open_hour )
       {
          if( pShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at {}am.", ( pShop->open_hour == 0 ) ? ( pShop->open_hour + sysdata->hournoon ) : ( pShop->open_hour ) );
          else
-            cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
+            cmdf( keeper, "say Sorry, come back later. I open at {}pm.",
                   ( pShop->open_hour == sysdata->hournoon ) ? ( pShop->open_hour ) : ( pShop->open_hour - sysdata->hournoon ) );
          return nullptr;
       }
       if( time_info.hour > pShop->close_hour )
       {
          if( pShop->close_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dam.", ( pShop->close_hour == 0 ) ? ( pShop->close_hour + sysdata->hournoon ) : ( pShop->close_hour ) );
+            cmdf( keeper, "say Sorry, come back tomorrow. I close at {}am.", ( pShop->close_hour == 0 ) ? ( pShop->close_hour + sysdata->hournoon ) : ( pShop->close_hour ) );
          else
-            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dpm.",
+            cmdf( keeper, "say Sorry, come back tomorrow. I close at {}pm.",
                   ( pShop->close_hour == sysdata->hournoon ) ? ( pShop->close_hour ) : ( pShop->close_hour - sysdata->hournoon ) );
          return nullptr;
       }
@@ -280,13 +280,13 @@ char_data *find_keeper( char_data * ch )
    if( ( number_percent(  ) % 65 ) > speakswell )
    {
       if( speakswell > 60 )
-         cmdf( keeper, "say %s, Could you repeat that? I didn't quite catch it.", ch->name.c_str() );
+         cmdf( keeper, "say {}, Could you repeat that? I didn't quite catch it.", ch->name );
       else if( speakswell > 50 )
-         cmdf( keeper, "say %s, Could you say that a little more clearly please?", ch->name.c_str() );
+         cmdf( keeper, "say {}, Could you say that a little more clearly please?", ch->name );
       else if( speakswell > 40 )
-         cmdf( keeper, "say %s, Sorry... What was that you wanted?", ch->name.c_str() );
+         cmdf( keeper, "say {}, Sorry... What was that you wanted?", ch->name );
       else
-         cmdf( keeper, "say %s, I can't understand you.", ch->name.c_str() );
+         cmdf( keeper, "say {}, I can't understand you.", ch->name );
       return nullptr;
    }
    return keeper;
@@ -452,9 +452,9 @@ char_data *find_fixer( char_data * ch )
       if( time_info.hour < rShop->open_hour && time_info.hour > rShop->close_hour )
       {
          if( rShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at {}am.", ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
          else
-            cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
+            cmdf( keeper, "say Sorry, come back later. I open at {}pm.",
                   ( rShop->open_hour == sysdata->hournoon ) ? ( rShop->open_hour ) : ( rShop->open_hour - sysdata->hournoon ) );
          return nullptr;
       }
@@ -464,18 +464,18 @@ char_data *find_fixer( char_data * ch )
       if( time_info.hour < rShop->open_hour )
       {
          if( rShop->open_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back later. I open at %dam.", ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
+            cmdf( keeper, "say Sorry, come back later. I open at {}am.", ( rShop->open_hour == 0 ) ? ( rShop->open_hour + sysdata->hournoon ) : ( rShop->open_hour ) );
          else
-            cmdf( keeper, "say Sorry, come back later. I open at %dpm.",
+            cmdf( keeper, "say Sorry, come back later. I open at {}pm.",
                   ( rShop->open_hour == sysdata->hournoon ) ? ( rShop->open_hour ) : ( rShop->open_hour - sysdata->hournoon ) );
          return nullptr;
       }
       if( time_info.hour > rShop->close_hour )
       {
          if( rShop->close_hour < sysdata->hournoon )
-            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dam.", ( rShop->close_hour == 0 ) ? ( rShop->close_hour + sysdata->hournoon ) : ( rShop->close_hour ) );
+            cmdf( keeper, "say Sorry, come back tomorrow. I close at {}am.", ( rShop->close_hour == 0 ) ? ( rShop->close_hour + sysdata->hournoon ) : ( rShop->close_hour ) );
          else
-            cmdf( keeper, "say Sorry, come back tomorrow. I close at %dpm.",
+            cmdf( keeper, "say Sorry, come back tomorrow. I close at {}pm.",
                   ( rShop->close_hour == sysdata->hournoon ) ? ( rShop->close_hour ) : ( rShop->close_hour - sysdata->hournoon ) );
          return nullptr;
       }
@@ -507,13 +507,13 @@ char_data *find_fixer( char_data * ch )
    if( ( number_percent(  ) % 65 ) > speakswell )
    {
       if( speakswell > 60 )
-         cmdf( keeper, "say %s, Could you repeat that? I didn't quite catch it.", ch->name.c_str() );
+         cmdf( keeper, "say {}, Could you repeat that? I didn't quite catch it.", ch->name );
       else if( speakswell > 50 )
-         cmdf( keeper, "say %s, Could you say that a little more clearly please?", ch->name.c_str() );
+         cmdf( keeper, "say {}, Could you say that a little more clearly please?", ch->name );
       else if( speakswell > 40 )
-         cmdf( keeper, "say %s, Sorry... What was that you wanted?", ch->name.c_str() );
+         cmdf( keeper, "say {}, Sorry... What was that you wanted?", ch->name );
       else
-         cmdf( keeper, "say %s I can't understand you.", ch->name.c_str() );
+         cmdf( keeper, "say {} I can't understand you.", ch->name );
       return nullptr;
    }
    return keeper;

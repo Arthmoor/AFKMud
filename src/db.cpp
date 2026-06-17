@@ -1704,32 +1704,6 @@ void log_string_plus( short log_type, short level, std::string_view str )
    }
 }
 
-// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
-void log_printf_plus( short log_type, short level, const char *fmt, ... )
-{
-   char buf[MSL * 2];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 2, fmt, args );
-   va_end( args );
-
-   log_string_plus( log_type, level, buf );
-}
-
-// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
-void log_printf( const char *fmt, ... )
-{
-   char buf[MSL * 2];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 2, fmt, args );
-   va_end( args );
-
-   log_string_plus( LOG_NORMAL, LEVEL_LOG, buf );
-}
-
 void log_string( std::string_view txt )
 {
    log_string_plus( LOG_NORMAL, LEVEL_LOG, txt );

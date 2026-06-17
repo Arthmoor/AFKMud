@@ -1338,7 +1338,7 @@ CMDF( do_drink )
 
       case ITEM_POTION:
          if( obj->carried_by == ch )
-            cmdf( ch, "quaff %s", obj->name );
+            cmdf( ch, "quaff {}", obj->name );
          else
             ch->print( "You're not carrying that.\r\n" );
          break;

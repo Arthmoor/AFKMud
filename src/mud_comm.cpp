@@ -706,48 +706,48 @@ CMDF( do_mpmset )
 
    /*
     * save some more finger-leather for setting RIS stuff
-    * Why there's can_modify checks here AND in the called function, Ill
-    * never know, so I removed them.. -- Alty
+    * Why there's can_modify checks here AND in the called function, I'll
+    * never know, so I removed them. -- Alty
     */
    if( !str_cmp( arg2, "r" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} resistant {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "i" ) )
    {
-      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} immune {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "s" ) )
    {
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} susceptible {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "ri" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} resistant {}", arg1, arg3 );
+      funcf( ch, do_mpmset, "{} immune {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "rs" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} resistant {}", arg1, arg3 );
+      funcf( ch, do_mpmset, "{} susceptible {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "is" ) )
    {
-      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} immune {}", arg1, arg3 );
+      funcf( ch, do_mpmset, "{} susceptible {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "ris" ) )
    {
-      funcf( ch, do_mpmset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mpmset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mpmset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} resistant {}", arg1, arg3 );
+      funcf( ch, do_mpmset, "{} immune {}", arg1, arg3 );
+      funcf( ch, do_mpmset, "{} susceptible {}", arg1, arg3 );
       return;
    }
 
@@ -1358,48 +1358,48 @@ CMDF( do_mposet )
     */
    if( !str_cmp( arg2, "ris" ) )
    {
-      funcf( ch, do_mposet, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "{} affect resistant {}", arg1, arg3 );
+      funcf( ch, do_mposet, "{} affect immune {}", arg1, arg3 );
+      funcf( ch, do_mposet, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "r" ) )
    {
-      funcf( ch, do_mpmset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mpmset, "{} affect resistant {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "i" ) )
    {
-      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "{} affect immune {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "s" ) )
    {
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "ri" ) )
    {
-      funcf( ch, do_mposet, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "{} affect resistant {}", arg1, arg3 );
+      funcf( ch, do_mposet, "{} affect immune {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "rs" ) )
    {
-      funcf( ch, do_mposet, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "{} affect resistant {}", arg1, arg3 );
+      funcf( ch, do_mposet, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "is" ) )
    {
-      funcf( ch, do_mposet, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mposet, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mposet, "{} affect immune {}", arg1, arg3 );
+      funcf( ch, do_mposet, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
@@ -3072,7 +3072,7 @@ CMDF( do_mp_damage )
          ++it;
 
          if( victim != ch && ch->can_see( victim, false ) ) /* Could go either way */
-            funcf( ch, do_mp_damage, "'%s' %s", victim->name.c_str(), argument.c_str(  ) );
+            funcf( ch, do_mp_damage, "'{}' {}", victim->name, argument );
       }
       return;
    }
@@ -4338,7 +4338,7 @@ CMDF( do_mptrlook )
          ++ich;
 
          if( victim != ch && victim->level > 1 && ch->can_see( victim, true ) )
-            funcf( ch, do_mptrlook, "%s %s", victim->name.c_str(), arg2.c_str(  ) );
+            funcf( ch, do_mptrlook, "{} {}", victim->name, arg2 );
       }
       return;
    }

@@ -3427,7 +3427,7 @@ CMDF( do_sset )
    if( !( victim = ch->get_char_world( arg1 ) ) )
    {
       if( ( sn = skill_lookup( arg1 ) ) >= 0 )
-         funcf( ch, do_sset, "%d %s %s", sn, arg2.c_str(  ), argument.c_str(  ) );
+         funcf( ch, do_sset, "{} {} {}", sn, arg2, argument );
       else
          ch->print( "They aren't here.\r\n" );
       return;
@@ -4185,7 +4185,7 @@ CMDF( do_steal )
       act( AT_ACTION, "$n tried to steal from you!\r\n", ch, nullptr, victim, TO_VICT );
       act( AT_ACTION, "$n tried to steal from $N.\r\n", ch, nullptr, victim, TO_NOTVICT );
 
-      cmdf( victim, "yell %s is a bloody thief!", ch->name.c_str() );
+      cmdf( victim, "yell THIEF!!! {} is a thief!", ch->name );
 
       ch->learn_from_failure( gsn_steal );
       if( !ch->isnpc(  ) )
@@ -4221,7 +4221,7 @@ CMDF( do_steal )
       }
       ch->gold += amount;
       victim->gold -= amount;
-      ch->printf( "Aha!  You got %d gold coins.\r\n", amount );
+      ch->print_fmt( "Aha!  You got {} gold coins.\r\n", amount );
       return;
    }
 
@@ -5563,7 +5563,7 @@ CMDF( do_mount )
    {
       act( AT_SKILL, "$N snarls and attacks!", ch, nullptr, victim, TO_CHAR );
       act( AT_SKILL, "As $n tries to mount $N, $N attacks $n!", ch, nullptr, victim, TO_NOTVICT );
-      cmdf( victim, "kill %s", ch->name.c_str() );
+      cmdf( victim, "kill {}", ch->name );
       return;
    }
    else if( check > -1 )

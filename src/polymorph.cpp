@@ -421,7 +421,7 @@ CMDF( do_morphset )
 
       if( !str_cmp( argument, "stat" ) )
       {
-         funcf( ch, do_morphstat, "%s help", morph->name );
+         funcf( ch, do_morphstat, "{} help", morph->name );
          return;
       }
 

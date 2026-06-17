@@ -304,7 +304,7 @@ CMDF( do_finger )
          {
             level = check_command_level( "comment", LEVEL_IMMORTAL );
             if( level != -1 )
-               cmdf( ch, "comment list %s", victim->name.c_str() );
+               cmdf( ch, "comment list {}", victim->name );
          }
       }
       ch->print_fmt( "&wBio:\r\n&G{}\r\n", !victim->pcdata->bio.empty() ? victim->pcdata->bio : "Not created" );

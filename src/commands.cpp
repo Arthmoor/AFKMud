@@ -807,39 +807,6 @@ void interpret( char_data * ch, std::string argument )
    lastplayercmd = "No commands pending";
 }
 
-// FIXME: Update to C++23 - follow example in character.cpp
-void cmdf( char_data * ch, const char *fmt, ... )
-{
-   char buf[MSL * 2];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 2, fmt, args );
-   va_end( args );
-
-   interpret( ch, buf );
-}
-
-/* Be damn sure the function you pass here is valid, or Bad Things(tm) will happen. */
-// FIXME: Update to C++23 - follow example in character.cpp
-void funcf( char_data * ch, DO_FUN * cmd, const char *fmt, ... )
-{
-   char buf[MSL * 2];
-   va_list args;
-
-   if( !cmd )
-   {
-      bug( "%s: Bad function passed to funcf!", __func__ );
-      return;
-   }
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 2, fmt, args );
-   va_end( args );
-
-   ( cmd ) ( ch, buf );
-}
-
 cmd_type::cmd_type(  )
 {
 }
@@ -1128,7 +1095,7 @@ CMDF( do_cedit )
       add_command( command );
       ch->print( "Command added.\r\n" );
       if( command->do_fun == skill_notfound )
-         ch->printf( "Code %s not found. Set to no code.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "Code {} not found. Set to no code.\r\n", arg2 );
       return;
    }
 
@@ -1145,9 +1112,9 @@ CMDF( do_cedit )
 
    if( arg2.empty(  ) || !str_cmp( arg2, "show" ) )
    {
-      ch->printf( "Command:   %s\r\nLevel:     %d\r\nPosition:  %s\r\nLog:       %s\r\nFunc Name: %s\r\nFlags:     %s\r\n",
-                  command->name.c_str(  ), command->level, npc_position[command->position], log_flag[command->log],
-                  command->fun_name.c_str(  ), bitset_string( command->flags, cmd_flags ) );
+      ch->print_fmt( "Command:   {}\r\nLevel:     {}\r\nPosition:  {}\r\nLog:       {}\r\nFunc Name: {}\r\nFlags:     {}\r\n",
+                  command->name, command->level, npc_position[command->position], log_flag[command->log],
+                  command->fun_name, bitset_string( command->flags, cmd_flags ) );
       return;
    }
 
@@ -1163,13 +1130,13 @@ CMDF( do_cedit )
 
       if( command->flags.test( CMD_LOADED ) )
       {
-         ch->printf( "The %s command function is already loaded.\r\n", command->name.c_str(  ) );
+         ch->print_fmt( "The {} command function is already loaded.\r\n", command->name );
          return;
       }
 
       if( command->fun_name.empty(  ) )
       {
-         ch->printf( "The %s command has a nullptr function name!\r\n", command->name.c_str() );
+         ch->print_fmt( "The {} command has a nullptr function name!\r\n", command->name );
          return;
       }
 
@@ -1179,11 +1146,11 @@ CMDF( do_cedit )
       {
          command->do_fun = ( DO_FUN * ) ( dlsym( command->fileHandle, command->fun_name.c_str(  ) ) );
          command->flags.set( CMD_LOADED );
-         ch->printf( "Command %s loaded and available.\r\n", command->name.c_str(  ) );
+         ch->print_fmt( "Command {} loaded and available.\r\n", command->name );
          return;
       }
 
-      ch->printf( "Error: %s\r\n", error );
+      ch->print_fmt( "Error: {}\r\n", error );
       return;
    }
 
@@ -1191,14 +1158,14 @@ CMDF( do_cedit )
    {
       if( !command->flags.test( CMD_LOADED ) )
       {
-         ch->printf( "The %s command function is not loaded.\r\n", command->name.c_str(  ) );
+         ch->print_fmt( "The {} command function is not loaded.\r\n", command->name );
          return;
       }
 
       dlclose( command->fileHandle );
       command->flags.reset( CMD_LOADED );
       command->do_fun = nullptr;
-      ch->printf( "The %s command has been unloaded.\r\n", command->name.c_str(  ) );
+      ch->print_fmt( "The {} command has been unloaded.\r\n", command->name );
       return;
    }
 
@@ -1206,16 +1173,16 @@ CMDF( do_cedit )
    {
       if( !command->flags.test( CMD_LOADED ) )
       {
-         ch->printf( "The %s command function is not loaded.\r\n", command->name.c_str(  ) );
+         ch->print_fmt( "The {} command function is not loaded.\r\n", command->name );
          return;
       }
 
       dlclose( command->fileHandle );
       command->flags.reset( CMD_LOADED );
       command->do_fun = nullptr;
-      ch->printf( "The %s command has been unloaded.\r\n", command->name.c_str(  ) );
+      ch->print_fmt( "The {} command has been unloaded.\r\n", command->name );
 
-      funcf( ch, do_cedit, "%s load", command->name.c_str(  ) );
+      funcf( ch, do_cedit, "{} load", command->name );
       return;
    }
 
@@ -1299,7 +1266,7 @@ CMDF( do_cedit )
       flag = get_cmdflag( argument );
       if( flag < 0 || flag >= MAX_CMD_FLAG )
       {
-         ch->printf( "Unknown flag %s.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Unknown flag {}.\r\n", argument );
          return;
       }
       command->flags.flip( flag );
@@ -1319,7 +1286,7 @@ CMDF( do_cedit )
       }
       if( ( checkcmd = find_command( arg1 ) ) != nullptr )
       {
-         ch->printf( "There is already a command named %s.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "There is already a command named {}.\r\n", arg1 );
          return;
       }
       unlink_command( command );
@@ -1382,12 +1349,12 @@ CMDF( do_restrict )
 
    if( !str_prefix( argument, "show" ) )
    {
-      cmdf( ch, "%s show", cmd->name.c_str(  ) );
+      cmdf( ch, "{} show", cmd->name );
       return;
    }
 
    cmd->level = level;
-   ch->printf( "You restrict %s to level %d\r\n", cmd->name.c_str(  ), level );
+   ch->print_fmt( "You restrict {} to level {}\r\n", cmd->name, level );
    log_printf( "%s restricting %s to level %d", ch->name.c_str(  ), cmd->name.c_str(  ), level );
 }
 

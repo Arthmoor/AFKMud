@@ -837,13 +837,13 @@ CMDF( do_reply )
 
       if( ( is_number( one_argument( argument, arg ) ) ) && ( get_board( ch, arg ) ) )
       {
-         cmdf( ch, "write %s", argument.c_str(  ) );
+         cmdf( ch, "write {}", argument );
          return;
       }
    }
    else if( is_number( argument ) && !argument.empty(  ) )
    {
-      cmdf( ch, "write %s", argument.c_str(  ) );
+      cmdf( ch, "write {}", argument );
       return;
    }
 
@@ -862,7 +862,7 @@ CMDF( do_reply )
    /*
     * This is a bit shorter than what was here before, no? Accomplished the same bloody thing too. -- Xorith 
     */
-   cmdf( ch, "tell %s %s", victim->name.c_str(), argument.c_str(  ) );
+   cmdf( ch, "tell {} {}", victim->name, argument );
 }
 
 CMDF( do_emote )
@@ -1339,7 +1339,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
       if( !arg2 && *ptr >= 'A' && *ptr <= 'Z' )
       {
          bug( "%s: missing arg2 for code %c:", __func__, *ptr );
-         log_printf( "Missing arg2 came from %s", ch->name.c_str() );
+         log_printf( "Missing arg2 came from {}", ch->name );
          if( ch->isnpc(  ) )
             log_printf( "NPC vnum: %d", ch->pIndexData->vnum );
          log_string( format );
@@ -1351,7 +1351,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
          {
             default:
                bug( "%s: bad code %c.", __func__, *ptr );
-               log_printf( "Bad code came from %s", ch->name.c_str() );
+               log_printf( "Bad code came from {}", ch->name );
                buf.append( " <@@@> " );
                break;
 
@@ -1611,13 +1611,13 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
       if( !vch )
       {
          bug( "%s: null vch with TO_VICT.", __func__ );
-         log_printf( "%s (%s)", ch->name.c_str(), format.data() );
+         log_printf( "{} ({})", ch->name, format );
          return;
       }
       if( !vch->in_room )
       {
          bug( "%s: vch in nullptr room!", __func__ );
-         log_printf( "%s -> %s (%s)", ch->name.c_str(), vch->name.c_str(), format.data() );
+         log_printf( "{} -> {} ({})", ch->name, vch->name, format );
          return;
       }
 

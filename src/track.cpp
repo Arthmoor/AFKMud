@@ -318,7 +318,7 @@ void found_prey( char_data * ch, char_data * victim )
          switch ( number_bits( 3 ) )
          {
             case 0:
-               cmdf( ch, "say Don't make me find you, %s!", victim->name.c_str() );
+               cmdf( ch, "say Don't make me find you, {}!", victim->name );
                break;
             case 1:
                act( AT_ACTION, "$n sniffs around the room for $N.", ch, nullptr, victim, TO_NOTVICT );
@@ -327,7 +327,7 @@ void found_prey( char_data * ch, char_data * victim )
                interpret( ch, "say I can smell your blood!" );
                break;
             case 2:
-               cmdf( ch, "yell I'm going to tear %s apart!", victim->name.c_str() );
+               cmdf( ch, "yell I'm going to tear {} apart!", victim->name );
                break;
             case 3:
                interpret( ch, "say Just wait until I find you..." );
@@ -349,13 +349,13 @@ void found_prey( char_data * ch, char_data * victim )
          {
             case 0:
                interpret( ch, "say C'mon out, you coward!" );
-               cmdf( ch, "yell %s is a bloody coward!", victim->name.c_str() );
+               cmdf( ch, "yell {} is a damn coward!", victim->name );
                break;
             case 1:
-               cmdf( ch, "say Let's take this outside, %s", victim->name.c_str() );
+               cmdf( ch, "say Let's take this outside, {}", victim->name );
                break;
             case 2:
-               cmdf( ch, "yell %s is a yellow-bellied wimp!", victim->name.c_str() );
+               cmdf( ch, "yell {} is a yellow-bellied wimp!", victim->name );
                break;
             case 3:
                act( AT_ACTION, "$n takes a few swipes at $N.", ch, nullptr, victim, TO_NOTVICT );
@@ -374,13 +374,13 @@ void found_prey( char_data * ch, char_data * victim )
       switch ( number_bits( 2 ) )
       {
          case 0:
-            cmdf( ch, "yell Your blood is mine, %s!", victim->name.c_str() );
+            cmdf( ch, "yell Your blood is mine, {}!", victim->name );
             break;
          case 1:
-            cmdf( ch, "say Alas, we meet again, %s!", victim->name.c_str() );
+            cmdf( ch, "say Alas, we meet again, {}!", victim->name );
             break;
          case 2:
-            cmdf( ch, "say What do you want on your tombstone, %s?", victim->name.c_str() );
+            cmdf( ch, "say What do you want on your tombstone, {}?", victim->name );
             break;
          case 3:
             act( AT_ACTION, "$n lunges at $N from out of nowhere!", ch, nullptr, victim, TO_NOTVICT );
@@ -488,7 +488,7 @@ void hunt_vic( char_data * ch )
 
          // Is it closed? If the mob doesn't have passdoor, OR the exit is passdoor-proof, have them try and open it first.
          if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) )
-            cmdf( ch, "open %s", pexit->keyword );
+            cmdf( ch, "open {}", pexit->keyword );
 
          // Is it STILL closed? Is it marked no passdoor? Bail out.
          if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )

@@ -230,10 +230,10 @@ void compile_code( char_data * ch, std::string_view argument )
 {
    if( !str_cmp( argument, "clean" ) )
    {
-      funcf( ch, do_mudexec, "%s", "make -C ../src clean" );
+      funcf( ch, do_mudexec, "{}", "make -C ../src clean" );
       return;
    }
-   funcf( ch, do_mudexec, "%s", "make -C ../src" );
+   funcf( ch, do_mudexec, "{}", "make -C ../src" );
 }
 
 /* This command compiles the code on the mud, works only on code port - Samson 4-8-98 */
@@ -313,20 +313,20 @@ CMDF( do_copyclass )
       {
          ch->print( "&RClass and skill files updated to main port.\r\n" );
 #ifdef USEGLOB
-         funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR.data(), fname.c_str(  ), MAINCLASSDIR.data() );
+         funcf( ch, do_mudexec, "cp {}{} {}", BUILDCLASSDIR, fname, MAINCLASSDIR );
 #else
-         funcf( ch, command_pipe, "cp %s%s %s", BUILDCLASSDIR.data(), fname.c_str(  ), MAINCLASSDIR.data() );
+         funcf( ch, command_pipe, "cp {}{} {}", BUILDCLASSDIR, fname, MAINCLASSDIR );
 #endif
-         funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR.data(), fname2.c_str(  ), MAINSYSTEMDIR.data() );
+         funcf( ch, do_mudexec, "cp {}{} {}", BUILDSYSTEMDIR, fname2, MAINSYSTEMDIR );
       }
       ch->print( "&GClass and skill files updated to code port.\r\n" );
 
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR.data(), fname.c_str(  ), CODECLASSDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDCLASSDIR, fname, CODECLASSDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDCLASSDIR.data(), fname.c_str(  ), CODECLASSDIR.data() );
+      funcf( ch, command_pipe, "cp {}{} {}", BUILDCLASSDIR, fname, CODECLASSDIR );
 #endif
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR.data(), fname2.c_str(  ), CODESYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDSYSTEMDIR, fname2, CODESYSTEMDIR );
       return;
    }
 
@@ -335,20 +335,20 @@ CMDF( do_copyclass )
       if( !sysdata->TESTINGMODE )
       {
          ch->print( "&RSkill file updated to main port.\r\n" );
-         funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR.data(), fname.c_str(  ), MAINSYSTEMDIR.data() );
+         funcf( ch, do_mudexec, "cp {}{} {}", BUILDSYSTEMDIR, fname, MAINSYSTEMDIR );
       }
       ch->print( "&GSkill file updated to code port.\r\n" );
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDSYSTEMDIR.data(), fname.c_str(  ), CODESYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDSYSTEMDIR, fname, CODESYSTEMDIR );
       return;
    }
 
    if( !sysdata->TESTINGMODE )
    {
-      ch->printf( "&R%s: file updated to main port.\r\n", argument.c_str(  ) );
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR.data(), fname.c_str(  ), MAINCLASSDIR.data() );
+      ch->printf( "&R{}: file updated to main port.\r\n", argument );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDCLASSDIR, fname, MAINCLASSDIR );
    }
-   ch->printf( "&G%s: file updated to code port.\r\n", argument.c_str(  ) );
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDCLASSDIR.data(), fname.c_str(  ), CODECLASSDIR.data() );
+   ch->printf( "&G{}: file updated to code port.\r\n", argument );
+   funcf( ch, do_mudexec, "cp {}{} {}", BUILDCLASSDIR, fname, CODECLASSDIR );
 }
 
 /* This command copies zones from build port to the others - Samson 4-7-98 */
@@ -405,16 +405,16 @@ CMDF( do_copyzone )
    {
       ch->print( "&RArea file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDZONEDIR.data(), fname.c_str(  ), MAINZONEDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDZONEDIR, fname, MAINZONEDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDZONEDIR.data(), fname.c_str(  ), MAINZONEDIR.data() );
+      funcf( ch, command_pipe, "cp {}{} {}", BUILDZONEDIR, fname, MAINZONEDIR );
 #endif
    }
 
    if( fname2 == "entry.are" || fname2 == "void.are" || fname2 == "astral.are" || fname2 == "one.are" || fname2 == "immtrain.are" )
    {
       ch->print( "&GArea file(s) updated to code port.\r\n" );
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDZONEDIR.data(), fname2.c_str(  ), CODEZONEDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDZONEDIR, fname2, CODEZONEDIR );
    }
 }
 
@@ -456,29 +456,29 @@ CMDF( do_copymap )
    {
       ch->print( "&RMap file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDMAPDIR.data(), fname.c_str(  ), MAINMAPDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDMAPDIR, fname, MAINMAPDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDMAPDIR.data(), fname.c_str(  ), MAINMAPDIR.data() );
+      funcf( ch, command_pipe, "cp {}{} {}", BUILDMAPDIR, fname, MAINMAPDIR );
 #endif
 
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s*.dat %s", BUILDMAPDIR.data(), MAINMAPDIR.data() );
+      funcf( ch, do_mudexec, "cp {}*.dat {}", BUILDMAPDIR, MAINMAPDIR );
 #else
-      funcf( ch, command_pipe, "cp %s*.dat %s", BUILDMAPDIR.data(), MAINMAPDIR.data() );
+      funcf( ch, command_pipe, "cp {}*.dat {}", BUILDMAPDIR, MAINMAPDIR );
 #endif
    }
 
    ch->print( "&GMap file(s) updated to code port.\r\n" );
 #ifdef USEGLOB
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDMAPDIR.data(), fname.c_str(  ), CODEMAPDIR.data() );
+   funcf( ch, do_mudexec, "cp {}{} {}", BUILDMAPDIR, fname, CODEMAPDIR );
 #else
-   funcf( ch, command_pipe, "cp %s%s %s", BUILDMAPDIR.data(), fname.c_str(  ), CODEMAPDIR.data() );
+   funcf( ch, command_pipe, "cp {}{} {}", BUILDMAPDIR, fname, CODEMAPDIR );
 #endif
 
 #ifdef USEGLOB
-   funcf( ch, do_mudexec, "cp %s*.dat %s", BUILDMAPDIR.data(), CODEMAPDIR.data() );
+   funcf( ch, do_mudexec, "cp {}*.dat {}", BUILDMAPDIR, CODEMAPDIR );
 #else
-   funcf( ch, command_pipe, "cp %s*.dat %s", BUILDMAPDIR.data(), CODEMAPDIR.data() );
+   funcf( ch, command_pipe, "cp {}*.dat {}", BUILDMAPDIR, CODEMAPDIR );
 #endif
 }
 
@@ -499,10 +499,10 @@ CMDF( do_copyhelp )
    if( !sysdata->TESTINGMODE )
    {
       ch->print( "&RHelp file updated to main port.\r\n" );
-      funcf( ch, do_mudexec, "cp %shelps.dat %s", BUILDSYSTEMDIR.data(), MAINSYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}helps.dat {}", BUILDSYSTEMDIR, MAINSYSTEMDIR );
    }
    ch->print( "&Help file updated to code port.\r\n" );
-   funcf( ch, do_mudexec, "cp %shelps.dat %s", BUILDSYSTEMDIR.data(), CODESYSTEMDIR.data() );
+   funcf( ch, do_mudexec, "cp {}helps.dat {}", BUILDSYSTEMDIR, CODESYSTEMDIR );
 }
 
 CMDF( do_copybits )
@@ -522,12 +522,12 @@ CMDF( do_copybits )
    if( !sysdata->TESTINGMODE )
    {
       ch->print( "&RAbit/Qbit files updated to main port.\r\n" );
-      funcf( ch, do_mudexec, "cp %sabit.lst %s", BUILDSYSTEMDIR.data(), MAINSYSTEMDIR.data() );
-      funcf( ch, do_mudexec, "cp %sqbit.lst %s", BUILDSYSTEMDIR.data(), MAINSYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}abit.lst {}", BUILDSYSTEMDIR, MAINSYSTEMDIR );
+      funcf( ch, do_mudexec, "cp {}qbit.lst {}", BUILDSYSTEMDIR, MAINSYSTEMDIR );
    }
    ch->print( "&GAbit/Qbit files updated to code port.\r\n" );
-   funcf( ch, do_mudexec, "cp %sabit.lst %s", BUILDSYSTEMDIR.data(), CODESYSTEMDIR.data() );
-   funcf( ch, do_mudexec, "cp %sqbit.lst %s", BUILDSYSTEMDIR.data(), CODESYSTEMDIR.data() );
+   funcf( ch, do_mudexec, "cp {}abit.lst {}", BUILDSYSTEMDIR, CODESYSTEMDIR );
+   funcf( ch, do_mudexec, "cp {}qbit.lst {}", BUILDSYSTEMDIR, CODESYSTEMDIR );
 }
 
 /* This command copies the social file from build port to the other ports - Samson 5-2-98 */
@@ -551,14 +551,14 @@ CMDF( do_copysocial )
        * Build port to Main port 
        */
       ch->print( "&RSocial file updated to main port.\r\n" );
-      funcf( ch, do_mudexec, "cp %ssocials.dat %s", BUILDSYSTEMDIR.data(), MAINSYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}socials.dat {}", BUILDSYSTEMDIR, MAINSYSTEMDIR );
    }
 
    /*
     * Build port to Code port 
     */
    ch->print( "&GSocial file updated to code port.\r\n" );
-   funcf( ch, do_mudexec, "cp %ssocials.dat %s", BUILDSYSTEMDIR.data(), CODESYSTEMDIR.data() );
+   funcf( ch, do_mudexec, "cp {}socials.dat {}", BUILDSYSTEMDIR, CODESYSTEMDIR );
 }
 
 /* This command copies the rune file from build port to the other ports - Samson 5-2-98 */
@@ -582,14 +582,14 @@ CMDF( do_copyrunes )
        * Build port to Main port 
        */
       ch->print( "&RRune file updated to main port.\r\n" );
-      funcf( ch, do_mudexec, "cp %srunes.dat %s", BUILDSYSTEMDIR.data(), MAINSYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}runes.dat {}", BUILDSYSTEMDIR, MAINSYSTEMDIR );
    }
 
    /*
     * Build port to Code port 
     */
    ch->print( "&GRune file updated to code port.\r\n" );
-   funcf( ch, do_mudexec, "cp %srunes.dat %s", BUILDSYSTEMDIR.data(), CODESYSTEMDIR.data() );
+   funcf( ch, do_mudexec, "cp {}runes.dat {}", BUILDSYSTEMDIR, CODESYSTEMDIR );
 }
 
 CMDF( do_copyslay )
@@ -612,14 +612,14 @@ CMDF( do_copyslay )
        * Build port to Main port 
        */
       ch->print( "&RSlay file updated to main port.\r\n" );
-      funcf( ch, do_mudexec, "cp %sslay.dat %s", BUILDSYSTEMDIR.data(), MAINSYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}slay.dat {}", BUILDSYSTEMDIR, MAINSYSTEMDIR );
    }
 
    /*
     * Build port to Code port 
     */
    ch->print( "&GSlay file updated to code port.\r\n" );
-   funcf( ch, do_mudexec, "cp %sslay.dat %s", BUILDSYSTEMDIR.data(), CODESYSTEMDIR.data() );
+   funcf( ch, do_mudexec, "cp {}slay.dat {}", BUILDSYSTEMDIR, CODESYSTEMDIR );
 }
 
 /* This command copies the morphs file from build port to the other ports - Samson 5-2-98 */
@@ -643,14 +643,14 @@ CMDF( do_copymorph )
        * Build port to Main port 
        */
       ch->print( "&RPolymorph file updated to main port.\r\n" );
-      funcf( ch, do_mudexec, "cp %smorph.dat %s", BUILDSYSTEMDIR.data(), MAINSYSTEMDIR.data() );
+      funcf( ch, do_mudexec, "cp {}morph.dat {}", BUILDSYSTEMDIR, MAINSYSTEMDIR );
    }
 
    /*
     * Build port to Code port 
     */
    ch->print( "&GPolymorph file updated to code port.\r\n" );
-   funcf( ch, do_mudexec, "cp %smorph.dat %s", BUILDSYSTEMDIR.data(), CODESYSTEMDIR.data() );
+   funcf( ch, do_mudexec, "cp {}morph.dat {}", BUILDSYSTEMDIR, CODESYSTEMDIR );
 }
 
 /* This command copies the mud binary file from code port to main port and build port - Samson 4-7-98 */
@@ -672,13 +672,13 @@ CMDF( do_copycode )
     * Code port to Builders' port 
     */
    ch->print( "&GBinary file updated to builder port.\r\n" );
-   funcf( ch, do_mudexec, "cp -f %s%s %s%s", TESTCODEDIR.data(), BINARYFILE.data(), BUILDCODEDIR.data(), BINARYFILE.data() );
+   funcf( ch, do_mudexec, "cp -f {}{} {}{}", TESTCODEDIR, BINARYFILE, BUILDCODEDIR, BINARYFILE );
 
    ch->print( "&GDNS Resolver file updated to builder port.\r\n" );
 #if defined(__CYGWIN__)
-   funcf( ch, do_mudexec, "cp -f %sresolver.exe %sresolver.exe", TESTCODEDIR.data(), BUILDCODEDIR.data() );
+   funcf( ch, do_mudexec, "cp -f {}resolver.exe {}resolver.exe", TESTCODEDIR, BUILDCODEDIR );
 #else
-   funcf( ch, do_mudexec, "cp -f %sresolver %sresolver", TESTCODEDIR.data(), BUILDCODEDIR.data() );
+   funcf( ch, do_mudexec, "cp -f {}resolver {}resolver", TESTCODEDIR, BUILDCODEDIR );
 #endif
 
    /*
@@ -687,13 +687,13 @@ CMDF( do_copycode )
    if( !sysdata->TESTINGMODE )
    {
       ch->print( "&RBinary file updated to main port.\r\n" );
-      funcf( ch, do_mudexec, "cp -f %s%s %s%s", TESTCODEDIR.data(), BINARYFILE.data(), MAINCODEDIR.data(), BINARYFILE.data() );
+      funcf( ch, do_mudexec, "cp -f {}{} {}{}", TESTCODEDIR, BINARYFILE, MAINCODEDIR, BINARYFILE );
 
       ch->print( "&RDNS Resolver file updated to main port.\r\n" );
 #if defined(__CYGWIN__)
-      funcf( ch, do_mudexec, "cp -f %sresolver.exe %sresolver.exe", TESTCODEDIR.data(), MAINCODEDIR.data() );
+      funcf( ch, do_mudexec, "cp -f {}resolver.exe {}resolver.exe", TESTCODEDIR, MAINCODEDIR );
 #else
-      funcf( ch, do_mudexec, "cp -f %sresolver %sresolver", TESTCODEDIR.data(), MAINCODEDIR.data() );
+      funcf( ch, do_mudexec, "cp -f {}resolver {}resolver", TESTCODEDIR, MAINCODEDIR );
 #endif
    }
 }
@@ -737,9 +737,9 @@ CMDF( do_copyrace )
     */
    ch->print( "&GRace file(s) updated to code port.\r\n" );
 #ifdef USEGLOB
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDRACEDIR.data(), fname.c_str(  ), CODERACEDIR.data() );
+   funcf( ch, do_mudexec, "cp {}{} {}", BUILDRACEDIR, fname, CODERACEDIR );
 #else
-   funcf( ch, command_pipe, "cp %s%s %s", BUILDRACEDIR.data(), fname.c_str(  ), CODERACEDIR.data() );
+   funcf( ch, command_pipe, "cp {}{} {}", BUILDRACEDIR, fname, CODERACEDIR );
 #endif
 
    if( !sysdata->TESTINGMODE )
@@ -749,9 +749,9 @@ CMDF( do_copyrace )
        */
       ch->print( "&RRace file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDRACEDIR.data(), fname.c_str(  ), MAINRACEDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDRACEDIR, fname, MAINRACEDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDRACEDIR.data(), fname.c_str(  ), MAINRACEDIR.data() );
+      funcf( ch, command_pipe, "cp {}{} {}", BUILDRACEDIR, fname, MAINRACEDIR );
 #endif
    }
 }
@@ -795,9 +795,9 @@ CMDF( do_copydeity )
     */
    ch->print( "&GDeity file(s) updated to code port.\r\n" );
 #ifdef USEGLOB
-   funcf( ch, do_mudexec, "cp %s%s %s", BUILDDEITYDIR.data(), fname.c_str(  ), CODEDEITYDIR.data() );
+   funcf( ch, do_mudexec, "cp {}{} {}", BUILDDEITYDIR, fname, CODEDEITYDIR );
 #else
-   funcf( ch, command_pipe, "cp %s%s %s", BUILDDEITYDIR.data(), fname.c_str(  ), CODEDEITYDIR.data() );
+   funcf( ch, command_pipe, "cp {}{} {}", BUILDDEITYDIR, fname, CODEDEITYDIR );
 #endif
 
    if( !sysdata->TESTINGMODE )
@@ -807,9 +807,9 @@ CMDF( do_copydeity )
        */
       ch->print( "&RDeity file(s) updated to main port.\r\n" );
 #ifdef USEGLOB
-      funcf( ch, do_mudexec, "cp %s%s %s", BUILDDEITYDIR.data(), fname.c_str(  ), MAINDEITYDIR.data() );
+      funcf( ch, do_mudexec, "cp {}{} {}", BUILDDEITYDIR, fname, MAINDEITYDIR );
 #else
-      funcf( ch, command_pipe, "cp %s%s %s", BUILDDEITYDIR.data(), fname.c_str(  ), MAINDEITYDIR.data() );
+      funcf( ch, command_pipe, "cp {}{} {}", BUILDDEITYDIR, fname, MAINDEITYDIR );
 #endif
    }
 }
@@ -846,7 +846,7 @@ CMDF( do_resolve )
       ch->print( "Resolve what?\r\n" );
       return;
    }
-   funcf( ch, do_mudexec, "host %s", argument.c_str(  ) );
+   funcf( ch, do_mudexec, "host {}", argument );
 }
 
 shell_cmd::shell_cmd(  )

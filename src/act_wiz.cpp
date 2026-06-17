@@ -4482,7 +4482,7 @@ CMDF( do_loadup )
    if( d->character->get_trust(  ) >= ch->get_trust(  ) )
    {
       interpret( d->character, "say How dare you load my Pfile!" );
-      cmdf( d->character, "dino %s", ch->name.c_str() );
+      cmdf( d->character, "dino {}", ch->name );
       ch->print_fmt( "I think you'd better leave {} alone!\r\n", argument );
       d->character->desc = nullptr;
       interpret( d->character, "quit auto" );
@@ -4739,7 +4739,7 @@ CMDF( do_demote )
       victim->pcdata->realm = nullptr;
       victim->pcdata->realm_name.clear();
    }
-   funcf( ch, do_bestow, "%s none", victim->name.c_str() );
+   funcf( ch, do_bestow, "{} none", victim->name );
    victim->save(  );
    make_wizlist(  );
    build_wizinfo(  );

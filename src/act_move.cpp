@@ -253,8 +253,8 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
          if( !pexit || !pexit->to_room )
          {
-            log_printf( "Broken Watchtower exit in room %d!", ch->in_room->vnum );
-            ch->printf( "Ooops! The watchtower here is broken. Please contact the immortals. You are in room %d.\r\n", ch->in_room->vnum );
+            log_printf( "Broken Watchtower exit in room {}!", ch->in_room->vnum );
+            ch->print_fmt( "Ooops! The watchtower here is broken. Please contact the immortals. You are in room {}.\r\n", ch->in_room->vnum );
             return rSTOP;
          }
 
@@ -399,7 +399,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       if( !valid_coordinates( pexit->map_x, pexit->map_y ) )
       {
-         log_printf( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
+         log_printf( "{}: Room #{} - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
          ch->print( "Oops. Something is wrong with this map exit - notify the immortals.\r\n" );
          check_sneaks( ch );
          return rSTOP;
@@ -922,7 +922,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
 
    ch->from_room(  );
    if( !ch->to_room( to_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    check_sneaks( ch );
    if( ch->mount )
    {
@@ -933,7 +933,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       {
          ch->mount->from_room(  );
          if( !ch->mount->to_room( to_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       }
    }
 
@@ -1056,7 +1056,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       act( AT_DEAD, "$n falls prey to a terrible death!", ch, nullptr, nullptr, TO_ROOM );
       ch->print( "&[dead]Oopsie... you're dead!\r\n" );
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s hit a DEATH TRAP in room %d!", ch->name.c_str(), ch->in_room->vnum );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} hit a DEATH TRAP in room {}!", ch->name.c_str(), ch->in_room->vnum );
       if( ch->isnpc(  ) )
          ch->extract( true );
       else
@@ -2523,14 +2523,14 @@ void teleportch( char_data * ch, room_index * room, bool show )
    act( AT_ACTION, "$n disappears suddenly!", ch, nullptr, nullptr, TO_ROOM );
    ch->from_room(  );
    if( !ch->to_room( room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line %d.", __FILE__, __func__, __LINE__ );
    act( AT_ACTION, "$n arrives suddenly!", ch, nullptr, nullptr, TO_ROOM );
    if( show )
       interpret( ch, "look" );
    if( ch->in_room->flags.test( ROOM_DEATH ) && !ch->is_immortal(  ) )
    {
       ch->print( "&[dead]Oopsie... you're dead!\r\n" );
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s hit a DEATH TRAP in room %d!", ch->name.c_str(), ch->in_room->vnum );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} hit a DEATH TRAP in room {}!", ch->name.c_str(), ch->in_room->vnum );
       if( ch->isnpc(  ) )
          ch->extract( true );
       else
@@ -3098,7 +3098,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
          return move_char( ch, xit, 1, xit->vdir, false );
       ch->from_room(  );
       if( !ch->to_room( xit->to_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
       if( showroom )
          interpret( ch, "look" );
@@ -3110,7 +3110,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
       {
          ch->mount->from_room(  );
          if( !ch->mount->to_room( xit->to_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line %d.", __FILE__, __func__, __LINE__ );
          if( showroom )
             interpret( ch->mount, "look" );
       }

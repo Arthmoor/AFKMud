@@ -177,7 +177,7 @@ CMDF( do_get )
    if( ch->carry_number < 0 || ch->carry_weight < 0 )
    {
       ch->print( "Uh oh ... better contact an immortal about your number or weight of items carried.\r\n" );
-      log_printf( "%s has negative carry_number or carry_weight!", ch->name.c_str() );
+      log_printf( "{} has negative carry_number or carry_weight!", ch->name );
       return;
    }
 
@@ -225,7 +225,7 @@ CMDF( do_get )
           */
          if( !( obj = get_obj_list( ch, arg1, ch->in_room->objects ) ) )
          {
-            ch->printf( "I see no %s here.\r\n", arg1.c_str(  ) );
+            ch->print_fmt( "I see no {} here.\r\n", arg1 );
             return;
          }
 
@@ -324,7 +324,7 @@ CMDF( do_get )
             if( fAll )
                ch->print( "I see nothing here.\r\n" );
             else
-               ch->printf( "I see no %s here.\r\n", chk.c_str(  ) );
+               ch->print_fmt( "I see no {} here.\r\n", chk );
          }
          else if( sysdata->save_flags.test( SV_GET ) )
             ch->save(  );
@@ -343,7 +343,7 @@ CMDF( do_get )
 
       if( !( container = ch->get_obj_here( arg2 ) ) )
       {
-         ch->printf( "I see no %s here.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "I see no {} here.\r\n", arg2 );
          return;
       }
 
@@ -543,16 +543,16 @@ CMDF( do_get )
             if( fAll )
             {
                if( container->item_type == ITEM_KEYRING && !container->extra_flags.test( ITEM_COVERING ) )
-                  ch->printf( "The %s holds no keys.\r\n", arg2.c_str(  ) );
+                  ch->print_fmt( "The {} holds no keys.\r\n", arg2 );
                else
-                  ch->printf( "I see nothing %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
+                  ch->print_fmt( "I see nothing {} the {}.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
             }
             else
             {
                if( container->item_type == ITEM_KEYRING && !container->extra_flags.test( ITEM_COVERING ) )
-                  ch->printf( "The %s does not hold that key.\r\n", arg2.c_str(  ) );
+                  ch->print_fmt( "The {} does not hold that key.\r\n", arg2 );
                else
-                  ch->printf( "I see nothing %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
+                  ch->print_fmt( "I see nothing {} the {}.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
             }
          }
          else

@@ -3127,13 +3127,13 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
                   ch->pcdata->clan->balance += split;
                   save_clan( ch->pcdata->clan );
-                  ch->printf( "The Wedgy comes to collect %d gold on behalf of your %s.\r\n", split, ch->pcdata->clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+                  ch->print_fmt( "The Wedgy comes to collect {} gold on behalf of your {}.\r\n", split, ch->pcdata->clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
                   gold_diff -= split;
                   ch->gold -= split;
                }
             }
             if( gold_diff > 0 && ch->has_pcflag( PCFLAG_GROUPSPLIT ) )
-               cmdf( ch, "split %d", gold_diff );
+               cmdf( ch, "split {}", gold_diff );
          }
          if( ch->has_pcflag( PCFLAG_AUTOLOOT ) && victim != ch )  /* prevent nasty obj problems -- Blodkai */
             interpret( ch, "get all corpse" );

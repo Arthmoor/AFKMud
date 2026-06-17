@@ -1374,10 +1374,10 @@ CMDF( do_look )
             {
                liquid_data *liq = get_liq_vnum( obj->value[2] );
 
-               ch->printf( "It's %s full of a %s liquid.\r\n", ( obj->value[1] * 10 ) < ( obj->value[0] * 10 ) / 4
+               ch->print_fmt( "It's {} full of a {} liquid.\r\n", ( obj->value[1] * 10 ) < ( obj->value[0] * 10 ) / 4
                            ? "less than halfway" : ( obj->value[1] * 10 ) < 2 * ( obj->value[0] * 10 ) / 4
                            ? "around halfway" : ( obj->value[1] * 10 ) < 3 * ( obj->value[0] * 10 ) / 4
-                           ? "more than halfway" : obj->value[1] == obj->value[0] ? "completely" : "almost", liq->color.c_str(  ) );
+                           ? "more than halfway" : obj->value[1] == obj->value[0] ? "completely" : "almost", liq->color );
             }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
@@ -1408,11 +1408,11 @@ CMDF( do_look )
                      original = ch->in_room;
                      ch->from_room(  );
                      if( !ch->to_room( pexit->to_room ) )
-                        log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                        log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                      do_look( ch, "auto" );
                      ch->from_room(  );
                      if( !ch->to_room( original ) )
-                        log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                        log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                      if( !visited )
                         ch->remove_visit( pexit->to_room );
                   }
@@ -1497,7 +1497,7 @@ CMDF( do_look )
             {
                liquid_data *liq = get_liq_vnum( obj->value[2] );
 
-               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == nullptr ? "clear" : liq->color.c_str() ) );
+               ch->print_fmt( "It's a puddle of {} liquid.\r\n", ( liq == nullptr ? "clear" : liq->color ) );
             }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
@@ -1546,7 +1546,7 @@ CMDF( do_look )
             {
                liquid_data *liq = get_liq_vnum( obj->value[2] );
 
-               ch->printf( "It's a puddle of %s liquid.\r\n", ( liq == nullptr ? "clear" : liq->color.c_str() ) );
+               ch->print_fmt( "It's a puddle of {} liquid.\r\n", ( liq == nullptr ? "clear" : liq->color ) );
             }
             if( EXA_prog_trigger )
                oprog_examine_trigger( ch, obj );
@@ -1589,7 +1589,7 @@ CMDF( do_look )
       }
 
       if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
-         ch->printf( "%s\r\n", pexit->exitdesc );
+         ch->print_fmt( "{}\r\n", pexit->exitdesc );
       else
          ch->print( "Nothing special there.\r\n" );
 
@@ -1925,7 +1925,7 @@ CMDF( do_examine )
 
          case ITEM_KEYRING:
             EXA_prog_trigger = false;
-            cmdf( ch, "look in %s", argument.c_str(  ) );
+            cmdf( ch, "look in {}", argument );
             EXA_prog_trigger = true;
             break;
 
@@ -1942,7 +1942,7 @@ CMDF( do_examine )
       if( obj->extra_flags.test( ITEM_COVERING ) )
       {
          EXA_prog_trigger = false;
-         cmdf( ch, "look under %s", argument.c_str(  ) );
+         cmdf( ch, "look under {}", argument );
          EXA_prog_trigger = true;
       }
 

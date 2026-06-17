@@ -628,7 +628,7 @@ CMDF( do_authorize )
             /*
              * Addition so that denied names get added to reserved list - Samson 10-18-98 
              */
-            funcf( ch, do_reserve, "%s add", nauth->name.c_str(  ) );
+            funcf( ch, do_reserve, "{} add", nauth->name );
             do_destroy( ch, nauth->name );
             return;
          }
@@ -642,7 +642,7 @@ CMDF( do_authorize )
             /*
              * Addition so that requested name changes get added to reserved list - Samson 10-18-98 
              */
-            funcf( ch, do_reserve, "%s add", nauth->name.c_str(  ) );
+            funcf( ch, do_reserve, "{} add", nauth->name );
             return;
          }
          else
@@ -678,7 +678,7 @@ CMDF( do_authorize )
             /*
              * Addition to add denied names to reserved list - Samson 10-18-98 
              */
-            funcf( ch, do_reserve, "%s add", victim->name.c_str() );
+            funcf( ch, do_reserve, "{} add", victim->name );
             do_destroy( ch, victim->name );
             return;
          }
@@ -696,7 +696,7 @@ CMDF( do_authorize )
             /*
              * Addition to put denied name on reserved list - Samson 10-18-98 
              */
-            funcf( ch, do_reserve, "%s add", victim->name.c_str() );
+            funcf( ch, do_reserve, "{} add", victim->name );
             return;
          }
          else

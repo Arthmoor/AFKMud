@@ -5227,7 +5227,7 @@ CMDF( do_levelup )
    ++ch->level;
    advance_level( ch );
    log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s has advanced to level %d!", ch->name.c_str(), ch->level );
-   cmdf( ch, "gtell I just reached level %d!", ch->level );
+   cmdf( ch, "gtell I just reached level {}!", ch->level );
 
    if( ch->level == 4 )
       ch->print( "&YYou can now be affected by hunger and thirst.\r\nIt is advisable for you to purchase food and water soon.\r\n" );

@@ -358,7 +358,7 @@ CMDF( do_quaff )
    if( obj->item_type != ITEM_POTION )
    {
       if( obj->item_type == ITEM_DRINK_CON )
-         cmdf( ch, "drink %s", obj->name );
+         cmdf( ch, "drink {}", obj->name );
       else
       {
          act( AT_ACTION, "$n lifts $p up to $s mouth and tries to drink from it...", ch, obj, nullptr, TO_ROOM );

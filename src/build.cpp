@@ -26,6 +26,7 @@
  *                   Online Building and Editing Module                     *
  ****************************************************************************/
 
+#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -1217,7 +1218,7 @@ CMDF( do_mset )
             if( !victim->isnpc(  ) )
                do_mstat( ch, victim->name );
             else
-               funcf( ch, do_mstat, "%d", victim->pIndexData->vnum );
+               funcf( ch, do_mstat, "{}", victim->pIndexData->vnum );
          }
          else
             ch->print( "No victim selected.  Type '?' for help.\r\n" );
@@ -2158,7 +2159,7 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "{} resistant {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "i" ) )
@@ -2168,7 +2169,7 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "{} immune {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "s" ) )
@@ -2178,7 +2179,7 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "{} susceptible {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "ri" ) )
@@ -2188,8 +2189,8 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "{} resistant {}", arg1, arg3 );
+      funcf( ch, do_mset, "{} immune {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "rs" ) )
@@ -2199,8 +2200,8 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "{} resistant {}", arg1, arg3 );
+      funcf( ch, do_mset, "{} susceptible {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "is" ) )
@@ -2210,8 +2211,8 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "{} immune {}", arg1, arg3 );
+      funcf( ch, do_mset, "{} susceptible {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "ris" ) )
@@ -2221,9 +2222,9 @@ CMDF( do_mset )
          ch->print( "You can only modify a mobile's ris.\r\n" );
          return;
       }
-      funcf( ch, do_mset, "%s resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mset, "%s immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_mset, "%s susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_mset, "{} resistant {}", arg1, arg3 );
+      funcf( ch, do_mset, "{} immune {}", arg1, arg3 );
+      funcf( ch, do_mset, "{} susceptible {}", arg1, arg3 );
       return;
    }
 
@@ -2668,10 +2669,14 @@ CMDF( do_mset )
     */
    if( !str_cmp( arg2, "hitdie" ) )
    {
-      sscanf( arg3.c_str(  ), "%d %c %d %c %d", &num, &char1, &size, &char2, &plus );
-      funcf( ch, do_mset, "%s hitnumdie %d", arg1.c_str(  ), num );
-      funcf( ch, do_mset, "%s hitsizedie %d", arg1.c_str(  ), size );
-      funcf( ch, do_mset, "%s hitplus %d", arg1.c_str(  ), plus );
+      std::stringstream ss( arg3 );
+
+      if( ss >> num >> char1 >> size >> char2 >> plus )
+      {
+         funcf( ch, do_mset, "{} hitnumdie {}", arg1, num );
+         funcf( ch, do_mset, "{} hitsizedie {}", arg1, size );
+         funcf( ch, do_mset, "{} hitplus {}", arg1, plus );
+      }
       return;
    }
 
@@ -2680,10 +2685,14 @@ CMDF( do_mset )
     */
    if( !str_cmp( arg2, "damdie" ) )
    {
-      sscanf( arg3.c_str(  ), "%d %c %d %c %d", &num, &char1, &size, &char2, &plus );
-      funcf( ch, do_mset, "%s damnumdie %d", arg1.c_str(  ), num );
-      funcf( ch, do_mset, "%s damsizedie %d", arg1.c_str(  ), size );
-      funcf( ch, do_mset, "%s damplus %d", arg1.c_str(  ), plus );
+      std::stringstream ss( arg3 );
+
+      if( ss >> num >> char1 >> size >> char2 >> plus )
+      {
+         funcf( ch, do_mset, "{} damnumdie {}", arg1, num );
+         funcf( ch, do_mset, "{} damsizedie {}", arg1, size );
+         funcf( ch, do_mset, "{} damplus {}", arg1, plus );
+      }
       return;
    }
 
@@ -2883,7 +2892,7 @@ CMDF( do_oset )
       if( argument.empty(  ) || !str_cmp( argument, " " ) || !str_cmp( argument, "stat" ) )
       {
          if( obj )
-            funcf( ch, do_ostat, "%d", obj->pIndexData->vnum );
+            funcf( ch, do_ostat, "{}", obj->pIndexData->vnum );
          else
             ch->print( "No object selected.  Type '?' for help.\r\n" );
          return;
@@ -3706,47 +3715,47 @@ CMDF( do_oset )
     */
    if( !str_cmp( arg2, "ris" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "{} affect resistant {}", arg1, arg3 );
+      funcf( ch, do_oset, "{} affect immune {}", arg1, arg3 );
+      funcf( ch, do_oset, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "r" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "{} affect resistant {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "i" ) )
    {
-      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "{} affect immune {}", arg1, arg3 );
       return;
    }
    if( !str_cmp( arg2, "s" ) )
    {
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "ri" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "{} affect resistant {}", arg1, arg3 );
+      funcf( ch, do_oset, "{} affect immune {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "rs" ) )
    {
-      funcf( ch, do_oset, "%s affect resistant %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "{} affect resistant {}", arg1, arg3 );
+      funcf( ch, do_oset, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
    if( !str_cmp( arg2, "is" ) )
    {
-      funcf( ch, do_oset, "%s affect immune %s", arg1.c_str(  ), arg3.c_str(  ) );
-      funcf( ch, do_oset, "%s affect susceptible %s", arg1.c_str(  ), arg3.c_str(  ) );
+      funcf( ch, do_oset, "{} affect immune {}", arg1, arg3 );
+      funcf( ch, do_oset, "{} affect susceptible {}", arg1, arg3 );
       return;
    }
 
@@ -4552,7 +4561,7 @@ CMDF( do_redit )
          argument = one_argument( argument, arg2 );
          value = get_rflag( arg2 );
          if( value < 0 || value >= ROOM_MAX )
-            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg2 );
          else
          {
             if( value == ROOM_PROTOTYPE && ch->level < sysdata->level_modify_proto )
@@ -4592,7 +4601,7 @@ CMDF( do_redit )
       tvnum = atoi( argument.c_str(  ) );
       if( tvnum < 1 || tvnum > sysdata->maxvnum )
       {
-         ch->printf( "Invalid vnum. Allowable range is 1 to %d\r\n", sysdata->maxvnum );
+         ch->print_fmt( "Invalid vnum. Allowable range is 1 to {}\r\n", sysdata->maxvnum );
          return;
       }
       if( !( temp = get_room_index( tvnum ) ) )
@@ -4626,7 +4635,7 @@ CMDF( do_redit )
       else
       {
          location->sector_type = value;
-         ch->printf( "Sector type set to %s.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "Sector type set to {}.\r\n", arg2 );
       }
       return;
    }
@@ -4674,7 +4683,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length() ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4683,18 +4692,18 @@ CMDF( do_redit )
          xit = location->get_exit( edir );
       }
 
-      x = atoi( arg3.c_str(  ) );
-      y = atoi( argument.c_str(  ) );
+      x = std::stoi( arg3 );
+      y = std::stoi( argument );
 
       if( !is_valid_x( x ) )
       {
-         ch->printf( "Valid X coordinates are 0 to %d.\r\n", MAX_X - 1 );
+         ch->print_fmt( "Valid X coordinates are 0 to {}.\r\n", MAX_X - 1 );
          return;
       }
 
       if( !is_valid_y( y ) )
       {
-         ch->printf( "Valid Y coordinates are 0 to %d.\r\n", MAX_Y - 1 );
+         ch->print_fmt( "Valid Y coordinates are 0 to {}.\r\n", MAX_Y - 1 );
          return;
       }
 
@@ -4766,7 +4775,7 @@ CMDF( do_redit )
       }
       if( argument.empty(  ) )
       {
-         ch->printf( "Flags for exit direction: %d  Keywords: %s  Key: %d\r\n[ %s ]", xit->vdir, xit->keyword, xit->key, bitset_string( xit->flags, ex_flags ) );
+         ch->print_fmt( "Flags for exit direction: {}  Keywords: {}  Key: {}\r\n[ {} ]", xit->vdir, xit->keyword, xit->key, bitset_string( xit->flags, ex_flags ) );
          return;
       }
       while( !argument.empty(  ) )
@@ -4774,7 +4783,7 @@ CMDF( do_redit )
          argument = one_argument( argument, arg2 );
          value = get_exflag( arg2 );
          if( value < 0 || value >= MAX_EXFLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg2 );
          else
             xit->flags.flip( value );
       }
@@ -4852,7 +4861,7 @@ CMDF( do_redit )
          // If outside the person's vnum range, bail out. FIXME: Check for people who can edit globally.
          if( evnum < ch->pcdata->low_vnum || evnum > ch->pcdata->hi_vnum )
          {
-            ch->printf( "Room #%d does not exist.\r\n", evnum );
+            ch->print_fmt( "Room #{} does not exist.\r\n", evnum );
             return;
          }
 
@@ -4924,7 +4933,7 @@ CMDF( do_redit )
             argument = one_argument( argument, arg3 );
             value = get_exflag( arg3 );
             if( value < 0 || value >= MAX_EXFLAG )
-               ch->printf( "Unknown exit flag: %s\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Unknown exit flag: {}\r\n", arg3 );
             else
                SET_EXIT_FLAG( xit, value );
          }
@@ -4995,7 +5004,7 @@ CMDF( do_redit )
             rxit = nullptr;
       }
 
-      funcf( ch, do_redit, "exit %s %s %s", arg2.c_str(  ), arg3.c_str(  ), argument.c_str(  ) );
+      funcf( ch, do_redit, "exit {} {} {}", arg2, arg3, argument );
       if( numnotdir )
          bxit = tmploc->get_exit_num( exnum );
       else
@@ -5011,7 +5020,7 @@ CMDF( do_redit )
             rxit = nullptr;
       }
       if( vnum )
-         cmdf( ch, "at %d redit exit %d %s %s", vnum, rev_dir[edir], rvnum.c_str(), argument.c_str(  ) );
+         cmdf( ch, "at {} redit exit {} {} {}", vnum, rev_dir[edir], rvnum, argument );
       return;
    }
 
@@ -5022,8 +5031,8 @@ CMDF( do_redit )
       argument = one_argument( argument, arg2 );
       if( arg2.empty(  ) )
       {
-         ch->printf( "Set the %s between this room, and the destination room.\r\n", arg.c_str(  ) );
-         ch->printf( "Usage: redit %s <dir> <type>\r\n", arg.c_str(  ) );
+         ch->print_fmt( "Set the {} between this room, and the destination room.\r\n", arg );
+         ch->print_fmt( "Usage: redit {} <dir> <type>\r\n", arg );
          return;
       }
       if( arg2[0] == '#' )
@@ -5039,7 +5048,7 @@ CMDF( do_redit )
       if( xit )
       {
          if( ( pt = get_pulltype( argument ) ) == -1 )
-            ch->printf( "Unknown pulltype: %s.  (See help PULLTYPES)\r\n", argument.c_str(  ) );
+            ch->print_fmt( "Unknown pulltype: {}.  (See help PULLTYPES)\r\n", argument );
          else
          {
             xit->pulltype = pt;
@@ -5120,7 +5129,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length() ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -5200,7 +5209,7 @@ CMDF( do_rdig )
          return;
       }
 
-      ch->printf( "Digging out room %d to the %s.\r\n", vnum, argument.c_str(  ) );
+      ch->print_fmt( "Digging out room {} to the {}.\r\n", vnum, argument );
 
       location = make_room( vnum, pArea );
       if( !location )
@@ -5210,13 +5219,13 @@ CMDF( do_rdig )
       }
       location->area = ch->pcdata->area;
 
-      funcf( ch, do_redit, "bexit %s %d", argument.c_str(  ), vnum );
+      funcf( ch, do_redit, "bexit {} {}", argument, vnum );
    }
    else
    {
       vnum = xit->vnum;
       location = get_room_index( vnum );
-      ch->printf( "Digging into room %d to the %s.\r\n", vnum, argument.c_str(  ) );
+      ch->print_fmt( "Digging into room {} to the {}.\r\n", vnum, argument );
    }
 
    stralloc_printf( &location->name, "%s", ch_location->name );
@@ -5232,7 +5241,7 @@ CMDF( do_rdig )
    /*
     * Move while rdigging -- Dracones 
     */
-   cmdf( ch, "goto %d", vnum );
+   cmdf( ch, "goto {}", vnum );
 }
 
 /* rgrid command by Dracones - From Smaug 1.8 */
@@ -5682,10 +5691,10 @@ CMDF( do_vlist )
             do_vlist( ch, "" );
             return;
          }
-         funcf( ch, do_mlist, "%s %s", arg2.c_str(  ), argument.c_str(  ) );
+         funcf( ch, do_mlist, "{} {}", arg2, argument );
          return;
       }
-      funcf( ch, do_mlist, "%d %d", tarea->low_vnum, tarea->hi_vnum );
+      funcf( ch, do_mlist, "{} {}", tarea->low_vnum, tarea->hi_vnum );
       return;
    }
 
@@ -5698,10 +5707,10 @@ CMDF( do_vlist )
             do_vlist( ch, "" );
             return;
          }
-         funcf( ch, do_olist, "%s %s", arg2.c_str(  ), argument.c_str(  ) );
+         funcf( ch, do_olist, "{} {}", arg2, argument );
          return;
       }
-      funcf( ch, do_olist, "%d %d", tarea->low_vnum, tarea->hi_vnum );
+      funcf( ch, do_olist, "{} {}", tarea->low_vnum, tarea->hi_vnum );
       return;
    }
 
@@ -5714,10 +5723,10 @@ CMDF( do_vlist )
             do_vlist( ch, "" );
             return;
          }
-         funcf( ch, do_rlist, "%s %s", arg2.c_str(  ), argument.c_str(  ) );
+         funcf( ch, do_rlist, "{} {}", arg2, argument );
          return;
       }
-      funcf( ch, do_rlist, "%d %d", tarea->low_vnum, tarea->hi_vnum );
+      funcf( ch, do_rlist, "{} {}", tarea->low_vnum, tarea->hi_vnum );
       return;
    }
    /*
@@ -5726,14 +5735,14 @@ CMDF( do_vlist )
    do_vlist( ch, "" );
 }
 
-void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, const std::string & argument )
+void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, std::string_view argument )
 {
    if( mptype != -1 )
    {
       mprg->type = mptype;
       STRFREE( mprg->arglist );
       if( !argument.empty(  ) )
-         mprg->arglist = STRALLOC( argument.c_str(  ) );
+         mprg->arglist = STRALLOC( argument.data(  ) );
    }
    ch->substate = SUB_MPROG_EDIT;
    ch->pcdata->dest_buf = mprg;

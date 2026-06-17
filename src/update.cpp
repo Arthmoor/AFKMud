@@ -437,7 +437,7 @@ void drunk_randoms( char_data * ch )
          if( number_percent(  ) < 10 )
             rvch = *ich;
       if( rvch )
-         cmdf( ch, "puke %s", rvch->name.c_str() );
+         cmdf( ch, "puke {}", rvch->name );
       else
          interpret( ch, "puke" );
    }
@@ -891,7 +891,7 @@ void mobile_update( void )
 
          // Is it closed? If the mob doesn't have passdoor, OR the exit is passdoor-proof, have them try and open it first.
          if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) )
-            cmdf( ch, "open %s", pexit->keyword );
+            cmdf( ch, "open {}", pexit->keyword );
 
          // Is it STILL closed? Is it marked no passdoor? Bail out.
          if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) )
@@ -944,16 +944,16 @@ void mobile_update( void )
                {
                   default:
                   case 0:
-                     cmdf( ch, "yell Get away from me, %s!", rch->name.c_str() );
+                     cmdf( ch, "yell Get away from me, {}!", rch->name );
                      break;
                   case 1:
-                     cmdf( ch, "yell Leave me be, %s!", rch->name.c_str() );
+                     cmdf( ch, "yell Leave me be, {}!", rch->name );
                      break;
                   case 2:
-                     cmdf( ch, "yell %s is trying to kill me!  Help!", rch->name.c_str() );
+                     cmdf( ch, "yell {} is trying to kill me!  Help!", rch->name );
                      break;
                   case 3:
-                     cmdf( ch, "yell Someone save me from %s!", rch->name.c_str() );
+                     cmdf( ch, "yell Someone save me from {}!", rch->name );
                      break;
                }
                found = true;
