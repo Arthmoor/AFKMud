@@ -870,13 +870,6 @@ extern const char *ex_pearth[];
 extern const char *ex_pfire[];
 extern const char *wear_locs[];
 extern const char *lang_names[];
-extern const char *temp_settings[]; /* FB */
-extern const char *precip_settings[];
-extern const char *wind_settings[];
-extern const char *preciptemp_msg[6][6];
-extern const char *windtemp_msg[6][6];
-extern const char *precip_msg[];
-extern const char *wind_msg[];
 extern const char *const login_msg[];
 
 /*
@@ -1007,7 +1000,7 @@ int number_bits( int );
 int dice( int, int );
 void log_string_plus( short, short, std::string_view );
 void log_string( std::string_view );
-void make_wizlist( void );
+void make_wizlist( );
 
 // descriptor.cpp
 void show_file( char_data *, std::string_view );
