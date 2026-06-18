@@ -569,11 +569,6 @@ const char *attack_table[DAM_MAX_TYPE] = {
    "thrust"
 };
 
-const char *attack_table_plural[DAM_MAX_TYPE] = {
-   "hits", "slashes", "stabs", "hacks", "crushes", "lashes", "pierces",
-   "thrusts"
-};
-
 const char *s_blade_messages[24] = {
    "miss", "barely scratch", "scratch", "nick", "cut", "hit", "tear",
    "rip", "gash", "lacerate", "hack", "maul", "rend", "decimate",

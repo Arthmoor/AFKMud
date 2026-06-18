@@ -832,7 +832,6 @@ extern const struct cha_app_type cha_app[26];
 extern const struct lck_app_type lck_app[26];
 
 extern const char *attack_table[DAM_MAX_TYPE];
-extern const char *attack_table_plural[DAM_MAX_TYPE];
 
 extern const char **s_message_table[DAM_MAX_TYPE];
 extern const char **p_message_table[DAM_MAX_TYPE];
