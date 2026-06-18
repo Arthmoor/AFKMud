@@ -218,7 +218,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDROOM";
       }
 
@@ -351,11 +351,11 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
 
                   if( area_conflict )
                   {
-                     log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-                     log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
-                     log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
+                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+                     log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
                      log_string( "This is a fatal error. Program terminated." );
-                     exit( 1 );
+                     std::exit( EXIT_FAILURE );
                   }
                }
 
@@ -378,7 +378,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
                   else
                   {
                      pRoomIndex = get_room_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: %d", vnum );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: {}", vnum );
                      pRoomIndex->clean_room(  );
                      oldroom = true;
                   }
@@ -419,7 +419,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
                      /*
                       * Clean out the old resets
                       */
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: %s", tarea->name );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: {}", tarea->name );
                      pRoomIndex->clean_resets(  );
                   }
                }
@@ -441,7 +441,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDOBJECT";
       }
 
@@ -580,7 +580,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
 
                if( pObjIndex->ego >= sysdata->minego )
                {
-                  log_printf( "Item %d gaining new rare item limit of 1", pObjIndex->vnum );
+                  log_printf( "Item {} gaining new rare item limit of 1", pObjIndex->vnum );
                   pObjIndex->limit = 1;   /* Sets new limit since stock zones won't have one */
                }
                else
@@ -642,9 +642,9 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
 
                   if( area_conflict )
                   {
-                     log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-                     log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
-                     log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
+                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+                     log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
                      log_string( "This is a fatal error. Program terminated." );
                      exit( 1 );
                   }
@@ -669,7 +669,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
                   else
                   {
                      pObjIndex = get_obj_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: %d", vnum );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: {}", vnum );
                      pObjIndex->clean_obj(  );
                      oldobj = true;
                   }
@@ -716,14 +716,14 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDMOBILE";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1099,11 +1099,11 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                   if( area_conflict )
                   {
-                     log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-                     log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
-                     log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
+                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+                     log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
                      log_string( "This is a fatal error. Program terminated." );
-                     exit( 1 );
+                     std::exit( EXIT_FAILURE );
                   }
                }
 
@@ -1126,7 +1126,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
                   else
                   {
                      pMobIndex = get_mob_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: %d", vnum );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: {}", vnum );
                      pMobIndex->clean_mob(  );
                      oldmob = true;
                   }
@@ -1162,14 +1162,14 @@ void fread_fuss_areadata( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDAREADATA";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 

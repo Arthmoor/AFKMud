@@ -153,7 +153,7 @@ void continent_data::load_png_file( void )
    FILE *jpgin;
    gdImagePtr im;
 
-   log_printf( "Loading png file for %s...", this->name.c_str( ) );
+   log_printf( "Loading png file for {}...", this->name );
 
    std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, this->mapfile );
 
@@ -306,7 +306,7 @@ void continent_data::fread_landmark( std::ifstream & stream )
          return;
       }
       else
-         log_printf( "%s: %s - Bad line reading landmarks: %s %s", __func__, this->name.c_str(  ), key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: {} - Bad line reading landmarks: {} {}", __func__, this->name, key, value );
    }
    while( !stream.eof(  ) );
 
@@ -365,7 +365,7 @@ void continent_data::fread_mapexit( std::ifstream & stream )
          return;
       }
       else
-         log_printf( "%s: %s - Bad line reading map exits: %s %s", __func__, this->name.c_str(  ), key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: {} - Bad line reading map exits: {} {}", __func__, this->name, key, value );
    }
    while( !stream.eof(  ) );
 
@@ -437,7 +437,7 @@ void load_continent( std::string_view continent_file )
          continent_list.push_back( continent );
       }
       else
-         log_printf( "%s: Bad line in continent file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in continent file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -519,7 +519,7 @@ void continent_data::save( )
 {
    std::ofstream stream;
 
-   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving continent data for %s...", this->filename.c_str( ) );
+   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving continent data for {}...", this->filename );
 
    std::filesystem::path buf = std::format( "{}{}.bak", MAP_DIR, this->filename );
    std::filesystem::rename( this->filename, buf );
@@ -582,7 +582,7 @@ void continent_data::save( )
    stream << "#END" << std::endl;
    stream.close();
 
-   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Data for %s saved.", this->filename.c_str( ) );
+   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Data for {} saved.", this->filename );
 }
 
 /*
@@ -2211,13 +2211,13 @@ void check_random_mobs( char_data * ch )
 
    if( !( imob = get_mob_index( vnum ) ) )
    {
-      log_printf( "%s: Missing mob for vnum %d", __func__, vnum );
+      log_printf( "{}: Missing mob for vnum {}", __func__, vnum );
       return;
    }
 
    mob = imob->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    mob->set_actflag( ACT_ONMAP );
    mob->sector = terrain;
    mob->continent = ch->continent;
@@ -2389,7 +2389,7 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
 
          fch->from_room(  );
          if( !fch->to_room( to ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          fix_maps( ch, fch );
       }
    }
@@ -2921,7 +2921,7 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, std::string_vie
    original = ch->in_room;
    ch->from_room(  );
    if( !ch->to_room( maproom ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    collect_followers( ch, original, ch->in_room );
    interpret( ch, "look" );
 
@@ -2956,7 +2956,7 @@ void leave_map( char_data * ch, char_data * victim, room_index * target )
       room_index *from = ch->in_room;
       ch->from_room(  );
       if( !ch->to_room( target ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       fix_maps( victim, ch );
       collect_followers( ch, from, target );
 

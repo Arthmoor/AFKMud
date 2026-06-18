@@ -2432,7 +2432,7 @@ SPELLF( spell_gate )
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    act( AT_MAGIC, "You bring forth $N from another plane!", ch, nullptr, mob, TO_CHAR );
    act( AT_MAGIC, "$n brings forth $N from another plane!", ch, nullptr, mob, TO_ROOM );
@@ -3527,7 +3527,7 @@ SPELLF( spell_portal )
    obj_data *portalObj;
    if( !( portalObj = get_obj_index( OBJ_VNUM_PORTAL )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return rSPELL_FAILED;
    }
    portalObj->timer = 3;
@@ -3646,12 +3646,12 @@ SPELLF( spell_farsight )
    visited = ch->has_visited( location->area );
    ch->from_room(  );
    if( !ch->to_room( location ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    interpret( ch, "look" );
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    if( !visited )
       ch->remove_visit( location );
 
@@ -3996,7 +3996,7 @@ SPELLF( spell_animate_dead )
          {
             ch->print( "Only dead dragons can become dracoliches.\r\n" );
             if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             return rSPELL_FAILED;
          }
       }
@@ -4005,7 +4005,7 @@ SPELLF( spell_animate_dead )
       {
          ch->printf( "The spirit of this corpse is not powerful enough to become a %s.\r\n", corpse_name );
          if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return rSPELL_FAILED;
       }
 
@@ -4013,12 +4013,12 @@ SPELLF( spell_animate_dead )
       {
          ch->printf( "You are not powerful enough to animate a %s yet.\r\n", corpse_name );
          if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return rSPELL_FAILED;
       }
 
       if( !mob->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
       act( AT_MAGIC, "$n makes $T rise from the grave!", ch, nullptr, pMobIndex->short_descr, TO_ROOM );
       act( AT_MAGIC, "You make $T rise from the grave!", ch, nullptr, pMobIndex->short_descr, TO_CHAR );
@@ -4937,7 +4937,7 @@ SPELLF( spell_create_obj )
 
    if( !( obj = get_obj_index( vnum )->create_object( lvl ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       failed_casting( skill, ch, nullptr, nullptr );
       return rNONE;
    }
@@ -5006,7 +5006,7 @@ SPELLF( spell_create_mob )
    mob->gold = 0;
    successful_casting( skill, ch, mob, nullptr );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    add_follower( mob, ch );
    af.type = sn;
    af.duration = ( number_fuzzy( ( ( level + 1 ) / 3 ) + 1 ) * DUR_CONV );
@@ -5453,7 +5453,7 @@ SPELLF( spell_rejuv )
             act( AT_MAGIC, "Your heart gives out from the strain.", ch, nullptr, victim, TO_VICT );
             act( AT_MAGIC, "$n's heart gives out from the strain.", victim, nullptr, nullptr, TO_ROOM );
             raw_kill( ch, victim ); /* Ooops. The target died :) */
-            log_printf( "%s killed during rejuvenation by %s", victim->name.c_str(), ch->name.c_str() );
+            log_printf( "{} killed during rejuvenation by {}", victim->name, ch->name );
             break;
          case 4:
          case 5: /* Age */
@@ -5597,7 +5597,7 @@ SPELLF( spell_warsteed )
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    ch->print( "&[magic]You summon a spectacular flying steed into being!\r\n" );
    bind_follower( mob, ch, sn, ch->level * 10 );
@@ -5640,7 +5640,7 @@ SPELLF( spell_warmount )
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    ch->print( "&[magic]You summon a spectacular steed into being!\r\n" );
    bind_follower( mob, ch, sn, ch->level * 10 );
@@ -5889,7 +5889,7 @@ SPELLF( spell_creeping_doom )
 
    mob = temp->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    fix_maps( ch, mob );
    ch->print( "&[magic]You summon a vile swarm of insects into being!\r\n" );
    return rNONE;

@@ -612,7 +612,7 @@ void load_holidays( void )
       else if( key == "End" )
          daylist.push_back( day );
       else
-         log_printf( "%s: Bad line in holiday file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in holiday file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );

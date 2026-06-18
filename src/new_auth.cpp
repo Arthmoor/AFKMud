@@ -136,7 +136,7 @@ void pick_name( std::string & argument, std::filesystem::path filename )
       std::ifstream infile( filename );
       if( !infile )
       {
-         log_printf( "Can't find %s", filename.c_str() );
+         log_printf( "Can't find {}", filename.string() );
          return;
       }
 
@@ -258,11 +258,11 @@ void clean_auth_list( void )
             bool success = std::filesystem::remove( file_path, ec );
             if( success )
             {
-               log_printf( "%s deleted for inactivity: %ld days", file_path.c_str(), age.count() );
+               log_printf( "{} deleted for inactivity: {} days", file_path.string(), age.count() );
             }
             else if( ec )
             {
-               log_printf( "Failed to delete %s: %s", file_path.c_str(), ec.message().c_str() );
+               log_printf( "Failed to delete {}: {}", file_path.string(), ec.message() );
             }
          }
       }
@@ -365,7 +365,7 @@ void load_auth_list( void )
       else if( key == "End" )
          authlist.push_back( auth );
       else
-         log_printf( "%s: Bad line in auth.dat file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in auth.dat file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -617,13 +617,13 @@ CMDF( do_authorize )
             nauth->state = AUTH_AUTHED;
             nauth->authed_by = ch->name;
             save_auth_list(  );
-            log_printf_plus( LOG_AUTH, level, "%s: authorized", nauth->name.c_str(  ) );
+            log_printf_plus( LOG_AUTH, level, "{}: authorized", nauth->name );
             ch->print_fmt( "You have authorized {}.\r\n", nauth->name );
             return;
          }
          else if( !str_cmp( argument, "reject" ) )
          {
-            log_printf_plus( LOG_AUTH, level, "%s: denied authorization", nauth->name.c_str(  ) );
+            log_printf_plus( LOG_AUTH, level, "{}: denied authorization", nauth->name );
             ch->print_fmt( "You have denied {}.\r\n", nauth->name );
             /*
              * Addition so that denied names get added to reserved list - Samson 10-18-98 
@@ -637,7 +637,7 @@ CMDF( do_authorize )
             nauth->state = AUTH_CHANGE_NAME;
             nauth->change_by = ch->name;
             save_auth_list(  );
-            log_printf_plus( LOG_AUTH, level, "%s: name denied", nauth->name.c_str(  ) );
+            log_printf_plus( LOG_AUTH, level, "{}: name denied", nauth->name );
             ch->print_fmt( "You requested {} change names.\r\n", nauth->name );
             /*
              * Addition so that requested name changes get added to reserved list - Samson 10-18-98 
@@ -660,7 +660,7 @@ CMDF( do_authorize )
          if( argument.empty(  ) || !str_cmp( argument, "accept" ) || !str_cmp( argument, "yes" ) )
          {
             victim->pcdata->authed_by = ch->name;
-            log_printf_plus( LOG_AUTH, level, "%s: authorized", victim->name.c_str() );
+            log_printf_plus( LOG_AUTH, level, "{}: authorized", victim->name );
 
             ch->print_fmt( "You have authorized {}.\r\n", victim->name );
 
@@ -672,7 +672,7 @@ CMDF( do_authorize )
          else if( !str_cmp( argument, "reject" ) )
          {
             victim->print( "&RYou have been denied access.\r\n" );
-            log_printf_plus( LOG_AUTH, level, "%s: denied authorization", victim->name.c_str() );
+            log_printf_plus( LOG_AUTH, level, "{}: denied authorization", victim->name );
             ch->print_fmt( "You have denied {}.\r\n", victim->name );
             remove_from_auth( victim->name );
             /*
@@ -687,7 +687,7 @@ CMDF( do_authorize )
             nauth->state = AUTH_CHANGE_NAME;
             nauth->change_by = ch->name;
             save_auth_list(  );
-            log_printf_plus( LOG_AUTH, level, "%s: name denied", victim->name.c_str() );
+            log_printf_plus( LOG_AUTH, level, "{}: name denied", victim->name );
             victim->print_fmt( "&R\r\nThe MUD Administrators have found the name '{}' to be unacceptable.\r\n"
                             "You may choose a new name when you reach the end of this area.\r\n"
                             "The name you choose must be medieval and original.\r\n"
@@ -860,7 +860,7 @@ CMDF( do_mpapplyb )
 
    if( NOT_AUTHED( victim ) )
    {
-      log_printf_plus( LOG_AUTH, level, "%s [%s] New player entering the game.\r\n", victim->name.c_str(), victim->desc->hostname.c_str(  ) );
+      log_printf_plus( LOG_AUTH, level, "{} [{}] New player entering the game.\r\n", victim->name, victim->desc->hostname );
       victim->print_fmt( "\r\nYou are now entering the game...\r\n"
                       "However, your character has not been authorized yet and can not\r\n"
                       "advance past level 5 until then. Your character will be saved,\r\n" "but not allowed to fully indulge in {}.\r\n", sysdata->mud_name );

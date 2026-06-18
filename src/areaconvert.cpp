@@ -268,13 +268,13 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
-            log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
+            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+            log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
             if( !manual )
             {
                log_string( "This is a fatal error. Program terminated." );
-               exit( 1 );
+               std::exit( EXIT_FAILURE );
             }
             else
             {
@@ -301,13 +301,13 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             else
             {
                shutdown_mud( "duplicate vnum" );
-               exit( 1 );
+               std::exit( EXIT_FAILURE );
             }
          }
          else
          {
             pMobIndex = get_mob_index( vnum );
-            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: %d", vnum );
+            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: {}", vnum );
             pMobIndex->clean_mob(  );
             oldmob = true;
          }
@@ -839,13 +839,13 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
-            log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
+            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+            log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
             if( !manual )
             {
                log_string( "This is a fatal error. Program terminated." );
-               exit( 1 );
+               std::exit( EXIT_FAILURE );
             }
             else
             {
@@ -878,7 +878,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          else
          {
             pObjIndex = get_obj_index( vnum );
-            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: %d", vnum );
+            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: {}", vnum );
             pObjIndex->clean_obj(  );
             oldobj = true;
          }
@@ -969,7 +969,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
          if( pObjIndex->ego >= sysdata->minego )
          {
-            log_printf( "Item %d gaining new rare item limit of 1", pObjIndex->vnum );
+            log_printf( "Item {} gaining new rare item limit of 1", pObjIndex->vnum );
             pObjIndex->limit = 1;   /* Sets new limit since stock zones won't have one */
          }
          else
@@ -1030,7 +1030,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
          if( pObjIndex->ego >= sysdata->minego )
          {
-            log_printf( "Item %d gaining new rare item limit of 1", pObjIndex->vnum );
+            log_printf( "Item {} gaining new rare item limit of 1", pObjIndex->vnum );
             pObjIndex->limit = 1;   /* Sets new limit since stock zones won't have one */
          }
          else
@@ -1212,13 +1212,13 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: %s has vnum conflict with %s!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "%s occupies vnums   : %-6d - %-6d", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
-            log_printf( "%s wants to use vnum: %-6d", tarea->filename, vnum );
+            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
+            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+            log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
             if( !manual )
             {
                log_string( "This is a fatal error. Program terminated." );
-               exit( 1 );
+               std::exit( EXIT_FAILURE );
             }
             else
             {
@@ -1251,7 +1251,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          else
          {
             pRoomIndex = get_room_index( vnum );
-            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: %d", vnum );
+            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: {}", vnum );
             pRoomIndex->clean_room(  );
             oldroom = true;
          }
@@ -1399,7 +1399,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                   if( arg3 < 0 || arg3 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg3 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
                   {
                      bug( "%s: SmaugWiz - 'D': exit %d not door.", __func__, arg3 );
-                     log_printf( "Reset: %c %d %d %d %d %d", letter2, extra, arg1, arg2, arg3, arg4 );
+                     log_printf( "Reset: {} {} {} {} {} {}", letter2, extra, arg1, arg2, arg3, arg4 );
                      if( fBootDb )
                         boot_log( "%s: SmaugWiz - %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg3 );
                   }
@@ -1739,7 +1739,7 @@ void load_stresets( area_data * tarea, FILE * fp )
             if( !( pRoomIndex = get_room_index( arg1 ) ) )
             {
                bug( "%s: 'D': room %d doesn't exist.", __func__, arg1 );
-               log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
+               log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
                   boot_log( "%s: %s (%d) 'D': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
                break;
@@ -1748,7 +1748,7 @@ void load_stresets( area_data * tarea, FILE * fp )
             if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
             {
                bug( "%s: 'D': exit %d not door.", __func__, arg2 );
-               log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
+               log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
                   boot_log( "%s: %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg2 );
             }
@@ -1874,7 +1874,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
       }
       else
       {
-         log_printf( "%s: No # found at start of area file %s", __func__, filename.c_str(  ) );
+         log_printf( "{}: No # found at start of area file {}", __func__, filename );
          return;
       }
    }
@@ -1906,7 +1906,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          {
             area_failed = true;
             FCLOSE( fpArea );
-            log_printf( "%s: Invalid header at start of area file %s", __func__, filename.c_str(  ) );
+            log_printf( "{}: Invalid header at start of area file {}", __func__, filename );
             return;
          }
       }
@@ -1915,7 +1915,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
    {
       area_failed = true;
       FCLOSE( fpArea );
-      log_printf( "%s: Invalid header at start of area file %s", __func__, filename.c_str(  ) );
+      log_printf( "{}: Invalid header at start of area file {}", __func__, filename );
       return;
    }
    dotdcheck = 0;
@@ -1930,7 +1930,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
 
       if( fread_letter( fpArea ) != '#' )
       {
-         log_printf( "%s: # not found. %s", __func__, tarea->filename );
+         log_printf( "{}: # not found. {}", __func__, tarea->filename );
          return;
       }
 
@@ -1960,7 +1960,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
             log_string( "------ Warning: Encountered Smaug 1.8b Version 2 format. Proceeding with unknown results. ------" );
          tarea->version = area_version;
 
-         log_printf( "&Y%s: Format version %d detected.", tarea->filename, tarea->version );
+         log_printf( "&Y{}: Format version {} detected.", tarea->filename, tarea->version );
       }
       // Skip the helps as we no longer support them embedded in area files
       else if( !str_cmp( word, "HELPS" ) )
@@ -2172,18 +2172,18 @@ void load_stock_area_file( const std::string & filename, bool manual )
       tarea->sort_name(  );
       tarea->sort_vnums(  );
       if( tarea->version == 0 && !dotdcheck )
-         log_printf( "%-20s: Converted Smaug 1.02a Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
+         log_printf( "{:<20}: Converted Smaug 1.02a Zone  Vnums: {:5} - {:<5}", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else if( tarea->version == 1 && !dotdcheck )
-         log_printf( "%-20s: Converted Smaug 1.4a Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
+         log_printf( "{:<20}: Converted Smaug 1.4a Zone  Vnums: {:5} - {:<5}", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else if( ( tarea->version == 2 || tarea->version == 3 ) && !dotdcheck )
-         log_printf( "%-20s: Converted Smaug 1.8b Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
+         log_printf( "{:<20}: Converted Smaug 1.8b Zone  Vnums: {:5} - {:<5}", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else if( dotdcheck )
-         log_printf( "%-20s: Converted DOTDII 2.3.6 Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
+         log_printf( "{:<20}: Converted DOTDII 2.3.6 Zone  Vnums: {:5} - {:<5}", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else
-         log_printf( "%-20s: Converted SmaugWiz Zone  Vnums: %5d - %-5d", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
+         log_printf( "{:<20}: Converted SmaugWiz Zone  Vnums: {:5} - {:<5}", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
 
       if( tarea->low_vnum < 0 || tarea->hi_vnum < 0 )
-         bug( "%-20s: Bad Vnum Range", tarea->filename );
+         log_printf( "{:<20}: Bad Vnum Range", tarea->filename );
       if( !tarea->author )
          tarea->author = STRALLOC( "Unknown" );
       if( tarea->creation_date == std::chrono::system_clock::time_point{} )
@@ -2192,7 +2192,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          tarea->install_date = umod;
    }
    else
-      log_printf( "(%s)", filename.c_str(  ) );
+      log_printf( "({})", filename );
 }
 
 /* Use of the forceload argument with this command isn't recommended

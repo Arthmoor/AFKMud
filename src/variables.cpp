@@ -514,14 +514,14 @@ void fread_variable( char_data * ch, FILE * fp )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 

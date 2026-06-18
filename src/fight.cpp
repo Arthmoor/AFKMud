@@ -90,7 +90,7 @@ bool in_arena( char_data * ch )
       bug( "%s: %s in nullptr room. Only The Wedgy knows how though.", __func__, ch->name.c_str() );
       log_string( "Going to attempt to move them to Limbo to prevent a crash." );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return false;
    }
 
@@ -110,7 +110,7 @@ void make_blood( char_data * ch )
 
    if( !( obj = get_obj_index( OBJ_VNUM_BLOOD )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->timer = number_range( 2, 4 );
@@ -131,7 +131,7 @@ void make_corpse( char_data * ch, char_data * killer )
       name = ch->short_descr;
       if( !( corpse = get_obj_index( OBJ_VNUM_CORPSE_NPC )->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
 
@@ -169,7 +169,7 @@ void make_corpse( char_data * ch, char_data * killer )
       name = ch->name;
       if( !( corpse = get_obj_index( OBJ_VNUM_CORPSE_PC )->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
 
@@ -651,8 +651,8 @@ bool check_illegal_pk( char_data * ch, char_data * victim )
       if( ( !victim->has_pcflag( PCFLAG_DEADLY ) || !ch->has_pcflag( PCFLAG_DEADLY ) )
           && !in_arena( ch ) && ch != victim && !( ch->is_immortal(  ) && victim->is_immortal(  ) ) )
       {
-         log_printf( "&p%s on %s%s in &W***&rILLEGAL PKILL&W*** &pattempt at %d",
-                     ( lastplayercmd.c_str() ), ( victim->isnpc(  ) ? victim->short_descr.c_str() : victim->name.c_str() ), ( victim->isnpc(  ) ? victim->name.c_str() : "" ), victim->in_room->vnum );
+         log_printf( "&p{} on {}{} in &W***&rILLEGAL PKILL&W*** &pattempt at {}",
+                     ( lastplayercmd ), ( victim->isnpc(  ) ? victim->short_descr : victim->name ), ( victim->isnpc(  ) ? victim->name : "" ), victim->in_room->vnum );
          last_pkroom = victim->in_room->vnum;
          return true;
       }
@@ -1542,7 +1542,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       was_in_room = ch->in_room;
       ch->from_room(  );
       if( !ch->to_room( victim->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
    else
       was_in_room = nullptr;
@@ -1644,7 +1644,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
                {
                   ch->from_room(  );
                   if( !ch->to_room( was_in_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                     log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                }
                return;
             }
@@ -1686,7 +1686,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    {
       ch->from_room(  );
       if( !ch->to_room( was_in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 }
 
@@ -2347,7 +2347,7 @@ void death_cry( char_data * ch )
       name = ch->isnpc(  ) ? ch->short_descr : ch->name;
       if( !( obj = get_obj_index( vnum )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       obj->timer = number_range( 4, 7 );
@@ -2383,7 +2383,7 @@ void raw_kill( char_data * ch, char_data * victim )
    {
       room_index *location = nullptr;
 
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s bested %s in the arena.", ch->name.c_str(), victim->name.c_str() );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} bested {} in the arena.", ch->name, victim->name );
       ch->print_fmt( "You bested {} in arena combat!\r\n", victim->name );
       victim->print_fmt( "{} bested you in arena combat!\r\n", ch->name );
       victim->hit = 1;
@@ -2396,7 +2396,7 @@ void raw_kill( char_data * ch, char_data * victim )
 
       victim->from_room(  );
       if( !victim->to_room( location ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
       if( victim->has_aflag( AFF_PARALYSIS ) )
          victim->unset_aflag( AFF_PARALYSIS );
@@ -2764,7 +2764,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
    if( dam > maxdam )
    {
       bug( "%s: %d more than %d points!", __func__, ( int )dam, maxdam );
-      log_printf( "** %s (lvl %d) -> %s **", ch->name.c_str(), ch->level, victim->name.c_str() );
+      log_printf( "** {} (lvl {}) -> {} **", ch->name, ch->level, victim->name );
       dam = maxdam;
    }
 
@@ -3047,8 +3047,8 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          if( !victim->desc )
             add_loginmsg( victim->name, 17, ( ch->isnpc() ? ch->short_descr : ch->name ) );
 
-         log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s (%d) killed by %s at %d",
-                          victim->name.c_str(), victim->level, ( ch->isnpc(  ) ? ch->short_descr.c_str() : ch->name.c_str() ), victim->in_room->vnum );
+         log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} ({}) killed by {} at {}",
+                          victim->name, victim->level, ( ch->isnpc(  ) ? ch->short_descr : ch->name ), victim->in_room->vnum );
 
          if( !ch->isnpc(  ) && !ch->is_immortal(  ) && ch->pcdata->clan && ch->pcdata->clan->clan_type != CLAN_GUILD && victim != ch )
          {

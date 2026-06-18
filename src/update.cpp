@@ -570,9 +570,9 @@ void mobile_update( void )
 
       if( !ch->in_room )
       {
-         log_printf( "%s: ch in nullptr room - attempting limbo transfer", __func__ );
+         log_printf( "{}: ch in nullptr room - attempting limbo transfer", __func__ );
          if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          continue;
       }
 
@@ -747,9 +747,9 @@ void mobile_update( void )
 
       if( !ch->in_room->area )
       {
-         log_printf( "Room %d for mob %s is not associated with an area?", ch->in_room->vnum, ch->name.c_str() );
+         log_printf( "Room {} for mob {} is not associated with an area?", ch->in_room->vnum, ch->name.c_str() );
          if( ch->was_in_room )
-            log_printf( "Was in room %d", ch->was_in_room->vnum );
+            log_printf( "Was in room {}", ch->was_in_room->vnum );
          ch->extract( true );
          continue;
       }
@@ -1255,7 +1255,7 @@ void char_update( void )
          MOBtrigger = false;
          ch->from_room(  );
          if( !ch->to_room( location ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          ch->print( "The gods have released you from hell as your sentence is up!\r\n" );
          interpret( ch, "look" );
          ch->pcdata->helled_by.clear();
@@ -1754,7 +1754,7 @@ void obj_update( void )
          obj_data *firepit;
 
          if( !( firepit = get_obj_index( OBJ_VNUM_FIREPIT )->create_object( 1 ) ) )
-            log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          else
          {
             firepit->continent = obj->continent;
@@ -2165,10 +2165,10 @@ void aggr_update( void )
          if( !victim )
          {
             bug( "%s: null victim. Aggro: %s", __func__, ch->name.c_str() );
-            log_printf( "Breaking %s loop and transferring aggressor to Limbo.", __func__ );
+            log_printf( "Breaking {} loop and transferring aggressor to Limbo.", __func__ );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             break;
          }
 

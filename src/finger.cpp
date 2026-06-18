@@ -160,10 +160,9 @@ CMDF( do_finger )
    char_data *victim = nullptr;
    room_index *temproom, *original = nullptr;
    int level = LEVEL_IMMORTAL;
-   const char *suf;
    short day = 0;
    bool loaded = false, skip = false;
-   std::string time_str;
+   std::string time_str, suf;
 
    if( ch->isnpc(  ) )
    {
@@ -234,7 +233,7 @@ CMDF( do_finger )
       pclist.push_back( d->character );
       original = d->character->in_room;
       if( !d->character->to_room( temproom ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       victim = d->character;  /* Hopefully this will work, if not, we're SOL */
       d->character->desc = nullptr;
       d->character = nullptr;
@@ -316,7 +315,7 @@ CMDF( do_finger )
 
       victim->from_room(  );
       if( !victim->to_room( original ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
       quitting_char = victim;
 

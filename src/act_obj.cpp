@@ -2508,7 +2508,7 @@ CMDF( do_brandish )
 
    if( ( sn = staff->value[3] ) < 0 || sn >= num_skills || skill_table[sn]->spell_fun == nullptr )
    {
-      log_printf( "Object: %s Vnum %d, bad sn: %d.", staff->short_descr, staff->pIndexData->vnum, sn );
+      log_printf( "Object: {} Vnum {}, bad sn: {}.", staff->short_descr, staff->pIndexData->vnum, sn );
       return;
    }
 
@@ -2533,7 +2533,7 @@ CMDF( do_brandish )
             switch ( skill_table[sn]->target )
             {
                default:
-                  log_printf( "Object: %s Vnum %d, bad target for sn %d.", staff->short_descr, staff->pIndexData->vnum, sn );
+                  log_printf( "Object: {} Vnum {}, bad target for sn {}.", staff->short_descr, staff->pIndexData->vnum, sn );
                   return;
 
                case TAR_IGNORE:

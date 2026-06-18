@@ -6473,7 +6473,7 @@ CMDF( do_slice )
    if( !( slice = get_obj_index( OBJ_VNUM_SLICE )->create_object( 1 ) ) )
    {
       ch->print( "Error - report to immortals\r\n" );
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -6860,7 +6860,7 @@ CMDF( do_tinker )
    {
       mob = pmob->create_mobile(  );
       if( !mob->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
       ch->print_fmt( "You tinker around awhile and construct a {}!\r\n", mob->short_descr );
       return;
@@ -7458,7 +7458,7 @@ CMDF( do_woodcall )
    {
       mob = call->create_mobile(  );
       if( !mob->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       ch->print_fmt( "&[skill]Your calls attract {} to your side!\r\n", mob->short_descr );
       bind_follower( mob, ch, gsn_woodcall, ch->level * 10 );
       return;
@@ -7834,7 +7834,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_SHIELD )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;
@@ -7846,7 +7846,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_JACKET )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       acapply += 5;
@@ -7858,7 +7858,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_BOOTS )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7874,7 +7874,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_GLOVES )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7890,7 +7890,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_LEGGINGS )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;
@@ -7902,7 +7902,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_SLEEVES )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;
@@ -7914,7 +7914,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_HELMET )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7930,7 +7930,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_BAG )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       hidetype = "A bag";
@@ -7940,7 +7940,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_BELT )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7956,7 +7956,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_CLOAK )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -7972,7 +7972,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_QUIVER )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       hidetype = "A quiver";
@@ -7982,7 +7982,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_WATERSKIN )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       hidetype = "A waterskin";
@@ -7992,7 +7992,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_COLLAR )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       --acapply;
@@ -8008,7 +8008,7 @@ CMDF( do_tan )
       if( !( hide = get_obj_index( OBJ_VNUM_TAN_WHIP )->create_object( 1 ) ) )
       {
          ch->print( "Ooops. Bug. The immortals have been notified.\r\n" );
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       ++acapply;

@@ -173,7 +173,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDPROG";
       }
 
@@ -183,7 +183,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -249,7 +249,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "ENDFILE";
       }
 
@@ -266,7 +266,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
             if( word[0] == '\0' )
             {
-               log_printf( "%s: EOF encountered reading file!", __func__ );
+               log_printf( "{}: EOF encountered reading file!", __func__ );
                word = "#ENDPROG";
             }
 
@@ -280,7 +280,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
             switch ( word[0] )
             {
                default:
-                  log_printf( "%s: no match: %s", __func__, word );
+                  log_printf( "{}: no match: {}", __func__, word );
                   fread_to_eol( progfile );
                   break;
 

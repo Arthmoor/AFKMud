@@ -5434,7 +5434,7 @@ CMDF( do_ocreate )
 
    if( vnum < 1 || vnum > sysdata->maxvnum )
    {
-      ch->printf( "Invalid vnum. Allowable range is 1 to %d\r\n", sysdata->maxvnum );
+      ch->print_fmt( "Invalid vnum. Allowable range is 1 to {}\r\n", sysdata->maxvnum );
       return;
    }
 
@@ -5482,13 +5482,13 @@ CMDF( do_ocreate )
    }
    if( !( obj = pObjIndex->create_object( ch->level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->to_char( ch );
 
    act( AT_IMMORT, "$n makes arcane gestures, and opens $s hands to reveal $p!", ch, obj, nullptr, TO_ROOM );
-   ch->printf( "&YYou make arcane gestures, and open your hands to reveal %s!\r\nObjVnum:  &W%d   &YKeywords:  &W%s\r\n",
+   ch->print_fmt( "&YYou make arcane gestures, and open your hands to reveal {}!\r\nObjVnum:  &W%d   &YKeywords:  &W%s\r\n",
                pObjIndex->short_descr, pObjIndex->vnum, pObjIndex->name );
 }
 
@@ -5518,7 +5518,7 @@ CMDF( do_mcreate )
 
    if( vnum < 1 || vnum > sysdata->maxvnum )
    {
-      ch->printf( "Invalid vnum. Allowable range is 1 to %d\r\n", sysdata->maxvnum );
+      ch->print_fmt( "Invalid vnum. Allowable range is 1 to {}\r\n", sysdata->maxvnum );
       return;
    }
 
@@ -5565,7 +5565,7 @@ CMDF( do_mcreate )
    }
    mob = pMobIndex->create_mobile(  );
    if( !mob->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    /*
     * If you create one on the map, make sure it gets placed properly - Samson 8-21-99 
@@ -5573,7 +5573,7 @@ CMDF( do_mcreate )
    fix_maps( ch, mob );
 
    act( AT_IMMORT, "$n waves $s arms about, and $N appears at $s command!", ch, nullptr, mob, TO_ROOM );
-   ch->printf( "&YYou wave your arms about, and %s appears at your command!\r\nMobVnum:  &W%d   &YKeywords:  &W%s\r\n",
+   ch->print_fmt( "&YYou wave your arms about, and {} appears at your command!\r\nMobVnum:  &W%d   &YKeywords:  &W%s\r\n",
                pMobIndex->short_descr, pMobIndex->vnum, pMobIndex->player_name );
 }
 
@@ -5587,14 +5587,14 @@ CMDF( do_rlist )
 
    argument = one_argument( argument, arg1 );
 
-   lrange = ( is_number( arg1 ) ? atoi( arg1.c_str(  ) ) : 1 );
-   trange = ( is_number( argument ) ? atoi( argument.c_str(  ) ) : 2 );
+   lrange = ( is_number( arg1 ) ? std::stoi( arg1 ) : 1 );
+   trange = ( is_number( argument ) ? std::stoi( argument ) : 2 );
 
    for( vnum = lrange; vnum <= trange; ++vnum )
    {
       if( !( room = get_room_index( vnum ) ) )
          continue;
-      ch->pagerf( "%5d) %s\r\n", vnum, room->name );
+      ch->pager_fmt( "{:5}) {}\r\n", vnum, room->name );
    }
 }
 
@@ -5608,14 +5608,14 @@ CMDF( do_olist )
 
    argument = one_argument( argument, arg1 );
 
-   lrange = ( is_number( arg1 ) ? atoi( arg1.c_str(  ) ) : 1 );
-   trange = ( is_number( argument ) ? atoi( argument.c_str(  ) ) : 2 );
+   lrange = ( is_number( arg1 ) ? std::stoi( arg1 ) : 1 );
+   trange = ( is_number( argument ) ? std::stoi( argument ) : 2 );
 
    for( vnum = lrange; vnum <= trange; ++vnum )
    {
       if( !( obj = get_obj_index( vnum ) ) )
          continue;
-      ch->pagerf( "%5d) %-20s (%s)\r\n", vnum, obj->name, obj->short_descr );
+      ch->pager_fmt( "{:5}) {:<20} ({})\r\n", vnum, obj->name, obj->short_descr );
    }
 }
 
@@ -5629,14 +5629,14 @@ CMDF( do_mlist )
 
    argument = one_argument( argument, arg1 );
 
-   lrange = ( is_number( arg1 ) ? atoi( arg1.c_str(  ) ) : 1 );
-   trange = ( is_number( argument ) ? atoi( argument.c_str(  ) ) : 2 );
+   lrange = ( is_number( arg1 ) ? std::stoi( arg1 ) : 1 );
+   trange = ( is_number( argument ) ? std::stoi( argument ) : 2 );
 
    for( vnum = lrange; vnum <= trange; ++vnum )
    {
       if( !( mob = get_mob_index( vnum ) ) )
          continue;
-      ch->pagerf( "%5d) %-20s '%s'\r\n", vnum, mob->player_name, mob->short_descr );
+      ch->pager_fmt( "{:5}) {:<20} '{}'\r\n", vnum, mob->player_name, mob->short_descr );
    }
 }
 
@@ -7236,7 +7236,7 @@ CMDF( do_vassign )
    }
    mob = pMobIndex->create_mobile(  );
    if( !mob->to_room( room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    /*
     * Initialize last mob in range 
@@ -7248,7 +7248,7 @@ CMDF( do_vassign )
    }
    mob = pMobIndex->create_mobile(  );
    if( !mob->to_room( room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    /*
     * Initialize first obj in range 
@@ -7260,7 +7260,7 @@ CMDF( do_vassign )
    }
    if( !( obj = pObjIndex->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->to_room( room, nullptr );
@@ -7275,7 +7275,7 @@ CMDF( do_vassign )
    }
    if( !( obj = pObjIndex->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->to_room( room, nullptr );

@@ -402,13 +402,13 @@ CMDF( do_disconnect )
          if( victim && victim->get_trust(  ) >= ch->get_trust(  ) )
          {
             ch->print( "You cannot disconnect that person.\r\n" );
-            log_printf( "%s tried to disconnect %s but failed.", ch->name.c_str(), !victim->name.empty() ? victim->name.c_str() : "Someone" );
+            log_printf( "{} tried to disconnect {} but failed.", ch->name, !victim->name.empty() ? victim->name : "Someone" );
             return;
          }
          if( victim )
-            log_printf( "%s will be disconnected %s", ch->name.c_str(), !victim->name.empty() ? victim->name.c_str() : "Someone" );
+            log_printf( "{} will be disconnected {}", ch->name, !victim->name.empty() ? victim->name : "Someone" );
          else
-            log_printf( "%s will be disconnected desc #%d", ch->name.c_str(), desc );
+            log_printf( "{} will be disconnected desc #{}", ch->name, desc );
          d->disconnect = true;
          ch->print( "Ok.\r\n" );
          return;
@@ -670,7 +670,7 @@ void location_action( char_data * ch, const std::string & argument, room_index *
    room_index *original = ch->in_room;
    ch->from_room(  );
    if( !ch->to_room( location ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    interpret( ch, argument );
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) && !original->flags.test( ROOM_MAP ) )
@@ -692,7 +692,7 @@ void location_action( char_data * ch, const std::string & argument, room_index *
       {
          ch->from_room(  );
          if( !ch->to_room( original ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          break;
       }
    }
@@ -794,13 +794,13 @@ CMDF( do_rat )
 
       ch->from_room(  );
       if( !ch->to_room( location ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       interpret( ch, argument );
    }
 
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    ch->print( "Done.\r\n" );
 }
 
@@ -2257,7 +2257,7 @@ void objinvoke( char_data * ch, std::string & argument )
 
    if( !( obj = pObjIndex->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -2284,14 +2284,14 @@ void objinvoke( char_data * ch, std::string & argument )
       else
       {
          ch->print_fmt( "WARNING: This item has ego exceeding {}! Destroy this item when finished!\r\n", sysdata->minego );
-         log_printf( "%s: %s has loaded a copy of vnum %d.", __func__, ch->name, pObjIndex->vnum );
+         log_printf( "{}: {} has loaded a copy of vnum {}.", __func__, ch->name, pObjIndex->vnum );
       }
    }
 #else
    if( obj->ego >= sysdata->minego )
    {
       ch->print_fmt( "WARNING: This item has ego exceeding {}! Destroy this item when finished!\r\n", sysdata->minego );
-      log_printf( "%s: %s has loaded a copy of vnum %d.", __func__, ch->name.c_str(), pObjIndex->vnum );
+      log_printf( "{}: {} has loaded a copy of vnum {}.", __func__, ch->name, pObjIndex->vnum );
    }
 #endif
 
@@ -2393,7 +2393,7 @@ void mobinvoke( char_data * ch, std::string & argument )
 
    victim = pMobIndex->create_mobile(  );
    if( !victim->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    /*
     * If you load one on the map, make sure it gets placed properly - Samson 8-21-99 
@@ -2618,8 +2618,8 @@ void destroy_immdata( char_data * ch, std::string_view vicname )
       ch->print( "&RPlayer's immortal data destroyed.\r\n" );
    else if( ec && ec != std::errc::no_such_file_or_directory )
    {
-      ch->printf( "&RUnknown error - %s (immortal data). Report to the admins.\r\n", ec.message().c_str() );
-      log_printf( "Error destroying %s: %s", godfile.c_str(), ec.message().c_str() );
+      ch->print_fmt( "&RUnknown error - {} (immortal data). Report to the admins.\r\n", ec.message() );
+      log_printf( "Error destroying {}: {}", godfile.string(), ec.message() );
    }
 
    areafile = std::format( "{}.are", vicname );
@@ -2644,8 +2644,8 @@ void destroy_immdata( char_data * ch, std::string_view vicname )
             ch->print( "&RPlayer's area data destroyed. Area saved as backup.\r\n" );
          else if( ec != std::errc::no_such_file_or_directory )
          {
-            ch->printf( "&RUnknown error - %s (area data). Report to the admins.\r\n", ec.message().c_str() );
-            log_printf( "Error renaming %s to %s: %s", buildfile.c_str(), buildbackup.c_str(), ec.message().c_str() );
+            ch->print_fmt( "&RUnknown error - {} (area data). Report to the admins.\r\n", ec.message() );
+            log_printf( "Error renaming {} to {}: {}", buildfile.string(), buildbackup.string(), ec.message() );
          }
          break;
       }
@@ -4476,7 +4476,7 @@ CMDF( do_loadup )
    pclist.push_back( d->character );
 
    if( !d->character->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    old_room_vnum = d->character->in_room->vnum;
    if( d->character->get_trust(  ) >= ch->get_trust(  ) )
@@ -5003,11 +5003,11 @@ CMDF( do_destroy )
    buf = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
 
    if( std::filesystem::remove( buf, ec ) )
-      ch->printf( "&RPlayer %s destroyed.\r\n", argument.c_str() );
+      ch->print_fmt( "&RPlayer {} destroyed.\r\n", argument );
    else if( ec && ec != std::errc::no_such_file_or_directory )
    {
-      ch->printf( "&RUnknown error: %s. Report to Samson.\r\n", ec.message().c_str() );
-      log_printf( "Error destroying %s: %s", buf.c_str(), ec.message().c_str() );
+      ch->print_fmt( "&RUnknown error: {}. Report to Samson.\r\n", ec.message() );
+      log_printf( "Error destroying {}: {}", buf.string(), ec.message() );
    }
 }
 
@@ -5168,11 +5168,11 @@ CMDF( do_for )
             room_index *old_room = ch->in_room;
             ch->from_room(  );
             if( !ch->to_room( p->in_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             interpret( ch, command );
             ch->from_room(  );
             if( !ch->to_room( old_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          }  /* if found */
       }  /* for every char */
    }
@@ -5224,11 +5224,11 @@ CMDF( do_for )
             room_index *old_room = ch->in_room;
             ch->from_room(  );
             if( !ch->to_room( room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             interpret( ch, argument );
             ch->from_room(  );
             if( !ch->to_room( old_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          }  /* if found */
       }  /* for every room in a bucket */
    }  /* if strchr */
@@ -5307,7 +5307,7 @@ CMDF( do_hell )
    act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    act( AT_MAGIC, "$n appears in a could of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    interpret( victim, "look" );
    if( !victim->desc )
@@ -5352,7 +5352,7 @@ CMDF( do_unhell )
    act( AT_MAGIC, "$n disappears in a cloud of godly light.", victim, nullptr, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( location ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    victim->print( "The gods have smiled on you and released you from hell early!\r\n" );
    interpret( victim, "look" );
    if( victim != ch )
@@ -7400,7 +7400,7 @@ bool load_race_file( const char *fname )
                else if( !IS_VALID_SN( sn ) )
                {
                   bug( "%s: skill %s = SN %d", __func__, word, sn );
-                  log_printf( "Skill %s unknown", word );
+                  log_printf( "Skill '{}' unknown", word );
                }
                else
                {

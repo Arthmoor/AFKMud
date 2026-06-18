@@ -151,7 +151,7 @@ void load_helps( void )
    stream.open( std::filesystem::path( HELP_FILE ) );
    if( !stream.is_open(  ) )
    {
-      log_printf( "No help file found." );
+      log_string( "No help file found." );
       return;
    }
 
@@ -248,7 +248,7 @@ void load_helps( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
-         log_printf( "Bad line in help file: %s %s", key.c_str(  ), value.c_str(  ) );
+         log_printf( "Bad line in help file: {} {}", key, value );
       }
    }
    while( !stream.eof(  ) );

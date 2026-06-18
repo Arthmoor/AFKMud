@@ -921,7 +921,7 @@ void add_shellcommand( shell_cmd * command )
    cmd_type *cmd;
    if( ( cmd = find_command( command->get_name(  ) ) ) != nullptr )
    {
-      log_printf( "Removing command: %s and replacing in shell command table.", cmd->name.c_str(  ) );
+      log_printf( "Removing command: {} and replacing in shell command table.", cmd->name );
       unlink_command( cmd );
       deleteptr( cmd );
    }
@@ -1289,9 +1289,9 @@ bool shell_hook( char_data * ch, std::string_view command, std::string & argumen
        * a logged command.  Check for descriptor in case force is used. 
        */
       if( ch->desc && ch->desc->original )
-         log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name, ch->desc->original->name, logline.c_str() );
+         log_printf_plus( loglvl, ch->level, "Log {} ({}): {}", ch->name, ch->desc->original->name, logline );
       else
-         log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name, logline.c_str() );
+         log_printf_plus( loglvl, ch->level, "Log {}: {}", ch->name, logline );
    }
 
    if( ch->desc && ch->desc->snoop_by )

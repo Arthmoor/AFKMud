@@ -186,7 +186,7 @@ descriptor_data::~descriptor_data(  )
    if( can_compress && is_compressing )
    {
       if( !compressEnd(  ) )
-         log_printf( "Error stopping compression on desc %d", descriptor );
+         log_printf( "Error stopping compression on desc {}", descriptor );
    }
    deleteptr( mccp );
 
@@ -717,7 +717,7 @@ bool descriptor_data::read( )
 
    if( iStart >= buffer_limit )
    {
-      log_printf( "%s input overflow!", this->hostname.c_str() );
+      log_printf( "{} input overflow!", this->hostname );
       this->write( "\r\n*** PUT A LID ON IT!!! ***\r\n" );
       return false;
    }
@@ -754,9 +754,8 @@ bool descriptor_data::read( )
          if( iErr == EWOULDBLOCK || iErr == EAGAIN )
             break; // Kernel buffer empty
 
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s: Descriptor error on #%d", __func__, this->descriptor );
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: %s", ( this->character && !this->character->name.empty() ) ? this->character->name.c_str() : this->hostname.c_str(  ) );
-         perror( __func__ );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "{}: Descriptor error on #{}", __func__, this->descriptor );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Descriptor belongs to: {}", ( this->character && !this->character->name.empty() ) ? this->character->name : this->hostname );
          return false;
       }
    }
@@ -1042,8 +1041,8 @@ void descriptor_data::read_from_buffer( )
 
             ++this->character->pcdata->spam;
 
-            log_printf( "%s was autofrozen by the spamguard - spamming: %s", this->character->name.c_str(), this->incomm.c_str(  ) );
-            log_printf( "%s has spammed %d times this login.", this->character->name.c_str(), this->character->pcdata->spam );
+            log_printf( "{} was autofrozen by the spamguard - spamming: {}", this->character->name, this->incomm );
+            log_printf( "{} has spammed {} times this login.", this->character->name, this->character->pcdata->spam );
 
             this->write( "\r\n*** PUT A LID ON IT!!! ***\r\nYou cannot enter the same command more than 10 consecutive times!\r\n" );
             this->write( "The Spamguard has spoken!\r\n" );
@@ -1406,7 +1405,7 @@ void load_dns( void )
             dnslist.push_back( cache );
          }
          else
-            log_printf( "%s: Bad line in DNS cache file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+            log_printf( "{}: Bad line in DNS cache file: {} {}", __func__, key, value );
       }
       while( !stream.eof(  ) );
       stream.close(  );
@@ -1693,7 +1692,7 @@ void new_descriptor( int new_desc )
    {
       sysdata->time_of_max = c_time( current_time, -1 );
       sysdata->alltimemax = sysdata->maxplayers;
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "Broke all-time maximum player record: %d", sysdata->alltimemax );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "Broke all-time maximum player record: {}", sysdata->alltimemax );
       save_sysdata(  );
    }
    set_alarm( 0 );
@@ -2003,7 +2002,7 @@ void close_socket( descriptor_data * d, bool force )
    {
       // Put this check here because seeing that they lost link after quitting/renting was annoying. We already know this.
       if( ch->in_room )
-         log_printf_plus( LOG_COMM, ch->level, "Closing link to %s.", ch->pcdata->filename.c_str() );
+         log_printf_plus( LOG_COMM, ch->level, "Closing link to {}.", ch->pcdata->filename );
 
       /*
        * Link dead auth -- Rantic 
@@ -2113,11 +2112,11 @@ void show_status( char_data * ch )
       interpret( ch, "checkboards" );
 
    if( str_cmp( ch->desc->client, "Unidentified" ) )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name.c_str() );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "{} client detected for {}.", ch->desc->client, ch->name );
    if( ch->desc->can_compress )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name.c_str() );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for {}.", ch->name );
    if( ch->desc->msp_detected )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name.c_str() );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for {}.", ch->name );
    quotes( ch );
    show_stateflags( ch );
 }
@@ -2168,7 +2167,7 @@ short descriptor_data::check_reconnect( std::string_view name, bool fConn )
             mprog_login_trigger( ch );
 
             act( AT_ACTION, "$n has reconnected.", ch, nullptr, nullptr, TO_CANSEE );
-            log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected.", ch->name.c_str(), hostname.c_str(  ) );
+            log_printf_plus( LOG_COMM, ch->level, "{} [{}] reconnected.", ch->name, hostname );
             connected = CON_PLAYING;
             check_auth_state( ch ); /* Link dead support -- Rantic */
             show_status( ch );
@@ -2197,7 +2196,7 @@ short descriptor_data::check_playing( std::string_view name, bool kick )
                   && cstate != CON_PRIZEKEY && cstate != CON_CONFIRMPRIZEKEY && cstate != CON_RAISE_STAT ) )
          {
             write_to_buffer( "Already connected - try again.\r\n" );
-            log_printf_plus( LOG_COMM, ch->level, "%s already connected.", ch->pcdata->filename.c_str() );
+            log_printf_plus( LOG_COMM, ch->level, "{} already connected.", ch->pcdata->filename );
             return BERR;
          }
          if( !kick )
@@ -2223,7 +2222,7 @@ short descriptor_data::check_playing( std::string_view name, bool kick )
          mprog_login_trigger( ch );
 
          act( AT_ACTION, "$n has reconnected, kicking off old link.", ch, nullptr, nullptr, TO_CANSEE );
-         log_printf_plus( LOG_COMM, ch->level, "%s [%s] reconnected, kicking off old link.", ch->name.c_str(), hostname.c_str(  ) );
+         log_printf_plus( LOG_COMM, ch->level, "{} [{}] reconnected, kicking off old link.", ch->name, hostname );
          connected = cstate;
          check_auth_state( ch ); /* Link dead support -- Rantic */
          show_status( ch );
@@ -2245,12 +2244,12 @@ void char_to_game( char_data * ch )
          ch->desc->xterm256 = true;
       else if( ch->desc->client.contains( "256" ) ) // Probably a bit of a leap of faith here.
          ch->desc->xterm256 = true;
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s client detected for %s.", capitalize( ch->desc->client ).c_str(  ), ch->name.c_str() );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "{} client detected for {}.", ch->desc->client, ch->name );
    }
    if( ch->desc->can_compress )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for %s.", ch->name.c_str() );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MCCP support detected for {}.", ch->name );
    if( ch->desc->msp_detected )
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for %s.", ch->name.c_str() );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "MSP support detected for {}.", ch->name );
 
    charlist.push_back( ch );
    pclist.push_back( ch );
@@ -2270,25 +2269,25 @@ void char_to_game( char_data * ch )
    else if( !ch->is_immortal(  ) && ch->pcdata->release_date > std::chrono::system_clock::time_point{} && ch->pcdata->release_date > current_time )
    {
       if( !ch->to_room( get_room_index( ROOM_VNUM_HELL ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 
    else if( ch->in_room && ( ch->is_immortal(  ) || !ch->in_room->flags.test( ROOM_PROTOTYPE ) ) )
    {
       if( !ch->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 
    else if( ch->is_immortal(  ) )
    {
       if( !ch->to_room( get_room_index( ROOM_VNUM_CHAT ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 
    else
    {
       if( !ch->to_room( get_room_index( ROOM_VNUM_TEMPLE ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 
    if( ch->get_timer( TIMER_SHOVEDRAG ) > 0 )
@@ -2506,7 +2505,7 @@ void descriptor_data::nanny( std::string & argument )
          {
             send_mssp_data( this );
             // Uncomment below if you want to know when an MSSP request occurs
-            //log_printf( "IP: %s requested MSSP data!", this->ipaddress.c_str() );
+            //log_printf( "IP: {} requested MSSP data!", this->ipaddress );
             close_socket( this, false );
             return;
          }
@@ -2584,12 +2583,12 @@ void descriptor_data::nanny( std::string & argument )
             return;
          }
 
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Incoming connection: %s, port %d.", hostname.c_str(  ), client_port );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Incoming connection: {}, port {}.", hostname, client_port );
 
          fOld = load_char_obj( this, argument, true, false );
          if( !character )
          {
-            log_printf( "Bad player file %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
+            log_printf( "Bad player file {}@{}.", argument, hostname );
             buffer_printf( "Your playerfile is corrupt...Please notify {}\r\n", sysdata->admin_email );
             close_socket( this, false );
             return;
@@ -2605,10 +2604,10 @@ void descriptor_data::nanny( std::string & argument )
 
          if( ch->has_pcflag( PCFLAG_DENY ) )
          {
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Denying access to %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Denying access to {}@{}.", argument, hostname );
             if( newstate != 0 )
             {
-               write_to_buffer( "That name is already taken.  Please choose another: " );
+               write_to_buffer( "That name is already taken. Please choose another: " );
                connected = CON_GET_NAME;
                character->desc = nullptr;
                deleteptr( character ); /* Big Memory Leak before --Shaddai */
@@ -2640,7 +2639,7 @@ void descriptor_data::nanny( std::string & argument )
          {
             write_to_buffer( "The game is wizlocked. Only immortals can connect now.\r\n" );
             write_to_buffer( "Please try back later.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to %s.", ch->name.c_str(),
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: {} disconnected due to {}.", ch->name,
                              sysdata->WIZLOCK ? "wizlock" : sysdata->IMPLOCK ? "implock" : "lockdown" );
             close_socket( this, false );
             return;
@@ -2649,7 +2648,7 @@ void descriptor_data::nanny( std::string & argument )
          {
             write_to_buffer( "The game is locked down. Only the head implementor can connect now.\r\n" );
             write_to_buffer( "Please try back later.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_SUPREME, "Immortal: %s disconnected due to lockdown.", ch->name.c_str() );
+            log_printf_plus( LOG_COMM, LEVEL_SUPREME, "Immortal: {} disconnected due to lockdown.", ch->name );
             close_socket( this, false );
             return;
          }
@@ -2657,14 +2656,14 @@ void descriptor_data::nanny( std::string & argument )
          {
             write_to_buffer( "The game is implocked. Only implementors can connect now.\r\n" );
             write_to_buffer( "Please try back later.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_KL, "Immortal: %s disconnected due to implock.", ch->name.c_str() );
+            log_printf_plus( LOG_COMM, LEVEL_KL, "Immortal: {} disconnected due to implock.", ch->name );
             close_socket( this, false );
             return;
          }
          else if( bootlock && !ch->is_immortal(  ) )
          {
             write_to_buffer( "The game is preparing to reboot. Please try back in about 5 minutes.\r\n" );
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: %s disconnected due to bootlock.", ch->name.c_str() );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Player: {} disconnected due to bootlock.", ch->name );
             close_socket( this, false );
             return;
          }
@@ -2758,7 +2757,7 @@ void descriptor_data::nanny( std::string & argument )
          fOld = load_char_obj( this, filename, false, false );
          if( !fOld )
          {
-            log_printf( "Bad player file %s@%s.", argument.c_str(  ), hostname.c_str(  ) );
+            log_printf( "Bad player file {}@{}.", argument, hostname );
             buffer_printf( "Your playerfile is corrupt...Please notify {}\r\n", sysdata->admin_email );
             close_socket( this, false );
             return;
@@ -2768,7 +2767,7 @@ void descriptor_data::nanny( std::string & argument )
          if( ch->position > POS_SITTING && ch->position < POS_STANDING )
             ch->position = POS_STANDING;
 
-         log_printf_plus( LOG_COMM, LEVEL_KL, "%s [%s] has connected.", ch->name.c_str(), hostname.c_str(  ) );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "{} [{}] has connected.", ch->name, hostname );
 
          std::string hash_check = check_hash_update( argument, ch->pcdata->pwd );
          if( hash_check != ch->pcdata->pwd )
@@ -2955,7 +2954,7 @@ void descriptor_data::nanny( std::string & argument )
             room_index *donate = get_room_index( ROOM_VNUM_DONATION );
 
             write_to_buffer( "\r\nYou've deleted your character!!!\r\n" );
-            log_printf( "Player: %s has deleted.", capitalize( ch->name ).c_str() );
+            log_printf( "Player: {} has deleted.", capitalize( ch->name ) );
 
             if( donate != nullptr && ch->level > 1 )  /* No more deleting to remove goodies from play */
             {
@@ -3004,7 +3003,7 @@ void descriptor_data::nanny( std::string & argument )
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3059,7 +3058,7 @@ void descriptor_data::nanny( std::string & argument )
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3106,7 +3105,7 @@ void descriptor_data::nanny( std::string & argument )
             write_to_buffer( "A fatal internal error has occurred. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3145,7 +3144,7 @@ void descriptor_data::nanny( std::string & argument )
             write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             connected = CON_PLAYING;
             break;
          }
@@ -3158,7 +3157,7 @@ void descriptor_data::nanny( std::string & argument )
                ch->pcdata->spare_ptr = nullptr;
                ch->from_room(  );
                if( !ch->to_room( get_room_index( ROOM_VNUM_ENDREDEEM ) ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                  log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                interpret( ch, "look" );
                ch->set_color( AT_BLUE );
                if( ch->Class == CLASS_BARD && prize->item_type == ITEM_INSTRUMENT )

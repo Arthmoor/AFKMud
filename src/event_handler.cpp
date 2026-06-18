@@ -97,7 +97,7 @@ void ev_violence( void *data )
 
    if( ch->in_room->flags.test( ROOM_SAFE ) )
    {
-      log_printf( "%s: %s fighting %s in a SAFE room.", __func__, ch->name.c_str(), victim->name.c_str() );
+      log_printf( "{}: {} fighting {} in a SAFE room.", __func__, ch->name, victim->name );
       ch->stop_fighting( true );
    }
    else if( ch->IS_AWAKE(  ) && ch->in_room == victim->in_room )

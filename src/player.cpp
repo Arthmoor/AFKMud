@@ -1175,7 +1175,7 @@ CMDF( do_deadly )
 
    ch->set_pcflag( PCFLAG_DEADLY );
    ch->print( "&YYou have joined the ranks of the deadly. The gods cease to protect you!\r\n" );
-   log_printf( "%s has become a pkiller!", ch->name.c_str() );
+   log_printf( "{} has become a pkiller!", ch->name );
 }
 
 const std::string output_person( char_data * ch, char_data * player )

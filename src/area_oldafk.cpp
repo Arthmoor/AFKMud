@@ -96,12 +96,12 @@ void load_mobiles( area_data * tarea, FILE * fp )
          {
             bug( "%s: vnum %d duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          }
          else
          {
             pMobIndex = get_mob_index( vnum );
-            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: %d", vnum );
+            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: {}", vnum );
             pMobIndex->clean_mob(  );
             oldmob = true;
          }
@@ -323,12 +323,12 @@ void load_objects( area_data * tarea, FILE * fp )
          {
             bug( "%s: vnum %d duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          }
          else
          {
             pObjIndex = get_obj_index( vnum );
-            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: %d", vnum );
+            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: {}", vnum );
             pObjIndex->clean_obj(  );
             oldobj = true;
          }
@@ -795,7 +795,7 @@ void load_resets( area_data * tarea, FILE * fp )
             if( !( pRoomIndex = get_room_index( arg1 ) ) )
             {
                bug( "%s: 'D': room %d doesn't exist.", __func__, arg1 );
-               log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
+               log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
                   boot_log( "%s: %s (%d) 'D': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
                break;
@@ -804,7 +804,7 @@ void load_resets( area_data * tarea, FILE * fp )
             if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
             {
                bug( "%s: 'D': exit %d not door.", __func__, arg2 );
-               log_printf( "Reset: %c %d %d %d %d", letter, extra, arg1, arg2, arg3 );
+               log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
                   boot_log( "%s: %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg2 );
             }
@@ -881,12 +881,12 @@ void load_rooms( area_data * tarea, FILE * fp )
          {
             bug( "%s: vnum %d duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          }
          else
          {
             pRoomIndex = get_room_index( vnum );
-            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: %d", vnum );
+            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: {}", vnum );
             pRoomIndex->clean_room(  );
             oldroom = true;
          }
@@ -920,7 +920,7 @@ void load_rooms( area_data * tarea, FILE * fp )
             /*
              * Clean out the old resets
              */
-            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: %s", tarea->name );
+            log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: {}", tarea->name );
             pRoomIndex->clean_resets(  );
          }
       }
@@ -1226,7 +1226,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
          if( tarea->hi_vnum >= sysdata->maxvnum )
          {
             sysdata->maxvnum = tarea->hi_vnum + 1;
-            log_printf( "MaxVnum value raised to %d to accomadate new zone.", sysdata->maxvnum );
+            log_printf( "MaxVnum value raised to {} to accomadate new zone.", sysdata->maxvnum );
             save_sysdata(  );
          }
       }

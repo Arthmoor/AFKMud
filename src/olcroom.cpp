@@ -283,17 +283,17 @@ void olc_log( descriptor_data * d, const char *format, ... )
    va_end( args );
 
    if( d->connected == CON_REDIT )
-      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s ROOM(%d): ", d->character->name.c_str(), room->vnum );
+      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} ROOM({}): ", d->character->name, room->vnum );
 
    else if( d->connected == CON_OEDIT )
-      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s OBJ(%d): ", d->character->name.c_str(), obj->pIndexData->vnum );
+      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} OBJ({}): ", d->character->name, obj->pIndexData->vnum );
 
    else if( d->connected == CON_MEDIT )
    {
       if( victim->isnpc(  ) )
-         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s MOB(%d): ", d->character->name.c_str(), victim->pIndexData->vnum );
+         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} MOB({}): ", d->character->name, victim->pIndexData->vnum );
       else
-         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: %s PLR(%s): ", d->character->name.c_str(), victim->name.c_str() );
+         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} PLR({}): ", d->character->name, victim->name );
    }
    else
       bug( "%s: called with a bad connected state", __func__ );

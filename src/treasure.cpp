@@ -239,7 +239,7 @@ void load_weapontable(  )
       else if( key == "End" )
          w_table.push_back( wt );
       else
-         log_printf( "%s: Bad line in weapon types file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in weapon types file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -421,7 +421,7 @@ void load_runewords( void )
             rwordlist.push_back( rword );
       }
       else
-         log_printf( "%s: Bad line in runewords file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in runewords file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -518,7 +518,7 @@ void load_runes( void )
          }
       }
       else
-         log_printf( "%s: Bad line in runes file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in runes file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -862,7 +862,7 @@ CMDF( do_loadrune )
 
    if( !( obj = get_obj_index( OBJ_VNUM_RUNE )->create_object( ch->level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       ch->print( "&RGeneric rune item is MISSING! Report to Samson.\r\n" );
       return;
    }
@@ -874,7 +874,7 @@ CMDF( do_loadrune )
    obj->value[2] = rune->stat2[0];
    obj->value[3] = rune->stat2[1];
    obj->to_char( ch );
-   ch->printf( "You now have a %s Rune.\r\n", rune->get_name(  ).c_str() );
+   ch->print_fmt( "You now have a {} Rune.\r\n", rune->get_name(  ) );
 }
 
 /* Edited by Tarl 2 April 02 for alphabetical display */
@@ -1034,7 +1034,7 @@ obj_data *generate_rune( short level )
    obj_data *newrune;
    if( !( newrune = get_obj_index( OBJ_VNUM_RUNE )->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return nullptr;
    }
 
@@ -1058,7 +1058,7 @@ obj_data *generate_gem( short level )
 
    if( !( gem = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return nullptr;
    }
 
@@ -1445,7 +1445,7 @@ short choose_material( short level )
       if( materials[mval].minlevel <= level && materials[mval].maxlevel >= level )
          return mval;
    }
-   log_printf( "Notice: %s failed to choose. Setting generic.", __func__ );
+   log_printf( "Notice: {} failed to choose. Setting generic.", __func__ );
    return ( TMAT_MAX - 1 );
 }
 
@@ -1463,7 +1463,7 @@ short choose_armor( short level )
       if( armor_type[mval].minlevel <= level && armor_type[mval].maxlevel >= level )
          return mval;
    }
-   log_printf( "Notice: %s failed to choose. Setting hide armor.", __func__ );
+   log_printf( "Notice: {} failed to choose. Setting hide armor.", __func__ );
    return ( 3 );
 }
 
@@ -2021,7 +2021,7 @@ obj_data *generate_item( area_data * area, short level )
 
    if( !( newitem = get_obj_index( OBJ_VNUM_TREASURE )->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return nullptr;
    }
 
@@ -2075,7 +2075,7 @@ obj_data *create_money( int amount )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_ONE )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return nullptr;
       }
    }
@@ -2083,7 +2083,7 @@ obj_data *create_money( int amount )
    {
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_SOME )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return nullptr;
       }
       stralloc_printf( &obj->short_descr, obj->short_descr, amount );
@@ -2244,7 +2244,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
       gold = gold + ( gold * ( ch->pcdata->exgold / 100 ) );
       create_money( gold )->to_obj( corpse );
       if( !str_cmp( corpse->name, "corpse random" ) )
-         log_printf( "Generated %d gold", gold );
+         log_printf( "Generated {} gold", gold );
       return;
    }
    else if( tchance <= area->tg_item )
@@ -2257,7 +2257,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
       }
       item->to_obj( corpse );
       if( !str_cmp( corpse->name, "corpse random" ) )
-         log_printf( "Generated %s", item->short_descr );
+         log_printf( "Generated {}", item->short_descr );
       return;
    }
    else if( tchance <= area->tg_gem )
@@ -2286,7 +2286,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
       }
       item->to_obj( corpse );
       if( !str_cmp( corpse->name, "corpse random" ) )
-         log_printf( "Generated %s", item->short_descr );
+         log_printf( "Generated {}", item->short_descr );
       return;
    }
 }
@@ -2326,7 +2326,7 @@ CMDF( do_rttest )
    }
    if( !( corpse = get_obj_index( OBJ_VNUM_CORPSE_NPC )->create_object( mlvl ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    stralloc_printf( &corpse->name, "%s", "corpse random" );
@@ -3320,7 +3320,7 @@ CMDF( do_forge )
    obj_data *item;
    if( !( item = get_obj_index( OBJ_VNUM_TREASURE )->create_object( 50 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       ch->print( "Ooops. Something happened while forging the item. Inform the immortals.\r\n" );
       return;
    }

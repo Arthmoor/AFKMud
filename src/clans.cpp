@@ -413,14 +413,14 @@ void delete_clan( char_data * ch, clan_data * clan )
    if( !ch )
    {
       if( std::filesystem::remove( filename ) )
-         log_printf( "Clan data for %s destroyed - no members left.", clanname.c_str(  ) );
+         log_printf( "Clan data for {} destroyed - no members left.", clanname );
       return;
    }
 
    if( std::filesystem::remove( filename ) )
    {
       ch->print_fmt( "&RClan data for {} has been destroyed.\r\n", clanname );
-      log_printf( "Clan data for %s has been destroyed by %s.", clanname.c_str(  ), ch->name.c_str(  ) );
+      log_printf( "Clan data for {} has been destroyed by {}.", clanname, ch->name );
    }
 }
 
@@ -1037,7 +1037,7 @@ void verify_clans( void )
       }
 
       change = false;
-      log_printf( "Checking data for %s.....", clan->name.c_str(  ) );
+      log_printf( "Checking data for {}.....", clan->name );
 
       if( !exists_player( clan->leader ) )
       {
@@ -1103,7 +1103,7 @@ void verify_clans( void )
          clan->gettwo = true;
       }
       if( change == true )
-         log_printf( "Administration data for %s has changed.", clan->name.c_str(  ) );
+         log_printf( "Administration data for {} has changed.", clan->name );
 
       for( auto it2 = clan->memberlist.begin(); it2 != clan->memberlist.end(); )
       {
@@ -1112,7 +1112,7 @@ void verify_clans( void )
 
          if( !exists_player( roster->name ) )
          {
-            log_printf( "%s removed from roster. Player no longer exists.", roster->name.c_str(  ) );
+            log_printf( "{} removed from roster. Player no longer exists.", roster->name );
             remove_roster( clan, roster->name );
          }
       }
@@ -1263,7 +1263,7 @@ CMDF( do_make )
 
    if( !( obj = pObjIndex->create_object( level ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    obj->extra_flags.set( ITEM_CLANOBJECT );
@@ -1611,7 +1611,7 @@ void pcsetclan( char_data * ch, std::string argument )
          }
       }
       echo_all_printf( ECHOTAR_ALL, "&[guildtalk]{} has dissolved {}!", ch->name, clan->name );
-      log_printf( "%s has dissolved %s", ch->name.c_str(  ), clan->name.c_str(  ) );
+      log_printf( "{} has dissolved {}", ch->name, clan->name );
       delete_clan( ch, clan );
       write_clan_list(  );
       return;

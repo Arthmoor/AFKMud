@@ -1659,11 +1659,11 @@ CMDF( do_look )
             original = ch->in_room;
             ch->from_room(  );
             if( !ch->to_room( pexit->to_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             do_look( ch, "auto" );
             ch->from_room(  );
             if( !ch->to_room( original ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             if( !visited )
                ch->remove_visit( pexit->to_room );
          }

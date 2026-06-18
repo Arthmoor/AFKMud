@@ -866,7 +866,7 @@ CMDF( do_mapout )
       if( map_obj_index )
       {
          if( !( map_obj = map_obj_index->create_object( 1 ) ) )
-            log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          ed = set_extra_descr( map_obj, "runes map scrawls" );
          ed->desc = ch->pcdata->pnote->text;
          map_obj->to_char( ch );

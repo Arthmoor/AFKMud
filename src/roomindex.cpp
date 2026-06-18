@@ -102,7 +102,7 @@ room_index::~room_index(  )
 
          ch->from_room(  );
          if( !ch->to_room( limbo ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       }
       else
          ch->extract( true );
@@ -924,7 +924,7 @@ obj_data *make_trap( int charges, int type, int level, int flags, int mindamage,
 
    if( !( trap = get_obj_index( OBJ_VNUM_TRAP )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return nullptr;
    }
    trap->timer = 0;
@@ -1117,7 +1117,7 @@ void room_index::reset(  )
             mob->resetnum = onreset;
             pReset->sreset = false;
             if( !mob->to_room( pRoomIndex ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             level = urange( 0, mob->level - 2, LEVEL_AVATAR );
 
             // LOAD_PROG imported from Smaug 1.8b
@@ -1997,7 +1997,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
          {
             bug( "%s: 'D': exit %d not door.", __func__, arg2 );
-            log_printf( "Reset: %c %d %d %d %d %d", letter, extra, arg1, arg2, arg3, arg4 );
+            log_printf( "Reset: {} {} {} {} {} {}", letter, extra, arg1, arg2, arg3, arg4 );
             if( fBootDb )
                boot_log( "%s: %s (%d) 'D': exit %d not door.", __func__, area->filename, count, arg2 );
          }

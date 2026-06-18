@@ -382,7 +382,7 @@ CMDF( do_pcrename )
    victim->pcdata->filename = capitalize( argument );
    if( !std::filesystem::remove( oldname ) )
    {
-      log_printf( "Error: Couldn't delete file %s in do_rename.", oldname.c_str() );
+      log_printf( "Error: Couldn't delete file {} in do_rename.", oldname.string() );
       ch->print( "Couldn't delete the old file!\r\n" );
    }
 
@@ -494,7 +494,7 @@ void delete_pfile( const std::filesystem::path & path, std::string_view name, st
 {
    if( std::filesystem::remove( path ) )
    {
-      log_printf( "Player %s was deleted. Exceeded time limit of %d days.", name.data(), days );
+      log_printf( "Player {} was deleted. Exceeded time limit of {} days.", name, days );
       remove_from_auth( name.data() );
       if( auto* pclan = get_clan( clan_name.data() ) )
       {
@@ -502,8 +502,6 @@ void delete_pfile( const std::filesystem::path & path, std::string_view name, st
       }
       ++deleted;
    }
-   else
-      perror( "Unlink" );
 }
 
 void fread_pfile( std::ifstream & is, time_t tdiff, const std::filesystem::path & filepath, bool count )
@@ -654,13 +652,13 @@ void pfile_scan( bool count )
    else
       log_string( "Pfile count completed." );
 
-   log_printf( "Total pfiles scanned: %d", cou );
-   log_printf( "Total exempted pfiles: %d", pexempt );
+   log_printf( "Total pfiles scanned: {}", cou );
+   log_printf( "Total exempted pfiles: {}", pexempt );
 
    if( !count )
    {
-      log_printf( "Total pfiles deleted: %d", deleted );
-      log_printf( "Total pfiles remaining: %d", cou - deleted );
+      log_printf( "Total pfiles deleted: {}", deleted );
+      log_printf( "Total pfiles remaining: {}", cou - deleted );
       num_pfiles = cou - deleted;
    }
    else
@@ -806,7 +804,7 @@ CMDF( do_pfiles )
 
    if( argument.empty(  ) )
    {
-      log_printf( "Manual pfile cleanup started by %s.", ch->name.c_str() );
+      log_printf( "Manual pfile cleanup started by {}.", ch->name );
 
       /*
        * Makes a backup copy of existing pfiles just in case - Samson
@@ -832,7 +830,7 @@ CMDF( do_pfiles )
 
    if( !str_cmp( argument, "count" ) )
    {
-      log_printf( "Pfile count started by %s.", ch->name.c_str() );
+      log_printf( "Pfile count started by {}.", ch->name );
       pfile_scan( true );
       return;
    }

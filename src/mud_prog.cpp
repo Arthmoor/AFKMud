@@ -142,7 +142,7 @@ void uphold_supermob( int *curr_serial, int serial, room_index ** supermob_room,
       {
          supermob->from_room(  );
          if( !supermob->to_room( *supermob_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       }
 
       if( true_supermob_obj && true_supermob_obj != supermob_obj )
@@ -330,7 +330,7 @@ void init_supermob( void )
    supermob = get_mob_index( MOB_VNUM_SUPERMOB )->create_mobile(  );
    office = get_room_index( MOB_VNUM_SUPERMOB );
    if( !supermob->to_room( office ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 }
 
 /* Used to get sequential lines of a multi line string (separated by "\r\n")
@@ -3432,7 +3432,7 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
 
       if( !( obj = get_obj_index( OBJ_VNUM_MONEY_SOME )->create_object( 1 ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
 
@@ -3631,7 +3631,7 @@ void mprog_greet_trigger( char_data * ch )
    {
       bug( "%s: ch '%s' not in room. Transferring to Limbo.", __func__, ch->name.c_str() );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -3878,7 +3878,7 @@ void set_supermob( obj_data * obj )
    {
       supermob->from_room(  );
       if( !supermob->to_room( room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       if( obj->extra_flags.test( ITEM_ONMAP ) )
       {
          supermob->set_actflag( ACT_ONMAP );
@@ -3894,7 +3894,7 @@ void release_supermob(  )
    supermob_obj = nullptr;
    supermob->from_room(  );
    if( !supermob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    if( supermob->has_actflag( ACT_ONMAP ) )
    {
       supermob->unset_actflag( ACT_ONMAP );
@@ -4201,7 +4201,7 @@ void rset_supermob( room_index * room )
 
       supermob->from_room(  );
       if( !supermob->to_room( room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 }
 

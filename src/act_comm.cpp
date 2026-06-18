@@ -1341,7 +1341,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
          bug( "%s: missing arg2 for code %c:", __func__, *ptr );
          log_printf( "Missing arg2 came from {}", ch->name );
          if( ch->isnpc(  ) )
-            log_printf( "NPC vnum: %d", ch->pIndexData->vnum );
+            log_printf( "NPC vnum: {}", ch->pIndexData->vnum );
          log_string( format );
          buf.append( " <@@@> " );
       }

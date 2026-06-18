@@ -319,7 +319,7 @@ char_data *mob_index::create_mobile(  )
    body_parts = mob->get_bparts(  );
 
    if( mob->numattacks > 10 )
-      log_printf_plus( LOG_BUILD, sysdata->build_level, "Mob vnum %d has too many attacks: %f", vnum, mob->numattacks );
+      log_printf_plus( LOG_BUILD, sysdata->build_level, "Mob vnum {} has too many attacks: {}", vnum, mob->numattacks );
 
    /*
     * Exp modification added by Samson - 5-15-98

@@ -315,7 +315,7 @@ char_data *load_mobile( FILE * fp )
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
                      if( ( sn = herb_lookup( sname ) ) < 0 )
-                        log_printf( "%s: unknown skill.", __func__ );
+                        log_printf( "{}: unknown skill.", __func__ );
                      else
                         sn += TYPE_HERB;
                   }
@@ -378,7 +378,7 @@ char_data *load_mobile( FILE * fp )
                   pRoomIndex = get_room_index( ROOM_VNUM_LIMBO );
                mob->tempnum = -9998;   /* Yet another hackish fix! */
                if( !mob->to_room( pRoomIndex ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                  log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                update_room_reset( mob, false );
                return mob;
             }
@@ -533,7 +533,7 @@ void read_obj_file( int vnum )
       release_supermob(  );
    }
    else
-      log_printf( "Cannot open obj file: %d", vnum );
+      log_printf( "Cannot open obj file: {}", vnum );
 }
 
 void load_obj_files( )
@@ -662,7 +662,7 @@ CMDF( do_hotboot )
       }
    }
 
-   log_printf( "Hotboot initiated by %s.", ch->name.c_str() );
+   log_printf( "Hotboot initiated by {}.", ch->name );
 
    stream.open( std::filesystem::path( HOTBOOT_FILE ) );
 
@@ -921,7 +921,7 @@ void hotboot_recover( void )
             pclist.push_back( d->character );
 
             if( !d->character->to_room( d->character->in_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             act( AT_MAGIC, "A puff of ethereal smoke dissipates around you!", d->character, nullptr, nullptr, TO_CHAR );
             act( AT_MAGIC, "$n appears in a puff of ethereal smoke!", d->character, nullptr, nullptr, TO_ROOM );
             d->connected = CON_PLAYING;
@@ -932,7 +932,7 @@ void hotboot_recover( void )
             {
                if( !d->compressStart(  ) )
                {
-                  log_printf( "%s: Error restarting compression for %s on desc %d", __func__, playername.c_str(), d->descriptor );
+                  log_printf( "{}: Error restarting compression for {} on desc {}", __func__, playername.c_str(), d->descriptor );
                   d->can_compress = false;
                   d->is_compressing = false;
                }
@@ -963,7 +963,7 @@ void hotboot_recover( void )
          }
       } // key == "End"
       else
-         log_printf( "%s: Bad line in hotboot file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in hotboot file: {} {}", __func__, key, value );
    }
    while( !stream.eof() );
    stream.close(  );

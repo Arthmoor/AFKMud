@@ -170,7 +170,7 @@ short gsn_dragon_ride;
 void ASSIGN_GSN( short gsn, const std::string_view name )
 {
    if( ( gsn = skill_lookup( name ) ) == -1 )
-      log_printf( "%s: Skill %s not found.\n", __func__, name.data( ) );
+      log_printf( "{}: Skill {} not found.\n", __func__, name );
 }
 
 void assign_gsn_data( void )

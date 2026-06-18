@@ -235,7 +235,7 @@ void load_sales( void )
       else if( key == "End" )
          salelist.push_back( sale );
       else
-         log_printf( "%s: Bad line in sales file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in sales file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -265,7 +265,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
    std::filesystem::path fname = std::format( "{}{}", dirname, filename );
    if( ( fp = fopen( fname.c_str(), "r" ) ) != nullptr )
    {
-      log_printf( "Loading auction house vault: %s", filename.data() );
+      log_printf( "Loading auction house vault: {}", filename );
       rset_supermob( aucvault );
 
       for( ;; )
@@ -712,7 +712,7 @@ void bid( char_data * ch, char_data * buyer, std::string_view argument )
       switch ( obj->item_type )
       {
          default:
-            log_printf( "%s: Auctioneer %s tried to auction invalid item type!", __func__, ch->short_descr.c_str() );
+            log_printf( "{}: Auctioneer {} tried to auction invalid item type!", __func__, ch->short_descr );
             return;
 
             /*
@@ -876,11 +876,11 @@ CMDF( do_identify )
 
    ch->from_room(  );
    if( !ch->to_room( aucvault ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    obj = get_obj_list( ch, argument, ch->in_room->objects );
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    if( !obj || ( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) ) )
    {
@@ -1047,11 +1047,11 @@ CMDF( do_collect )
 
    ch->from_room(  );
    if( !ch->to_room( aucvault ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    obj = get_obj_list( ch, argument, ch->in_room->objects );
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    if( !obj )
    {
@@ -1171,11 +1171,11 @@ void auction_value( char_data * ch, char_data * auc, std::string_view argument )
 
    ch->from_room(  );
    if( !ch->to_room( aucvault ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    obj = get_obj_list( ch, argument, ch->in_room->objects );
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    if( !obj || ( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) ) )
    {
@@ -1230,11 +1230,11 @@ void auction_buy( char_data * ch, char_data * auc, std::string_view argument )
 
    ch->from_room(  );
    if( !ch->to_room( aucvault ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    obj = get_obj_list( ch, argument, ch->in_room->objects );
    ch->from_room(  );
    if( !ch->to_room( original ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
    if( !obj )
    {
@@ -1461,12 +1461,12 @@ void sweep_house( room_index * aucroom )
             aucobj->to_room( clanroom, nullptr );
             aucmob->from_room(  );
             if( !aucmob->to_room( clanroom ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             save_clan_storeroom( aucmob, clan );
             aucmob->from_room(  );
             if( !aucmob->to_room( aucroom ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
-            talk_auction( "{} has turned {} over to {}.", aucmob->short_descr, aucobj->short_descr, clan->name.c_str(  ) );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
+            talk_auction( "{} has turned {} over to {}.", aucmob->short_descr, aucobj->short_descr, clan->name );
          }
          else
          {

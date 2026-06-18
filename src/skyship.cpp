@@ -72,7 +72,7 @@ void continent_data::fread_landing_site( std::ifstream & stream )
          return;
       }
       else
-         log_printf( "%s: %s - Bad line reading landing sites: %s %s", __func__, this->name.c_str(  ), key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: {} - Bad line reading landing sites: {} {}", __func__, this->name, key, value );
    }
    while( !stream.eof(  ) );
 
@@ -301,7 +301,7 @@ void create_skyship( char_data * ch )
     * skyship can be safely spawned using the same room as the PC calling it - Samson 
     */
    if( !skyship->to_room( ch->in_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    skyship->set_actflag( ACT_ONMAP );
    skyship->inflight = true;
    skyship->heading = -1;

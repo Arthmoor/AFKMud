@@ -736,7 +736,7 @@ CMDF( do_buy )
       pet->chardesc = std::format( "{}A neck tag says 'I belong to {}'.\r\n", pet->chardesc, ch->name );
 
       if( !pet->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       bind_follower( pet, ch, gsn_charm_person, -1 );
       ch->print( "Enjoy your pet.\r\n" );
       act( AT_ACTION, "$n bought $N as a pet.", ch, nullptr, pet, TO_ROOM );
@@ -873,7 +873,7 @@ CMDF( do_buy )
          if( !( buy_obj = obj->pIndexData->create_object( obj->level ) ) )
          {
             ch->gold += ( int )cost;
-            log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             return;
          }
 
@@ -888,7 +888,7 @@ CMDF( do_buy )
             if( !( bag = get_obj_index( OBJ_VNUM_SHOPPING_BAG )->create_object( 1 ) ) )
             {
                ch->gold += ( int )cost;
-               log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                return;
             }
             bag->extra_flags.set( ITEM_GROUNDROT );
@@ -962,11 +962,11 @@ CMDF( do_list )
 
       ch->from_room(  );
       if( !ch->to_room( aucvault ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       show_list_to_char( ch, ch->in_room->objects, true, false );
       ch->from_room(  );
       if( !ch->to_room( original ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
 

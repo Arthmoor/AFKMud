@@ -812,7 +812,7 @@ void obj_data::from_char(  )
    if( !( ch = carried_by ) )
    {
       bug( "%s: null ch.", __func__ );
-      log_printf( "Object was vnum %d - %s", pIndexData->vnum, short_descr );
+      log_printf( "Object was vnum {} - {}", pIndexData->vnum, short_descr );
       return;
    }
 
@@ -1528,7 +1528,7 @@ void obj_data::make_scraps(  )
    separate(  );
    if( !( scraps = get_obj_index( OBJ_VNUM_SCRAPS )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    scraps->timer = number_range( 5, 15 );

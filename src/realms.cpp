@@ -159,7 +159,7 @@ void delete_realm( char_data * ch, realm_data * realm )
       {
          vch->pcdata->realm_name.clear(  );
          vch->pcdata->realm = nullptr;
-         vch->printf( "The realm known as &W%s&D has been destroyed by the gods!\r\n", realm->name.c_str(  ) );
+         vch->print_fmt( "The realm known as &W{}&D has been destroyed by the gods!\r\n", realm->name );
       }
    }
 
@@ -169,14 +169,14 @@ void delete_realm( char_data * ch, realm_data * realm )
    if( !ch )
    {
       if( std::filesystem::remove( filename ) )
-         log_printf( "Realm data for %s destroyed - no members left.", realmname.c_str(  ) );
+         log_printf( "Realm data for {} destroyed - no members left.", realmname );
       return;
    }
 
    if( std::filesystem::remove( filename ) )
    {
-      ch->printf( "&RRealm data for %s has been destroyed.\r\n", realmname.c_str(  ) );
-      log_printf( "Realm data for %s has been destroyed by %s.", realmname.c_str(  ), ch->name.c_str() );
+      ch->print_fmt( "&RRealm data for {} has been destroyed.\r\n", realmname );
+      log_printf( "Realm data for {} has been destroyed by {}.", realmname.c_str(  ), ch->name.c_str() );
    }
 }
 
@@ -459,7 +459,7 @@ void verify_realms( void )
       realm_data *realm = *it;
       ++it;
 
-      log_printf( "Checking data for %s.....", realm->name.c_str(  ) );
+      log_printf( "Checking data for {}...", realm->name );
 
       if( realm->leader.empty(  ) )
       {
@@ -486,7 +486,7 @@ void verify_realms( void )
 
          if( !exists_player( roster->name ) )
          {
-            log_printf( "%s removed from roster. Player no longer exists.", roster->name.c_str(  ) );
+            log_printf( "{} removed from roster. Player no longer exists.", roster->name );
             remove_realm_roster( realm, roster->name );
          }
       }

@@ -252,7 +252,7 @@ obj_data *obj_index::create_object( int olevel )
    {
       default:
          bug( "%s: vnum %d bad type.", __func__, vnum );
-         log_printf( "------------------------>    %d", obj->item_type );
+         log_printf( "------------------------>    {}", obj->item_type );
          break;
 
       case ITEM_TREE:
@@ -639,14 +639,14 @@ int obj_index::set_ego(  )
          switch ( af->location )
          {
             default:
-               log_printf( "%s: Affect %s exceeds maximum item ego specs. Object %d", __func__, a_types[af->location], vnum );
+               log_printf( "{}: Affect {} exceeds maximum item ego specs. Object {}", __func__, a_types[af->location], vnum );
                break;
 
             case APPLY_WEAPONSPELL:
             case APPLY_WEARSPELL:
             case APPLY_REMOVESPELL:
             case APPLY_EAT_SPELL:
-               log_printf( "%s: Item spell %s exceeds allowable item ego specs. Object %d", __func__,
+               log_printf( "{}: Item spell {} exceeds allowable item ego specs. Object {}", __func__,
                            IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "unknown", vnum );
                break;
 
@@ -654,7 +654,7 @@ int obj_index::set_ego(  )
             case APPLY_IMMUNE:
             case APPLY_SUSCEPTIBLE:
             case APPLY_ABSORB:
-               log_printf( "%s: Item RISA flags exceed allowable item ego specs. Object %d", __func__, vnum );
+               log_printf( "{}: Item RISA flags exceed allowable item ego specs. Object {}", __func__, vnum );
                break;
          }
          return -2;

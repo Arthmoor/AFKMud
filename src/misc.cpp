@@ -619,7 +619,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
        */
       act( AT_DEAD, "$n falls prey to a terrible death!", ch, nullptr, nullptr, TO_ROOM );
       act( AT_DEAD, "Oopsie... you're dead!\r\n", ch, nullptr, nullptr, TO_CHAR );
-      log_printf( "%s hit a DEATH TRIGGER in room %d!", ch->name.c_str(), ch->in_room->vnum );
+      log_printf( "{} hit a DEATH TRIGGER in room {}!", ch->name, ch->in_room->vnum );
 
       /*
        * Personally I figured if we wanted it to be a full DT we could just have it send them into a DT.
@@ -1567,7 +1567,7 @@ CMDF( do_connect )
        */
       if( !( new_ob = get_obj_index( first_ob->value[1] )->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       first_ob->extract(  );

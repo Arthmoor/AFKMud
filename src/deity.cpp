@@ -419,7 +419,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
                   deity->npcfoe[1] = 0;
                   deity->npcfoe[2] = 0;
                }
-               log_printf( "Deity: %s loaded", deity->name.c_str(  ) );
+               log_printf( "Deity: {} loaded", deity->name );
                return;
             }
 
@@ -2852,7 +2852,7 @@ CMDF( do_supplicate )
 
       victim = pMobIndex->create_mobile(  );
       if( !victim->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
       act( AT_MAGIC, "$n summons a powerful avatar!", ch, nullptr, nullptr, TO_ROOM );
@@ -2896,7 +2896,7 @@ CMDF( do_supplicate )
 
       victim = pMobIndex->create_mobile(  );
       if( !victim->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
       act( AT_MAGIC, "$n summons a mount!", ch, nullptr, nullptr, TO_ROOM );
@@ -2935,7 +2935,7 @@ CMDF( do_supplicate )
 
       victim = pMobIndex->create_mobile(  );
       if( !victim->to_room( ch->in_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       fix_maps( ch, victim );
 
       act( AT_MAGIC, "$n summons a minion!", ch, nullptr, nullptr, TO_ROOM );
@@ -2971,7 +2971,7 @@ CMDF( do_supplicate )
 
       if( !( obj = pObjIndex->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       if( obj->wear_flags.test( ITEM_TAKE ) )
@@ -3042,7 +3042,7 @@ CMDF( do_supplicate )
 
       if( !( obj = pObjIndex->create_object( ch->level ) ) )
       {
-         log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return;
       }
       if( obj->wear_flags.test( ITEM_TAKE ) )

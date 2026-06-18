@@ -547,7 +547,7 @@ void boot_log( const char *str, ... )
    vsnprintf( buf, MSL, str, param );
    va_end( param );
 
-   log_printf( "[*****] BOOT: %s", buf );
+   log_printf( "[*****] BOOT: {}", buf );
 
    std::ofstream stream;
    stream.open( std::filesystem::path( BOOTLOG_FILE ), std::ios::app );
@@ -574,7 +574,7 @@ void load_buildlist( void )
    {
       // This should be treated as fatal.
       bug( "%s: Builder directory is missing!", __func__ );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 
    for( const auto& entry : std::filesystem::directory_iterator( BUILD_DIR ) )
@@ -1065,9 +1065,9 @@ void boot_db( bool fCopyOver )
    sysdata->dlHandle = dlopen( nullptr, RTLD_NOW );
    if( !sysdata->dlHandle )
    {
-      log_printf( "%s: Error opening local system executable as handle, please check compile flags.", __func__ );
+      log_printf( "{}: Error opening local system executable as handle, please check compile flags.", __func__ );
       shutdown_mud( "libdl failure" );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
 
 #if defined(SQL)
@@ -1244,7 +1244,7 @@ void boot_db( bool fCopyOver )
       log_string( "Reading in area files..." );
       if( !( fpList = fopen( AREA_LIST.data(), "r" ) ) )
       {
-         log_printf( "Cannot open area.lst file.");
+         log_string( "Cannot open area.lst file.");
          shutdown_mud( "Boot_db: Unable to open area list." );
          std::exit( EXIT_FAILURE );
       }
@@ -1286,7 +1286,7 @@ void boot_db( bool fCopyOver )
    else
    {
       astral_target = number_range( 4350, 4449 );  /* Added by Samson for Astral Walk spell. Chooses a random target room. */
-      log_printf( "Astral Walk target room for this boot is: %d", astral_target );
+      log_printf( "Astral Walk target room for this boot is: {}", astral_target );
    }
 
    log_string( "Loading ships..." );
@@ -1629,7 +1629,7 @@ void bug( const char *str, ... )
    vsnprintf( buf, MSL, str, param );
    va_end( param );
 
-   log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "[*****] BUG: %s", buf );
+   log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "[*****] BUG: {}", buf );
 
    if( fpArea != nullptr )
    {
@@ -1648,7 +1648,7 @@ void bug( const char *str, ... )
          }
          fseek( fpArea, iChar, 0 );
       }
-      log_printf( "[*****] FILE: %s LINE: %d", strArea, iLine );
+      log_printf( "[*****] FILE: {} LINE: {}", strArea, iLine );
    }
 
 #if defined(HAVE_CXXABI)

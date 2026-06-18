@@ -156,7 +156,7 @@ void load_mudchannels( void )
       else if( key == "End" )
          chanlist.push_back( channel );
       else
-         log_printf( "%s: Bad line in channel file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in channel file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );

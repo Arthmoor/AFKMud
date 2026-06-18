@@ -651,9 +651,9 @@ void interpret( char_data * ch, std::string argument )
       if( !ch->isnpc(  ) )
       {
          if( ch->desc && ch->desc->original )
-            log_printf_plus( loglvl, ch->level, "Log %s (%s): %s", ch->name.c_str(  ), ch->desc->original->name.c_str(), logline.c_str() );
+            log_printf_plus( loglvl, ch->level, "Log {} ({}): {}", ch->name, ch->desc->original->name, logline );
          else
-            log_printf_plus( loglvl, ch->level, "Log %s: %s", ch->name.c_str(  ), logline.c_str() );
+            log_printf_plus( loglvl, ch->level, "Log {}: {}", ch->name, logline );
       }
    }
 
@@ -801,8 +801,8 @@ void interpret( char_data * ch, std::string argument )
       long long seconds = tmptime / 1000000;
       long long microseconds = tmptime % 1000000;
 
-      log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: %s: %s %s (R:%d S:%lld.%06lld)", ch->name.c_str(  ),
-                       cmd->name.c_str(  ), ( cmd->log == LOG_NEVER ? "XXX" : argument.c_str(  ) ), ch->in_room ? ch->in_room->vnum : 0, seconds, microseconds );
+      log_printf_plus( LOG_NORMAL, ch->level, "[*****] LAG: {}: {} {} (R:{} S:{}.{})", ch->name,
+                       cmd->name, ( cmd->log == LOG_NEVER ? "XXX" : argument ), ch->in_room ? ch->in_room->vnum : 0, seconds, microseconds );
    }
    lastplayercmd = "No commands pending";
 }
@@ -1033,7 +1033,7 @@ void load_commands( void )
       else if( key == "End" )
          add_command( cmd );
       else
-         log_printf( "%s: Bad line in command file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in command file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -1355,7 +1355,7 @@ CMDF( do_restrict )
 
    cmd->level = level;
    ch->print_fmt( "You restrict {} to level {}\r\n", cmd->name, level );
-   log_printf( "%s restricting %s to level %d", ch->name.c_str(  ), cmd->name.c_str(  ), level );
+   log_printf( "{} restricting {} to level {}", ch->name, cmd->name, level );
 }
 
 std::string extract_command_names( char_data * ch )
@@ -1537,8 +1537,8 @@ CMDF( do_force )
 
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
-         ch->printf( "You cannot force anyone to %s\r\n", cmd->name.c_str(  ) );
-         log_printf( "%s attempted to force all to %s - command is flagged noforce", ch->name.c_str(  ), cmd->name.c_str(  ) );
+         ch->print_fmt( "You cannot force anyone to {}\r\n", cmd->name );
+         log_printf( "{} attempted to force all to {} - command is flagged noforce", ch->name, cmd->name );
          return;
       }
 
@@ -1578,8 +1578,8 @@ CMDF( do_force )
 
       if( cmd && cmd->flags.test( CMD_NOFORCE ) )
       {
-         ch->printf( "You cannot force anyone to %s\r\n", cmd->name.c_str(  ) );
-         log_printf( "%s attempted to force %s to %s - command is flagged noforce", ch->name.c_str(  ), victim->name.c_str(  ), cmd->name.c_str(  ) );
+         ch->print_fmt( "You cannot force anyone to {}\r\n", cmd->name );
+         log_printf( "{} attempted to force {} to {} - command is flagged noforce", ch->name, victim->name, cmd->name );
          return;
       }
 
@@ -2133,7 +2133,7 @@ void load_socials( void )
       else if( key == "End" )
          social_table[social->name] = social;
       else
-         log_printf( "Bad line in socials file: %s %s", key.c_str(  ), value.c_str(  ) );
+         log_printf( "Bad line in socials file: {} {}", key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );

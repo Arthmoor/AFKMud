@@ -72,7 +72,7 @@ void load_slays( )
 
    if( !stream )
    {
-      log_printf( "No slay file found: %s", SLAY_FILE.data() );
+      log_string( "No slay.dat file found." );
       return;
    }
 
@@ -120,7 +120,7 @@ void load_slays( )
          else if( sv == "Cmessage" ) current_slay->set_cmsg( read_line( delim ) );
          else if( sv == "Vmessage" ) current_slay->set_vmsg( read_line( delim ) );
          else if( sv == "Rmessage" ) current_slay->set_rmsg( read_line( delim ) );
-         else log_printf( "%s: Bad line: %s", __func__, key.c_str() );
+         else log_printf( "{}: Bad line: {}", __func__, key );
       }
    }
 }

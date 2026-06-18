@@ -165,7 +165,7 @@ void load_mssp_data( void )
    stream.open( std::filesystem::path( MSSP_FILE ) );
    if( !stream.is_open(  ) )
    {
-      log_printf( "No MSSP data file found. Generating default data." );
+      log_string( "No MSSP data file found. Generating default data." );
       mssp_info = new msspinfo;
       save_mssp_info();
       return;
@@ -423,7 +423,7 @@ void load_mssp_data( void )
          stream.getline( buf, MSL );
          value = buf;
          strip_lspace( value );
-         log_printf( "Bad line in MSSP data file: %s %s", key.c_str(  ), value.c_str(  ) );
+         log_printf( "Bad line in MSSP data file: {} {}", key, value );
       }
    }
    while( !stream.eof(  ) );

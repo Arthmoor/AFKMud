@@ -454,7 +454,7 @@ SPECF( spec_cast_cleric )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }
 
@@ -553,7 +553,7 @@ SPECF( spec_cast_mage )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }
 
@@ -640,7 +640,7 @@ SPECF( spec_cast_undead )
    if( ch->level < skill_table[sn]->skill_level[ch->Class] )
       return false;
 
-   cmdf( ch, "cast %s %s", skill_table[sn]->name, victim->name.c_str() );
+   cmdf( ch, "cast {} {}", skill_table[sn]->name, victim->name );
    return true;
 }
 
@@ -1331,11 +1331,11 @@ SPECF( spec_wanderer )
                   trash->to_room( pexit->to_room, ch );
                   ch->from_room(  );
                   if( !ch->to_room( pexit->to_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                     log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                   act( AT_CYAN, "$p thrown by $n lands in the room.", ch, trash, ch, TO_ROOM );
                   ch->from_room(  );
                   if( !ch->to_room( was_in_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                     log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                }
                else
                {

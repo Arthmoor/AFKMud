@@ -94,7 +94,7 @@ char_data::~char_data(  )
    if( this->desc )
    {
       bug( "%s: char still has descriptor.", __func__ );
-      log_printf( "Desc# %d, DescHost %s DescClient %s", this->desc->descriptor, this->desc->hostname.c_str(  ), this->desc->client.c_str(  ) );
+      log_printf( "Desc# {}, DescHost {} DescClient {}", this->desc->descriptor, this->desc->hostname, this->desc->client );
       deleteptr( this->desc );
    }
 
@@ -2363,7 +2363,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    {
       bug( "%s: %s -> nullptr room!  Putting char in limbo (%d)", __func__, this->name.c_str(), ROOM_VNUM_LIMBO );
       if( pRoomIndex )
-         log_printf( "Supposedly from Vnum: %d", pRoomIndex->vnum );
+         log_printf( "Supposedly from Vnum: {}", pRoomIndex->vnum );
 
       /*
        * This used to just return, but there was a problem with crashing
@@ -3364,7 +3364,7 @@ void char_data::extract( bool fPull )
    {
       bug( "%s: %s in nullptr room. Transferring to Limbo.", __func__, !this->name.empty() ? this->name.c_str() : "???" );
       if( !this->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 
    if( this == supermob && !mud_down )
@@ -3503,7 +3503,7 @@ void char_data::extract( bool fPull )
          location = get_room_index( ROOM_VNUM_LIMBO );
 
       if( !this->to_room( location ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
       if( this->has_pcflag( PCFLAG_ONMAP ) )
       {
@@ -5226,7 +5226,7 @@ CMDF( do_levelup )
 
    ++ch->level;
    advance_level( ch );
-   log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "%s has advanced to level %d!", ch->name.c_str(), ch->level );
+   log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} has advanced to level {}!", ch->name, ch->level );
    cmdf( ch, "gtell I just reached level {}!", ch->level );
 
    if( ch->level == 4 )

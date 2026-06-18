@@ -1284,10 +1284,10 @@ void board_check_expire( board_data * board )
                return;
             }
             fwrite_note( pnote, fp );
-            log_printf( "Saving expired note '%s' to '%s'", pnote->subject, filename.c_str() );
+            log_printf( "Saving expired note '{}' to '{}'", pnote->subject, filename.string() );
             FCLOSE( fp );
          }
-         log_printf( "Removing expired note '%s'", pnote->subject );
+         log_printf( "Removing expired note '{}'", pnote->subject );
          note_remove( board, pnote );
          continue;
       }
@@ -1634,19 +1634,19 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             ch->pcdata->pnote->expire = std::chrono::system_clock::time_point{};
             TOGGLE_NOTE_FLAG( ch->pcdata->pnote, NOTE_STICKY );
-            ch->printf( "%sThis note will not expire during pruning.&D\r\n", s1.c_str() );
+            ch->print_fmt( "{}This note will not expire during pruning.&D\r\n", s1 );
          }
          else
          {
             time_t legacy_time = std::chrono::system_clock::to_time_t( ch->pcdata->pnote->expire );
             ch->pcdata->pnote->expire = ch->pcdata->board->expire;
-            ch->printf( "%sNote set to expire after the default of %s%ld%s day%s.&D\r\n", s1.c_str(), s2.c_str(), legacy_time, s1.c_str(), legacy_time == 1 ? "" : "s" );
+            ch->print_fmt( "{}Note set to expire after the default of {}{}{} day{}.&D\r\n", s1, s2, legacy_time, s1, legacy_time == 1 ? "" : "s" );
          }
 
          if( ch->pcdata->pnote->parent )
-            ch->printf( "%sTo whom is this note addressed? %s(%sDefault: %s%s%s)&D   ", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), ch->pcdata->pnote->parent->sender, s3.c_str() );
+            ch->print_fmt( "{}To whom is this note addressed? {}({}Default: {}{}{})&D   ", s1, s3, s1, s2, ch->pcdata->pnote->parent->sender, s3 );
          else
-            ch->printf( "%sTo whom is this note addressed? %s(%sDefault: %sAll%s)&D   ", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), s3.c_str() );
+            ch->print_fmt( "{}To whom is this note addressed? {}({}Default: {}All{})&D   ", s1, s3, s1, s2, s3 );
          ch->substate = SUB_BOARD_TO;
          return;
 
@@ -1655,7 +1655,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             if( IS_BOARD_FLAG( ch->pcdata->board, BOARD_PRIVATE ) && !ch->is_immortal(  ) )
             {
-               ch->printf( "%sYou must specify a recipient:&D   ", s1.c_str() );
+               ch->print_fmt( "{}You must specify a recipient:&D   ", s1 );
                return;
             }
             STRFREE( ch->pcdata->pnote->to_list );
@@ -1665,9 +1665,9 @@ void board_parse( descriptor_data * d, const std::string & argument )
                ch->pcdata->pnote->to_list = STRALLOC( "All" );
 
             if( str_cmp( argument, "all" ) )
-               ch->printf( "%sNo recipient specified. Defaulting to '%s%s%s'&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->to_list, s1.c_str() );
+               ch->print_fmt( "{}No recipient specified. Defaulting to '{}{}{}'&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1 );
             else
-               ch->printf( "%sRecipient set to '%sAll%s'&D\r\n", s1.c_str(), s2.c_str(), s1.c_str() );
+               ch->print_fmt( "{}Recipient set to '{}All{}'&D\r\n", s1, s2, s1 );
          }
          else
          {
@@ -1676,19 +1676,19 @@ void board_parse( descriptor_data * d, const std::string & argument )
             buf = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
             if( !std::filesystem::exists( buf ) || !check_parse_name( argument, false ) )
             {
-               ch->printf( "%sNo such player named '%s%s%s'.\r\nTo whom is this note addressed?   &D", s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );
+               ch->print_fmt( "{}No such player named '{}{}{}'.\r\nTo whom is this note addressed?   &D", s1, s2, argument.c_str(  ), s1 );
                return;
             }
             STRFREE( ch->pcdata->pnote->to_list );
             ch->pcdata->pnote->to_list = STRALLOC( argument.c_str(  ) );
          }
 
-         ch->printf( "%sTo: %s%-15s %sFrom: %s%s&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->to_list, s1.c_str(), s2.c_str(), ch->pcdata->pnote->sender );
+         ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
          if( ch->pcdata->pnote->subject )
          {
-            ch->printf( "%sSubject: %s%s&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->subject );
+            ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
             ch->substate = SUB_BOARD_TEXT;
-            ch->printf( "%sPlease enter the text for your message:&D\r\n", s1.c_str() );
+            ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
             if( !ch->pcdata->pnote->text )
                ch->pcdata->pnote->text = strdup( "" );
             ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list );
@@ -1696,13 +1696,13 @@ void board_parse( descriptor_data * d, const std::string & argument )
             return;
          }
          ch->substate = SUB_BOARD_SUBJECT;
-         ch->printf( "%sPlease enter a subject for this note:&D   ", s1.c_str() );
+         ch->print_fmt( "{}Please enter a subject for this note:&D   ", s1 );
          return;
 
       case SUB_BOARD_SUBJECT:
          if( argument.empty(  ) )
          {
-            ch->printf( "%sNo subject specified!&D\r\n%sYou must specify a subject:&D  ", s3.c_str(), s1.c_str() );
+            ch->print_fmt( "{}No subject specified!&D\r\n{}You must specify a subject:&D  ", s3, s1 );
             return;
          }
          else
@@ -1712,9 +1712,9 @@ void board_parse( descriptor_data * d, const std::string & argument )
          }
 
          ch->substate = SUB_BOARD_TEXT;
-         ch->printf( "%sTo: %s%-15s %sFrom: %s%s&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->to_list, s1.c_str(), s2.c_str(), ch->pcdata->pnote->sender );
-         ch->printf( "%sSubject: %s%s&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->subject );
-         ch->printf( "%sPlease enter the text for your message:&D\r\n", s1.c_str() );
+         ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
+         ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
+         ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
          if( !ch->pcdata->pnote->text )
             ch->pcdata->pnote->text = strdup( "" );
          ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list );
@@ -1725,7 +1725,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
          if( argument.empty(  ) )
          {
             note_to_char( ch, ch->pcdata->pnote, nullptr, 0 );
-            ch->printf( "%sYou %smust%s confirm! Is this correct? %s(%sType: %sY%s or %sN%s)&D   ", s1.c_str(), s3.c_str(), s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), s3.c_str() );
+            ch->print_fmt( "{}You {}must{} confirm! Is this correct? {}({}Type: {}Y{} or {}N{})&D   ", s1, s3, s1, s3, s1, s2, s1, s2, s3 );
             return;
          }
 
@@ -1763,9 +1763,9 @@ void board_parse( descriptor_data * d, const std::string & argument )
 
             ch->from_room(  );
             if( !ch->to_room( ch->orig_room ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
-            ch->printf( "%sYou post the note '%s%s%s' on the %s%s%s board.&D\r\n", s1.c_str(), s2.c_str(), ch->pcdata->pnote->subject, s1.c_str(), s2.c_str(), ch->pcdata->board->name, s1.c_str() );
+            ch->print_fmt( "{}You post the note '{}{}{}' on the {}{}{} board.&D\r\n", s1, s2, ch->pcdata->pnote->subject, s1, s2, ch->pcdata->board->name, s1 );
             act( AT_GREY, "$n posts a note on the board.", ch, nullptr, nullptr, TO_ROOM );
             board_announce( ch, ch->pcdata->board, ch->pcdata->pnote );
             ch->pcdata->pnote = nullptr;
@@ -1778,32 +1778,32 @@ void board_parse( descriptor_data * d, const std::string & argument )
          if( !str_cmp( argument, "n" ) || !str_cmp( argument, "no" ) )
          {
             ch->substate = SUB_BOARD_REDO_MENU;
-            ch->printf( "%sWhat would you like to change?&D\r\n", s1.c_str() );
-            ch->printf( "   %s1%s) %sRecipients  %s[%s%s%s]&D\r\n", s2.c_str(), s3.c_str(), s1.c_str(), s3.c_str(), s2.c_str(), ch->pcdata->pnote->to_list, s3.c_str() );
+            ch->print_fmt( "{}What would you like to change?&D\r\n", s1 );
+            ch->print_fmt( "   {}1{}) {}Recipients  {}[{}{}{}]&D\r\n", s2, s3, s1, s3, s2, ch->pcdata->pnote->to_list, s3 );
             if( ch->pcdata->pnote->parent )
-               ch->printf( "   %s2%s) %sYou cannot change subjects on a reply.&D\r\n", s2.c_str(), s3.c_str(), s1.c_str() );
+               ch->print_fmt( "   {}2{}) {}You cannot change subjects on a reply.&D\r\n", s2, s3, s1 );
             else
-               ch->printf( "   %s2%s) %sSubject     %s[%s%s%s]&D\r\n", s2.c_str(), s3.c_str(), s1.c_str(), s3.c_str(), s2.c_str(), ch->pcdata->pnote->subject, s3.c_str() );
-            ch->printf( "   %s3%s) %sText\r\n%s%s&D\r\n", s2.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), ch->pcdata->pnote->text );
-            ch->printf( "%sPlease choose an option, %sQ%s to quit this menu, or %s/a%s to abort:&D   ", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), s1.c_str() );
+               ch->print_fmt( "   {}2{}) {}Subject     {}[{}{}{}]&D\r\n", s2, s3, s1, s3, s2, ch->pcdata->pnote->subject, s3 );
+            ch->print_fmt( "   {}3{}) {}Text\r\n{}{}&D\r\n", s2, s3, s1, s2, ch->pcdata->pnote->text );
+            ch->print_fmt( "{}Please choose an option, {}Q{} to quit this menu, or {}/a{} to abort:&D   ", s1, s2, s1, s2, s1 );
             return;
          }
-         ch->printf( "%sPlease enter either %sY%s or %sN%s:&D   ", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), s1.c_str() );
+         ch->print_fmt( "{}Please enter either {}Y{} or {}N{}:&D   ", s1, s2, s1, s2, s1 );
          return;
 
       case SUB_BOARD_REDO_MENU:
          if( argument.empty(  ) )
          {
-            ch->printf( "%sPlease choose an option, %sQ%s to quit this menu, or %s/a%s to abort:&D   ", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), s1.c_str() );
+            ch->print_fmt( "{}Please choose an option, {}Q{} to quit this menu, or {}/a{} to abort:&D   ", s1, s2, s1, s2, s1 );
             return;
          }
 
          if( !str_cmp( argument, "1" ) )
          {
             if( ch->pcdata->pnote->parent )
-               ch->printf( "%sTo whom is this note addressed? %s(%sDefault: %s%s%s)&D   ", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), ch->pcdata->pnote->parent->sender, s3.c_str() );
+               ch->print_fmt( "{}To whom is this note addressed? {}({}Default: {}{}{})&D   ", s1, s3, s1, s2, ch->pcdata->pnote->parent->sender, s3 );
             else
-               ch->printf( "%sTo whom is this note addressed? %s(%sDefault: %sAll%s)&D   ", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str(), s3.c_str() );
+               ch->print_fmt( "{}To whom is this note addressed? {}({}Default: {}All{})&D   ", s1, s3, s1, s2, s3 );
             ch->substate = SUB_BOARD_TO;
             return;
          }
@@ -1812,19 +1812,19 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             if( ch->pcdata->pnote->parent )
             {
-               ch->printf( "%sYou cannot change the subject of a reply!&D\r\n", s1.c_str() );
-               ch->printf( "%sPlease choose an option, %sQ%s to quit this menu, or %s/a%s to abort:&D   ", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), s1.c_str() );
+               ch->print_fmt( "{}You cannot change the subject of a reply!&D\r\n", s1 );
+               ch->print_fmt( "{}Please choose an option, {}Q{} to quit this menu, or {}/a{} to abort:&D   ", s1, s2, s1, s2, s1 );
                return;
             }
             ch->substate = SUB_BOARD_SUBJECT;
-            ch->printf( "%sPlease enter a subject for this note:&D   ", s1.c_str() );
+            ch->print_fmt( "{}Please enter a subject for this note:&D   ", s1 );
             return;
          }
 
          if( !str_cmp( argument, "3" ) )
          {
             ch->substate = SUB_BOARD_TEXT;
-            ch->printf( "%sPlease enter the text for your message:&D\r\n", s1.c_str() );
+            ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
             if( !ch->pcdata->pnote->text )
                ch->pcdata->pnote->text = strdup( "" );
             ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
@@ -1836,10 +1836,10 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             ch->substate = SUB_BOARD_CONFIRM;
             note_to_char( ch, ch->pcdata->pnote, nullptr, 0 );
-            ch->printf( "%sIs this correct? %s(%sY%s/%sN%s)&D   ", s1.c_str(), s3.c_str(), s2.c_str(), s3.c_str(), s2.c_str(), s3.c_str() );
+            ch->print_fmt( "{}Is this correct? {}({}Y{}/{}N{})&D   ", s1, s3, s2, s3, s2, s3 );
             return;
          }
-         ch->printf( "%sPlease choose an option, %sQ%s to quit this menu, or %s/a%s to abort:&D   ", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), s1.c_str() );
+         ch->print_fmt( "{}Please choose an option, {}Q{} to quit this menu, or {}/a{} to abort:&D   ", s1, s2, s1, s2, s1 );
          return;
    }
 }
@@ -1873,7 +1873,7 @@ CMDF( do_board_moderate )
       }
    }
    else
-      ch->printf( "&[board]Using current board in room: &[board2]%s&D\r\n", board->name );
+      ch->print_fmt( "&[board]Using current board in room: &[board2]{}&D\r\n", board->name );
 
    if( !can_remove( ch, board ) )
    {
@@ -1923,7 +1923,7 @@ CMDF( do_board_moderate )
       else
       {
          TOGGLE_NOTE_FLAG( pnote, NOTE_CLOSED );
-         ch->printf( "&[board]The note '&[board2]%s&[board]' is now closed.", pnote->subject );
+         ch->print_fmt( "&[board]The note '&[board2]{}&[board]' is now closed.", pnote->subject );
       }
       return;
    }
@@ -1935,7 +1935,7 @@ CMDF( do_board_moderate )
       else
       {
          TOGGLE_NOTE_FLAG( pnote, NOTE_CLOSED );
-         ch->printf( "&[board]The note '&[board2]%s&[board]' is now open.", pnote->subject );
+         ch->print_fmt( "&[board]The note '&[board2]{}&[board]' is now open.", pnote->subject );
       }
       return;
    }
@@ -1947,7 +1947,7 @@ CMDF( do_board_moderate )
       else
       {
          TOGGLE_NOTE_FLAG( pnote, NOTE_HIDDEN );
-         ch->printf( "&[board]The note '&[board2]%s&[board]' is now hidden.", pnote->subject );
+         ch->print_fmt( "&[board]The note '&[board2]{}&[board]' is now hidden.", pnote->subject );
       }
       return;
    }
@@ -1959,7 +1959,7 @@ CMDF( do_board_moderate )
       else
       {
          TOGGLE_NOTE_FLAG( pnote, NOTE_HIDDEN );
-         ch->printf( "&[board]The note '&[board2]%s&[board]' is now visible.", pnote->subject );
+         ch->print_fmt( "&[board]The note '&[board2]{}&[board]' is now visible.", pnote->subject );
       }
       return;
    }
@@ -1971,7 +1971,7 @@ CMDF( do_board_moderate )
       else
       {
          TOGGLE_NOTE_FLAG( pnote, NOTE_STICKY );
-         ch->printf( "&[board]The note '&[board2]%s&[board]' is now sticky.", pnote->subject );
+         ch->print_fmt( "&[board]The note '&[board2]{}&[board]' is now sticky.", pnote->subject );
       }
       return;
    }
@@ -1980,7 +1980,7 @@ CMDF( do_board_moderate )
    {
       if( board->expire == std::chrono::system_clock::time_point{} )
       {
-         ch->printf( "&[board]This note cannot be made unsticky, as &[board2]%s&[board] is set to never expire notes.&D\r\n", board->name );
+         ch->print_fmt( "&[board]This note cannot be made unsticky, as &[board2]{}&[board] is set to never expire notes.&D\r\n", board->name );
          return;
       }
 
@@ -1989,7 +1989,7 @@ CMDF( do_board_moderate )
       else
       {
          TOGGLE_NOTE_FLAG( pnote, NOTE_STICKY );
-         ch->printf( "&[board]The note '&[board2]%s&[board]' is now unsticky.", pnote->subject );
+         ch->print_fmt( "&[board]The note '&[board2]{}&[board]' is now unsticky.", pnote->subject );
       }
       return;
    }
@@ -2030,7 +2030,7 @@ CMDF( do_note_write )
          ch->pcdata->pnote = nullptr;
          ch->from_room(  );
          if( !ch->to_room( ch->orig_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          ch->desc->connected = CON_PLAYING;
          act( AT_GREY, "$n aborts $s note writing.", ch, nullptr, nullptr, TO_ROOM );
          ch->pcdata->board = nullptr;
@@ -2175,7 +2175,7 @@ CMDF( do_note_write )
       ch->orig_room = ch->in_room;
       ch->from_room(  );
       if( !ch->to_room( board_room ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
 
@@ -2211,7 +2211,7 @@ CMDF( do_note_write )
    ch->orig_room = ch->in_room;
    ch->from_room(  );
    if( !ch->to_room( board_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 }
 
 CMDF( do_note_read )
@@ -2950,14 +2950,14 @@ CMDF( do_board_set )
 
    if( !str_cmp( arg1, "purge" ) )
    {
-      log_printf( "Manual board pruning started by %s.", ch->name.c_str() );
+      log_printf( "Manual board pruning started by {}.", ch->name );
       check_boards(  );
       return;
    }
 
    if( !( board = get_board( ch, arg1 ) ) )
    {
-      ch->printf( "%sSorry, but '%s%s%s' is not a valid board.&D\r\n", s1.c_str(), s2.c_str(), arg1.c_str(  ), s1.c_str() );
+      ch->print_fmt( "{}Sorry, but '{}{}{}' is not a valid board.&D\r\n", s1, s2, arg1, s1 );
       return;
    }
 
@@ -2967,7 +2967,7 @@ CMDF( do_board_set )
 
       bool fMatch = false, fUnknown = false;
 
-      ch->printf( "%sSetting flags: %s", s1.c_str(), s2.c_str() );
+      ch->print_fmt( "{}Setting flags: {}", s1, s2 );
       buf = std::format( "\r\n{}Unknown flags: {}", s1, s2 );
       while( !argument.empty(  ) )
       {
@@ -2983,12 +2983,12 @@ CMDF( do_board_set )
             fMatch = true;
             TOGGLE_BOARD_FLAG( board, value );
             if( IS_BOARD_FLAG( board, value ) )
-               ch->printf( " +%s", arg3.c_str(  ) );
+               ch->print_fmt( " +{}", arg3 );
             else
-               ch->printf( " -%s", arg3.c_str(  ) );
+               ch->print_fmt( " -{}", arg3 );
          }
       }
-      ch->printf( "%s%s&D\r\n", fMatch ? "" : "none", fUnknown ? buf.c_str() : "" );
+      ch->print_fmt( "{}{}&D\r\n", fMatch ? "" : "none", fUnknown ? buf : "" );
       write_boards(  );
       return;
    }
@@ -3002,7 +3002,7 @@ CMDF( do_board_set )
       }
       board->objvnum = value;
       write_boards(  );
-      ch->printf( "%sThe objvnum for '%s%s%s' has been set to '%s%d%s'.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), board->objvnum, s1.c_str() );
+      ch->print_fmt( "{}The objvnum for '{}{}{}' has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->objvnum, s1 );
       return;
    }
 
@@ -3010,7 +3010,7 @@ CMDF( do_board_set )
    {
       board->objvnum = 0;
       write_boards(  );
-      ch->printf( "%s%s%s is now a global board.\r\n", s2.c_str(), board->name, s1.c_str() );
+      ch->print_fmt( "{}{}{} is now a global board.\r\n", s2, board->name, s1 );
       return;
    }
 
@@ -3018,7 +3018,7 @@ CMDF( do_board_set )
    {
       if( value < 0 || value > ch->level )
       {
-         ch->printf( "%s%d%s is out of range.\r\nValues range from %s1%s to %s%d%s.&D\r\n", s2.c_str(), value, s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), ch->level, s1.c_str() );
+         ch->print_fmt( "{}{}{} is out of range.\r\nValues range from {}1{} to {}{}{}.&D\r\n", s2, value, s1, s2, s1, s2, ch->level, s1 );
          return;
       }
       if( !str_cmp( arg2, "read_level" ) )
@@ -3029,11 +3029,11 @@ CMDF( do_board_set )
          board->remove_level = value;
       else
       {
-         ch->printf( "%sUnknown field '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), arg2.c_str(  ), s1.c_str() );
+         ch->print_fmt( "{}Unknown field '{}{}{}'.&D\r\n", s1, s2, arg2, s1 );
          return;
       }
       write_boards(  );
-      ch->printf( "%sThe %s%s%s for '%s%s%s' has been set to '%s%d%s'.&D\r\n", s1.c_str(), s3.c_str(), arg2.c_str(  ), s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), value, s1.c_str() );
+      ch->print_fmt( "{}The {}{}{} for '{}{}{}' has been set to '{}{}{}'.&D\r\n", s1, s3, arg2, s1, s2, board->name, s1, s2, value, s1 );
       return;
    }
 
@@ -3059,12 +3059,11 @@ CMDF( do_board_set )
       }
       else
       {
-         ch->printf( "%sUnknown field '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), arg2.c_str(  ), s1.c_str() );
+         ch->print_fmt( "{}Unknown field '{}{}{}'.&D\r\n", s1, s2, arg2, s1 );
          return;
       }
       write_boards(  );
-      ch->printf( "%sThe %s%s%s for '%s%s%s' have been set to '%s%s%s'.\r\n", s1.c_str(), s3.c_str(), arg2.c_str(  ),
-                  s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), !argument.empty(  )? argument.c_str(  ) : "(nothing)", s1.c_str() );
+      ch->print_fmt( "{}The {}{}{} for '{}{}{}' have been set to '{}{}{}'.\r\n", s1, s3, arg2, s1, s2, board->name, s1, s2, !argument.empty(  ) ? argument : "(nothing)", s1 );
       return;
    }
 
@@ -3087,7 +3086,7 @@ CMDF( do_board_set )
       board->filename = strdup( argument.c_str(  ) );
       write_boards(  );
       write_board( board );
-      ch->printf( "%sThe filename for '%s%s%s' has been changed to '%s%s%s'.\r\n", s1.c_str(), s2.c_str(), filename.c_str(), s1.c_str(), s2.c_str(), board->filename, s1.c_str() );
+      ch->print_fmt( "{}The filename for '{}{}{}' has been changed to '{}{}{}'.\r\n", s1, s2, filename.string(), s1, s2, board->filename, s1 );
       return;
    }
 
@@ -3105,7 +3104,7 @@ CMDF( do_board_set )
       }
       write_boards(  );
 
-      ch->printf( "%sThe name for '%s%s%s' has been changed to '%s%s%s'.\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );
+      ch->print_fmt( "{}The name for '{}{}{}' has been changed to '{}{}{}'.\r\n", s1, s2, board->name, s1, s2, argument, s1 );
       STRFREE( board->name );
       board->name = STRALLOC( argument.c_str(  ) );
       return;
@@ -3115,16 +3114,16 @@ CMDF( do_board_set )
    {
       if( value < 0 || value > MAX_BOARD_EXPIRE )
       {
-         ch->printf( "%sExpire time must be a value between %s0%s and %s%d%s.&D\r\n", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), MAX_BOARD_EXPIRE, s1.c_str() );
+         ch->print_fmt( "{}Expire time must be a value between {}0{} and {}{}{}.&D\r\n", s1, s2, s1, s2, MAX_BOARD_EXPIRE, s1 );
          return;
       }
 
       auto expiry_time = current_time + std::chrono::days( value );
       board->expire = expiry_time;
 
-      ch->printf( "%sFrom now on, notes on the %s%s%s board will expire after %s%d%s days.\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), value, s1.c_str() );
-      ch->printf( "%sPlease note: This will not effect notes currently on the board. To effect %sALL%s notes, "
-                  "type: %sbset <board> expireall <days>&D\r\n", s1.c_str(), s3.c_str(), s1.c_str(), s2.c_str() );
+      ch->print_fmt( "{}From now on, notes on the {}{}{} board will expire after {}{}{} days.\r\n", s1, s2, board->name, s1, s2, value, s1 );
+      ch->print_fmt( "{}Please note: This will not effect notes currently on the board. To effect {}ALL{} notes, "
+                  "type: {}bset <board> expireall <days>&D\r\n", s1, s3, s1, s2 );
       write_boards(  );
       return;
    }
@@ -3133,7 +3132,7 @@ CMDF( do_board_set )
    {
       if( value < 0 || value > MAX_BOARD_EXPIRE )
       {
-         ch->printf( "%sExpire time must be a value between %s0%s and %s%d%s.&D\r\n", s1.c_str(), s2.c_str(), s1.c_str(), s2.c_str(), MAX_BOARD_EXPIRE, s1.c_str() );
+         ch->print_fmt( "{}Expire time must be a value between {}0{} and {}{}{}.&D\r\n", s1, s2, s1, s2, MAX_BOARD_EXPIRE, s1 );
          return;
       }
 
@@ -3144,7 +3143,7 @@ CMDF( do_board_set )
       {
          note->expire = expiry_time;
       }
-      ch->printf( "%sAll notes on the %s%s%s board will expire after %s%d%s days.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), value, s1.c_str() );
+      ch->print_fmt( "{}All notes on the {}{}{} board will expire after {}{}{} days.&D\r\n", s1, s2, board->name, s1, s2, value, s1 );
       ch->print( "Performing board pruning now...\r\n" );
       board_check_expire( board );
       write_boards(  );
@@ -3166,7 +3165,7 @@ CMDF( do_board_set )
       DISPOSE( board->desc );
       board->desc = strdup( argument.c_str(  ) );
       write_boards(  );
-      ch->printf( "%sThe desc for %s%s%s has been set to '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), board->desc, s1.c_str() );
+      ch->print_fmt( "{}The desc for {}{}{} has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->desc, s1 );
       return;
    }
 
@@ -3181,7 +3180,7 @@ CMDF( do_board_set )
       STRFREE( board->group );
       board->group = STRALLOC( argument.c_str(  ) );
       write_boards(  );
-      ch->printf( "%sThe group for %s%s%s has been set to '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), board->group, s1.c_str() );
+      ch->print_fmt( "{}The group for {}{}{} has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->group, s1 );
       return;
    }
 
@@ -3196,7 +3195,7 @@ CMDF( do_board_set )
       }
       if( bd == bdlist.begin(  ) )
       {
-         ch->printf( "%sBut '%s%s%s' is already the first board!&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str() );
+         ch->print_fmt( "{}But '{}{}{}' is already the first board!&D\r\n", s1, s2, board->name, s1 );
          return;
       }
       --bd;
@@ -3204,7 +3203,7 @@ CMDF( do_board_set )
       bdlist.remove( board );
       bdlist.insert( bd, board );
 
-      ch->printf( "%sMoved '%s%s%s' above '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), ( *bd )->name, s1.c_str() );
+      ch->print_fmt( "{}Moved '{}{}{}' above '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, ( *bd )->name, s1 );
       return;
    }
 
@@ -3220,7 +3219,7 @@ CMDF( do_board_set )
 
       if( ++bd == bdlist.end(  ) )
       {
-         ch->printf( "%sBut '%s%s%s' is already the last board!&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str() );
+         ch->print_fmt( "{}But '{}{}{}' is already the last board!&D\r\n", s1, s2, board->name, s1 );
          return;
       }
       --bd;
@@ -3240,7 +3239,7 @@ CMDF( do_board_set )
          bdlist.remove( board );
          bdlist.insert( bd, board );
       }
-      ch->printf( "%sMoved '%s%s%s' below '%s%s%s'.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), ( *bd )->name, s1.c_str() );
+      ch->print_fmt( "{}Moved '{}{}{}' below '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, ( *bd )->name, s1 );
       return;
    }
    do_board_set( ch, "" );
@@ -3453,7 +3452,7 @@ project_data *read_project( FILE * fp )
                realm_data *realm = get_realm( fread_flagstring( fp ) );
 
                if( !realm )
-                  log_printf( "Project %s has no valid realm.", project->name );
+                  log_printf( "Project {} has no valid realm.", project->name );
                else
                   project->realm_name = realm->name;
                break;

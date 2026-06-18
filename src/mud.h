@@ -634,10 +634,10 @@ do                                             \
       {                                        \
          if( in_hash_table( (point) ) )        \
          {                                     \
-            log_printf( "&RDISPOSE called on STRALLOC pointer: %s, line %d\n", __FILE__, __LINE__ ); \
+            log_printf( "&RDISPOSE called on STRALLOC pointer: {}, line {}\n", __FILE__, __LINE__ ); \
             log_string( "Attempting to correct." ); \
             if( str_free( (point) ) == -1 )    \
-               log_printf( "&RSTRFREEing bad pointer: %s, line %d\n", __FILE__, __LINE__ ); \
+               log_printf( "&RSTRFREEing bad pointer: {}, line {}\n", __FILE__, __LINE__ ); \
          }                                     \
          else                                  \
             free( (point) );                   \
@@ -660,7 +660,7 @@ do                                              \
    if((point))                                  \
    {                                            \
       if( str_free((point)) == -1 )             \
-         bug( "&RSTRFREEing bad pointer: %s, line %d", __FILE__, __LINE__ ); \
+         log_printf( "&RSTRFREEing bad pointer: {}, line {}", __FILE__, __LINE__ ); \
       (point) = nullptr;                        \
    }                                            \
 } while(0)
@@ -672,12 +672,12 @@ do                                               \
    {                                             \
       if( !in_hash_table( (point) ) )            \
       {                                          \
-         log_printf( "&RSTRFREE called on strdup pointer: %s, line %d\n", __FILE__, __LINE__ ); \
+         log_printf( "&RSTRFREE called on strdup pointer: {}, line {}\n", __FILE__, __LINE__ ); \
          log_string( "Attempting to correct." ); \
          free( (point) );                        \
       }                                          \
       else if( str_free( (point) ) == -1 )       \
-         log_printf( "&RSTRFREEing bad pointer: %s, line %d\n", __FILE__, __LINE__ ); \
+         log_printf( "&RSTRFREEing bad pointer: {}, line {}\n", __FILE__, __LINE__ ); \
       (point) = nullptr;                         \
    }                                             \
    else                                          \
@@ -1005,8 +1005,6 @@ int number_range( int, int );
 int number_door( void );
 int number_bits( int );
 int dice( int, int );
-void log_printf( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
-void log_printf_plus( short, short, const char *, ... ) __attribute__ ( ( format( printf, 3, 4 ) ) );
 void log_string_plus( short, short, std::string_view );
 void log_string( std::string_view );
 void make_wizlist( void );

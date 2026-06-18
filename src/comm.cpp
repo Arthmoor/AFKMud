@@ -179,11 +179,11 @@ void directory_check( void )
       if( !std::filesystem::exists( directory_table[x] ) )
       {
          buf = directory_table[x];
-         log_printf( "Creating required directory: %s", directory_table[x].data() );
+         log_printf( "Creating required directory: {}", directory_table[x] );
 
          if( !std::filesystem::create_directory( buf ) )
          {
-            log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", directory_table[x].data() );
+            log_printf( "FATAL ERROR :: Unable to create required directory: {}. Must be corrected manually.", directory_table[x] );
             std::exit( EXIT_FAILURE );
          }
       }
@@ -195,11 +195,11 @@ void directory_check( void )
             std::filesystem::path dirname = std::format( "{}{}", PLAYER_DIR, c );
             if( !std::filesystem::exists( dirname ) )
             {
-               log_printf( "Creating required directory: %s", dirname.c_str() );
+               log_printf( "Creating required directory: {}", dirname.string() );
 
                if( !std::filesystem::create_directory( dirname ) )
                {
-                  log_printf( "FATAL ERROR :: Unable to create required directory: %s. Must be corrected manually.", dirname.c_str() );
+                  log_printf( "FATAL ERROR :: Unable to create required directory: {}. Must be corrected manually.", dirname.string() );
                   std::exit( EXIT_FAILURE );
                }
             }
@@ -371,20 +371,20 @@ void init_mud( bool fCopyOver, int gameport )
    switch ( gameport )
    {
       case MAINPORT:
-         log_printf( "%s game server ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
+         log_printf( "{} game server ready on port {}.", sysdata->mud_name, gameport );
          break;
       case BUILDPORT:
-         log_printf( "%s builders' server ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
+         log_printf( "{} builders' server ready on port {}.", sysdata->mud_name, gameport );
          break;
       case CODEPORT:
-         log_printf( "%s coding server ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
+         log_printf( "{} coding server ready on port {}.", sysdata->mud_name, gameport );
          break;
       default:
-         log_printf( "%s - running on unsupported port %d!!", sysdata->mud_name.c_str(  ), gameport );
+         log_printf( "{} - running on unsupported port {}!!", sysdata->mud_name, gameport );
          break;
    }
 #else
-   log_printf( "%s ready on port %d.", sysdata->mud_name.c_str(  ), gameport );
+   log_printf( "{} ready on port {}.", sysdata->mud_name, gameport );
 #endif
 
    if( fCopyOver )
@@ -414,7 +414,7 @@ void close_mud( void )
          if( !vch->isnpc(  ) )
          {
             vch->save(  );
-            log_printf( "%s saved.", vch->name.c_str(  ) );
+            log_printf( "{} saved.", vch->name );
             d->write( "You have been saved to disk.\033[0m\r\n" );
          }
       }

@@ -265,73 +265,73 @@ void validate_treasure_settings( area_data * area )
 {
    if( area->tg_nothing > area->tg_gold && area->tg_gold != 0 )
    {
-      log_printf( "%s: Nothing setting is larger than gold setting.", area->filename );
+      log_printf( "{}: Nothing setting is larger than gold setting.", area->filename );
       if( area->tg_nothing > 100 )
       {
-         log_printf( "%s: Nothing setting exceeds 100%%, correcting.", area->filename );
+         log_printf( "{}: Nothing setting exceeds 100%, correcting.", area->filename );
          area->tg_nothing = 100;
       }
    }
 
    if( area->tg_gold > area->tg_item && area->tg_item != 0 )
    {
-      log_printf( "%s: Gold setting is larger than item setting.", area->filename );
+      log_printf( "{}: Gold setting is larger than item setting.", area->filename );
       if( area->tg_gold > 100 )
       {
-         log_printf( "%s: Gold setting exceeds 100%%, correcting.", area->filename );
+         log_printf( "{}: Gold setting exceeds 100%, correcting.", area->filename );
          area->tg_gold = 100;
       }
    }
 
    if( area->tg_item > area->tg_gem && area->tg_gem != 0 )
    {
-      log_printf( "%s: Item setting is larger than gem setting.", area->filename );
+      log_printf( "{}: Item setting is larger than gem setting.", area->filename );
       if( area->tg_item > 100 )
       {
-         log_printf( "%s: Item setting exceeds 100%%, correcting.", area->filename );
+         log_printf( "{}: Item setting exceeds 100%, correcting.", area->filename );
          area->tg_item = 100;
       }
    }
 
    if( area->tg_gem > 100 )
    {
-      log_printf( "%s: Gem setting exceeds 100%%, correcting.", area->filename );
+      log_printf( "{}: Gem setting exceeds 100%, correcting.", area->filename );
       area->tg_gem = 100;
    }
 
    if( area->tg_scroll > area->tg_potion && area->tg_potion != 0 )
    {
-      log_printf( "%s: Scroll setting is larger than potion setting.", area->filename );
+      log_printf( "{}: Scroll setting is larger than potion setting.", area->filename );
       if( area->tg_scroll > 100 )
       {
-         log_printf( "%s: Scroll setting exceeds 100%%, correcting.", area->filename );
+         log_printf( "{}: Scroll setting exceeds 100%, correcting.", area->filename );
          area->tg_scroll = 100;
       }
    }
 
    if( area->tg_potion > area->tg_wand && area->tg_wand != 0 )
    {
-      log_printf( "%s: Potion setting is larger than wand setting.", area->filename );
+      log_printf( "{}: Potion setting is larger than wand setting.", area->filename );
       if( area->tg_wand > 100 )
       {
-         log_printf( "%s: Wand setting exceeds 100%%, correcting.", area->filename );
+         log_printf( "{}: Wand setting exceeds 100%, correcting.", area->filename );
          area->tg_wand = 100;
       }
    }
 
    if( area->tg_wand > area->tg_armor && area->tg_armor != 0 )
    {
-      log_printf( "%s: Wand setting is larger than armor setting.", area->filename );
+      log_printf( "{}: Wand setting is larger than armor setting.", area->filename );
       if( area->tg_wand > 100 )
       {
-         log_printf( "%s: Wand setting exceeds 100%%, correcting.", area->filename );
+         log_printf( "{}: Wand setting exceeds 100%, correcting.", area->filename );
          area->tg_wand = 100;
       }
    }
 
    if( area->tg_armor > 100 )
    {
-      log_printf( "%s: Armor setting exceeds 100%%, correcting.", area->filename );
+      log_printf( "{}: Armor setting exceeds 100%, correcting.", area->filename );
       area->tg_armor = 100;
    }
 }
@@ -346,14 +346,14 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDEXIT";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -486,14 +486,14 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDEXDESC";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -531,14 +531,14 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDAREADATA";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -701,7 +701,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
                if( tarea->hi_vnum >= sysdata->maxvnum )
                {
                   sysdata->maxvnum = tarea->hi_vnum + 1;
-                  log_printf( "MaxVnum value raised to %d to accomadate new zone.", sysdata->maxvnum );
+                  log_printf( "MaxVnum value raised to {} to accomadate new zone.", sysdata->maxvnum );
                   save_sysdata(  );
                }
                break;
@@ -722,14 +722,14 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDMOBILE";
       }
 
       switch ( word[0] )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1082,7 +1082,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
                   else
                   {
                      pMobIndex = get_mob_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: %d", vnum );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: {}", vnum );
                      pMobIndex->clean_mob(  );
                      oldmob = true;
                   }
@@ -1121,7 +1121,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#ENDOBJECT";
       }
 
@@ -1358,7 +1358,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
                   else
                   {
                      pObjIndex = get_obj_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: %d", vnum );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: {}", vnum );
                      pObjIndex->clean_obj(  );
                      oldobj = true;
                   }
@@ -1405,7 +1405,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          if( fBootDb )
             exit( 1 );
 
@@ -1549,7 +1549,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                   else
                   {
                      pRoomIndex = get_room_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: %d", vnum );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: {}", vnum );
                      pRoomIndex->clean_room(  );
                      oldroom = true;
                   }
@@ -1590,7 +1590,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                      /*
                       * Clean out the old resets
                       */
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: %s", tarea->name );
+                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: {}", tarea->name );
                      pRoomIndex->clean_resets(  );
                   }
                }
@@ -1671,9 +1671,9 @@ void process_sorting( area_data * tarea, bool isproto )
    tarea->sort_vnums(  );
    if( isproto )
       tarea->flags.set( AFLAG_PROTOTYPE );
-   log_printf( "%-20s: Version %-3d Vnums: %5d - %-5d", tarea->filename, tarea->version, tarea->low_vnum, tarea->hi_vnum );
+   log_printf( "{:<20}: Version {:<3} Vnums: {:5} - {:<5}", tarea->filename, tarea->version, tarea->low_vnum, tarea->hi_vnum );
    if( tarea->low_vnum < 0 || tarea->hi_vnum < 0 )
-      log_printf( "%-20s: Bad Vnum Range", tarea->filename );
+      log_printf( "{:<20}: Bad Vnum Range", tarea->filename );
    if( !tarea->author )
       tarea->author = STRALLOC( "AFKMud" );
 }
@@ -1719,7 +1719,7 @@ void load_area_file( const std::string & filename, bool isproto )
    }
 
    // Support conversions from other bases if encountered. -- Samson 12/31/06
-   log_printf( "Area format conversion: %s", filename.c_str(  ) );
+   log_printf( "Area format conversion: {}", filename );
 
    if( !str_cmp( word, "FUSSAREA" ) )
    {
@@ -1859,7 +1859,7 @@ void load_area_file( const std::string & filename, bool isproto )
    if( tarea )
       process_sorting( tarea, isproto );
    else
-      log_printf( "(%s)", filename.c_str(  ) );
+      log_printf( "({})", filename );
 }
 
 void fwrite_afk_affect( FILE * fpout, affect_data * af )
@@ -2324,7 +2324,7 @@ void area_data::fold( const std::string & fname, bool install )
 {
    FILE *fpout;
 
-   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving %s...", this->filename );
+   log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving {}...", this->filename );
 
    std::filesystem::path buf = std::format( "{}.bak", fname );
    std::filesystem::rename( fname, buf.c_str() );
@@ -2567,7 +2567,7 @@ void assign_area( char_data * ch )
          tarea = find_area( taf );
       if( !tarea )
       {
-         log_printf_plus( LOG_BUILD, ch->level, "Creating area entry for %s", ch->name.c_str() );
+         log_printf_plus( LOG_BUILD, ch->level, "Creating area entry for {}", ch->name );
 
          tarea = create_area(  );
          strdup_printf( &tarea->name, "[PROTO] %s's area in progress", ch->name.c_str() );
@@ -2577,7 +2577,7 @@ void assign_area( char_data * ch )
          tarea->sort_vnums(  );
       }
       else
-         log_printf_plus( LOG_BUILD, ch->level, "Updating area entry for %s", ch->name.c_str() );
+         log_printf_plus( LOG_BUILD, ch->level, "Updating area entry for {}", ch->name );
 
       tarea->low_vnum = ch->pcdata->low_vnum;
       tarea->hi_vnum = ch->pcdata->hi_vnum;
@@ -2637,7 +2637,7 @@ CMDF( do_aassign )
 
    ch->pcdata->area = tarea;
    ch->print_fmt( "Assigning you: {}\r\n", tarea->name );
-   log_printf( "Assigning %s to %s.", tarea->name, ch->name.c_str() );
+   log_printf( "Assigning {} to {}.", tarea->name, ch->name );
 }
 
 /*
@@ -2666,7 +2666,7 @@ CMDF( do_installarea )
    {
       if( exists_file( arg2 ) )
       {
-         ch->printf( "An area with filename %s already exists - choose another.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "An area with filename {} already exists - choose another.\r\n", arg2 );
          return;
       }
 
@@ -2681,7 +2681,7 @@ CMDF( do_installarea )
        * Fold area with install flag -- auto-removes prototype flags 
        */
       tarea->flags.reset( AFLAG_PROTOTYPE );
-      ch->printf( "Saving and installing %s...\r\n", tarea->filename );
+      ch->print_fmt( "Saving and installing {}...\r\n", tarea->filename );
       tarea->install_date = current_time;
       tarea->fold( tarea->filename, true );
 
@@ -2721,7 +2721,7 @@ CMDF( do_installarea )
       ch->print( "Done.\r\n" );
       return;
    }
-   ch->printf( "No area with filename %s exists in the building directory.\r\n", arg1.c_str(  ) );
+   ch->print_fmt( "No area with filename {} exists in the building directory.\r\n", arg1 );
 }
 
 CMDF( do_astat )
@@ -2741,30 +2741,30 @@ CMDF( do_astat )
          tarea = ch->in_room->area;
    }
 
-   ch->printf( "\r\n&wName:     &W%s\r\n&wFilename: &W%-20s  &wPrototype: &W%s\r\n&wAuthor:   &W%s\r\n",
+   ch->print_fmt( "\r\n&wName:     &W{}\r\n&wFilename: &W{:<20}  &wPrototype: &W{}\r\n&wAuthor:   &W{}\r\n",
                tarea->name, tarea->filename, tarea->flags.test( AFLAG_PROTOTYPE ) ? "yes" : "no", tarea->author );
-   ch->printf( "&wCreated on   : &W%s\r\n", c_time( tarea->creation_date, -1 ).c_str() );
-   ch->printf( "&wInstalled on : &W%s\r\n", c_time( tarea->install_date, -1 ).c_str() );
-   ch->printf( "&wLast reset on: &W%s\r\n", c_time( tarea->last_resettime, -1 ).c_str() );
-   ch->printf( "&wVersion: &W%-3d &wAge: &W%-3d  &wCurrent number of players: &W%-3d\r\n", tarea->version, tarea->age, tarea->nplayer );
-   ch->printf( "&wlow_vnum: &W%5d    &whi_vnum: &W%5d\r\n", tarea->low_vnum, tarea->hi_vnum );
-   ch->printf( "&wSoft range: &W%d - %d    &wHard range: &W%d - %d\r\n", tarea->low_soft_range, tarea->hi_soft_range, tarea->low_hard_range, tarea->hi_hard_range );
-   ch->printf( "&wArea flags: &W%s\r\n", bitset_string( tarea->flags, area_flags ) );
+   ch->print_fmt( "&wCreated on   : &W{}\r\n", c_time( tarea->creation_date, -1 ) );
+   ch->print_fmt( "&wInstalled on : &W{}\r\n", c_time( tarea->install_date, -1 ) );
+   ch->print_fmt( "&wLast reset on: &W{}\r\n", c_time( tarea->last_resettime, -1 ) );
+   ch->print_fmt( "&wVersion: &W{:<3} &wAge: &W{:<3}  &wCurrent number of players: &W{:<3}\r\n", tarea->version, tarea->age, tarea->nplayer );
+   ch->print_fmt( "&wlow_vnum: &W{:5}    &whi_vnum: &W{:5}\r\n", tarea->low_vnum, tarea->hi_vnum );
+   ch->print_fmt( "&wSoft range: &W{} - {}    &wHard range: &W{} - {}\r\n", tarea->low_soft_range, tarea->hi_soft_range, tarea->low_hard_range, tarea->hi_hard_range );
+   ch->print_fmt( "&wArea flags: &W{}\r\n", bitset_string( tarea->flags, area_flags ) );
 
    ch->print( "&wTreasure Settings:\r\n" );
-   ch->printf( "&wNothing: &W%-3hu &wGold:   &W%-3hu &wItem: &W%-3hu &wGem:   &W%-3hu\r\n", tarea->tg_nothing, tarea->tg_gold, tarea->tg_item, tarea->tg_gem );
-   ch->printf( "&wScroll:  &W%-3hu &wPotion: &W%-3hu &wWand: &W%-3hu &wArmor: &W%-3hu\r\n", tarea->tg_scroll, tarea->tg_potion, tarea->tg_wand, tarea->tg_armor );
+   ch->print_fmt( "&wNothing: &W{:<3} &wGold:   &W{:<3} &wItem: &W{:<3} &wGem:   &W{:<3}\r\n", tarea->tg_nothing, tarea->tg_gold, tarea->tg_item, tarea->tg_gem );
+   ch->print_fmt( "&wScroll:  &W{:<3} &wPotion: &W{:<3} &wWand: &W{:<3} &wArmor: &W{:<3}\r\n", tarea->tg_scroll, tarea->tg_potion, tarea->tg_wand, tarea->tg_armor );
 
    if( tarea->continent )
-      ch->printf( "&wContinent or Plane: &W%s\r\n", tarea->continent->name.c_str( ) );
+      ch->print_fmt( "&wContinent or Plane: &W{}\r\n", tarea->continent->name );
    else
       ch->print( "&wContinent or Plane: &W<NOT SET>\r\n" );
 
-   ch->printf( "&wCoordinates: &W%d %d\r\n", tarea->map_x, tarea->map_y );
-   ch->printf( "&wWeather: X Coord: &W%-3d  &w Y Coord: &W%-3d\r\n", tarea->weatherx, tarea->weathery );
+   ch->print_fmt( "&wCoordinates: &W{} {}\r\n", tarea->map_x, tarea->map_y );
+   ch->print_fmt( "&wWeather: X Coord: &W%-3d  &w Y Coord: &W%-3d\r\n", tarea->weatherx, tarea->weathery );
 
-   ch->printf( "&wResetmsg: &W%s\r\n", tarea->resetmsg ? tarea->resetmsg : "(default)" ); /* Rennard */
-   ch->printf( "&wReset frequency: &W%d &wminutes.\r\n", tarea->reset_frequency ? tarea->reset_frequency : 15 );
+   ch->print_fmt( "&wResetmsg: &W{}\r\n", tarea->resetmsg ? tarea->resetmsg : "(default)" ); /* Rennard */
+   ch->print_fmt( "&wReset frequency: &W{} &wminutes.\r\n", tarea->reset_frequency ? tarea->reset_frequency : 15 );
 }
 
 /* check other areas for a conflict while ignoring the current area */

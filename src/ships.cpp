@@ -258,7 +258,7 @@ void load_ships( void )
       else if( key == "End" )
          shiplist.push_back( ship );
       else
-         log_printf( "%s: Bad line in ships file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         log_printf( "{}: Bad line in ships file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -954,11 +954,11 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       {
          ch->mount->from_room(  );
          if( !ch->mount->to_room( to_room ) )
-            log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       }
    }
    if( !ch->to_room( to_room ) )
-      log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    ship->room = to_room->vnum;
    check_sneaks( ch );
 

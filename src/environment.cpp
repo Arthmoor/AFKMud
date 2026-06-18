@@ -217,7 +217,7 @@ void environment_actual_update( void )
 
                      ch->print( "&RScorching flames erupt all around!\r\n" );
                      if( !( obj = get_obj_index( OBJ_VNUM_OVFIRE )->create_object( 1 ) ) )
-                        log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                        log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                      else
                      {
                         obj->timer = en->time_left;

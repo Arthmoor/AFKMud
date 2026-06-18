@@ -399,7 +399,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       if( !valid_coordinates( pexit->map_x, pexit->map_y ) )
       {
-         log_printf( "{}: Room #{} - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
+         log_printf( "{}: Room #{} - Invalid exit coordinates: {} {}", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
          ch->print( "Oops. Something is wrong with this map exit - notify the immortals.\r\n" );
          check_sneaks( ch );
          return rSTOP;
@@ -2523,7 +2523,7 @@ void teleportch( char_data * ch, room_index * room, bool show )
    act( AT_ACTION, "$n disappears suddenly!", ch, nullptr, nullptr, TO_ROOM );
    ch->from_room(  );
    if( !ch->to_room( room ) )
-      log_printf( "char_to_room: {}:{}, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    act( AT_ACTION, "$n arrives suddenly!", ch, nullptr, nullptr, TO_ROOM );
    if( show )
       interpret( ch, "look" );
@@ -3110,7 +3110,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
       {
          ch->mount->from_room(  );
          if( !ch->mount->to_room( xit->to_room ) )
-            log_printf( "char_to_room: {}:{}, line %d.", __FILE__, __func__, __LINE__ );
+            log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          if( showroom )
             interpret( ch->mount, "look" );
       }

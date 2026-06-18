@@ -869,14 +869,14 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            log_printf( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -892,7 +892,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_ability( nullptr, ability, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown ability: %s", __func__, ability );
+                  log_printf( "{}: unknown ability: {}", __func__, ability );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -949,7 +949,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
                      if( ( sn = herb_lookup( sname ) ) < 0 )
-                        log_printf( "%s: unknown skill.", __func__ );
+                        log_printf( "{}: unknown skill.", __func__ );
                      else
                         sn += TYPE_HERB;
                   }
@@ -1042,8 +1042,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                word = fread_flagstring( fp );
                if( !( board = get_board( nullptr, word ) ) )
                {
-                  log_printf( "Player %s has board %s which apparently doesn't exist?", ch->name.c_str(), word );
-                  ch->printf( "Warning: the board %s no longer exsists.\r\n", word );
+                  log_printf( "Player {} has board {} which apparently doesn't exist?", ch->name, word );
+                  ch->print_fmt( "Warning: the board {} no longer exsists.\r\n", word );
                   fread_to_eol( fp );
                   break;
                }
@@ -1089,7 +1089,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_combat( nullptr, combat, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown combat skill: %s", __func__, combat );
+                  log_printf( "{}: unknown combat skill: {}", __func__, combat );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1286,7 +1286,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_lore( nullptr, lore, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown lore: %s", __func__, lore );
+                  log_printf( "{}: unknown lore: {}", __func__, lore );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1529,7 +1529,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_skill( nullptr, skill, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown skill: %s", __func__, skill );
+                  log_printf( "{}: unknown skill: {}", __func__, skill );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1576,7 +1576,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_spell( nullptr, spell, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown spell: %s", __func__, spell );
+                  log_printf( "{}: unknown spell: {}", __func__, spell );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1740,7 +1740,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                int sn = find_tongue( nullptr, tongue, false );
 
                if( sn < 0 )
-                  log_printf( "%s: unknown tongue: %s", __func__, tongue );
+                  log_printf( "{}: unknown tongue: {}", __func__, tongue );
                else
                {
                   ch->pcdata->learned[sn] = value;
@@ -1812,7 +1812,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
       if( word[0] == '\0' )
       {
-         log_printf( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -2165,7 +2165,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                // It will still log from other sources though, so hey, if something OTHER that the hotboot recovery is triggering it, investigate that cause it may not be right!
                if( file_ver < 10 && fVnum == true && os_type != OS_CORPSE && ch->tempnum != -9999 )
                {
-                  log_printf( "%s: != OS_CORPSE case encountered. file_ver=%d", __func__, file_ver );
+                  log_printf( "{}: != OS_CORPSE case encountered. file_ver={}", __func__, file_ver );
                   obj->value[0] = obj->pIndexData->value[0];
                   obj->value[1] = obj->pIndexData->value[1];
                   obj->value[2] = obj->pIndexData->value[2];
@@ -2370,7 +2370,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                if( !pRoomIndex )
                   pRoomIndex = get_room_index( ROOM_VNUM_LIMBO );
                if( !mob->to_room( pRoomIndex ) )
-                  log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                  log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
                for( int i = 0; i < MAX_WEAR; ++i )
                   for( int x = 0; x < MAX_LAYERS; ++x )
@@ -2506,9 +2506,9 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
    if( std::filesystem::exists( strsave ) && d->connected != CON_PLOADED )
    {
       if( preload )
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Preloading player data for: %s", ch->pcdata->filename.c_str() );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Preloading player data for: {}", ch->pcdata->filename );
       else
-         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for %s (%ldK)", ch->pcdata->filename.c_str(), static_cast<long>( std::filesystem::file_size( strsave ) / 1024 ) );
+         log_printf_plus( LOG_COMM, LEVEL_KL, "Loading player data for {} ({}K)", ch->pcdata->filename, static_cast<long>( std::filesystem::file_size( strsave ) / 1024 ) );
    }
    /*
     * else no player file 
@@ -2569,7 +2569,7 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
                {
                   mob->from_room(  );
                   if( !mob->to_room( ch->in_room ) )
-                     log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+                     log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
                }
             }
          }

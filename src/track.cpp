@@ -513,7 +513,7 @@ void hunt_vic( char_data * ch )
          {
             bug( "%s: no ch->in_room! Name: %s. Placing mob in limbo.", __func__, ch->name.c_str() );
             if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
-               log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+               log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
             return;
          }
          interpret( ch, "say Damn! I lost track of my quarry!" );

@@ -96,7 +96,7 @@ void expire_items( char_data * ch )
       // If the player is less powerful than the object, it has a chance of simply disappearing without notice.
       if( ch->char_ego(  ) < obj->ego && number_bits( 3 ) > 4 )
       {
-         log_printf( "obj %d, %s, removed from %s. Random ego check.", obj->pIndexData->vnum, obj->short_descr, ch->name.c_str() );
+         log_printf( "obj {}, {}, removed from {}. Random ego check.", obj->pIndexData->vnum, obj->short_descr, ch->name );
          rare_purge( ch, obj );
          continue;
       }
@@ -104,7 +104,7 @@ void expire_items( char_data * ch )
       // The larger the item's ego, the larger it's implied worth. So you get less time to stash it offline.
       if( ch->pcdata->daysidle > 100 - obj->ego )
       {
-         log_printf( "obj %d, %s, removed from %s. Exceeded ego idle time.", obj->pIndexData->vnum, obj->short_descr, ch->name.c_str() );
+         log_printf( "obj {}, {}, removed from {}. Exceeded ego idle time.", obj->pIndexData->vnum, obj->short_descr, ch->name );
          rare_purge( ch, obj );
          continue;
       }
@@ -196,7 +196,7 @@ CMDF( do_quit )
 
    if( !str_cmp( argument, "auto" ) )
    {
-      log_printf_plus( LOG_COMM, level, "%s has idled out.", ch->name.c_str() );
+      log_printf_plus( LOG_COMM, level, "{} has idled out.", ch->name );
       char_leaving( ch, 3 );
       return;
    }
@@ -251,7 +251,7 @@ CMDF( do_quit )
    ch->print( "&d\r\n" );
    act( AT_BYE, "$n has left the game.", ch, nullptr, nullptr, TO_ROOM );
 
-   log_printf_plus( LOG_COMM, ch->level, "%s has quit.", ch->name.c_str() );
+   log_printf_plus( LOG_COMM, ch->level, "{} has quit.", ch->name );
    char_leaving( ch, 3 );
 }
 
@@ -278,19 +278,19 @@ void scan_rares( char_data * ch )
          default:
             break;
          case 0:
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s checks out of the inn.", ch->name.c_str() );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "{} checks out of the inn.", ch->name );
             break;
          case 2:
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s reconnecting after idling out.", ch->name.c_str() );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "{} reconnecting after idling out.", ch->name );
             break;
          case 3:
-            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s reconnecting after quitting.", ch->name.c_str() );
+            log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "{} reconnecting after quitting.", ch->name );
             break;
       }
    }
    else
    {
-      log_printf_plus( LOG_COMM, ch->level, "%s returns from beyond the void.", ch->name.c_str() );
+      log_printf_plus( LOG_COMM, ch->level, "{} returns from beyond the void.", ch->name );
       show_stateflags( ch );
    }
 }
@@ -323,7 +323,7 @@ CMDF( do_rent )
    ch->print( "&d\r\n" );
    act( AT_BYE, "$n shows $N to $S room, and stores $S equipment.", innkeeper, nullptr, ch, TO_NOTVICT );
 
-   log_printf_plus( LOG_COMM, level, "%s rented in: %s, %s", ch->name.c_str(), ch->in_room->name, ch->in_room->area->name );
+   log_printf_plus( LOG_COMM, level, "{} rented in: {}, {}", ch->name, ch->in_room->name, ch->in_room->area->name );
 
    char_leaving( ch, 0 );
 }
@@ -337,7 +337,7 @@ void make_campfire( room_index * in_room, char_data * ch, short timer )
 
    if( !( fire = get_obj_index( OBJ_VNUM_CAMPFIRE )->create_object( 1 ) ) )
    {
-      log_printf( "create_object: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+      log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
    fire->timer = number_fuzzy( timer );
@@ -512,7 +512,7 @@ CMDF( do_camp )
    ch->print( "After tending to your fire and securing your belongings, you make camp for the night.\r\n" );
    act( AT_GREEN, "$n secures $s belongings and makes camp for the night.\r\n", ch, nullptr, nullptr, TO_ROOM );
 
-   log_printf( "%s has made camp for the night in %s.", ch->name.c_str(), ch->in_room->area->name );
+   log_printf( "{} has made camp for the night in {}.", ch->name, ch->in_room->area->name );
    char_leaving( ch, 1 );
 }
 
@@ -523,8 +523,8 @@ int thief_raid( char_data * ch, obj_data * obj, int robbed )
    {
       if( obj->ego >= sysdata->minego )
       {
-         ch->printf( "&YThe thieves stole %s!\r\n", obj->short_descr );
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves stole %s from %s!", obj->short_descr, ch->name.c_str() );
+         ch->print_fmt( "&YThe thieves stole {}!\r\n", obj->short_descr );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves stole {} from {}!", obj->short_descr, ch->name );
          obj->separate(  );
          obj->extract(  );
          robbed = 1;
@@ -540,8 +540,8 @@ int bandit_raid( char_data * ch, obj_data * obj, int robbed )
 {
    if( obj->ego >= sysdata->minego )
    {
-      ch->printf( "&YThe bandits stole %s!\r\n", obj->short_descr );
-      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits stole %s from %s!", obj->short_descr, ch->name.c_str() );
+      ch->print_fmt( "&YThe bandits stole {}!\r\n", obj->short_descr );
+      log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits stole {} from {}!", obj->short_descr, ch->name );
       obj->extract(  );
       robbed = 1;
    }
@@ -563,9 +563,9 @@ void break_camp( char_data * ch )
       std::list<obj_data *>::iterator iobj;
       if( robchance < 98 )
       {
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves raided %s's camp!", ch->name.c_str() );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Thieves raided {}'s camp!", ch->name );
          ch->print( "&RYour camp was visited by thieves while you were away!\r\n" );
-         ch->print( "&RYour belongings have been rummaged through....\r\n" );
+         ch->print( "&RYour belongings have been rummaged through...\r\n" );
 
          for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
          {
@@ -575,9 +575,9 @@ void break_camp( char_data * ch )
       }
       else
       {
-         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits raided %s's camp!", ch->name.c_str() );
+         log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "Bandits raided {}'s camp!", ch->name );
          ch->print( "&RYour camp was visited by bandits while you were away!\r\n" );
-         ch->print( "&RYour belongings have been rummaged through....\r\n" );
+         ch->print( "&RYour belongings have been rummaged through...\r\n" );
 
          for( iobj = ch->carrying.begin(  ); iobj != ch->carrying.end(  ); ++iobj )
          {
@@ -586,7 +586,7 @@ void break_camp( char_data * ch )
          }
       }
    }
-   log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "%s breaks camp and enters the game.", ch->name.c_str() );
+   log_printf_plus( LOG_COMM, LEVEL_IMMORTAL, "{} breaks camp and enters the game.", ch->name );
    ch->pcdata->camp = 0;
 }
 
@@ -601,10 +601,10 @@ void adjust_pfile( const std::string & name )
    {
       if( !str_cmp( name, temp->name ) )
       {
-         log_printf( "Skipping rare item adjustments for %s, player is online.", temp->name.c_str() );
+         log_printf( "Skipping rare item adjustments for {}, player is online.", temp->name );
          if( temp->is_immortal(  ) )   /* Get the rare items off the immortals */
          {
-            log_printf( "Immortal: Removing rare items from %s.", temp->name.c_str() );
+            log_printf( "Immortal: Removing rare items from {}.", temp->name );
             for( auto it = temp->carrying.begin(); it != temp->carrying.end(); )
             {
                obj_data *tobj = *it;
@@ -637,20 +637,20 @@ void adjust_pfile( const std::string & name )
       pclist.push_back( d->character );
       original = d->character->in_room;
       if( !d->character->to_room( temproom ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       ch = d->character;   /* Hopefully this will work, if not, we're SOL */
       d->character->desc = nullptr;
       d->character = nullptr;
       deleteptr( d );
 
-      log_printf( "Updating rare items for %s", ch->name.c_str() );
+      log_printf( "Updating rare items for {}", ch->name );
 
       ++ch->pcdata->daysidle;
       expire_items( ch );
 
       ch->from_room(  );
       if( !ch->to_room( original ) )
-         log_printf( "char_to_room: %s:%s, line %d.", __FILE__, __func__, __LINE__ );
+         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
       quitting_char = ch;
       ch->save(  );
@@ -682,7 +682,7 @@ void adjust_pfile( const std::string & name )
          for( int y = 0; y < MAX_LAYERS; ++y )
             save_equipment[x][y] = nullptr;
 
-      log_printf( "Rare items for %s updated sucessfully.", name.c_str(  ) );
+      log_printf( "Rare items for {} updated successfully.", name );
    }
 }
 
@@ -795,7 +795,7 @@ int scan_pfiles( const std::string & dirname, const std::string & filename, bool
                if( !updating )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", filename.c_str(), counter, vnum );
+                  log_printf( "{}: Counted {} of Vnum {}", filename, counter, vnum );
                }
                else
                   adjust = 1;
@@ -815,7 +815,7 @@ void corpse_scan( std::string_view filename )
 
    if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      log_printf( "Cannot open corpse file: %s", fname.c_str() );
+      log_printf( "Cannot open corpse file: {}", fname.string() );
       return;
    }
 
@@ -881,7 +881,7 @@ void corpse_scan( std::string_view filename )
                if( ego >= sysdata->minego )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", fname.c_str(), counter, vnum );
+                  log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
                }
             }
          }
@@ -897,10 +897,7 @@ void mobfile_scan( void )
    std::filesystem::path fname = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
 
    if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
-   {
-      perror( fname.c_str() );
       return;
-   }
 
    for( ;; )
    {
@@ -964,7 +961,7 @@ void mobfile_scan( void )
                if( ego >= sysdata->minego )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", fname.c_str(), counter, vnum );
+                  log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
                }
             }
          }
@@ -981,7 +978,7 @@ void objfile_scan( std::string_view filename )
 
    if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
    {
-      log_printf( "Cannot open object file: %s", fname.c_str() );
+      log_printf( "Cannot open object file: {}", fname.string() );
       return;
    }
 
@@ -1047,7 +1044,7 @@ void objfile_scan( std::string_view filename )
                if( ego >= sysdata->minego )
                {
                   pObjIndex->count += counter;
-                  log_printf( "%s: Counted %d of Vnum %d", fname.c_str(), counter, vnum );
+                  log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
                }
             }
          }
@@ -1060,8 +1057,8 @@ void load_equipment_totals( bool fCopyOver )
 {
    check_pfiles( 255 ); /* Clean up stragglers to get a better count - Samson 1-1-00 */
 
-   log_string( "Updating rare item counts....." );
-   log_string( "Checking player files...." );
+   log_string( "Updating rare item counts..." );
+   log_string( "Checking player files..." );
 
    for( char c = 'a'; c <= 'z'; ++c )
    {
@@ -1081,7 +1078,7 @@ void load_equipment_totals( bool fCopyOver )
       }
    }
 
-   log_string( "Checking corpses...." );
+   log_string( "Checking corpses..." );
 
    for( const auto& entry : std::filesystem::directory_iterator( CORPSE_DIR ) )
    {
@@ -1096,10 +1093,10 @@ void load_equipment_totals( bool fCopyOver )
 
    if( fCopyOver )
    {
-      log_string( "Scanning world-state mob file...." );
+      log_string( "Scanning world-state mob file..." );
       mobfile_scan(  );
 
-      log_string( "Scanning world-state obj files...." );
+      log_string( "Scanning world-state obj files..." );
 
       for( const auto& entry : std::filesystem::directory_iterator( HOTBOOT_DIR ) )
       {
@@ -1116,7 +1113,7 @@ void load_equipment_totals( bool fCopyOver )
 
 void rare_update( void )
 {
-   log_string( "Checking daily rare items for players...." );
+   log_string( "Checking daily rare items for players..." );
 
    for( char c = 'a'; c <= 'z'; ++c )
    {
