@@ -538,16 +538,9 @@ char* fread_word( FILE* fp )
 /*
  * Add a string to the boot-up log - Thoric
  */
-void boot_log( const char *str, ... )
+void write_to_boot_log( std::string_view text )
 {
-   char buf[MSL];
-   va_list param;
-
-   va_start( param, str );
-   vsnprintf( buf, MSL, str, param );
-   va_end( param );
-
-   log_printf( "[*****] BOOT: {}", buf );
+   log_printf( "[*****] BOOT: {}", text );
 
    std::ofstream stream;
    stream.open( std::filesystem::path( BOOTLOG_FILE ), std::ios::app );
@@ -557,11 +550,12 @@ void boot_log( const char *str, ... )
       return;
    }
 
-   stream << buf << "\n";
+   stream << text << "\n";
    stream.close();
 }
 
-/* Build list of in progress areas. Do not load areas.
+/*
+ * Build list of in progress areas. Do not load areas.
  * define AREA_READ if you want it to build area names rather than reading
  * them out of the area files. -- Altrag
  */
@@ -863,7 +857,7 @@ void fix_exits( void )
          if( pexit->vnum <= 0 || !( pexit->to_room = get_room_index( pexit->vnum ) ) )
          {
             if( fBootDb )
-               boot_log( "%s: room %d, exit %s leads to bad vnum (%d)", __func__, pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
+               boot_log( "{}: room {}, exit {} leads to bad vnum ({})", __func__, pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
 
             bug( "%s: Deleting %s exit in room %d", __func__, dir_name[pexit->vdir], pRoomIndex->vnum );
             pRoomIndex->extract_exit( pexit );
@@ -1026,7 +1020,7 @@ void boot_db( bool fCopyOver )
 
    fpArea = nullptr;
    std::filesystem::remove( BOOTLOG_FILE );
-   boot_log( "%s", "---------------------[ Boot Log: Start ]--------------------" );
+   boot_log( "{}", "---------------------[ Boot Log: Start ]--------------------" );
    log_string( "Database bootup starting." );
    fBootDb = true;   /* Supposed to help with EOF bugs, so it got moved up */
 
@@ -1142,7 +1136,7 @@ void boot_db( bool fCopyOver )
    log_string( "Loading quest bit tables..." );
    load_bits(  );
 
-   log_string( "Initalizing global lists" );
+   log_string( "Initializing globals." );
    nummobsloaded = 0;
    numobjsloaded = 0;
    physicalobjects = 0;
@@ -1170,7 +1164,7 @@ void boot_db( bool fCopyOver )
 
       if( !load_timedata(  ) )   /* Loads time from stored file if true - Samson 1-21-99 */
       {
-         boot_log( "%s", "Resetting mud time based on current system time." );
+         boot_log( "{}", "Resetting mud time based on current system time." );
 
          auto duration = current_time.time_since_epoch();
          long long total_seconds = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
@@ -1415,7 +1409,7 @@ void boot_db( bool fCopyOver )
    add_event( 1, ev_dns_check, nullptr );
 
    log_string( "Database bootup completed." );
-   boot_log( "%s", "---------------------[ Boot Log: End ]--------------------" );
+   boot_log( "{}", "---------------------[ Boot Log: End ]--------------------" );
 }
 
 /* Removal of this function constitutes a license violation */
@@ -1437,20 +1431,20 @@ CMDF( do_memory )
 
    argument = one_argument( argument, arg );
    ch->print( "\r\n&wSystem Memory [arguments - hash, check, showhigh]\r\n" );
-   ch->printf( "&wAffects: &W%5d\t\t\t&wAreas:   &W%5d\r\n", top_affect, top_area );
-   ch->printf( "&wExtDes:  &W%5d\t\t\t&wExits:   &W%5d\r\n", top_ed, top_exit );
-   ch->printf( "&wResets:  &W%5d\r\n", top_reset );
-   ch->printf( "&wIdxMobs: &W%5d\t\t\t&wMobiles: &W%5d\r\n", top_mob_index, nummobsloaded );
-   ch->printf( "&wIdxObjs: &W%5d\t\t\t&wObjs:    &W%5d(%d)\r\n", top_obj_index, numobjsloaded, physicalobjects );
-   ch->printf( "&wRooms:   &W%5d\r\n", top_room );
-   ch->printf( "&wShops:   &W%5d\t\t\t&wRepShps: &W%5d\r\n", top_shop, top_repair );
-   ch->printf( "&wCurOq's: &W%5d\t\t\t&wCurCq's: &W%5d\r\n", cur_qobjs, cur_qchars );
-   ch->printf( "&wPeople : &W%5d\t\t\t&wMaxplrs: &W%5d\r\n", num_descriptors, sysdata->maxplayers );
-   ch->printf( "&wPlayers: &W%5d\r\n", sysdata->playersonline );
-   ch->printf( "&wMaxEver: &W%5d\t\t\t&wTopsn:   &W%5d(%5d)\r\n", sysdata->alltimemax, num_skills, MAX_SKILL );
-   ch->printf( "&wMaxEver was recorded on:  &W%s\r\n\r\n", sysdata->time_of_max.c_str(  ) );
+   ch->print_fmt( "&wAffects: &W{:5}\t\t\t&wAreas:   &W{:5}\r\n", top_affect, top_area );
+   ch->print_fmt( "&wExtDes:  &W{:5}\t\t\t&wExits:   &W{:5}\r\n", top_ed, top_exit );
+   ch->print_fmt( "&wResets:  &W{:5}\r\n", top_reset );
+   ch->print_fmt( "&wIdxMobs: &W{:5}\t\t\t&wMobiles: &W{:5}\r\n", top_mob_index, nummobsloaded );
+   ch->print_fmt( "&wIdxObjs: &W{:5}\t\t\t&wObjs:    &W{:5}(%d)\r\n", top_obj_index, numobjsloaded, physicalobjects );
+   ch->print_fmt( "&wRooms:   &W{:5}\r\n", top_room );
+   ch->print_fmt( "&wShops:   &W{:5}\t\t\t&wRepShps: &W{:5}\r\n", top_shop, top_repair );
+   ch->print_fmt( "&wCurOq's: &W{:5}\t\t\t&wCurCq's: &W{:5}\r\n", cur_qobjs, cur_qchars );
+   ch->print_fmt( "&wPeople : &W{:5}\t\t\t&wMaxplrs: &W{:5}\r\n", num_descriptors, sysdata->maxplayers );
+   ch->print_fmt( "&wPlayers: &W{:5}\r\n", sysdata->playersonline );
+   ch->print_fmt( "&wMaxEver: &W{:5}\t\t\t&wTopsn:   &W{:5}({:5})\r\n", sysdata->alltimemax, num_skills, MAX_SKILL );
+   ch->print_fmt( "&wMaxEver was recorded on:  &W{}\r\n\r\n", sysdata->time_of_max );
 #if defined(SQL)
-   ch->printf( "&wMySQL Connection Active:  &W%s\r\n\r\n", ( db && db->ping() ) ? "YES" : ( db ? db->get_error().c_str() : "NO" ) );
+   ch->print_fmt( "&wMySQL Connection Active:  &W{}\r\n\r\n", ( db && db->ping() ) ? "YES" : ( db ? db->get_error() : "NO" ) );
 #endif
 
    if( !arg.empty() )

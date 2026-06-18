@@ -1357,33 +1357,33 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                default:
                   bug( "%s: SmaugWiz - bad command '%c'.", __func__, letter2 );
                   if( fBootDb )
-                     boot_log( "%s: %s (%d) bad command '%c'.", __func__, tarea->filename, count, letter2 );
+                     boot_log( "{}: {} ({}) bad command '{}'.", __func__, tarea->filename, count, letter2 );
                   return;
 
                case 'M':
                   if( get_mob_index( arg2 ) == nullptr && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg2 );
+                     boot_log( "{}: SmaugWiz - {} ({}) 'M': mobile {} doesn't exist.", __func__, tarea->filename, count, arg2 );
                   break;
 
                case 'O':
                   if( get_obj_index( arg2 ) == nullptr && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
+                     boot_log( "{}: SmaugWiz - {} ({}) '{}': object {} doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   break;
 
                case 'P':
                   if( get_obj_index( arg2 ) == nullptr && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
+                     boot_log( "{}: SmaugWiz - {} ({}) '{}': object {} doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   if( arg4 > 0 )
                   {
                      if( get_obj_index( arg4 ) == nullptr && fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg4 );
+                        boot_log( "{}: SmaugWiz - {} ({}) 'P': destination object {} doesn't exist.", __func__, tarea->filename, count, arg4 );
                   }
                   break;
 
                case 'G':
                case 'E':
                   if( get_obj_index( arg2 ) == nullptr && fBootDb )
-                     boot_log( "%s: SmaugWiz - %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
+                     boot_log( "{}: SmaugWiz - {} ({}) '{}': object {} doesn't exist.", __func__, tarea->filename, count, letter2, arg2 );
                   break;
 
                case 'T':
@@ -1392,7 +1392,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                case 'H':
                   if( arg1 > 0 )
                      if( get_obj_index( arg2 ) == nullptr && fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'H': object %d doesn't exist.", __func__, tarea->filename, count, arg2 );
+                        boot_log( "{}: SmaugWiz - {} ({}) 'H': object {} doesn't exist.", __func__, tarea->filename, count, arg2 );
                   break;
 
                case 'D':
@@ -1401,13 +1401,13 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                      bug( "%s: SmaugWiz - 'D': exit %d not door.", __func__, arg3 );
                      log_printf( "Reset: {} {} {} {} {} {}", letter2, extra, arg1, arg2, arg3, arg4 );
                      if( fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg3 );
+                        boot_log( "{}: SmaugWiz - {} ({}) 'D': exit {} not door.", __func__, tarea->filename, count, arg3 );
                   }
                   if( arg4 < 0 || arg4 > 2 )
                   {
                      bug( "%s: 'D': bad 'locks': %d.", __func__, arg4 );
                      if( fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'D': bad 'locks': %d.", __func__, tarea->filename, count, arg4 );
+                        boot_log( "{}: SmaugWiz - {} ({}) 'D': bad 'locks': {}.", __func__, tarea->filename, count, arg4 );
                   }
                   break;
 
@@ -1416,7 +1416,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                   {
                      bug( "%s: 'R': bad exit %d.", __func__, arg3 );
                      if( fBootDb )
-                        boot_log( "%s: SmaugWiz - %s (%d) 'R': bad exit %d.", __func__, tarea->filename, count, arg3 );
+                        boot_log( "{}: SmaugWiz - {} ({}) 'R': bad exit {}.", __func__, tarea->filename, count, arg3 );
                      break;
                   }
                   break;
@@ -1661,25 +1661,25 @@ void load_stresets( area_data * tarea, FILE * fp )
          default:
             bug( "%s: bad command '%c'.", __func__, letter );
             if( fBootDb )
-               boot_log( "%s: %s (%d) bad command '%c'.", __func__, tarea->filename, count, letter );
+               boot_log( "{}: {} ({}) bad command '{}'.", __func__, tarea->filename, count, letter );
             return;
 
          case 'M':
             if( get_mob_index( arg1 ) == nullptr && fBootDb )
-               boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, tarea->filename, count, arg1 );
+               boot_log( "{}: {} ({}) 'M': mobile {} doesn't exist.", __func__, tarea->filename, count, arg1 );
 
             if( ( pRoomIndex = get_room_index( arg3 ) ) == nullptr && fBootDb )
-               boot_log( "%s: %s (%d) 'M': room %d doesn't exist.", __func__, tarea->filename, count, arg3 );
+               boot_log( "{}: {} ({}) 'M': room {} doesn't exist.", __func__, tarea->filename, count, arg3 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             break;
 
          case 'O':
             if( get_obj_index( arg1 ) == nullptr && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
+               boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
 
             if( ( pRoomIndex = get_room_index( arg3 ) ) == nullptr && fBootDb )
-               boot_log( "%s: %s (%d) '%c': room %d doesn't exist.", __func__, tarea->filename, count, letter, arg3 );
+               boot_log( "{}: {} ({}) '{}': room {} doesn't exist.", __func__, tarea->filename, count, letter, arg3 );
             else
             {
                if( !pRoomIndex )
@@ -1691,11 +1691,11 @@ void load_stresets( area_data * tarea, FILE * fp )
 
          case 'P':
             if( get_obj_index( arg1 ) == nullptr && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
+               boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( arg3 > 0 )
             {
                if( get_obj_index( arg3 ) == nullptr && fBootDb )
-                  boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __func__, tarea->filename, count, arg3 );
+                  boot_log( "{}: {} ({}) 'P': destination object {} doesn't exist.", __func__, tarea->filename, count, arg3 );
                if( extra > 1 )
                   not01 = true;
             }
@@ -1712,7 +1712,7 @@ void load_stresets( area_data * tarea, FILE * fp )
          case 'G':
          case 'E':
             if( get_obj_index( arg1 ) == nullptr && fBootDb )
-               boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
+               boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( !pRoomIndex )
                bug( "%s: Unable to add give/equip reset - room not found.", __func__ );
             else
@@ -1741,7 +1741,7 @@ void load_stresets( area_data * tarea, FILE * fp )
                bug( "%s: 'D': room %d doesn't exist.", __func__, arg1 );
                log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
+                  boot_log( "{}: {} ({}) 'D': room {} doesn't exist.", __func__, tarea->filename, count, arg1 );
                break;
             }
 
@@ -1750,28 +1750,28 @@ void load_stresets( area_data * tarea, FILE * fp )
                bug( "%s: 'D': exit %d not door.", __func__, arg2 );
                log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': exit %d not door.", __func__, tarea->filename, count, arg2 );
+                  boot_log( "{}: {} ({}) 'D': exit {} not door.", __func__, tarea->filename, count, arg2 );
             }
 
             if( arg3 < 0 || arg3 > 2 )
             {
                bug( "%s: 'D': bad 'locks': %d.", __func__, arg3 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'D': bad 'locks': %d.", __func__, tarea->filename, count, arg3 );
+                  boot_log( "{}: {} ({}) 'D': bad 'locks': {}.", __func__, tarea->filename, count, arg3 );
             }
             pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2, -2 );
             break;
 
          case 'R':
             if( !( pRoomIndex = get_room_index( arg1 ) ) && fBootDb )
-               boot_log( "%s: %s (%d) 'R': room %d doesn't exist.", __func__, tarea->filename, count, arg1 );
+               boot_log( "{}: {} ({}) 'R': room {} doesn't exist.", __func__, tarea->filename, count, arg1 );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, -2, -2, -2, -2, -2, -2, -2, -2 );
             if( arg2 < 0 || arg2 > 10 )
             {
                bug( "%s: 'R': bad exit %d.", __func__, arg2 );
                if( fBootDb )
-                  boot_log( "%s: %s (%d) 'R': bad exit %d.", __func__, tarea->filename, count, arg2 );
+                  boot_log( "{}: {} ({}) 'R': bad exit {}.", __func__, tarea->filename, count, arg2 );
                break;
             }
             break;

@@ -101,7 +101,6 @@ void write_area_list(  );
 area_data *get_area( std::string_view ); /* FB */
 area_data *find_area( std::string_view );
 void load_area_file( const std::string &, bool );
-void boot_log( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
 
 extern std::list<area_data *> arealist;
 extern std::list<area_data *> area_nsort;
@@ -111,3 +110,23 @@ extern int rand_factor;
 extern int climate_factor;
 extern int neigh_factor;
 extern int max_vector;
+
+void write_to_boot_log( std::string_view );
+
+inline void boot_log( std::string_view fmt, auto&&... args )
+{
+   std::string buf;
+
+   try
+   {
+      buf = std::vformat( fmt, std::make_format_args( args... ) );
+   }
+   catch( const std::exception & e )
+   {
+      // In case someone bodged a call to this that isn't formatted right.
+      bug( "%s: Boot Log formatting error: %s", __func__, e.what() );
+      return;
+   }
+
+   write_to_boot_log( buf );
+}

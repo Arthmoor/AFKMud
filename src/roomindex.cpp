@@ -1824,7 +1824,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
       default:
          bug( "%s: bad command '%c'.", __func__, letter );
          if( fBootDb )
-            boot_log( "%s: %s (%d) bad command '%c'.", __func__, area->filename, count, letter );
+            boot_log( "{}: {} ({}) bad command '{}'.", __func__, area->filename, count, letter );
          return;
 
       case 'M':
@@ -1835,10 +1835,10 @@ void room_index::load_reset( FILE * fp, bool newformat )
             arg7 = 100;
 
          if( get_mob_index( arg1 ) == nullptr && fBootDb )
-            boot_log( "%s: %s (%d) 'M': mobile %d doesn't exist.", __func__, area->filename, count, arg1 );
+            boot_log( "{}: {} ({}) 'M': mobile {} doesn't exist.", __func__, area->filename, count, arg1 );
          if( arg4 != -1 && arg4 != 0 )
          {
-            boot_log( "%s: %s (%d) 'M': %d is an invalid overland flag. Correcting.", __func__, area->filename, count, arg4 );
+            boot_log( "{}: {} ({}) 'M': {} is an invalid overland flag. Correcting.", __func__, area->filename, count, arg4 );
             if( arg5 == -1 || arg6 == -1 )
                arg4 = -1;
             else
@@ -1846,12 +1846,12 @@ void room_index::load_reset( FILE * fp, bool newformat )
          }
          if( arg5 != -1 && !is_valid_x( arg5 ) )
          {
-            boot_log( "%s: %s (%d) 'M': X coordinate %d is out of range.", __func__, area->filename, count, arg5 );
+            boot_log( "{}: {} ({}) 'M': X coordinate {} is out of range.", __func__, area->filename, count, arg5 );
             arg5 = -1;
          }
          if( arg6 != -1 && !is_valid_y( arg6 ) )
          {
-            boot_log( "%s: %s (%d) 'M': Y coordinate %d is out of range.", __func__, area->filename, count, arg6 );
+            boot_log( "{}: {} ({}) 'M': Y coordinate {} is out of range.", __func__, area->filename, count, arg6 );
             arg6 = -1;
          }
          break;
@@ -1863,10 +1863,10 @@ void room_index::load_reset( FILE * fp, bool newformat )
             arg7 = 100;
 
          if( get_obj_index( arg1 ) == nullptr && fBootDb )
-            boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg1 );
+            boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, area->filename, count, letter, arg1 );
          if( arg4 != -1 && arg4 != 0 )
          {
-            boot_log( "%s: %s (%d) 'O': %d is an invalid overland flag. Correcting.", __func__, area->filename, count, arg4 );
+            boot_log( "{}: {} ({}) 'O': {} is an invalid overland flag. Correcting.", __func__, area->filename, count, arg4 );
             if( arg5 == -1 || arg6 == -1 )
                arg4 = -1;
             else
@@ -1874,12 +1874,12 @@ void room_index::load_reset( FILE * fp, bool newformat )
          }
          if( arg5 != -1 && !is_valid_x( arg5 ) )
          {
-            boot_log( "%s: %s (%d) 'O': X coordinate %d is out of range.", __func__, area->filename, count, arg5 );
+            boot_log( "{}: {} ({}) 'O': X coordinate {} is out of range.", __func__, area->filename, count, arg5 );
             arg5 = -1;
          }
          if( arg6 != -1 && !is_valid_y( arg6 ) )
          {
-            boot_log( "%s: %s (%d) 'O': Y coordinate %d is out of range.", __func__, area->filename, count, arg6 );
+            boot_log( "{}: {} ({}) 'O': Y coordinate {} is out of range.", __func__, area->filename, count, arg6 );
             arg6 = -1;
          }
          break;
@@ -1891,7 +1891,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
             arg11 = 100;
          if( arg8 != -1 && arg8 != 0 )
          {
-            boot_log( "%s: %s (%d) 'Z': %d is an invalid overland flag. Correcting.", __func__, area->filename, count, arg8 );
+            boot_log( "{}: {} ({}) 'Z': {} is an invalid overland flag. Correcting.", __func__, area->filename, count, arg8 );
             if( arg9 == -1 || arg10 == -1 )
                arg8 = -1;
             else
@@ -1899,12 +1899,12 @@ void room_index::load_reset( FILE * fp, bool newformat )
          }
          if( arg9 != -1 && !is_valid_x( arg9 ) )
          {
-            boot_log( "%s: %s (%d) 'Z': X coordinate %d is out of range.", __func__, area->filename, count, arg9 );
+            boot_log( "{}: {} ({}) 'Z': X coordinate {} is out of range.", __func__, area->filename, count, arg9 );
             arg9 = -1;
          }
          if( arg10 != -1 && !is_valid_y( arg10 ) )
          {
-            boot_log( "%s: %s (%d) 'Z': Y coordinate %d is out of range.", __func__, area->filename, count, arg10 );
+            boot_log( "{}: {} ({}) 'Z': Y coordinate {} is out of range.", __func__, area->filename, count, arg10 );
             arg10 = -1;
          }
          break;
@@ -1916,12 +1916,12 @@ void room_index::load_reset( FILE * fp, bool newformat )
             arg5 = 100;
 
          if( get_obj_index( arg2 ) == nullptr && fBootDb )
-            boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg2 );
+            boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, area->filename, count, letter, arg2 );
 
          if( arg4 <= 0 )
             arg4 = OBJ_VNUM_DUMMYOBJ;  // This may look stupid, but for some reason it works.
          if( get_obj_index( arg4 ) == nullptr && fBootDb )
-            boot_log( "%s: %s (%d) 'P': destination object %d doesn't exist.", __func__, area->filename, count, arg4 );
+            boot_log( "{}: {} ({}) 'P': destination object {} doesn't exist.", __func__, area->filename, count, arg4 );
          if( !newformat && area->version < 21 )
          {
             if( extra > 0 )
@@ -1940,7 +1940,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          if( arg3 > 100 )
             arg3 = 100;
          if( get_obj_index( arg1 ) == nullptr && fBootDb )
-            boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg1 );
+            boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, area->filename, count, letter, arg1 );
          break;
 
       case 'E':
@@ -1950,7 +1950,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
             arg4 = 100;
 
          if( get_obj_index( arg1 ) == nullptr && fBootDb )
-            boot_log( "%s: %s (%d) '%c': object %d doesn't exist.", __func__, area->filename, count, letter, arg1 );
+            boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, area->filename, count, letter, arg1 );
          break;
 
       case 'X':
@@ -1999,14 +1999,14 @@ void room_index::load_reset( FILE * fp, bool newformat )
             bug( "%s: 'D': exit %d not door.", __func__, arg2 );
             log_printf( "Reset: {} {} {} {} {} {}", letter, extra, arg1, arg2, arg3, arg4 );
             if( fBootDb )
-               boot_log( "%s: %s (%d) 'D': exit %d not door.", __func__, area->filename, count, arg2 );
+               boot_log( "{}: {} ({}) 'D': exit {} not door.", __func__, area->filename, count, arg2 );
          }
 
          if( arg3 < 0 || arg3 > 2 )
          {
             bug( "%s: 'D': bad 'locks': %d.", __func__, arg3 );
             if( fBootDb )
-               boot_log( "%s: %s (%d) 'D': bad 'locks': %d.", __func__, area->filename, count, arg3 );
+               boot_log( "{}: {} ({}) 'D': bad 'locks': {}.", __func__, area->filename, count, arg3 );
          }
          break;
 
@@ -2020,7 +2020,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
          {
             bug( "%s: 'R': bad exit %d.", __func__, arg2 );
             if( fBootDb )
-               boot_log( "%s: %s (%d) 'R': bad exit %d.", __func__, area->filename, count, arg2 );
+               boot_log( "{}: {} ({}) 'R': bad exit {}.", __func__, area->filename, count, arg2 );
             break;
          }
          break;
