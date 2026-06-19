@@ -491,12 +491,12 @@ CMDF( do_medit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_mob_desc: nullptr ch->pcdata->dest_buf", __func__ );
+            bug( "{}: sub_mob_desc: nullptr ch->pcdata->dest_buf", __func__ );
             cleanup_olc( ch->desc );
             ch->substate = SUB_NONE;
             return;
          }
-         victim->chardesc = ch->copy_buffer( true );
+         victim->chardesc = ch->copy_buffer( );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
             STRFREE( victim->pIndexData->chardesc );
@@ -686,7 +686,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
           * . We should never get here .
           */
          cleanup_olc( d );
-         bug( "%s: OLC: medit_parse(): Reached D_DESC case!", __func__ );
+         bug( "{}: OLC: medit_parse(): Reached D_DESC case!", __func__ );
          break;
 
       case MEDIT_NPC_FLAGS:
@@ -1185,7 +1185,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          /*
           * . We should never get here .
           */
-         bug( "%s: OLC: medit_parse(): Reached default case!", __func__ );
+         bug( "{}: OLC: medit_parse(): Reached default case!", __func__ );
          cleanup_olc( d );
          return;
    }

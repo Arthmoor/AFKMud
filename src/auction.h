@@ -134,7 +134,7 @@ inline void talk_auction( std::string_view fmt, auto&&... args )
    catch( const std::exception & e )
    {
       // In case someone bodged a call to this that isn't formatted right.
-      bug( "%s: Auction formatting error: %s", __func__, e.what() );
+      bug( "{}: Auction formatting error: {}", __func__, e.what() );
       return;
    }
 

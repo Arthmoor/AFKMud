@@ -67,7 +67,7 @@ void ev_violence( void *data )
 
    if( !ch )
    {
-      bug( "%s: nullptr ch pointer!", __func__ );
+      bug( "{}: nullptr ch pointer!", __func__ );
       return;
    }
    char_data *victim = ch->who_fighting(  );
@@ -486,7 +486,7 @@ void ev_auction( void *data )
       case 3: /* SOLD! */
          if( !auction->buyer && auction->bet )
          {
-            bug( "%s: Auction code reached SOLD, with nullptr buyer, but %d gold bid", __func__, auction->bet );
+            bug( "{}: Auction code reached SOLD, with nullptr buyer, but {} gold bid", __func__, auction->bet );
             auction->bet = 0;
          }
          if( auction->bet > 0 && auction->buyer != auction->seller )

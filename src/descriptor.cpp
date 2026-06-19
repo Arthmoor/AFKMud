@@ -193,7 +193,7 @@ descriptor_data::~descriptor_data(  )
    if( descriptor > 0 )
       close( descriptor );
    else if( descriptor == 0 )
-      bug( "%s: }RALERT! Closing socket 0! BAD BAD BAD!", __func__ );
+      bug( "{}: }}RALERT! Closing socket 0! BAD BAD BAD!", __func__ );
 }
 
 descriptor_data::descriptor_data(  ) : inbuf( MAX_INBUF_SIZE, 0 )
@@ -305,7 +305,7 @@ void fread_loginmsg( FILE * fp )
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -318,7 +318,7 @@ void fread_loginmsg( FILE * fp )
             {
                if( lmsg->name.empty() )
                {
-                  bug( "%s: Login message with no name.", __func__ );
+                  bug( "{}: Login message with no name.", __func__ );
                   deleteptr( lmsg );
                   return;
                }
@@ -326,7 +326,7 @@ void fread_loginmsg( FILE * fp )
                {
                   if( !exists_player( lmsg->name ) )
                   {
-                     bug( "%s: Login message expired - %s no longer exists.", __func__, lmsg->name.c_str() );
+                     bug( "{}: Login message expired - {} no longer exists.", __func__, lmsg->name );
 
                      deleteptr( lmsg );
                      return;
@@ -361,7 +361,7 @@ void load_loginmsg(  )
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
    if( ( fp = fopen( filename.c_str(), "r" ) ) == nullptr )
    {
-      bug( "%s: Cannot open login message file.", __func__ );
+      bug( "{}: Cannot open login message file.", __func__ );
       return;
    }
 
@@ -380,7 +380,7 @@ void load_loginmsg(  )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found. ", __func__ );
+         bug( "{}: # not found. ", __func__ );
          break;
       }
 
@@ -395,7 +395,7 @@ void load_loginmsg(  )
          break;
       else
       {
-         bug( "%s: bad section: %s", __func__, word );
+         bug( "{}: bad section: {}", __func__, word );
          continue;
       }
    }
@@ -410,7 +410,7 @@ void save_loginmsg(  )
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
    if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
    {
-      bug( "%s: Cannot open login message file.", __func__ );
+      bug( "{}: Cannot open login message file.", __func__ );
       return;
    }
 
@@ -434,7 +434,7 @@ void add_loginmsg( std::string_view name, short type, std::string_view argument 
 
    if( type < 0 || name.empty() )
    {
-      bug( "%s: bad name or type.", __func__ );
+      bug( "{}: bad name or type.", __func__ );
       return;
    }
 
@@ -462,7 +462,7 @@ void check_loginmsg( char_data * ch )
       if( !str_cmp( lmsg->name, ch->name ) )
       {
          if( lmsg->type > MAX_MSG )
-            bug( "%s: Error: Unknown login msg: %d for %s.", __func__, lmsg->type, ch->name.c_str() );
+            bug( "{}: Error: Unknown login msg: {} for {}.", __func__, lmsg->type, ch->name );
 
          switch ( lmsg->type )
          {
@@ -470,7 +470,7 @@ void check_loginmsg( char_data * ch )
             {
                if( lmsg->text.empty() )
                {
-                  bug( "%s: Empty loginmsg text for type 0.", __func__ );
+                  bug( "{}: Empty loginmsg text for type 0.", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -484,7 +484,7 @@ void check_loginmsg( char_data * ch )
             {
                if( lmsg->text.empty() )
                {
-                  bug( "%s: Empty loginmsg text for type 17.", __func__ );
+                  bug( "{}: Empty loginmsg text for type 17.", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -499,7 +499,7 @@ void check_loginmsg( char_data * ch )
             {
                if( lmsg->text.empty() )
                {
-                  bug( "%s: Empty loginmsg text for type 18.", __func__ );
+                  bug( "{}: Empty loginmsg text for type 18.", __func__ );
 
                   login_messages.remove( lmsg );
                   deleteptr( lmsg );
@@ -1302,19 +1302,21 @@ void save_dns( void )
    stream.open( std::filesystem::path( DNS_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open DND cache file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, DNS_FILE, std::strerror(errno) );
       return;
    }
 
    for( auto* ip : dnslist )
    {
-      stream << "#CACHE" << std::endl;
-      stream << "IP   " << ip->ip << std::endl;
-      stream << "Name " << ip->name << std::endl;
-      stream << "Time " << ip->time << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << "#CACHE\n";
+      stream << "IP   " << ip->ip << "\n";
+      stream << "Name " << ip->name << "\n";
+      stream << "Time " << ip->time << "\n";
+      stream << "End\n\n";
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, DNS_FILE, std::strerror(errno) );
 }
 
 void prune_dns( void )
@@ -1546,10 +1548,10 @@ void descriptor_data::resolve_dns( const std::string & ip )
       /*
        * Still here --> hmm. An error. 
        */
-      bug( "%s: Exec failed; Closing child.", __func__ );
+      bug( "{}: Exec failed; Closing child.", __func__ );
       ifd = -1;
       ipid = -1;
-      exit( 0 );
+      std::exit( EXIT_SUCCESS );
    }
    else
    {
@@ -1632,7 +1634,7 @@ void new_descriptor( int new_desc )
 
    if( desc == 0 )
    {
-      bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Host: %s", __func__, dnew->ipaddress.c_str( ) );
+      bug( "{}: }}RALERT! Assigning socket 0! BAD BAD BAD! Host: {}", __func__, dnew->ipaddress );
       deleteptr( dnew );
       set_alarm( 0 );
       return;
@@ -1735,7 +1737,7 @@ void accept_new( int ctrl )
 
    if( FD_ISSET( ctrl, &exc_set ) )
    {
-      bug( "%s: Exception raised on controlling descriptor %d", __func__, ctrl );
+      bug( "{}: Exception raised on controlling descriptor {}", __func__, ctrl );
       FD_CLR( ctrl, &in_set );
       FD_CLR( ctrl, &out_set );
    }
@@ -1750,7 +1752,7 @@ void descriptor_data::prompt(  )
 {
    if( !character )
    {
-      bug( "%s: nullptr character", __func__ );
+      bug( "{}: nullptr character", __func__ );
       return;
    }
 
@@ -1932,7 +1934,7 @@ void descriptor_data::prompt(  )
                output += "[Rebooting]";
             break;
          default:
-            bug( "%s: bad command char '%c'.", __func__, cmd );
+            bug( "{}: bad command char '{}'.", __func__, cmd );
             break;
       }
    }
@@ -1990,7 +1992,7 @@ void close_socket( descriptor_data * d, bool force )
          interpret( ch, "return" );
       else
       {
-         bug( "%s: original without character %s", __func__, ( !d->original->name.empty() ? d->original->name.c_str() : "unknown" ) );
+         bug( "{}: original without character {}", __func__, ( !d->original->name.empty() ? d->original->name : "unknown" ) );
          d->character = d->original;
          d->original = nullptr;
       }
@@ -2474,7 +2476,7 @@ void descriptor_data::nanny( std::string & argument )
    switch ( connected )
    {
       default:
-         bug( "%s: bad d->connected %d.", __func__, connected );
+         bug( "{}: bad d->connected {}.", __func__, connected );
          close_socket( this, true );
          return;
 
@@ -2999,8 +3001,8 @@ void descriptor_data::nanny( std::string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned nullptr somehow!", __func__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
+            bug( "{}: Prize object turned nullptr somehow!", __func__ );
+            write_to_buffer( "A fatal internal error has occurred. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
@@ -3054,8 +3056,8 @@ void descriptor_data::nanny( std::string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned nullptr somehow!", __func__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
+            bug( "{} Prize object turned nullptr somehow!", __func__ );
+            write_to_buffer( "A fatal internal error has occurred. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
@@ -3101,7 +3103,7 @@ void descriptor_data::nanny( std::string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned nullptr somehow!", __func__ );
+            bug( "{}: Prize object turned nullptr somehow!", __func__ );
             write_to_buffer( "A fatal internal error has occurred. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
@@ -3140,8 +3142,8 @@ void descriptor_data::nanny( std::string & argument )
          prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
-            bug( "%s: Prize object turned nullptr somehow!", __func__ );
-            write_to_buffer( "A fatal internal error has occured. Seek immortal assistance.\r\n" );
+            bug( "{}: Prize object turned nullptr somehow!", __func__ );
+            write_to_buffer( "A fatal internal error has occurred. Seek immortal assistance.\r\n" );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_REDEEM ) ) )
                log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
@@ -3191,7 +3193,7 @@ void descriptor_data::nanny( std::string & argument )
       {
          if( ch->tempnum < 1 )
          {
-            bug( "%s: CON_RAISE_STAT: ch loop counter is < 1 for %s", __func__, ch->name.c_str() );
+            bug( "{}: CON_RAISE_STAT: ch loop counter is < 1 for {}", __func__, ch->name );
             connected = CON_PLAYING;
             return;
          }
@@ -3203,7 +3205,7 @@ void descriptor_data::nanny( std::string & argument )
              && ch->perm_con >= 18 + race_table[ch->race]->con_plus
              && ch->perm_cha >= 18 + race_table[ch->race]->cha_plus && ch->perm_lck >= 18 + race_table[ch->race]->lck_plus )
          {
-            bug( "%s: CON_RAISE_STAT: %s is unable to raise anything.", __func__, ch->name.c_str() );
+            bug( "{}: CON_RAISE_STAT: {} is unable to raise anything.", __func__, ch->name );
             write_to_buffer( "All of your stats are already at their maximum values!\r\n" );
             connected = CON_PLAYING;
             return;

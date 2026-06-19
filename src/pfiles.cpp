@@ -101,8 +101,7 @@ void save_quotes( void )
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
-      perror( filename.c_str() );
-      bug( "%s: Unable to open quote file for writing!", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
@@ -112,6 +111,9 @@ void save_quotes( void )
       quote->number = ++q;
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
+
    num_quotes = q;
 }
 
@@ -137,7 +139,7 @@ void load_quotes( void )
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
-      perror( filename.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
@@ -190,17 +192,18 @@ std::string add_linebreak( const std::string & str )
    return newstr;
 }
 
-/** Function: do_quotes
-  * Descr   : Outputs an ascii file "quote.#" to the player. The number (#)
-  *           is determined at random, based on how many quote files are
-  *           stored in the QUOTE_DIR directory.
-  * Returns : (void)
-  * Syntax  : (none)
-  * Written : v1.0 12/97
-  * Author  : Gary McNickle <gary@dharvest.com>
-  *
-  * Completely rewritten by Samson so it can be OLC'able. 10-15-03
-  */
+/*
+ * Function: do_quotes
+ * Descr   : Outputs an ascii file "quote.#" to the player. The number (#)
+ *           is determined at random, based on how many quote files are
+ *           stored in the QUOTE_DIR directory.
+ * Returns : (void)
+ * Syntax  : (none)
+ * Written : v1.0 12/97
+ * Author  : Gary McNickle <gary@dharvest.com>
+ *
+ * Completely rewritten by Samson so it can be OLC'able. 10-15-03
+ */
 CMDF( do_quoteset )
 {
    quote_data *quote;
@@ -287,10 +290,10 @@ void quotes( char_data * ch )
    quote = get_quote( q );
    if( !quote )
    {
-      bug( "%s: Missing quote #%d ?!?", __func__, q );
+      bug( "{}: Missing quote #{} ?!?", __func__, q );
       return;
    }
-   ch->printf( "&W\r\n%s&d\r\n", quote->quote.c_str(  ) );
+   ch->print_fmt( "&W\r\n{}&d\r\n", quote->quote );
 }
 
 CMDF( do_quotes )
@@ -449,12 +452,12 @@ void search_pfiles( char_data* ch, const std::string & dirname, const std::strin
                      is >> vnum;
                      if( !get_obj_index( vnum ) )
                      {
-                        bug( "%s: Bad obj vnum: %d", __func__, vnum );
+                        bug( "{}: Bad obj vnum: {}", __func__, vnum );
                         adjust_pfile( filename );
                      }
                      else if( vnum == cvnum )
                      {
-                        ch->pagerf( "Player %s: Counted %d of Vnum %d.\r\n",  filename.empty() ? "<NO PFILE?!?>" : filename.c_str(), counter, cvnum );
+                        ch->pager_fmt( "Player {}: Counted {} of Vnum {}.\r\n",  filename.empty() ? "<NO PFILE?!?>" : filename, counter, cvnum );
                      }
                   }
                   break;

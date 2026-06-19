@@ -79,13 +79,13 @@ bool will_fall( char_data * ch, int fall )
 {
    if( !ch )
    {
-      bug( "%s: nullptr *ch!!", __func__ );
+      bug( "{}: nullptr *ch!!", __func__ );
       return false;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: Character in nullptr room: %s", __func__, !ch->name.empty() ? ch->name.c_str() : "Unknown?!?" );
+      bug( "{}: Character in nullptr room: {}", __func__, !ch->name.empty() ? ch->name : "Unknown?!?" );
       return false;
    }
 
@@ -93,7 +93,7 @@ bool will_fall( char_data * ch, int fall )
    {
       if( fall > 80 )
       {
-         bug( "%s: Falling (in a loop?) more than 80 rooms: vnum %d", __func__, ch->in_room->vnum );
+         bug( "{}: Falling (in a loop?) more than 80 rooms: vnum {}", __func__, ch->in_room->vnum );
          leave_map( ch, nullptr, get_room_index( ROOM_VNUM_TEMPLE ) );
          fall = 0;
          return true;
@@ -2545,7 +2545,7 @@ void teleport( char_data * ch, int room, int flags )
 
    if( !( dest = get_room_index( room ) ) )
    {
-      bug( "%s: bad room vnum %d", __func__, room );
+      bug( "{}: bad room vnum {}", __func__, room );
       return;
    }
 
@@ -2761,7 +2761,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
 
    if( !( room = ch->in_room ) )
    {
-      bug( "%s: %s not in a room?!?", __func__, ch->name.c_str() );
+      bug( "{}: {} not in a room?!?", __func__, ch->name );
       return rNONE;
    }
 

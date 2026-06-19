@@ -77,9 +77,8 @@ void load_specfuns( void )
    std::filesystem::path filename = std::format( "{}specfuns.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      bug( "%s: FATAL - cannot load specfuns.dat, exiting.", __func__ );
-      perror( filename.c_str() );
-      exit( 1 );
+      bug( "{}: FATAL - cannot load specfuns.dat, exiting.", __func__ );
+      std::exit( EXIT_FAILURE );
    }
    else
    {
@@ -87,7 +86,7 @@ void load_specfuns( void )
       {
          if( feof( fp ) )
          {
-            bug( "%s: Premature end of file!", __func__ );
+            bug( "{}: Premature end of file!", __func__ );
             FCLOSE( fp );
             return;
          }

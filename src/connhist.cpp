@@ -81,7 +81,7 @@ int check_conn_entry( conn_data * conn )
    if( conn->user.empty(  ) || conn->host.empty(  ) || conn->when.empty(  ) )
    {
       deleteptr( conn );
-      bug( "%s: Removed bugged conn entry!", __func__ );
+      bug( "{}: Removed bugged conn entry!", __func__ );
       return CHK_CONN_REMOVED;
    }
    return CHK_CONN_OK;
@@ -98,38 +98,27 @@ void load_connhistory( void )
 
    stream.open( std::filesystem::path( CH_FILE ) );
    if( !stream.is_open(  ) )
-      return;
-
-   do
    {
-      std::string key, value;
-      char buf[MIL];
+      bug( "{}: Cannot open {} for reading: {}", __func__, CH_FILE, std::strerror(errno) );
+      return;
+   }
 
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
+   auto read_line = [&]() -> std::string
+   {
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
 
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
+      return line;
+   };
 
-      if( key.empty(  ) )
-         continue;
-
+   std::string key;
+   while( stream >> key )
+   {
       if( key == "#CONN" )
+      {
          conn = new conn_data;
-      else if( key == "User" )
-         conn->user = value;
-      else if( key == "When" )
-         conn->when = value;
-      else if( key == "Host" )
-         conn->host = value;
-      else if( key == "Level" )
-         conn->level = atoi( value.c_str(  ) );
-      else if( key == "Type" )
-         conn->type = atoi( value.c_str(  ) );
-      else if( key == "Invis" )
-         conn->type = atoi( value.c_str(  ) );
+      }
       else if( key == "End" )
       {
          if( conncount < MAX_CONNHISTORY )
@@ -139,15 +128,20 @@ void load_connhistory( void )
          }
          else
          {
-            bug( "%s: more connection histories than MAX_CONNHISTORY %zu", __func__, MAX_CONNHISTORY );
+            bug( "{}: more connection histories than MAX_CONNHISTORY {}", __func__, MAX_CONNHISTORY );
             stream.close(  );
             return;
          }
       }
+      else if( key == "User" )   { conn->user = read_line(); }
+      else if( key == "When" )   { conn->when = read_line(); }
+      else if( key == "Host" )   { conn->host = read_line(); }
+      else if( key == "Level" )  { stream >> conn->level; }
+      else if( key == "Type" )   { stream >> conn->type; }
+      else if( key == "Invis" )  { stream >> conn->invis_lvl; }
       else
-         bug( "%s: Bad line in connection history file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         bug( "{}: Bad key in connection history file: {}", __func__, key );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
@@ -162,7 +156,7 @@ void save_connhistory( void )
    stream.open( std::filesystem::path( CH_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Error opening '%s'", __func__, CH_FILE.data() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, CH_FILE, std::strerror(errno) );
       return;
    }
 
@@ -173,20 +167,23 @@ void save_connhistory( void )
        */
       if( ( check_conn_entry( conn ) ) == CHK_CONN_OK )
       {
-         stream << "#CONN" << std::endl;
-         stream << "User   " << conn->user << std::endl;
-         stream << "Host   " << conn->host << std::endl;
-         stream << "When   " << conn->when << std::endl;
-         stream << "Level  " << conn->level << std::endl;
-         stream << "Type   " << conn->type << std::endl;
-         stream << "Invis  " << conn->invis_lvl << std::endl;
-         stream << "End" << std::endl << std::endl;
+         stream << "#CONN\n";
+         stream << std::format( "User       {}\n", conn->user );
+         stream << std::format( "Host       {}\n", conn->host );
+         stream << std::format( "When       {}\n", conn->when );
+         stream << std::format( "Level      {}\n", conn->level );
+         stream << std::format( "Type       {}\n", conn->type );
+         stream << std::format( "Invis      {}\n", conn->invis_lvl );
+         stream << "End\n\n";
       }
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, CH_FILE, std::strerror(errno) );
 }
 
-/* NeoCode 0.08 Revamp of this! I now base it off of descriptor_data.
+/*
+ * NeoCode 0.08 Revamp of this! I now base it off of descriptor_data.
  * It will pull needed data from the descriptor. If there's no character
  * than it will use default information. -- X
  */
@@ -197,7 +194,7 @@ void update_connhistory( descriptor_data * d, int type )
 
    if( !d )
    {
-      bug( "%s: nullptr descriptor!", __func__ );
+      bug( "{}: nullptr descriptor!", __func__ );
       return;
    }
 
@@ -246,7 +243,7 @@ CMDF( do_logins )
    /*
     * Modify this line to fit your tastes 
     */
-   ch->printf( "&c----[&WConnection History for %s&c]----&w\r\n", sysdata->mud_name.c_str(  ) );
+   ch->print_fmt( "&c----[&WConnection History for {}&c]----&w\r\n", sysdata->mud_name );
 
    for( auto* conn : connlist )
    {
@@ -292,7 +289,7 @@ CMDF( do_logins )
           * * what invis level they were. Note: change color for the Invis tag here.
           */
          if( conn->invis_lvl > 0 && ch->is_immortal(  ) )
-            user = std::format( "(&cInvis &p{}&w) %s", conn->invis_lvl, conn->user );
+            user = std::format( "(&cInvis &p{}&w) {}", conn->invis_lvl, conn->user );
          else
             user = conn->user;
 
@@ -301,9 +298,9 @@ CMDF( do_logins )
           * If you know what you're doing, than you can modify the output here 
           */
          if( ch->is_immortal(  ) )
-            ch->printf( "&c[&O%s&c] &w%s&g@&w%s&c%s&w\r\n", conn->when.c_str(  ), user.c_str(), conn->host.c_str(  ), typebuf.c_str(  ) );
+            ch->print_fmt( "&c[&O{}&c] &w{}&g@&w{}&c{}&w\r\n", conn->when, user, conn->host, typebuf );
          else
-            ch->printf( "&c[&O%s&c] &w%s&c%s&w\r\n", conn->when.c_str(  ), user.c_str(), typebuf.c_str(  ) );
+            ch->print_fmt( "&c[&O{}&c] &w{}&c{}&w\r\n", conn->when, user, typebuf );
       }
    }
 

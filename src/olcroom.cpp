@@ -270,7 +270,7 @@ void olc_log( descriptor_data * d, const char *format, ... )
 
    if( !d )
    {
-      bug( "%s: called with null descriptor", __func__ );
+      bug( "{}: called with null descriptor", __func__ );
       return;
    }
 
@@ -296,7 +296,7 @@ void olc_log( descriptor_data * d, const char *format, ... )
          log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} PLR({}): ", d->character->name, victim->name );
    }
    else
-      bug( "%s: called with a bad connected state", __func__ );
+      bug( "{}: called with a bad connected state", __func__ );
 }
 
 /**************************************************************************
@@ -509,7 +509,7 @@ CMDF( do_redit_reset )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: Invalid substate!", __func__ );
+         bug( "{}: Invalid substate!", __func__ );
          return;
 
       case SUB_ROOM_DESC:
@@ -519,7 +519,7 @@ CMDF( do_redit_reset )
              * If theres no dest_buf, theres no object, so stick em back as playing 
              */
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
+            bug( "{}: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             ch->desc->connected = CON_PLAYING;
             return;
@@ -542,7 +542,7 @@ CMDF( do_redit_reset )
              * If theres no dest_buf, theres no object, so stick em back as playing 
              */
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
+            bug( "{}: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             ch->desc->connected = CON_PLAYING;
             return;
@@ -559,7 +559,7 @@ CMDF( do_redit_reset )
          return;
 
       case SUB_ROOM_EXTRA:
-         ed->desc = ch->copy_buffer(  );
+         ed->desc = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->pcdata->dest_buf = room;
          ch->pcdata->spare_ptr = ed;
@@ -678,14 +678,14 @@ void redit_parse( descriptor_data * d, std::string & arg )
          /*
           * we will NEVER get here 
           */
-         bug( "%s: Reached REDIT_DESC case", __func__ );
+         bug( "{}: Reached REDIT_DESC case", __func__ );
          break;
 
       case REDIT_NDESC:
          /*
           * we will NEVER get here 
           */
-         bug( "%s: Reached REDIT_NDESC case", __func__ );
+         bug( "{}: Reached REDIT_NDESC case", __func__ );
          break;
 
       case REDIT_FLAGS:
@@ -1108,7 +1108,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          /*
           * we should never get here 
           */
-         bug( "%s: Reached default case", __func__ );
+         bug( "{}: Reached default case", __func__ );
          break;
    }
    /*

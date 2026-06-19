@@ -192,7 +192,7 @@ mob_index *get_mob_index( int vnum )
       return imob->second;
 
    if( fBootDb )
-      bug( "%s: bad vnum %d.", __func__, vnum );
+      bug( "{}: bad vnum {}.", __func__, vnum );
 
    return nullptr;
 }
@@ -217,13 +217,13 @@ char_data *mob_index::create_mobile(  )
 
    mob->pIndexData = this;
 
-   mob->name = QUICKLINK( player_name );
-   if( short_descr && short_descr[0] != '\0' )
-      mob->short_descr = QUICKLINK( short_descr );
-   if( long_descr && long_descr[0] != '\0' )
-      mob->long_descr = QUICKLINK( long_descr );
-   if( chardesc && chardesc[0] != '\0' )
-      mob->chardesc = QUICKLINK( chardesc );
+   mob->name = this->player_name;
+   if( this->short_descr && this->short_descr[0] != '\0' )
+      mob->short_descr = this->short_descr;
+   if( this->long_descr && this->long_descr[0] != '\0' )
+      mob->long_descr = this->long_descr;
+   if( this->chardesc && this->chardesc[0] != '\0' )
+      mob->chardesc = chardesc;
    mob->spec_fun = spec_fun;
    mob->spec_funname = spec_funname;
    mob->level = number_fuzzy( level );
@@ -458,8 +458,8 @@ void mob_index::mprog_read_programs( FILE * fp )
 
       if( letter != '>' )
       {
-         bug( "%s: vnum %d MUDPROG char", __func__, vnum );
-         exit( 1 );
+         bug( "{}: vnum {} MUDPROG char", __func__, vnum );
+         std::exit( EXIT_FAILURE );
       }
       mprg = new mud_prog_data;
       mudprogs.push_back( mprg );
@@ -470,8 +470,8 @@ void mob_index::mprog_read_programs( FILE * fp )
       switch ( mprg->type )
       {
          case ERROR_PROG:
-            bug( "%s: vnum %d MUDPROG type.", __func__, vnum );
-            exit( 1 );
+            bug( "{}: vnum {} MUDPROG type.", __func__, vnum );
+            std::exit( EXIT_FAILURE );
 
          case IN_FILE_PROG:
             mprg->arglist = fread_string( fp );

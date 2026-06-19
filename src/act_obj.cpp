@@ -617,7 +617,7 @@ CMDF( do_put )
 
    if( !( container = ch->get_obj_here( arg2 ) ) )
    {
-      ch->printf( "I see no %s here.\r\n", arg2.c_str(  ) );
+      ch->print_fmt( "I see no {} here.\r\n", arg2 );
       return;
    }
 
@@ -642,7 +642,7 @@ CMDF( do_put )
 
       if( IS_SET( container->value[1], CONT_CLOSED ) )
       {
-         ch->printf( "The %s is closed.\r\n", container->name );
+         ch->print_fmt( "The {} is closed.\r\n", container->name );
          return;
       }
    }
@@ -742,14 +742,14 @@ CMDF( do_put )
       {
          if( obj == nullptr )
          {
-            bug( "%s: clanstoreroom check: Object is nullptr!", __func__ );
+            bug( "{}: clanstoreroom check: Object is nullptr!", __func__ );
             return;
          }
          if( obj->ego < sysdata->minego )
             check_clan_storeroom( ch );
          else
          {
-            ch->printf( "%s is a rare item and therefore cannot be stored here.\r\n", obj->short_descr );
+            ch->print_fmt( "{} is a rare item and therefore cannot be stored here.\r\n", obj->short_descr );
             obj->from_obj(  );
             obj->to_char( ch );
          }
@@ -824,7 +824,7 @@ CMDF( do_put )
          if( fAll )
             ch->print( "You are not carrying anything.\r\n" );
          else
-            ch->printf( "You are not carrying any %s.\r\n", chk.c_str(  ) );
+            ch->print_fmt( "You are not carrying any {}.\r\n", chk );
          return;
       }
 
@@ -844,14 +844,14 @@ CMDF( do_put )
       {
          if( obj == nullptr )
          {
-            bug( "%s: clanstoreroom check: Object is nullptr!", __func__ );
+            bug( "{}: clanstoreroom check: Object is nullptr!", __func__ );
             return;
          }
          if( obj->ego < sysdata->minego )
             check_clan_storeroom( ch );
          else
          {
-            ch->printf( "%s is a rare item and therefore cannot be stored here.\r\n", obj->short_descr );
+            ch->print_fmt( "{} is a rare item and therefore cannot be stored here.\r\n", obj->short_descr );
             obj->from_obj(  );
             obj->to_char( ch );
          }
@@ -1626,7 +1626,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
    switch ( bit )
    {
       default:
-         bug( "%s: uknown/unused item_wear bit %d. Obj vnum: %d", __func__, bit, obj->pIndexData->vnum );
+         bug( "{}: uknown/unused item_wear bit {}. Obj vnum: {}", __func__, bit, obj->pIndexData->vnum );
          if( fReplace )
             ch->print( "You can't wear, wield, or hold that.\r\n" );
          return;
@@ -2560,15 +2560,15 @@ CMDF( do_brandish )
          ch_ret retcode = obj_cast_spell( staff->value[3], staff->value[0], ch, vch, nullptr );
          if( retcode == rCHAR_DIED )
          {
-            bug( "%s: char died", __func__ );
+            bug( "{}: char died", __func__ );
             return;
          }
       }
    }
 
-   if( --staff->value[2] < 0 )  /* Modified to prevent extraction when reaching zero - Samson */
+   if( --staff->value[2] < 0 )  // Modified to prevent extraction when reaching zero - Samson
    {
-      staff->value[2] = 0; /* Added to prevent the damn things from getting negative values - Samson 4-21-98 */
+      staff->value[2] = 0; // Added to prevent the damn things from getting negative values - Samson 4-21-98
       act( AT_MAGIC, "$p blazes brightly in $n's hands, but does nothing.", ch, staff, nullptr, TO_ROOM );
       act( AT_MAGIC, "$p blazes brightly, but does nothing.", ch, staff, nullptr, TO_CHAR );
    }
@@ -2641,7 +2641,7 @@ CMDF( do_zap )
       retcode = obj_cast_spell( wand->value[3], wand->value[0], ch, victim, obj );
       if( retcode == rCHAR_DIED )
       {
-         bug( "%s: char died", __func__ );
+         bug( "{}: char died", __func__ );
          return;
       }
    }

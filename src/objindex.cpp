@@ -206,7 +206,7 @@ obj_index *get_obj_index( int vnum )
       return iobj->second;
 
    if( fBootDb )
-      bug( "%s: bad vnum %d.", __func__, vnum );
+      bug( "{}: bad vnum {}.", __func__, vnum );
 
    return nullptr;
 }
@@ -251,7 +251,7 @@ obj_data *obj_index::create_object( int olevel )
    switch ( obj->item_type )
    {
       default:
-         bug( "%s: vnum %d bad type.", __func__, vnum );
+         bug( "{}: vnum {} bad type.", __func__, vnum );
          log_printf( "------------------------>    {}", obj->item_type );
          break;
 
@@ -806,8 +806,8 @@ void obj_index::oprog_read_programs( FILE * fp )
 
       if( letter != '>' )
       {
-         bug( "%s: vnum %d MUDPROG char", __func__, vnum );
-         exit( 1 );
+         bug( "{}: vnum {} MUDPROG char", __func__, vnum );
+         std::exit( EXIT_FAILURE );
       }
       mprg = new mud_prog_data;
       mudprogs.push_back( mprg );
@@ -818,8 +818,8 @@ void obj_index::oprog_read_programs( FILE * fp )
       switch ( mprg->type )
       {
          case ERROR_PROG:
-            bug( "%s: vnum %d MUDPROG type.", __func__, vnum );
-            exit( 1 );
+            bug( "{}: vnum {} MUDPROG type.", __func__, vnum );
+            std::exit( EXIT_FAILURE );
 
          case IN_FILE_PROG:
             mprg->arglist = fread_string( fp );

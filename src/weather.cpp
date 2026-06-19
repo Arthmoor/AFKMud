@@ -2279,7 +2279,7 @@ void save_weathermap( void )
    std::ofstream stream( filename );
    if( !stream )
    {
-      bug( "%s: Cannot open weather file for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
@@ -2305,6 +2305,9 @@ void save_weathermap( void )
       }
    }
    stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
@@ -2336,7 +2339,7 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
             int value = get_climate( climate_str );
 
             if( value < 0 || value >= MAX_CLIMATE )
-               bug( "%s: Unknown climate: %s", __func__, climate_str.c_str() );
+               bug( "{}: Unknown climate: {}", __func__, climate_str );
             else
                cell->climate = value;
          }
@@ -2351,7 +2354,7 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
             int value = get_hemisphere( hemi_str );
 
             if( value < 0 || value >= HEMISPHERE_MAX )
-               bug( "%s: Unknown hemisphere: %s", __func__, hemi_str.c_str() );
+               bug( "{}: Unknown hemisphere: {}", __func__, hemi_str );
             else
                cell->hemisphere = value;
          }
@@ -2369,7 +2372,7 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
       }
       else
       {
-         bug( "%s: no match for %s", __func__, word.c_str() );
+         bug( "{}: no match for {}", __func__, word );
          std::string dummy;
          std::getline( stream, dummy );
       }
@@ -2386,7 +2389,7 @@ bool load_weathermap( void )
    std::ifstream stream(filename);
    if( !stream.is_open() )
    {
-      bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return false;
    }
 
@@ -2402,7 +2405,7 @@ bool load_weathermap( void )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found (%c)", __func__, letter );
+         bug( "{}: # not found ({})", __func__, letter );
          return false;
       }
 
@@ -2425,7 +2428,7 @@ bool load_weathermap( void )
          break;
       else
       {
-         bug( "%s: no match for %s", __func__, word.c_str() );
+         bug( "{}: no match for {}", __func__, word );
          std::string dummy;
          std::getline( stream, dummy );
          continue;

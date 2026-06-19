@@ -760,7 +760,7 @@ int slot_lookup( int slot )
          return sn;
 
    if( fBootDb )
-      bug( "%s: bad slot %d.", __func__, slot );
+      bug( "{}: bad slot {}.", __func__, slot );
 
    return -1;
 }
@@ -771,10 +771,10 @@ CMDF( do_slotlookup )
 
    if( ( sn = slot_lookup( atoi( argument.c_str(  ) ) ) ) == -1 )
    {
-      ch->printf( "%s is not a valid slot number.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "{} is not a valid slot number.\r\n", argument );
       return;
    }
-   ch->printf( "Slot %s belongs to skill/spell '%s'\r\n", argument.c_str(  ), skill_table[sn]->name );
+   ch->print_fmt( "Slot {} belongs to skill/spell '{}'\r\n", argument, skill_table[sn]->name );
 }
 
 /*
@@ -850,7 +850,7 @@ void update_skill_index( skill_type * skill, int sn )
    switch ( skill->type )
    {
       default:
-         bug( "%s: Invalid skill type %d", __func__, skill->type );
+         bug( "{}: Invalid skill type {}", __func__, skill->type );
          break;
 
       case SKILL_SPELL:
@@ -1050,7 +1050,7 @@ void save_skill_table( void )
    std::filesystem::path filename = SKILL_FILE;
    if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Cannot open skills.dat for writing", __func__ );
+      bug( "{}: Cannot open skills.dat for writing", __func__ );
       return;
    }
 
@@ -1079,7 +1079,7 @@ void save_herb_table(  )
    std::filesystem::path filename = HERB_FILE;
    if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Cannot open herbs.dat for writing", __func__ );
+      bug( "{}: Cannot open herbs.dat for writing", __func__ );
       return;
    }
 
@@ -1118,14 +1118,14 @@ skill_type *fread_skill( FILE * fp, int version )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1222,7 +1222,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
                if( validate_spec_fun( w ) )
                {
-                  bug( "%s: ERROR: Trying to assign spec_fun to skill/spell %s", __func__, w );
+                  bug( "{}: ERROR: Trying to assign spec_fun to skill/spell {}", __func__, w );
                   skill->skill_fun = skill_notfound;
                   skill->spell_fun = spell_notfound;
                }
@@ -1240,7 +1240,7 @@ skill_type *fread_skill( FILE * fp, int version )
                }
                else
                {
-                  bug( "%s: unknown skill/spell %s", __func__, w );
+                  bug( "{}: unknown skill/spell {}", __func__, w );
                   skill->spell_fun = spell_null;
                }
                break;
@@ -1263,7 +1263,7 @@ skill_type *fread_skill( FILE * fp, int version )
             {
                if( skill->saves != 0 && SPELL_SAVE( skill ) == SE_NONE )
                {
-                  bug( "%s: %s: Has saving throw (%d) with no saving effect.", __func__, skill->name, skill->saves );
+                  bug( "{}: {}: Has saving throw ({}) with no saving effect.", __func__, skill->name, skill->saves );
                   SET_SSAV( skill, SE_NEGATE );
                }
                if( !skill->author )
@@ -1362,7 +1362,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
                   if( position < 0 || position >= POS_MAX )
                   {
-                     bug( "%s: Skill %s has invalid position! Defaulting to standing.", __func__, skill->name );
+                     bug( "{}: Skill {} has invalid position! Defaulting to standing.", __func__, skill->name );
                      position = POS_STANDING;
                   }
                   skill->minimum_position = position;
@@ -1442,7 +1442,7 @@ void load_skill_table( void )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __func__ );
+            bug( "{}: # not found.", __func__ );
             break;
          }
 
@@ -1456,7 +1456,7 @@ void load_skill_table( void )
          {
             if( num_skills >= MAX_SKILL )
             {
-               bug( "%s: more skills than MAX_SKILL %d", __func__, MAX_SKILL );
+               bug( "{}: more skills than MAX_SKILL {}", __func__, MAX_SKILL );
                FCLOSE( fp );
                fpArea = nullptr;
                return;
@@ -1468,7 +1468,7 @@ void load_skill_table( void )
             break;
          else
          {
-            bug( "%s: bad section: %s", __func__, word );
+            bug( "{}: bad section: {}", __func__, word );
             continue;
          }
       }
@@ -1477,7 +1477,7 @@ void load_skill_table( void )
    }
    else
    {
-      bug( "%s: Cannot open skills.dat", __func__ );
+      bug( "{}: Cannot open skills.dat", __func__ );
       std::exit( EXIT_FAILURE );
    }
 }
@@ -1504,7 +1504,7 @@ void load_herb_table(  )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __func__ );
+            bug( "{}: # not found.", __func__ );
             break;
          }
 
@@ -1518,7 +1518,7 @@ void load_herb_table(  )
          {
             if( top_herb >= MAX_HERB )
             {
-               bug( "%s: more herbs than MAX_HERB %d", __func__, MAX_HERB );
+               bug( "{}: more herbs than MAX_HERB {}", __func__, MAX_HERB );
                FCLOSE( fp );
                return;
             }
@@ -1531,7 +1531,7 @@ void load_herb_table(  )
             break;
          else
          {
-            bug( "%s: bad section: %s", __func__, word );
+            bug( "{}: bad section: {}", __func__, word );
             continue;
          }
       }
@@ -1539,7 +1539,7 @@ void load_herb_table(  )
    }
    else
    {
-      bug( "%s: Cannot open herbs.dat", __func__ );
+      bug( "{}: Cannot open herbs.dat", __func__ );
       std::exit( EXIT_FAILURE );
    }
 }
@@ -1981,7 +1981,7 @@ bool check_ability( char_data * ch, std::string_view command, std::string_view a
       switch ( skill_table[sn]->target )
       {
          default:
-            bug( "%s: bad target for sn %d.", __func__, sn );
+            bug( "{}: bad target for sn {}.", __func__, sn );
             ch->print( "Something went wrong...\r\n" );
             return true;
 
@@ -1999,7 +1999,7 @@ bool check_ability( char_data * ch, std::string_view command, std::string_view a
          case TAR_CHAR_OFFENSIVE:
             if( argument.empty(  ) && !( victim = ch->who_fighting(  ) ) )
             {
-               ch->printf( "Confusion overcomes you as your '%s' has no target.\r\n", skill_table[sn]->name );
+               ch->print_fmt( "Confusion overcomes you as your '{}' has no target.\r\n", skill_table[sn]->name );
                return true;
             }
             else if( !argument.empty(  ) && !( victim = ch->get_char_room( argument ) ) )
@@ -2206,7 +2206,7 @@ bool check_skill( char_data * ch, std::string_view command, std::string_view arg
       switch ( skill_table[sn]->target )
       {
          default:
-            bug( "%s: bad target for sn %d.", __func__, sn );
+            bug( "{}: bad target for sn {}.", __func__, sn );
             ch->print( "Something went wrong...\r\n" );
             return true;
 
@@ -2224,7 +2224,7 @@ bool check_skill( char_data * ch, std::string_view command, std::string_view arg
          case TAR_CHAR_OFFENSIVE:
             if( argument.empty(  ) && !( victim = ch->who_fighting(  ) ) )
             {
-               ch->printf( "Confusion overcomes you as your '%s' has no target.\r\n", skill_table[sn]->name );
+               ch->print_fmt( "Confusion overcomes you as your '{}' has no target.\r\n", skill_table[sn]->name );
                return true;
             }
             else if( !argument.empty(  ) && !( victim = ch->get_char_room( argument ) ) )
@@ -2369,7 +2369,8 @@ bool check_skill( char_data * ch, std::string_view command, std::string_view arg
    return true;
 }
 
-/* A buncha different stuff added/subtracted/rearranged in do_slist to remove 
+/*
+ * A buncha different stuff added/subtracted/rearranged in do_slist to remove
  * annoying, but harmless bugs, as well as provide better functionality - Adjani 12-05-2002 
  */
 CMDF( do_slist )
@@ -3741,7 +3742,7 @@ CMDF( do_detrap )
          if( ch->alloc_ptr.empty() )
          {
             ch->print( "Your detrapping was interrupted!\r\n" );
-            bug( "%s: ch->alloc_ptr nullptr!", __func__ );
+            bug( "{}: ch->alloc_ptr nullptr!", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -3878,7 +3879,7 @@ CMDF( do_dig )
          {
             ch->print( "Your digging was interrupted!\r\n" );
             act( AT_PLAIN, "$n's digging was interrupted!", ch, nullptr, nullptr, TO_ROOM );
-            bug( "%s: alloc_ptr nullptr", __func__ );
+            bug( "{}: alloc_ptr nullptr", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -4023,7 +4024,7 @@ CMDF( do_search )
          if( ch->alloc_ptr.empty() )
          {
             ch->print( "Your search was interrupted!\r\n" );
-            bug( "%s: alloc_ptr nullptr", __func__ );
+            bug( "{}: alloc_ptr nullptr", __func__ );
             return;
          }
          arg = ch->alloc_ptr;
@@ -6454,7 +6455,7 @@ CMDF( do_slice )
    if( !( pMobIndex = get_mob_index( corpse->value[4] ) ) )
    {
       ch->print( "Error - report to immortals\r\n" );
-      bug( "%s: Can not find mob for value[4] of corpse", __func__ );
+      bug( "{}: Can not find mob for value[4] of corpse", __func__ );
       return;
    }
 
@@ -6865,7 +6866,7 @@ CMDF( do_tinker )
       ch->print_fmt( "You tinker around awhile and construct a {}!\r\n", mob->short_descr );
       return;
    }
-   bug( "%s: Somehow reached the end of the function!!!", __func__ );
+   bug( "{}: Somehow reached the end of the function!!!", __func__ );
    ch->print( "Oops. Something mighty odd just happened. The imms have been informed.\r\n" );
    ch->print( "Reimbursing the gold you lost...\r\n" );
    ch->gold += cost;
@@ -7337,7 +7338,7 @@ CMDF( do_forage )
 
    if( herb == nullptr )
    {
-      bug( "%s: Cannot locate item for vnum %d", __func__, vnum );
+      bug( "{}: Cannot locate item for vnum {}", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
       return;
    }
@@ -7352,7 +7353,7 @@ CMDF( do_forage )
       obj = herb->create_object( 1 );
       obj = obj->to_char( ch );
       ch->print( "After an intense search of the area, your efforts have\r\n" );
-      ch->printf( "yielded you %s!\r\n", obj->short_descr );
+      ch->print_fmt( "yielded you {}!\r\n", obj->short_descr );
       return;
    }
    else
@@ -7438,7 +7439,7 @@ CMDF( do_woodcall )
 
    if( !( call = get_mob_index( vnum ) ) )
    {
-      bug( "%s: Cannot locate mob for vnum %d", __func__, vnum );
+      bug( "{}: Cannot locate mob for vnum {}", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
       return;
    }
@@ -7519,7 +7520,7 @@ CMDF( do_mining )
 
    if( ore == nullptr )
    {
-      bug( "%s: Cannot locate item for vnum %d", __func__, vnum );
+      bug( "{}: Cannot locate item for vnum {}", __func__, vnum );
       ch->print( "Oops. Slight bug here. The immortals have been notified.\r\n" );
       return;
    }
@@ -8022,7 +8023,7 @@ CMDF( do_tan )
 
    if( !hide )
    {
-      bug( "%s: Tan objects missing.", __func__ );
+      bug( "{}: Tan objects missing.", __func__ );
       ch->print( "You messed up the hide and it's useless.\r\n" );
       return;
    }

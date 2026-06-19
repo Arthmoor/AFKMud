@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -1768,7 +1769,7 @@ CMDF( do_examine )
 
    if( !ch )
    {
-      bug( "%s: null ch.", __func__ );
+      bug( "{}: null ch.", __func__ );
       return;
    }
 
@@ -2570,155 +2571,6 @@ CMDF( do_pager )
    ch->printf( "Page pausing set to %d lines.\r\n", ch->pcdata->pagerlen );
 }
 
-/* Command so imms can view the imotd - Samson 1-20-01 */
-CMDF( do_imotd )
-{
-   if( exists_file( IMOTD_FILE ) )
-      show_file( ch, IMOTD_FILE );
-}
-
-/* Command so people can call up the MOTDs - Samson 1-20-01 */
-CMDF( do_motd )
-{
-   if( exists_file( MOTD_FILE ) )
-      show_file( ch, MOTD_FILE );
-}
-
-/* Saves MOTDs to disk - Samson 12-31-00 */
-void save_motd( std::string_view name, std::string_view str )
-{
-   FILE *fp;
-
-   if( !( fp = fopen( name.data(), "w" ) ) )
-   {
-      bug( "%s: fopen", __func__ );
-      perror( name.data() );
-   }
-   else
-      fprintf( fp, "%s", str.data() );
-   FCLOSE( fp );
-}
-
-void load_motd( char_data * ch, std::string_view name )
-{
-   FILE *fp;
-   char buf[MSL];
-   int num = 0;
-
-   if( !( fp = fopen( name.data(), "r" ) ) )
-   {
-      bug( "%s: Cannot open", __func__ );
-      perror( name.data() );
-   }
-
-   while( !feof( fp ) )
-   {
-      while( num < ( MSL - 4 ) && ( buf[num] = fgetc( fp ) ) != EOF && buf[num] != '\n' && buf[num] != '\r' )
-         ++num;
-
-      int c = fgetc( fp );
-      if( ( c != '\n' && c != '\r' ) || c == buf[num] )
-         ungetc( c, fp );
-      buf[num++] = '\r';
-      buf[num++] = '\n';
-      buf[num] = '\0';
-   }
-   FCLOSE( fp );
-   ch->pcdata->motd_buf = buf;
-}
-
-/* Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00 */
-CMDF( do_motdedit )
-{
-   std::string arg1;
-
-   if( ch->isnpc(  ) )
-   {
-      ch->print( "Huh?\r\n" );
-      return;
-   }
-
-   switch ( ch->substate )
-   {
-      default:
-         break;
-
-      case SUB_RESTRICTED:
-         ch->print( "You cannot do this while in another command.\r\n" );
-         return;
-
-      case SUB_EDMOTD:
-         ch->pcdata->motd_buf = ch->copy_buffer( false );
-         ch->stop_editing(  );
-         ch->substate = ch->tempnum;
-         return;
-
-      case SUB_EDIT_ABORT:
-         ch->substate = SUB_NONE;
-         ch->print( "Aborting MOTD message.\r\n" );
-         return;
-   }
-
-   argument = one_argument( argument, arg1 );
-
-   if( arg1.empty(  ) )
-   {
-      ch->print( "Usage: motdedit <field>\r\n" );
-      ch->print( "Usage: motdedit save <field>\r\n\r\n" );
-      ch->print( "Field can be one of:\r\n" );
-      ch->print( "motd imotd\r\n" );
-      return;
-   }
-
-   if( !str_cmp( arg1, "save" ) )
-   {
-      if( ch->pcdata->motd_buf.empty() )
-      {
-         ch->print( "Nothing to save.\r\n" );
-         return;
-      }
-      if( !str_cmp( argument, "motd" ) )
-      {
-         save_motd( MOTD_FILE, ch->pcdata->motd_buf );
-         ch->print( "MOTD Message updated.\r\n" );
-         ch->pcdata->motd_buf.clear();
-         sysdata->motd = current_time;
-         save_sysdata(  );
-         return;
-      }
-      if( !str_cmp( argument, "imotd" ) )
-      {
-         save_motd( IMOTD_FILE, ch->pcdata->motd_buf );
-         ch->print( "IMOTD Message updated.\r\n" );
-         ch->pcdata->motd_buf.clear();
-         sysdata->imotd = current_time;
-         save_sysdata(  );
-         return;
-      }
-      do_motdedit( ch, "" );
-      return;
-   }
-
-   if( !str_cmp( arg1, "motd" ) || !str_cmp( arg1, "imotd" ) )
-   {
-      if( !str_cmp( arg1, "motd" ) )
-         load_motd( ch, MOTD_FILE );
-      else
-         load_motd( ch, IMOTD_FILE );
-      if( ch->substate == SUB_REPEATCMD )
-         ch->tempnum = SUB_REPEATCMD;
-      else
-         ch->tempnum = SUB_NONE;
-      ch->substate = SUB_EDMOTD;
-      ch->pcdata->dest_buf = ch;
-      ch->pcdata->motd_buf.clear();
-      ch->start_editing( ch->pcdata->motd_buf );
-      ch->set_editor_desc( "An MOTD." );
-      return;
-   }
-   do_motdedit( ch, "" );
-}
-
 void pc_data::save_ignores( FILE * fp )
 {
    for( const auto& name : ignore )
@@ -2745,7 +2597,7 @@ void pc_data::load_ignores( FILE * fp )
     * Add the name unless the limit has been reached 
     */
    if( ignore.size(  ) >= sysdata->maxign )
-      bug( "%s: too many ignored names", __func__ );
+      bug( "{}: too many ignored names", __func__ );
    else
       ignore.push_back( ig );
 }
@@ -2912,7 +2764,7 @@ bool is_ignoring( char_data * ch, char_data * ign_ch )
 {
    if( !ch )   /* Paranoid bug check, you never know. */
    {
-      bug( "%s: nullptr CH!", __func__ );
+      bug( "{}: nullptr CH!", __func__ );
       return false;
    }
 

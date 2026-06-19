@@ -49,7 +49,7 @@ extra_descr_data *fread_afk_exdesc( FILE * );
 /*
  * There should be 34 entries here to match the size of the sector_types list in olc.h.
  * They should be listed in the same order they appear in sec_flags in build.c for SmaugFUSS.
- * Don't fill in the unused slots unless SmaugFUSS plops a new value into one of them. [Last checked: January 2025]
+ * Don't fill in the unused slots unless SmaugFUSS plops a new value into one of them. [Last checked: June 2026]
  */
 const char *fuss_sec_flags[] = {
    "inside", "city", "field", "forest", "hills", "mountain", "water_swim",           // 6
@@ -59,7 +59,7 @@ const char *fuss_sec_flags[] = {
    "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED"                        // 34
 };
 
-// This table needs to stay in sync with SmaugFUSS to remain effective.
+// This table needs to stay in sync with SmaugFUSS to remain effective. [Last checked: June 2026]
 const char *fuss_npc_race[] = {
    // Playable Races
    "human", "elf", "dwarf", "halfling", "pixie", "half-ogre", "half-orc",          // 6
@@ -91,7 +91,7 @@ const char *fuss_npc_race[] = {
    "???", "???", "???"                                                             // 161
 };
 
-// This table needs to stay in sync with SmaugFUSS to remain effective.
+// This table needs to stay in sync with SmaugFUSS to remain effective. [Last checked: June 2026]
 const char *fuss_npc_class[] = {
    // Playable Classes
    "mage", "cleric", "thief", "warrior", "UNUSED", "druid", "ranger",
@@ -102,7 +102,7 @@ const char *fuss_npc_class[] = {
    "baker", "butcher", "blacksmith", "mayor", "king", "queen"
 };
 
-// Samson, next time you get the bright idea to shorten a flag name, don't do it, ok?
+// Samson, next time you get the bright idea to shorten a flag name, don't do it, ok? [Last checked: June 2026]
 const char *fuss_act_flags[] = {
    "npc", "sentinel", "scavenger", "innkeeper", "banker", "aggressive", "stayarea",
    "wimpy", "pet", "nosteal", "practice", "immortal", "deadly", "polyself",
@@ -114,7 +114,7 @@ const char *fuss_act_flags[] = {
    "guildrepair", "guildforge", "idmob", "guildidmob", "stopscript"
 };
 
-// Samson, next time you get the bright idea to shorten a flag name, don't do it, ok?
+// Samson, next time you get the bright idea to shorten a flag name, don't do it, ok? [Last checked: June 2026]
 const char *fuss_o_flags[] = {
    "glow", "hum", "metal", "mineral", "organic", "invis", "magic", "nodrop", "bless",
    "antigood", "antievil", "antineutral", "anticleric", "antimage",
@@ -129,7 +129,7 @@ const char *fuss_o_flags[] = {
    "mustmount", "noauction", "thrown", "permanent", "deathdrop", "nofill"
 };
 
-// Samson, next time you get the bright idea to shorten a flag name, don't do it, ok?
+// Samson, next time you get the bright idea to shorten a flag name, don't do it, ok? [Last checked: June 2026]
 const char *fuss_r_flags[] = {
    "dark", "death", "nomob", "indoors", "safe", "nocamp", "nosummon",
    "nomagic", "tunnel", "private", "silence", "nosupplicate", "arena", "nomissile",
@@ -186,7 +186,7 @@ affect_data *fread_fuss_affect( FILE * fp, const char *word )
 
       sn = skill_lookup( fread_word( fp ) );
       if( sn < 0 )
-         bug( "%s: unknown skill.", __func__ );
+         bug( "{}: unknown skill.", __func__ );
       else
          paf->type = sn;
    }
@@ -225,7 +225,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
       switch ( word[0] )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -308,7 +308,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
 
                if( sector < 0 || sector >= SECT_MAX )
                {
-                  bug( "%s: Room #%d has bad sector type: %s", __func__, pRoomIndex->vnum, sec_type );
+                  bug( "{}: Room #{} has bad sector type: {}", __func__, pRoomIndex->vnum, sec_type );
                   sector = 1;
                }
 
@@ -364,7 +364,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __func__, vnum );
+                     bug( "{}: vnum {} duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated room and then bail out
                      for( ;; )
@@ -406,7 +406,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
                   {
                      int count = 0;
 
-                     bug( "%s: WARNING: resets already exist for this room.", __func__ );
+                     bug( "{}: WARNING: resets already exist for this room.", __func__ );
                      for( auto* rtmp : pRoomIndex->resets )
                      {
                         ++count;
@@ -448,7 +448,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
       switch ( word[0] )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -599,7 +599,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
 
                if( value < 0 )
                {
-                  bug( "%s: vnum %d: Object has invalid type! Defaulting to trash.", __func__, pObjIndex->vnum );
+                  bug( "{}: vnum {}: Object has invalid type! Defaulting to trash.", __func__, pObjIndex->vnum );
                   value = get_otype( "trash" );
                }
                pObjIndex->item_type = value;
@@ -655,7 +655,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __func__, vnum );
+                     bug( "{}: vnum {} duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated object and then bail out
                      for( ;; )
@@ -805,7 +805,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: vnum %d: Mob has invalid class: %s. Defaulting to warrior.", __func__, pMobIndex->vnum, class_word );
+                  bug( "{}: vnum {}: Mob has invalid class: {}. Defaulting to warrior.", __func__, pMobIndex->vnum, class_word );
                   Class = get_npc_class( "warrior" );
                }
 
@@ -827,7 +827,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __func__, pMobIndex->vnum );
+                  bug( "{}: vnum {}: Mobile in invalid default position! Defaulting to standing.", __func__, pMobIndex->vnum );
                   position = POS_STANDING;
                }
                pMobIndex->defposition = position;
@@ -851,7 +851,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                if( sex < 0 || sex > SEX_FEMALE )
                {
-                  bug( "%s: vnum %d: Mobile has invalid sex! Defaulting to neuter.", __func__, pMobIndex->vnum );
+                  bug( "{}: vnum {}: Mobile has invalid sex! Defaulting to neuter.", __func__, pMobIndex->vnum );
                   sex = SEX_NEUTRAL;
                }
                pMobIndex->sex = sex;
@@ -882,7 +882,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __func__, pMobIndex->vnum );
+                  bug( "{}: vnum {}: Mobile in invalid position! Defaulting to standing.", __func__, pMobIndex->vnum );
                   position = POS_STANDING;
                }
                pMobIndex->position = position;
@@ -898,7 +898,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                if( race < 0 || race >= MAX_NPC_RACE )
                {
-                  bug( "%s: vnum %d: Mob has invalid race: %s Defaulting to monster.", __func__, pMobIndex->vnum, race_word );
+                  bug( "{}: vnum {}: Mob has invalid race: {} Defaulting to monster.", __func__, pMobIndex->vnum, race_word );
                   race = get_npc_race( "monster" );
                }
 
@@ -984,7 +984,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
                speaking = one_argument( speaking, flag );
                value = get_langnum( flag );
                if( value < 0 || value >= LANG_UNKNOWN )
-                  bug( "Unknown speaking language: %s", flag.c_str() );
+                  bug( "Unknown speaking language: {}", flag );
                else
                   pMobIndex->speaking = value;
 
@@ -999,12 +999,12 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                if( !pMobIndex )
                {
-                  bug( "%s: Specfun: Invalid mob vnum!", __func__ );
+                  bug( "{}: Specfun: Invalid mob vnum!", __func__ );
                   break;
                }
                if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                {
-                  bug( "%s: Specfun: vnum %d, no spec_fun called %s.", __func__, pMobIndex->vnum, temp );
+                  bug( "{}: Specfun: vnum {}, no spec_fun called {}.", __func__, pMobIndex->vnum, temp );
                   pMobIndex->spec_funname.clear(  );
                }
                else
@@ -1112,7 +1112,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __func__, vnum );
+                     bug( "{}: vnum {} duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated mobile and then bail out
                      for( ;; )
@@ -1270,9 +1270,9 @@ area_data *fread_smaugfuss_area( FILE * fp )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found. Invalid format.", __func__ );
+         bug( "{}: # not found. Invalid format.", __func__ );
          if( fBootDb )
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          break;
       }
 
@@ -1280,7 +1280,7 @@ area_data *fread_smaugfuss_area( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "ENDAREA";
       }
 
@@ -1300,7 +1300,7 @@ area_data *fread_smaugfuss_area( FILE * fp )
          break;
       else
       {
-         bug( "%s: Bad section header: %s", __func__, word );
+         log_printf( "{}: Bad section header: {}", __func__, word );
          fread_to_eol( fp );
       }
    }

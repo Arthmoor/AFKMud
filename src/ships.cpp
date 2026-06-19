@@ -151,7 +151,7 @@ void save_ships( void )
    stream.open( std::filesystem::path( SHIP_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: can't open ship file", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, SHIP_FILE, std::strerror(errno) );
       return;
    }
 
@@ -173,6 +173,8 @@ void save_ships( void )
       stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, SHIP_FILE, std::strerror(errno) );
 }
 
 void load_ships( void )
@@ -186,7 +188,7 @@ void load_ships( void )
    stream.open( std::filesystem::path( SHIP_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Unable to open ships file.", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, SHIP_FILE, std::strerror(errno) );
       return;
    }
 
@@ -555,7 +557,7 @@ ch_ret process_shipexit( char_data * ch, short x, short y, int dir )
 
          if( !( toroom = get_room_index( mexit->vnum ) ) )
          {
-            bug( "%s: Target vnum %d for map exit does not exist!", __func__, mexit->vnum );
+            bug( "{}: Target vnum {} for map exit does not exist!", __func__, mexit->vnum );
             ch->print( "Ooops. Something bad happened. Contact the immortals ASAP.\r\n" );
             return rSTOP;
          }
@@ -796,7 +798,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
    {
       if( !valid_coordinates( pexit->map_x, pexit->map_y ) )
       {
-         bug( "%s: Room #%d - Invalid exit coordinates: %d %d", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
+         bug( "{}: Room #{} - Invalid exit coordinates: {} {}", __func__, in_room->vnum, pexit->map_x, pexit->map_y );
          ch->print( "Oops. Something is wrong with this map exit - notify the immortals.\r\n" );
          check_sneaks( ch );
          return rSTOP;

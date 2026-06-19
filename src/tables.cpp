@@ -49,11 +49,11 @@ SPEC_FUN *m_spec_lookup( std::string_view name )
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
-         bug( "%s: Error locating %s in symbol table. %s", __func__, name.data(), error );
+         bug( "{}: Error locating {} in symbol table. %s", __func__, name, error );
          return nullptr;
 
          // Edge case. Apparently a symbol can be valid but point to a NULL. This catches those.
-         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.data() );
+         bug( "{}: Symbol {} found as NULL pointer.", __func__, name );
          return nullptr;
       }
    }
@@ -74,11 +74,11 @@ SPELL_FUN *spell_function( std::string_view name )
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
-         bug( "%s: Error locating %s in symbol table. %s", __func__, name.data(), error );
+         bug( "{}: Error locating {} in symbol table. {}", __func__, name, error );
          return ( SPELL_FUN * ) spell_notfound;
 
          // Edge case. Apparently a symbol can be valid but point to a NULL. This catches those.
-         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.data() );
+         bug( "{}: Symbol {} found as NULL pointer.", __func__, name );
          return ( SPELL_FUN * ) spell_notfound;
       }
    }
@@ -99,11 +99,11 @@ DO_FUN *skill_function( std::string_view name )
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
-         bug( "%s: Error locating %s in symbol table. %s", __func__, name.data(), error );
+         bug( "{}: Error locating {} in symbol table. {}", __func__, name, error );
          return ( DO_FUN * ) skill_notfound;
 
          // Edge case. Apparently a symbol can be valid but point to a NULL. This catches those.
-         bug( "%s: Symbol %s found as NULL pointer.", __func__, name.data() );
+         bug( "{}: Symbol {} found as NULL pointer.", __func__, name );
          return ( DO_FUN * ) skill_notfound;
       }
    }
@@ -206,8 +206,8 @@ void load_tongues(  )
       }
       else if( letter != '#' )
       {
-         bug( "%s: Letter '%c' not #.", __func__, letter );
-         exit( 1 );
+         bug( "{}: Letter '{}' not #.", __func__, letter );
+         std::exit( EXIT_FAILURE );
       }
       word = fread_word( fp );
       if( !str_cmp( word, "end" ) )

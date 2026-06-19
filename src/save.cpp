@@ -128,7 +128,7 @@ void char_data::de_equip(  )
             {
                if( x == MAX_LAYERS )
                {
-                  bug( "%s: %s had on more than %d layers of clothing in one location (%d): %s", __func__, name.c_str(), MAX_LAYERS, obj->wear_loc, obj->name );
+                  bug( "{}: {} had on more than {} layers of clothing in one location ({}): {}", __func__, name, MAX_LAYERS, obj->wear_loc, obj->name );
                   break;
                }
 
@@ -199,7 +199,7 @@ void fwrite_char( char_data * ch, FILE * fp )
 
    if( ch->isnpc(  ) )
    {
-      bug( "%s: NPC save called!", __func__ );
+      bug( "{}: NPC save called!", __func__ );
       return;
    }
 
@@ -459,7 +459,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
 {
    if( iNest >= MAX_NEST )
    {
-      bug( "%s: iNest hit MAX_NEST %d", __func__, iNest );
+      bug( "{}: iNest hit MAX_NEST {}", __func__, iNest );
       return;
    }
 
@@ -467,7 +467,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
    {
       if( !obj )
       {
-         bug( "%s: nullptr obj", __func__ );
+         bug( "{}: nullptr obj", __func__ );
          continue;
       }
 
@@ -777,8 +777,7 @@ void char_data::save(  )
 
       if( !( fp = fopen( strback.c_str(), "w" ) ) )
       {
-         perror( strback.c_str() );
-         bug( "%s: fopen", __func__ );
+         bug( "{}: Unable to open {} for writing.", __func__, strback.string() );
       }
       else
       {
@@ -800,8 +799,7 @@ void char_data::save(  )
    std::filesystem::path strsave = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( name[0] ) ), capitalize( pcdata->filename ) );
    if( !( fp = fopen( strsave.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( strsave.c_str() );
+      bug( "{}: Unable to open {} for writing.", __func__, strsave.string() );
    }
    else
    {
@@ -1075,7 +1073,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: Player %s has invalid Class! Defaulting to warrior.", __func__, ch->name.c_str() );
+                  bug( "{}: Player {} has invalid Class! Defaulting to warrior.", __func__, ch->name );
                   Class = CLASS_WARRIOR;
                }
                ch->Class = Class;
@@ -1151,8 +1149,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   */
                   if( !temp )
                   {
-                     bug( "%s", "FATAL: No valid fallback rooms. Program terminating!" );
-                     exit( 1 );
+                     bug( "{}", "FATAL: No valid fallback rooms. Program terminating!" );
+                     std::exit( EXIT_FAILURE );
                   }
 
                   /*
@@ -1359,7 +1357,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: Player %s has invalid position! Defaulting to standing.", __func__, ch->name.c_str() );
+                  bug( "{}: Player {} has invalid position! Defaulting to standing.", __func__, ch->name );
                   position = POS_STANDING;
                }
                ch->position = position;
@@ -1405,7 +1403,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( race < 0 || race >= MAX_NPC_RACE )
                {
-                  bug( "%s: Player %s has invalid race! Defaulting to human.", __func__, ch->name.c_str() );
+                  bug( "{}: Player {} has invalid race! Defaulting to human.", __func__, ch->name );
                   race = RACE_HUMAN;
                }
                ch->race = race;
@@ -1466,8 +1464,8 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                */
                if( !temp )
                {
-                  bug( "%s", "FATAL: No valid fallback rooms. Program terminating!" );
-                  exit( 1 );
+                  bug( "{}", "FATAL: No valid fallback rooms. Program terminating!" );
+                  std::exit( EXIT_FAILURE );
                }
 
                /*
@@ -1487,7 +1485,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                if( sex < 0 || sex >= SEX_MAX )
                {
-                  bug( "%s: Player %s has invalid sex! Defaulting to Neuter.", __func__, ch->name.c_str() );
+                  bug( "{}: Player {} has invalid sex! Defaulting to Neuter.", __func__, ch->name );
                   sex = SEX_NEUTRAL;
                }
                ch->sex = sex;
@@ -1563,7 +1561,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
                value = get_langnum( speaking );
                if( value < 0 || value >= LANG_UNKNOWN )
-                  bug( "Unknown language: %s", speaking );
+                  bug( "Unknown language: {}", speaking );
                else
                   ch->speaking = value;
                break;
@@ -1819,7 +1817,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             deleteptr( obj );
             return;
@@ -1844,7 +1842,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
                   sn = skill_lookup( fread_word( fp ) );
                   if( sn < 0 )
-                     bug( "%s: Vnum %d - unknown skill: %s", __func__, obj->pIndexData->vnum, word );
+                     bug( "{}: Vnum {} - unknown skill: {}", __func__, obj->pIndexData->vnum, word );
                   else
                      paf->type = sn;
                }
@@ -1908,9 +1906,9 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                if( !fNest || !fVnum )
                {
                   if( obj->name )
-                     bug( "%s: %s incomplete object. obj_file_ver=%d", __func__, obj->name, obj_file_ver );
+                     bug( "{}: {} incomplete object. obj_file_ver={}", __func__, obj->name, obj_file_ver );
                   else
-                     bug( "%s: incomplete object. obj_file_ver=%d", __func__, obj_file_ver );
+                     bug( "{}: incomplete object. obj_file_ver={}", __func__, obj_file_ver );
                   deleteptr( obj );
                   return;
                }
@@ -1971,7 +1969,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                   {
                      if( !room )
                      {
-                        bug( "%s: Corpse without room", __func__ );
+                        bug( "{}: Corpse without room", __func__ );
                         room = get_room_index( ROOM_VNUM_LIMBO );
                      }
 
@@ -2030,7 +2028,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                         obj = obj->to_obj( rgObjNest[iNest - 1] );
                      }
                      else
-                        bug( "%s: nest layer missing %d", __func__, iNest - 1 );
+                        bug( "{}: nest layer missing {}", __func__, iNest - 1 );
                   }
                   if( fNest )
                      rgObjNest[iNest] = obj;
@@ -2055,7 +2053,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                iNest = fread_number( fp );
                if( iNest < 0 || iNest >= MAX_NEST )
                {
-                  bug( "%s: bad nest %d.", __func__, iNest );
+                  bug( "{}: bad nest {}.", __func__, iNest );
                   iNest = 0;
                   fNest = false;
                }
@@ -2106,13 +2104,13 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                iValue = fread_number( fp );
                sn = skill_lookup( fread_word( fp ) );
                if( iValue < 0 || iValue > 10 )
-                  bug( "%s: bad iValue %d.", __func__, iValue );
+                  bug( "{}: bad iValue {}.", __func__, iValue );
                /*
                 * Bug fixed here to change corrupted spell values to -1 to stop spamming logs - Samson 7-5-03 
                 */
                else if( sn < 0 )
                {
-                  bug( "%s: Vnum %d - unknown skill: %s", __func__, obj->pIndexData->vnum, word );
+                  bug( "{}: Vnum {} - unknown skill: {}", __func__, obj->pIndexData->vnum, word );
                   obj->value[iValue] = -1;
                }
                else
@@ -2251,7 +2249,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             if( !str_cmp( word, "EndMobile" ) || !str_cmp( word, "EndVendor" ) )
                break;
          }
-         bug( "%s: No index data for vnum %d", __func__, vnum );
+         bug( "{}: No index data for vnum {}", __func__, vnum );
          return nullptr;
       }
       mob = pMobIndex->create_mobile(  );
@@ -2272,7 +2270,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             break;
       }
 
-      bug( "%s: Vnum not found", __func__ );
+      bug( "{}: Vnum not found", __func__ );
       return nullptr;
    }
 
@@ -2286,7 +2284,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -2316,7 +2314,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
                      if( ( sn = herb_lookup( sname ) ) < 0 )
-                        bug( "%s: unknown skill.", __func__ );
+                        bug( "{}: unknown skill.", __func__ );
                      else
                         sn += TYPE_HERB;
                   }
@@ -2461,7 +2459,7 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
 
    if( !d )
    {
-      bug( "%s: nullptr d! This should not have happened!", __func__ );
+      bug( "{}: nullptr d! This should not have happened!", __func__ );
       return false;
    }
 
@@ -2539,7 +2537,7 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
 
          if( letter != '#' )
          {
-            bug( "%s: # not found. %s", __func__, strsave.c_str(  ) );
+            bug( "{}: # not found. {}", __func__, strsave.string() );
             break;
          }
 
@@ -2579,7 +2577,7 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
             break;
          else
          {
-            bug( "%s: bad section: %s", __func__, word );
+            bug( "{}: bad section: {}", __func__, word );
             break;
          }
       }
@@ -2647,7 +2645,7 @@ void write_corpse( obj_data * corpse, std::string_view name )
 
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Error opening corpse file for write: %s", __func__, filename.c_str() );
+      bug( "{}: Error opening corpse file for write: {}", __func__, filename.string() );
       return;
    }
 
@@ -2721,7 +2719,7 @@ void load_corpses( void )
          }
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __func__ );
+            bug( "{}: # not found.", __func__ );
             break;
          }
          word = fread_word( fpArea );
@@ -2733,7 +2731,7 @@ void load_corpses( void )
             break;
          else
          {
-            bug( "%s: bad section: %s", __func__, word );
+            bug( "{}: bad section: {}", __func__, word );
             break;
          }
       }

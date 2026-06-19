@@ -1115,27 +1115,27 @@ void obj_data::weapongen(  )
 
    if( item_type != ITEM_WEAPON )
    {
-      bug( "%s: Improperly set item passed: %s", __func__, name );
+      bug( "{}: Improperly set item passed: {}", __func__, name );
       return;
    }
 
    if( value[8] >= TWTP_MAX )
    {
-      bug( "%s: Improper weapon type passed for %s", __func__, name );
+      bug( "{}: Improper weapon type passed for {}", __func__, name );
       value[8] = 0;
       return;
    }
 
    if( value[9] >= TMAT_MAX )
    {
-      bug( "%s: Improper material passed for %s", __func__, name );
+      bug( "{}: Improper material passed for {}", __func__, name );
       value[9] = 0;
       return;
    }
 
    if( value[10] >= TQUAL_MAX )
    {
-      bug( "%s: Improper quality passed for %s", __func__, name );
+      bug( "{}: Improper quality passed for {}", __func__, name );
       value[10] = 0;
       return;
    }
@@ -1162,7 +1162,7 @@ void obj_data::weapongen(  )
       eflags = one_argument( eflags, flag );
       ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
-         bug( "%s: Unknown object extraflag: %s", __func__, flag.c_str(  ) );
+         bug( "{}: Unknown object extraflag: {}", __func__, flag );
       else
          extra_flags.set( ovalue );
    }
@@ -1259,20 +1259,20 @@ void obj_data::armorgen(  )
 
    if( item_type != ITEM_ARMOR )
    {
-      bug( "%s: Improperly set item passed: %s", __func__, name );
+      bug( "{}: Improperly set item passed: {}", __func__, name );
       return;
    }
 
    if( value[3] >= TATP_MAX )
    {
-      bug( "%s: Improper armor type passed for %s", __func__, name );
+      bug( "{}: Improper armor type passed for {}", __func__, name );
       value[3] = 0;
       return;
    }
 
    if( value[4] >= TMAT_MAX )
    {
-      bug( "%s: Improper material passed for %s", __func__, name );
+      bug( "{}: Improper material passed for {}", __func__, name );
       value[4] = 0;
       return;
    }
@@ -1313,7 +1313,7 @@ void obj_data::armorgen(  )
       eflags = one_argument( eflags, flag );
       ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
-         bug( "%s: Unknown object extraflag: %s", __func__, flag.c_str(  ) );
+         bug( "{}: Unknown object extraflag: {}", __func__, flag );
       else
          extra_flags.set( ovalue );
    }
@@ -2067,7 +2067,7 @@ obj_data *create_money( int amount )
 
    if( amount <= 0 )
    {
-      bug( "%s: zero or negative money %d.", __func__, amount );
+      bug( "{}: zero or negative money {}.", __func__, amount );
       amount = 1;
    }
 
@@ -2252,7 +2252,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
       obj_data *item = generate_item( area, level );
       if( !item )
       {
-         bug( "%s: Item object failed to create!", __func__ );
+         bug( "{}: Item object failed to create!", __func__ );
          return;
       }
       item->to_obj( corpse );
@@ -2267,7 +2267,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
          obj_data *item = generate_gem( level );
          if( !item )
          {
-            bug( "%s: Gem object failed to create!", __func__ );
+            bug( "{}: Gem object failed to create!", __func__ );
             return;
          }
          item->to_obj( corpse );
@@ -2281,7 +2281,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
       obj_data *item = generate_rune( level );
       if( !item )
       {
-         bug( "%s: Rune object failed to create!", __func__ );
+         bug( "{}: Rune object failed to create!", __func__ );
          return;
       }
       item->to_obj( corpse );
@@ -2512,19 +2512,19 @@ CMDF( do_socket )
 
    if( !( rune = ch->get_obj_carry( arg ) ) )
    {
-      ch->printf( "You do not have a %s rune in your inventory!\r\n", arg.c_str(  ) );
+      ch->print_fmt( "You do not have a {} rune in your inventory!\r\n", arg );
       return;
    }
 
    if( !( item = ch->get_obj_carry( argument ) ) )
    {
-      ch->printf( "You do not have a %s in your inventory!\r\n", argument.c_str(  ) );
+      ch->print_fmt( "You do not have a {} in your inventory!\r\n", argument );
       return;
    }
 
    if( rune->item_type != ITEM_RUNE )
    {
-      ch->printf( "%s is not a rune and cannot be used like that!\r\n", rune->short_descr );
+      ch->print_fmt( "{} is not a rune and cannot be used like that!\r\n", rune->short_descr );
       return;
    }
 
@@ -2534,7 +2534,7 @@ CMDF( do_socket )
    {
       if( item->value[7] < 1 )
       {
-         ch->printf( "%s does not have any free sockets left.\r\n", item->short_descr );
+         ch->print_fmt( "{} does not have any free sockets left.\r\n", item->short_descr );
          return;
       }
 
@@ -2542,7 +2542,7 @@ CMDF( do_socket )
       {
          stralloc_printf( &item->socket[0], "%s", rune->short_descr );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
+         ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
@@ -2551,7 +2551,7 @@ CMDF( do_socket )
       {
          stralloc_printf( &item->socket[1], "%s", rune->short_descr );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
+         ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
@@ -2560,11 +2560,11 @@ CMDF( do_socket )
       {
          stralloc_printf( &item->socket[2], "%s", rune->short_descr );
          item->value[7] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
+         ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
-      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name.c_str(), item->short_descr );
+      bug( "{}: ({}) {} has open sockets, but all sockets are filled?!?", __func__, ch->name, item->short_descr );
       ch->print( "Ooops. Something bad happened. Contact the immortals for assistance.\r\n" );
       return;
    }
@@ -2573,7 +2573,7 @@ CMDF( do_socket )
    {
       if( item->value[2] < 1 )
       {
-         ch->printf( "%s does not have any free sockets left.\r\n", item->short_descr );
+         ch->print_fmt( "{} does not have any free sockets left.\r\n", item->short_descr );
          return;
       }
 
@@ -2581,7 +2581,7 @@ CMDF( do_socket )
       {
          stralloc_printf( &item->socket[0], "%s", rune->short_descr );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
+         ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
@@ -2590,7 +2590,7 @@ CMDF( do_socket )
       {
          stralloc_printf( &item->socket[1], "%s", rune->short_descr );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
+         ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
@@ -2599,15 +2599,15 @@ CMDF( do_socket )
       {
          stralloc_printf( &item->socket[2], "%s", rune->short_descr );
          item->value[2] -= 1;
-         ch->printf( "%s glows brightly as the %s rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
+         ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
-      bug( "%s: (%s) %s has open sockets, but all sockets are filled?!?", __func__, ch->name.c_str(), item->short_descr );
+      bug( "{}: ({}) {} has open sockets, but all sockets are filled?!?", __func__, ch->name, item->short_descr );
       ch->print( "Ooops. Something bad happened. Contact the immortals for assistance.\r\n" );
       return;
    }
-   ch->printf( "%s cannot be socketed. Only weapons, body armors, and shields are valid.\r\n", item->short_descr );
+   ch->print_fmt( "{} cannot be socketed. Only weapons, body armors, and shields are valid.\r\n", item->short_descr );
 }
 
 int get_ore( std::string_view ore )
@@ -2767,7 +2767,7 @@ CMDF( do_forge )
    switch ( ore_type )
    {
       default:
-         bug( "%s: Bad ore value: %d", __func__, ore_type );
+         bug( "{}: Bad ore value: {}", __func__, ore_type );
          break;
 
       case ORE_IRON:

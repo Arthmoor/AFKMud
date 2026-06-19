@@ -1042,7 +1042,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
    }
    else
    {
-      bug( "%s: no projectile, no skill dt %d", __func__, dt );
+      bug( "{}: no projectile, no skill dt {}", __func__, dt );
       return rNONE;
    }
 

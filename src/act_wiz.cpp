@@ -414,7 +414,7 @@ CMDF( do_disconnect )
          return;
       }
    }
-   bug( "%s: desc '%d' not found!", __func__, desc );
+   bug( "{}: desc '{}' not found!", __func__, desc );
    ch->print( "Descriptor not found!\r\n" );
 }
 
@@ -503,7 +503,7 @@ void transfer_char( char_data * ch, char_data * victim, room_index * location )
 {
    if( !victim->in_room )
    {
-      bug( "%s: victim in nullptr room: %s", __func__, victim->name.c_str() );
+      bug( "{}: victim in nullptr room: {}", __func__, victim->name );
       return;
    }
 
@@ -614,13 +614,13 @@ void location_action( char_data * ch, const std::string & argument, room_index *
 
    if( !location )
    {
-      bug( "%s: nullptr room!", __func__ );
+      bug( "{}: nullptr room!", __func__ );
       return;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: nullptr ch->in_room!", __func__ );
+      bug( "{}: nullptr ch->in_room!", __func__ );
       return;
    }
 
@@ -1679,8 +1679,8 @@ CMDF( do_owhere )
       }
       for( ; obj->in_obj; obj = obj->in_obj )
       {
-         ch->pagerf( "&Y[&W%5d&Y] &G%-28s &Cin object &Y[&W%5d&Y] &C%s\r\n",
-                     obj->pIndexData->vnum, obj->oshort(  ).c_str(  ), obj->in_obj->pIndexData->vnum, obj->in_obj->short_descr );
+         ch->pager_fmt( "&Y[&W{:5}&Y] &G{:<28} &Cin object &Y[&W{:5}&Y] &C{}\r\n",
+                     obj->pIndexData->vnum, obj->oshort( ), obj->in_obj->pIndexData->vnum, obj->in_obj->short_descr );
          ++icnt;
       }
       buf = std::format( "&Y[&W{:5}&Y] &G{:<28} ", obj->pIndexData->vnum, obj->oshort(  ) );
@@ -1696,17 +1696,17 @@ CMDF( do_owhere )
       }
       else if( obj->in_obj )
       {
-         bug( "%s: obj->in_obj after nullptr!", __func__ );
+         bug( "{}: obj->in_obj after nullptr!", __func__ );
          buf.append( "object??\r\n" );
       }
       else
       {
-         bug( "%s: object doesnt have location!", __func__ );
+         bug( "{}: object doesnt have location!", __func__ );
          buf.append( "nowhere??\r\n" );
       }
       ch->pager( buf );
       ++icnt;
-      ch->pagerf( "Nested %d levels deep.\r\n", icnt );
+      ch->pager_fmt( "Nested {} levels deep.\r\n", icnt );
       return;
    }
 
@@ -1735,15 +1735,15 @@ CMDF( do_owhere )
          buf.append( std::format( "&Cobject &Y[&W{:5}&Y] &C{}\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ) ) );
       else
       {
-         bug( "%s: object doesnt have location!", __func__ );
+         bug( "{}: object doesn't have location!", __func__ );
          buf.append( "nowhere??\r\n" );
       }
       ch->pager( buf );
    }
    if( !found )
-      ch->printf( "You didn't find any %s.\r\n", arg.c_str(  ) );
+      ch->print_fmt( "You didn't find any {}.\r\n", arg );
    else
-      ch->pagerf( "%d matches.\r\n", icnt );
+      ch->pager_fmt( "{} matches.\r\n", icnt );
 }
 
 CMDF( do_pwhere )
@@ -1899,18 +1899,18 @@ CMDF( do_where )
             buf.append( std::format( "object [{:5}] {}\r\n", obj->in_obj->pIndexData->vnum, obj->in_obj->oshort(  ) ) );
          else
          {
-            bug( "%s: object '%s' doesn't have location!", __func__, obj->short_descr );
+            bug( "{}: object '{}' doesn't have location!", __func__, obj->short_descr );
             buf.append( "nowhere??\r\n" );
          }
          ch->pager( buf );
       }
 
       if( !found )
-         ch->pagerf( "No copies of vnum %d are loaded.\r\n", vnum );
+         ch->pager_fmt( "No copies of vnum {} are loaded.\r\n", vnum );
       else
-         ch->pagerf( "%d matches for vnum %d are loaded.\r\n", icnt, vnum );
+         ch->pager_fmt( "{} matches for vnum {} are loaded.\r\n", icnt, vnum );
 
-      ch->pagerf( "Checking player files for stored copies of vnum %d....\r\n", vnum );
+      ch->pager_fmt( "Checking player files for stored copies of vnum {}....\r\n", vnum );
 
       check_stored_objects( ch, vnum );
       return;
@@ -6239,14 +6239,14 @@ bool load_class_file( const char *fname )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -6282,7 +6282,7 @@ bool load_class_file( const char *fname )
                FCLOSE( fp );
                if( cl < 0 || cl >= MAX_CLASS )
                {
-                  bug( "%s: Class (%s) bad/not found (%d)", __func__, Class->who_name ? Class->who_name : "name not found", cl );
+                  bug( "{}: Class ({}) bad/not found ({})", __func__, Class->who_name ? Class->who_name : "name not found", cl );
                   deleteptr( Class );
                   return false;
                }
@@ -6336,9 +6336,9 @@ bool load_class_file( const char *fname )
                adp = fread_number( fp );
                sn = skill_lookup( word );
                if( cl < 0 || cl >= MAX_CLASS )
-                  bug( "%s: Skill %s -- Class bad/not found (%d)", __func__, word, cl );
+                  bug( "{}: Skill {} -- Class bad/not found ({})", __func__, word, cl );
                else if( !IS_VALID_SN( sn ) )
-                  bug( "%s: Skill %s unknown. Class: %d", __func__, word, cl );
+                  bug( "{}: Skill {} unknown. Class: {}", __func__, word, cl );
                else
                {
                   skill_table[sn]->skill_level[cl] = lev;
@@ -6362,7 +6362,7 @@ bool load_class_file( const char *fname )
             {
                if( cl < 0 || cl >= MAX_CLASS )
                {
-                  bug( "%s: Title -- Class bad/not found (%d)", __func__, cl );
+                  bug( "{}: Title -- Class bad/not found ({})", __func__, cl );
                   fread_flagstring( fp );
                   fread_flagstring( fp );
                }
@@ -6387,7 +6387,7 @@ bool load_class_file( const char *fname )
                   ++tlev;
                }
                else
-                  bug( "%s: Too many titles. Class: %d", __func__, cl );
+                  bug( "{}: Too many titles. Class: {}", __func__, cl );
                break;
             }
             KEY( "Thac0gain", Class->thac0_gain, fread_float( fp ) );
@@ -6432,7 +6432,7 @@ void load_classes(  )
 
       if( filename[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading class list!", __func__ );
+         log_printf( "{}: EOF encountered reading class list!", __func__ );
          break;
       }
 
@@ -6440,7 +6440,7 @@ void load_classes(  )
          break;
 
       if( !load_class_file( filename ) )
-         bug( "%s: Cannot load Class file: %s", __func__, filename );
+         bug( "{}: Cannot load Class file: {}", __func__, filename );
       else
          ++MAX_PC_CLASS;
    }
@@ -6470,7 +6470,7 @@ void write_class_file( int cl )
    std::filesystem::path filename = std::format( "{}{}.class", CLASS_DIR, Class->who_name );
    if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Cannot open: %s for writing", __func__, filename.c_str() );
+      bug( "{}: Cannot open: {} for writing", __func__, filename.string() );
       return;
    }
 
@@ -6529,7 +6529,7 @@ void write_class_list(  )
    std::filesystem::path classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
    if( !( fpList = fopen( classlist.c_str(), "w" ) ) )
    {
-      bug( "%s: Can't open class list for writing.", __func__ );
+      bug( "{}: Can't open class list for writing.", __func__ );
       return;
    }
 
@@ -7235,14 +7235,14 @@ bool load_race_file( const char *fname )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "%s: no match: %s", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -7319,7 +7319,7 @@ bool load_race_file( const char *fname )
                FCLOSE( fp );
                if( ra < 0 || ra >= MAX_RACE )
                {
-                  bug( "%s: Race (%s) bad/not found (%d)", __func__, race->race_name ? race->race_name : "name not found", ra );
+                  bug( "{}: Race ({}) bad/not found ({})", __func__, race->race_name ? race->race_name : "name not found", ra );
                   deleteptr( race );
                   return false;
                }
@@ -7396,10 +7396,10 @@ bool load_race_file( const char *fname )
                adp = fread_number( fp );
                sn = skill_lookup( word );
                if( ra < 0 || ra >= MAX_RACE )
-                  bug( "%s: Skill %s -- race bad/not found (%d)", __func__, word, ra );
+                  bug( "{}: Skill {} -- race bad/not found ({})", __func__, word, ra );
                else if( !IS_VALID_SN( sn ) )
                {
-                  bug( "%s: skill %s = SN %d", __func__, word, sn );
+                  bug( "{}: skill {} = SN {}", __func__, word, sn );
                   log_printf( "Skill '{}' unknown", word );
                }
                else
@@ -7460,7 +7460,7 @@ void load_races(  )
 
       if( filename[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          break;
       }
 
@@ -7468,7 +7468,7 @@ void load_races(  )
          break;
 
       if( !load_race_file( filename ) )
-         bug( "%s: Cannot load race file: %s", __func__, filename );
+         bug( "{}: Cannot load race file: {}", __func__, filename );
       else
          ++MAX_PC_RACE;
    }
@@ -7495,14 +7495,14 @@ void write_race_file( int ra )
 
    if( !race->race_name )
    {
-      bug( "Race %d has null name, not writing .race file.", ra );
+      log_printf( "Race {} has null name, not writing .race file.", ra );
       return;
    }
 
    std::filesystem::path filename = std::format( "{}{}.race", RACE_DIR, race->race_name );
    if( !( fpout = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "Cannot open: %s for writing", filename.c_str() );
+      bug( "Cannot open: {} for writing", filename.string() );
       return;
    }
    fprintf( fpout, "Version     %d\n", RACEFILEVER );
@@ -7570,7 +7570,7 @@ void write_race_list(  )
    std::filesystem::path racelist = std::format( "{}{}", RACE_DIR, RACE_LIST );
    if( !( fpList = fopen( racelist.c_str(), "w" ) ) )
    {
-      bug( "%s: Error opening racelist.", __func__ );
+      bug( "{}: Error opening racelist.", __func__ );
       return;
    }
    for( int i = 0; i < MAX_PC_RACE; ++i )

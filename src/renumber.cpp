@@ -170,7 +170,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
          r_table = &(r_data->r_obj);
       else
       {
-         bug( "%s: Invalid 'T' reset found.", __func__ );
+         bug( "{}: Invalid 'T' reset found.", __func__ );
          return;
       }
 
@@ -195,7 +195,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
                r_table = &(r_data->r_room);
             else
             {
-               bug( "%s: Invalid action found in action table.", __func__ );
+               bug( "{}: Invalid action found in action table.", __func__ );
                p += 2;
                continue;
             }
@@ -209,7 +209,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
                parg = &( reset->arg3 );
             else
             {
-               bug( "%s: Invalid argument number found in action table.", __func__ );
+               bug( "{}: Invalid argument number found in action table.", __func__ );
                ++p;
                continue;
             }
@@ -224,7 +224,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
    }
 
    if( action_table[i] == nullptr )
-      bug( "%s: Invalid reset '%c' found.", __func__, reset->command );
+      bug( "{}: Invalid reset '{}' found.", __func__, reset->command );
 }
 
 void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_area, bool verbose )
@@ -398,12 +398,12 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    for( const auto& r_data : r_area->r_room )
    {
       if( verbose )
-         ch->pagerf( "(Room) %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+         ch->pager_fmt( "(Room) {} -> {}\r\n", r_data.old_vnum, r_data.new_vnum );
 
       room = get_room_index( r_data.old_vnum );
       if( !room )
       {
-         bug( "%s: nullptr room %d", __func__, r_data.old_vnum );
+         bug( "{}: nullptr room {}", __func__, r_data.old_vnum );
          continue;
       }
 
@@ -453,12 +453,12 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    for( const auto& r_data : r_area->r_mob )
    {
       if( verbose )
-         ch->pagerf( "(Mobs) %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+         ch->pager_fmt( "(Mobs) {} -> {}\r\n", r_data.old_vnum, r_data.new_vnum );
 
       mob = get_mob_index( r_data.old_vnum );
       if( !mob )
       {
-         bug( "%s: nullptr mob %d", __func__, r_data.old_vnum );
+         bug( "{}: nullptr mob {}", __func__, r_data.old_vnum );
          continue;
       }
 
@@ -468,13 +468,13 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
       if( mob->pShop )
       {
          if( verbose )
-            ch->pagerf( "(Mobs) Fixing shop for mob %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+            ch->pager_fmt( "(Mobs) Fixing shop for mob {} -> {}\r\n", r_data.old_vnum, r_data.new_vnum );
          mob->pShop->keeper = r_data.new_vnum;
       }
       if( mob->rShop )
       {
          if( verbose )
-            ch->pagerf( "(Mobs) Fixing repair shop for mob %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+            ch->pager_fmt( "(Mobs) Fixing repair shop for mob {} -> {}\r\n", r_data.old_vnum, r_data.new_vnum );
          mob->rShop->keeper = r_data.new_vnum;
       }
 
@@ -520,11 +520,11 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
    for( const auto& r_data : r_area->r_obj )
    {
       if( verbose )
-         ch->pagerf( "(Objs) %d -> %d\r\n", r_data.old_vnum, r_data.new_vnum );
+         ch->pager_fmt( "(Objs) {} -> {}\r\n", r_data.old_vnum, r_data.new_vnum );
       obj = get_obj_index( r_data.old_vnum );
       if( !obj )
       {
-         bug( "%s: nullptr obj %d", __func__, r_data.old_vnum );
+         bug( "{}: nullptr obj {}", __func__, r_data.old_vnum );
          continue;
       }
 
@@ -667,7 +667,7 @@ bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
 {
    if( !r_area )
    {
-      bug( "%s: nullptr r_area!", __func__ );
+      bug( "{}: nullptr r_area!", __func__ );
       return true;
    }
 
@@ -679,7 +679,7 @@ bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
 
    if( high > sysdata->maxvnum )
    {
-      ch->printf( "This operation would raise the maximum allowed vnum beyond %d.\r\n", sysdata->maxvnum );
+      ch->print_fmt( "This operation would raise the maximum allowed vnum beyond {}.\r\n", sysdata->maxvnum );
       ch->print( "Pick a lower base, or have sysdata->maxvnum raised.\r\n" );
       return true;
    }
@@ -694,7 +694,7 @@ bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
 
       if( !( high < area->low_vnum || low > area->hi_vnum ) )
       {
-         ch->printf( "This operation would overwrite area %s! Use checkvnums first.\r\n", area->filename );
+         ch->print_fmt( "This operation would overwrite area {}! Use checkvnums first.\r\n", area->filename );
          return true;
       }
    }

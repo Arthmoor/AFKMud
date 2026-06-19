@@ -550,14 +550,14 @@ void fread_variable( char_data * ch, FILE * fp )
                switch( pvd->type )
                {
                   default:
-                     bug( "%s: invalid variable type. Discarding.", __func__ );
+                     bug( "{}: invalid variable type. Discarding.", __func__ );
                      deleteptr( pvd );
                      break;
 
                   case vtSTR:
                      if( pvd->varstring.empty() )
                      {
-                        bug( "%s: vtSTR: Incomplete data. Discarding.", __func__ );
+                        bug( "{}: vtSTR: Incomplete data. Discarding.", __func__ );
                         deleteptr( pvd );
                      }
                      break;
@@ -565,7 +565,7 @@ void fread_variable( char_data * ch, FILE * fp )
                   case vtXBIT:
                      if( pvd->varflags.none() )
                      {
-                        bug( "%s: vtXBIT: Incomplete data. Discarding.", __func__ );
+                        bug( "{}: vtXBIT: Incomplete data. Discarding.", __func__ );
                         deleteptr( pvd );
                      }
                      break;
@@ -642,6 +642,6 @@ void fread_variable( char_data * ch, FILE * fp )
    while( !feof( fp ) );
 
    // If you make it here, something got borked.
-   bug( "%s: Fell through to bottom!", __func__ );
+   bug( "{}: Fell through to bottom!", __func__ );
    deleteptr( pvd );
 }

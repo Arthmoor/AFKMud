@@ -161,8 +161,7 @@ void save_world( void )
          std::filesystem::path filename = std::format( "{}{}", HOTBOOT_DIR, pRoomIndex->vnum );
          if( !( objfp = fopen( filename.c_str(), "w" ) ) )
          {
-            bug( "%s: fopen %d", __func__, pRoomIndex->vnum );
-            perror( filename.c_str() );
+            bug( "{}:{} Cannot open {} for writing: {}", __func__, pRoomIndex->vnum, filename.string(), std::strerror(errno) );
             continue;
          }
          fwrite_obj( nullptr, pRoomIndex->objects, nullptr, objfp, 0, true );
@@ -176,8 +175,7 @@ void save_world( void )
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
    if( !( mobfp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen mob file", __func__ );
-      perror( filename.c_str() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
    }
    else
    {
@@ -203,7 +201,7 @@ char_data *load_mobile( FILE * fp )
 
    if( word[0] == '\0' )
    {
-      bug( "%s: EOF encountered reading file!", __func__ );
+      bug( "{}: EOF encountered reading file!", __func__ );
       word = "EndMobile";
    }
 
@@ -214,7 +212,7 @@ char_data *load_mobile( FILE * fp )
       vnum = fread_number( fp );
       if( !get_mob_index( vnum ) )
       {
-         bug( "%s: No index data for vnum %d", __func__, vnum );
+         bug( "{}: No index data for vnum {}", __func__, vnum );
          return nullptr;
       }
       mob = get_mob_index( vnum )->create_mobile(  );
@@ -226,7 +224,7 @@ char_data *load_mobile( FILE * fp )
 
             if( word[0] == '\0' )
             {
-               bug( "%s: EOF encountered reading file!", __func__ );
+               bug( "{}: EOF encountered reading file!", __func__ );
                word = "EndMobile";
             }
             /*
@@ -236,7 +234,7 @@ char_data *load_mobile( FILE * fp )
             if( !str_cmp( word, "EndMobile" ) )
                break;
          }
-         bug( "%s: Unable to create mobile for vnum %d", __func__, vnum );
+         bug( "{}: Unable to create mobile for vnum {}", __func__, vnum );
          return nullptr;
       }
    }
@@ -248,7 +246,7 @@ char_data *load_mobile( FILE * fp )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __func__ );
+            bug( "{}: EOF encountered reading file!", __func__ );
             word = "EndMobile";
          }
 
@@ -260,7 +258,7 @@ char_data *load_mobile( FILE * fp )
             break;
       }
 
-      bug( "%s: Vnum not found", __func__ );
+      bug( "{}: Vnum not found", __func__ );
       return nullptr;
    }
 
@@ -270,14 +268,14 @@ char_data *load_mobile( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "EndMobile";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -464,7 +462,7 @@ void read_obj_file( int vnum )
 
    if( !( room = get_room_index( vnum ) ) )
    {
-      bug( "%s: ARGH! Missing room index for %d!", __func__, vnum );
+      bug( "{}: ARGH! Missing room index for {}!", __func__, vnum );
       std::filesystem::remove( fname );
       return;
    }
@@ -490,7 +488,7 @@ void read_obj_file( int vnum )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __func__ );
+            bug( "{}: # not found.", __func__ );
             break;
          }
 
@@ -504,7 +502,7 @@ void read_obj_file( int vnum )
             break;
          else
          {
-            bug( "%s: bad section: %s", __func__, word );
+            bug( "{}: bad section: {}", __func__, word );
             break;
          }
       }
@@ -566,8 +564,7 @@ void load_world( void )
    std::filesystem::path file1 = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
    if( !( mobfp = fopen( file1.c_str(), "r" ) ) )
    {
-      bug( "%s: fopen mob file", __func__ );
-      perror( file1.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, file1.string(), std::strerror(errno) );
    }
    else
       mobfile = true;
@@ -669,7 +666,7 @@ CMDF( do_hotboot )
    if( !stream.is_open(  ) )
    {
       ch->print( "Hotboot file not writeable, aborted.\r\n" );
-      bug( "%s: Could not write to hotboot file. Hotboot aborted.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, HOTBOOT_FILE, std::strerror(errno) );
       return;
    }
 
@@ -733,8 +730,10 @@ CMDF( do_hotboot )
    stream << "#MAXPLAYERS " << sysdata->maxplayers << std::endl << std::endl;
    stream << "#END" << std::endl << std::endl;
    stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, HOTBOOT_FILE, std::strerror(errno) );
 
-   log_string( "Saving world time...." );
+   log_string( "Saving world time..." );
    save_timedata(  );   /* Preserve that up to the second calendar value :) */
    save_weathermap(  ); /* Same for the weather */
 
@@ -744,7 +743,7 @@ CMDF( do_hotboot )
       return;
    }
 
-   log_string( "Executing hotboot...." );
+   log_string( "Executing hotboot..." );
 
    /*
     * exec - descriptors are inherited 
@@ -769,13 +768,13 @@ CMDF( do_hotboot )
    sysdata->dlHandle = dlopen( nullptr, RTLD_LAZY );
    if( !sysdata->dlHandle )
    {
-      bug( "%s: FATAL ERROR: Unable to reopen system executable handle!", __func__ );
-      exit( 1 );
+      bug( "{}: FATAL ERROR: Unable to reopen system executable handle!", __func__ );
+      std::exit( EXIT_FAILURE );
    }
 #if defined(SQL)
    init_mysql(  );
 #endif
-   bug( "%s: Hotboot execution failed!!", __func__ );
+   bug( "{}: Hotboot execution failed!!", __func__ );
    ch->print( "Hotboot FAILED!\r\n" );
 }
 
@@ -791,9 +790,8 @@ void hotboot_recover( void )
    stream.open( std::filesystem::path( HOTBOOT_FILE ) );
    if( !stream.is_open(  ) )   /* there are some descriptors open which will hang forever then ? */
    {
-      perror( "hotboot_recover: fopen" );
-      bug( "%s: Hotboot file not found. Exitting.", __func__ );
-      exit( 1 );
+      bug( "{}: Cannot open {} for readin: {}", __func__, HOTBOOT_FILE, std::strerror(errno) );
+      std::exit( EXIT_FAILURE );
    }
 
    std::filesystem::remove( HOTBOOT_FILE ); /* In case something crashes - doesn't prevent reading */
@@ -878,7 +876,7 @@ void hotboot_recover( void )
       {
          if( d->descriptor == 0 )
          { 
-            bug( "%s: }RALERT! Assigning socket 0! BAD BAD BAD! Name: %s Host: %s", __func__, playername.c_str(), d->hostname.c_str() );
+            bug( "{}: }}RALERT! Assigning socket 0! BAD BAD BAD! Name: {} Host: {}", __func__, playername, d->hostname );
             deleteptr( d );
             continue;
          }

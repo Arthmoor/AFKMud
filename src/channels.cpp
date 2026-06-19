@@ -172,7 +172,7 @@ void save_mudchannels( void )
    stream.open( std::filesystem::path( CHANNEL_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot write to channel file.", __func__ );
+      log_printf( "{}: Cannot write to channel file.", __func__ );
       return;
    }
 

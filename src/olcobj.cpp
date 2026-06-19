@@ -103,9 +103,9 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          break;
 
       case ITEM_LIGHT:
-         ch->printf( "%sValue[2] - Hours left: ", olc ? "&gG&w) " : "&w" );
+         ch->print_fmt( "{}Value[2] - Hours left: ", olc ? "&gG&w) " : "&w" );
          if( obj->value[2] >= 0 )
-            ch->printf( "&c%d\r\n", obj->value[2] );
+            ch->print_fmt( "&c{}\r\n", obj->value[2] );
          else
             ch->print( "&cInfinite\r\n" );
          break;
@@ -113,89 +113,89 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
       case ITEM_POTION:
       case ITEM_PILL:
       case ITEM_SCROLL:
-         ch->printf( "%sValue[0] - Spell Level: %d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[0] - Spell Level: {}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
 
          for( x = 1; x <= 3; ++x )
          {
             lbuf = std::format( "&g{}&w) ", 'E' + x );
             if( obj->value[x] >= 0 && ( sktmp = get_skilltype( obj->value[x] ) ) != nullptr )
-               ch->printf( "%sValue[%d] - Spell (%d): &c%s\r\n", olc ? lbuf.c_str() : "", x, obj->value[x], sktmp->name );
+               ch->print_fmt( "{}Value[{}] - Spell ({}): &c{}\r\n", olc ? lbuf : "", x, obj->value[x], sktmp->name );
             else
-               ch->printf( "%sValue[%d] - Spell: None\r\n", olc ? lbuf.c_str() : "&w", x );
+               ch->print_fmt( "{}Value[{}] - Spell: None\r\n", olc ? lbuf : "&w", x );
          }
 
          if( obj->item_type == ITEM_PILL )
-            ch->printf( "%sValue[4] - Food Value: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
+            ch->print_fmt( "{}Value[4] - Food Value: &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
          break;
 
       case ITEM_SALVE:
       case ITEM_WAND:
       case ITEM_STAFF:
-         ch->printf( "%sValue[0] - Spell Level: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Max Charges: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-         ch->printf( "%sValue[2] - Charges Remaining: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
+         ch->print_fmt( "{}Value[0] - Spell Level: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Max Charges: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[2] - Charges Remaining: &c{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          if( obj->item_type != ITEM_SALVE )
          {
             if( obj->value[3] >= 0 && ( sktmp = get_skilltype( obj->value[3] ) ) != nullptr )
-               ch->printf( "%sValue[3] - Spell (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], sktmp->name );
+               ch->print_fmt( "{}Value[3] - Spell ({}): &c{}\r\n", olc ? "&gH&w) " : "&w", obj->value[3], sktmp->name );
             else
-               ch->printf( "%sValue[3] - Spell: &cNone\r\n", olc ? "&gH&w) " : "&w" );
+               ch->print_fmt( "{}Value[3] - Spell: &cNone\r\n", olc ? "&gH&w) " : "&w" );
             break;
          }
-         ch->printf( "%sValue[3] - Delay (beats): &c%d\r\n", olc ? "&gH&w) " : "&w", obj->value[3] );
+         ch->print_fmt( "{}Value[3] - Delay (beats): &c{}\r\n", olc ? "&gH&w) " : "&w", obj->value[3] );
          for( x = 4; x <= 5; ++x )
          {
             lbuf = std::format( "&g{}&w) ", 'E' + x );
             if( obj->value[x] >= 0 && ( sktmp = get_skilltype( obj->value[x] ) ) != nullptr )
-               ch->printf( "%sValue[%d] - Spell (%d): &c%s\r\n", olc ? lbuf.c_str() : "&w", x, obj->value[x], sktmp->name );
+               ch->print_fmt( "{}Value[{}] - Spell ({}): &c{}\r\n", olc ? lbuf : "&w", x, obj->value[x], sktmp->name );
             else
-               ch->printf( "%sValue[%d] - Spell: None\r\n", olc ? lbuf.c_str() : "&w", x );
+               ch->print_fmt( "{}Value[{}] - Spell: None\r\n", olc ? lbuf : "&w", x );
          }
          break;
 
       case ITEM_WEAPON:
       case ITEM_MISSILE_WEAPON:
-         ch->printf( "%sValue[0] - Base Condition: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Min. Damage: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-         ch->printf( "%sValue[2] - Max Damage: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
-         ch->printf( "&RAverage Hit: %d\r\n", ( obj->value[1] + obj->value[2] ) / 2 );
+         ch->print_fmt( "{}Value[0] - Base Condition: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Min. Damage: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[2] - Max Damage: &c{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
+         ch->print_fmt( "&RAverage Hit: {}\r\n", ( obj->value[1] + obj->value[2] ) / 2 );
          if( obj->item_type != ITEM_MISSILE_WEAPON )
-            ch->printf( "%sValue[3] - Damage Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], attack_table[obj->value[3]] );
-         ch->printf( "%sValue[4] - Skill Required (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4], weapon_skills[obj->value[4]] );
+            ch->print_fmt( "{}Value[3] - Damage Type ({}): &c{}\r\n", olc ? "&gH&w) " : "&w", obj->value[3], attack_table[obj->value[3]] );
+         ch->print_fmt( "{}Value[4] - Skill Required ({}): &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4], weapon_skills[obj->value[4]] );
          if( obj->item_type == ITEM_MISSILE_WEAPON )
          {
-            ch->printf( "%sValue[5] - Projectile Fired (%d): &c%s\r\n", olc ? "&gJ&w) " : "&w", obj->value[5], projectiles[obj->value[5]] );
+            ch->print_fmt( "{}Value[5] - Projectile Fired ({}): &c{}\r\n", olc ? "&gJ&w) " : "&w", obj->value[5], projectiles[obj->value[5]] );
             ch->print( "Projectile fired must match on the projectiles this weapon fires.\r\n" );
          }
-         ch->printf( "%sValue[6] - Current Condition: &c%d\r\n", olc ? "&gK&w) " : "&w", obj->value[6] );
-         ch->printf( "Condition: %s\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
-         ch->printf( "%sValue[7] - Available sockets: &c%d\r\n", olc ? "&gL&w) " : "&w", obj->value[7] );
-         ch->printf( "Socket 1: %s\r\n", obj->socket[0] );
-         ch->printf( "Socket 2: %s\r\n", obj->socket[1] );
-         ch->printf( "Socket 3: %s\r\n", obj->socket[2] );
+         ch->print_fmt( "{}Value[6] - Current Condition: &c{}\r\n", olc ? "&gK&w) " : "&w", obj->value[6] );
+         ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
+         ch->print_fmt( "{}Value[7] - Available sockets: &c{}\r\n", olc ? "&gL&w) " : "&w", obj->value[7] );
+         ch->print_fmt( "Socket 1: {}\r\n", obj->socket[0] );
+         ch->print_fmt( "Socket 2: {}\r\n", obj->socket[1] );
+         ch->print_fmt( "Socket 3: {}\r\n", obj->socket[2] );
          ch->print( "&WThe following 3 settings only apply to automatically generated weapons.\r\n" );
-         ch->printf( "%sValue[8] - Weapon Type (%d): &c%s\r\n", olc ? "&gM&w) " : "&w", obj->value[8], weapon_type[obj->value[8]].name );
-         ch->printf( "%sValue[9] - Weapon Material (%d): &c%s\r\n", olc ? "&gN&w) " : "&w", obj->value[9], materials[obj->value[9]].name );
-         ch->printf( "%sValue[10] - Weapon Quality (%d): &c%s\r\n", olc ? "&gO&w) " : "&w", obj->value[10], weapon_quality[obj->value[10]] );
+         ch->print_fmt( "{}Value[8] - Weapon Type ({}): &c{}\r\n", olc ? "&gM&w) " : "&w", obj->value[8], weapon_type[obj->value[8]].name );
+         ch->print_fmt( "{}Value[9] - Weapon Material ({}): &c{}\r\n", olc ? "&gN&w) " : "&w", obj->value[9], materials[obj->value[9]].name );
+         ch->print_fmt( "{}Value[10] - Weapon Quality ({}): &c{}\r\n", olc ? "&gO&w) " : "&w", obj->value[10], weapon_quality[obj->value[10]] );
          break;
 
       case ITEM_ARMOR:
-         ch->printf( "%sValue[0] - Current AC: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Base AC: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-         ch->printf( "Condition: %s\r\n", condtxt( obj->value[0], obj->value[1] ).c_str(  ) );
-         ch->printf( "%sValue[2] - Available sockets( applies only to body armor ): &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
-         ch->printf( "Socket 1: %s\r\n", obj->socket[0] );
-         ch->printf( "Socket 2: %s\r\n", obj->socket[1] );
-         ch->printf( "Socket 3: %s\r\n", obj->socket[2] );
+         ch->print_fmt( "{}Value[0] - Current AC: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Base AC: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[0], obj->value[1] ).c_str(  ) );
+         ch->print_fmt( "{}Value[2] - Available sockets( applies only to body armor ): &c{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
+         ch->print_fmt( "Socket 1: {}\r\n", obj->socket[0] );
+         ch->print_fmt( "Socket 2: {}\r\n", obj->socket[1] );
+         ch->print_fmt( "Socket 3: {}\r\n", obj->socket[2] );
          ch->print( "&WThe following 2 settings only apply to automatically generated armors.\r\n" );
-         ch->printf( "%sValue[3] - Armor Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], armor_type[obj->value[3]].name );
-         ch->printf( "%sValue[4] - Armor Material (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4], materials[obj->value[4]].name );
+         ch->print_fmt( "{}Value[3] - Armor Type ({}): &c{}\r\n", olc ? "&gH&w) " : "&w", obj->value[3], armor_type[obj->value[3]].name );
+         ch->print_fmt( "{}Value[4] - Armor Material ({}): &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4], materials[obj->value[4]].name );
          break;
 
       case ITEM_COOK:
       case ITEM_FOOD:
-         ch->printf( "%sValue[0] - Food Value: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Condition (%d): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[0] - Food Value: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Condition ({}): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
          if( obj->timer > 0 && obj->value[1] > 0 )
             dam = ( obj->timer * 10 ) / obj->value[1];
          else
@@ -226,7 +226,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          ch->print( buf );
          if( obj->item_type == ITEM_COOK )
          {
-            ch->printf( "%sValue[2] - Condition (%d): &c", olc ? "&gG&w) " : "&w", obj->value[2] );
+            ch->print_fmt( "{}Value[2] - Condition ({}): &c", olc ? "&gG&w) " : "&w", obj->value[2] );
             dam = obj->value[2];
             if( dam >= 3 )
                buf = "It is burned to a crisp.";
@@ -241,9 +241,9 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          }
          if( obj->value[3] != 0 )
          {
-            ch->printf( "%sValue[3] - Poisoned (%d): &cYes\r\n", olc ? "&gH&w) " : "&w", obj->value[3] );
+            ch->print_fmt( "{}Value[3] - Poisoned ({}): &cYes\r\n", olc ? "&gH&w) " : "&w", obj->value[3] );
             x = 2 * obj->value[0] * ( obj->value[3] > 0 ? obj->value[3] : 1 );
-            ch->printf( "Duration: %d\r\n", x );
+            ch->print_fmt( "Duration: {}\r\n", x );
          }
          if( obj->timer > 0 && obj->value[1] > 0 )
             dam = ( obj->timer * 10 ) / obj->value[1];
@@ -253,18 +253,18 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          {
             ch->print( "Poison: Yes\r\n" );
             x = 2 * obj->value[0] * ( obj->value[3] > 0 ? obj->value[3] : 1 );
-            ch->printf( "Duration: %d\r\n", x );
+            ch->print_fmt( "Duration: {}\r\n", x );
          }
          if( obj->value[4] )
-            ch->printf( "%sValue[4] - Timer: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
+            ch->print_fmt( "{}Value[4] - Timer: &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
          break;
 
       case ITEM_DRINK_CON:
          if( !( liq = get_liq_vnum( obj->value[2] ) ) )
-            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
+            bug( "{}: bad liquid number {}.", __func__, obj->value[2] );
 
-         ch->printf( "%sValue[0] - Capacity: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Quantity Left (%d): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[0] - Capacity: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Quantity Left ({}): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
          if( obj->value[1] > obj->value[0] )
             ch->print( "More than Full\r\n" );
          else if( obj->value[1] == obj->value[0] )
@@ -281,26 +281,26 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             ch->print( "Almost Empty\r\n" );
          else
             ch->print( "Empty\r\n" );
-         ch->printf( "%sValue[2] - Liquid (%d): &c%s\r\n", olc ? "&gG&w) " : "&w", obj->value[2], liq->name.c_str(  ) );
-         ch->printf( "Liquid type : %s\r\n", liquid_types[liq->type] );
-         ch->printf( "Liquid color: %s\r\n", liq->color.c_str(  ) );
+         ch->print_fmt( "{}Value[2] - Liquid ({}): &c{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2], liq->name );
+         ch->print_fmt( "Liquid type : {}\r\n", liquid_types[liq->type] );
+         ch->print_fmt( "Liquid color: {}\r\n", liq->color );
          if( liq->mod[COND_DRUNK] != 0 )
-            ch->printf( "Affects Drunkeness by: %d\r\n", liq->mod[COND_DRUNK] );
+            ch->print_fmt( "Affects Drunkeness by: {}\r\n", liq->mod[COND_DRUNK] );
          if( liq->mod[COND_FULL] != 0 )
-            ch->printf( "Affects Hunger by: %d\r\n", liq->mod[COND_FULL] );
+            ch->print_fmt( "Affects Hunger by: {}\r\n", liq->mod[COND_FULL] );
          if( liq->mod[COND_THIRST] != 0 )
-            ch->printf( "Affects Thirst by: %d\r\n", liq->mod[COND_THIRST] );
-         ch->printf( "Poisoned: &c%s\r\n", liq->type == LIQTYPE_POISON ? "Yes" : "No" );
+            ch->print_fmt( "Affects Thirst by: {}\r\n", liq->mod[COND_THIRST] );
+         ch->print_fmt( "Poisoned: &c{}\r\n", liq->type == LIQTYPE_POISON ? "Yes" : "No" );
          break;
 
       case ITEM_HERB:
-         ch->printf( "%sValue[1] - Charges: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-         ch->printf( "%sValue[2] - Herb #: &cY%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
+         ch->print_fmt( "{}Value[1] - Charges: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[2] - Herb #: &cY{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          break;
 
       case ITEM_CONTAINER:
-         ch->printf( "%sValue[0] - Capacity (%d): &c", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%s\r\n",
+         ch->print_fmt( "{}Value[0] - Capacity ({}): &c", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}\r\n",
                      obj->value[0] < 76 ? "Small capacity" :
                      obj->value[0] < 150 ? "Small to medium capacity" :
                      obj->value[0] < 300 ? "Medium capacity" : obj->value[0] < 550 ? "Medium to large capacity" : obj->value[0] < 751 ? "Large capacity" : "Giant capacity" );
@@ -308,8 +308,8 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          if( obj->value[1] <= 0 )
             ch->print( " None\r\n" );
          else
-            ch->printf( "%s\r\n", flag_string( obj->value[1], container_flags ) );
-         ch->printf( "%sValue[2] - Key (%d): &c", olc ? "&gG&w) " : "&w", obj->value[2] );
+            ch->print_fmt( "{}\r\n", flag_string( obj->value[1], container_flags ) );
+         ch->print_fmt( "{}Value[2] - Key ({}): &c", olc ? "&gG&w) " : "&w", obj->value[2] );
          if( obj->value[2] <= 0 )
             ch->print( "None\r\n" );
          else
@@ -317,42 +317,42 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             obj_index *key = get_obj_index( obj->value[2] );
 
             if( key )
-               ch->printf( "%s\r\n", key->short_descr );
+               ch->print_fmt( "{}\r\n", key->short_descr );
             else
                ch->print( "ERROR: Key does not exist!\r\n" );
          }
          ch->printf( "%sValue[3] - Condition: &c%d\r\n", olc ? "&gH&w) " : "&w", obj->value[3] );
          if( obj->timer )
-            ch->printf( "Object Timer, Time Left: %d\r\n", obj->timer );
+            ch->print_fmt( "Object Timer, Time Left: {}\r\n", obj->timer );
          break;
 
       case ITEM_PROJECTILE:
-         ch->printf( "%sValue[0] - Condition: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Min. Damage: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-         ch->printf( "%sValue[2] - Max Damage: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
-         ch->printf( "%sValue[3] - Damage Type (%d): &c%s\r\n", olc ? "&gH&w) " : "&w", obj->value[3], attack_table[obj->value[3]] );
-         ch->printf( "%sValue[4] - Projectile Type (%d): &c%s\r\n", olc ? "&gI&w) " : "&w", obj->value[4], projectiles[obj->value[4]] );
+         ch->print_fmt( "{}Value[0] - Condition: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Min. Damage: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[2] - Max Damage: &c{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
+         ch->print_fmt( "{}Value[3] - Damage Type ({}): &c{}\r\n", olc ? "&gH&w) " : "&w", obj->value[3], attack_table[obj->value[3]] );
+         ch->print_fmt( "{}Value[4] - Projectile Type ({}): &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4], projectiles[obj->value[4]] );
          ch->print( "Projectile type must match on the missileweapon which fires it.\r\n" );
-         ch->printf( "%sValue[5] - Current Condition: &c%d\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
-         ch->printf( "Condition: %s", condtxt( obj->value[5], obj->value[0] ).c_str(  ) );
+         ch->print_fmt( "{}Value[5] - Current Condition: &c{}\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
+         ch->print_fmt( "Condition: {}", condtxt( obj->value[5], obj->value[0] ) );
          break;
 
       case ITEM_MONEY:
-         ch->printf( "%sValue[0] - # of Coins: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[0] - # of Coins: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          break;
 
       case ITEM_FURNITURE:
-         ch->printf( "%sValue[2] - Furniture Flags: &c%s\r\n", olc ? "&gG&w) " : "&w", flag_string( obj->value[2], furniture_flags ) );
+         ch->print_fmt( "{}Value[2] - Furniture Flags: &c{}\r\n", olc ? "&gG&w) " : "&w", flag_string( obj->value[2], furniture_flags ) );
          break;
 
       case ITEM_TRAP:
-         ch->printf( "%sValue[0] - Charges Remaining: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Type (%d): &c%s\r\n", olc ? "&gF&w) " : "&w", obj->value[1], trap_types[obj->value[1]] );
+         ch->print_fmt( "{}Value[0] - Charges Remaining: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Type ({}): &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1], trap_types[obj->value[1]] );
          switch ( obj->value[1] )
          {
             default:
                buf = "Hit by a trap";
-               ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
+               ch->print_fmt( "Does Damage from ({}) to ({})\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_GAS:
                buf = "Surrounded by a green cloud of gas";
@@ -361,22 +361,22 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             case TRAP_TYPE_POISON_DART:
                buf = "Hit by a dart";
                ch->print( "Casts spell: Poison\r\n" );
-               ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
+               ch->print_fmt( "Does Damage from ({}) to ({})\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_NEEDLE:
                buf = "Pricked by a needle";
                ch->print( "Casts spell: Poison\r\n" );
-               ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
+               ch->print_fmt( "Does Damage from ({}) to ({})\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_DAGGER:
                buf = "Stabbed by a dagger";
                ch->print( "Casts spell: Poison\r\n" );
-               ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
+               ch->print_fmt( "Does Damage from ({}) to ({})\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_POISON_ARROW:
                buf = "Struck with an arrow";
                ch->print( "Casts spell: Poison\r\n" );
-               ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
+               ch->print_fmt( "Does Damage from ({}) to ({})\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_BLINDNESS_GAS:
                buf = "Surrounded by a red cloud of gas";
@@ -404,31 +404,31 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                break;
             case TRAP_TYPE_BLADE:
                buf = "Sliced by a razor sharp blade";
-               ch->printf( "Does Damage from (%d) to (%d)\r\n", obj->value[4], obj->value[5] );
+               ch->print_fmt( "Does Damage from ({}) to ({})\r\n", obj->value[4], obj->value[5] );
                break;
             case TRAP_TYPE_SEX_CHANGE:
                buf = "Surrounded by a mysterious aura";
                ch->print( "Casts spell: Change Sex\r\n" );
                break;
          }
-         ch->printf( "Text Displayed: %s\r\n", buf.c_str() );
-         ch->printf( "%sValue[3] - Trap Flags (%d): &c", olc ? "&gH&w) " : "&w", obj->value[3] );
-         ch->printf( "%s\r\n", flag_string( obj->value[3], trap_flags ) );
-         ch->printf( "%sValue[4] - Min. Damage: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
-         ch->printf( "%sValue[5] - Max Damage: &c%d\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
+         ch->print_fmt( "Text Displayed: {}\r\n", buf.c_str() );
+         ch->print_fmt( "{}Value[3] - Trap Flags ({}): &c", olc ? "&gH&w) " : "&w", obj->value[3] );
+         ch->print_fmt( "{}\r\n", flag_string( obj->value[3], trap_flags ) );
+         ch->print_fmt( "{}Value[4] - Min. Damage: &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
+         ch->print_fmt( "{}Value[5] - Max Damage: &c{}\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
          break;
 
       case ITEM_KEY:
-         ch->printf( "%sValue[0] - Lock #: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[4] - Durability: &c%d\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
-         ch->printf( "%sValue[5] - Container Lock Number: &c%d\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
+         ch->print_fmt( "{}Value[0] - Lock #: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[4] - Durability: &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
+         ch->print_fmt( "{}Value[5] - Container Lock Number: &c{}\r\n", olc ? "&gJ&w) " : "&w", obj->value[5] );
          break;
 
       case ITEM_SWITCH:
       case ITEM_LEVER:
       case ITEM_PULLCHAIN:
       case ITEM_BUTTON:
-         ch->printf( "%sValue[0] - Flags (%d): &c%s\r\n", olc ? "&gE&w) " : "&w", obj->value[0], flag_string( obj->value[0], trig_flags ) );
+         ch->print_fmt( "{}Value[0] - Flags ({}): &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0], flag_string( obj->value[0], trig_flags ) );
          ch->print( "Trigger Position: " );
          if( obj->item_type != ITEM_BUTTON )
          {
@@ -444,7 +444,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             else
                ch->print( "Out\r\n" );
          }
-         ch->printf( "Automatically Reset Trigger? : %s\r\n", IS_SET( obj->value[0], TRIG_AUTORETURN ) ? "Yes" : "No" );
+         ch->print_fmt( "Automatically Reset Trigger? : {}\r\n", IS_SET( obj->value[0], TRIG_AUTORETURN ) ? "Yes" : "No" );
          if( HAS_PROG( obj->pIndexData, PULL_PROG ) || HAS_PROG( obj->pIndexData, PUSH_PROG ) )
             ch->print( "Object Has: " );
          if( HAS_PROG( obj->pIndexData, PULL_PROG ) && HAS_PROG( obj->pIndexData, PUSH_PROG ) )
@@ -457,22 +457,22 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          {
             if( IS_SET( obj->value[0], TRIG_OLOAD ) )
             {
-               ch->printf( "Triggers: Object Load &c%d&w into room &c%d&w at level &c%d&w.\r\n",
+               ch->print_fmt( "Triggers: Object Load &c{}&w into room &c{}&w at level &c{}&w.\r\n",
                   obj->value[1], obj->value[2], obj->value[3] );
             }
 
             if( IS_SET( obj->value[0], TRIG_MLOAD ) )
             {
-               ch->printf( "Triggers: Mob Load &c%d&w into room &c%d&w.\r\n",
+               ch->print_fmt( "Triggers: Mob Load &c{}&w into room &c{}&w.\r\n",
                   obj->value[1], obj->value[2] );
             }
          }
          if( IS_SET( obj->value[0], TRIG_CONTAINER ) )
          {
-            ch->printf( "Triggers: Container &c%d&w in room &c%d&w.\r\n", obj->value[2], obj->value[1] );
+            ch->print_fmt( "Triggers: Container &c{}&w in room &c{}&w.\r\n", obj->value[2], obj->value[1] );
             if( obj->value[3] > 0 )
             {
-               ch->printf( "Manipulates the following container flags: &c%s&w\r\n",
+               ch->print_fmt( "Manipulates the following container flags: &c{}&w\r\n",
                   flag_string( obj->value[3], container_flags ) );
             }
          }
@@ -482,24 +482,24 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          }
          if( IS_SET( obj->value[0], TRIG_CAST ) )
          {
-            ch->printf( "Triggers: Casts '&c%s&w' at the player touching it.\r\n",
+            ch->print_fmt( "Triggers: Casts '&c{}&w' at the player touching it.\r\n",
                !IS_VALID_SN( obj->value[1] ) ? "&RINVALID SN" : skill_table[obj->value[1]]->name );
             if( obj->value[2] > 0 )
-               ch->printf( "Casts at spell level &c%d&w.\r\n", obj->value[2] );
+               ch->print_fmt( "Casts at spell level &c{}&w.\r\n", obj->value[2] );
             else
                ch->print( "Casts at the player's level.\r\n" );
          }
          if( IS_SET( obj->value[0], TRIG_TELEPORT ) || IS_SET( obj->value[0], TRIG_TELEPORTALL ) || IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) )
          {
-            ch->printf( "Triggers: Teleport %s\r\n",
+            ch->print_fmt( "Triggers: Teleport {}\r\n",
                         IS_SET( obj->value[0], TRIG_TELEPORT ) ? "Character <actor>" :
                         IS_SET( obj->value[0], TRIG_TELEPORTALL ) ? "All Characters in room" :
                         IS_SET( obj->value[0], TRIG_TELEPORTPLUS ) ? "All Characters and Objects in room" : "");
-            ch->printf( "%sValue[1] - Teleport to Room: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-            ch->printf( "Show Room Description on Teleport? %s\r\n", IS_SET( obj->value[0], TRIG_SHOWROOMDESC ) ? "Yes" : "No" );
+            ch->print_fmt( "{}Value[1] - Teleport to Room: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+            ch->print_fmt( "Show Room Description on Teleport? {}\r\n", IS_SET( obj->value[0], TRIG_SHOWROOMDESC ) ? "Yes" : "No" );
          }
          if( IS_SET( obj->value[0], TRIG_RAND4 ) || IS_SET( obj->value[0], TRIG_RAND6 ) )
-            ch->printf( "Triggers: Randomize %s Exits in room %d.\r\n", IS_SET( obj->value[0], TRIG_RAND4 ) ? "4" : "6", obj->value[1] );
+            ch->print_fmt( "Triggers: Randomize {} Exits in room {}.\r\n", IS_SET( obj->value[0], TRIG_RAND4 ) ? "4" : "6", obj->value[1] );
          if( IS_SET( obj->value[0], TRIG_DOOR ) )
          {
             ch->print( "Triggers: Door\r\n" );
@@ -513,26 +513,26 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                ch->print( "Triggers: Open Door\r\n" );
             if( IS_SET( obj->value[0], TRIG_CLOSE ) )
                ch->print( "Triggers: Close Door\r\n" );
-            ch->printf( "%sValue[1] - In Room: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-            ch->printf( "To the: %s\r\n",
+            ch->print_fmt( "{}Value[1] - In Room: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+            ch->print_fmt( "To the: {}\r\n",
                         IS_SET( obj->value[0], TRIG_D_NORTH ) ? "North" :
                         IS_SET( obj->value[0], TRIG_D_SOUTH ) ? "South" :
                         IS_SET( obj->value[0], TRIG_D_EAST ) ? "East" :
                         IS_SET( obj->value[0], TRIG_D_WEST ) ? "West" :
                         IS_SET( obj->value[0], TRIG_D_UP ) ? "UP" : IS_SET( obj->value[0], TRIG_D_DOWN ) ? "Down" : "Unknown" );
             if( IS_SET( obj->value[0], TRIG_PASSAGE ) )
-               ch->printf( "%sValue[2] - To Room: &c%d\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
+               ch->print_fmt( "{}Value[2] - To Room: &c{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          }
          break;
 
       case ITEM_BLOOD:
-         ch->printf( "%sValue[1] - Amount Remaining: &c%d\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[1] - Amount Remaining: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
          if( obj->timer )
-            ch->printf( "Object Timer, Time Left: %d\r\n", obj->timer );
+            ch->print_fmt( "Object Timer, Time Left: {}\r\n", obj->timer );
          break;
 
       case ITEM_CAMPGEAR:
-         ch->printf( "%sValue[0] - Type of Gear (%d): &c", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[0] - Type of Gear ({}): &c", olc ? "&gE&w) " : "&w", obj->value[0] );
          switch ( obj->value[0] )
          {
             default:
@@ -554,13 +554,13 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
          break;
 
       case ITEM_ORE:
-         ch->printf( "%sValue[0] - Type of Ore (%d): &c%s\r\n", olc ? "&gE&w) " : "&w", obj->value[0], ores[obj->value[0]] );
-         ch->printf( "%sValue[1] - Purity: &c%d", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[0] - Type of Ore ({}): &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0], ores[obj->value[0]] );
+         ch->print_fmt( "{}Value[1] - Purity: &c{}", olc ? "&gF&w) " : "&w", obj->value[1] );
          break;
 
       case ITEM_PIECE:
-         ch->printf( "%sValue[0] - Obj Vnum for Other Half: &c%d\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
-         ch->printf( "%sValue[1] - Obj Vnum for Combined Object: &c%d", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[0] - Obj Vnum for Other Half: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
+         ch->print_fmt( "{}Value[1] - Obj Vnum for Combined Object: &c{}", olc ? "&gF&w) " : "&w", obj->value[1] );
          break;
    }
 }
@@ -1686,11 +1686,11 @@ CMDF( do_oedit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
+            bug( "{}: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
-         ed->desc = ch->copy_buffer(  );
+         ed->desc = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->pcdata->dest_buf = obj;
          ch->pcdata->spare_ptr = ed;
@@ -1704,7 +1704,7 @@ CMDF( do_oedit_reset )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Fatal error, report to Samson.\r\n" );
-            bug( "%s: sub_obj_long: nullptr ch->pcdata->dest_buf", __func__ );
+            bug( "{}: sub_obj_long: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }
@@ -2771,7 +2771,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          /*
           * Should never reach this 
           */
-         bug( "%s: Reached OEDIT_EXTRADESC_DESCRIPTION", __func__ );
+         bug( "{}: Reached OEDIT_EXTRADESC_DESCRIPTION", __func__ );
          break;
 
       case OEDIT_EXTRADESC_CHOICE:
@@ -2858,7 +2858,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          break;
 
       default:
-         bug( "%s: Reached default case!", __func__ );
+         bug( "{}: Reached default case!", __func__ );
          break;
    }
 

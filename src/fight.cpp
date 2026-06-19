@@ -81,13 +81,13 @@ bool in_arena( char_data * ch )
 {
    if( !ch )   /* Um..... Could THIS be why ? */
    {
-      bug( "%s: nullptr CH!!! Wedgy, you better spill the beans!", __func__ );
+      bug( "{}: nullptr CH!!! Wedgy, you better spill the beans!", __func__ );
       return false;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: %s in nullptr room. Only The Wedgy knows how though.", __func__, ch->name.c_str() );
+      bug( "{}: {} in nullptr room. Only The Wedgy knows how though.", __func__, ch->name );
       log_string( "Going to attempt to move them to Limbo to prevent a crash." );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
@@ -673,13 +673,13 @@ bool is_safe( char_data * ch, char_data * victim )
 
    if( !victim )  /*Gonna find this is_safe crash bug -Blod */
    {
-      bug( "%s: %s opponent does not exist!", __func__, ch->name.c_str() );
+      bug( "{}: {} opponent does not exist!", __func__, ch->name );
       return true;
    }
 
    if( !victim->in_room )
    {
-      bug( "%s: %s has no physical location!", __func__, victim->name.c_str() );
+      bug( "{}: {} has no physical location!", __func__, victim->name );
       return true;
    }
 
@@ -1474,7 +1474,7 @@ void group_gain( char_data * ch, char_data * victim )
    }
    if( members == 0 )
    {
-      bug( "%s: members.", __func__ );
+      bug( "{}: members.", __func__ );
       members = 1;
    }
 
@@ -1556,7 +1556,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       w_index = dt - TYPE_HIT;
    else
    {
-      bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name.c_str(), ch->in_room->vnum );
+      bug( "{}: bad dt {}d from {} in {}.", __func__, dt, ch->name, ch->in_room->vnum );
       dt = TYPE_HIT;
       w_index = 0;
    }
@@ -1605,7 +1605,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          attack = attack_table[dt - TYPE_HIT];
       else
       {
-         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name.c_str(), ch->in_room->vnum );
+         bug( "{}: bad dt {}d from {} in {}.", __func__, dt, ch->name, ch->in_room->vnum );
          dt = TYPE_HIT;
          attack = attack_table[0];
       }
@@ -1668,7 +1668,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       }
       else
       {
-         bug( "%s: bad dt %ud from %s in %d.", __func__, dt, ch->name.c_str(), ch->in_room->vnum );
+         bug( "{}: bad dt {}d from {} in {}.", __func__, dt, ch->name, ch->in_room->vnum );
          attack = attack_table[0];
       }
       buf1 = std::format( "$n's {} {} $N{}", attack, vp, punct );
@@ -1718,7 +1718,7 @@ void check_attacker( char_data * ch, char_data * victim )
    {
       if( !ch->master )
       {
-         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  ) ? ch->short_descr.c_str() : ch->name.c_str() );
+         bug( "{}: {} bad AFF_CHARM", __func__, ch->isnpc(  ) ? ch->short_descr : ch->name );
          ch->affect_strip( gsn_charm_person );
          ch->unset_aflag( AFF_CHARM );
          return;
@@ -1746,7 +1746,7 @@ void set_fighting( char_data * ch, char_data * victim )
 
    if( ch->fighting )
    {
-      bug( "%s: %s -> %s (already fighting %s)", __func__, ch->name.c_str(), victim->name.c_str(), ch->fighting->who->name.c_str() );
+      bug( "{}: {} -> {} (already fighting {})", __func__, ch->name, victim->name, ch->fighting->who->name );
       return;
    }
 
@@ -1988,7 +1988,7 @@ void check_killer( char_data * ch, char_data * victim )
    {
       if( !ch->master )
       {
-         bug( "%s: %s bad AFF_CHARM", __func__, ch->isnpc(  ) ? ch->short_descr.c_str() : ch->name.c_str() );
+         bug( "{}: {} bad AFF_CHARM", __func__, ch->isnpc(  ) ? ch->short_descr : ch->name );
          ch->affect_strip( gsn_charm_person );
          ch->unset_aflag( AFF_CHARM );
          return;
@@ -2262,7 +2262,7 @@ void death_cry( char_data * ch )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __func__ );
+      bug( "{}: null ch!", __func__ );
       return;
    }
 
@@ -2340,7 +2340,7 @@ void death_cry( char_data * ch )
 
       if( !get_obj_index( vnum ) )
       {
-         bug( "%s: invalid vnum %d", __func__, vnum );
+         bug( "{}: invalid vnum {}", __func__, vnum );
          return;
       }
 
@@ -2364,7 +2364,7 @@ void raw_kill( char_data * ch, char_data * victim )
 {
    if( !victim )
    {
-      bug( "%s: null victim! CH: %s", __func__, ch->name.c_str() );
+      bug( "{}: null victim! CH: {}", __func__, ch->name );
       return;
    }
 
@@ -2373,7 +2373,7 @@ void raw_kill( char_data * ch, char_data * victim )
     */
    if( !victim->isnpc(  ) && victim->level == 1 )
    {
-      bug( "%s: killing level 1", __func__ );
+      bug( "{}: killing level 1", __func__ );
       return;
    }
 
@@ -2462,7 +2462,7 @@ void raw_kill( char_data * ch, char_data * victim )
    victim->extract( false );
    if( !victim )
    {
-      bug( "%s: extract_char destroyed pc char", __func__ );
+      bug( "{}: extract_char destroyed pc char", __func__ );
       return;
    }
 
@@ -2661,13 +2661,13 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __func__ );
+      bug( "{}: null ch!", __func__ );
       return rERROR;
    }
 
    if( !victim )
    {
-      bug( "%s: null victim!", __func__ );
+      bug( "{}: null victim!", __func__ );
       return rVICT_DIED;
    }
 
@@ -2763,7 +2763,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       maxdam = ch->level * 80;
    if( dam > maxdam )
    {
-      bug( "%s: %d more than %d points!", __func__, ( int )dam, maxdam );
+      bug( "{}: {} more than {} points!", __func__, dam, maxdam );
       log_printf( "** {} (lvl {}) -> {} **", ch->name, ch->level, victim->name );
       dam = maxdam;
    }
@@ -3735,7 +3735,7 @@ ch_ret multi_hit( char_data * ch, char_data * victim, int dt )
          {
             if( !ch->get_eq( WEAR_WIELD ) )
             {
-               bug( "%s: !WEAR_WIELD in multi_hit in fight.c: %s", __func__, ch->name.c_str() );
+               bug( "{}: !WEAR_WIELD in multi_hit in fight.cpp: {}", __func__, ch->name );
                return rNONE;
             }
             /*

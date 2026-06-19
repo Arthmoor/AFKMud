@@ -93,7 +93,7 @@ char_data::~char_data(  )
    // Hackish fix - if we forget, whoever reads this should remind us someday - Samson 3-28-05
    if( this->desc )
    {
-      bug( "%s: char still has descriptor.", __func__ );
+      bug( "{}: char still has descriptor.", __func__ );
       log_printf( "Desc# {}, DescHost {} DescClient {}", this->desc->descriptor, this->desc->hostname, this->desc->client );
       deleteptr( this->desc );
    }
@@ -319,7 +319,7 @@ void char_data::set_color( short AType )
    this->desc->write_to_buffer( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: nullptr descriptor after WTB! CH: %s", __func__, !this->name.empty() ? this->name.c_str() : "Unknown?!?" );
+      bug( "{}: nullptr descriptor after WTB! CH: {}", __func__, !this->name.empty() ? this->name : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -336,7 +336,7 @@ void char_data::set_pager_color( short AType )
    this->desc->pager( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "%s: nullptr descriptor after WTP! CH: %s", __func__, !this->name.empty() ? this->name.c_str() : "Unknown?!?" );
+      bug( "{}: nullptr descriptor after WTP! CH: %s", __func__, !this->name.empty() ? this->name : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];
@@ -346,7 +346,7 @@ void char_data::set_title( std::string_view title )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: NPC %s", __func__, this->name.c_str() );
+      bug( "{}: NPC {}", __func__, this->name );
       return;
    }
 
@@ -576,7 +576,7 @@ bool char_data::can_see( char_data * victim, bool override )
 {
    if( !victim )  /* Gorog - panicked attempt to stop crashes */
    {
-      bug( "%s: nullptr victim! CH %s tried to see it.", __func__, name.c_str() );
+      bug( "{}: nullptr victim! CH {} tried to see it.", __func__, name );
       return false;
    }
 
@@ -1147,13 +1147,13 @@ void char_data::equip( obj_data * obj, int iWear )
 
    if( ( otmp = this->get_eq( iWear ) ) != nullptr && ( !otmp->pIndexData->layers || !obj->pIndexData->layers ) )
    {
-      bug( "%s: already equipped (%d).", __func__, iWear );
+      bug( "{}: already equipped ({}).", __func__, iWear );
       return;
    }
 
    if( obj->carried_by != this )
    {
-      bug( "%s: obj (%s) not being carried by ch (%s)!", __func__, obj->name, this->name.c_str() );
+      bug( "{}: obj ({}) not being carried by ch ({})!", __func__, obj->name, this->name );
       return;
    }
 
@@ -1212,7 +1212,7 @@ void char_data::unequip( obj_data * obj )
 
    if( obj->wear_loc == WEAR_NONE )
    {
-      bug( "%s: %s already unequipped.", __func__, name.c_str() );
+      bug( "{}: {} already unequipped.", __func__, name );
       return;
    }
 
@@ -1540,7 +1540,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    {
       if( paf->bit < 0 || paf->bit >= MAX_AFFECTED_BY )
       {
-         bug( "%s: %s: Unknown bitflag: '%d' for location %d, with modifier %d", __func__, name.c_str(), paf->bit, paf->location, paf->modifier );
+         bug( "{}: {}: Unknown bitflag: '{}' for location {}, with modifier {}", __func__, name, paf->bit, paf->location, paf->modifier );
          return;
       }
       mod2 = mod;
@@ -1557,7 +1557,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          if( IS_VALID_SN( mod ) && ( skill = skill_table[mod] ) != nullptr && skill->type == SKILL_SPELL )
             this->set_aflag( AFF_RECURRINGSPELL );
          else
-            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name.c_str(), mod );
+            bug( "{}: ({}) APPLY_RECURRINGSPELL with bad sn {}", __func__, this->name, mod );
          return;
       }
    }
@@ -1574,7 +1574,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
       {
          mod = abs( mod );
          if( !IS_VALID_SN( mod ) || ( skill = skill_table[mod] ) == nullptr || skill->type != SKILL_SPELL )
-            bug( "%s: (%s) APPLY_RECURRINGSPELL with bad sn %d", __func__, this->name.c_str(), mod );
+            bug( "{}: ({}) APPLY_RECURRINGSPELL with bad sn {}", __func__, this->name, mod );
          this->unset_aflag( AFF_RECURRINGSPELL );
          return;
       }
@@ -1616,7 +1616,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
    switch ( location )
    {
       default:
-         bug( "%s: unknown location %d. (%s)", __func__, paf->location, this->name.c_str() );
+         bug( "{}: unknown location {}. ({})", __func__, paf->location, this->name );
          return;
 
       case APPLY_NONE:
@@ -1787,7 +1787,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
          if( IS_VALID_SN( mod ) )
             this->affect_strip( mod );
          else
-            bug( "%s: APPLY_STRIPSN invalid sn %d", __func__, mod );
+            bug( "{}: APPLY_STRIPSN invalid sn {}", __func__, mod );
          break;
 
          /*
@@ -1962,7 +1962,7 @@ void char_data::affect_to_char( affect_data * paf )
 
    if( !paf )
    {
-      bug( "%s: (%s, nullptr)", __func__, name.c_str() );
+      bug( "{}: ({}, nullptr)", __func__, name );
       return;
    }
 
@@ -1985,7 +1985,7 @@ void char_data::affect_remove( affect_data * paf )
 {
    if( affects.empty(  ) )
    {
-      bug( "%s: (%s, %d): no affect.", __func__, name.c_str(), paf ? paf->type : 0 );
+      bug( "{}: ({}, {}): no affect.", __func__, name, paf ? paf->type : 0 );
       return;
    }
 
@@ -2056,7 +2056,7 @@ void char_data::showaffect( affect_data * paf )
 
    if( !paf )
    {
-      bug( "%s: nullptr paf", __func__ );
+      bug( "{}: nullptr paf", __func__ );
       return;
    }
 
@@ -2300,7 +2300,7 @@ void char_data::from_room(  )
 
    if( !this->in_room )
    {
-      bug( "%s: %s not in a room!", __func__, this->name.c_str() );
+      bug( "{}: {} not in a room!", __func__, this->name );
       return;
    }
 
@@ -2361,7 +2361,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    // Ok, asshole code, lets see you get past this!
    if( !pRoomIndex || !get_room_index( pRoomIndex->vnum ) )
    {
-      bug( "%s: %s -> nullptr room!  Putting char in limbo (%d)", __func__, this->name.c_str(), ROOM_VNUM_LIMBO );
+      bug( "{}: {} -> nullptr room!  Putting char in limbo ({})", __func__, this->name.c_str(), ROOM_VNUM_LIMBO );
       if( pRoomIndex )
          log_printf( "Supposedly from Vnum: {}", pRoomIndex->vnum );
 
@@ -2371,7 +2371,7 @@ bool char_data::to_room( room_index * pRoomIndex )
        */
       if( !( pRoomIndex = get_room_index( ROOM_VNUM_LIMBO ) ) )
       {
-         bug( "FATAL: Limbo room is MISSING! Expect crash! %s:%s, line %d", __FILE__, __func__, __LINE__ );
+         bug( "FATAL: Limbo room is MISSING! Expect crash! {}:{}, line {}", __FILE__, __func__, __LINE__ );
          return false;
       }
    }
@@ -3138,7 +3138,7 @@ void stop_follower( char_data * ch )
 {
    if( !ch->master )
    {
-      bug( "%s: %s has null master.", __func__, ch->name.c_str() );
+      bug( "{}: {} has null master.", __func__, ch->name );
       return;
    }
 
@@ -3175,7 +3175,7 @@ void add_follower( char_data * ch, char_data * master )
 {
    if( ch->master )
    {
-      bug( "%s: non-null master.", __func__ );
+      bug( "{}: non-null master.", __func__ );
       return;
    }
 
@@ -3362,20 +3362,20 @@ void char_data::extract( bool fPull )
 {
    if( !this->in_room )
    {
-      bug( "%s: %s in nullptr room. Transferring to Limbo.", __func__, !this->name.empty() ? this->name.c_str() : "???" );
+      bug( "{}: {} in nullptr room. Transferring to Limbo.", __func__, !this->name.empty() ? this->name : "???" );
       if( !this->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
    }
 
    if( this == supermob && !mud_down )
    {
-      bug( "%s: ch == supermob!", __func__ );
+      bug( "{}: ch == supermob!", __func__ );
       return;
    }
 
    if( this->char_died(  ) )
    {
-      bug( "%s: %s already died!", __func__, this->name.c_str() );
+      bug( "{}: {} already died!", __func__, this->name );
       /*
        * return; This return is commented out in the hops of allowing the dead mob to be extracted anyway 
        */
@@ -3567,7 +3567,7 @@ void char_data::extract( bool fPull )
    if( this->desc )
    {
       if( this->desc->character != this )
-         bug( "%s: %s's descriptor points to another char", __func__, this->name.c_str() );
+         bug( "{}: {}'s descriptor points to another char", __func__, this->name );
       else
          close_socket( this->desc, false );
    }
@@ -3577,7 +3577,7 @@ void char_data::extract( bool fPull )
       --sysdata->playersonline;
       if( sysdata->playersonline < 0 )
       {
-         bug( "%s: Player count went negative!", __func__ );
+         bug( "{}: Player count went negative!", __func__ );
          sysdata->playersonline = 0;
       }
    }
@@ -3810,7 +3810,7 @@ void char_data::set_actflag( int value )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3822,7 +3822,7 @@ void char_data::unset_actflag( int value )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3839,7 +3839,7 @@ void char_data::toggle_actflag( int value )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3863,7 +3863,7 @@ void char_data::set_actflags( std::bitset<MAX_ACT_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3875,7 +3875,7 @@ void char_data::set_file_actflags( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3892,7 +3892,7 @@ void char_data::set_immune( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3904,7 +3904,7 @@ void char_data::unset_immune( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3916,7 +3916,7 @@ void char_data::toggle_immune( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3940,7 +3940,7 @@ void char_data::set_immunes( std::bitset<MAX_RIS_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3952,7 +3952,7 @@ void char_data::set_file_immunes( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3969,7 +3969,7 @@ void char_data::set_noimmune( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -3993,7 +3993,7 @@ void char_data::set_noimmunes( std::bitset<MAX_RIS_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4005,7 +4005,7 @@ void char_data::set_file_noimmunes( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4022,7 +4022,7 @@ void char_data::set_resist( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4034,7 +4034,7 @@ void char_data::unset_resist( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4046,7 +4046,7 @@ void char_data::toggle_resist( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4070,7 +4070,7 @@ void char_data::set_resists( std::bitset<MAX_RIS_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4082,7 +4082,7 @@ void char_data::set_file_resists( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4099,7 +4099,7 @@ void char_data::set_noresist( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4123,7 +4123,7 @@ void char_data::set_noresists( std::bitset<MAX_RIS_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4135,7 +4135,7 @@ void char_data::set_file_noresists( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4152,7 +4152,7 @@ void char_data::set_suscep( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4164,7 +4164,7 @@ void char_data::unset_suscep( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4176,7 +4176,7 @@ void char_data::toggle_suscep( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4200,7 +4200,7 @@ void char_data::set_susceps( std::bitset<MAX_RIS_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4212,7 +4212,7 @@ void char_data::set_file_susceps( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4229,7 +4229,7 @@ void char_data::set_nosuscep( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4253,7 +4253,7 @@ void char_data::set_nosusceps( std::bitset<MAX_RIS_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4265,7 +4265,7 @@ void char_data::set_file_nosusceps( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4282,7 +4282,7 @@ void char_data::set_absorb( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4294,7 +4294,7 @@ void char_data::unset_absorb( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4306,7 +4306,7 @@ void char_data::toggle_absorb( int ris )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4330,7 +4330,7 @@ void char_data::set_absorbs( std::bitset<MAX_RIS_FLAG> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4342,7 +4342,7 @@ void char_data::set_file_absorbs( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4359,7 +4359,7 @@ void char_data::set_attack( int attack )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4371,7 +4371,7 @@ void char_data::unset_attack( int attack )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4383,7 +4383,7 @@ void char_data::toggle_attack( int attack )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4407,7 +4407,7 @@ void char_data::set_attacks( std::bitset<MAX_ATTACK_TYPE> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4419,7 +4419,7 @@ void char_data::set_file_attacks( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4436,7 +4436,7 @@ void char_data::set_defense( int defense )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4448,7 +4448,7 @@ void char_data::unset_defense( int defense )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4460,7 +4460,7 @@ void char_data::toggle_defense( int defense )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4484,7 +4484,7 @@ void char_data::set_defenses( std::bitset<MAX_DEFENSE_TYPE> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4496,7 +4496,7 @@ void char_data::set_file_defenses( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4513,7 +4513,7 @@ void char_data::set_aflag( int sn )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4525,7 +4525,7 @@ void char_data::unset_aflag( int sn )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4537,7 +4537,7 @@ void char_data::toggle_aflag( int sn )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4561,7 +4561,7 @@ void char_data::set_aflags( std::bitset<MAX_AFFECTED_BY> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4573,7 +4573,7 @@ void char_data::set_file_aflags( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4590,7 +4590,7 @@ void char_data::set_noaflag( int sn )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4602,7 +4602,7 @@ void char_data::unset_noaflag( int sn )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4614,7 +4614,7 @@ void char_data::toggle_noaflag( int sn )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4638,7 +4638,7 @@ void char_data::set_noaflags( std::bitset<MAX_AFFECTED_BY> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4650,7 +4650,7 @@ void char_data::set_file_noaflags( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4667,7 +4667,7 @@ void char_data::set_bpart( int part )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
    if( this->has_bparts() )
       this->set_bodypart_where_names();
@@ -4681,7 +4681,7 @@ void char_data::unset_bpart( int part )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
    if( this->has_bparts() )
       this->set_bodypart_where_names();
@@ -4695,7 +4695,7 @@ void char_data::toggle_bpart( int part )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
    if( this->has_bparts() )
       this->set_bodypart_where_names();
@@ -4721,7 +4721,7 @@ void char_data::set_bparts( std::bitset<MAX_BPART> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
    if( this->has_bparts() )
       this->set_bodypart_where_names();
@@ -4735,7 +4735,7 @@ void char_data::set_file_bparts( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
    if( this->has_bparts() )
       this->set_bodypart_where_names();
@@ -4870,7 +4870,7 @@ bool char_data::has_pcflag( int bit )
 void char_data::set_pcflag( int bit )
 {
    if( this->isnpc(  ) )
-      bug( "%s: Setting PC flag on NPC!", __func__ );
+      bug( "{}: Setting PC flag on NPC!", __func__ );
    else
    {
       try
@@ -4879,7 +4879,7 @@ void char_data::set_pcflag( int bit )
       }
       catch( std::exception & e )
       {
-         bug( "Flag exception caught: %s", e.what(  ) );
+         bug( "Flag exception caught: {}", e.what(  ) );
       }
    }
 }
@@ -4887,7 +4887,7 @@ void char_data::set_pcflag( int bit )
 void char_data::unset_pcflag( int bit )
 {
    if( this->isnpc(  ) )
-      bug( "%s: Removing PC flag on NPC!", __func__ );
+      bug( "{}: Removing PC flag on NPC!", __func__ );
    else
    {
       try
@@ -4896,7 +4896,7 @@ void char_data::unset_pcflag( int bit )
       }
       catch( std::exception & e )
       {
-         bug( "Flag exception caught: %s", e.what(  ) );
+         bug( "Flag exception caught: {}", e.what(  ) );
       }
    }
 }
@@ -4904,7 +4904,7 @@ void char_data::unset_pcflag( int bit )
 void char_data::toggle_pcflag( int bit )
 {
    if( this->isnpc(  ) )
-      bug( "%s: Toggling PC flag on NPC!", __func__ );
+      bug( "{}: Toggling PC flag on NPC!", __func__ );
    else
    {
       try
@@ -4913,7 +4913,7 @@ void char_data::toggle_pcflag( int bit )
       }
       catch( std::exception & e )
       {
-         bug( "Flag exception caught: %s", e.what(  ) );
+         bug( "Flag exception caught: {}", e.what(  ) );
       }
    }
 }
@@ -4922,7 +4922,7 @@ bool char_data::has_pcflags(  )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: Checking PC flags on NPC!", __func__ );
+      bug( "{}: Checking PC flags on NPC!", __func__ );
       return false;
    }
    else
@@ -4937,7 +4937,7 @@ std::bitset < MAX_PCFLAG > char_data::get_pcflags(  )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: Retreving PC flags on NPC!", __func__ );
+      bug( "{}: Retrieving PC flags on NPC!", __func__ );
       return 0;
    }
    else
@@ -4948,7 +4948,7 @@ void char_data::set_file_pcflags( FILE * fp )
 {
    if( this->isnpc(  ) )
    {
-      bug( "%s: Setting PC flags on NPC from FILE!", __func__ );
+      bug( "{}: Setting PC flags on NPC from FILE!", __func__ );
       return;
    }
 
@@ -4958,7 +4958,7 @@ void char_data::set_file_pcflags( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -4979,7 +4979,7 @@ void char_data::set_lang( int lang )
       }
       catch( std::exception & e )
       {
-         bug( "Flag exception caught: %s", e.what(  ) );
+         bug( "Flag exception caught: {}", e.what(  ) );
       }
    }
 }
@@ -4992,7 +4992,7 @@ void char_data::unset_lang( int lang )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -5004,7 +5004,7 @@ void char_data::toggle_lang( int lang )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -5028,7 +5028,7 @@ void char_data::set_langs( std::bitset<LANG_UNKNOWN> bits )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 
@@ -5040,7 +5040,7 @@ void char_data::set_file_langs( FILE * fp )
    }
    catch( std::exception & e )
    {
-      bug( "Flag exception caught: %s", e.what(  ) );
+      bug( "Flag exception caught: {}", e.what(  ) );
    }
 }
 

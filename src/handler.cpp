@@ -297,7 +297,7 @@ void queue_extracted_obj( obj_data * obj )
 
    if( !obj )
    {
-      bug( "%s: obj = nullptr", __func__ );
+      bug( "{}: obj = nullptr", __func__ );
       return;
    }
    ood = new extracted_obj_data;
@@ -316,7 +316,7 @@ void queue_extracted_char( char_data * ch, bool extract )
 
    if( !ch )
    {
-      bug( "%s: ch = nullptr", __func__ );
+      bug( "{}: ch = nullptr", __func__ );
       return;
    }
    ccd = new extracted_char_data;

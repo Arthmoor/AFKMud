@@ -865,7 +865,7 @@ void *locate_targets( char_data * ch, const std::string & arg, int sn )
    switch ( skill->target )
    {
       default:
-         bug( "%s: bad target for sn %d.", __func__, sn );
+         bug( "{}: bad target for sn {}.", __func__, sn );
          return &pAbort;
 
       case TAR_IGNORE:
@@ -1273,11 +1273,11 @@ CMDF( do_cast )
             if( !( skill = get_skilltype( sn ) ) )
             {
                ch->print( "Something went wrong...\r\n" );
-               bug( "%s: SUB_TIMER_DO_ABORT: bad sn %d", __func__, sn );
+               bug( "{}: SUB_TIMER_DO_ABORT: bad sn {}", __func__, sn );
                return;
             }
             mana = ch->isnpc(  )? 0 : umax( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
-            if( !ch->is_immortal(  ) ) /* so imms dont lose mana */
+            if( !ch->is_immortal(  ) ) /* so imms don't lose mana */
                ch->mana -= mana / 3;
          }
          ch->set_color( AT_MAGIC );
@@ -1292,13 +1292,13 @@ CMDF( do_cast )
          if( !( skill = get_skilltype( sn ) ) )
          {
             ch->print( "Something went wrong...\r\n" );
-            bug( "%s: substate 1: bad sn %d", __func__, sn );
+            bug( "{}: substate 1: bad sn {}", __func__, sn );
             return;
          }
          if( ch->alloc_ptr.empty() || !IS_VALID_SN( sn ) || skill->type != SKILL_SPELL )
          {
             ch->print( "Something cancels out the spell!\r\n" );
-            bug( "%s: ch->alloc_ptr nullptr or bad sn (%d)", __func__, sn );
+            bug( "{}: ch->alloc_ptr nullptr or bad sn ({})", __func__, sn );
             return;
          }
          mana = ch->isnpc(  )? 0 : umax( skill->min_mana, 100 / ( 2 + ch->level - skill->skill_level[ch->Class] ) );
@@ -1592,7 +1592,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
 
    if( !skill || !skill->spell_fun )
    {
-      bug( "%s: bad sn %d.", __func__, sn );
+      bug( "{}: bad sn {}.", __func__, sn );
       return rERROR;
    }
 
@@ -1647,7 +1647,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
    switch ( skill->target )
    {
       default:
-         bug( "%s: bad target for sn %d.", __func__, sn );
+         bug( "{}: bad target for sn {}.", __func__, sn );
          return rERROR;
 
       case TAR_IGNORE:
@@ -2051,7 +2051,7 @@ SPELLF( spell_create_water )
 
    if( !( liq = get_liq_vnum( obj->value[2] ) ) )
    {
-      bug( "%s: bad liquid number %d", __func__, obj->value[2] );
+      bug( "{}: bad liquid number {}", __func__, obj->value[2] );
       ch->print( "There's already another liquid in the container.\r\n" );
       return rSPELL_FAILED;
    }
@@ -2420,7 +2420,7 @@ SPELLF( spell_gate )
 
    if( !( temp = get_mob_index( MOB_VNUM_GATE ) ) )
    {
-      bug( "%s: Servitor daemon vnum %d doesn't exist.", __func__, MOB_VNUM_GATE );
+      bug( "{}: Servitor daemon vnum {} doesn't exist.", __func__, MOB_VNUM_GATE );
       return rSPELL_FAILED;
    }
 
@@ -2657,7 +2657,7 @@ SPELLF( spell_locate_object )
          ;
       if( cnt >= MAX_NEST )
       {
-         bug( "%s: object [%d] %s is nested more than %d times!", __func__, obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
+         bug( "{}: object [{}] {} is nested more than {} times!", __func__, obj->pIndexData->vnum, obj->short_descr, MAX_NEST );
          continue;
       }
 
@@ -3919,7 +3919,7 @@ SPELLF( spell_animate_dead )
 
    if( !( pMobIndex = get_mob_index( corpse->value[4] ) ) )
    {
-      bug( "%s: Can't find mob for value[4] of corpse", __func__ );
+      bug( "{}: Can't find mob for value[4] of corpse", __func__ );
       ch->print( "Ooops. Something didn't go quite right here....\r\n" );
       return rSPELL_FAILED;
    }
@@ -4578,7 +4578,7 @@ SPELLF( spell_affect )
 
    if( skill->affects.empty(  ) )
    {
-      bug( "%s: spell_affect has no affects sn %d", __func__, sn );
+      bug( "{}: spell_affect has no affects sn {}", __func__, sn );
       return rNONE;
    }
 
@@ -4670,7 +4670,7 @@ SPELLF( spell_affect )
 
    if( !victim )
    {
-      bug( "%s: could not find victim: sn %d", __func__, sn );
+      bug( "{}: could not find victim: sn {}", __func__, sn );
       failed_casting( skill, ch, victim, nullptr );
       return rSPELL_FAILED;
    }
@@ -4756,7 +4756,7 @@ SPELLF( spell_obj_inv )
 
             if( !( liq = get_liq_vnum( obj->value[2] ) ) )
             {
-               bug( "%s: bad liquid number %d", __func__, obj->value[2] );
+               bug( "{}: bad liquid number {}", __func__, obj->value[2] );
                ch->print( "There's already another liquid in the container.\r\n" );
                return rSPELL_FAILED;
             }
@@ -5029,7 +5029,7 @@ SPELLF( spell_smaug )
     */
    if( !skill )
    {
-      bug( "%s: Called with a null skill for sn %d", __func__, sn );
+      bug( "{}: Called with a null skill for sn {}", __func__, sn );
       return rERROR;
    }
 
@@ -5576,7 +5576,7 @@ SPELLF( spell_warsteed )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNTTHREE ) ) )
       {
-         bug( "%s: Paladin Warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNTTHREE );
+         bug( "{}: Paladin Warmount vnum {} doesn't exist.", __func__, MOB_VNUM_WARMOUNTTHREE );
          return rSPELL_FAILED;
       }
    }
@@ -5584,7 +5584,7 @@ SPELLF( spell_warsteed )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNTFOUR ) ) )
       {
-         bug( "%s: Antipaladin warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNTFOUR );
+         bug( "{}: Antipaladin warmount vnum {} doesn't exist.", __func__, MOB_VNUM_WARMOUNTFOUR );
          return rSPELL_FAILED;
       }
    }
@@ -5619,7 +5619,7 @@ SPELLF( spell_warmount )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNT ) ) )
       {
-         bug( "%s: Paladin Warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNT );
+         bug( "{}: Paladin Warmount vnum {} doesn't exist.", __func__, MOB_VNUM_WARMOUNT );
          return rSPELL_FAILED;
       }
    }
@@ -5627,7 +5627,7 @@ SPELLF( spell_warmount )
    {
       if( !( temp = get_mob_index( MOB_VNUM_WARMOUNTTWO ) ) )
       {
-         bug( "%s: Antipaladin warmount vnum %d doesn't exist.", __func__, MOB_VNUM_WARMOUNTTWO );
+         bug( "{}: Antipaladin warmount vnum {} doesn't exist.", __func__, MOB_VNUM_WARMOUNTTWO );
          return rSPELL_FAILED;
       }
    }
@@ -5667,7 +5667,7 @@ SPELLF( spell_fireseed )
    }
    else
    {
-      bug( "%s: Fireseed object %d not found.", __func__, OBJ_VNUM_FIRESEED );
+      bug( "{}: Fireseed object {} not found.", __func__, OBJ_VNUM_FIRESEED );
       return rSPELL_FAILED;
    }
 }
@@ -5883,7 +5883,7 @@ SPELLF( spell_creeping_doom )
 
    if( !( temp = get_mob_index( MOB_VNUM_CREEPINGDOOM ) ) )
    {
-      bug( "%s: Creeping Doom vnum %d doesn't exist.", __func__, MOB_VNUM_CREEPINGDOOM );
+      bug( "{}: Creeping Doom vnum {} doesn't exist.", __func__, MOB_VNUM_CREEPINGDOOM );
       return rSPELL_FAILED;
    }
 
@@ -6246,7 +6246,7 @@ int recall( char_data * ch, int target )
 
    if( !location )
    {
-      bug( "%s: No recall room found!", __func__ );
+      bug( "{}: No recall room found!", __func__ );
       ch->print( "You cannot recall on this plane!\r\n" );
       return -1;
    }

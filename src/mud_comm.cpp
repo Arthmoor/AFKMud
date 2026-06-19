@@ -1700,21 +1700,21 @@ CMDF( do_rpstat )
 
    if( !location )
    {
-      bug( "%s: Bad room index: %s", __func__, argument.c_str(  ) );
+      bug( "{}: Bad room index: {}", __func__, argument );
       ch->print( "That room does not exist!\r\n" );
       return;
    }
 
    if( location->progtypes.none(  ) )
    {
-      ch->printf( "No programs on room: %s - #%d\r\n", ch->in_room->name, ch->in_room->vnum );
+      ch->print_fmt( "No programs on room: {} - #{}\r\n", ch->in_room->name, ch->in_room->vnum );
       return;
    }
 
-   ch->printf( "Name: %s.  Vnum: %d.\r\n", location->name, location->vnum );
+   ch->print_fmt( "Name: {}.  Vnum: {}.\r\n", location->name, location->vnum );
 
    for( auto* mprog : location->mudprogs )
-      ch->printf( "%d >%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
+      ch->print_fmt( "{} >{} {}\r\n{}\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
 }
 
 /* Woowoo - Blodkai, November 1997 */
@@ -1763,7 +1763,7 @@ CMDF( do_mpkill )
 
    if( !ch )
    {
-      bug( "%s: Nonexistent ch!", __func__ );
+      bug( "{}: Nonexistent ch!", __func__ );
       return;
    }
 
@@ -2886,7 +2886,7 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __func__ );
+      bug( "{}: null ch!", __func__ );
       return rERROR;
    }
    if( !victim )
@@ -3684,7 +3684,7 @@ char_data *make_doppleganger( char_data * ch )
 
    if( !( pMobIndex = get_mob_index( MOB_DOPPLEGANGER ) ) )
    {
-      bug( "%s: Doppleganger mob %d not found!", __func__, MOB_DOPPLEGANGER );
+      bug( "{}: Doppleganger mob {} not found!", __func__, MOB_DOPPLEGANGER );
       return nullptr;
    }
 
@@ -3896,7 +3896,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    ch->weight = ch->calculate_race_weight(  );
 
    if( ( iLang = skill_lookup( "common" ) ) < 0 )
-      bug( "%s: cannot find common language.", __func__ );
+      bug( "{}: cannot find common language.", __func__ );
    else
       ch->pcdata->learned[iLang] = 100;
 
@@ -3949,7 +3949,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
          obj->to_char( ch );
    }
    else
-      bug( "%s: Newbie Guide object %d not found.", __func__, OBJ_VNUM_NEWBIE_GUIDE );
+      bug( "{}: Newbie Guide object {} not found.", __func__, OBJ_VNUM_NEWBIE_GUIDE );
 
    objcheck = get_obj_index( OBJ_VNUM_SCHOOL_BANNER );
    if( objcheck != nullptr )
@@ -3963,7 +3963,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
       }
    }
    else
-      bug( "%s: Newbie light object %d not found.", __func__, OBJ_VNUM_SCHOOL_BANNER );
+      bug( "{}: Newbie light object {} not found.", __func__, OBJ_VNUM_SCHOOL_BANNER );
 
    if( !NEWLOGIN )
       return;
@@ -4151,7 +4151,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->weapon )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class weapon %d not found for Class %s.", Class->weapon, classname );
+         bug( "Class weapon {} not found for Class {}.", Class->weapon, classname );
       }
       else
       {
@@ -4165,7 +4165,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->armor )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class armor %d not found for Class %s.", Class->armor, classname );
+         bug( "Class armor {} not found for Class {}.", Class->armor, classname );
       }
       else
       {
@@ -4179,7 +4179,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->legwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class legwear %d not found for Class %s.", Class->legwear, classname );
+         bug( "Class legwear {} not found for Class {}.", Class->legwear, classname );
       }
       else
       {
@@ -4193,7 +4193,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->headwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class headwear %d not found for Class %s.", Class->headwear, classname );
+         bug( "Class headwear {} not found for Class {}.", Class->headwear, classname );
       }
       else
       {
@@ -4207,7 +4207,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->armwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class armwear %d not found for Class %s.", Class->armwear, classname );
+         bug( "Class armwear {} not found for Class {}.", Class->armwear, classname );
       }
       else
       {
@@ -4221,7 +4221,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->footwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class footwear %d not found for Class %s.", Class->footwear, classname );
+         bug( "Class footwear {} not found for Class {}.", Class->footwear, classname );
       }
       else
       {
@@ -4235,7 +4235,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->shield )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class shield %d not found for Class %s.", Class->shield, classname );
+         bug( "Class shield {} not found for Class {}.", Class->shield, classname );
       }
       else
       {
@@ -4249,7 +4249,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->held )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class held %d not found for Class %s.", Class->held, classname );
+         bug( "Class held {} not found for Class {}.", Class->held, classname );
       }
       else
       {

@@ -114,9 +114,10 @@ void web_who(  )
    std::string rank, outbuf, stats, clan_name;
    int pcount = 0, amount, xx = 0, yy = 0;
 
-   if( !( webwho = fopen( WEBWHO_FILE.data(), "w" ) ) )
+   std::filesystem::path filename = std::format( "{}", WEBWHO_FILE );
+   if( !( webwho = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Unable to open webwho file for writing!", __func__ );
+      bug( "{}: Unable to open webwho file for writing!", __func__ );
       return;
    }
 
@@ -143,7 +144,7 @@ void web_who(  )
 
       if( !d )
       {
-         bug( "%s: nullptr DESCRIPTOR in list!", __func__ );
+         bug( "{}: nullptr DESCRIPTOR in list!", __func__ );
          continue;
       }
 
@@ -194,7 +195,7 @@ void web_who(  )
 
       if( !d )
       {
-         bug( "%s: nullptr DESCRIPTOR in list!", __func__ );
+         bug( "{}: nullptr DESCRIPTOR in list!", __func__ );
          continue;
       }
 
@@ -259,7 +260,7 @@ void web_arealist(  )
 
    if( !( fp = fopen( AREALIST_FILE.data(), "w" ) ) )
    {
-      bug( "%s: Unable to open arealist file for writing!", __func__ );
+      bug( "{}: Unable to open arealist file for writing!", __func__ );
       return;
    }
 
@@ -471,7 +472,7 @@ void room_to_html( room_index * room, bool complete )
       FCLOSE( fp );
    }
    else
-      bug( "%s: Error Opening room to html index stream!", __func__ );
+      bug( "{}: Error Opening room to html index stream!", __func__ );
 }
 
 CMDF( do_webroom )

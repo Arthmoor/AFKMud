@@ -957,9 +957,9 @@ void tybuid( char_data * ch, std::string_view argument, int type )
       if( type == 1 )
          ch->print( "\r\nUsage:  'idea <message>'\r\n" );
       else
-         ch->printf( "Usage:  '%s <message>'  (your location is automatically recorded)\r\n", tybuid_name[type] );
+         ch->print_fmt( "Usage:  '{} <message>'  (your location is automatically recorded)\r\n", tybuid_name[type] );
       if( ch->get_trust(  ) >= LEVEL_ASCENDANT )
-         ch->printf( "  '%s list' or '%s clear now'\r\n", tybuid_name[type], tybuid_name[type] );
+         ch->print_fmt( "  '{} list' or '{} clear now'\r\n", tybuid_name[type], tybuid_name[type] );
       return;
    }
 
@@ -968,11 +968,11 @@ void tybuid( char_data * ch, std::string_view argument, int type )
       FILE *fp;
       if( !( fp = fopen( tybuid_file[type], "w" ) ) )
       {
-         bug( "%s: unable to stat %s file '%s'!", __func__, tybuid_name[type], tybuid_file[type] );
+         bug( "{}: unable to stat {} file '{}'!", __func__, tybuid_name[type], tybuid_file[type] );
          return;
       }
       FCLOSE( fp );
-      ch->printf( "The %s file has been cleared.\r\n", tybuid_name[type] );
+      ch->print_fmt( "The {} file has been cleared.\r\n", tybuid_name[type] );
       return;
    }
 
@@ -984,7 +984,7 @@ void tybuid( char_data * ch, std::string_view argument, int type )
 
    std::string t = std::format( "{:%a %b %d, %Y %I:%M:%S %p}", current_time );
    append_file( ch->in_room ? ch->in_room->vnum : 0, ch->name, tybuid_file[type], "({}:  {}", t, argument );
-   ch->printf( "Thank you! Your %s has been recorded.\r\n", tybuid_name[type] );
+   ch->print_fmt( "Thank you! Your {} has been recorded.\r\n", tybuid_name[type] );
 }
 
 CMDF( do_bug )
@@ -1302,7 +1302,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
 
    if( format.empty(  ) )
    {
-      bug( "%s: nullptr str!", __func__ );
+      bug( "{}: Empty formatting string!", __func__ );
       return "";
    }
 
@@ -1338,7 +1338,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
 
       if( !arg2 && *ptr >= 'A' && *ptr <= 'Z' )
       {
-         bug( "%s: missing arg2 for code %c:", __func__, *ptr );
+         bug( "{}: missing arg2 for code {}:", __func__, *ptr );
          log_printf( "Missing arg2 came from {}", ch->name );
          if( ch->isnpc(  ) )
             log_printf( "NPC vnum: {}", ch->pIndexData->vnum );
@@ -1350,7 +1350,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
          switch ( *ptr )
          {
             default:
-               bug( "%s: bad code %c.", __func__, *ptr );
+               bug( "{}: bad code {}.", __func__, *ptr );
                log_printf( "Bad code came from {}", ch->name );
                buf.append( " <@@@> " );
                break;
@@ -1360,7 +1360,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
                   buf.append( ( char * )arg1 );
                else
                {
-                  bug( "%s: bad $t.", __func__ );
+                  bug( "{}: bad $t.", __func__ );
                   buf.append( " <@@@> " );
                }
                break;
@@ -1370,7 +1370,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
                   buf.append( ( char * )arg2 );
                else
                {
-                  bug( "%s: bad $T.", __func__ );
+                  bug( "{}: bad $T.", __func__ );
                   buf.append( " <@@@> " );
                }
                break;
@@ -1519,7 +1519,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
 
    if( !ch )
    {
-      bug( "%s: null ch. (%s)", __func__, format.data() );
+      bug( "{}: null ch. ({})", __func__, format );
       return;
    }
 
@@ -1536,7 +1536,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
          switch ( *ptr )
          {
             default:
-               bug( "Act: bad code %c for format %s.", *ptr, format.data() );
+               bug( "{}: bad code {} for format {}.", __func__, *ptr, format.data() );
                break;
 
             case 't':
@@ -1573,20 +1573,20 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
 
    if( flags1 != ACTF_NONE && flags1 != ACTF_TXT && flags1 != ACTF_CH && flags1 != ACTF_OBJ )
    {
-      bug( "%s: arg1 has more than one type in format %s. Setting all nullptr.", __func__, format.data() );
+      bug( "{}: arg1 has more than one type in format {}. Setting all nullptr.", __func__, format );
       obj1 = nullptr;
    }
 
    if( flags2 != ACTF_NONE && flags2 != ACTF_TXT && flags2 != ACTF_CH && flags2 != ACTF_OBJ )
    {
-      bug( "%s: arg2 has more than one type in format %s. Setting all nullptr.", __func__, format.data() );
+      bug( "{}: arg2 has more than one type in format {}. Setting all nullptr.", __func__, format );
       vch = nullptr;
       obj2 = nullptr;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: nullptr ch->in_room! (%s:%s)", __func__, ch->name.c_str(), format.data() );
+      bug( "{}: nullptr ch->in_room! ({}:{})", __func__, ch->name, format );
       return;
    }
    else if( type == TO_CHAR )
@@ -1610,13 +1610,13 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
    {
       if( !vch )
       {
-         bug( "%s: null vch with TO_VICT.", __func__ );
+         bug( "{}: null vch with TO_VICT.", __func__ );
          log_printf( "{} ({})", ch->name, format );
          return;
       }
       if( !vch->in_room )
       {
-         bug( "%s: vch in nullptr room!", __func__ );
+         bug( "{}: vch in nullptr room!", __func__ );
          log_printf( "{} -> {} ({})", ch->name, vch->name, format );
          return;
       }
@@ -1648,7 +1648,7 @@ void act( short AType, std::string_view format, char_data *ch, const void *arg1,
 
    if( !to )
    {
-      bug( "%s: nullptr TARGET - CANNOT CONTINUE", __func__ );
+      bug( "{}: nullptr TARGET - CANNOT CONTINUE", __func__ );
       return;
    }
 

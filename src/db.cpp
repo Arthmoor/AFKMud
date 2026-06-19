@@ -200,12 +200,14 @@ void shutdown_mud( std::string_view reason )
    stream.open( std::filesystem::path( SHUTDOWN_FILE ), std::ios::app );
    if( !stream.is_open() )
    {
-      bug( "%s: Cannot open shutdown file for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, SHUTDOWN_FILE, std::strerror(errno) );
       return;
    }
 
    stream << reason << "\n";
    stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, SHUTDOWN_FILE, std::strerror(errno) );
 }
 
 bool exists_file( std::string_view name )
@@ -287,7 +289,7 @@ char fread_letter( FILE* fp )
       }
    }
 
-   bug( "%s: EOF encountered on read.", __func__ );
+   bug( "{}: EOF encountered on read.", __func__ );
 
    if( fBootDb )
    {
@@ -306,7 +308,7 @@ static std::string internal_fread_flagstring( FILE* fp )
 
    if( c == EOF )
    {
-      bug( "%s: EOF encountered on read.", __func__ );
+      bug( "{}: EOF encountered on read.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "Corrupt file somewhere." );
@@ -338,7 +340,7 @@ static std::string internal_fread_flagstring( FILE* fp )
       }
    }
 
-   bug( "%s: EOF encountered before ~", __func__ );
+   bug( "{}: EOF encountered before ~", __func__ );
    return result;
 }
 
@@ -408,7 +410,7 @@ void fread_to_eol( FILE* fp )
       }
    }
 
-   bug( "%s: EOF encountered on read.", __func__ );
+   bug( "{}: EOF encountered on read.", __func__ );
 
    if( fBootDb )
    {
@@ -425,7 +427,7 @@ static std::string internal_fread_line( FILE* fp )
 
    if( c == EOF )
    {
-      bug( "%s: EOF encountered on read.", __func__ );
+      bug( "{}: EOF encountered on read.", __func__ );
 
       if( fBootDb )
       {
@@ -445,7 +447,7 @@ static std::string internal_fread_line( FILE* fp )
 
    if( c == EOF )
    {
-      bug( "%s: EOF encountered mid-line.", __func__ );
+      bug( "{}: EOF encountered mid-line.", __func__ );
 
       if( fBootDb )
          std::exit( EXIT_FAILURE );
@@ -484,7 +486,7 @@ char* fread_word( FILE* fp )
 
    if( c == EOF )
    {
-      bug( "%s: EOF encountered on read.", __func__ );
+      bug( "{}: EOF encountered on read.", __func__ );
 
       if( fBootDb )
       {
@@ -524,7 +526,7 @@ char* fread_word( FILE* fp )
 
    if( c == EOF && cEnd != ' ' )
    {
-      bug( "%s: EOF encountered inside quoted string.", __func__ );
+      bug( "{}: EOF encountered inside quoted string.", __func__ );
 
       if( fBootDb )
          std::exit( EXIT_FAILURE );
@@ -534,7 +536,6 @@ char* fread_word( FILE* fp )
    return word.data();
 }
 
-// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
 /*
  * Add a string to the boot-up log - Thoric
  */
@@ -546,12 +547,14 @@ void write_to_boot_log( std::string_view text )
    stream.open( std::filesystem::path( BOOTLOG_FILE ), std::ios::app );
    if( !stream.is_open() )
    {
-      bug( "%s: Cannot open boot log file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, BOOTLOG_FILE, std::strerror(errno) );
       return;
    }
 
    stream << text << "\n";
    stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, BOOTLOG_FILE, std::strerror(errno) );
 }
 
 /*
@@ -567,7 +570,7 @@ void load_buildlist( void )
    if( !std::filesystem::exists( BUILD_DIR ) || !std::filesystem::is_directory( BUILD_DIR ) )
    {
       // This should be treated as fatal.
-      bug( "%s: Builder directory is missing!", __func__ );
+      bug( "{}: Builder directory is missing!", __func__ );
       std::exit( EXIT_FAILURE );
    }
 
@@ -603,7 +606,7 @@ void save_sysdata( void )
 
    if( !stream.is_open() )
    {
-      bug( "%s: Cannot open sysdata file for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
    else
@@ -686,6 +689,8 @@ void save_sysdata( void )
       stream << "\n#END\n";
    }
    stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 /*
@@ -821,7 +826,7 @@ bool load_systemdata( void )
       }
       else
       {
-         bug( "%s: Invalid key in sysdata file: %s", __func__, key.c_str() );
+         bug( "{}: Invalid key in sysdata file: {}", __func__, key );
          continue;
       }
    }
@@ -859,7 +864,7 @@ void fix_exits( void )
             if( fBootDb )
                boot_log( "{}: room {}, exit {} leads to bad vnum ({})", __func__, pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
 
-            bug( "%s: Deleting %s exit in room %d", __func__, dir_name[pexit->vdir], pRoomIndex->vnum );
+            bug( "{}: Deleting {} exit in room {}", __func__, dir_name[pexit->vdir], pRoomIndex->vnum );
             pRoomIndex->extract_exit( pexit );
          }
       }
@@ -1074,9 +1079,9 @@ void boot_db( bool fCopyOver )
    std::filesystem::path lbuf = GREETING_FILE;
    if( !std::filesystem::exists( lbuf ) )
    {
-      bug( "%s: Login greeting not found!", __func__ );
+      bug( "{}: Login greeting not found!", __func__ );
       shutdown_mud( "Missing login greeting" );
-      exit( 1 );
+      std::exit( EXIT_FAILURE );
    }
    else
       log_string( "Login greeting located." );
@@ -1250,7 +1255,7 @@ void boot_db( bool fCopyOver )
       {
          if( feof( fpList ) )
          {
-            bug( "%s: EOF encountered reading area list - no $ found at end of file.", __func__ );
+            bug( "{}: EOF encountered reading area list - no $ found at end of file.", __func__ );
             break;
          }
          strlcpy( strArea, fread_word( fpList ), MIL );
@@ -1552,6 +1557,147 @@ CMDF( do_randtest )
    ch->print_fmt( "3d35 ( 3 35 sided dice ): {}\r\n", dice( 3, 35 ) );
 }
 
+/* Command so imms can view the imotd - Samson 1-20-01 */
+CMDF( do_imotd )
+{
+   if( exists_file( IMOTD_FILE ) )
+      show_file( ch, IMOTD_FILE );
+}
+
+/* Command so people can call up the MOTDs - Samson 1-20-01 */
+CMDF( do_motd )
+{
+   if( exists_file( MOTD_FILE ) )
+      show_file( ch, MOTD_FILE );
+}
+
+/* Saves MOTDs to disk - Samson 12-31-00 */
+void save_motd( std::string_view name, std::string_view str )
+{
+   std::ofstream stream( std::filesystem::path{name} );
+
+   if( !stream )
+   {
+      bug( "{}: Cannot open {} for writing: {}", __func__, name, std::strerror(errno) );
+      return;
+   }
+
+   stream << str;
+   stream.close();
+
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, name, std::strerror(errno) );
+}
+
+void load_motd( char_data * ch, std::string_view name )
+{
+   std::ifstream stream( std::filesystem::path{name} );
+
+   if( !stream )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, name, std::strerror(errno) );
+      return;
+   }
+
+   std::stringstream buffer;
+   buffer << stream.rdbuf();
+   ch->pcdata->motd_buf = buffer.str();
+
+   stream.close();
+}
+
+/* Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00 */
+CMDF( do_motdedit )
+{
+   std::string arg1;
+
+   if( ch->isnpc(  ) )
+   {
+      ch->print( "Huh?\r\n" );
+      return;
+   }
+
+   switch ( ch->substate )
+   {
+      default:
+         break;
+
+      case SUB_RESTRICTED:
+         ch->print( "You cannot do this while in another command.\r\n" );
+         return;
+
+      case SUB_EDMOTD:
+         ch->pcdata->motd_buf = ch->copy_buffer( );
+         ch->stop_editing(  );
+         ch->substate = ch->tempnum;
+         return;
+
+      case SUB_EDIT_ABORT:
+         ch->substate = SUB_NONE;
+         ch->print( "Aborting MOTD message.\r\n" );
+         return;
+   }
+
+   argument = one_argument( argument, arg1 );
+
+   if( arg1.empty(  ) )
+   {
+      ch->print( "Usage: motdedit <field>\r\n" );
+      ch->print( "Usage: motdedit save <field>\r\n\r\n" );
+      ch->print( "Field can be one of:\r\n" );
+      ch->print( "motd imotd\r\n" );
+      return;
+   }
+
+   if( !str_cmp( arg1, "save" ) )
+   {
+      if( ch->pcdata->motd_buf.empty() )
+      {
+         ch->print( "Nothing to save.\r\n" );
+         return;
+      }
+      if( !str_cmp( argument, "motd" ) )
+      {
+         save_motd( MOTD_FILE, ch->pcdata->motd_buf );
+         ch->print( "MOTD Message updated.\r\n" );
+         ch->pcdata->motd_buf.clear();
+         sysdata->motd = current_time;
+         save_sysdata(  );
+         return;
+      }
+      if( !str_cmp( argument, "imotd" ) )
+      {
+         save_motd( IMOTD_FILE, ch->pcdata->motd_buf );
+         ch->print( "IMOTD Message updated.\r\n" );
+         ch->pcdata->motd_buf.clear();
+         sysdata->imotd = current_time;
+         save_sysdata(  );
+         return;
+      }
+      do_motdedit( ch, "" );
+      return;
+   }
+
+   if( !str_cmp( arg1, "motd" ) || !str_cmp( arg1, "imotd" ) )
+   {
+      if( !str_cmp( arg1, "motd" ) )
+         load_motd( ch, MOTD_FILE );
+      else
+         load_motd( ch, IMOTD_FILE );
+      if( ch->substate == SUB_REPEATCMD )
+         ch->tempnum = SUB_REPEATCMD;
+      else
+         ch->tempnum = SUB_NONE;
+      ch->substate = SUB_EDMOTD;
+      ch->pcdata->dest_buf = ch;
+      ch->pcdata->motd_buf.clear();
+      ch->start_editing( ch->pcdata->motd_buf );
+      ch->set_editor_desc( "An MOTD." );
+      return;
+   }
+   do_motdedit( ch, "" );
+}
+
 /*
  * Believe it or not, this little gem originated as a code example in a Google search.
  * I've modified what Google AI provided to cut the filename down to the actual source code file.
@@ -1612,18 +1758,9 @@ void generate_backtrace( void )
  * Due to the formatting attributes, at least __func__ is required.
  * It's helpful to include the file and line tags since for some odd reason the backtrace code won't include the function that called "bug".
  */
-// FIXME: Tagging this for upgrade to std::format. Many places call this. Follow example from character.cpp
-void bug( const char *str, ... )
+void process_bug( std::string_view text )
 {
-   char buf[MSL];
-
-   va_list param;
-
-   va_start( param, str );
-   vsnprintf( buf, MSL, str, param );
-   va_end( param );
-
-   log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "[*****] BUG: {}", buf );
+   log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "[*****] BUG: {}", text );
 
    if( fpArea != nullptr )
    {

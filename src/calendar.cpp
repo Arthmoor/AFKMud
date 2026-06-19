@@ -177,14 +177,14 @@ void fread_timedata( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -250,7 +250,7 @@ bool load_timedata( void )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __func__ );
+            log_printf( "{}: # not found.", __func__ );
             break;
          }
 
@@ -264,7 +264,7 @@ bool load_timedata( void )
             break;
          else
          {
-            bug( "%s: bad section - %s.", __func__, word );
+            log_printf( "{}: bad section - {}.", __func__, word );
             break;
          }
       }
@@ -282,8 +282,7 @@ void save_timedata( void )
 
    if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
    {
-      bug( "%s: fopen", __func__ );
-      perror( filename.c_str() );
+      log_printf( "{}: Unable to open time.dat for writing!", __func__ );
    }
    else
    {
@@ -626,7 +625,7 @@ void save_holidays( void )
    stream.open( std::filesystem::path( HOLIDAY_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot write to holiday file.", __func__ );
+      log_printf( "{}: Cannot write to holiday file.", __func__ );
       return;
    }
 

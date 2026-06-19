@@ -51,19 +51,19 @@ void comment_remove( char_data * ch, note_data * pnote )
 {
    if( !ch )
    {
-      bug( "%s: Null ch!", __func__ );
+      bug( "{}: Null ch!", __func__ );
       return;
    }
 
    if( ch->pcdata->comments.empty(  ) )
    {
-      bug( "%s: %s has an empty comment list already.", __func__, ch->name.c_str(  ) );
+      bug( "{}: {} has an empty comment list already.", __func__, ch->name );
       return;
    }
 
    if( !pnote )
    {
-      bug( "%s: Null pnote, removing comment from %s!", __func__, ch->name.c_str(  ) );
+      bug( "{}: Null pnote, removing comment from {}!", __func__, ch->name );
       return;
    }
 
@@ -93,7 +93,7 @@ CMDF( do_comment )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __func__ );
+      bug( "{}: no descriptor", __func__ );
       return;
    }
 
@@ -115,13 +115,13 @@ CMDF( do_comment )
       case SUB_WRITING_NOTE:
          if( !ch->pcdata->pnote )
          {
-            bug( "%s: note got lost?", __func__ );
+            bug( "{}: note got lost?", __func__ );
             ch->print( "Your note got lost!\r\n" );
             ch->stop_editing(  );
             return;
          }
          if( ch->pcdata->dest_buf != ch->pcdata->pnote )
-            bug( "%s: sub_writing_note: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
+            bug( "{}: sub_writing_note: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
          DISPOSE( ch->pcdata->pnote->text );
          ch->pcdata->pnote->text = ch->copy_buffer( false );
          ch->stop_editing(  );

@@ -55,11 +55,11 @@ void load_mobiles( area_data * tarea, FILE * fp )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __func__ );
+      bug( "{}: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
       else
          return;
@@ -74,11 +74,11 @@ void load_mobiles( area_data * tarea, FILE * fp )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __func__ );
+         bug( "{}: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          }
          else
             return;
@@ -94,7 +94,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __func__, vnum );
+            bug( "{}: vnum {} duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
             std::exit( EXIT_FAILURE );
          }
@@ -197,7 +197,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       speaking = one_argument( speaking, flag );
       value = get_langnum( flag );
       if( value < 0 || value >= LANG_UNKNOWN )
-         bug( "Unknown speaking language: %s", flag.c_str() );
+         bug( "Unknown speaking language: {}", flag );
       else
          pMobIndex->speaking = value;
 
@@ -209,7 +209,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int position = get_npc_position( fread_flagstring( fp ) );
       if( position < 0 || position >= POS_MAX )
       {
-         bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __func__, vnum );
+         bug( "{}: vnum {}: Mobile in invalid position! Defaulting to standing.", __func__, vnum );
          position = POS_STANDING;
       }
       pMobIndex->position = position;
@@ -217,7 +217,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       position = get_npc_position( fread_flagstring( fp ) );
       if( position < 0 || position >= POS_MAX )
       {
-         bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __func__, vnum );
+         bug( "{}: vnum {}: Mobile in invalid default position! Defaulting to standing.", __func__, vnum );
          position = POS_STANDING;
       }
       pMobIndex->defposition = position;
@@ -225,7 +225,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int sex = get_npc_sex( fread_flagstring( fp ) );
       if( sex < 0 || sex >= SEX_MAX )
       {
-         bug( "%s: vnum %d: Mobile has invalid sex! Defaulting to neuter.", __func__, vnum );
+         bug( "{}: vnum {}: Mobile has invalid sex! Defaulting to neuter.", __func__, vnum );
          sex = SEX_NEUTRAL;
       }
       pMobIndex->sex = sex;
@@ -233,7 +233,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int race = get_npc_race( fread_flagstring( fp ) );
       if( race < 0 || race >= MAX_NPC_RACE )
       {
-         bug( "%s: vnum %d: Mob has invalid race! Defaulting to monster.", __func__, vnum );
+         bug( "{}: vnum {}: Mob has invalid race! Defaulting to monster.", __func__, vnum );
          race = get_npc_race( "monster" );
       }
       pMobIndex->race = race;
@@ -241,7 +241,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       int Class = get_npc_class( fread_flagstring( fp ) );
       if( Class < 0 || Class >= MAX_NPC_CLASS )
       {
-         bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __func__, vnum );
+         bug( "{}: vnum {}: Mob has invalid Class! Defaulting to warrior.", __func__, vnum );
          Class = get_npc_class( "warrior" );
       }
       pMobIndex->Class = Class;
@@ -283,11 +283,11 @@ void load_objects( area_data * tarea, FILE * fp )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __func__ );
+      bug( "{}: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
       else
          return;
@@ -301,11 +301,11 @@ void load_objects( area_data * tarea, FILE * fp )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __func__ );
+         bug( "{}: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          }
          else
             return;
@@ -321,7 +321,7 @@ void load_objects( area_data * tarea, FILE * fp )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __func__, vnum );
+            bug( "{}: vnum {} duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
             std::exit( EXIT_FAILURE );
          }
@@ -367,7 +367,7 @@ void load_objects( area_data * tarea, FILE * fp )
       value = get_otype( fread_flagstring( fp ) );
       if( value < 0 )
       {
-         bug( "%s: vnum %d: Object has invalid type! Defaulting to trash.", __func__, vnum );
+         bug( "{}: vnum {}: Object has invalid type! Defaulting to trash.", __func__, vnum );
          value = get_otype( "trash" );
       }
       pObjIndex->item_type = value;
@@ -497,7 +497,7 @@ void load_objects( area_data * tarea, FILE * fp )
                   value = get_aflag( aff );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
                   {
-                     bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
+                     bug( "{}: Unsupportable value for affect flag: {}", __func__, aff );
                      setaff = false;
                   }
                   else
@@ -516,7 +516,7 @@ void load_objects( area_data * tarea, FILE * fp )
                      risa = one_argument( risa, flag );
                      value = get_risflag( flag );
                      if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "%s: Unsupportable value for RISA flag: %s", __func__, flag );
+                        bug( "{}: Unsupportable value for RISA flag: {}", __func__, flag );
                      else
                         paf->rismod.set( value );
                   }
@@ -533,7 +533,7 @@ void load_objects( area_data * tarea, FILE * fp )
                value = get_atype( loc );
                if( value < 0 || value >= MAX_APPLY_TYPE )
                {
-                  bug( "%s: Invalid apply type: %s", __func__, loc );
+                  bug( "{}: Invalid apply type: {}", __func__, loc );
                   setaff = false;
                }
                paf->location = value;
@@ -548,7 +548,7 @@ void load_objects( area_data * tarea, FILE * fp )
                   value = get_aflag( aff );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
                   {
-                     bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
+                     bug( "{}: Unsupportable value for affect flag: {}", __func__, aff );
                      setaff = false;
                   }
                   else
@@ -613,11 +613,11 @@ void load_resets( area_data * tarea, FILE * fp )
 
    if( !tarea )
    {
-      bug( "%s: no #AREA seen yet.", __func__ );
+      bug( "{}: no #AREA seen yet.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #AREA" );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
       else
          return;
@@ -625,11 +625,11 @@ void load_resets( area_data * tarea, FILE * fp )
 
    if( tarea->rooms.empty(  ) )
    {
-      bug( "%s: No #ROOMS section found. Cannot load resets.", __func__ );
+      bug( "{}: No #ROOMS section found. Cannot load resets.", __func__ );
       if( fBootDb )
       {
          shutdown_mud( "No #ROOMS" );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
       else
          return;
@@ -702,7 +702,7 @@ void load_resets( area_data * tarea, FILE * fp )
       switch ( letter )
       {
          default:
-            bug( "%s: bad command '%c'.", __func__, letter );
+            bug( "{}: bad command '{}'.", __func__, letter );
             if( fBootDb )
                boot_log( "{}: {} ({}) bad command '{}'.", __func__, tarea->filename, count, letter );
             return;
@@ -733,7 +733,7 @@ void load_resets( area_data * tarea, FILE * fp )
             else
             {
                if( !pRoomIndex )
-                  bug( "%s: Unable to add room reset - room not found.", __func__ );
+                  bug( "{}: Unable to add room reset - room not found.", __func__ );
                else
                   pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             }
@@ -756,7 +756,7 @@ void load_resets( area_data * tarea, FILE * fp )
                   not01 = true;
             }
             if( !pRoomIndex )
-               bug( "%s: Unable to add room reset - room not found.", __func__ );
+               bug( "{}: Unable to add room reset - room not found.", __func__ );
             else
             {
                if( arg3 == 0 )
@@ -770,31 +770,31 @@ void load_resets( area_data * tarea, FILE * fp )
             if( get_obj_index( arg1 ) == nullptr && fBootDb )
                boot_log( "{}: {} ({}) '{}': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( !pRoomIndex )
-               bug( "%s: Unable to add room reset - room not found.", __func__ );
+               bug( "{}: Unable to add room reset - room not found.", __func__ );
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2, -2 );
             break;
 
          case 'T':
             if( IS_SET( extra, TRAP_OBJ ) )
-               bug( "%s: Unable to add legacy object trap reset. Must be converted manually.", __func__ );
+               bug( "{}: Unable to add legacy object trap reset. Must be converted manually.", __func__ );
             else
             {
                if( !( pRoomIndex = get_room_index( arg3 ) ) )
-                  bug( "%s: Unable to add trap reset - room not found.", __func__ );
+                  bug( "{}: Unable to add trap reset - room not found.", __func__ );
                else
                   pRoomIndex->add_reset( letter, extra, arg1, arg2, arg3, arg4, -2, -2, -2, -2, -2, -2 );
             }
             break;
 
          case 'H':
-            bug( "%s: Unable to convert legacy hide reset. Must be converted manually.", __func__ );
+            bug( "{}: Unable to convert legacy hide reset. Must be converted manually.", __func__ );
             break;
 
          case 'D':
             if( !( pRoomIndex = get_room_index( arg1 ) ) )
             {
-               bug( "%s: 'D': room %d doesn't exist.", __func__, arg1 );
+               bug( "{}: 'D': room {} doesn't exist.", __func__, arg1 );
                log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
                   boot_log( "{}: {} ({}) 'D': room {} doesn't exist.", __func__, tarea->filename, count, arg1 );
@@ -803,7 +803,7 @@ void load_resets( area_data * tarea, FILE * fp )
 
             if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = pRoomIndex->get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
             {
-               bug( "%s: 'D': exit %d not door.", __func__, arg2 );
+               bug( "{}: 'D': exit {} not door.", __func__, arg2 );
                log_printf( "Reset: {} {} {} {} {}", letter, extra, arg1, arg2, arg3 );
                if( fBootDb )
                   boot_log( "{}: {} ({}) 'D': exit {} not door.", __func__, tarea->filename, count, arg2 );
@@ -811,7 +811,7 @@ void load_resets( area_data * tarea, FILE * fp )
 
             if( arg3 < 0 || arg3 > 2 )
             {
-               bug( "%s: 'D': bad 'locks': %d.", __func__, arg3 );
+               bug( "{}: 'D': bad 'locks': {}.", __func__, arg3 );
                if( fBootDb )
                   boot_log( "{}: {} ({}) 'D': bad 'locks': {}.", __func__, tarea->filename, count, arg3 );
             }
@@ -825,7 +825,7 @@ void load_resets( area_data * tarea, FILE * fp )
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, -2, -2, -2, -2, -2, -2, -2, -2 );
             if( arg2 < 0 || arg2 > 10 )
             {
-               bug( "%s: 'R': bad exit %d.", __func__, arg2 );
+               bug( "{}: 'R': bad exit {}.", __func__, arg2 );
                if( fBootDb )
                   boot_log( "{}: {} ({}) 'R': bad exit {}.", __func__, tarea->filename, count, arg2 );
                break;
@@ -859,11 +859,11 @@ void load_rooms( area_data * tarea, FILE * fp )
       letter = fread_letter( fp );
       if( letter != '#' )
       {
-         bug( "%s: # not found.", __func__ );
+         bug( "{}: # not found.", __func__ );
          if( fBootDb )
          {
             shutdown_mud( "# not found" );
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          }
          else
             return;
@@ -879,7 +879,7 @@ void load_rooms( area_data * tarea, FILE * fp )
       {
          if( tmpBootDb )
          {
-            bug( "%s: vnum %d duplicated.", __func__, vnum );
+            bug( "{}: vnum {} duplicated.", __func__, vnum );
             shutdown_mud( "duplicate vnum" );
             std::exit( EXIT_FAILURE );
          }
@@ -907,7 +907,7 @@ void load_rooms( area_data * tarea, FILE * fp )
          {
             int count = 0;
 
-            bug( "%s: WARNING: resets already exist for this room.", __func__ );
+            bug( "{}: WARNING: resets already exist for this room.", __func__ );
             for( auto* rtmp : pRoomIndex->resets )
             {
                ++count;
@@ -951,7 +951,7 @@ void load_rooms( area_data * tarea, FILE * fp )
       int sector = get_sectypes( fread_flagstring( fp ) );
       if( sector < 0 || sector >= SECT_MAX )
       {
-         bug( "%s: Room #%d has bad sector type.", __func__, vnum );
+         bug( "{}: Room #{} has bad sector type.", __func__, vnum );
          sector = 1;
       }
 
@@ -984,7 +984,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 
       if( pRoomIndex->sector_type < 0 || pRoomIndex->sector_type >= SECT_MAX )
       {
-         bug( "%s: vnum %d has bad sector_type %d.", __func__, vnum, pRoomIndex->sector_type );
+         bug( "{}: vnum {} has bad sector_type {}.", __func__, vnum, pRoomIndex->sector_type );
          pRoomIndex->sector_type = 1;
       }
 
@@ -1011,7 +1011,7 @@ void load_rooms( area_data * tarea, FILE * fp )
             loc = fread_word( fp );
             value = get_atype( loc );
             if( value < 0 || value >= MAX_APPLY_TYPE )
-               bug( "%s: Invalid apply type: %s", __func__, loc );
+               bug( "{}: Invalid apply type: {}", __func__, loc );
             else
                paf->location = value;
 
@@ -1024,7 +1024,7 @@ void load_rooms( area_data * tarea, FILE * fp )
                aff = fread_word( fp );
                value = get_aflag( aff );
                if( value < 0 || value >= MAX_AFFECTED_BY )
-                  bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
+                  bug( "{}: Unsupportable value for affect flag: {}", __func__, aff );
                else
                   paf->modifier = value;
             }
@@ -1048,9 +1048,9 @@ void load_rooms( area_data * tarea, FILE * fp )
 
             if( door < 0 || door > DIR_SOMEWHERE )
             {
-               bug( "%s: vnum %d has bad door number %d.", __func__, vnum, door );
+               bug( "{}: vnum {} has bad door number {}.", __func__, vnum, door );
                if( fBootDb )
-                  exit( 1 );
+                  std::exit( EXIT_FAILURE );
             }
             else
             {
@@ -1098,9 +1098,9 @@ void load_rooms( area_data * tarea, FILE * fp )
          }
          else
          {
-            bug( "%s: vnum %d has flag '%c' not 'ADESR'.", __func__, vnum, letter );
+            bug( "{}: vnum {} has flag '{}' not 'ADESR'.", __func__, vnum, letter );
             shutdown_mud( "Room flag not ADESR" );
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          }
       }
 
@@ -1183,13 +1183,13 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
 {
    if( !fpArea )
    {
-      bug( "%s: Bad FILE pointer passed!", __func__ );
+      bug( "{}: Bad FILE pointer passed!", __func__ );
       return true;
    }
 
    if( !tarea )
    {
-      bug( "%s: Bad area pointer passed!", __func__ );
+      bug( "{}: Bad area pointer passed!", __func__ );
       return true;
    }
 
@@ -1199,8 +1199,8 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
    {
       if( fread_letter( fpArea ) != '#' )
       {
-         bug( "%s: # not found %s", __func__, tarea->filename );
-         exit( 1 );
+         bug( "{}: # not found {}", __func__, tarea->filename );
+         std::exit( EXIT_FAILURE );
       }
 
       const char *word = fread_word( fpArea );
@@ -1275,7 +1275,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
 
          if( !( continent = find_continent_by_name( value ) ) )
          {
-            bug( "%s: Invalid area continent '%s' - Needs to be manually corrected.", __func__, value.c_str( ) );
+            bug( "{}: Invalid area continent '{}' - Needs to be manually corrected.", __func__, value );
             tarea->continent = nullptr;
          }
          else
@@ -1293,13 +1293,13 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
 
          if( !is_valid_x( x ) )
          {
-            bug( "%s: Area has bad x coord - setting X to 0", __func__ );
+            bug( "{}: Area has bad x coord - setting X to 0", __func__ );
             x = 0;
          }
 
          if( !is_valid_y( y ) )
          {
-            bug( "%s: Area has bad y coord - setting Y to 0", __func__ );
+            bug( "{}: Area has bad y coord - setting Y to 0", __func__ );
             y = 0;
          }
          tarea->map_x = x;
@@ -1371,8 +1371,8 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
             switch ( letter = fread_letter( fpArea ) )
             {
                default:
-                  bug( "%s: letter '%c' not *MSOR.", __func__, letter );
-                  exit( 1 );
+                  bug( "{}: letter '{}' not *MSOR.", __func__, letter );
+                  std::exit( EXIT_FAILURE );
 
                case 'S':
                   done = true;
@@ -1386,12 +1386,12 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
                   temp = fread_word( fpArea );
                   if( !pMobIndex )
                   {
-                     bug( "%s: 'M': Invalid mob vnum!", __func__ );
+                     bug( "{}: 'M': Invalid mob vnum!", __func__ );
                      break;
                   }
                   if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                   {
-                     bug( "%s: 'M': vnum %d, no spec_fun called %s.", __func__, pMobIndex->vnum, temp );
+                     bug( "{}: 'M': vnum {}, no spec_fun called {}.", __func__, pMobIndex->vnum, temp );
                      pMobIndex->spec_funname.clear(  );
                   }
                   else
@@ -1405,7 +1405,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       }
       else
       {
-         bug( "%s: %s bad section name %s", __func__, tarea->filename, word );
+         bug( "{}: {} bad section name {}", __func__, tarea->filename, word );
          return true;
       }
    }

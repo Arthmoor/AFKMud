@@ -930,7 +930,7 @@ CMDF( do_description )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __func__ );
+      bug( "{}: no descriptor", __func__ );
       return;
    }
 
@@ -943,7 +943,7 @@ CMDF( do_description )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: %s illegal substate %d", __func__, ch->name.c_str(), ch->substate );
+         bug( "{}: {} illegal substate %d", __func__, ch->name, ch->substate );
          return;
 
       case SUB_RESTRICTED:
@@ -958,7 +958,7 @@ CMDF( do_description )
          return;
 
       case SUB_PERSONAL_DESC:
-         ch->chardesc = ch->copy_buffer( true );
+         ch->chardesc = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
 
@@ -980,7 +980,7 @@ CMDF( do_bio )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __func__ );
+      bug( "{}: no descriptor", __func__ );
       return;
    }
 
@@ -993,7 +993,7 @@ CMDF( do_bio )
    switch ( ch->substate )
    {
       default:
-         bug( "%s: %s illegal substate %d", __func__, ch->name.c_str(), ch->substate );
+         bug( "{}: {} illegal substate {}", __func__, ch->name, ch->substate );
          return;
 
       case SUB_RESTRICTED:
@@ -1008,7 +1008,7 @@ CMDF( do_bio )
          return;
 
       case SUB_PERSONAL_BIO:
-         ch->pcdata->bio = ch->copy_buffer( false );
+         ch->pcdata->bio = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
 
@@ -1232,7 +1232,7 @@ int afk_who( char_data * ch )
 
    if( !ch )
    {
-      bug( "%s: Called with no *ch!", __func__ );
+      bug( "{}: Called with no *ch!", __func__ );
       return 0;
    }
 
@@ -1269,7 +1269,7 @@ int afk_who( char_data * ch )
    {
       pcount += players.size(  );
 
-      ch->pagerf( "\r\n%s--------------------------------=[ %sPlayers %s]=---------------------------------\r\n\r\n", s7.c_str(), s6.c_str(), s7.c_str() );
+      ch->pager_fmt( "\r\n{}--------------------------------=[ {}Players {}]=---------------------------------\r\n\r\n", s7, s6, s7 );
 
       for( auto* player : players )
       {
@@ -1282,7 +1282,7 @@ int afk_who( char_data * ch )
    {
       pcount += immortals.size(  );
 
-      ch->pagerf( "\r\n%s-------------------------------=[ %sImmortals %s]=--------------------------------\r\n\r\n", s1.c_str(), s6.c_str(), s1.c_str() );
+      ch->pager_fmt( "\r\n{}-------------------------------=[ {}Immortals {}]=--------------------------------\r\n\r\n", s1, s6, s1 );
 
       for( auto* player : players )
       {
@@ -1314,15 +1314,15 @@ CMDF( do_who )
       outbuf += " ";
 
    outbuf.append( buf );
-   ch->pagerf( "%s\r\n", outbuf.c_str() );
+   ch->pager_fmt( "{}\r\n", outbuf );
 
    pcount = afk_who( ch );
 
-   ch->pagerf( "\r\n\r\n%s[%s%d Player%s%s] ", s3.c_str(), s2.c_str(), pcount, pcount == 1 ? "" : "s", s3.c_str() );
+   ch->pager_fmt( "\r\n\r\n{}[{}{} Player{}{}] ", s3, s2, pcount, pcount == 1 ? "" : "s", s3 );
 
-   ch->pagerf( "%s[%sHomepage: %s%s] [%s%d Max since reboot%s]\r\n", s3.c_str(), s2.c_str(), sysdata->http.c_str(  ), s3.c_str(), s2.c_str(), sysdata->maxplayers, s3.c_str() );
+   ch->pager_fmt( "{}[{}Homepage: {}{}] [{}{} Max since reboot{}]\r\n", s3, s2, sysdata->http, s3, s2, sysdata->maxplayers, s3 );
 
-   ch->pagerf( "%s[%s%d login%s since last reboot on %s%s]\r\n", s3.c_str(), s2.c_str(), num_logins, num_logins == 1 ? "" : "s", str_boot_time.c_str(), s3.c_str() );
+   ch->pager_fmt( "{}[{}{} login{} since last reboot on {}{}]\r\n", s3, s2, num_logins, num_logins == 1 ? "" : "s", str_boot_time, s3 );
 }
 
 /*
@@ -2086,7 +2086,7 @@ CMDF( do_journal )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __func__ );
+      bug( "{}: no descriptor", __func__ );
       return;
    }
 
@@ -2101,7 +2101,7 @@ CMDF( do_journal )
       case SUB_JOURNAL_WRITE:
          if( ( journal = ch->get_eq( WEAR_HOLD ) ) == nullptr || journal->item_type != ITEM_JOURNAL )
          {
-            bug( "%s: Player not holding journal. (Player: %s)", __func__, ch->name.c_str() );
+            bug( "{}: Player not holding journal. (Player: {})", __func__, ch->name );
             ch->stop_editing( );
             return;
          }
@@ -2166,7 +2166,7 @@ CMDF( do_journal )
       if( journal->value[0] > 50 )
       {
          journal->value[0] = 50;
-         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name.c_str() );
+         bug( "{}: Journal size greater than 50 pages! Resetting to 50 pages. (Player: {})", __func__, ch->name );
       }
 
       ch->set_color( AT_GREY );
@@ -2215,10 +2215,10 @@ CMDF( do_journal )
          if( journal->value[0] > 50 )
          {
             journal->value[0] = 50;
-            bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name.c_str() );
+            bug( "{}: Journal size greater than 50 pages! Resetting to 50 pages. (Player: {})", __func__, ch->name );
          }
          ch->set_color( AT_GREY );
-         ch->printf( "There are %d pages in this journal.\r\n", journal->value[0] );
+         ch->print_fmt( "There are {} pages in this journal.\r\n", journal->value[0] );
          return;
       }
    }
@@ -2243,7 +2243,7 @@ CMDF( do_journal )
 
       if( is_number( arg2 ) )
       {
-         anum = atoi( arg2.c_str() );
+         anum = std::stoi( arg2 );
       }
 
       if( ( journal = ch->get_eq( WEAR_HOLD ) ) == nullptr || journal->item_type != ITEM_JOURNAL )
@@ -2255,7 +2255,7 @@ CMDF( do_journal )
       if( journal->value[0] > 50 )
       {
          journal->value[0] = 50;
-         bug( "%s: Journal size greater than 50 pages! Resetting to 50 pages. (Player: %s)", __func__, ch->name.c_str() );
+         bug( "{}: Journal size greater than 50 pages! Resetting to 50 pages. (Player: {})", __func__, ch->name );
       }
 
       ch->set_color( AT_GREY );

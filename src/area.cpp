@@ -372,7 +372,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
                if( door < 0 || door > DIR_SOMEWHERE )
                {
-                  bug( "%s: vnum %d has bad door number %d.", __func__, pRoomIndex->vnum, door );
+                  bug( "{}: vnum {} has bad door number {}.", __func__, pRoomIndex->vnum, door );
                   if( fBootDb )
                      return;
                }
@@ -415,7 +415,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
    }
 
    // Reach this point, you fell through somehow. The data is no longer valid.
-   bug( "%s: Reached fallout point! Exit data invalid.", __func__ );
+   bug( "{}: Reached fallout point! Exit data invalid.", __func__ );
    if( pexit )
       pRoomIndex->extract_exit( pexit );
 }
@@ -439,7 +439,7 @@ affect_data *fread_afk_affect( FILE * fp )
    value = get_atype( loc );
    if( value < 0 || value >= MAX_APPLY_TYPE )
    {
-      bug( "%s: Invalid apply type: %s", __func__, loc );
+      bug( "{}: Invalid apply type: {}", __func__, loc );
       setaff = false;
    }
    paf->location = value;
@@ -454,7 +454,7 @@ affect_data *fread_afk_affect( FILE * fp )
       value = get_aflag( aff );
       if( value < 0 || value >= MAX_AFFECTED_BY )
       {
-         bug( "%s: Unsupportable value for affect flag: %s", __func__, aff );
+         bug( "{}: Unsupportable value for affect flag: {}", __func__, aff );
          setaff = false;
       }
       else
@@ -502,7 +502,7 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
             {
                if( ed->keyword.empty(  ) )
                {
-                  bug( "%s: Missing ExDesc keyword. Returning nullptr.", __func__ );
+                  bug( "{}: Missing ExDesc keyword. Returning nullptr.", __func__ );
                   deleteptr( ed );
                   return nullptr;
                }
@@ -518,7 +518,7 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
    }
 
    // Reach this point, you fell through somehow. The data is no longer valid.
-   bug( "%s: Reached fallout point! ExtraDesc data invalid.", __func__ );
+   bug( "{}: Reached fallout point! ExtraDesc data invalid.", __func__ );
    deleteptr( ed );
    return nullptr;
 }
@@ -573,7 +573,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
                if( !( continent = find_continent_by_name( value ) ) )
                {
-                  bug( "%s: Invalid area continent '%s' - Needs to be manually corrected.", __func__, value.c_str( ) );
+                  bug( "{}: Invalid area continent '{}' - Needs to be manually corrected.", __func__, value );
                   tarea->continent = nullptr;
                }
                else
@@ -592,13 +592,13 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
                if( !is_valid_x( x ) )
                {
-                  bug( "%s: Area has bad x coord - setting X to 0", __func__ );
+                  bug( "{}: Area has bad x coord - setting X to 0", __func__ );
                   x = 0;
                }
 
                if( !is_valid_y( y ) )
                {
-                  bug( "%s: Area has bad y coord - setting Y to 0", __func__ );
+                  bug( "{}: Area has bad y coord - setting Y to 0", __func__ );
                   y = 0;
                }
 
@@ -796,7 +796,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: vnum %d: Mob has invalid Class! Defaulting to warrior.", __func__, pMobIndex->vnum );
+                  bug( "{}: vnum {}: Mob has invalid Class! Defaulting to warrior.", __func__, pMobIndex->vnum );
                   Class = get_npc_class( "warrior" );
                }
 
@@ -818,7 +818,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: vnum %d: Mobile in invalid default position! Defaulting to standing.", __func__, pMobIndex->vnum );
+                  bug( "{}: vnum {}: Mobile in invalid default position! Defaulting to standing.", __func__, pMobIndex->vnum );
                   position = POS_STANDING;
                }
                pMobIndex->defposition = position;
@@ -846,7 +846,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( sex < 0 || sex >= SEX_MAX )
                {
-                  bug( "%s: vnum %d: Mobile has invalid gender! Defaulting to neuter.", __func__, pMobIndex->vnum );
+                  bug( "{}: vnum {}: Mobile has invalid gender! Defaulting to neuter.", __func__, pMobIndex->vnum );
                   sex = SEX_NEUTRAL;
                }
                pMobIndex->sex = sex;
@@ -881,7 +881,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( position < 0 || position >= POS_MAX )
                {
-                  bug( "%s: vnum %d: Mobile in invalid position! Defaulting to standing.", __func__, pMobIndex->vnum );
+                  bug( "{}: vnum {}: Mobile in invalid position! Defaulting to standing.", __func__, pMobIndex->vnum );
                   position = POS_STANDING;
                }
                pMobIndex->position = position;
@@ -897,7 +897,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( race < 0 || race >= MAX_NPC_RACE )
                {
-                  bug( "%s: vnum %d: Mob has invalid race: %s. Defaulting to monster.", __func__, pMobIndex->vnum, race_text );
+                  bug( "{}: vnum {}: Mob has invalid race: %s. Defaulting to monster.", __func__, pMobIndex->vnum, race_text );
                   race = get_npc_race( "monster" );
                }
 
@@ -976,7 +976,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
                speaking = one_argument( speaking, flag );
                value = get_langnum( flag );
                if( value < 0 || value >= LANG_UNKNOWN )
-                  bug( "Unknown speaking language: %s", flag.c_str() );
+                  bug( "Unknown speaking language: {}", flag );
                else
                   pMobIndex->speaking = value;
 
@@ -991,12 +991,12 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
                if( !pMobIndex )
                {
-                  bug( "%s: Specfun: Invalid mob vnum!", __func__ );
+                  bug( "{}: Specfun: Invalid mob vnum!", __func__ );
                   break;
                }
                if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                {
-                  bug( "%s: Specfun: vnum %d, no spec_fun called %s.", __func__, pMobIndex->vnum, temp );
+                  bug( "{}: Specfun: vnum {}, no spec_fun called {}.", __func__, pMobIndex->vnum, temp );
                   pMobIndex->spec_funname.clear(  );
                }
                else
@@ -1068,7 +1068,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __func__, vnum );
+                     bug( "{}: vnum {} duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated mobile and then bail out
                      for( ;; )
@@ -1128,7 +1128,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
       switch ( word[0] )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1288,7 +1288,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
 
                if( value < 0 )
                {
-                  bug( "%s: vnum %d: Object has invalid type! Defaulting to trash.", __func__, pObjIndex->vnum );
+                  bug( "{}: vnum {}: Object has invalid type! Defaulting to trash.", __func__, pObjIndex->vnum );
                   value = get_otype( "trash" );
                }
                pObjIndex->item_type = value;
@@ -1344,7 +1344,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __func__, vnum );
+                     bug( "{}: vnum {} duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated object and then bail out
                      for( ;; )
@@ -1415,7 +1415,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
       switch ( word[0] )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1494,7 +1494,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
 
                if( sector < 0 || sector >= SECT_MAX )
                {
-                  bug( "%s: Room #%d has bad sector type.", __func__, pRoomIndex->vnum );
+                  bug( "{}: Room #{} has bad sector type.", __func__, pRoomIndex->vnum );
                   sector = 1;
                }
 
@@ -1535,7 +1535,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                   if( tmpBootDb )
                   {
                      fBootDb = tmpBootDb;
-                     bug( "%s: vnum %d duplicated.", __func__, vnum );
+                     bug( "{}: vnum {} duplicated.", __func__, vnum );
 
                      // Try to recover, read to end of duplicated room and then bail out
                      for( ;; )
@@ -1577,7 +1577,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
                   {
                      int count = 0;
 
-                     bug( "%s: WARNING: resets already exist for this room.", __func__ );
+                     bug( "{}: WARNING: resets already exist for this room.", __func__ );
                      for( auto* rtmp : pRoomIndex->resets )
                      {
                         ++count;
@@ -1628,9 +1628,9 @@ area_data *fread_afk_area( FILE * fp )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found. Invalid format.", __func__ );
+         bug( "{}: # not found. Invalid format.", __func__ );
          if( fBootDb )
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          break;
       }
 
@@ -1638,7 +1638,7 @@ area_data *fread_afk_area( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "ENDAREA";
       }
 
@@ -1658,7 +1658,7 @@ area_data *fread_afk_area( FILE * fp )
          break;
       else
       {
-         bug( "%s: Bad section header: %s", __func__, word );
+         bug( "{}: Bad section header: {}", __func__, word );
          fread_to_eol( fp );
       }
    }
@@ -1686,7 +1686,7 @@ void load_area_file( const std::string & filename, bool isproto )
    if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
    {
       perror( filename.c_str(  ) );
-      bug( "%s: error loading file (can't open) %s", __func__, filename.c_str(  ) );
+      bug( "{}: error loading file (can't open) {}", __func__, filename );
       return;
    }
 
@@ -1694,12 +1694,12 @@ void load_area_file( const std::string & filename, bool isproto )
    {
       if( fBootDb )
       {
-         bug( "%s: No # found at start of area file.", __func__ );
-         exit( 1 );
+         bug( "{}: No # found at start of area file.", __func__ );
+         std::exit( EXIT_FAILURE );
       }
       else
       {
-         bug( "%s: No # found at start of area file.", __func__ );
+         bug( "{}: No # found at start of area file.", __func__ );
          FCLOSE( fpArea );
          return;
       }
@@ -1754,9 +1754,9 @@ void load_area_file( const std::string & filename, bool isproto )
             return;
          }
 
-         bug( "%s: Invalid header at start of area file: %s", __func__, word );
+         bug( "{}: Invalid header at start of area file: {}", __func__, word );
          if( fBootDb )
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          else
          {
             FCLOSE( fpArea );
@@ -1764,7 +1764,7 @@ void load_area_file( const std::string & filename, bool isproto )
          }
       }
 
-      bug( "%s: Invalid header at start of area file: %s", __func__, word );
+      bug( "{}: Invalid header at start of area file: {}", __func__, word );
       if( fBootDb )
          exit( 1 );
       else
@@ -1781,8 +1781,8 @@ void load_area_file( const std::string & filename, bool isproto )
 
       if( fread_letter( fpArea ) != '#' )
       {
-         bug( "%s: # not found %s", __func__, tarea->filename );
-         exit( 1 );
+         bug( "{}: # not found {}", __func__, tarea->filename );
+         std::exit( EXIT_FAILURE );
       }
 
       word = fread_word( fpArea );
@@ -1796,7 +1796,7 @@ void load_area_file( const std::string & filename, bool isproto )
 
          if( aversion <= 3 )
          {
-            log_string( "Smaug 1.02a, 1.4a, or 1.8b area encountered. Attempting to pass to Area Convertor." );
+            log_string( "Smaug 1.02a, 1.4a, or 1.8b area encountered. Attempting to pass to Area Converter." );
             FCLOSE( fpArea );
             deleteptr( tarea );
             --top_area;
@@ -1806,7 +1806,7 @@ void load_area_file( const std::string & filename, bool isproto )
 
          if( aversion == 1000 )
          {
-            log_string( "SmaugWiz 2.02 area encountered. Attempting to pass to Area Convertor." );
+            log_string( "SmaugWiz 2.02 area encountered. Attempting to pass to Area Converter." );
             FCLOSE( fpArea );
             deleteptr( tarea );
             do_areaconvert( nullptr, filename );
@@ -1822,9 +1822,9 @@ void load_area_file( const std::string & filename, bool isproto )
                break;
             else
             {
-               bug( "%s: Bad conversion from AFKMud 1.x format. Cannot continue.", __func__ );
+               bug( "{}: Bad conversion from AFKMud 1.x format. Cannot continue.", __func__ );
                if( fBootDb )
-                  exit( 1 );
+                  std::exit( EXIT_FAILURE );
                else
                {
                   FCLOSE( fpArea );
@@ -1833,9 +1833,9 @@ void load_area_file( const std::string & filename, bool isproto )
             return;
          }
 
-         bug( "%s: %s:%d - Bad version header. Format conversion failed.", __func__, word, aversion );
+         bug( "{}: {}:{} - Bad version header. Format conversion failed.", __func__, word, aversion );
          if( fBootDb )
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          else
          {
             FCLOSE( fpArea );
@@ -1844,9 +1844,9 @@ void load_area_file( const std::string & filename, bool isproto )
       }
       else
       {
-         bug( "%s: %s bad section name %s", __func__, tarea->filename, word );
+         bug( "{}: {} bad section name {}", __func__, tarea->filename, word );
          if( fBootDb )
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
          else
          {
             FCLOSE( fpArea );
@@ -1933,7 +1933,7 @@ void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int l
       switch ( to_upper( pReset->command ) ) /* extra arg1 arg2 arg3 */
       {
          default:
-            bug( "%s: Invalid reset type %c", __func__, to_upper( pReset->command ) );
+            bug( "{}: Invalid reset type {}", __func__, to_upper( pReset->command ) );
             break;
 
          case '*':
@@ -2330,8 +2330,7 @@ void area_data::fold( const std::string & fname, bool install )
    std::filesystem::rename( fname, buf.c_str() );
    if( !( fpout = fopen( fname.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( fname.c_str() );
+      bug( "{}: Cannot open area file '{}' for writing!", __func__, fname );
       return;
    }
 
@@ -2472,7 +2471,7 @@ void write_area_list( void )
    fpout = fopen( AREA_LIST.data(), "w" );
    if( !fpout )
    {
-      bug( "%s: cannot open area.lst for writing!", __func__ );
+      bug( "{}: cannot open area.lst for writing!", __func__ );
       return;
    }
 

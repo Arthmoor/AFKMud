@@ -120,7 +120,7 @@ struct mud_msgbuf
 void close_queue( void )
 {
    msgctl( qid, IPC_RMID, 0 );
-   bug( "%s", "close_queue" );
+   bug( "{}: {}", __func__, "close_queue" );
 }
 
 int open_queue( void )
@@ -140,11 +140,7 @@ int open_queue( void )
 
    if( ( qid = msgget( keyval, IPC_CREAT | 0666 ) ) == -1 )
    {
-#if defined(__FreeBSD__)
-      bug( "Unable to msgget keyval %ld.", keyval );
-#else
-      bug( "Unable to msgget keyval %d.", keyval );
-#endif
+      bug( "{}: Unable to msgget keyval {}.", __func__, keyval );
       return -1;
    }
 
@@ -172,7 +168,7 @@ void mud_send_message( const char *arg )
       qbuf.mtype = other_ports[x];
 
       if( msgsnd( qid, &qbuf, strlen( qbuf.mtext ) + 1, 0 ) == -1 )
-         bug( "%s: errno: %d", __func__, errno );
+         bug( "{}: errno: {}", __func__, errno );
    }
 }
 
@@ -210,7 +206,7 @@ void recv_text_handler( std::string & str )
 
    if( !( channel = find_channel( arg1 ) ) )
    {
-      bug( "%s: channel %s doesn't exist!", __func__, arg1.c_str(  ) );
+      bug( "{}: channel {} doesn't exist!", __func__, arg1 );
       return;
    }
 
@@ -221,7 +217,7 @@ void recv_text_handler( std::string & str )
 
    if( !isnpc )
    {
-      ch->name = STRALLOC( capitalize( chname ).c_str() );
+      ch->name = capitalize( chname ) );
       ch->pcdata = new pc_data;
       ch->pcdata->wizinvis = ilevel;
       if( isinvis )
@@ -230,7 +226,7 @@ void recv_text_handler( std::string & str )
    else
    {
       ch->set_actflag( ACT_IS_NPC );
-      ch->short_descr = STRALLOC( capitalize( chname ).c_str() );
+      ch->short_descr = capitalize( chname ) );
       ch->mobinvis = ilevel;
    }
    ch->level = clevel;
@@ -256,5 +252,5 @@ void mud_recv_message( void )
    }
 
    if( ret == -1 && errno != ENOMSG )
-      bug( "%s: errno: %d", __func__, errno );
+      bug( "{}: errno: {}", __func__, errno );
 }

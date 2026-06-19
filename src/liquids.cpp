@@ -143,7 +143,7 @@ void save_liquids( void )
    filename = std::format( "{}liquids.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __func__, filename.c_str() );
+      bug( "{}: cannot open {} for writing", __func__, filename.string() );
       return;
    }
 
@@ -179,14 +179,14 @@ liquid_data *fread_liquid( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -248,7 +248,7 @@ void load_liquids( void )
    filename = std::format( "{}liquids.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
+      bug( "{}: cannot open {} for reading", __func__, filename.string() );
       return;
    }
 
@@ -271,7 +271,7 @@ void load_liquids( void )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found (%c)", __func__, letter );
+         bug( "{}: # not found ({})", __func__, letter );
          return;
       }
 
@@ -286,7 +286,7 @@ void load_liquids( void )
          liquid_data *liq = fread_liquid( fp );
 
          if( !liq )
-            bug( "%s: returned nullptr liquid", __func__ );
+            bug( "{}: returned nullptr liquid", __func__ );
          else
          {
             liquid_table[liq->vnum] = liq;
@@ -300,7 +300,7 @@ void load_liquids( void )
          break;
       else
       {
-         bug( "%s: no match for %s", __func__, word );
+         bug( "{}: no match for {}", __func__, word );
          continue;
       }
    }
@@ -320,7 +320,7 @@ void save_mixtures( void )
    std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: cannot open %s for writing", __func__, filename.c_str() );
+      bug( "{}: cannot open {} for writing", __func__, filename.string() );
       return;
    }
 
@@ -348,14 +348,14 @@ mixture_data *fread_mixture( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -413,7 +413,7 @@ void load_mixtures( void )
    std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
    {
-      bug( "%s: cannot open %s for reading", __func__, filename.c_str() );
+      bug( "{}: cannot open {} for reading", __func__, filename.string() );
       return;
    }
 
@@ -430,7 +430,7 @@ void load_mixtures( void )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found (%c)", __func__, letter );
+         bug( "{}: # not found ({})", __func__, letter );
          return;
       }
 
@@ -446,7 +446,7 @@ void load_mixtures( void )
 
          mix = fread_mixture( fp );
          if( !mix )
-            bug( "%s: mixture returned nullptr", __func__ );
+            bug( "{}: mixture returned nullptr", __func__ );
          else
             mixlist.push_back( mix );
       }
@@ -454,7 +454,7 @@ void load_mixtures( void )
          break;
       else
       {
-         bug( "%s: no match for %s", __func__, word );
+         bug( "{}: no match for {}", __func__, word );
          break;
       }
    }
@@ -509,7 +509,7 @@ liquid_data *get_liq_vnum( int vnum )
     */
    if( vnum < 0 || vnum > top_liquid )
    {
-      bug( "%s: Invalid vnum %d, returning nullptr", __func__, vnum );
+      bug( "{}: Invalid vnum {}, returning nullptr", __func__, vnum );
       return nullptr;
    }
 
@@ -1352,7 +1352,7 @@ CMDF( do_drink )
 
          if( !( liq = get_liq_vnum( obj->value[2] ) ) )
          {
-            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
+            bug( "{}: bad liquid number {}.", __func__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
@@ -1380,13 +1380,13 @@ CMDF( do_drink )
 
          if( obj->value[1] <= 0 )
          { 
-            bug( "%s: empty puddle %d.", __func__, obj->in_room->vnum ); 
+            bug( "{}: empty puddle {}.", __func__, obj->in_room->vnum );
             return; 
          } 
 
          if( ( liq = get_liq_vnum( obj->value[2] ) ) == nullptr )
          { 
-            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
+            bug( "{}: bad liquid number {}.", __func__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
@@ -1463,7 +1463,7 @@ CMDF( do_drink )
 
          if( !( liq = get_liq_vnum( obj->value[2] ) ) )
          {
-            bug( "%s: bad liquid number %d.", __func__, obj->value[2] );
+            bug( "{}: bad liquid number {}.", __func__, obj->value[2] );
             liq = get_liq_vnum( 0 );
          }
 
@@ -1886,7 +1886,7 @@ CMDF( do_fill )
    switch ( source->item_type )
    {
       default:
-         bug( "%s: got bad item type: %d", __func__, source->item_type );
+         bug( "{}: got bad item type: {}", __func__, source->item_type );
          ch->print( "Something went wrong...\r\n" );
          return;
 

@@ -531,7 +531,7 @@ void room_index::rprog_read_programs( FILE * fp )
 
       if( letter != '>' )
       {
-         bug( "%s: vnum %d MUDPROG char", __func__, vnum );
+         bug( "{}: vnum {} MUDPROG char", __func__, vnum );
          std::exit( EXIT_FAILURE );
       }
       mprg = new mud_prog_data;
@@ -543,8 +543,8 @@ void room_index::rprog_read_programs( FILE * fp )
       switch ( mprg->type )
       {
          case ERROR_PROG:
-            bug( "%s: vnum %d MUDPROG type.", __func__, vnum );
-            exit( 1 );
+            bug( "{}: vnum {} MUDPROG type.", __func__, vnum );
+            std::exit( EXIT_FAILURE );
 
          case IN_FILE_PROG:
             mprg->arglist = fread_string( fp );
@@ -801,7 +801,7 @@ room_index *get_room_index( int vnum )
       return iroom->second;
 
    if( fBootDb )
-      bug( "%s: bad vnum %d.", __func__, vnum );
+      bug( "{}: bad vnum {}.", __func__, vnum );
 
    return nullptr;
 }
@@ -965,7 +965,7 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, in
       case 'Y':
          if( !last_mob_reset )
          {
-            bug( "%s: Can't add '%c' reset to room: last_mob_reset is nullptr.", __func__, letter );
+            bug( "{}: Can't add '{}' reset to room: last_mob_reset is nullptr.", __func__, letter );
             return nullptr;
          }
          last_obj_reset = pReset;
@@ -976,7 +976,7 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, in
       case 'W':
          if( !last_obj_reset )
          {
-            bug( "%s: Can't add '%c' reset to room: last_obj_reset is nullptr.", __func__, letter );
+            bug( "{}: Can't add '{}' reset to room: last_obj_reset is nullptr.", __func__, letter );
             return nullptr;
          }
          last_obj_reset->resets.push_back( pReset );
@@ -1071,7 +1071,7 @@ void room_index::reset(  )
       switch ( pReset->command )
       {
          default:
-            bug( "%s: %s: bad command %c.", __func__, filename, pReset->command );
+            bug( "{}: {}: bad command {}.", __func__, filename, pReset->command );
             break;
 
          case 'M':
@@ -1082,13 +1082,13 @@ void room_index::reset(  )
 
             if( !( pMobIndex = get_mob_index( pReset->arg1 ) ) )
             {
-               bug( "%s: %s: 'M': bad mob vnum %d.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'M': bad mob vnum {}.", __func__, filename, pReset->arg1 );
                break;
             }
 
             if( !( pRoomIndex = get_room_index( pReset->arg3 ) ) )
             {
-               bug( "%s: %s: 'M': bad room vnum %d.", __func__, filename, pReset->arg3 );
+               bug( "{}: {}: 'M': bad room vnum {}.", __func__, filename, pReset->arg3 );
                break;
             }
 
@@ -1225,7 +1225,7 @@ void room_index::reset(  )
                            {
                               if( objnew->carried_by != mob )
                               {
-                                 bug( "'X' reset: can't give object %d to mob %d.", objnew->pIndexData->vnum, mob->pIndexData->vnum );
+                                 bug( "'X' reset: can't give object {} to mob {}.", objnew->pIndexData->vnum, mob->pIndexData->vnum );
                                  break;
                               }
                               mob->equip( objnew, tReset->arg7 );
@@ -1250,7 +1250,7 @@ void room_index::reset(  )
 
                         if( !( pObjIndex = get_obj_index( tReset->arg1 ) ) )
                         {
-                           bug( "%s: %s: 'E' or 'G': bad obj vnum %d.", __func__, filename, tReset->arg1 );
+                           bug( "{}: {}: 'E' or 'G': bad obj vnum {}.", __func__, filename, tReset->arg1 );
                            break;
                         }
 
@@ -1282,7 +1282,7 @@ void room_index::reset(  )
                         {
                            if( obj->carried_by != mob )
                            {
-                              bug( "'E' reset: can't give object %d to mob %d.", obj->pIndexData->vnum, mob->pIndexData->vnum );
+                              bug( "'E' reset: can't give object {} to mob {}.", obj->pIndexData->vnum, mob->pIndexData->vnum );
                               break;
                            }
                            mob->equip( obj, tReset->arg3 );
@@ -1321,13 +1321,13 @@ void room_index::reset(  )
 
                                     if( !( pObjIndex = get_obj_index( gReset->arg2 ) ) )
                                     {
-                                       bug( "%s: %s: 'P': bad obj vnum %d.", __func__, filename, gReset->arg2 );
+                                       bug( "{}: {}: 'P': bad obj vnum {}.", __func__, filename, gReset->arg2 );
                                        break;
                                     }
 
                                     if( !( pObjToIndex = get_obj_index( gReset->arg4 ) ) )
                                     {
-                                       bug( "%s: %s: 'P': bad objto vnum %d.", __func__, filename, gReset->arg4 );
+                                       bug( "{}: {}: 'P': bad objto vnum {}.", __func__, filename, gReset->arg4 );
                                        break;
                                     }
 
@@ -1392,7 +1392,7 @@ void room_index::reset(  )
 
             if( !( pRoomIndex = get_room_index( pReset->arg7 ) ) )
             {
-               bug( "%s: %s: 'Z': bad room vnum %d.", __func__, filename, pReset->arg7 );
+               bug( "{}: {}: 'Z': bad room vnum {}.", __func__, filename, pReset->arg7 );
                break;
             }
 
@@ -1426,12 +1426,12 @@ void room_index::reset(  )
 
             if( !( pObjIndex = get_obj_index( pReset->arg1 ) ) )
             {
-               bug( "%s: %s: 'O': bad obj vnum %d.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'O': bad obj vnum {}.", __func__, filename, pReset->arg1 );
                break;
             }
             if( !( pRoomIndex = get_room_index( pReset->arg3 ) ) )
             {
-               bug( "%s: %s: 'O': bad room vnum %d.", __func__, filename, pReset->arg3 );
+               bug( "{}: {}: 'O': bad room vnum {}.", __func__, filename, pReset->arg3 );
                break;
             }
 
@@ -1527,7 +1527,7 @@ void room_index::reset(  )
 
                         if( !IS_SET( tReset->arg1, TRAP_OBJ ) )
                         {
-                           bug( "%s: Room reset found on object reset list", __func__ );
+                           bug( "{}: Room reset found on object reset list", __func__ );
                            break;
                         }
                         else
@@ -1541,7 +1541,7 @@ void room_index::reset(  )
                            {
                               if( !( pObjToIndex = get_obj_index( tReset->arg4 ) ) )
                               {
-                                 bug( "%s: %s: 'T': bad objto vnum %d.", __func__, filename, tReset->arg4 );
+                                 bug( "{}: {}: 'T': bad objto vnum {}.", __func__, filename, tReset->arg4 );
                                  continue;
                               }
                               if( area->nplayer > 0 || !( to_obj = get_obj_type( pObjToIndex ) ) ||
@@ -1603,13 +1603,13 @@ void room_index::reset(  )
 
                         if( !( pObjIndex = get_obj_index( tReset->arg2 ) ) )
                         {
-                           bug( "%s: %s: 'P': bad obj vnum %d.", __func__, filename, tReset->arg2 );
+                           bug( "{}: {}: 'P': bad obj vnum {}.", __func__, filename, tReset->arg2 );
                            break;
                         }
 
                         if( !( pObjToIndex = get_obj_index( tReset->arg4 ) ) )
                         {
-                           bug( "%s: %s: 'P': bad objto vnum %d.", __func__, filename, tReset->arg4 );
+                           bug( "{}: {}: 'P': bad objto vnum {}.", __func__, filename, tReset->arg4 );
                            break;
                         }
 
@@ -1669,14 +1669,14 @@ void room_index::reset(  )
 
             if( IS_SET( pReset->arg1, TRAP_OBJ ) )
             {
-               bug( "%s: Object trap found in room %d reset list", __func__, vnum );
+               bug( "{}: Object trap found in room {} reset list", __func__, vnum );
                break;
             }
             else
             {
                if( !( pRoomIndex = get_room_index( pReset->arg4 ) ) )
                {
-                  bug( "%s: %s: 'T': bad room %d.", __func__, filename, pReset->arg4 );
+                  bug( "{}: {}: 'T': bad room {}.", __func__, filename, pReset->arg4 );
                   break;
                }
                if( area->nplayer > 0 || count_obj_list( pReset, get_obj_index( OBJ_VNUM_TRAP ), pRoomIndex->objects ) > 0 )
@@ -1693,7 +1693,7 @@ void room_index::reset(  )
 
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
-               bug( "%s: %s: 'D': bad room vnum %d.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'D': bad room vnum {}.", __func__, filename, pReset->arg1 );
                break;
             }
 
@@ -1731,7 +1731,7 @@ void room_index::reset(  )
 
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
-               bug( "%s: %s: 'R': bad room vnum %d.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'R': bad room vnum {}.", __func__, filename, pReset->arg1 );
                break;
             }
             pRoomIndex->randomize_exits( pReset->arg2 - 1 );
@@ -1822,7 +1822,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
    switch ( letter )
    {
       default:
-         bug( "%s: bad command '%c'.", __func__, letter );
+         bug( "{}: bad command '{}'.", __func__, letter );
          if( fBootDb )
             boot_log( "{}: {} ({}) bad command '{}'.", __func__, area->filename, count, letter );
          return;
@@ -1996,7 +1996,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
 
          if( arg2 < 0 || arg2 > MAX_DIR + 1 || !( pexit = get_exit( arg2 ) ) || !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
          {
-            bug( "%s: 'D': exit %d not door.", __func__, arg2 );
+            bug( "{}: 'D': exit {} not door.", __func__, arg2 );
             log_printf( "Reset: {} {} {} {} {} {}", letter, extra, arg1, arg2, arg3, arg4 );
             if( fBootDb )
                boot_log( "{}: {} ({}) 'D': exit {} not door.", __func__, area->filename, count, arg2 );
@@ -2004,7 +2004,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
 
          if( arg3 < 0 || arg3 > 2 )
          {
-            bug( "%s: 'D': bad 'locks': %d.", __func__, arg3 );
+            bug( "{}: 'D': bad 'locks': {}.", __func__, arg3 );
             if( fBootDb )
                boot_log( "{}: {} ({}) 'D': bad 'locks': {}.", __func__, area->filename, count, arg3 );
          }
@@ -2018,7 +2018,7 @@ void room_index::load_reset( FILE * fp, bool newformat )
 
          if( arg2 < 0 || arg2 > 10 )
          {
-            bug( "%s: 'R': bad exit %d.", __func__, arg2 );
+            bug( "{}: 'R': bad exit {}.", __func__, arg2 );
             if( fBootDb )
                boot_log( "{}: {} ({}) 'R': bad exit {}.", __func__, area->filename, count, arg2 );
             break;

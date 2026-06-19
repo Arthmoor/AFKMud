@@ -559,7 +559,7 @@ const char *aoran( std::string_view str )
 {
    if( str.empty() )
    {
-      bug( "%s: empty str", __func__ );
+      bug( "{}: empty str", __func__ );
       return "";
    }
 
@@ -659,7 +659,7 @@ void string_erase( std::string & src, std::string_view find )
 {
    if( find.empty() )
    {
-      bug( "%s: Cannot search for an empty string!", __func__ );
+      bug( "{}: Cannot search for an empty string!", __func__ );
       return;
    }
 
@@ -676,7 +676,7 @@ void string_replace( std::string & src, std::string_view find, std::string_view 
 {
    if( find.empty() )
    {
-      bug( "%s: Cannot search for an empty string!", __func__ );
+      bug( "{}: Cannot search for an empty string!", __func__ );
       return;
    }
 
@@ -811,7 +811,7 @@ void char_data::stop_editing(  )
 
    if( !desc )
    {
-      bug( "Fatal: %s: no desc", __func__ );
+      bug( "Fatal: {}: no desc", __func__ );
       return;
    }
    desc->connected = CON_PLAYING;
@@ -825,11 +825,11 @@ void char_data::start_editing( std::string data )
 
    if( !desc )
    {
-      bug( "Fatal: %s: no desc", __func__ );
+      bug( "Fatal: {}: no desc", __func__ );
       return;
    }
    if( substate == SUB_RESTRICTED )
-      bug( "NOT GOOD: %s: ch->substate == SUB_RESTRICTED", __func__ );
+      bug( "NOT GOOD: {}: ch->substate == SUB_RESTRICTED", __func__ );
 
    set_color( AT_GREEN );
    print( "Begin entering your text now (/? = help /s = save /c = clear /l = list)\r\n" );
@@ -893,11 +893,11 @@ void char_data::start_editing( char *data )
 
    if( !desc )
    {
-      bug( "Fatal: %s: no desc", __func__ );
+      bug( "Fatal: {}: no desc", __func__ );
       return;
    }
    if( substate == SUB_RESTRICTED )
-      bug( "NOT GOOD: %s: ch->substate == SUB_RESTRICTED", __func__ );
+      bug( "NOT GOOD: {}: ch->substate == SUB_RESTRICTED", __func__ );
 
    set_color( AT_GREEN );
    print( "Begin entering your text now (/? = help /s = save /c = clear /l = list)\r\n" );
@@ -955,29 +955,24 @@ void char_data::start_editing( char *data )
 
 std::string char_data::copy_buffer(  )
 {
-   char buf[MSL], tmp[100];
-   short i, len;
-
    if( !pcdata->editor )
    {
-      bug( "%s: null editor", __func__ );
+      bug( "{}: null editor", __func__ );
       return "";
    }
 
-   buf[0] = '\0';
-   for( i = 0; i < pcdata->editor->numlines; ++i )
+   std::ostringstream oss;
+
+   for( int i = 0; i < pcdata->editor->numlines; ++i )
    {
-      strlcpy( tmp, pcdata->editor->line[i], 100 );
-      len = strlen( tmp );
-      if( len > 0 && tmp[len - 1] == '~' )
-         tmp[len - 1] = '\0';
+      std::string_view line{pcdata->editor->line[i]};
+
+      if( !line.empty() && line.back() == '~' )
+         oss << line.substr( 0, line.size() - 1 );
       else
-         strlcat( tmp, "\n", 100 );
-      smash_tilde( tmp );
-      strlcat( buf, tmp, MSL );
+         oss << line << '\n';
    }
-   std::string newbuf = buf;
-   return newbuf;
+   return oss.str();
 }
 
 char *char_data::copy_buffer( bool hash )
@@ -987,7 +982,7 @@ char *char_data::copy_buffer( bool hash )
 
    if( !pcdata->editor )
    {
-      bug( "%s: null editor", __func__ );
+      bug( "{}: null editor", __func__ );
       if( hash )
          return STRALLOC( "" );
       return strdup( "" );
@@ -1035,14 +1030,14 @@ void char_data::edit_buffer( std::string & argument )
    if( d->connected != CON_EDITING )
    {
       print( "You can't do that!\r\n" );
-      bug( "%s: d->connected != CON_EDITING", __func__ );
+      bug( "{}: d->connected != CON_EDITING", __func__ );
       return;
    }
 
    if( substate <= SUB_PAUSE )
    {
       print( "You can't do that!\r\n" );
-      bug( "%s: illegal ch->substate (%d)", __func__, substate );
+      bug( "{}: illegal ch->substate ({})", __func__, substate );
       d->connected = CON_PLAYING;
       return;
    }
@@ -1050,7 +1045,7 @@ void char_data::edit_buffer( std::string & argument )
    if( !pcdata->editor )
    {
       print( "You can't do that!\r\n" );
-      bug( "%s: null editor", __func__ );
+      bug( "{}: null editor", __func__ );
       d->connected = CON_PLAYING;
       return;
    }

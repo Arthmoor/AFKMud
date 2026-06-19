@@ -876,19 +876,19 @@ void add_shellcommand( shell_cmd * command )
 
    if( !command )
    {
-      bug( "%s: nullptr command", __func__ );
+      bug( "{}: nullptr command", __func__ );
       return;
    }
 
    if( command->get_name(  ).empty(  ) )
    {
-      bug( "%s: Empty command->name", __func__ );
+      bug( "{}: Empty command->name", __func__ );
       return;
    }
 
    if( !command->get_func(  ) )
    {
-      bug( "%s: nullptr command->do_fun for command %s", __func__, command->get_name(  ).c_str(  ) );
+      bug( "{}: nullptr command->do_fun for command {}", __func__, command->get_name(  ) );
       return;
    }
 
@@ -948,7 +948,7 @@ void load_shellcommands( void )
    stream.open( std::filesystem::path( SHELL_COMMAND_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open %s", __func__, SHELL_COMMAND_FILE.data() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, SHELL_COMMAND_FILE, std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
 
@@ -996,14 +996,14 @@ void load_shellcommands( void )
       {
          if( scmd->get_name(  ).empty(  ) )
          {
-            bug( "%s: Command name not found", __func__ );
+            bug( "{}: Command name not found", __func__ );
             deleteptr( scmd );
             continue;
          }
 
          if( scmd->get_func_name(  ).empty(  ) )
          {
-            bug( "%s: Command name not found", __func__ );
+            bug( "{}: Command name not found", __func__ );
             deleteptr( scmd );
             continue;
          }
@@ -1018,7 +1018,7 @@ void load_shellcommands( void )
       else if( key == "#END" )
          return;
       else
-         bug( "%s: Bad line in shell commands file: %s %s", __func__, key.c_str(  ), value.c_str(  ) );
+         bug( "{}: Bad line in shell commands file: {} {}", __func__, key, value );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -1035,7 +1035,7 @@ void save_shellcommands( void )
    stream.open( std::filesystem::path( SHELL_COMMAND_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open shell command file for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, SHELL_COMMAND_FILE, std::strerror(errno) );
       return;
    }
 
@@ -1045,7 +1045,7 @@ void save_shellcommands( void )
    {
       if( command->get_name(  ).empty(  ) )
       {
-         bug( "%s: blank command in list.", __func__ );
+         bug( "{}: blank command in list.", __func__ );
          continue;
       }
       stream << "#COMMAND" << std::endl;
@@ -1060,6 +1060,8 @@ void save_shellcommands( void )
       stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, SHELL_COMMAND_FILE, std::strerror(errno) );
 }
 
 void shellcommands( char_data * ch, short curr_lvl )

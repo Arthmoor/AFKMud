@@ -377,7 +377,7 @@ board_data *find_board( char_data * ch )
    return nullptr;
 }
 
-board_chardata *get_chboard( char_data * ch, const std::string & board_name )
+board_chardata *get_chboard( char_data * ch, std::string_view board_name )
 {
    for( auto* board : ch->pcdata->boarddata )
    {
@@ -387,7 +387,7 @@ board_chardata *get_chboard( char_data * ch, const std::string & board_name )
    return nullptr;
 }
 
-board_chardata *create_chboard( char_data * ch, const std::string & board_name )
+board_chardata *create_chboard( char_data * ch, std::string_view board_name )
 {
    board_chardata *chboard;
 
@@ -408,7 +408,7 @@ void char_data::note_attach(  )
 
    if( pcdata->pnote )
    {
-      bug( "%s: ch->pcdata->pnote already exists!", __func__ );
+      bug( "{}: ch->pcdata->pnote already exists!", __func__ );
       return;
    }
 
@@ -426,7 +426,7 @@ void write_boards( void )
 
    if( !( fpout = fopen( std::filesystem::path( BOARD_FILE ).c_str(), "w" ) ) )
    {
-      bug( "%s: Unable to open %s%s for writing!", __func__, BOARD_DIR.data(), BOARD_FILE.data() );
+      bug( "{}: Unable to open {}{} for writing!", __func__, BOARD_DIR, BOARD_FILE );
       return;
    }
 
@@ -434,7 +434,7 @@ void write_boards( void )
    {
       if( !board->name )
       {
-         bug( "%s: Board with a null name! Skipping...", __func__ );
+         log_printf( "{}: Board with a null name! Skipping...", __func__ );
          continue;
       }
 
@@ -484,7 +484,7 @@ void fwrite_note( note_data * pnote, FILE * fpout )
 
    if( !pnote->sender )
    {
-      bug( "%s: Called on a note without a valid sender!", __func__ );
+      bug( "{}: Called on a note without a valid sender!", __func__ );
       return;
    }
 
@@ -513,7 +513,7 @@ void fwrite_note( note_data * pnote, FILE * fpout )
 
          if( !reply->sender || !reply->to_list || !reply->subject || !reply->text )
          {
-            bug( "%s: Destroying a buggy reply on note '%s'!", __func__, pnote->subject );
+            log_printf( "{}: Destroying a buggy reply on note '{}'!", __func__, pnote->subject );
             --pnote->reply_count;
             deleteptr( reply );
             continue;
@@ -535,8 +535,7 @@ void write_board( board_data * board )
    std::filesystem::path filename = std::format( "{}{}.board", BOARD_DIR, board->filename );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      perror( filename.c_str() );
-      bug( "%s: Error opening %s! Board NOT saved!", __func__, filename.c_str() );
+      bug( "{}: Error opening {}! Board NOT saved!", __func__, filename.string() );
       return;
    }
 
@@ -547,7 +546,7 @@ void write_board( board_data * board )
 
       if( !pnote->sender || !pnote->to_list || !pnote->subject || !pnote->text )
       {
-         bug( "%s: Destroying a buggy note on the %s board!", __func__, board->name );
+         log_printf( "{}: Destroying a buggy note on the {} board!", __func__, board->name );
          --board->msg_count;
          deleteptr( pnote );
          continue;
@@ -561,7 +560,7 @@ void note_remove( board_data * board, note_data * pnote )
 {
    if( !board || !pnote )
    {
-      bug( "%s: null %s variable.", __func__, board ? "pnote" : "board" );
+      bug( "{}: null {} variable.", __func__, board ? "pnote" : "board" );
       return;
    }
 
@@ -622,14 +621,14 @@ board_data *read_board( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#END";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -699,7 +698,7 @@ board_data *read_board( FILE * fp )
             }
             else
             {
-               bug( "%s: Bad section: %s", __func__, word );
+               log_printf( "{}: Bad section: {}", __func__, word );
                deleteptr( board );
                return nullptr;
             }
@@ -733,14 +732,14 @@ board_data *read_old_board( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -839,14 +838,14 @@ note_data *read_note( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "#END";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -898,12 +897,12 @@ note_data *read_note( FILE * fp )
             {
                if( pnote->reply_count == MAX_REPLY )
                {
-                  bug( "%s: Reply found when MAX_REPLY has already been reached!", __func__ );
+                  log_printf( "{}: Reply found when MAX_REPLY has already been reached!", __func__ );
                   continue;
                }
                if( reply != nullptr )
                {
-                  bug( "%s: Unsupported nested reply found!", __func__ );
+                  log_printf( "{}: Unsupported nested reply found!", __func__ );
                   continue;
                }
                reply = new note_data;
@@ -979,7 +978,7 @@ note_data *read_note( FILE * fp )
             }
             else
             {
-               bug( "%s: Bad section: %s", __func__, word );
+               log_printf( "{}: Bad section: {}", __func__, word );
                if( reply ) // In case a half-constructed reply exists.
                   deleteptr( reply );
                deleteptr( pnote );
@@ -1014,7 +1013,7 @@ note_data *read_old_note( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -1030,7 +1029,7 @@ note_data *read_old_note( FILE * fp )
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -1054,7 +1053,7 @@ note_data *read_old_note( FILE * fp )
 
                   pnote_expire = current_time + std::chrono::days( 1 );
                   pnote->expire = pnote_expire;   /* Or we'll do it for you! */
-                  bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
+                  log_printf( "{}: No text on note! Setting to '{}' and expiration to 1 day", __func__, pnote->text );
                }
 
                /*
@@ -1063,17 +1062,17 @@ note_data *read_old_note( FILE * fp )
                if( !pnote->sender )
                {
                   pnote->sender = STRALLOC( "Converted Msg" );
-                  bug( "%s: No sender on converted note! Setting to '%s'", __func__, pnote->sender );
+                  log_printf( "{}: No sender on converted note! Setting to '{}'", __func__, pnote->sender );
                }
                if( !pnote->subject )
                {
                   pnote->subject = strdup( "Converted Msg" );
-                  bug( "%s: No subject on converted note! Setting to '%s'", __func__, pnote->subject );
+                  log_printf( "{}: No subject on converted note! Setting to '{}'", __func__, pnote->subject );
                }
                if( !pnote->to_list )
                {
                   pnote->to_list = STRALLOC( "imm" );
-                  bug( "%s: No to_list on converted note! Setting to '%s'", __func__, pnote->to_list );
+                  log_printf( "{}: No to_list on converted note! Setting to '{}'", __func__, pnote->to_list );
                }
                return pnote;
             }
@@ -1099,7 +1098,7 @@ note_data *read_old_note( FILE * fp )
 
                   auto pnote_expire = current_time + std::chrono::days( 1 );
                   pnote->expire = pnote_expire;   /* Or we'll do it for you! */
-                  bug( "%s: No text on note! Setting to '%s' and expiration to 1 day", __func__, pnote->text );
+                  log_printf( "{}: No text on note! Setting to '{}' and expiration to 1 day", __func__, pnote->text );
                }
 
                /*
@@ -1108,17 +1107,17 @@ note_data *read_old_note( FILE * fp )
                if( !pnote->sender )
                {
                   pnote->sender = STRALLOC( "Converted Msg" );
-                  bug( "%s: No sender on converted note! Setting to '%s'", __func__, pnote->sender );
+                  log_printf( "{}: No sender on converted note! Setting to '{}'", __func__, pnote->sender );
                }
                if( !pnote->subject )
                {
                   pnote->subject = strdup( "Converted Msg" );
-                  bug( "%s: No subject on converted note! Setting to '%s'", __func__, pnote->subject );
+                  log_printf( "{}: No subject on converted note! Setting to '{}'", __func__, pnote->subject );
                }
                if( !pnote->to_list )
                {
                   pnote->to_list = STRALLOC( "imm" );
-                  bug( "%s: No to_list on converted note! Setting to '%s'", __func__, pnote->to_list );
+                  log_printf( "{}: No to_list on converted note! Setting to '{}'", __func__, pnote->to_list );
                }
                return pnote;
             }
@@ -1167,7 +1166,7 @@ void load_boards( void )
             }
          }
          else
-            bug( "%s: Note file '%s' for the '%s' board not found!", __func__, notefile.c_str(), board->name );
+            log_printf( "{}: Note file '{}' for the '{}' board not found!", __func__, notefile.string(), board->name );
 
          write_board( board );   /* save the converted board */
 
@@ -1196,7 +1195,7 @@ void load_boards( void )
             }
          }
          else
-            bug( "%s: Note file '%s' for the '%s' board not found!", __func__, notefile.c_str(), board->name );
+            log_printf( "{}: Note file '{}' for the '{}' board not found!", __func__, notefile.string(), board->name );
       }
    }
    /*
@@ -1279,8 +1278,7 @@ void board_check_expire( board_data * board )
             filename = std::format( "{}{}.purged", BOARD_DIR, board->name );
             if( !( fp = fopen( filename.c_str(), "a" ) ) )
             {
-               perror( filename.c_str() );
-               bug( "%s: Error opening %s!", __func__, filename.c_str() );
+               log_printf( "{}: Error opening {}!", __func__, filename.string() );
                return;
             }
             fwrite_note( pnote, fp );
@@ -1340,7 +1338,7 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
 
    if( pnote == nullptr )
    {
-      bug( "%s: null pnote!", __func__ );
+      bug( "{}: null pnote!", __func__ );
       return;
    }
 
@@ -1580,7 +1578,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
     */
    if( ch->isnpc(  ) )
    {
-      bug( "%s: NPC in %s!", __func__, __func__ );
+      bug( "{}: NPC in {}!", __func__, __func__ );
       d->connected = CON_PLAYING;
       ch->substate = SUB_NONE;
       return;
@@ -1592,7 +1590,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
     */
    if( !ch->pcdata->pnote )
    {
-      bug( "%s: In substate -- No pnote on character!", __func__ );
+      bug( "{}: In substate -- No pnote on character!", __func__ );
       d->connected = CON_PLAYING;
       ch->substate = SUB_NONE;
       return;
@@ -1600,7 +1598,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
 
    if( !ch->pcdata->board )
    {
-      bug( "%s: In substate -- No board on character!", __func__ );
+      bug( "{}: In substate -- No board on character!", __func__ );
       d->connected = CON_PLAYING;
       ch->substate = SUB_NONE;
       return;
@@ -1733,7 +1731,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             if( !ch->pcdata->pnote )
             {
-               bug( "%s: nullptr (ch)%s->pcdata->pnote!", __func__, ch->name.c_str() );
+               bug( "{}: nullptr (ch){}->pcdata->pnote!", __func__, ch->name );
                d->connected = CON_PLAYING;
                ch->substate = SUB_NONE;
                return;
@@ -2039,13 +2037,13 @@ CMDF( do_note_write )
       case SUB_BOARD_TEXT:
          if( ch->pcdata->pnote == nullptr )
          {
-            bug( "%s: SUB_BOARD_TEXT: Null pnote on character (%s)!", __func__, ch->name.c_str() );
+            bug( "{}: SUB_BOARD_TEXT: Null pnote on character ({})!", __func__, ch->name );
             ch->stop_editing(  );
             return;
          }
          if( ch->pcdata->board == nullptr )
          {
-            bug( "%s: SUB_BOARD_TEXT: Null board on character (%s)!", __func__, ch->name.c_str() );
+            bug( "{}: SUB_BOARD_TEXT: Null board on character ({})!", __func__, ch->name );
             ch->stop_editing(  );
             return;
          }
@@ -2111,7 +2109,7 @@ CMDF( do_note_write )
    board_room = ch->find_location( buf );
    if( !board_room )
    {
-      bug( "%s: Missing board room: Vnum %d", __func__, ROOM_VNUM_LIMBO );
+      bug( "{}: Missing board room: Vnum {}", __func__, ROOM_VNUM_LIMBO );
       return;
    }
    ch->print_fmt( "{}Typing '{}/a{}' at any time will abort the note.&D\r\n", s3, s2, s3 );
@@ -3281,7 +3279,7 @@ void write_projects( void )
    fpout = fopen( std::filesystem::path( PROJECTS_FILE ).c_str(), "w" );
    if( !fpout )
    {
-      bug( "%s: FATAL: cannot open projects.txt for writing!", __func__ );
+      bug( "{}: FATAL: cannot open projects.txt for writing!", __func__ );
       return;
    }
 
@@ -3337,7 +3335,7 @@ note_data *read_old_log( FILE * fp )
       else
       {
          deleteptr( nlog );
-         bug( "%s: bad key word: %s", __func__, word );
+         log_printf( "{}: bad key word: {}", __func__, word );
          return nullptr;
       }
    }
@@ -3368,14 +3366,14 @@ project_data *read_project( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         log_printf( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -3431,7 +3429,7 @@ project_data *read_project( FILE * fp )
                   nlog = read_old_log( fp );
 
                if( !nlog )
-                  bug( "%s: couldn't read log!", __func__ );
+                  log_printf( "{}: couldn't read log!", __func__ );
                else
                   project->nlist.push_back( nlog );
                break;
@@ -3548,7 +3546,7 @@ CMDF( do_project )
 
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __func__ );
+      bug( "{}: no descriptor", __func__ );
       return;
    }
 
@@ -3560,13 +3558,13 @@ CMDF( do_project )
       case SUB_WRITING_NOTE:
          if( !ch->pcdata->pnote )
          {
-            bug( "%s: log got lost?", __func__ );
+            bug( "{}: log got lost?", __func__ );
             ch->print( "Your log was lost!\r\n" );
             ch->stop_editing(  );
             return;
          }
          if( ch->pcdata->dest_buf != ch->pcdata->pnote )
-            bug( "%s: sub_writing_note: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
+            bug( "{}: sub_writing_note: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
          DISPOSE( ch->pcdata->pnote->text );
          ch->pcdata->pnote->text = ch->copy_buffer( false );
          ch->stop_editing(  );
@@ -3576,7 +3574,7 @@ CMDF( do_project )
          if( !ch->pcdata->dest_buf )
          {
             ch->print( "Your description was lost!" );
-            bug( "%s: sub_project_desc: nullptr ch->pcdata->dest_buf", __func__ );
+            bug( "{}: sub_project_desc: nullptr ch->pcdata->dest_buf", __func__ );
             ch->substate = SUB_NONE;
             return;
          }

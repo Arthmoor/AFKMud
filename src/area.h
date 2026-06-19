@@ -124,7 +124,7 @@ inline void boot_log( std::string_view fmt, auto&&... args )
    catch( const std::exception & e )
    {
       // In case someone bodged a call to this that isn't formatted right.
-      bug( "%s: Boot Log formatting error: %s", __func__, e.what() );
+      bug( "{}: Boot Log formatting error: {}", __func__, e.what() );
       return;
    }
 

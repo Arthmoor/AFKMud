@@ -134,7 +134,7 @@ void load_banlist( void )
    stream.open( std::filesystem::path( BAN_LIST ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open banlist file.", __func__ );
+      bug( "{}: Cannot open banlist for reading: {}", __func__, std::strerror(errno) );
       return;
    }
 
@@ -172,7 +172,7 @@ void load_banlist( void )
          banlist.push_back( ban );
       }
       else
-         bug( "%s: Invalid key: %s", __func__, key.c_str(  ) );
+         bug( "{}: Invalid key: {}", __func__, key );
    }
    while( !stream.eof(  ) );
    stream.close(  );
@@ -187,7 +187,7 @@ void save_banlist( void )
    stream.open( std::filesystem::path( BAN_LIST ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot write to banlist file.", __func__ );
+      bug( "{}: Cannot open banlist for writing: {}", __func__, std::strerror(errno) );
       return;
    }
 
@@ -203,6 +203,8 @@ void save_banlist( void )
       stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, std::strerror(errno) );
 }
 
 void check_ban_expirations( void )
@@ -265,14 +267,14 @@ bool is_ip_range( const std::string & ip_address, const std::string & cidr_addre
    // Are we checking a valid IP?
    if( !is_valid_ip( ip_address ) )
    {
-      bug( "%s: Invalid IP address format: %s", __func__, ip_address.c_str() );
+      bug( "{}: Invalid IP address format: {}", __func__, ip_address );
       return false;
    }
 
    // Are we checking a valid CIDR?
    if( !is_valid_cidr( cidr_address ) )
    {
-      bug( "%s: Invalid CIDR format: %s", __func__, cidr_address.c_str() );
+      bug( "{}: Invalid CIDR format: {}", __func__, cidr_address );
       return false;
    }
 
@@ -292,14 +294,14 @@ bool is_ip_match( const std::string & ipaddress, const std::string & stored_ip )
    // Are we checking a valid IP?
    if( !is_valid_ip( ipaddress ) )
    {
-      bug( "%s: Invalid IP address format: %s", __func__, ipaddress.c_str() );
+      bug( "{}: Invalid IP address format: {}", __func__, ipaddress );
       return false;
    }
 
    // Is the stored IP valid?
    if( !is_valid_ip( stored_ip ) )
    {
-      bug( "%s: Invalid stored IP address format: %s", __func__, stored_ip.c_str() );
+      bug( "{}: Invalid stored IP address format: {}", __func__, stored_ip );
       return false;
    }
 

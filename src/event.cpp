@@ -122,7 +122,7 @@ void run_events( std::chrono::system_clock::time_point newtime )
       if( callback )
          callback ( data );
       else
-         bug( "%s: nullptr callback", __func__ );
+         bug( "{}: nullptr callback", __func__ );
 
       deleteptr (e );
    }
@@ -131,6 +131,6 @@ void run_events( std::chrono::system_clock::time_point newtime )
 
 CMDF( do_eventinfo )
 {
-   ch->printf( "&BPending events&c: %zu\r\n", eventlist.size(  ) );
-   ch->printf( "&BEvents served &c: %ld\r\n", events_served );
+   ch->print_fmt( "&BPending events&c: {}\r\n", eventlist.size(  ) );
+   ch->print_fmt( "&BEvents served &c: {}\r\n", events_served );
 }

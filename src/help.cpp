@@ -78,7 +78,7 @@ void add_help( help_data * pHelp )
 
       if( pHelp->level == help->level && !str_cmp( pHelp->keyword, help->keyword ) )
       {
-         bug( "%s: duplicate: %s. Deleting.", __func__, pHelp->keyword.c_str(  ) );
+         bug( "{}: duplicate: {}. Deleting.", __func__, pHelp->keyword );
          deleteptr( pHelp );
          return;
       }
@@ -116,7 +116,7 @@ void save_helps( void )
 
    if( !stream.is_open(  ) )
    {
-      log_string( "Couldn't write to help file." );
+      bug( "{}: Cannot open {} for writing: {}", __func__, HELP_FILE, std::strerror(errno) );
       return;
    }
 
@@ -137,6 +137,8 @@ void save_helps( void )
       stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, HELP_FILE, std::strerror(errno) );
 }
 
 void load_helps( void )
@@ -151,7 +153,7 @@ void load_helps( void )
    stream.open( std::filesystem::path( HELP_FILE ) );
    if( !stream.is_open(  ) )
    {
-      log_string( "No help file found." );
+      bug( "{}: Cannot open {} for reading: {}", __func__, HELP_FILE, std::strerror(errno) );
       return;
    }
 
@@ -426,11 +428,11 @@ CMDF( do_hedit )
       case SUB_HELP_EDIT:
          if( !( pHelp = ( help_data * ) ch->pcdata->dest_buf ) )
          {
-            bug( "%s: sub_help_edit: nullptr ch->pcdata->dest_buf", __func__ );
+            bug( "{}: sub_help_edit: nullptr ch->pcdata->dest_buf", __func__ );
             ch->stop_editing(  );
             return;
          }
-         pHelp->text = ch->copy_buffer(  );
+         pHelp->text = ch->copy_buffer( );
          strip_lspace( pHelp->text );
          ch->stop_editing(  );
          return;

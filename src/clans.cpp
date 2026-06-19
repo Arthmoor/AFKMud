@@ -66,7 +66,7 @@ void remove_roster( clan_data * clan, std::string_view name )
 {
    if( !clan )
    {
-      bug( "%s: Invalid clan pointer!", __func__ );
+      bug( "{}: Invalid clan pointer!", __func__ );
       return;
    }
 
@@ -113,7 +113,7 @@ void remove_all_rosters( clan_data * clan )
 {
    if( !clan )
    {
-      bug( "%s: Invalid clan pointer!", __func__ );
+      bug( "{}: Invalid clan pointer!", __func__ );
       return;
    }
 
@@ -196,21 +196,20 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
 
    if( !clan )
    {
-      bug( "%s: Null clan pointer!", __func__ );
+      bug( "{}: Null clan pointer!", __func__ );
       return;
    }
 
    if( !ch )
    {
-      bug( "%s: Null ch pointer!", __func__ );
+      bug( "{}: Null ch pointer!", __func__ );
       return;
    }
 
    std::filesystem::path filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( filename.c_str() );
+      log_printf( "{}: Unable to open clan storeroom for writing: {}", __func__, filename.string() );
    }
    else
    {
@@ -432,7 +431,7 @@ void write_clan_list( void )
    fpout = fopen( filename.c_str(), "w" );
    if( !fpout )
    {
-      bug( "%s: FATAL: cannot open clan.lst for writing!", __func__ );
+      bug( "{}: FATAL: cannot open clan.lst for writing!", __func__ );
       return;
    }
 
@@ -471,7 +470,7 @@ void fread_memberlist( clan_data * clan, FILE * fp )
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -486,7 +485,7 @@ void fread_memberlist( clan_data * clan, FILE * fp )
 
                if( Class < 0 || Class >= MAX_NPC_CLASS )
                {
-                  bug( "%s: Invalid class in clan roster", __func__ );
+                  bug( "{}: Invalid class in clan roster", __func__ );
                   Class = get_npc_class( "warrior" );
                }
                roster->Class = Class;
@@ -528,7 +527,7 @@ void fread_memberlist( clan_data * clan, FILE * fp )
       }
    }
 
-   bug( "%s: Fell through to bottom!", __func__ );
+   bug( "{}: Fell through to bottom!", __func__ );
    deleteptr( roster );
 }
 
@@ -542,13 +541,13 @@ void save_clan( clan_data * clan )
 
    if( !clan )
    {
-      bug( "%s: null clan pointer!", __func__ );
+      bug( "{}: null clan pointer!", __func__ );
       return;
    }
 
    if( clan->filename.empty(  ) )
    {
-      bug( "%s: %s has no filename", __func__, clan->name.c_str(  ) );
+      bug( "{}: {} has no filename", __func__, clan->name );
       return;
    }
 
@@ -556,7 +555,7 @@ void save_clan( clan_data * clan )
 
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: Cannot open clan file %s for writing.", __func__, filename.c_str() );
+      bug( "{}: Cannot open clan file {} for writing.", __func__, filename.string() );
       return;
    }
 
@@ -640,7 +639,7 @@ void fread_clan( clan_data * clan, FILE * fp )
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -882,7 +881,7 @@ bool load_clan_file( const char *clanfile )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found.", __func__ );
+            bug( "{}: # not found.", __func__ );
             break;
          }
 
@@ -895,7 +894,7 @@ bool load_clan_file( const char *clanfile )
             break;
          else
          {
-            bug( "%s: bad section: %s.", __func__, word );
+            log_printf( "{}: bad section: {}.", __func__, word );
             break;
          }
       }
@@ -933,7 +932,7 @@ bool load_clan_file( const char *clanfile )
 
             if( letter != '#' )
             {
-               bug( "%s: # not found. %s", __func__, clan->name.c_str(  ) );
+               bug( "{}: # not found. {}", __func__, clan->name );
                break;
             }
 
@@ -947,7 +946,7 @@ bool load_clan_file( const char *clanfile )
                break;
             else
             {
-               bug( "%s: %s bad section.", __func__, clan->name.c_str(  ) );
+               log_printf( "{}: {} bad section.", __func__, clan->name );
                break;
             }
          }
@@ -1137,7 +1136,7 @@ void load_clans( void )
 
    if( !( fpList = fopen( clanlistfile.c_str(), "r" ) ) )
    {
-      bug( "%s: Cannot open clan list file.", __func__ );
+      bug( "{}: Cannot open clan list file.", __func__ );
       std::exit( EXIT_FAILURE );
    }
 
@@ -1151,7 +1150,7 @@ void load_clans( void )
       log_string( filename );
 
       if( !load_clan_file( filename ) )
-         bug( "%s: Cannot load clan file: %s", __func__, filename );
+         bug( "{}: Cannot load clan file: {}", __func__, filename );
    }
    FCLOSE( fpList );
    verify_clans(  ); /* Check against pfiles to see if clans should still exist */

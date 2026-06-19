@@ -95,14 +95,14 @@ immortal_host_log *fread_imm_host_log( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "LEnd";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -138,14 +138,14 @@ immortal_host *fread_imm_host( FILE * fp )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "ZEnd";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            bug( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -157,7 +157,7 @@ immortal_host *fread_imm_host( FILE * fp )
             if( !str_cmp( word, "Domain_host" ) )
             {
                if( dnum >= MAX_DOMAIN )
-                  bug( "%s: more saved domains than MAX_DOMAIN", __func__ );
+                  bug( "{}: more saved domains than MAX_DOMAIN", __func__ );
                else
                {
                   dnum++;
@@ -171,7 +171,7 @@ immortal_host *fread_imm_host( FILE * fp )
             if( !str_cmp( word, "LOG" ) )
             {
                if( !( nlog = fread_imm_host_log( fp ) ) )
-                  bug( "%s: incomplete log returned", __func__ );
+                  bug( "{}: incomplete log returned", __func__ );
                else
                   host->loglist.push_back( nlog );
 
@@ -206,7 +206,7 @@ void load_imm_host( void )
 
    if( !( fp = fopen( IMM_HOST_FILE.data(), "r" ) ) )
    {
-      bug( "%s: could not open immhost file for reading.", __func__ );
+      bug( "{}: could not open immhost file for reading.", __func__ );
       return;
    }
 
@@ -223,7 +223,7 @@ void load_imm_host( void )
 
       if( letter != '#' )
       {
-         bug( "%s: # not found", __func__ );
+         bug( "{}: # not found", __func__ );
          break;
       }
 
@@ -235,7 +235,7 @@ void load_imm_host( void )
 
          if( !( host = fread_imm_host( fp ) ) )
          {
-            bug( "%s: incomplete immhost", __func__ );
+            bug( "{}: incomplete immhost", __func__ );
             continue;
          }
          hostlist.push_back( host );
@@ -245,7 +245,7 @@ void load_imm_host( void )
          break;
       else
       {
-         bug( "%s: unknown section %s", __func__, word );
+         bug( "{}: unknown section %s", __func__, word );
          continue;
       }
    }
@@ -258,7 +258,7 @@ void save_imm_host( void )
 
    if( !( fp = fopen( IMM_HOST_FILE.data(), "w" ) ) )
    {
-      bug( "%s: could not open immhost file for writing.", __func__ );
+      bug( "{}: could not open immhost file for writing.", __func__ );
       return;
    }
 

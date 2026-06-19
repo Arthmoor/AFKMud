@@ -620,7 +620,7 @@ void adjust_pfile( const std::string & name )
    room_index *temproom, *original;
    if( !( temproom = get_room_index( ROOM_VNUM_RAREUPDATE ) ) )
    {
-      bug( "%s: Error in rare item adjustment, temporary loading room is missing!", __func__ );
+      bug( "{}: Error in rare item adjustment, temporary loading room is missing!", __func__ );
       return;
    }
 
@@ -718,7 +718,7 @@ int scan_pfiles( const std::string & dirname, const std::string & filename, bool
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -733,7 +733,7 @@ int scan_pfiles( const std::string & dirname, const std::string & filename, bool
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __func__ );
+            bug( "{}: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -781,7 +781,7 @@ int scan_pfiles( const std::string & dirname, const std::string & filename, bool
             vnum = fread_number( fpChar );
             if( ( pObjIndex = get_obj_index( vnum ) ) == nullptr )
             {
-               bug( "%s: %s has bad obj vnum.", __func__, filename.c_str() );
+               bug( "{}: {} has bad obj vnum.", __func__, filename );
                adjust = 1; /* So it can clean out the bad object - Samson 4-16-00 */
             }
             word = feof( fpChar ) ? "End" : fread_word( fpChar );
@@ -835,7 +835,7 @@ void corpse_scan( std::string_view filename )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -848,7 +848,7 @@ void corpse_scan( std::string_view filename )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __func__ );
+            bug( "{}: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -871,7 +871,7 @@ void corpse_scan( std::string_view filename )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == nullptr )
-               bug( "%s: %s's corpse has bad obj vnum.", __func__, fname.c_str() );
+               bug( "{}: {}'s corpse has bad obj vnum.", __func__, fname.string() );
             else
             {
                int ego = 0;
@@ -915,7 +915,7 @@ void mobfile_scan( void )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -928,7 +928,7 @@ void mobfile_scan( void )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __func__ );
+            bug( "{}: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -951,7 +951,7 @@ void mobfile_scan( void )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == nullptr )
-               bug( "%s: bad obj vnum %d.", __func__, vnum );
+               bug( "{}: bad obj vnum {}.", __func__, vnum );
             else
             {
                int ego = 0;
@@ -998,7 +998,7 @@ void objfile_scan( std::string_view filename )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading file!", __func__ );
+         bug( "{}: EOF encountered reading file!", __func__ );
          word = "End";
       }
 
@@ -1011,7 +1011,7 @@ void objfile_scan( std::string_view filename )
 
          if( word[0] == '\0' )
          {
-            bug( "%s: EOF encountered reading file!", __func__ );
+            bug( "{}: EOF encountered reading file!", __func__ );
             word = "End";
          }
 
@@ -1034,7 +1034,7 @@ void objfile_scan( std::string_view filename )
          {
             vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == nullptr )
-               bug( "%s: bad obj vnum %d.", __func__, vnum );
+               bug( "{}: bad obj vnum {}.", __func__, vnum );
             else
             {
                int ego = 0;

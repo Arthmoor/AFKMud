@@ -470,13 +470,13 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
 {
    if( !ch )
    {
-      bug( "%s: nullptr ch!", __func__ );
+      bug( "{}: nullptr ch!", __func__ );
       return MOVE_INVALID;
    }
 
    if( !board )
    {
-      bug( "%s: nullptr board!", __func__ );
+      bug( "{}: nullptr board!", __func__ );
       return MOVE_INVALID;
    }
 
@@ -696,7 +696,7 @@ int is_valid_move( char_data * ch, game_board_data * board, int x, int y, int dx
       }
          break;
       default:
-         bug( "Invaild piece: %d", board->board[x][y] );
+         bug( "Invaild piece: {}", board->board[x][y] );
          return MOVE_INVALID;
    }
 
@@ -1058,7 +1058,7 @@ CMDF( do_chess )
             break;
 
          default:
-            bug( "%s: Unknown return value", __func__ );
+            bug( "{}: Unknown return value", __func__ );
             break;
       }
       return;

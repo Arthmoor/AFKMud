@@ -159,11 +159,11 @@ void continent_data::load_png_file( void )
 
    if( !( jpgin = fopen( file_name.c_str(), "r" ) ) )
    {
-      bug( "%s -> %s:%d: Missing graphical map file '%s' for continent '%s'!", __func__, __FILE__, __LINE__, this->mapfile.c_str( ), this->name.c_str( ) );
+      bug( "{} -> {}:{}: Missing graphical map file '{}' for continent '{}'!", __func__, __FILE__, __LINE__, this->mapfile, this->name );
       if( fBootDb )
       {
          shutdown_mud( "Missing map file" );
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       }
       else
          return;
@@ -181,9 +181,9 @@ void continent_data::load_png_file( void )
             this->putterr( x, y, terr );
          else
          {
-            bug( "%s -> %s:%d: Attempting to add sector data out of bounds for '%s' (%d %d). Graphic file is too large.", __func__, __FILE__, __LINE__, this->name.c_str( ), x, y );
+            bug( "{} -> {}:{}: Attempting to add sector data out of bounds for '{}' ({} {}). Graphic file is too large.", __func__, __FILE__, __LINE__, this->name, x, y );
             if( fBootDb )
-               exit( 1 );
+               std::exit( EXIT_FAILURE );
          }
       }
    }
@@ -227,8 +227,8 @@ void continent_data::save_png_file( )
 
    if( ( PngOut = fopen( graphicname.c_str(), "w" ) ) == nullptr )
    {
-      bug( "%s -> %s:%d: fopen", __func__, __FILE__, __LINE__ );
-      perror( graphicname.c_str() );
+      bug( "{} -> {}:{}: Unable to open {} for writing.", __func__, __FILE__, __LINE__, graphicname.string() );
+      return;
    }
 
    /*
@@ -254,7 +254,7 @@ void write_continent_list( void )
    fpout = fopen( CONT_LIST.data(), "w" );
    if( !fpout )
    {
-      bug( "%s -> %s:%d: cannot open continent.lst for writing!", __func__, __FILE__, __LINE__ );
+      bug( "{} -> {}:{}: cannot open continent.lst for writing!", __func__, __FILE__, __LINE__ );
       return;
    }
 
@@ -310,7 +310,7 @@ void continent_data::fread_landmark( std::ifstream & stream )
    }
    while( !stream.eof(  ) );
 
-   bug( "%s -> %s:%d: Filestream reached premature EOF reading landmarks for continent %s - FATAL ERROR: Aborting file read.", __func__,  __FILE__, __LINE__, this->name.c_str(  ) );
+   bug( "{} -> {}:{}: Filestream reached premature EOF reading landmarks for continent {} - FATAL ERROR: Aborting file read.", __func__,  __FILE__, __LINE__, this->name );
    shutdown_mud( "Corrupt continent file." );
 }
 
@@ -369,7 +369,7 @@ void continent_data::fread_mapexit( std::ifstream & stream )
    }
    while( !stream.eof(  ) );
 
-   bug( "%s -> %s:%d: Filestream reached premature EOF reading map exits for continent %s - FATAL ERROR: Aborting file read.", __func__, __FILE__, __LINE__, this->name.c_str(  ) );
+   bug( "{} -> {}:{}: Filestream reached premature EOF reading map exits for continent {} - FATAL ERROR: Aborting file read.", __func__, __FILE__, __LINE__, this->name );
    shutdown_mud( "Corrupt continent file." );
 }
 
@@ -384,7 +384,7 @@ void load_continent( std::string_view continent_file )
 
    if( !stream.is_open(  ) )
    {
-      bug( "%s -> %s:%d: error loading file (can't open) %s", __func__, __FILE__, __LINE__, file_name.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, file_name.string(), std::strerror(errno) );
       return;
    }
 
@@ -451,7 +451,7 @@ void load_continents( const int AREA_FILE_ALARM )
 
    if( !( fpList = fopen( list_file.c_str(), "r" ) ) )
    {
-      bug( "%s: Cannot open continent list file.", __func__ );
+      bug( "{}: Cannot open continent list file.", __func__ );
       shutdown_mud( "Boot_db: Unable to open continent list." );
       std::exit( EXIT_FAILURE );
    }
@@ -462,7 +462,7 @@ void load_continents( const int AREA_FILE_ALARM )
    {
       if( feof( fpList ) )
       {
-         bug( "%s -> %s:%d: EOF encountered reading area list - no $ found at end of file.", __func__, __FILE__, __LINE__ );
+         bug( "{} -> {}:{}: EOF encountered reading area list - no $ found at end of file.", __func__, __FILE__, __LINE__ );
          break;
       }
 
@@ -490,7 +490,7 @@ void validate_overland_data( void )
       {
          if( !get_room_index( continent->vnum ) )
          {
-            bug( "%s -> %s:%d: Continent %s had an invalid room vnum assigned: %d", __func__, __FILE__, __LINE__, continent->name.c_str( ), continent->vnum );
+            bug( "{} -> {}:{}: Continent {} had an invalid room vnum assigned: {}", __func__, __FILE__, __LINE__, continent->name, continent->vnum );
             error_count++;
          }
 
@@ -498,7 +498,7 @@ void validate_overland_data( void )
 
          if( !area )
          {
-            bug( "%s -> %s:%d: Continent %s had an invalid area filename assigned: %s", __func__, __FILE__, __LINE__, continent->name.c_str( ), continent->areafile.c_str( ) );
+            bug( "{} -> {}:{}: Continent {} had an invalid area filename assigned: {}", __func__, __FILE__, __LINE__, continent->name, continent->areafile );
             error_count++;
          }
          else
@@ -528,8 +528,7 @@ void continent_data::save( )
    stream.open( fname );
    if( !stream.is_open(  ) )
    {
-      bug( "%s -> %s:%d: fopen", __func__, __FILE__, __LINE__ );
-      perror( this->filename.c_str( ) );
+      bug( "{}: Cannot open {} for writing: {}", __func__, fname.string(), std::strerror(errno) );
       return;
    }
 
@@ -581,6 +580,8 @@ void continent_data::save( )
 
    stream << "#END" << std::endl;
    stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, fname.string(), std::strerror(errno) );
 
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Data for {} saved.", this->filename );
 }
@@ -1098,10 +1099,11 @@ void continent_data::putterr( short x, short y, short terr )
    if( valid_coordinates( x, y ) )
       this->grid[x][y] = terr;
    else
-      bug( "%s -> %s:%d: Attempting to edit sector out of bounds for '%s' (%d %d)", __func__, __FILE__, __LINE__, this->name.c_str( ), x, y );
+      bug( "{} -> {}:{}: Attempting to edit sector out of bounds for '{}' ({} {})", __func__, __FILE__, __LINE__, this->name, x, y );
 }
 
-/* Alrighty - this checks where the PC is currently standing to see what kind of terrain the space is.
+/*
+ * Alrighty - this checks where the PC is currently standing to see what kind of terrain the space is.
  * Returns -1 if something is not kosher with where they're standing.
  * Called from several places below, so leave this right here.
  */
@@ -1119,10 +1121,11 @@ CMDF( do_continents )
    ch->pager( "-----------------------------------------------------\r\n" );
 
    for( auto* continent : continent_list )
-      ch->pagerf( "%-15s  %-4zu     %-4zu         %-4zu\r\n", continent->name.c_str( ), continent->exits.size(), continent->landmarks.size(), continent->landing_sites.size() );
+      ch->pager_fmt( "{:<15}  {:<4}     {:<4}         {:<4}\r\n", continent->name, continent->exits.size(), continent->landmarks.size(), continent->landing_sites.size() );
 }
 
-/* Used with the survey command to calculate distance to the landmark.
+/*
+ * Used with the survey command to calculate distance to the landmark.
  * Used by do_scan to see if the target is close enough to justify showing it.
  * Used by the display_map code to create a more "circular" display.
  *
@@ -1264,7 +1267,8 @@ bool valid_coordinates( short x, short y )
    return true;
 }
 
-/* Will set the vics map the same as the characters map
+/*
+ * Will set the vics map the same as the characters map
  * I got tired of coding the same stuff... over.. and over...
  *
  * Used in summon, gate, goto
@@ -1285,7 +1289,7 @@ void fix_maps( char_data * ch, char_data * victim )
     */
    if( !victim )
    {
-      bug( "%s -> %s:%d: nullptr victim!", __func__, __FILE__, __LINE__ );
+      bug( "{} -> {}:{}: nullptr victim!", __func__, __FILE__, __LINE__ );
       return;
    }
 
@@ -1340,7 +1344,7 @@ void continent_data::delete_landmark( landmark_data * landmark )
 {
    if( !landmark )
    {
-      bug( "%s -> %s:%d: Trying to delete nullptr landmark!", __func__, __FILE__, __LINE__ );
+      bug( "{} -> {}:{}: Trying to delete nullptr landmark!", __func__, __FILE__, __LINE__ );
       return;
    }
 
@@ -1509,8 +1513,8 @@ CMDF( do_setmark )
       case SUB_OVERLAND_DESC:
          landmark = ( landmark_data * ) ch->pcdata->dest_buf;
          if( !landmark )
-            bug( "%s -> %s:%d: setmark desc: sub_overland_desc: nullptr ch->pcdata->dest_buf", __func__, __FILE__, __LINE__ );
-         landmark->description = ch->copy_buffer(  );
+            bug( "{} -> {}:{}: setmark desc: sub_overland_desc: nullptr ch->pcdata->dest_buf", __func__, __FILE__, __LINE__ );
+         landmark->description = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          ch->continent->save(  );
@@ -1639,7 +1643,7 @@ void continent_data::modify_mapexit( mapexit_data * mexit, std::string_view toma
 {
    if( !mexit )
    {
-      bug( "%s -> %s:%d: nullptr exit being modified!", __func__, __FILE__, __LINE__ );
+      bug( "{} -> {}:{}: nullptr exit being modified!", __func__, __FILE__, __LINE__ );
       return;
    }
 
@@ -1670,7 +1674,7 @@ void continent_data::delete_mapexit( mapexit_data * mexit )
 {
    if( !mexit )
    {
-      bug( "%s -> %s:%d: Trying to delete nullptr exit!", __func__, __FILE__, __LINE__ );
+      bug( "{} -> {}:{}: Trying to delete nullptr exit!", __func__, __FILE__, __LINE__ );
       return;
    }
 
@@ -1763,7 +1767,7 @@ CMDF( do_setexit )
 
       if( !ch->continent )
       {
-         bug( "%s -> %s:%d: %s is not on a valid map!", __func__, __FILE__, __LINE__, ch->name.c_str() );
+         bug( "{} -> {}:{}: {} is not on a valid map!", __func__, __FILE__, __LINE__, ch->name );
          ch->print( "Can't do that - your on an invalid map.\r\n" );
          return;
       }
@@ -1781,22 +1785,22 @@ CMDF( do_setexit )
 
       if( !newmap )
       {
-         ch->printf( "There isn't a map for '%s'.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "There isn't a map for '{}'.\r\n", arg2 );
          return;
       }
 
-      x = atoi( arg3.c_str(  ) );
-      y = atoi( argument.c_str(  ) );
+      x = std::stoi( arg3 );
+      y = std::stoi( argument );
 
       if( !is_valid_x( x ) )
       {
-         ch->printf( "Valid x coordinates are 0 to %d.\r\n", MAX_X - 1 );
+         ch->print_fmt( "Valid x coordinates are 0 to {}.\r\n", MAX_X - 1 );
          return;
       }
 
       if( !is_valid_y( y ) )
       {
-         ch->printf( "Valid y coordinates are 0 to %d.\r\n", MAX_Y - 1 );
+         ch->print_fmt( "Valid y coordinates are 0 to {}.\r\n", MAX_Y - 1 );
          return;
       }
 
@@ -1806,14 +1810,14 @@ CMDF( do_setexit )
       ch->continent->save( );
       ch->continent->save_png_file( );
 
-      ch->printf( "Exit set to map of %s, at %dX, %dY.\r\n", arg2.c_str(  ), x, y );
+      ch->print_fmt( "Exit set to map of {}, at {}X, {}Y.\r\n", arg2, x, y );
 
       return;
    }
 
    if( !str_cmp( arg, "vnum" ) )
    {
-      vnum = atoi( argument.c_str(  ) );
+      vnum = std::stoi( argument );
 
       if( !( location = get_room_index( vnum ) ) )
       {
@@ -1827,13 +1831,14 @@ CMDF( do_setexit )
       ch->continent->save( );
       ch->continent->save_png_file( );
 
-      ch->printf( "Exit set to room %d.\r\n", vnum );
+      ch->print_fmt( "Exit set to room {}.\r\n", vnum );
       return;
    }
 }
 /* Overland exit stuff ends here */
 
-/* The guts of the map display code. Streamlined to only change color codes when it needs to.
+/*
+ * The guts of the map display code. Streamlined to only change color codes when it needs to.
  * If you are also using my newly updated Custom Color code you'll get even better performance
  * out of it since that code replaced the stock Smaug color tag converter, which shaved a few
  * microseconds off the time it takes to display a full immortal map :)
@@ -2035,7 +2040,7 @@ void display_map( char_data * ch )
 
    if( !ch->continent )
    {
-      bug( "%s -> %s:%d: Player %s on invalid map! Moving them to Bywater recall room.", __func__, __FILE__, __LINE__, ch->name.c_str() );
+      bug( "{} -> {}:{}: Player {} on invalid map! Moving them to Bywater recall room.", __func__, __FILE__, __LINE__, ch->name );
       ch->print( "&RYou were found on an invalid map and have been moved to the recall room in Bywater.\r\n" );
       toroom = get_room_index( ROOM_VNUM_ALTAR );
       leave_map( ch, nullptr, toroom );
@@ -2361,19 +2366,19 @@ void collect_followers( char_data * ch, room_index * from, room_index * to )
 {
    if( !ch )
    {
-      bug( "%s -> %s:%d: nullptr master!", __func__, __FILE__, __LINE__ );
+      bug( "{} -> {}:{}: nullptr master!", __func__, __FILE__, __LINE__ );
       return;
    }
 
    if( !from )
    {
-      bug( "%s -> %s:%d: %s nullptr source room!", __func__, __FILE__, __LINE__, ch->name.c_str() );
+      bug( "{} -> {}:{}: {} nullptr source room!", __func__, __FILE__, __LINE__, ch->name );
       return;
    }
 
    if( !to )
    {
-      bug( "%s -> %s:%d: %s nullptr target room!", __func__, __FILE__, __LINE__, ch->name.c_str() );
+      bug( "{} -> {}:{}: {} nullptr target room!", __func__, __FILE__, __LINE__, ch->name );
       return;
    }
 
@@ -2492,7 +2497,7 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
          {
             if( !ch->isnpc(  ) )
             {
-               bug( "%s -> %s:%d: Target vnum %d for map exit does not exist!", __func__, __FILE__, __LINE__, mexit->vnum );
+               bug( "{} -> {}:{}: Target vnum {} for map exit does not exist!", __func__, __FILE__, __LINE__, mexit->vnum );
                ch->print( "Ooops. Something bad happened. Contact the immortals ASAP.\r\n" );
             }
             return rSTOP;
@@ -2865,7 +2870,7 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, std::string_vie
 
       if( !continent )
       {
-         bug( "%s -> %s:%d: Cannot find area to enter an overland map from room %d.", __func__, __FILE__, __LINE__, ch->in_room->vnum );
+         bug( "{} -> {}:{}: Cannot find area to enter an overland map from room {}.", __func__, __FILE__, __LINE__, ch->in_room->vnum );
          return;
       }
 
@@ -2879,14 +2884,14 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, std::string_vie
          maproom = get_room_index( continent->vnum );
       else
       {
-         bug( "%s -> %s:%d: Invalid target map specified: %s", __func__, __FILE__, __LINE__, tomap.data() );
+         bug( "{} -> {}:{}: Invalid target map specified: {}", __func__, __FILE__, __LINE__, tomap );
          return;
       }
    }
 
    if( !valid_coordinates( x, y ) )
    {
-      ch->printf( "Coordinates %d %d are not valid.\r\n", x, y );
+      ch->print_fmt( "Coordinates {} {} are not valid.\r\n", x, y );
       return;
    }
 
@@ -2898,7 +2903,7 @@ void enter_map( char_data * ch, exit_data * pexit, int x, int y, std::string_vie
 
    if( !maproom )
    {
-      bug( "%s -> %s:%d: Overland map room is missing!", __func__, __FILE__, __LINE__ );
+      bug( "{} -> {}:{}: Overland map room is missing!", __func__, __FILE__, __LINE__ );
       ch->print( "Woops. Something is majorly wrong here - inform the immortals.\r\n" );
       return;
    }

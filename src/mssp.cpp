@@ -97,27 +97,29 @@ void save_mssp_info( void )
 
    if( !stream.is_open( ) )
    {
-      bug( "%s: Cannot open MSSP file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, MSSP_FILE, std::strerror(errno) );
       return;
    }
 
    // For writing string values if they are actually set.
-   auto write_field = [&stream](const std::string& label, const std::string& value) {
+   auto write_field = [&stream]( const std::string & label, const std::string & value )
+   {
       if( !value.empty() )
       {
-         stream << label << value << std::endl;
+         stream << label << value << "\n";
       }
    };
 
    // For writing numerical values if they're > 0.
-   auto write_field_int = [&stream](const std::string& label, int value) {
+   auto write_field_int = [&stream]( const std::string & label, const int value )
+   {
       if( value > 0 )
       {
-         stream << label << value << std::endl;
+         stream << label << value << "\n";
       }
    };
 
-   stream << "#MSSP_INFO" << std::endl;
+   stream << "#MSSP_INFO\n";
 
    write_field( "Hostname          ", mssp_info->hostname );
    write_field( "IP                ", mssp_info->ip );
@@ -135,7 +137,7 @@ void save_mssp_info( void )
    write_field( "Intermud          ", mssp_info->intermud );
 
    if( mssp_info->ssl >= 1024 )
-      stream << "SSL               " << mssp_info->ssl;
+      stream << "SSL               \n" << mssp_info->ssl;
 
    write_field_int( "CrawlDelay        ", mssp_info->crawldelay );
    write_field_int( "MinAge            ", mssp_info->minAge );
@@ -152,7 +154,10 @@ void save_mssp_info( void )
    write_field_int( "HiringBuilders    ", mssp_info->hiringBuilders );
    write_field_int( "HiringCoders      ", mssp_info->hiringCoders );
 
-   stream << "End" << std::endl << std::endl;
+   stream << "End\n\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, MSSP_FILE, std::strerror(errno) );
 }
 
 /*
@@ -439,7 +444,7 @@ void show_mssp( char_data * ch )
 {
    if( !ch )
    {
-      bug( "%s: nullptr ch", __func__ );
+      bug( "{}: nullptr ch", __func__ );
       return;
    }
 
@@ -655,7 +660,7 @@ void write_to_descriptor_printf( descriptor_data * desc, std::string_view fmt, a
    catch( const std::exception & e )
    {
       // In case someone bodged a call to this that isn't formatted right.
-      bug( "%s: Formatting error: %s", __func__, e.what() );
+      bug( "{}: Formatting error: {}", __func__, e.what() );
       return;
    }
 
@@ -668,13 +673,13 @@ void mssp_reply( descriptor_data * d, const char *var, std::string_view fmt, aut
 
    if( !d )
    {
-      bug( "%s: nullptr d", __func__ );
+      bug( "{}: nullptr d", __func__ );
       return;
    }
 
    if( !var || var[0] == '\0' )
    {
-      bug( "%s: nullptr var", __func__ );
+      bug( "{}: nullptr var", __func__ );
       return;
    }
 
@@ -685,7 +690,7 @@ void mssp_reply( descriptor_data * d, const char *var, std::string_view fmt, aut
    catch( const std::exception & e )
    {
       // In case someone bodged a call to this that isn't formatted right.
-      bug( "%s: Formatting error: %s", __func__, e.what() );
+      bug( "{}: Formatting error: %s", __func__, e.what() );
       return;
    }
 
@@ -718,7 +723,7 @@ void send_mssp_data( descriptor_data * d )
 {
    if( !d )
    {
-      bug( "%s: nullptr d", __func__ );
+      bug( "{}: nullptr d", __func__ );
       return;
    }
 

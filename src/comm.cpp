@@ -509,7 +509,7 @@ static void SigTerm( int signum )
 static void caught_alarm( int signum )
 {
    echo_to_all( "&[immortal]Alas, the hideous malevolent entity known only as 'Lag' rises once more!", ECHOTAR_ALL );
-   bug( "&RALARM CLOCK! In section %s", alarm_section );
+   bug( "&RALARM CLOCK! In section {}", alarm_section );
 
    if( newdesc )
    {

@@ -137,7 +137,7 @@ void save_slays( )
 
    if( !stream )
    {
-      bug( "%s: Could not open file for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, SLAY_FILE, std::strerror(errno) );
       return;
    }
 
@@ -167,6 +167,9 @@ void save_slays( )
 
       stream << "End\n\n";
    }
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, SLAY_FILE, std::strerror(errno) );
 }
 
 /** Function: do_slay
@@ -328,7 +331,7 @@ CMDF( do_setslay )
 
       case SUB_SLAYCMSG:
          slay = ( slay_data * ) ch->pcdata->dest_buf;
-         slay->set_cmsg( ch->copy_buffer(  ) );
+         slay->set_cmsg( ch->copy_buffer( ) );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          save_slays(  );
@@ -336,7 +339,7 @@ CMDF( do_setslay )
 
       case SUB_SLAYVMSG:
          slay = ( slay_data * ) ch->pcdata->dest_buf;
-         slay->set_vmsg( ch->copy_buffer(  ) );
+         slay->set_vmsg( ch->copy_buffer( ) );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          save_slays(  );
@@ -344,7 +347,7 @@ CMDF( do_setslay )
 
       case SUB_SLAYRMSG:
          slay = ( slay_data * ) ch->pcdata->dest_buf;
-         slay->set_rmsg( ch->copy_buffer(  ) );
+         slay->set_rmsg( ch->copy_buffer( ) );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          save_slays(  );

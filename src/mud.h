@@ -66,9 +66,6 @@ class char_data;
 class pc_data;
 class obj_data;
 
-// Used in class headers - needs to be declared early.
-void bug( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
-
 // Function types. Samson. Stop. Don't do it! NO! You have to keep these things you idiot!
 typedef void DO_FUN( char_data * ch, std::string argument );
 typedef ch_ret SPELL_FUN( int sn, int level, char_data * ch, void *vo );
@@ -285,8 +282,8 @@ struct extra_descr_data
 };
 
 #include "mudcfg.h" // Contains definitions specific to your mud - will not be covered by patches. Samson 3-14-04
-#include "color.h"  // Custom color stuff
-#include "olc.h"    // Oasis OLC code and global definitions
+#include "color.h"  // Custom color stuff.
+#include "olc.h"    // Oasis OLC code and global definitions.
 
 // Time and weather stuff.
 enum sun_positions
@@ -979,6 +976,7 @@ void check_switches(  );
 void check_switch( char_data * );
 
 // db.cpp
+void process_bug( std::string_view );
 bool is_valid_filename( char_data *, std::string_view, std::string_view );
 void shutdown_mud( std::string_view );
 bool exists_file( std::string_view );
@@ -1139,6 +1137,14 @@ void weather_update( void );
 // weather.cpp
 bool is_indoor_sector( int );
 
+template <typename... Args>
+void bug( std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   process_bug( formatted );
+}
+
 // This used to be the old ext_flagstring converted to C++ and using strings so it can't overflow the temporary buffer.
 template < size_t N > const char *bitset_string( std::bitset < N > bits, const char *flagarray[] )
 {
@@ -1173,7 +1179,7 @@ template < size_t N > void flag_set( FILE * fp, std::bitset < N > &field, const 
 
       // Casting N down to an int might not look good, but we can't check for -1 any other way.
       if( value < 0 || value >= ( int )N )
-         bug( "%s: Invalid flag: %s", __func__, flag.c_str() );
+         bug( "{}: Invalid flag: {}", __func__, flag );
       else
          field.set( value );
    }
@@ -1191,7 +1197,7 @@ template < size_t N > void flag_string_set( std::string & original, std::bitset 
 
       // Casting N down to an int might not look good, but we can't check for -1 any other way.
       if( value < 0 || value >= ( int )N )
-         bug( "%s: Invalid flag: %s", __func__, flag.c_str(  ) );
+         bug( "{}: Invalid flag: {}", __func__, flag );
       else
          field.set( value );
    }
@@ -1393,7 +1399,7 @@ void funcf( char_data * ch, DO_FUN * cmd, std::format_string<Args...> fmt, Args&
 {
    if( !cmd )
    {
-      bug( "%s: Bad function passed to funcf!", __func__ );
+      bug( "{}: Bad function passed to funcf!", __func__ );
       return;
    }
 

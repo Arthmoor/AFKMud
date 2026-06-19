@@ -52,7 +52,7 @@ void save_sales( void )
    stream.open( std::filesystem::path( SALES_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open sales file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, SALES_FILE, std::strerror(errno) );
       return;
    }
 
@@ -68,6 +68,8 @@ void save_sales( void )
       stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, SALES_FILE, std::strerror(errno) );
 }
 
 sale_data::sale_data(  )
@@ -250,7 +252,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
 
    if( !( aucmob = supermob->get_char_world( filename ) ) )
    {
-      bug( "%s: Um. Missing mob for %s's auction vault.", __func__, filename.data() );
+      bug( "{}: Um. Missing mob for {}'s auction vault.", __func__, filename );
       return;
    }
 
@@ -258,7 +260,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
 
    if( !aucvault )
    {
-      bug( "Ooops! The vault room for %s's auction house is missing!", aucmob->short_descr.c_str() );
+      bug( "Ooops! The vault room for {}'s auction house is missing!", aucmob->short_descr );
       return;
    }
 
@@ -282,7 +284,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
 
          if( letter != '#' )
          {
-            bug( "%s: # not found. %s", __func__, aucmob->short_descr.c_str() );
+            bug( "{}: # not found. {}", __func__, aucmob->short_descr );
             break;
          }
 
@@ -296,7 +298,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
             break;
          else
          {
-            bug( "%s: bad section. %s", __func__, aucmob->short_descr.c_str() );
+            bug( "{}: bad section. {}", __func__, aucmob->short_descr );
             break;
          }
       }
@@ -346,7 +348,7 @@ void save_aucvault( char_data * ch, std::string_view aucmob )
 
    if( !ch )
    {
-      bug( "%s: nullptr ch!", __func__ );
+      bug( "{}: nullptr ch!", __func__ );
       return;
    }
 
@@ -355,20 +357,18 @@ void save_aucvault( char_data * ch, std::string_view aucmob )
    std::filesystem::path filename = std::format( "{}{}", AUC_DIR, aucmob );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
-      perror( filename.c_str() );
+      bug( "{}: Unable to open {} for writing.", __func__, filename.string() );
+      return;
    }
-   else
-   {
-      short templvl = ch->level;
-      ch->level = LEVEL_AVATAR;  /* make sure EQ doesn't get lost */
 
-      if( !aucvault->objects.empty(  ) )
-         fwrite_obj( ch, aucvault->objects, nullptr, fp, 0, false );
-      fprintf( fp, "%s", "#END\n" );
-      ch->level = templvl;
-      FCLOSE( fp );
-   }
+   short templvl = ch->level;
+   ch->level = LEVEL_AVATAR;  /* make sure EQ doesn't get lost */
+
+   if( !aucvault->objects.empty(  ) )
+      fwrite_obj( ch, aucvault->objects, nullptr, fp, 0, false );
+   fprintf( fp, "%s", "#END\n" );
+   ch->level = templvl;
+   FCLOSE( fp );
 }
 
 char_data *find_auctioneer( char_data * ch )
@@ -703,7 +703,7 @@ void bid( char_data * ch, char_data * buyer, std::string_view argument )
 
    if( !( obj = ch->get_obj_carry( arg1 ) ) )   /* does char have the item ? */
    {
-      bug( "%s: Auctioneer %s isn't carrying the item!", __func__, ch->short_descr.c_str() );
+      bug( "{}: Auctioneer {} isn't carrying the item!", __func__, ch->short_descr );
       return;
    }
 
@@ -853,7 +853,7 @@ CMDF( do_identify )
    if( !ch->in_room->flags.test( ROOM_AUCTION ) )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Auction mob in non-auction room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Auction mob in non-auction room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -862,7 +862,7 @@ CMDF( do_identify )
    if( !aucvault )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Missing auction vault for room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Missing auction vault for room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -891,7 +891,7 @@ CMDF( do_identify )
    if( !str_cmp( obj->seller, "" ) || !obj->seller )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
-      bug( "%s: Object with no seller - %s", __func__, obj->short_descr );
+      bug( "{}: Object with no seller - {}", __func__, obj->short_descr );
       return;
    }
 
@@ -956,7 +956,7 @@ CMDF( do_collect )
    if( !ch->in_room->flags.test( ROOM_AUCTION ) )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Auction mob in non-auction room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Auction mob in non-auction room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -965,7 +965,7 @@ CMDF( do_collect )
    if( !aucvault )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Missing auction vault for room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Missing auction vault for room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -1154,7 +1154,7 @@ void auction_value( char_data * ch, char_data * auc, std::string_view argument )
    if( !ch->in_room->flags.test( ROOM_AUCTION ) )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Auction mob in non-auction room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Auction mob in non-auction room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -1163,7 +1163,7 @@ void auction_value( char_data * ch, char_data * auc, std::string_view argument )
    if( !aucvault )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Missing auction vault for room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Missing auction vault for room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -1186,7 +1186,7 @@ void auction_value( char_data * ch, char_data * auc, std::string_view argument )
    if( !str_cmp( obj->seller, "" ) || obj->seller == nullptr )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
-      bug( "%s: Object with no seller - %s", __func__, obj->short_descr );
+      bug( "{}: Object with no seller - {}", __func__, obj->short_descr );
       return;
    }
    ch->print_fmt( "&[auction]{} : Offered by {}. Minimum bid: {}\r\n", obj->short_descr, obj->seller, obj->bid );
@@ -1207,7 +1207,7 @@ void auction_buy( char_data * ch, char_data * auc, std::string_view argument )
    if( !ch->in_room->flags.test( ROOM_AUCTION ) )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Auction mob in non-auction room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Auction mob in non-auction room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -1216,7 +1216,7 @@ void auction_buy( char_data * ch, char_data * auc, std::string_view argument )
    if( !aucvault )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Missing auction vault for room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Missing auction vault for room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -1245,7 +1245,7 @@ void auction_buy( char_data * ch, char_data * auc, std::string_view argument )
    if( !str_cmp( obj->seller, "" ) || obj->seller == nullptr )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
-      bug( "%s: Object with no seller - %s", __func__, obj->short_descr );
+      bug( "{}: Object with no seller - {}", __func__, obj->short_descr );
       return;
    }
 
@@ -1294,14 +1294,14 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
    if( !ch->in_room->flags.test( ROOM_AUCTION ) )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Auction mob in non-auction room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Auction mob in non-auction room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
    if( !( aucvault = get_room_index( ch->in_room->vnum + 1 ) ) )
    {
       ch->print( "This is not an auction house!\r\n" );
-      bug( "%s: Missing auction vault for room %d!", __func__, ch->in_room->vnum );
+      bug( "{}: Missing auction vault for room {}!", __func__, ch->in_room->vnum );
       return;
    }
 
@@ -1423,7 +1423,7 @@ void sweep_house( room_index * aucroom )
 
    if( !( aucvault = get_room_index( aucroom->vnum + 1 ) ) )
    {
-      bug( "%s: No vault room preset for auction house %d!", __func__, aucroom->vnum );
+      bug( "{}: No vault room preset for auction house {}!", __func__, aucroom->vnum );
       return;
    }
 

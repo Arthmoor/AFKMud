@@ -49,12 +49,13 @@
 std::map<int, std::string> abits;
 std::map<int, std::string> qbits;
 
-/* QBITS save, ABITS do not save. There are enough of each to give a range
-   of them to builders the same as their vnums. They are identifiable by mobs
-   running mob progs, and can be used as little identifiers for players..
-   player X has done this and this and this.. think of them like a huge array
-   of boolean variables you can put on a player or mob with a mob prog. -- Scion
-*/
+/*
+ * QBITS save, ABITS do not save. There are enough of each to give a range
+ * of them to builders the same as their vnums. They are identifiable by mobs
+ * running mob progs, and can be used as little identifiers for players..
+ * player X has done this and this and this.. think of them like a huge array
+ * of boolean variables you can put on a player or mob with a mob prog. -- Scion
+ */
 void free_questbits( void )
 {
    qbits.clear(  );
@@ -85,16 +86,18 @@ void save_bits( void )
          start_bit = qbits;
       }
 
-      stream.open( filename );
+      stream.open( std::filesystem::path( filename ) );
       if( !stream.is_open(  ) )
       {
-         bug( "%s: Cannot open bit list %d for writing", __func__, mode );
-         return;
+         bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
+         continue;
       }
 
       for( bit = start_bit.begin(  ); bit != start_bit.end(  ); ++bit )
          stream << bit->first << " " << bit->second << std::endl;
       stream.close(  );
+      if( stream.fail() )
+         bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
    }
 }
 
@@ -122,14 +125,14 @@ void load_oldbits( void )
 
       if( word[0] == '\0' )
       {
-         bug( "%s: EOF encountered reading old bits file!", __func__ );
+         log_printf( "{}: EOF encountered reading old bits file!", __func__ );
          word = "End";
       }
 
       switch ( to_upper( word[0] ) )
       {
          default:
-            bug( "%s: no match: %s", __func__, word );
+            log_printf( "{}: no match: {}", __func__, word );
             fread_to_eol( fp );
             break;
 
@@ -157,7 +160,7 @@ void load_oldbits( void )
             }
             else
             {
-               bug( "%s: Bad section: %s", __func__, word );
+               log_printf( "{}: Bad section: {}", __func__, word );
                return;
             }
 
@@ -192,7 +195,7 @@ void load_abits( void )
 
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open abit file.", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
@@ -220,7 +223,7 @@ void load_qbits( void )
    stream.open( filename );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open qbit file.", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 

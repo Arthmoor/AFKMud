@@ -217,7 +217,7 @@ CMDF( do_finger )
       temproom = get_room_index( ROOM_VNUM_LIMBO );
       if( !temproom )
       {
-         bug( "%s: Limbo room is not available!", __func__ );
+         bug( "{}: Limbo room is not available!", __func__ );
          ch->print( "Fatal error, report to the immortals.\r\n" );
          return;
       }

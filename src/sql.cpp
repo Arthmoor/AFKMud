@@ -92,7 +92,8 @@ void init_mysql( )
    }
    catch( const std::exception & e )
    {
-      bug( "%s: Connection failed: %s", __func__, e.what() );
+      bug( "{}: Connection failed: {}", __func__, e.what() );
+      std::exit( EXIT_FAILURE );
    }
 }
 
@@ -112,7 +113,7 @@ int mysql_safe_query( std::string_view fmt, auto&&... args )
 {
    if( !db )
    {
-      bug( "%s: DB not initialized.", __func__ );
+      bug( "{}: DB not initialized.", __func__ );
       return -1;
    }
 
@@ -124,7 +125,7 @@ int mysql_safe_query( std::string_view fmt, auto&&... args )
    }
    catch( const std::exception & e )
    {
-      bug( "%s: Formatting error: %s", __func__, e.what() );
+      bug( "{}: Formatting error: %s", __func__, e.what() );
       return -1;
    }
 }

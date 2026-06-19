@@ -291,7 +291,7 @@ void gain_condition( char_data * ch, int iCond, int value )
 
    if( iCond < 0 || iCond >= MAX_CONDS )
    {
-      bug( "%s -> %s:%d: Player condition is outside valid array range [0-%d]: %d", __func__, __FILE__, __LINE__, MAX_CONDS - 1, iCond );
+      bug( "{} -> {}:{}: Player condition is outside valid array range [0-{}]: {}", __func__, __FILE__, __LINE__, MAX_CONDS - 1, iCond );
       return;
    }
 
@@ -330,7 +330,7 @@ void gain_condition( char_data * ch, int iCond, int value )
             break;
 
          default:
-            bug( "%s: invalid condition type %d", __func__, iCond );
+            bug( "{}: invalid condition type {}", __func__, iCond );
             retcode = rNONE;
             break;
       }
@@ -2164,7 +2164,7 @@ void aggr_update( void )
 
          if( !victim )
          {
-            bug( "%s: null victim. Aggro: %s", __func__, ch->name.c_str() );
+            bug( "{}: null victim. Aggro: {}", __func__, ch->name );
             log_printf( "Breaking {} loop and transferring aggressor to Limbo.", __func__ );
             ch->from_room(  );
             if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )

@@ -76,8 +76,9 @@ void continent_data::fread_landing_site( std::ifstream & stream )
    }
    while( !stream.eof(  ) );
 
-   bug( "%s: Filestream reached premature EOF reading landing sites for continent %s - FATAL ERROR: Aborting file read.", __func__, this->name.c_str(  ) );
+   bug( "{}: Filestream reached premature EOF reading landing sites for continent {} - FATAL ERROR: Aborting file read.", __func__, this->name );
    shutdown_mud( "Corrupt continent file." );
+   std::exit( EXIT_FAILURE );
 }
 
 /*
@@ -289,7 +290,7 @@ void create_skyship( char_data * ch )
 
    if( !( vskyship = get_mob_index( MOB_VNUM_SKYSHIP ) ) )
    {
-      bug( "%s: Vnum %d not found for skyship", __func__, MOB_VNUM_SKYSHIP );
+      bug( "{}: Vnum {} not found for skyship", __func__, MOB_VNUM_SKYSHIP );
       return;
    }
 

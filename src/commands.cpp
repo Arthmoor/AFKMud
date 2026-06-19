@@ -428,13 +428,13 @@ void interpret( char_data * ch, std::string argument )
 
    if( !ch )
    {
-      bug( "%s: null ch!", __func__ );
+      bug( "{}: null ch!", __func__ );
       return;
    }
 
    if( !ch->in_room )
    {
-      bug( "%s: %s null in_room!", __func__, ch->name.c_str(  ) );
+      bug( "{}: {} null in_room!", __func__, ch->name );
       return;
    }
 
@@ -446,7 +446,7 @@ void interpret( char_data * ch, std::string argument )
       if( !( fun = ch->last_cmd ) )
       {
          ch->substate = SUB_NONE;
-         bug( "%s: %s SUB_REPEATCMD with nullptr last_cmd", __func__, ch->name.c_str(  ) );
+         bug( "{}: {} SUB_REPEATCMD with nullptr last_cmd", __func__, ch->name );
          return;
       }
       else
@@ -476,7 +476,7 @@ void interpret( char_data * ch, std::string argument )
          if( !found )
          {
             cmd = nullptr;
-            bug( "%s: SUB_REPEATCMD: last_cmd invalid", __func__ );
+            bug( "{}: SUB_REPEATCMD: last_cmd invalid", __func__ );
             return;
          }
          logline = std::format( "({}) {}", cmd->name, argument );
@@ -490,7 +490,7 @@ void interpret( char_data * ch, std::string argument )
        */
       if( argument.empty(  ) )
       {
-         bug( "%s: null argument!", __func__ );
+         bug( "{}: null argument!", __func__ );
          return;
       }
 
@@ -583,7 +583,7 @@ void interpret( char_data * ch, std::string argument )
          else
          {
             ch->print( "Huh?\r\n" );
-            bug( "%s: %s", __func__, error );
+            bug( "{}: {}", __func__, error );
             return;
          }
       }
@@ -783,11 +783,11 @@ void interpret( char_data * ch, std::string argument )
    }
    catch( std::exception & e )
    {
-      bug( "&YCommand exception: '%s' on command: %s %s&D", e.what(  ), cmd->name.c_str(  ), argument.c_str(  ) );
+      bug( "&YCommand exception: '{}' on command: {} {}&D", e.what(  ), cmd->name, argument );
    }
    catch( ... )
    {
-      bug( "&YUnknown command exception on command: %s %s&D", cmd->name.c_str(  ), argument.c_str(  ) );
+      bug( "&YUnknown command exception on command: {} {}&D", cmd->name, argument );
    }
 
    // tmptime is in milliseconds, up to a cap of 19 seconds.
@@ -844,7 +844,7 @@ void unlink_command( cmd_type * command )
 {
    if( !command )
    {
-      bug( "%s: nullptr command", __func__ );
+      bug( "{}: nullptr command", __func__ );
       return;
    }
 
@@ -870,13 +870,13 @@ void add_command( cmd_type * command )
 {
    if( !command )
    {
-      bug( "%s: nullptr command", __func__ );
+      bug( "{}: nullptr command", __func__ );
       return;
    }
 
    if( command->name.empty(  ) )
    {
-      bug( "%s: Empty command->name", __func__ );
+      bug( "{}: Empty command->name", __func__ );
       return;
    }
 
@@ -917,7 +917,7 @@ void save_commands( void )
    stream.open( std::filesystem::path( COMMAND_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open commands.dat for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, COMMAND_FILE, std::strerror(errno) );
       return;
    }
 
@@ -934,7 +934,7 @@ void save_commands( void )
 
          if( command->name.empty(  ) )
          {
-            bug( "%s: blank command in command table", __func__ );
+            bug( "{}: blank command in command table", __func__ );
             continue;
          }
          stream << "#COMMAND" << std::endl;
@@ -953,6 +953,8 @@ void save_commands( void )
       }
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, COMMAND_FILE, std::strerror(errno) );
 }
 
 void load_commands( void )
@@ -967,8 +969,8 @@ void load_commands( void )
    stream.open( std::filesystem::path( COMMAND_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: No command file found.", __func__ );
-      exit( 1 );
+      bug( "{}: Cannot open {} for reading: {}", __func__, COMMAND_FILE, std::strerror(errno) );
+      std::exit( EXIT_FAILURE );
    }
 
    do
@@ -988,7 +990,7 @@ void load_commands( void )
          continue;
 
       if( key == "#VERSION" )
-         version = atoi( value.c_str(  ) );
+         version = std::stoi( value );
       else if( key == "#COMMAND" )
          cmd = new cmd_type;
       else if( key == "Name" )
@@ -1005,7 +1007,7 @@ void load_commands( void )
          int pos = get_npc_position( value );
          if( pos < 0 || pos >= POS_MAX )
          {
-            bug( "%s: Command %s has invalid position! Defaulting to standing.", __func__, cmd->name.c_str(  ) );
+            bug( "{}: Command {} has invalid position! Defaulting to standing.", __func__, cmd->name );
             pos = POS_STANDING;
          }
          cmd->position = pos;
@@ -1022,7 +1024,7 @@ void load_commands( void )
 
             if( lognum < 0 || lognum > LOG_ALL )
             {
-               bug( "%s: Command %s has invalid log flag! Defaulting to normal.", __func__, cmd->name.c_str(  ) );
+               bug( "{}: Command {} has invalid log flag! Defaulting to normal.", __func__, cmd->name );
                lognum = LOG_NORMAL;
             }
             cmd->log = lognum;
@@ -1979,7 +1981,7 @@ void unlink_social( social_type * social )
 {
    if( !social )
    {
-      bug( "%s: nullptr social", __func__ );
+      bug( "{}: nullptr social", __func__ );
       return;
    }
 
@@ -1994,19 +1996,19 @@ void add_social( social_type * social )
 {
    if( !social )
    {
-      bug( "%s: nullptr social", __func__ );
+      bug( "{}: nullptr social", __func__ );
       return;
    }
 
    if( social->name.empty(  ) )
    {
-      bug( "%s: nullptr social->name", __func__ );
+      bug( "{}: nullptr social->name", __func__ );
       return;
    }
 
    if( social->char_no_arg.empty(  ) )
    {
-      bug( "%s: nullptr social->char_no_arg on social %s", __func__, social->name.c_str(  ) );
+      bug( "{}: nullptr social->char_no_arg on social %s", __func__, social->name );
       return;
    }
 
@@ -2026,7 +2028,7 @@ void save_socials( void )
    stream.open( std::filesystem::path( SOCIAL_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s", "Cannot open socials.dat for writting" );
+      bug( "{}: Cannot open {} for writing: {}", __func__, SOCIAL_FILE, std::strerror(errno) );
       return;
    }
 
@@ -2037,7 +2039,7 @@ void save_socials( void )
 
       if( social->name.empty(  ) )
       {
-         bug( "%s: blank social in social table", __func__ );
+         bug( "{}: blank social in social table", __func__ );
          continue;
       }
 
@@ -2046,7 +2048,7 @@ void save_socials( void )
       if( !social->char_no_arg.empty(  ) )
          stream << "CharNoArg   " << social->char_no_arg << std::endl;
       else
-         bug( "%s: nullptr char_no_arg in social_table for %s", __func__, social->name.c_str(  ) );
+         bug( "{}: Empty char_no_arg in social_table for {}", __func__, social->name );
       if( !social->others_no_arg.empty(  ) )
          stream << "OthersNoArg " << social->others_no_arg << std::endl;
       if( !social->char_found.empty(  ) )
@@ -2067,6 +2069,8 @@ void save_socials( void )
       stream << "End" << std::endl << std::endl;
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, SOCIAL_FILE, std::strerror(errno) );
 }
 
 void load_socials( void )
@@ -2079,8 +2083,8 @@ void load_socials( void )
    stream.open( std::filesystem::path( SOCIAL_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open socials.dat", __func__ );
-      exit( 1 );
+      bug( "{}: Cannot open {} for reading: {}", __func__, SOCIAL_FILE, std::strerror(errno) );
+      std::exit( EXIT_FAILURE );
    }
 
    do

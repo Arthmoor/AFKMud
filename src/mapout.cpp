@@ -134,7 +134,7 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
 
    if( !ch->pcdata->pnote )
    {
-      bug( "%s: ch->pcdata->pnote == nullptr!", __func__ );
+      bug( "{}: ch->pcdata->pnote == nullptr!", __func__ );
       return;
    }
    n = 0;
@@ -176,7 +176,7 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
           */
          ++col;
          /*
-          * Make sure it has a closeing ] 
+          * Make sure it has a closing ]
           */
          if( c == ']' )
             ++col;
@@ -209,7 +209,7 @@ int add_new_room_to_map( char_data * ch, char code )
       {
          if( !( location = make_room( i, ch->pcdata->area ) ) )
          {
-            bug( "%s: make_room failed", __func__ );
+            bug( "{}: make_room failed", __func__ );
             return -1;
          }
          /*
@@ -294,7 +294,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
 
    if( !ch->pcdata->pnote )
    {
-      bug( "%s: ch->pcdata->pnote == nullptr!", __func__ );
+      bug( "{}: ch->pcdata->pnote == nullptr!", __func__ );
       return;
    }
 
@@ -334,7 +334,7 @@ void map_to_rooms( char_data * ch, map_index * m_index )
    if( !map_index )
    {
       ch->print( "Couldn't find or make a map_index for you!\r\n" );
-      bug( "%s: Couldn't find or make a map_index", __func__ );
+      bug( "{}: Couldn't find or make a map_index", __func__ );
       /*
        * do something. return failed or somesuch
        */
@@ -751,7 +751,7 @@ CMDF( do_mapout )
 
    if( !ch )
    {
-      bug( "%s: null ch", __func__ );
+      bug( "{}: null ch", __func__ );
       return;
    }
    if( ch->isnpc(  ) )
@@ -761,7 +761,7 @@ CMDF( do_mapout )
    }
    if( !ch->desc )
    {
-      bug( "%s: no descriptor", __func__ );
+      bug( "{}: no descriptor", __func__ );
       return;
    }
    if( !ch->pcdata->area )
@@ -776,7 +776,7 @@ CMDF( do_mapout )
          break;
       case SUB_WRITING_NOTE:
          if( ch->pcdata->dest_buf != ch->pcdata->pnote )
-            bug( "%s: sub_writing_map: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
+            bug( "{}: sub_writing_map: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
          STRFREE( ch->pcdata->pnote->text );
          ch->pcdata->pnote->text = ch->copy_buffer( true );
          ch->stop_editing(  );

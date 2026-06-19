@@ -47,10 +47,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <format>
-
-void bug( const char *, ... ) __attribute__ ( ( format( printf, 1, 2 ) ) );
-
-extern bool mud_down;
+#include "mud.h"
 
 constexpr int STR_HASH_SIZE = 1024;
 
@@ -75,7 +72,7 @@ char *str_alloc( const char *str, const char *function, const char *filename, in
 
    if( !str || str[0] == '\0' )
    {
-      bug( "%s: %s@%d trying to allocate an empty/null string", function, filename, line );
+      bug( "{}: {}@{} trying to allocate an empty/null string", function, filename, line );
       return nullptr;
    }
 

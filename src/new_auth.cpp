@@ -270,7 +270,7 @@ void clean_auth_list( void )
       {
          if( ec != std::errc::no_such_file_or_directory )
          {
-            bug( "%s: File %s error: %s", __func__, file_path.c_str(), ec.message().c_str() );
+            bug( "{}: File {} error: {}", __func__, file_path.string(), ec.message() );
          }
       }
    }
@@ -283,22 +283,27 @@ void save_auth_list( void )
    stream.open( std::filesystem::path( AUTH_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open auth.dat for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, AUTH_FILE, std::strerror(errno) );
       return;
    }
 
    for( auto* auth: authlist )
    {
-      stream << "#AUTH" << std::endl;
-      stream << "Name     " << auth->name << std::endl;
-      stream << "State    " << auth->state << std::endl;
+      stream << "#AUTH\n";
+      stream << std::format( "Name       {}\n", auth->name );
+      stream << std::format( "State      {}\n", auth->state );
+
       if( !auth->authed_by.empty(  ) )
-         stream << "AuthedBy " << auth->authed_by << std::endl;
+         stream << std::format( "AuthedBy   {}\n", auth->authed_by );
+
       if( !auth->change_by.empty(  ) )
-         stream << "Change   " << auth->change_by << std::endl;
-      stream << "End" << std::endl << std::endl;
+         stream << std::format( "Change     {}\n", auth->change_by );
+
+      stream << "End\n\n";
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, AUTH_FILE, std::strerror(errno) );
 }
 
 void clear_auth_list( void )
@@ -324,7 +329,7 @@ void load_auth_list( void )
    stream.open( std::filesystem::path( AUTH_FILE ) );
    if( !stream.is_open(  ) )
    {
-      bug( "%s: Cannot open auth.dat", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, AUTH_FILE, std::strerror(errno) );
       return;
    }
 

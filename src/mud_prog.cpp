@@ -2736,7 +2736,7 @@ int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data *
     */
    if( mob->char_died(  ) )
    {
-      bug( "%s: Mob died while executing program, vnum %d.", __func__, vnum );
+      bug( "{}: Mob died while executing program, vnum {}.", __func__, vnum );
       return BERR;
    }
 
@@ -3629,7 +3629,7 @@ void mprog_greet_trigger( char_data * ch )
 {
    if( !ch->in_room )
    {
-      bug( "%s: ch '%s' not in room. Transferring to Limbo.", __func__, ch->name.c_str() );
+      bug( "{}: ch '{}' not in room. Transferring to Limbo.", __func__, ch->name );
       if( !ch->to_room( get_room_index( ROOM_VNUM_LIMBO ) ) )
          log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
@@ -4476,10 +4476,10 @@ void progbug( std::string_view str, char_data * mob )
        * was set to indicate the object or room, so we just need to show
        * the description in the bug message.
        */
-      bug( "%s, %s.", str.data(), mob->chardesc.empty() ? "(unknown)" : mob->chardesc.c_str() );
+      bug( "{}, {}.", str, mob->chardesc.empty() ? "(unknown)" : mob->chardesc );
    }
    else
-      bug( "%s, Mob #%d.", str.data(), vnum );
+      bug( "{}, Mob #{}.", str, vnum );
 }
 
 // A much simpler version than the old mess - Samson 8/2/05

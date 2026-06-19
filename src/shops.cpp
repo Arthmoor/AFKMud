@@ -91,7 +91,7 @@ void save_shop( char_data * mob )
 
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
-      bug( "%s: fopen", __func__ );
+      bug( "{}: Unable to open {} for writing.", __func__, filename.string() );
       perror( filename.c_str() );
    }
    fwrite_mobile( mob, fp, true );
@@ -131,7 +131,7 @@ void load_shopkeepers( void )
 
             if( letter != '#' )
             {
-               bug( "%s: # not found.", __func__ );
+               bug( "{}: # not found.", __func__ );
                break;
             }
 
@@ -673,7 +673,7 @@ CMDF( do_buy )
       pRoomIndexNext = get_room_index( ch->in_room->vnum + 1 );
       if( !pRoomIndexNext )
       {
-         bug( "%s: bad pet shop at vnum %d.", __func__, ch->in_room->vnum );
+         bug( "{}: bad pet shop at vnum {}.", __func__, ch->in_room->vnum );
          ch->print( "Sorry, you can't buy that here.\r\n" );
          return;
       }
@@ -932,7 +932,8 @@ CMDF( do_buy )
    }
 }
 
-/* Ok, sod all that crap about levels and dividers and stuff.
+/*
+ * Ok, sod all that crap about levels and dividers and stuff.
  * Lets just have a nice, simple list command.
  * Samson 8-27-03
  */
@@ -945,7 +946,7 @@ CMDF( do_list )
 
       if( !( aucvault = get_room_index( ch->in_room->vnum + 1 ) ) )
       {
-         bug( "%s: bad auction house at vnum %d.", __func__, ch->in_room->vnum );
+         bug( "{}: bad auction house at vnum {}.", __func__, ch->in_room->vnum );
          ch->print( "You can't do that here.\r\n" );
          return;
       }
@@ -976,7 +977,7 @@ CMDF( do_list )
 
       if( !( pRoomIndexNext = get_room_index( ch->in_room->vnum + 1 ) ) )
       {
-         bug( "%s: bad pet shop at vnum %d.", __func__, ch->in_room->vnum );
+         bug( "{}: bad pet shop at vnum {}.", __func__, ch->in_room->vnum );
          ch->print( "You can't do that here.\r\n" );
          return;
       }
@@ -1772,10 +1773,10 @@ CMDF( do_shops )
    {
       if( !( mob = get_mob_index( shop->keeper ) ) )
       {
-         bug( "%s: Bad mob index on shopkeeper %d", __func__, shop->keeper );
+         bug( "{}: Bad mob index on shopkeeper {}", __func__, shop->keeper );
          continue;
       }
-      ch->pagerf( "&WShopkeeper: &G%-20.20s &WVnum: &G%-5d &WArea: &G%s\r\n", mob->short_descr, mob->vnum, mob->area->name );
+      ch->pager_fmt( "&WShopkeeper: &G{:<20.20} &WVnum: &G{:<5} &WArea: &G{}\r\n", mob->short_descr, mob->vnum, mob->area->name );
    }
 }
 
@@ -2066,10 +2067,10 @@ CMDF( do_repairshops )
    {
       if( !( mob = get_mob_index( repair->keeper ) ) )
       {
-         bug( "%s: Bad mob index on repairsmith %d", __func__, repair->keeper );
+         bug( "{}: Bad mob index on repairsmith {}", __func__, repair->keeper );
          continue;
       }
-      ch->pagerf( "&WRepairsmith: &G%-20.20s &WVnum: &G%-5d &WArea: &G%s\r\n", mob->short_descr, mob->vnum, mob->area->name );
+      ch->pager_fmt( "&WRepairsmith: &G{:<20.20} &WVnum: &G{:<5} &WArea: &G{}\r\n", mob->short_descr, mob->vnum, mob->area->name );
    }
 }
 

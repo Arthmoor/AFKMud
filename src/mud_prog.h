@@ -231,7 +231,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
    if( !( progfile = fopen( MUDProgfile, "r" ) ) )
    {
-      bug( "%s: couldn't open mudprog file", __func__ );
+      bug( "{}: couldn't open mudprog file", __func__ );
       return;
    }
 
@@ -241,7 +241,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
       if( letter != '#' )
       {
-         bug( "%s: MUDPROG char", __func__ );
+         bug( "{}: MUDPROG char", __func__ );
          break;
       }
 
@@ -293,7 +293,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
                      switch ( mprg->type )
                      {
                         case IN_FILE_PROG:
-                           bug( "%s: Nested file programs are not allowed.", __func__ );
+                           bug( "{}: Nested file programs are not allowed.", __func__ );
                            deleteptr( mprg );
                            break;
 
