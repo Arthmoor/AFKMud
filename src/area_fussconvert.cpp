@@ -351,8 +351,8 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
 
                   if( area_conflict )
                   {
-                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( !area->filename.empty() ? area->filename : "(invalid)" ) );
+                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( !area->filename.empty() ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
                      log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
                      log_string( "This is a fatal error. Program terminated." );
                      std::exit( EXIT_FAILURE );
@@ -642,8 +642,8 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
 
                   if( area_conflict )
                   {
-                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( !area->filename.empty() ? area->filename : "(invalid)" ) );
+                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( !area->filename.empty() ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
                      log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
                      log_string( "This is a fatal error. Program terminated." );
                      exit( 1 );
@@ -1099,8 +1099,8 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
                   if( area_conflict )
                   {
-                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+                     log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( !area->filename.empty() ? area->filename : "(invalid)" ) );
+                     log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( !area->filename.empty() ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
                      log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
                      log_string( "This is a fatal error. Program terminated." );
                      std::exit( EXIT_FAILURE );
@@ -1182,11 +1182,11 @@ void fread_fuss_areadata( FILE * fp, area_data * tarea )
             break;
 
          case 'A':
-            KEY( "Author", tarea->author, fread_string( fp ) );
+            STDSKEY( "Author", tarea->author );
             break;
 
          case 'C':
-            KEY( "Credits", tarea->credits, fread_string( fp ) );
+            STDSKEY( "Credits", tarea->credits );
             break;
 
          case 'E':
@@ -1208,7 +1208,7 @@ void fread_fuss_areadata( FILE * fp, area_data * tarea )
             break;
 
          case 'N':
-            KEY( "Name", tarea->name, fread_string_nohash( fp ) );
+            STDSKEY( "Name", tarea->name );
             break;
 
          case 'R':
@@ -1227,7 +1227,7 @@ void fread_fuss_areadata( FILE * fp, area_data * tarea )
 
                break;
             }
-            KEY( "ResetMsg", tarea->resetmsg, fread_string_nohash( fp ) );
+            STDSKEY( "ResetMsg", tarea->resetmsg );
             KEY( "ResetFreq", tarea->reset_frequency, fread_short( fp ) );
             break;
 
@@ -1287,7 +1287,7 @@ area_data *fread_smaugfuss_area( FILE * fp )
       if( !str_cmp( word, "AREADATA" ) )
       {
          tarea = create_area(  );
-         tarea->filename = strdup( strArea );
+         tarea->filename = strArea;
          fread_fuss_areadata( fp, tarea );
       }
       else if( !str_cmp( word, "MOBILE" ) )

@@ -445,7 +445,7 @@ void ev_area_reset( void *data )
 
    area = ( area_data * ) data;
 
-   if( area->resetmsg && str_cmp( area->resetmsg, "" ) )
+   if( !area->resetmsg.empty() )
    {
       for( auto* d : dlist )
       {
@@ -454,7 +454,7 @@ void ev_area_reset( void *data )
          if( !ch )
             continue;
          if( ch->IS_AWAKE(  ) && ch->in_room && ch->in_room->area == area )
-            act( AT_RESET, "$t", ch, area->resetmsg, nullptr, TO_CHAR );
+            act( AT_RESET, "$t", ch, area->resetmsg.c_str(), nullptr, TO_CHAR );
       }
    }
 

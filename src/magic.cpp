@@ -5309,7 +5309,7 @@ SPELLF( spell_group_towngate )
    }
    else
    {
-      ch->printf( "You have not yet all visited %s!\r\n", room->area->name );
+      ch->print_fmt( "You have not yet all visited {}!\r\n", room->area->name );
       return rSPELL_FAILED;
    }
 }
@@ -5347,7 +5347,7 @@ SPELLF( spell_towngate )
 
    if( !ch->has_visited( room->area ) )
    {
-      ch->printf( "You have not yet visited %s!\r\n", room->area->name );
+      ch->print_fmt( "You have not yet visited {}!\r\n", room->area->name );
       return rSPELL_FAILED;
    }
 
@@ -6172,9 +6172,9 @@ CMDF( do_beacon )
       {
          pRoomIndex = get_room_index( ch->pcdata->beacon[a] );
          if( pRoomIndex != nullptr )
-            ch->printf( " %2d | %-39s | %s\r\n", a, pRoomIndex->name, pRoomIndex->area->name );
+            ch->print_fmt( " {:2} | {:<39} | {}\r\n", a, pRoomIndex->name, pRoomIndex->area->name );
          else
-            ch->printf( " %2d | Not Set\r\n", a );
+            ch->print_fmt( " {:2} | Not Set\r\n", a );
          pRoomIndex = nullptr;
       }
       return;
@@ -6195,11 +6195,11 @@ CMDF( do_beacon )
       if( !pRoomIndex )
       {
          ch->pcdata->beacon[a] = 0;
-         ch->printf( "Beacon %d was already empty.\r\n", a );
+         ch->print_fmt( "Beacon {} was already empty.\r\n", a );
          return;
       }
 
-      ch->printf( "You sever your ether ties to %s.\r\n", pRoomIndex->name );
+      ch->print_fmt( "You sever your ether ties to {}.\r\n", pRoomIndex->name );
       ch->pcdata->beacon[a] = 0;
       return;
    }

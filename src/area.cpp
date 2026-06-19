@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -137,10 +138,6 @@ area_data::~area_data(  )
    }
    objects.clear(  );
 
-   DISPOSE( name );
-   DISPOSE( filename );
-   DISPOSE( resetmsg );
-   STRFREE( author );
    arealist.remove( this );
    area_nsort.remove( this );
    area_vsort.remove( this );
@@ -195,13 +192,11 @@ void area_data::fix_exits(  )
  */
 void area_data::sort_name(  )
 {
-   std::list < area_data * >::iterator iarea;
-
-   for( iarea = area_nsort.begin(  ); iarea != area_nsort.end(  ); ++iarea )
+   for( auto iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
    {
-      area_data *area = *iarea;
+      area_data* area = *iarea;
 
-      if( strcmp( name, area->name ) < 0 )
+      if( this->name < area->name )
       {
          area_nsort.insert( iarea, this );
          return;
@@ -216,9 +211,7 @@ void area_data::sort_name(  )
  */
 void area_data::sort_vnums(  )
 {
-   std::list < area_data * >::iterator iarea;
-
-   for( iarea = area_vsort.begin(  ); iarea != area_vsort.end(  ); ++iarea )
+   for( auto iarea = area_vsort.begin(); iarea != area_vsort.end(); ++iarea )
    {
       area_data *area = *iarea;
 
@@ -551,11 +544,11 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
             break;
 
          case 'A':
-            KEY( "Author", tarea->author, fread_string( fp ) );
+            STDSKEY( "Author", tarea->author );
             break;
 
          case 'C':
-            KEY( "Credits", tarea->credits, fread_string( fp ) );
+            STDSKEY( "Credits", tarea->credits );
 
             if( !str_cmp( word, "Climate" ) )
             {
@@ -628,7 +621,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
             break;
 
          case 'N':
-            KEY( "Name", tarea->name, fread_string_nohash( fp ) );
+            STDSKEY( "Name", tarea->name );
             if( !str_cmp( word, "Neighbor" ) )
             {
                // This section is no longer used with the new weather code.
@@ -653,7 +646,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 
                break;
             }
-            KEY( "ResetMsg", tarea->resetmsg, fread_string_nohash( fp ) );
+            STDSKEY( "ResetMsg", tarea->resetmsg );
             KEY( "ResetFreq", tarea->reset_frequency, fread_short( fp ) );
             break;
 
@@ -1645,7 +1638,7 @@ area_data *fread_afk_area( FILE * fp )
       if( !str_cmp( word, "AREADATA" ) )
       {
          tarea = create_area(  );
-         tarea->filename = strdup( strArea );
+         tarea->filename = strArea;
          fread_afk_areadata( fp, tarea );
       }
       else if( !str_cmp( word, "MOBILE" ) )
@@ -1674,8 +1667,8 @@ void process_sorting( area_data * tarea, bool isproto )
    log_printf( "{:<20}: Version {:<3} Vnums: {:5} - {:<5}", tarea->filename, tarea->version, tarea->low_vnum, tarea->hi_vnum );
    if( tarea->low_vnum < 0 || tarea->hi_vnum < 0 )
       log_printf( "{:<20}: Bad Vnum Range", tarea->filename );
-   if( !tarea->author )
-      tarea->author = STRALLOC( "AFKMud" );
+   if( tarea->author.empty() )
+      tarea->author = "AFKMud";
 }
 
 void load_area_file( const std::string & filename, bool isproto )
@@ -1685,7 +1678,6 @@ void load_area_file( const std::string & filename, bool isproto )
 
    if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
    {
-      perror( filename.c_str(  ) );
       bug( "{}: error loading file (can't open) {}", __func__, filename );
       return;
    }
@@ -1738,8 +1730,8 @@ void load_area_file( const std::string & filename, bool isproto )
    {
       tarea = create_area();
 
-      tarea->filename = strdup( strArea );
-      tarea->name = fread_string_nohash( fpArea );
+      tarea->filename = strArea;
+      fread_string( tarea->name, fpArea );
    }
    else
    {
@@ -1995,10 +1987,10 @@ void fwrite_area_header( area_data * area, FILE * fpout )
 {
    fprintf( fpout, "%s", "#AREADATA\n" );
    fprintf( fpout, "Version         %d\n", area->version );
-   fprintf( fpout, "Name            %s~\n", area->name );
-   fprintf( fpout, "Author          %s~\n", area->author );
-   if( area->credits )
-      fprintf( fpout, "Credits         %s~\n", area->credits );
+   fprintf( fpout, "Name            %s~\n", area->name.c_str() );
+   fprintf( fpout, "Author          %s~\n", area->author.c_str() );
+   if( !area->credits.empty() )
+      fprintf( fpout, "Credits         %s~\n", area->credits.c_str() );
    fprintf( fpout, "Vnums           %d %d\n", area->low_vnum, area->hi_vnum );
    if( area->continent )
       fprintf( fpout, "Continent       %s~\n", area->continent->name.c_str( ) );
@@ -2009,8 +2001,8 @@ void fwrite_area_header( area_data * area, FILE * fpout )
 
    fprintf( fpout, "Dates           %ld %ld\n", cdate, idate );
    fprintf( fpout, "Ranges          %d %d %d %d\n", area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
-   if( area->resetmsg ) /* Rennard */
-      fprintf( fpout, "ResetMsg        %s~\n", area->resetmsg );
+   if( !area->resetmsg.empty() ) /* Rennard */
+      fprintf( fpout, "ResetMsg        %s~\n", area->resetmsg.c_str() );
    if( area->reset_frequency )
       fprintf( fpout, "ResetFreq       %d\n", area->reset_frequency );
    if( area->flags.any(  ) )
@@ -2327,7 +2319,7 @@ void area_data::fold( const std::string & fname, bool install )
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving {}...", this->filename );
 
    std::filesystem::path buf = std::format( "{}.bak", fname );
-   std::filesystem::rename( fname, buf.c_str() );
+   std::filesystem::rename( fname, buf );
    if( !( fpout = fopen( fname.c_str(), "w" ) ) )
    {
       bug( "{}: Cannot open area file '{}' for writing!", __func__, fname );
@@ -2417,7 +2409,7 @@ CMDF( do_savearea )
 
    if( !tarea->flags.test( AFLAG_PROTOTYPE ) )
    {
-      ch->printf( "&[immortal]Cannot savearea %s, use foldarea instead.\r\n", tarea->filename );
+      ch->print_fmt( "&[immortal]Cannot savearea {}, use foldarea instead.\r\n", tarea->filename );
       return;
    }
    fname = std::format( "{}{}", BUILD_DIR, tarea->filename );
@@ -2456,7 +2448,7 @@ CMDF( do_foldarea )
 
    if( tarea->flags.test( AFLAG_PROTOTYPE ) )
    {
-      ch->printf( "Cannot fold %s, use savearea instead.\r\n", tarea->filename );
+      ch->print_fmt( "Cannot fold {}, use savearea instead.\r\n", tarea->filename );
       return;
    }
    ch->print( "Folding area...\r\n" );
@@ -2466,26 +2458,28 @@ CMDF( do_foldarea )
 
 void write_area_list( void )
 {
-   FILE *fpout;
+   std::ofstream stream;
 
-   fpout = fopen( AREA_LIST.data(), "w" );
-   if( !fpout )
+   stream.open( std::filesystem::path( AREA_LIST ) );
+   if( !stream )
    {
-      bug( "{}: cannot open area.lst for writing!", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, AREA_LIST, std::strerror(errno) );
       return;
    }
 
    for( auto* area : arealist )
    {
       if( !area->flags.test( AFLAG_PROTOTYPE ) )
-         fprintf( fpout, "%s\n", area->filename );
+         stream << area->filename << "\n";
    }
-   fprintf( fpout, "%s", "$\n" );
-   FCLOSE( fpout );
+   stream << "$\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, AREA_LIST, std::strerror(errno) );
 }
 
 /*
- * returns area with name matching input string
+ * Returns area with name matching input string
  * Last Modified : July 21, 1997
  * Fireblade
  */
@@ -2529,7 +2523,7 @@ CMDF( do_adelete )
 
    if( !( tarea = find_area( arg ) ) )
    {
-      ch->printf( "No such area as %s\r\n", arg.c_str(  ) );
+      ch->print_fmt( "No such area as {}\r\n", arg );
       return;
    }
 
@@ -2547,7 +2541,7 @@ CMDF( do_adelete )
    std::filesystem::remove( filename );
    write_area_list(  );
    web_arealist(  );
-   ch->printf( "&W%s&R has been destroyed.&D\r\n", arg.c_str(  ) );
+   ch->print_fmt( "&W{}&R has been destroyed.&D\r\n", arg );
 }
 
 void assign_area( char_data * ch )
@@ -2569,9 +2563,9 @@ void assign_area( char_data * ch )
          log_printf_plus( LOG_BUILD, ch->level, "Creating area entry for {}", ch->name );
 
          tarea = create_area(  );
-         strdup_printf( &tarea->name, "[PROTO] %s's area in progress", ch->name.c_str() );
-         tarea->filename = strdup( taf.c_str() );
-         stralloc_printf( &tarea->author, "%s", ch->name.c_str() );
+         tarea->name = std::format( "[PROTO] {}'s area in progress", ch->name );
+         tarea->filename = taf;
+         tarea->author = ch->name;
          tarea->sort_name(  );
          tarea->sort_vnums(  );
       }
@@ -2669,12 +2663,10 @@ CMDF( do_installarea )
          return;
       }
 
-      DISPOSE( tarea->name );
-      tarea->name = strdup( argument.c_str(  ) );
+      tarea->name = argument;
 
       oldfilename = tarea->filename;
-      DISPOSE( tarea->filename );
-      tarea->filename = strdup( arg2.c_str(  ) );
+      tarea->filename = arg2;
 
       /*
        * Fold area with install flag -- auto-removes prototype flags 
@@ -2742,6 +2734,8 @@ CMDF( do_astat )
 
    ch->print_fmt( "\r\n&wName:     &W{}\r\n&wFilename: &W{:<20}  &wPrototype: &W{}\r\n&wAuthor:   &W{}\r\n",
                tarea->name, tarea->filename, tarea->flags.test( AFLAG_PROTOTYPE ) ? "yes" : "no", tarea->author );
+   if( !tarea->credits.empty() )
+      ch->print_fmt( "&wAdditional Credits: : &W{}\r\n", tarea->credits );
    ch->print_fmt( "&wCreated on   : &W{}\r\n", c_time( tarea->creation_date, -1 ) );
    ch->print_fmt( "&wInstalled on : &W{}\r\n", c_time( tarea->install_date, -1 ) );
    ch->print_fmt( "&wLast reset on: &W{}\r\n", c_time( tarea->last_resettime, -1 ) );
@@ -2762,7 +2756,7 @@ CMDF( do_astat )
    ch->print_fmt( "&wCoordinates: &W{} {}\r\n", tarea->map_x, tarea->map_y );
    ch->print_fmt( "&wWeather: X Coord: &W%-3d  &w Y Coord: &W%-3d\r\n", tarea->weatherx, tarea->weathery );
 
-   ch->print_fmt( "&wResetmsg: &W{}\r\n", tarea->resetmsg ? tarea->resetmsg : "(default)" ); /* Rennard */
+   ch->print_fmt( "&wResetmsg: &W{}\r\n", !tarea->resetmsg.empty() ? tarea->resetmsg : "(default)" ); /* Rennard */
    ch->print_fmt( "&wReset frequency: &W{} &wminutes.\r\n", tarea->reset_frequency ? tarea->reset_frequency : 15 );
 }
 
@@ -2824,8 +2818,7 @@ CMDF( do_aset )
          return;
       }
 
-      DISPOSE( tarea->name );
-      tarea->name = strdup( argument.c_str(  ) );
+      tarea->name = argument;
       ch->print( "Done.\r\n" );
       return;
    }
@@ -2836,8 +2829,7 @@ CMDF( do_aset )
          return;
 
       std::filesystem::path filename = tarea->filename;
-      DISPOSE( tarea->filename );
-      tarea->filename = strdup( argument.c_str(  ) );
+      tarea->filename = argument;
       std::filesystem::rename( filename, tarea->filename );
       write_area_list(  );
       ch->print( "Done.\r\n" );
@@ -2861,12 +2853,12 @@ CMDF( do_aset )
       continent = find_continent_by_name( arg2 );
       if( !continent )
       {
-         ch->printf( "Invalid area continent: %s does not exist.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "Invalid area continent: {} does not exist.\r\n", arg2 );
       }
       else
       {
          tarea->continent = continent;
-         ch->printf( "Area continent set to %s.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "Area continent set to {}.\r\n", arg2 );
       }
       return;
    }
@@ -2875,12 +2867,12 @@ CMDF( do_aset )
    {
       if( check_for_area_conflicts( tarea, tarea->low_vnum, vnum ) )
       {
-         ch->printf( "Setting %d for low_vnum would conflict with another area.\r\n", vnum );
+         ch->print_fmt( "Setting {} for low_vnum would conflict with another area.\r\n", vnum );
          return;
       }
       if( tarea->hi_vnum < vnum )
       {
-         ch->printf( "Vnum %d exceeds the hi_vnum of %d for this area.\r\n", vnum, tarea->hi_vnum );
+         ch->print_fmt( "Vnum {} exceeds the hi_vnum of {} for this area.\r\n", vnum, tarea->hi_vnum );
          return;
       }
       tarea->low_vnum = vnum;
@@ -2892,12 +2884,12 @@ CMDF( do_aset )
    {
       if( check_for_area_conflicts( tarea, tarea->hi_vnum, vnum ) )
       {
-         ch->printf( "Setting %d for hi_vnum would conflict with another area.\r\n", vnum );
+         ch->print_fmt( "Setting {} for hi_vnum would conflict with another area.\r\n", vnum );
          return;
       }
       if( tarea->low_vnum > vnum )
       {
-         ch->printf( "Cannot set %d for hi_vnum smaller than the low_vnum of %d.\r\n", vnum, tarea->low_vnum );
+         ch->print_fmt( "Cannot set {} for hi_vnum smaller than the low_vnum of {}.\r\n", vnum, tarea->low_vnum );
          return;
       }
       tarea->hi_vnum = vnum;
@@ -2922,13 +2914,13 @@ CMDF( do_aset )
 
       if( !is_valid_x( x ) )
       {
-         ch->printf( "Valid X coordinates are from 0 to %d.\r\n", MAX_X - 1 );
+         ch->print_fmt( "Valid X coordinates are from 0 to {}.\r\n", MAX_X - 1 );
          return;
       }
 
       if( !is_valid_y( y ) )
       {
-         ch->printf( "Valid Y coordinates are from 0 to %d.\r\n", MAX_Y - 1 );
+         ch->print_fmt( "Valid Y coordinates are from 0 to {}.\r\n", MAX_Y - 1 );
          return;
       }
 
@@ -3011,8 +3003,7 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "author" ) )
    {
-      STRFREE( tarea->author );
-      tarea->author = STRALLOC( argument.c_str(  ) );
+      tarea->author = argument;
       ch->print( "Done.\r\n" );
       web_arealist(  );
       return;
@@ -3020,8 +3011,7 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "credits" ) )
    {
-      STRFREE( tarea->credits );
-      tarea->credits = STRALLOC( argument.c_str(  ) );
+      tarea->credits = argument;
       ch->print( "Done.\r\n" );
       web_arealist(  );
       return;
@@ -3029,9 +3019,8 @@ CMDF( do_aset )
 
    if( !str_cmp( arg2, "resetmsg" ) )
    {
-      DISPOSE( tarea->resetmsg );
       if( str_cmp( argument, "clear" ) )
-         tarea->resetmsg = strdup( argument.c_str(  ) );
+         tarea->resetmsg = argument;
       ch->print( "Done.\r\n" );
       return;
    }  /* Rennard */
@@ -3055,7 +3044,7 @@ CMDF( do_aset )
          argument = one_argument( argument, arg3 );
          value = get_areaflag( arg3 );
          if( value < 0 || value >= AFLAG_MAX )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             tarea->flags.flip( value );
       }
@@ -3122,7 +3111,7 @@ CMDF( do_aset )
          return;
       }
       tarea->tg_scroll = stoi( argument );
-      ch->printf( "Area chance to generate scroll set to %hu%%\r\n", tarea->tg_scroll );
+      ch->print_fmt( "Area chance to generate scroll set to {}%\r\n", tarea->tg_scroll );
 
       return;
    }
@@ -3135,7 +3124,7 @@ CMDF( do_aset )
          return;
       }
       tarea->tg_potion = stoi( argument );
-      ch->printf( "Area chance to generate potion set to %hu%%\r\n", tarea->tg_potion );
+      ch->print_fmt( "Area chance to generate potion set to {}%\r\n", tarea->tg_potion );
 
       return;
    }
@@ -3148,7 +3137,7 @@ CMDF( do_aset )
          return;
       }
       tarea->tg_wand = stoi( argument );
-      ch->printf( "Area chance to generate wand set to %hu%%\r\n", tarea->tg_wand );
+      ch->print_fmt( "Area chance to generate wand set to {}%\r\n", tarea->tg_wand );
 
       return;
    }
@@ -3161,7 +3150,7 @@ CMDF( do_aset )
          return;
       }
       tarea->tg_armor = stoi( argument );
-      ch->printf( "Area chance to generate armor set to %hu%%\r\n", tarea->tg_armor );
+      ch->print_fmt( "Area chance to generate armor set to {}%\r\n", tarea->tg_armor );
 
       return;
    }
@@ -3179,23 +3168,23 @@ void show_vnums( char_data * ch, short proto )
    {
       if( proto == 0 && !area->flags.test( AFLAG_PROTOTYPE ) )
       {
-         ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d\r\n", area->filename, area->name, area->low_vnum, area->hi_vnum );
+         ch->pager_fmt( "&c{:<15.15} {:<40.40} V: {:5} - {:<5}\r\n", area->filename, area->name, area->low_vnum, area->hi_vnum );
          ++count;
       }
       else if( proto == 1 && area->flags.test( AFLAG_PROTOTYPE ) )
       {
-         ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d &W[Proto]\r\n", area->filename, area->name, area->low_vnum, area->hi_vnum );
+         ch->pager_fmt( "&c{:<15.15} {:<40.40} V: {:5} - {:<5} &W[Proto]\r\n", area->filename, area->name, area->low_vnum, area->hi_vnum );
          ++count;
       }
       else if( proto == 2 )
       {
-         ch->pagerf( "&c%-15.15s %-40.40s V: %5d - %-5d %s\r\n",
+         ch->pager_fmt( "&c{:<15.15} {:<40.40} V: {:5} - {:<5} {}\r\n",
                      area->filename, area->name, area->low_vnum, area->hi_vnum, area->flags.test( AFLAG_PROTOTYPE ) ? "&W[Proto]" : "" );
          ++count;
       }
    }
-   ch->pagerf( "&CAreas listed: %d\r\n", count );
-   ch->pagerf( "Maximum allowed vnum is currently %d.&D\r\n", sysdata->maxvnum );
+   ch->pager_fmt( "&CAreas listed: {}\r\n", count );
+   ch->pager_fmt( "Maximum allowed vnum is currently {}.&D\r\n", sysdata->maxvnum );
 }
 
 CMDF( do_zones )
@@ -3242,13 +3231,13 @@ CMDF( do_freevnums )
 
    if( low_range < 1 || low_range > sysdata->maxvnum )
    {
-      ch->printf( "Invalid low range. Valid vnums are from 1 to %d.\r\n", sysdata->maxvnum );
+      ch->print_fmt( "Invalid low range. Valid vnums are from 1 to {}.\r\n", sysdata->maxvnum );
       return;
    }
 
    if( high_range < 1 || high_range > sysdata->maxvnum )
    {
-      ch->printf( "Invalid high range. Valid vnums are from 1 to %d.\r\n", sysdata->maxvnum );
+      ch->print_fmt( "Invalid high range. Valid vnums are from 1 to {}.\r\n", sysdata->maxvnum );
       return;
    }
 
@@ -3270,7 +3259,7 @@ CMDF( do_freevnums )
       {
          lohi[x++] = area->low_vnum;
          lohi[x++] = area->hi_vnum;
-         ch->printf( "&RArea Conflict: &g%-20.20s &wRange: &g%d - %d\r\n", area->filename, area->low_vnum, area->hi_vnum );
+         ch->print_fmt( "&RArea Conflict: &g{:<20.20} &wRange: &g{} - {}\r\n", area->filename, area->low_vnum, area->hi_vnum );
       }
    }
    int xfin = x;
@@ -3304,7 +3293,7 @@ CMDF( do_freevnums )
          }
       }
       if( area_conflict == false )
-         ch->printf( "&wOpen Range: &g%d - %d\r\n", y, z );
+         ch->print_fmt( "&wOpen Range: &g{} - {}\r\n", y, z );
    }
 }
 
@@ -3368,8 +3357,8 @@ CMDF( do_check_vnums )
 
       if( area_conflict )
       {
-         ch->printf( "Conflict:%-15s| ", ( area->filename ? area->filename : "(invalid)" ) );
-         ch->printf( "Vnums: %5d - %-5d\r\n", area->low_vnum, area->hi_vnum );
+         ch->print_fmt( "Conflict:{:<15}| ", ( !area->filename.empty() ? area->filename : "(invalid)" ) );
+         ch->print_fmt( "Vnums: {:5} - {:<5}\r\n", area->low_vnum, area->hi_vnum );
       }
    }
 }
@@ -3395,7 +3384,7 @@ CMDF( do_aexit )
    {
       if( room->flags.test( ROOM_TELEPORT ) && ( room->tele_vnum < lrange || room->tele_vnum > trange ) )
       {
-         ch->pagerf( "From: %-20.20s Room: %5d To: Room: %5d (Teleport)\r\n", tarea->filename, room->vnum, room->tele_vnum );
+         ch->pager_fmt( "From: {:<20.20} Room: {:5} To: Room: {:5} (Teleport)\r\n", tarea->filename, room->vnum, room->tele_vnum );
       }
 
       for( int i = 0; i < MAX_DIR + 2; ++i ) /* MAX_DIR+2 added to include ? exits.  Dwip 5/7/02 */
@@ -3406,12 +3395,12 @@ CMDF( do_aexit )
 
          if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
          {
-            ch->pagerf( "To: Overland %4dX %4dY From: %20.20s Room: %5d (%s)\r\n", pexit->map_x, pexit->map_y, tarea->filename, room->vnum, dir_name[i] );
+            ch->pager_fmt( "To: Overland {:4}X {:4}Y From: {:20.20} Room: {:5} ({})\r\n", pexit->map_x, pexit->map_y, tarea->filename, room->vnum, dir_name[i] );
             continue;
          }
          if( pexit->to_room->area != tarea )
          {
-            ch->pagerf( "To: %-20.20s Room: %5d From: %-20.20s Room: %5d (%s)\r\n", pexit->to_room->area->filename, pexit->vnum, tarea->filename, room->vnum, dir_name[i] );
+            ch->pager_fmt( "To: {:<20.20} Room: {:5} From: {:<20.20} Room: {:5} ({})\r\n", pexit->to_room->area->filename, pexit->vnum, tarea->filename, room->vnum, dir_name[i] );
          }
       }
    }
@@ -3428,7 +3417,7 @@ CMDF( do_aexit )
          if( room2->flags.test( ROOM_TELEPORT ) )
          {
             if( room2->tele_vnum >= tarea->low_vnum && room2->tele_vnum <= tarea->hi_vnum )
-               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (Teleport)\r\n", area->filename, room2->vnum, tarea->filename, room2->tele_vnum );
+               ch->pager_fmt( "From: {:<20.20} Room: {:5} To: {:<20.20} Room: {:5} (Teleport)\r\n", area->filename, room2->vnum, tarea->filename, room2->tele_vnum );
          }
 
          for( int i = 0; i < MAX_DIR + 2; ++i )
@@ -3442,7 +3431,7 @@ CMDF( do_aexit )
 
             if( pexit->to_room->area == tarea )
             {
-               ch->pagerf( "From: %-20.20s Room: %5d To: %-20.20s Room: %5d (%s)\r\n", area->filename, room2->vnum, pexit->to_room->area->filename, pexit->vnum, dir_name[i] );
+               ch->pager_fmt( "From: {:<20.20} Room: {:5} To: {:<20.20} Room: {:5} ({})\r\n", area->filename, room2->vnum, pexit->to_room->area->filename, pexit->vnum, dir_name[i] );
             }
          }
       }
@@ -3453,19 +3442,18 @@ CMDF( do_aexit )
       for( auto* mexit : continent->exits )
       {
          if( mexit->vnum >= tarea->low_vnum && mexit->vnum <= tarea->hi_vnum )
-            ch->pagerf( "From Continent %s: %4dX %4dY To: Room: %5d\r\n", continent->name.c_str( ), mexit->herex, mexit->herey, mexit->vnum );
+            ch->pager_fmt( "From Continent {}: {:4}X {:4}Y To: Room: {:5}\r\n", continent->name, mexit->herex, mexit->herey, mexit->vnum );
       }
    }
 }
 
 /*
- * Revised version of do_areas, orgininally written by Fireblade 4/27/97,
- * rewritten by Dwip to fix horrid argument bugs 4/14/02.  Happy 5 year
+ * Revised version of do_areas, originally written by Fireblade 4/27/97,
+ * Rewritten by Dwip to fix horrid argument bugs 4/14/02.  Happy 5 year
  * anniversary, do_areas! :)
  */
 CMDF( do_areas )
 {
-   const char *print_string = "%-12s | %-36s | %4d - %-4d | %3d - %-3d \r\n";
    int lower_bound = 0, upper_bound = MAX_LEVEL + 1, num_args = 0, swap;
    /*
     * 0-2 = x arguments, 3 = old style 
@@ -3532,6 +3520,7 @@ CMDF( do_areas )
    ch->pager( "\r\n   Author    |             Area                     | Recommended |  Enforced\r\n" );
    ch->pager( "-------------+--------------------------------------+-------------+-----------\r\n" );
 
+   std::string print_string = "{:<12} | {:<36} | {:4} - {:<4} | {:3} - {:<3} \r\n";
    for( auto* area : area_nsort )
    {
       // Hidden areas should not display on the list.
@@ -3541,29 +3530,29 @@ CMDF( do_areas )
       switch ( num_args )
       {
          case 0:
-            ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+            ch->pager( std::vformat( print_string, std::make_format_args( area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range ) ) );
             break;
 
          case 1:
             if( area->hi_soft_range >= upper_bound && area->low_soft_range <= upper_bound )
             {
-               ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+               ch->pager( std::vformat( print_string, std::make_format_args( area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range ) ) );
             }
             break;
 
          case 2:
             if( area->hi_soft_range >= upper_bound && area->low_soft_range <= lower_bound )
             {
-               ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+               ch->pager( std::vformat( print_string, std::make_format_args( area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range ) ) );
             }
             break;
 
          case 3:
-            ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+            ch->pager( std::vformat( print_string, std::make_format_args( area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range ) ) );
             break;
 
          default:
-            ch->pagerf( print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+            ch->pager( std::vformat( print_string, std::make_format_args( area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range ) ) );
             break;
       }
    }

@@ -1117,8 +1117,8 @@ void print_infoflags( char_data * ch )
    {
       tarea = ch->in_room->area;
 
-      ch->printf( "&[aflags][Area Flags: %s]\r\n", ( tarea->flags.any(  ) ) ? bitset_string( tarea->flags, area_flags ) : "none" );
-      ch->printf( "&[rflags][Room Flags: %s]\r\n", bitset_string( ch->in_room->flags, r_flags ) );
+      ch->print_fmt( "&[aflags][Area Flags: {}]\r\n", ( tarea->flags.any(  ) ) ? bitset_string( tarea->flags, area_flags ) : "none" );
+      ch->print_fmt( "&[rflags][Room Flags: {}]\r\n", bitset_string( ch->in_room->flags, r_flags ) );
    }
 
    /*
@@ -1128,9 +1128,9 @@ void print_infoflags( char_data * ch )
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_SECTORD ) )
    {
       if( tarea->continent )
-         ch->printf( "&[stype][Sector Type: %s] [Continent or Plane: %s]\r\n", sect_types[ch->in_room->sector_type], tarea->continent->name.c_str( ) );
+         ch->print_fmt( "&[stype][Sector Type: {}] [Continent or Plane: %s]\r\n", sect_types[ch->in_room->sector_type], tarea->continent->name );
       else
-         ch->printf( "&[stype][Sector Type: %s] [Continent or Plane: <NOT SET>]\r\n", sect_types[ch->in_room->sector_type] );
+         ch->print_fmt( "&[stype][Sector Type: {}] [Continent or Plane: <NOT SET>]\r\n", sect_types[ch->in_room->sector_type] );
    }
 
    /*
@@ -1138,9 +1138,9 @@ void print_infoflags( char_data * ch )
     */
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_ANAME ) )
    {
-      ch->printf( "&[aname][Area name: %s]", ch->in_room->area->name );
+      ch->print_fmt( "&[aname][Area name: {}]", ch->in_room->area->name );
       if( ch->level >= LEVEL_CREATOR )
-         ch->printf( "  [Area filename: %s]\r\n", ch->in_room->area->filename );
+         ch->print_fmt( "  [Area filename: {}]\r\n", ch->in_room->area->filename );
       else
          ch->print( "\r\n" );
    }
@@ -1155,7 +1155,7 @@ void print_roomname( char_data * ch )
     */
    ch->print( ch->in_room->name );
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_ROOMVNUM ) )
-      ch->printf( "   &YVnum: %d", ch->in_room->vnum );
+      ch->print_fmt( "   &YVnum: {}", ch->in_room->vnum );
 
    ch->print( "\r\n" );
 }

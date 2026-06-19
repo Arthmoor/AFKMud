@@ -1055,7 +1055,6 @@ void room_index::reset(  )
    mob_index *pMobIndex = nullptr;
    obj_index *pObjIndex = nullptr, *pObjToIndex;
    exit_data *pexit;
-   char *filename = area->filename;
    int level = 0, num, lastnest, onreset = 0;
 
    mob = nullptr;
@@ -1071,7 +1070,7 @@ void room_index::reset(  )
       switch ( pReset->command )
       {
          default:
-            bug( "{}: {}: bad command {}.", __func__, filename, pReset->command );
+            bug( "{}: {}: bad command {}.", __func__, area->filename, pReset->command );
             break;
 
          case 'M':
@@ -1082,13 +1081,13 @@ void room_index::reset(  )
 
             if( !( pMobIndex = get_mob_index( pReset->arg1 ) ) )
             {
-               bug( "{}: {}: 'M': bad mob vnum {}.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'M': bad mob vnum {}.", __func__, area->filename, pReset->arg1 );
                break;
             }
 
             if( !( pRoomIndex = get_room_index( pReset->arg3 ) ) )
             {
-               bug( "{}: {}: 'M': bad room vnum {}.", __func__, filename, pReset->arg3 );
+               bug( "{}: {}: 'M': bad room vnum {}.", __func__, area->filename, pReset->arg3 );
                break;
             }
 
@@ -1250,7 +1249,7 @@ void room_index::reset(  )
 
                         if( !( pObjIndex = get_obj_index( tReset->arg1 ) ) )
                         {
-                           bug( "{}: {}: 'E' or 'G': bad obj vnum {}.", __func__, filename, tReset->arg1 );
+                           bug( "{}: {}: 'E' or 'G': bad obj vnum {}.", __func__, area->filename, tReset->arg1 );
                            break;
                         }
 
@@ -1321,13 +1320,13 @@ void room_index::reset(  )
 
                                     if( !( pObjIndex = get_obj_index( gReset->arg2 ) ) )
                                     {
-                                       bug( "{}: {}: 'P': bad obj vnum {}.", __func__, filename, gReset->arg2 );
+                                       bug( "{}: {}: 'P': bad obj vnum {}.", __func__, area->filename, gReset->arg2 );
                                        break;
                                     }
 
                                     if( !( pObjToIndex = get_obj_index( gReset->arg4 ) ) )
                                     {
-                                       bug( "{}: {}: 'P': bad objto vnum {}.", __func__, filename, gReset->arg4 );
+                                       bug( "{}: {}: 'P': bad objto vnum {}.", __func__, area->filename, gReset->arg4 );
                                        break;
                                     }
 
@@ -1392,7 +1391,7 @@ void room_index::reset(  )
 
             if( !( pRoomIndex = get_room_index( pReset->arg7 ) ) )
             {
-               bug( "{}: {}: 'Z': bad room vnum {}.", __func__, filename, pReset->arg7 );
+               bug( "{}: {}: 'Z': bad room vnum {}.", __func__, area->filename, pReset->arg7 );
                break;
             }
 
@@ -1426,12 +1425,12 @@ void room_index::reset(  )
 
             if( !( pObjIndex = get_obj_index( pReset->arg1 ) ) )
             {
-               bug( "{}: {}: 'O': bad obj vnum {}.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'O': bad obj vnum {}.", __func__, area->filename, pReset->arg1 );
                break;
             }
             if( !( pRoomIndex = get_room_index( pReset->arg3 ) ) )
             {
-               bug( "{}: {}: 'O': bad room vnum {}.", __func__, filename, pReset->arg3 );
+               bug( "{}: {}: 'O': bad room vnum {}.", __func__, area->filename, pReset->arg3 );
                break;
             }
 
@@ -1541,7 +1540,7 @@ void room_index::reset(  )
                            {
                               if( !( pObjToIndex = get_obj_index( tReset->arg4 ) ) )
                               {
-                                 bug( "{}: {}: 'T': bad objto vnum {}.", __func__, filename, tReset->arg4 );
+                                 bug( "{}: {}: 'T': bad objto vnum {}.", __func__, area->filename, tReset->arg4 );
                                  continue;
                               }
                               if( area->nplayer > 0 || !( to_obj = get_obj_type( pObjToIndex ) ) ||
@@ -1603,13 +1602,13 @@ void room_index::reset(  )
 
                         if( !( pObjIndex = get_obj_index( tReset->arg2 ) ) )
                         {
-                           bug( "{}: {}: 'P': bad obj vnum {}.", __func__, filename, tReset->arg2 );
+                           bug( "{}: {}: 'P': bad obj vnum {}.", __func__, area->filename, tReset->arg2 );
                            break;
                         }
 
                         if( !( pObjToIndex = get_obj_index( tReset->arg4 ) ) )
                         {
-                           bug( "{}: {}: 'P': bad objto vnum {}.", __func__, filename, tReset->arg4 );
+                           bug( "{}: {}: 'P': bad objto vnum {}.", __func__, area->filename, tReset->arg4 );
                            break;
                         }
 
@@ -1676,7 +1675,7 @@ void room_index::reset(  )
             {
                if( !( pRoomIndex = get_room_index( pReset->arg4 ) ) )
                {
-                  bug( "{}: {}: 'T': bad room {}.", __func__, filename, pReset->arg4 );
+                  bug( "{}: {}: 'T': bad room {}.", __func__, area->filename, pReset->arg4 );
                   break;
                }
                if( area->nplayer > 0 || count_obj_list( pReset, get_obj_index( OBJ_VNUM_TRAP ), pRoomIndex->objects ) > 0 )
@@ -1693,7 +1692,7 @@ void room_index::reset(  )
 
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
-               bug( "{}: {}: 'D': bad room vnum {}.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'D': bad room vnum {}.", __func__, area->filename, pReset->arg1 );
                break;
             }
 
@@ -1731,7 +1730,7 @@ void room_index::reset(  )
 
             if( !( pRoomIndex = get_room_index( pReset->arg1 ) ) )
             {
-               bug( "{}: {}: 'R': bad room vnum {}.", __func__, filename, pReset->arg1 );
+               bug( "{}: {}: 'R': bad room vnum {}.", __func__, area->filename, pReset->arg1 );
                break;
             }
             pRoomIndex->randomize_exits( pReset->arg2 - 1 );

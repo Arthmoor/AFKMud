@@ -58,6 +58,7 @@ class area_data
    void fold( const std::string &, bool );
    void wipe_resets(  );
 
+   class continent_data *continent = nullptr; // Continent data structure this area is associated with.
    std::list<room_index *> rooms;         // The list of room indexes for this area.
    std::list<mob_index *> mobs;           // The list of mob indexes for this area.
    std::list<obj_index *> objects;        // The list of object indexes for this area.
@@ -65,13 +66,11 @@ class area_data
    std::chrono::system_clock::time_point creation_date;   // Timestamp for when this area was first created. Samson 1/20/07
    std::chrono::system_clock::time_point install_date;    // Timestamp for when this area was "live" installed. Samson 1/20/07
    std::chrono::system_clock::time_point last_resettime;  // Tracking for when the area was last reset. Debugging tool. Samson 3-6-04
-
-   class continent_data *continent = nullptr; // Continent data structure this area is associated with.
-   char *name = nullptr;                  // The name of the area.
-   char *filename = nullptr;              // The area's filename on disk.
-   char *author = nullptr;                // The person who wrote the area. - Scryn
-   char *credits = nullptr;               // Additional credits for the area.
-   char *resetmsg = nullptr;              // Message shown to players when an area resets.     /* Rennard */
+   std::string name;                      // The name of the area.
+   std::string filename;                  // The area's filename on disk.
+   std::string author;                    // The person who wrote the area. - Scryn
+   std::string credits;                   // Additional credits for the area.
+   std::string resetmsg;                  // Message shown to players when an area resets.     /* Rennard */
    int low_vnum = 0;                      // First Vnum for this area.
    int hi_vnum = 0;                       // Last Vnum for this area.
    int low_soft_range = 0;                // Recommended minimum level for this area.

@@ -356,7 +356,7 @@ const char* fread_flagstring( FILE* fp )
    return buffer.c_str();
 }
 
-// Read a string from file and allocate it to the shared string hash
+// Read a string from file and allocate it to the shared string hash.
 char* fread_string( FILE* fp )
 {
    std::string temp = internal_fread_flagstring( fp );

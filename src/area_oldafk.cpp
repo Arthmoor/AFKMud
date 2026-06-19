@@ -1211,8 +1211,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       // Resuming from where area.cpp left off. AUTHOR should be next valid field.
       else if( !str_cmp( word, "AUTHOR" ) )
       {
-         STRFREE( tarea->author );
-         tarea->author = fread_string( fpArea );
+         fread_string( tarea->author, fpArea );
       }
       else if( !str_cmp( word, "VNUMS" ) )
       {
@@ -1253,8 +1252,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       }
       else if( !str_cmp( word, "RESETMSG" ) )
       {
-         DISPOSE( tarea->resetmsg );
-         tarea->resetmsg = fread_string_nohash( fpArea );
+         fread_string( tarea->resetmsg, fpArea );
       }
       /*
        * Frequency loader - Samson 5-10-99 

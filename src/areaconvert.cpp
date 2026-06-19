@@ -268,8 +268,8 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( !area->filename.empty() ? area->filename : "(invalid)" ) );
+            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( !area->filename.empty() ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
             log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
             if( !manual )
             {
@@ -839,8 +839,8 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( !area->filename.empty() ? area->filename : "(invalid)" ) );
+            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( !area->filename.empty() ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
             log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
             if( !manual )
             {
@@ -1212,8 +1212,8 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
          if( area_conflict )
          {
-            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( area->filename ? area->filename : "(invalid)" ) );
-            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( area->filename ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
+            log_printf( "ERROR: {} has vnum conflict with {}!", tarea->filename, ( !area->filename.empty() ? area->filename : "(invalid)" ) );
+            log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( !area->filename.empty() ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
             log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
             if( !manual )
             {
@@ -1881,9 +1881,9 @@ void load_stock_area_file( const std::string & filename, bool manual )
    if( !str_cmp( word, "AREA" ) )
    {
       tarea = create_area(  );
-      tarea->name = fread_string_nohash( fpArea );
-      tarea->author = STRALLOC( "unknown" );
-      tarea->filename = strdup( strArea );
+      fread_string( tarea->name, fpArea );
+      tarea->author = "Unknown";
+      tarea->filename = strArea;
       tarea->version = 0;
    }
    else if( !str_cmp( word, "VERSION" ) )
@@ -1896,9 +1896,9 @@ void load_stock_area_file( const std::string & filename, bool manual )
          if( !str_cmp( word, "#AREA" ) )
          {
             tarea = create_area(  );
-            tarea->name = fread_string_nohash( fpArea );
-            tarea->author = STRALLOC( "unknown" );
-            tarea->filename = strdup( strArea );
+            fread_string( tarea->name, fpArea );
+            tarea->author = "Unknown";
+            tarea->filename = strArea;
             tarea->version = temp;
          }
          else
@@ -1976,13 +1976,11 @@ void load_stock_area_file( const std::string & filename, bool manual )
       }
       else if( !str_cmp( word, "AUTHOR" ) )
       {
-         STRFREE( tarea->author );
-         tarea->author = fread_string( fpArea );
+         fread_string( tarea->author, fpArea );
       }
       else if( !str_cmp( word, "CREDITS" ) ) /* Smaug 1.8b v3 format */
       {
-         STRFREE( tarea->credits );
-         tarea->credits = fread_string( fpArea );
+         fread_string( tarea->credits, fpArea );
       }
       else if( !str_cmp( word, "RANGES" ) )
       {
@@ -2007,8 +2005,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
       }
       else if( !str_cmp( word, "RESETMSG" ) )
       {
-         DISPOSE( tarea->resetmsg );
-         tarea->resetmsg = fread_string_nohash( fpArea );
+         fread_string( tarea->resetmsg, fpArea );
       }
       else if( !str_cmp( word, "FLAGS" ) )
       {
@@ -2183,8 +2180,8 @@ void load_stock_area_file( const std::string & filename, bool manual )
 
       if( tarea->low_vnum < 0 || tarea->hi_vnum < 0 )
          log_printf( "{:<20}: Bad Vnum Range", tarea->filename );
-      if( !tarea->author )
-         tarea->author = STRALLOC( "Unknown" );
+      if( tarea->author.empty() )
+         tarea->author = "Unknown";
       if( tarea->creation_date == std::chrono::system_clock::time_point{} )
          tarea->creation_date = umod;
       if( tarea->install_date == std::chrono::system_clock::time_point{} )
@@ -2194,7 +2191,8 @@ void load_stock_area_file( const std::string & filename, bool manual )
       log_printf( "({})", filename );
 }
 
-/* Use of the forceload argument with this command isn't recommended
+/*
+ * Use of the forceload argument with this command isn't recommended
  * unless you KNOW for sure that what you're doing will be safe.
  * Trying to force something that is broken *WILL* result in a crashed mud.
  * The argument was added as a laziness feature for the installation of new
@@ -2285,7 +2283,7 @@ CMDF( do_areaconvert )
             ch->print( "&YArea conversion complete.\r\n" );
          }
          else
-            ch->printf( "&GForced load on %s complete.\r\n", tarea->filename );
+            ch->print_fmt( "&GForced load on {} complete.\r\n", tarea->filename );
          write_area_list(  );
       }
    }

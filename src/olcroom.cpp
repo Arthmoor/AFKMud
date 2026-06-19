@@ -393,7 +393,7 @@ void redit_disp_exit_dirs( descriptor_data * d )
 {
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i <= DIR_SOMEWHERE; ++i )
-      d->character->printf( "&g%2d&w) %s\r\n", i, dir_name[i] );
+      d->character->print_fmt( "&g{:2}&w) %s\r\n", i, dir_name[i] );
 
    d->character->print( "\r\nChoose a direction: " );
 }
@@ -410,7 +410,7 @@ void redit_disp_exit_flag_menu( descriptor_data * d )
    {
       if( i == EX_PORTAL )
          continue;
-      d->character->printf( "&g%2d&w) %-20.20s\r\n", i + 1, ex_flags[i] );
+      d->character->print_fmt( "&g{}&w) {:<20.20}\r\n", i + 1, ex_flags[i] );
    }
 
    for( i = 0; i < MAX_EXFLAG; ++i )
@@ -422,7 +422,7 @@ void redit_disp_exit_flag_menu( descriptor_data * d )
       }
    }
 
-   d->character->printf( "\r\nExit flags: &c%s&w\r\nEnter room flags, 0 to quit: ", buf1.c_str() );
+   d->character->print_fmt( "\r\nExit flags: &c{}&w\r\nEnter room flags, 0 to quit: ", buf1 );
    d->olc->mode = REDIT_EXIT_FLAGS;
 }
 
@@ -435,12 +435,12 @@ void redit_disp_flag_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < ROOM_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter + 1, r_flags[counter] );
+      d->character->print_fmt( "&g{}&w) {:<20.20} ", counter + 1, r_flags[counter] );
 
       if( !( ++columns % 2 ) )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nRoom flags: &c%s&w\r\nEnter room flags, 0 to quit : ", bitset_string( room->flags, r_flags ) );
+   d->character->print_fmt( "\r\nRoom flags: &c{}&w\r\nEnter room flags, 0 to quit : ", bitset_string( room->flags, r_flags ) );
    d->olc->mode = REDIT_FLAGS;
 }
 
@@ -452,7 +452,7 @@ void redit_disp_sector_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < SECT_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, sect_types[counter] );
+      d->character->print_fmt( "&g{}&w) {:<20.20} ", counter, sect_types[counter] );
 
       if( !( ++columns % 2 ) )
          d->character->print( "\r\n" );
@@ -467,16 +467,16 @@ void redit_disp_menu( descriptor_data * d )
    room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
-   d->character->printf( "&w-- Room number : [&c%d&w]      Room area: [&c%-30.30s&w]\r\n"
-                         "&g1&w) Room Name   : &O%s\r\n"
-                         "&g2&w) Description :\r\n&O%s"
-                         "&g3&w) Night Desc  :\r\n&O%s"
-                         "&g4&w) Room flags  : &c%s\r\n"
-                         "&g5&w) Sector type : &c%s\r\n"
-                         "&g6&w) Tunnel      : &c%d\r\n"
-                         "&g7&w) TeleDelay   : &c%d\r\n"
-                         "&g8&w) TeleVnum    : &c%d\r\n"
-                         "&g9&w) Base Light  : &c%d\r\n"
+   d->character->print_fmt( "&w-- Room number : [&c{}&w]      Room area: [&c{:<30.30}&w]\r\n"
+                         "&g1&w) Room Name   : &O{}\r\n"
+                         "&g2&w) Description :\r\n&O{}"
+                         "&g3&w) Night Desc  :\r\n&O{}"
+                         "&g4&w) Room flags  : &c{}\r\n"
+                         "&g5&w) Sector type : &c{}\r\n"
+                         "&g6&w) Tunnel      : &c{}\r\n"
+                         "&g7&w) TeleDelay   : &c{}\r\n"
+                         "&g8&w) TeleVnum    : &c{}\r\n"
+                         "&g9&w) Base Light  : &c{}\r\n"
                          "&gA&w) Exit menu\r\n"
                          "&gB&w) Extra descriptions menu\r\n"
                          "&gQ&w) Quit\r\n"
@@ -516,7 +516,7 @@ CMDF( do_redit_reset )
          if( !ch->pcdata->dest_buf )
          {
             /*
-             * If theres no dest_buf, theres no object, so stick em back as playing 
+             * If there's no dest_buf, there's no object, so stick em back as playing
              */
             ch->print( "Fatal error, report to Samson.\r\n" );
             bug( "{}: sub_obj_extra: nullptr ch->pcdata->dest_buf", __func__ );

@@ -114,7 +114,7 @@ void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area 
             {
                if( rv_exit->vnum != i )
                {
-                  ch->pagerf( "...    fixing reverse exit in area %s.\r\n", pexit->to_room->area->filename );
+                  ch->pager_fmt( "...    fixing reverse exit in area {}.\r\n", pexit->to_room->area->filename );
                   rv_exit->vnum = i;
                }
             }
@@ -795,7 +795,7 @@ CMDF( do_renumber )
    {
       if( area->low_vnum < ch->pcdata->low_vnum || area->hi_vnum > ch->pcdata->hi_vnum )
       {
-         ch->printf( "You can't renumber that area ('%s').\r\n", area->filename );
+         ch->print_fmt( "You can't renumber that area ('{}').\r\n", area->filename );
          return;
       }
    }

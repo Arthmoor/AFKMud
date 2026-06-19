@@ -106,7 +106,7 @@ void load_connhistory( void )
    auto read_line = [&]() -> std::string
    {
       std::string line;
-      std::getline( stream, line, delimiter );
+      std::getline( stream, line );
       strip_spaces( line );
 
       return line;
