@@ -23,11 +23,44 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                             Map reading module                           *
+ *                          Map Reading OLC Module                          *
  ****************************************************************************/
 
+/*
+ * This code takes a note written by a builder that parses the following type of layout into a linked set of rooms:
+ *
+ *                 [ ]         [ ]
+ *                  =           =
+ * [ ]-[ ]     [ ]-[ ]     [ ]:[ ]:[ ]
+ *  |   |           |         / =
+ * [ ]-[ ]:[ ]-----[ ]-----[ ] [ ]
+ *        /                   \
+ * [ ]:[ ]:[ ]     [ ]     [ ]:[ ]:[ ]
+ *      |           |           |
+ * [ ]:[ ]:[ ] [ ]-[ ]-[ ] [ ]:[ ]:[ ]
+ *      |         / = \         |
+ * [ ]:[ ]:[ ] [ ] [ ] [ ] [ ]:[ ]:[ ]:[ ]
+ *      |           |           |       |
+ * [ ]:[ ] [ ] [ ] [ ]-[ ]-[ ]-[ ]:[ ] [ ]
+ *        \ =   =   |   |   |   |
+ * [ ]-[ ]:[ ]-[ ]-[ ] [ ]-[ ] [ ]-[ ]
+ *        /     |     \       /     |
+ *     [ ] [ ]:[ ]:[ ] [ ]-[ ] [ ] [ ]-[ ]-[ ]
+ *              =   |   |     = =
+ *         [ ]-[ ]-[ ] [ ]:[ ]:[ ]
+ *
+ * The above example is taken from one of Alsherok's maps.
+ *
+ * Some limitations:
+ *
+ * The note (and therefore the room grid) is restricted to 48 x 80. This is the size of the MUD's internal edit buffer. If you need a larger set of dimensions, you'll need to do it the old fashioned way.
+ * Room generation must stay within the builder's assigned VNUM range. This should already be guardrailed by the add_new_room_to_map() function.
+ * Exits must be linkable as normal room links. It cannot deal with going through an exit that warps the player, or uses a portal.
+ * It cannot link a room into another area. This is enforced in the link_map_exit() function. Allowing this would make a pretty big mess of things.
+ */
+
 #include "mud.h"
-#include "boards.h"
+#include "boards.h"   // Not obvious, but this is what provides the note buffer functionality.
 #include "objindex.h"
 #include "roomindex.h"
 
@@ -42,7 +75,7 @@ struct map_data   /* contains per-room data */
 struct map_index
 {
    int vnum = 0;              // Vnum of the map.
-   int map_of_vnums[49][81];  // Room vnums arranged as a map.
+   int map_of_vnums[49][81];  // Room vnums arranged as a map. This matches the dimensions of a note that's written in the game's internal editor.
 };
 
 struct map_stuff
@@ -57,23 +90,20 @@ struct map_stuff
 std::list<map_index *> map_list;
 
 /* Lets make it check the map and make sure it uses [ ] instead of [] */
-char *check_map( char *str )
+std::string check_map( std::string_view str )
 {
-   static char newstr[MSL];
-   int i, j;
+   std::string result;
+   result.reserve( str.size() + 10 );
 
-   for( i = j = 0; str[i] != '\0'; ++i )
+   for( size_t i = 0; i < str.size(); ++i )
    {
-      if( str[i - 1] == '[' && str[i] == ']' )
+      if( i > 0 && str[i - 1] == '[' && str[i] == ']' )
       {
-         newstr[j++] = ' ';
-         newstr[j++] = str[i];
+         result.push_back( ' ' );
       }
-      else
-         newstr[j++] = str[i];
+      result.push_back( str[i] );
    }
-   newstr[j] = '\0';
-   return newstr;
+   return result;
 }
 
 /*
@@ -126,35 +156,36 @@ map_index *get_map_index( int vnum )
    return nullptr;
 }
 
-void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
+void map_stats( char_data* ch, int* rooms, int* rows, int* cols )
 {
-   int row, col, n;
-   int leftmost, rightmost;
-   char *l, c;
-
    if( !ch->pcdata->pnote )
    {
-      bug( "{}: ch->pcdata->pnote == nullptr!", __func__ );
+      bug("{}: ch->pcdata->pnote == nullptr!", __func__);
       return;
    }
-   n = 0;
-   row = col = 0;
-   leftmost = rightmost = 0;
-   l = ch->pcdata->pnote->text;
-   do
+
+   const std::string & text = ch->pcdata->pnote->text;
+
+   int row = 0;
+   int col = 0;
+   int n = 0;
+   int leftmost = 0;
+   int rightmost = 0;
+
+   for( size_t i = 0; i < text.size(); ++i )
    {
-      c = l[0];
+      char c = text[i];
 
-      switch ( c )
+      switch( c )
       {
-         default:
-         case '\n':
-            break;
-
          case '\r':
             col = 0;
             ++row;
-            break;
+            continue;
+
+         default:
+         case '\n':
+            continue;
 
          case ' ':
             ++col;
@@ -163,35 +194,25 @@ void map_stats( char_data * ch, int *rooms, int *rows, int *cols )
 
       if( c == '[' )
       {
-         /*
-          * Increase col 
-          */
-         ++col;
-         /*
-          * This is a room since in [ ] 
-          */
+         col += 2;
          ++n;
-         /*
-          * This will later handle a letter etc 
-          */
-         ++col;
-         /*
-          * Make sure it has a closing ]
-          */
-         if( c == ']' )
+
+         if( i + 1 < text.size() && text[i + 1] == ']' )
+         {
             ++col;
-         if( col < leftmost )
-            leftmost = col;
-         if( col > rightmost )
-            rightmost = col;
+         }
+
+         leftmost = umin( leftmost, col );
+         rightmost = umax( rightmost, col );
       }
-      if( ( c == ' ' || c == '-' || c == '|' || c == '=' || c == '\\' || c == '/' || c == '^' || c == ':' ) )
+      else if( c == ' ' || c == '-' || c == '|' || c == '=' || c == '\\' || c == '/' || c == '^' || c == ':' )
+      {
          ++col;
-      ++l;
+      }
    }
-   while( c != '\0' );
+
    *cols = ( rightmost - leftmost );
-   *rows = row;   /* [sic.] */
+   *rows = row;
    *rooms = n;
 }
 
@@ -276,21 +297,67 @@ int add_new_room_to_map( char_data * ch, char code )
    return -1;
 }
 
+void link_map_exit( char_data * ch, room_index * from, room_index * to, int direction, bool is_door )
+{
+   // Don't link to itself.
+   if( !from || !to || from == to )
+      return;
+
+   if( from->area != to->area )
+   {
+      ch->print_fmt( "Room {}, for area {}, is trying to link an exit in another area: {}. Skipping this link. You will need to add this manually.\r\n", from->vnum, from->area->name, to->area->name );
+      return;
+   }
+
+   auto* xit = from->make_exit( to, direction );
+   xit->keyword = nullptr;
+   xit->exitdesc = nullptr;
+   xit->key = -1;
+
+   if( is_door )
+   {
+      SET_EXIT_FLAG( xit, EX_ISDOOR );
+      SET_EXIT_FLAG( xit, EX_CLOSED );
+   }
+   else
+   {
+      xit->flags.reset();
+   }
+}
+
+struct DirRule
+{
+   int dir;
+   int dy, dx;
+   int start_dy, start_dx;
+   std::string symbols;
+
+   // Checks if the immediate connector is a door
+   bool is_door( const map_stuff & m) const { return m.code == ':' || m.code == '='; }
+};
+
+const std::vector<DirRule> dir_rules = {
+   { DIR_NORTH,     -1,  0, -1,  0, "|:=" },
+   { DIR_SOUTH,      1,  0,  1,  0, "|:=" },
+   { DIR_EAST,       0,  1,  0,  1, "-:=" },
+   { DIR_WEST,       0, -1,  0, -1, "-:=" },
+   { DIR_UP,        -1,  0, -1,  0, "^" },
+   { DIR_DOWN,       1,  0,  1,  0, "^" },
+   { DIR_NORTHEAST, -1,  1, -1,  2, "/:=" },
+   { DIR_NORTHWEST, -1, -1, -1, -2, "\\:=" },
+   { DIR_SOUTHEAST,  1,  1,  1,  2, "\\:=" },
+   { DIR_SOUTHWEST,  1, -1,  1, -2, "/:=" }
+};
+
 /*
  * This function takes the character string in ch->pcdata->pnote and
  *  creates rooms laid out in the appropriate configuration.
  */
-void map_to_rooms( char_data * ch, map_index * m_index )
+void map_to_rooms( char_data* ch, map_index* m_index )
 {
-   struct map_stuff rmap[49][78];   /* size of edit buffer */
-   char *newmap;
-   int row, col, i, n, x, y, tvnum, proto_vnum = 0;
-   int newx, newy;
-   char *l, c;
-   room_index *newrm;
-   map_index *map_index = nullptr, *tmp;
-   exit_data *xit;   /* these are for exits */
-   bool getroomnext = false;
+   map_index* m_ptr = nullptr;
+   map_index* tmp;
+   static map_stuff rmap[49][78];
 
    if( !ch->pcdata->pnote )
    {
@@ -298,52 +365,34 @@ void map_to_rooms( char_data * ch, map_index * m_index )
       return;
    }
 
-   /*
-    * Make sure format is right
-    */
-   newmap = check_map( ch->pcdata->pnote->text );
-   STRFREE( ch->pcdata->pnote->text );
-   ch->pcdata->pnote->text = STRALLOC( newmap );
+   ch->pcdata->pnote->text = check_map( ch->pcdata->pnote->text );
+   const std::string & text = ch->pcdata->pnote->text;
 
-   n = 0;
-   row = col = 0;
-
-   /*
-    * Check to make sure map_index exists.
-    * If not, then make a new one.
-    */
    if( !m_index )
-   {  /* Make a new vnum */
-      for( i = ch->pcdata->low_vnum; i <= ch->pcdata->hi_vnum; ++i )
+   {
+      for( int i = ch->pcdata->low_vnum; i <= ch->pcdata->hi_vnum; ++i )
       {
-         if( ( tmp = get_map_index( i ) ) == nullptr )
+         if( !( tmp = get_map_index(i) ) )
          {
-            map_index = make_new_map_index( i );
+            m_ptr = make_new_map_index(i);
             break;
          }
       }
    }
    else
    {
-      map_index = m_index;
+      m_ptr = m_index;
    }
 
-   /*
-    *
-    */
-   if( !map_index )
+   if( !m_ptr )
    {
       ch->print( "Couldn't find or make a map_index for you!\r\n" );
-      bug( "{}: Couldn't find or make a map_index", __func__ );
-      /*
-       * do something. return failed or somesuch
-       */
       return;
    }
 
-   for( x = 0; x < 49; ++x )
+   for( int x = 0; x < 49; ++x )
    {
-      for( y = 0; y < 78; ++y )
+      for( int y = 0; y < 78; ++y )
       {
          rmap[x][y].vnum = 0;
          rmap[x][y].proto_vnum = 0;
@@ -352,378 +401,80 @@ void map_to_rooms( char_data * ch, map_index * m_index )
       }
    }
 
-   l = ch->pcdata->pnote->text;
-   do
+   int row = 0, col = 0;
+   bool getroomnext = false;
+
+   for( char c : text )
    {
-      c = l[0];
-
-      switch ( c )
+      if( c == '\r' )
       {
-         default:
-            break;
-
-         case '\n':
-            row++;
-            col = 0;
-            break;
-
-         case '\r':
-            col = 0;
-            ++row;
-            break;
-      }
-
-      if( c != ' ' && c != '-' && c != '|' && c != '=' && c != '\\' && c != '/' && c != '^' && c != ':' && c != '[' && c != ']' && c != '^' && !getroomnext )
-      {
-         ++l;
+         col = 0;
+         ++row;
          continue;
       }
 
+      if( c == '\n' )
+      {
+         ++row;
+         col = 0;
+         continue;
+      }
+
+      bool is_symbol = ( c == ' ' || c == '-' || c == '|' || c == '=' || c == '\\' || c == '/' || c == '^' || c == ':' || c == '[' || c == ']' );
+
+      if( !is_symbol && !getroomnext )
+         continue;
+
       if( getroomnext )
       {
-         ++n;
-         /*
-          * Actual room info
-          */
          rmap[row][col].vnum = add_new_room_to_map( ch, c );
-         map_index->map_of_vnums[row][col] = rmap[row][col].vnum;
-         rmap[row][col].proto_vnum = proto_vnum;
+         m_ptr->map_of_vnums[row][col] = rmap[row][col].vnum;
          getroomnext = false;
       }
       else
       {
-         map_index->map_of_vnums[row][col] = 0;
+         m_ptr->map_of_vnums[row][col] = 0;
          rmap[row][col].vnum = 0;
-         rmap[row][col].exits = 0;
       }
+
       rmap[row][col].code = c;
-      /*
-       * Handle rooms
-       */
       if( c == '[' )
          getroomnext = true;
-      ++col;
-      ++l;
+      col++;
    }
-   while( c != '\0' );
 
-   for( y = 0; y < ( row + 1 ); ++y )
-   {  /* rows */
-      for( x = 0; x < 78; ++x )
-      {  /* cols (78, i think) */
-
+   for( int y = 0; y <= row; ++y )
+   {
+      for( int x = 0; x < 78; ++x )
+      {
          if( rmap[y][x].vnum == 0 )
             continue;
 
-         newrm = get_room_index( rmap[y][x].vnum );
-         /*
-          * Continue if no newrm
-          */
-         if( !newrm )
+         room_index* src = get_room_index( rmap[y][x].vnum );
+         if( !src )
             continue;
 
-         /*
-          * Check up
-          */
-         if( y > 1 )
+         for( const auto& rule : dir_rules )
          {
-            newx = x;
-            newy = y;
-            --newy;
-            while( newy >= 0 && ( rmap[newy][x].code == '^' ) )
-               --newy;
+            int ny = y + rule.start_dy;
+            int nx = x + rule.start_dx;
 
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][x].vnum )
-               break;
-            if( ( tvnum = rmap[newy][x].vnum ) != 0 )
+            while( ny >= 0 && ny < 49 && nx >= 0 && nx < 78 && rule.symbols.find( rmap[ny][nx].code ) != std::string::npos )
             {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_UP );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               xit->flags.reset(  );
+               ny += rule.dy;
+               nx += rule.dx;
             }
-         }
 
-         /*
-          * Check down
-          */
-         if( y < 48 )
-         {
-            newx = x;
-            newy = y;
-            ++newy;
-            while( newy <= 48 && ( rmap[newy][x].code == '^' ) )
-               ++newy;
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][x].vnum )
-               break;
-            if( ( tvnum = rmap[newy][x].vnum ) != 0 )
+            // If we found a target room, link it.
+            if( ny >= 0 && ny < 49 && nx >= 0 && nx < 78 && rmap[ny][nx].vnum != 0 )
             {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_DOWN );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               xit->flags.reset(  );
-            }
-         }
+               // Don't link to itself.
+               if( rmap[y][x].vnum == rmap[ny][nx].vnum )
+                  continue;
 
-         /*
-          * Check north
-          */
-         if( y > 1 )
-         {
-            newx = x;
-            newy = y;
-            --newy;
-            while( newy >= 0 && ( rmap[newy][x].code == '|' || rmap[newy][x].code == ':' || rmap[newy][x].code == '=' ) )
-               --newy;
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][x].vnum )
-               break;
-            if( ( tvnum = rmap[newy][x].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_NORTH );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               if( rmap[newy + 1][x].code == ':' || rmap[newy + 1][x].code == '=' )
-               {
-                  SET_EXIT_FLAG( xit, EX_ISDOOR );
-                  SET_EXIT_FLAG( xit, EX_CLOSED );
-               }
-               else
-                  xit->flags.reset(  );
-            }
-         }
+               bool door = rule.is_door( rmap[y + rule.start_dy][x + rule.start_dx] );
 
-         /*
-          * Check south
-          */
-         if( y < 48 )
-         {
-            newx = x;
-            newy = y;
-            ++newy;
-            while( newy <= 48 && ( rmap[newy][x].code == '|' || rmap[newy][x].code == ':' || rmap[newy][x].code == '=' ) )
-               ++newy;
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][x].vnum )
-               break;
-            if( ( tvnum = rmap[newy][x].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_SOUTH );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               if( rmap[newy - 1][x].code == ':' || rmap[newy - 1][x].code == '=' )
-               {
-                  SET_EXIT_FLAG( xit, EX_ISDOOR );
-                  SET_EXIT_FLAG( xit, EX_CLOSED );
-               }
-               else
-                  xit->flags.reset(  );
-            }
-         }
-
-         /*
-          * Check east
-          */
-         if( x < 79 )
-         {
-            newx = x;
-            newy = y;
-            ++newx;
-            while( newx <= 79 && ( rmap[y][newx].code == '-' || rmap[y][newx].code == ':' || rmap[y][newx].code == '='
-               || rmap[y][newx].code == '[' || rmap[y][newx].code == ']' ) )
-               ++newx;
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[y][newx].vnum )
-               break;
-            if( ( tvnum = rmap[y][newx].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_EAST );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               if( rmap[y][newx - 2].code == ':' || rmap[y][newx - 2].code == '=' )
-               {
-                  SET_EXIT_FLAG( xit, EX_ISDOOR );
-                  SET_EXIT_FLAG( xit, EX_CLOSED );
-               }
-               else
-                  xit->flags.reset(  );
-            }
-         }
-
-         /*
-          * Check west
-          */
-         if( x > 1 )
-         {
-            newx = x;
-            newy = y;
-            --newx;
-            while( newx >= 0 && ( rmap[y][newx].code == '-' || rmap[y][newx].code == ':' || rmap[y][newx].code == '='
-               || rmap[y][newx].code == '[' || rmap[y][newx].code == ']' ) )
-               --newx;
-
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[y][newx].vnum )
-               break;
-            if( ( tvnum = rmap[y][newx].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_WEST );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               if( rmap[y][newx + 2].code == ':' || rmap[y][newx + 2].code == '=' )
-               {
-                  SET_EXIT_FLAG( xit, EX_ISDOOR );
-                  SET_EXIT_FLAG( xit, EX_CLOSED );
-               }
-               else
-                  xit->flags.reset(  );
-            }
-         }
-
-         /*
-          * Check southeast
-          */
-         if( y < 48 && x < 79 )
-         {
-            newx = x;
-            newy = y;
-            newx += 2;
-            ++newy;
-            while( newx <= 79 && newy <= 48 && ( rmap[newy][newx].code == '\\' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
-            {
-               ++newx;
-               ++newy;
-            }
-            if( rmap[newy][newx].code == '[' )
-               ++newx;
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][newx].vnum )
-               break;
-            if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_SOUTHEAST );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               xit->flags.reset(  );
-            }
-         }
-
-         /*
-          * Check northeast
-          */
-         if( y > 1 && x < 79 )
-         {
-            newx = x;
-            newy = y;
-            newx += 2;
-            --newy;
-            while( newx >= 0 && newy <= 48 && ( rmap[newy][newx].code == '/' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
-            {
-               ++newx;
-               --newy;
-            }
-            if( rmap[newy][newx].code == '[' )
-               ++newx;
-
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][newx].vnum )
-               break;
-            if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_NORTHEAST );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               xit->flags.reset(  );
-            }
-         }
-
-         /*
-          * Check northwest
-          */
-         if( y > 1 && x > 1 )
-         {
-            newx = x;
-            newy = y;
-            newx -= 2;
-            --newy;
-            while( newx >= 0 && newy >= 0 && ( rmap[newy][newx].code == '\\' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
-            {
-               --newx;
-               --newy;
-            }
-            if( rmap[newy][newx].code == ']' )
-               --newx;
-
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][newx].vnum )
-               break;
-            if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_NORTHWEST );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               xit->flags.reset(  );
-            }
-         }
-
-         /*
-          * Check southwest
-          */
-         if( y < 48 && x > 1 )
-         {
-            newx = x;
-            newy = y;
-            newx -= 2;
-            ++newy;
-            while( newx >= 0 && newy <= 48 && ( rmap[newy][newx].code == '/' || rmap[newy][newx].code == ':' || rmap[newy][newx].code == '=' ) )
-            {
-               --newx;
-               ++newy;
-            }
-            if( rmap[newy][newx].code == ']' )
-               --newx;
-
-            /*
-             * dont link it to itself
-             */
-            if( rmap[y][x].vnum == rmap[newy][newx].vnum )
-               break;
-            if( ( tvnum = rmap[newy][newx].vnum ) != 0 )
-            {
-               xit = get_room_index( tvnum )->make_exit( newrm, DIR_SOUTHWEST );
-               xit->keyword = nullptr;
-               xit->exitdesc = nullptr;
-               xit->key = -1;
-               xit->flags.reset(  );
+               link_map_exit( src, get_room_index(rmap[ny][nx].vnum), rule.dir, door );
             }
          }
       }
@@ -777,8 +528,7 @@ CMDF( do_mapout )
       case SUB_WRITING_NOTE:
          if( ch->pcdata->dest_buf != ch->pcdata->pnote )
             bug( "{}: sub_writing_map: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
-         STRFREE( ch->pcdata->pnote->text );
-         ch->pcdata->pnote->text = ch->copy_buffer( true );
+         ch->pcdata->pnote->text = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
    }
@@ -795,9 +545,9 @@ CMDF( do_mapout )
          return;
       }
       map_stats( ch, &rooms, &rows, &cols );
-      ch->printf( "Map represents %d rooms, %d rows, and %d columns\r\n", rooms, rows, cols );
+      ch->print_fmt( "Map represents {} rooms, {} rows, and {} columns\r\n", rooms, rows, cols );
       avail_rooms = num_rooms_avail( ch );
-      ch->printf( "You currently have %d unused rooms.\r\n", avail_rooms );
+      ch->print_fmt( "You currently have {} unused rooms.\r\n", avail_rooms );
       act( AT_ACTION, "$n glances at an etherial map.", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
@@ -818,10 +568,6 @@ CMDF( do_mapout )
          ch->print( "You have no map in progress\r\n" );
          return;
       }
-      STRFREE( ch->pcdata->pnote->text );
-      STRFREE( ch->pcdata->pnote->subject );
-      STRFREE( ch->pcdata->pnote->to_list );
-      STRFREE( ch->pcdata->pnote->sender );
       deleteptr( ch->pcdata->pnote );
       ch->pcdata->pnote = nullptr;
       ch->print( "Map cleared.\r\n" );

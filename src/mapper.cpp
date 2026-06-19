@@ -81,7 +81,7 @@ bool BOUNDARY( int x, int y )
 }
 
 /* Take care of some repetitive code for later */
-void get_exit_dir( int dir, int &x, int &y, int xorig, int yorig )
+void get_exit_dir( int dir, int & x, int & y, int xorig, int yorig )
 {
    /*
     * Get the next coord based on direction 
