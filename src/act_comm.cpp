@@ -28,7 +28,6 @@
 
 #include "mud.h"
 #include "area.h"
-#include "boards.h"
 #include "descriptor.h"
 #include "language.h"
 #include "mobindex.h"
