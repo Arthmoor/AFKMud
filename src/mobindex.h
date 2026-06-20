@@ -46,7 +46,10 @@ class mob_index
    char_data *create_mobile(  );
    void mprog_read_programs( FILE * fp );
 
-   std::string spec_funname;                    // Name of a special function if it has one.
+   class area_data *area = nullptr;             // Area this mob is associated with.
+   SPEC_FUN *spec_fun = nullptr;                // Pointer to the special function this mob uses if one was specified.
+   struct shop_data *pShop = nullptr;           // Data for a shop being run by this mob.
+   struct repair_data *rShop = nullptr;         // Data for a repair shop being run by this mob.
    std::list<struct mud_prog_data *> mudprogs;  // List of Mudprogs this mob has.
    std::bitset<MAX_PROG> progtypes;
    std::bitset<MAX_ACT_FLAG> actflags;
@@ -59,14 +62,11 @@ class mob_index
    std::bitset<MAX_RIS_FLAG> susceptible;       // What susceptibilities the mob has.
    std::bitset<MAX_RIS_FLAG> absorb;            // What the mob is able to absorb - Samson 3-16-00
    std::bitset<LANG_UNKNOWN> speaks;            // What languages the mob is capable of speaking.
-   area_data *area = nullptr;                   // Area this mod is associated with.
-   SPEC_FUN *spec_fun = nullptr;                // Pointer to the special function this mob uses if one was specified.
-   struct shop_data *pShop = nullptr;           // Data for a shop being run by this mob.
-   struct repair_data *rShop = nullptr;         // Data for a repair shop being run by this mob.
-   char *player_name = nullptr;                 // A list of keywords used to interact with this mob.
-   char *short_descr = nullptr;                 // The visible name of the mob.
-   char *long_descr = nullptr;                  // Description added after the name when seen in a room.
-   char *chardesc = nullptr;                    // The detailed description when looked at by a player.
+   std::string player_name;                     // A list of keywords used to interact with this mob.
+   std::string short_descr;                     // The visible name of the mob.
+   std::string long_descr;                      // Description added after the name when seen in a room.
+   std::string chardesc;                        // The detailed description when looked at by a player.
+   std::string spec_funname;                    // Name of a special function if it has one.
    float numattacks = 1.0;                      // Number of attacks the mob has.
    int speaking = LANG_COMMON;                  // What language the mob is currently speaking. Don't bitset this - it should only be a single language at a time.
    int vnum = 0;                                // The mob's vnum.

@@ -123,19 +123,18 @@ void load_mobiles( area_data * tarea, FILE * fp )
             tarea->hi_vnum = vnum;
       }
       pMobIndex->area = tarea;
-      pMobIndex->player_name = fread_string( fp );
-      pMobIndex->short_descr = fread_string( fp );
-      pMobIndex->long_descr = fread_string( fp );
+      fread_string( pMobIndex->player_name, fp );
+      fread_string( pMobIndex->short_descr, fp );
+      fread_string( pMobIndex->long_descr, fp );
+      fread_string( pMobIndex->chardesc, fp );
 
-      const char *desc = fread_flagstring( fp );
-      if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
+      if( !pMobIndex->chardesc.empty() )
       {
-         pMobIndex->chardesc = STRALLOC( desc );
-         if( str_prefix( "namegen", desc ) )
+         if( str_prefix( "namegen", pMobIndex->chardesc ) )
             pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
       }
 
-      if( pMobIndex->long_descr != nullptr && str_prefix( "namegen", pMobIndex->long_descr ) )
+      if( !pMobIndex->long_descr.empty() && str_prefix( "namegen", pMobIndex->long_descr ) )
          pMobIndex->long_descr[0] = to_upper( pMobIndex->long_descr[0] );
 
       flag_set( fp, pMobIndex->actflags, act_flags );

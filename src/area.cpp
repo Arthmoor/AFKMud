@@ -820,12 +820,11 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
             if( !str_cmp( word, "Desc" ) )
             {
-               const char *desc = fread_flagstring( fp );
+               fread_string( pMobIndex->chardesc, fp );
 
-               if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
+               if( !pMobIndex->chardesc.empty() )
                {
-                  pMobIndex->chardesc = STRALLOC( desc );
-                  if( str_prefix( "namegen", desc ) )
+                  if( str_prefix( "namegen", pMobIndex->chardesc ) )
                      pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
                }
                break;
@@ -856,11 +855,11 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
             break;
 
          case 'K':
-            KEY( "Keywords", pMobIndex->player_name, fread_string( fp ) );
+            STDSKEY( "Keywords", pMobIndex->player_name );
             break;
 
          case 'L':
-            KEY( "Long", pMobIndex->long_descr, fread_string( fp ) );
+            STDSKEY( "Long", pMobIndex->long_descr );
             break;
 
          case 'N':
@@ -926,7 +925,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
             break;
 
          case 'S':
-            KEY( "Short", pMobIndex->short_descr, fread_string( fp ) );
+            STDSKEY( "Short", pMobIndex->short_descr );
 
             if( !str_cmp( word, "ShopData" ) )
             {
@@ -2025,7 +2024,7 @@ void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
 
    fprintf( fpout, "%s", "#MOBILE\n" );
    fprintf( fpout, "Vnum      %d\n", pMobIndex->vnum );
-   fprintf( fpout, "Keywords  %s~\n", pMobIndex->player_name );
+   fprintf( fpout, "Keywords  %s~\n", pMobIndex->player_name.c_str() );
    fprintf( fpout, "Race      %s~\n", npc_race[pMobIndex->race] );
    fprintf( fpout, "Class     %s~\n", npc_class[pMobIndex->Class] );
    fprintf( fpout, "Gender    %s~\n", npc_sex[pMobIndex->sex] );
@@ -2033,11 +2032,11 @@ void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
    fprintf( fpout, "DefPos    %s~\n", npc_position[pMobIndex->defposition] );
    if( pMobIndex->spec_fun && !pMobIndex->spec_funname.empty(  ) )
       fprintf( fpout, "Specfun   %s~\n", pMobIndex->spec_funname.c_str(  ) );
-   fprintf( fpout, "Short     %s~\n", pMobIndex->short_descr );
-   if( pMobIndex->long_descr && pMobIndex->long_descr[0] != '\0' )
-      fprintf( fpout, "Long      %s~\n", strip_cr( pMobIndex->long_descr ) );
-   if( pMobIndex->chardesc && pMobIndex->chardesc[0] != '\0' )
-      fprintf( fpout, "Desc      %s~\n", strip_cr( pMobIndex->chardesc ) );
+   fprintf( fpout, "Short     %s~\n", pMobIndex->short_descr.c_str() );
+   if( !pMobIndex->long_descr.empty() )
+      fprintf( fpout, "Long      %s~\n", strip_cr( pMobIndex->long_descr ).c_str() );
+   if( !pMobIndex->chardesc.empty() )
+      fprintf( fpout, "Desc      %s~\n", strip_cr( pMobIndex->chardesc ).c_str() );
    fprintf( fpout, "Nattacks  %f\n", pMobIndex->numattacks );
    fprintf( fpout, "Stats1    %d %d %d %d %d %d\n", pMobIndex->alignment, pMobIndex->gold, pMobIndex->height, pMobIndex->weight, pMobIndex->max_move, pMobIndex->max_mana );
    fprintf( fpout, "Stats2    %d %d %d %d %d %d %d\n",

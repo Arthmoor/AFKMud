@@ -101,13 +101,13 @@ void save_mobile( FILE * fp, char_data * mob )
       fprintf( fp, "Continent    %s\n", mob->continent->name.c_str( ) );
       fprintf( fp, "Coordinates  %d %d\n", mob->map_x, mob->map_y );
    }
-   if( !mob->name.empty() && mob->pIndexData->player_name && str_cmp( mob->name, mob->pIndexData->player_name ) )
+   if( !mob->name.empty() && !mob->pIndexData->player_name.empty() && str_cmp( mob->name, mob->pIndexData->player_name ) )
       fprintf( fp, "Name     %s~\n", mob->name.c_str() );
-   if( !mob->short_descr.empty() && mob->pIndexData->short_descr && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
+   if( !mob->short_descr.empty() && !mob->pIndexData->short_descr.empty() && str_cmp( mob->short_descr, mob->pIndexData->short_descr ) )
       fprintf( fp, "Short	%s~\n", mob->short_descr.c_str() );
-   if( !mob->long_descr.empty() && mob->pIndexData->long_descr && str_cmp( mob->long_descr, mob->pIndexData->long_descr ) )
+   if( !mob->long_descr.empty() && !mob->pIndexData->long_descr.empty() && str_cmp( mob->long_descr, mob->pIndexData->long_descr ) )
       fprintf( fp, "Long	%s~\n", mob->long_descr.c_str() );
-   if( !mob->chardesc.empty() && mob->pIndexData->chardesc && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
+   if( !mob->chardesc.empty() && !mob->pIndexData->chardesc.empty() && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
       fprintf( fp, "Description %s~\n", mob->chardesc.c_str() );
    fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
    fprintf( fp, "Position %d\n", mob->position );

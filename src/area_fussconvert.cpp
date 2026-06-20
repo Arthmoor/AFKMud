@@ -836,10 +836,10 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
             if( !str_cmp( word, "Desc" ) )
             {
-               const char *desc = fread_flagstring( fp );
+               fread_string( pMobIndex->chardesc, fp );
 
-               if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-                  pMobIndex->chardesc = STRALLOC( desc );
+               if( !pMobIndex->chardesc.empty() )
+                  pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
                break;
             }
             break;
@@ -868,11 +868,11 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
             break;
 
          case 'K':
-            KEY( "Keywords", pMobIndex->player_name, fread_string( fp ) );
+            STDSKEY( "Keywords", pMobIndex->player_name );
             break;
 
          case 'L':
-            KEY( "Long", pMobIndex->long_descr, fread_string( fp ) );
+            STDSKEY( "Long", pMobIndex->long_descr );
             break;
 
          case 'P':
@@ -941,7 +941,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
                break;
             }
 
-            KEY( "Short", pMobIndex->short_descr, fread_string( fp ) );
+            STDSKEY( "Short", pMobIndex->short_descr );
 
             if( !str_cmp( word, "ShopData" ) )
             {

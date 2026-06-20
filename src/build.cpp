@@ -1183,8 +1183,7 @@ CMDF( do_mset )
          victim->chardesc = ch->copy_buffer( );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            STRFREE( victim->pIndexData->chardesc );
-            victim->pIndexData->chardesc = STRALLOC( victim->chardesc.c_str() );
+            victim->pIndexData->chardesc = victim->chardesc;
          }
          tmpmob = ( char_data * ) ch->pcdata->spare_ptr;
          ch->stop_editing(  );
@@ -2001,8 +2000,7 @@ CMDF( do_mset )
       victim->short_descr = arg3;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
-         STRFREE( victim->pIndexData->short_descr );
-         victim->pIndexData->short_descr = STRALLOC( victim->short_descr.c_str() );
+         victim->pIndexData->short_descr = victim->short_descr;
       }
       ch->print( "Short description set.\r\n" );
       return;
@@ -2013,8 +2011,7 @@ CMDF( do_mset )
       victim->long_descr = std::format( "{}\r\n", arg3 );
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
-         STRFREE( victim->pIndexData->long_descr );
-         victim->pIndexData->long_descr = STRALLOC( victim->long_descr.c_str() );
+         victim->pIndexData->long_descr = victim->long_descr;
       }
       ch->print( "Long description set.\r\n" );
       return;
@@ -2027,8 +2024,7 @@ CMDF( do_mset )
          victim->chardesc = arg3;
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            STRFREE( victim->pIndexData->chardesc );
-            victim->pIndexData->chardesc = STRALLOC( victim->chardesc.c_str() );
+            victim->pIndexData->chardesc = victim->chardesc;
          }
          ch->print( "Detailed description set.\r\n" );
          return;
@@ -2539,8 +2535,7 @@ CMDF( do_mset )
       victim->name = arg3;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
       {
-         STRFREE( victim->pIndexData->player_name );
-         victim->pIndexData->player_name = STRALLOC( victim->name.c_str() );
+         victim->pIndexData->player_name = victim->name;
       }
       ch->print( "Keywords set.\r\n" );
       return;

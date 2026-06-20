@@ -6478,9 +6478,9 @@ CMDF( do_slice )
       return;
    }
 
-   stralloc_printf( &slice->name, "meat fresh slice %s", pMobIndex->player_name );
-   stralloc_printf( &slice->short_descr, "a slice of raw meat from %s", pMobIndex->short_descr );
-   stralloc_printf( &slice->objdesc, "A slice of raw meat from %s lies on the ground.", pMobIndex->short_descr );
+   stralloc_printf( &slice->name, "meat fresh slice %s", pMobIndex->player_name.c_str() );
+   stralloc_printf( &slice->short_descr, "a slice of raw meat from %s", pMobIndex->short_descr.c_str() );
+   stralloc_printf( &slice->objdesc, "A slice of raw meat from %s lies on the ground.", pMobIndex->short_descr.c_str() );
 
    act( AT_BLOOD, "$n cuts a slice of meat from $p.", ch, corpse, nullptr, TO_ROOM );
    act( AT_BLOOD, "You cut a slice of meat from $p.", ch, corpse, nullptr, TO_CHAR );

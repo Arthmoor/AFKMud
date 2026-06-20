@@ -1751,11 +1751,11 @@ CMDF( do_shopstat )
    }
    shop = mob->pShop;
 
-   ch->printf( "Keeper: %d  %s\r\n", shop->keeper, mob->short_descr );
-   ch->printf( "buy0 [%s]  buy1 [%s]  buy2 [%s]  buy3 [%s]  buy4 [%s]\r\n",
+   ch->print_fmt( "Keeper: {}  {}\r\n", shop->keeper, mob->short_descr );
+   ch->print_fmt( "buy0 [{}]  buy1 [{}]  buy2 [{}]  buy3 [{}]  buy4 [{}]\r\n",
                o_types[shop->buy_type[0]], o_types[shop->buy_type[1]], o_types[shop->buy_type[2]], o_types[shop->buy_type[3]], o_types[shop->buy_type[4]] );
-   ch->printf( "Profit:  buy %3d%%  sell %3d%%\r\n", shop->profit_buy, shop->profit_sell );
-   ch->printf( "Hours:   open %2d  close %2d\r\n", shop->open_hour, shop->close_hour );
+   ch->print_fmt( "Profit:  buy {:3}%  sell {:3}%\r\n", shop->profit_buy, shop->profit_sell );
+   ch->print_fmt( "Hours:   open {:2}  close {:2}\r\n", shop->open_hour, shop->close_hour );
 }
 
 CMDF( do_shops )
@@ -2046,10 +2046,10 @@ CMDF( do_repairstat )
    }
    repair = mob->rShop;
 
-   ch->printf( "Keeper: %d  %s\r\n", repair->keeper, mob->short_descr );
-   ch->printf( "fix0 [%s]  fix1 [%s]  fix2 [%s]\r\n", o_types[repair->fix_type[0]], o_types[repair->fix_type[1]], o_types[repair->fix_type[2]] );
-   ch->printf( "Profit: %3d%%  Type: %d\r\n", repair->profit_fix, repair->shop_type );
-   ch->printf( "Hours:   open %2d  close %2d\r\n", repair->open_hour, repair->close_hour );
+   ch->print_fmt( "Keeper: {}  {}\r\n", repair->keeper, mob->short_descr );
+   ch->print_fmt( "fix0 [{}]  fix1 [{}]  fix2 [{}]\r\n", o_types[repair->fix_type[0]], o_types[repair->fix_type[1]], o_types[repair->fix_type[2]] );
+   ch->print_fmt( "Profit: {:3}%  Type: {}\r\n", repair->profit_fix, repair->shop_type );
+   ch->print_fmt( "Hours:   open {:2}  close {:2}\r\n", repair->open_hour, repair->close_hour );
 }
 
 CMDF( do_repairshops )

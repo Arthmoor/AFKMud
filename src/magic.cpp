@@ -4020,8 +4020,8 @@ SPELLF( spell_animate_dead )
       if( !mob->to_room( ch->in_room ) )
          log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
-      act( AT_MAGIC, "$n makes $T rise from the grave!", ch, nullptr, pMobIndex->short_descr, TO_ROOM );
-      act( AT_MAGIC, "You make $T rise from the grave!", ch, nullptr, pMobIndex->short_descr, TO_CHAR );
+      act( AT_MAGIC, "$n makes $T rise from the grave!", ch, nullptr, pMobIndex->short_descr.c_str(), TO_ROOM );
+      act( AT_MAGIC, "You make $T rise from the grave!", ch, nullptr, pMobIndex->short_descr.c_str(), TO_CHAR );
 
       mob->name = std::format( "{} {}", corpse_name, pMobIndex->player_name );
       mob->short_descr = std::format( "The {}", corpse_name );

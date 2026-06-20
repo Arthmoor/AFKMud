@@ -40,8 +40,8 @@ class deity_data
      deity_data(  );
     ~deity_data(  );
 
-   std::string filename;                  // Filename for this deity on disk.
    std::string name;                      // Name of the deity.
+   std::string filename;                  // Filename for this deity on disk.
    std::string deitydesc;                 // Detailed description of the deity.
    std::bitset<MAX_RACE> race_allowed;    // Races which cannot worship this deity - Samson 5-17-04
    std::bitset<MAX_CLASS> class_allowed;  // Classes which cannot worship this deity - Samson 5-17-04

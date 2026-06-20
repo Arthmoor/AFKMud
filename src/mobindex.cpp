@@ -106,11 +106,6 @@ mob_index::~mob_index(  )
       --top_repair;
    }
 
-   STRFREE( player_name );
-   STRFREE( short_descr );
-   STRFREE( long_descr );
-   STRFREE( chardesc );
-
    std::map<int, mob_index *>::iterator imob;
    if( ( imob = mob_index_table.find( vnum ) ) != mob_index_table.end(  ) )
       mob_index_table.erase( imob );
@@ -126,10 +121,10 @@ mob_index::mob_index(  )
  */
 void mob_index::clean_mob(  )
 {
-   STRFREE( player_name );
-   STRFREE( short_descr );
-   STRFREE( long_descr );
-   STRFREE( chardesc );
+   player_name.clear();
+   short_descr.clear();
+   long_descr.clear();
+   chardesc.clear();
    spec_funname.clear(  );
    spec_fun = nullptr;
    pShop = nullptr;
@@ -218,12 +213,12 @@ char_data *mob_index::create_mobile(  )
    mob->pIndexData = this;
 
    mob->name = this->player_name;
-   if( this->short_descr && this->short_descr[0] != '\0' )
+   if( !this->short_descr.empty() )
       mob->short_descr = this->short_descr;
-   if( this->long_descr && this->long_descr[0] != '\0' )
+   if( !this->long_descr.empty() )
       mob->long_descr = this->long_descr;
-   if( this->chardesc && this->chardesc[0] != '\0' )
-      mob->chardesc = chardesc;
+   if( !this->chardesc.empty() )
+      mob->chardesc = this->chardesc;
    mob->spec_fun = spec_fun;
    mob->spec_funname = spec_funname;
    mob->level = number_fuzzy( level );
@@ -370,18 +365,18 @@ mob_index *make_mobile( int vnum, int cvnum, const std::string & name, area_data
 
    if( !cMobIndex )
    {
-      stralloc_printf( &pMobIndex->short_descr, "A newly created %s", name.c_str(  ) );
-      stralloc_printf( &pMobIndex->long_descr, "Some god abandoned a newly created %s here.\r\n", name.c_str(  ) );
+      pMobIndex->short_descr = std::format( "A newly created {}", name );
+      pMobIndex->long_descr = std::format( "Some god abandoned a newly created {} here.\r\n", name );
       pMobIndex->actflags.set( ACT_IS_NPC );
       pMobIndex->actflags.set( ACT_PROTOTYPE );
       pMobIndex->speaks.set( LANG_COMMON );
    }
    else
    {
-      pMobIndex->short_descr = QUICKLINK( cMobIndex->short_descr );
-      pMobIndex->long_descr = QUICKLINK( cMobIndex->long_descr );
-      if( cMobIndex->chardesc && cMobIndex->chardesc[0] != '\0' )
-         pMobIndex->chardesc = QUICKLINK( cMobIndex->chardesc );
+      pMobIndex->short_descr = cMobIndex->short_descr;
+      pMobIndex->long_descr = cMobIndex->long_descr;
+      if( !cMobIndex->chardesc.empty() )
+         pMobIndex->chardesc = cMobIndex->chardesc;
       pMobIndex->actflags = cMobIndex->actflags;
       pMobIndex->actflags.set( ACT_PROTOTYPE );
       pMobIndex->affected_by = cMobIndex->affected_by;

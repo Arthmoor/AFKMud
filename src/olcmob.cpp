@@ -499,8 +499,7 @@ CMDF( do_medit_reset )
          victim->chardesc = ch->copy_buffer( );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            STRFREE( victim->pIndexData->chardesc );
-            victim->pIndexData->chardesc = STRALLOC( victim->chardesc.c_str() );
+            victim->pIndexData->chardesc = victim->chardesc;
          }
          ch->stop_editing(  );
          ch->pcdata->dest_buf = victim;
@@ -656,8 +655,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          victim->name = arg;
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            STRFREE( victim->pIndexData->player_name );
-            victim->pIndexData->player_name = STRALLOC( victim->name.c_str() );
+            victim->pIndexData->player_name = victim->name;
          }
          olc_log( d, "Changed name to %s", arg.c_str(  ) );
          break;
@@ -666,8 +664,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          victim->short_descr = arg;
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            STRFREE( victim->pIndexData->short_descr );
-            victim->pIndexData->short_descr = STRALLOC( victim->short_descr.c_str() );
+            victim->pIndexData->short_descr = victim->short_descr;
          }
          olc_log( d, "Changed short desc to %s", arg.c_str(  ) );
          break;
