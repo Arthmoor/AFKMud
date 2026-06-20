@@ -60,6 +60,7 @@
  */
 
 #include "mud.h"
+#include "area.h"
 #include "boards.h"   // Not obvious, but this is what provides the note buffer functionality.
 #include "objindex.h"
 #include "roomindex.h"
@@ -474,7 +475,7 @@ void map_to_rooms( char_data* ch, map_index* m_index )
 
                bool door = rule.is_door( rmap[y + rule.start_dy][x + rule.start_dx] );
 
-               link_map_exit( src, get_room_index(rmap[ny][nx].vnum), rule.dir, door );
+               link_map_exit( ch, src, get_room_index(rmap[ny][nx].vnum), rule.dir, door );
             }
          }
       }

@@ -128,11 +128,6 @@ note_data::note_data(  )
 
 note_data::~note_data(  )
 {
-   DISPOSE( text );
-   DISPOSE( subject );
-   STRFREE( to_list );
-   STRFREE( sender );
-
    for( auto it = rlist.begin(); it != rlist.end(); )
    {
       note_data *reply = *it;
@@ -149,14 +144,6 @@ board_data::board_data(  )
 
 board_data::~board_data(  )
 {
-   STRFREE( name );
-   STRFREE( readers );
-   STRFREE( posters );
-   STRFREE( moderators );
-   DISPOSE( desc );
-   STRFREE( group );
-   DISPOSE( filename );
-
    for( auto it = nlist.begin(); it != nlist.end(); )
    {
       note_data *pnote = *it;
@@ -194,12 +181,12 @@ bool can_remove( char_data * ch, board_data * board )
    /*
     * If there's no group on the board, or if the character is Immortal, use the following... 
     */
-   if( !board->group || board->group[0] == '\0' || ch->is_immortal(  ) )
+   if( board->group.empty() || ch->is_immortal(  ) )
    {
       if( ch->get_trust(  ) >= board->remove_level )
          return true;
 
-      if( board->moderators && board->moderators[0] != '\0' )
+      if( !board->moderators.empty() )
       {
          if( hasname( board->moderators, ch->name ) )
             return true;
@@ -218,7 +205,7 @@ bool can_remove( char_data * ch, board_data * board )
       if( ch->get_trust(  ) >= board->remove_level )
          return true;
 
-      if( board->moderators && board->moderators[0] != '\0' )
+      if( !board->moderators.empty() )
       {
          if( hasname( board->moderators, ch->name ) )
             return true;
@@ -242,12 +229,12 @@ bool can_post( char_data * ch, board_data * board )
    /*
     * If there's no group on the board, or if the character is Immortal, use the following... 
     */
-   if( !board->group || board->group[0] == '\0' || ch->is_immortal(  ) )
+   if( board->group.empty() || ch->is_immortal(  ) )
    {
       if( ch->get_trust(  ) >= board->post_level )
          return true;
 
-      if( board->posters && board->posters[0] != '\0' )
+      if( !board->posters.empty() )
       {
          if( hasname( board->posters, ch->name ) )
             return true;
@@ -261,7 +248,7 @@ bool can_post( char_data * ch, board_data * board )
       if( ch->get_trust(  ) >= board->post_level )
          return true;
 
-      if( board->posters && board->posters[0] != '\0' )
+      if( !board->posters.empty() )
       {
          if( hasname( board->posters, ch->name ) )
             return true;
@@ -281,12 +268,12 @@ bool can_read( char_data * ch, board_data * board )
    /*
     * If there's no group on the board, or if the character is Immortal, use the following... 
     */
-   if( !board->group || board->group[0] == '\0' || ch->is_immortal(  ) )
+   if( board->group.empty() || ch->is_immortal(  ) )
    {
       if( ch->get_trust(  ) >= board->read_level )
          return true;
 
-      if( board->readers && board->readers[0] != '\0' )
+      if( !board->readers.empty() )
       {
          if( hasname( board->readers, ch->name ) )
             return true;
@@ -300,7 +287,7 @@ bool can_read( char_data * ch, board_data * board )
       if( ch->get_trust(  ) >= board->read_level )
          return true;
 
-      if( board->readers && board->readers[0] != '\0' )
+      if( !board->readers.empty() )
       {
          if( hasname( board->readers, ch->name ) )
             return true;
@@ -311,7 +298,7 @@ bool can_read( char_data * ch, board_data * board )
 
 bool is_note_to( char_data * ch, note_data * pnote )
 {
-   if( pnote->to_list && pnote->to_list[0] != '\0' )
+   if( !pnote->to_list.empty() )
    {
       if( hasname( pnote->to_list, "all" ) )
          return true;
@@ -413,12 +400,14 @@ void char_data::note_attach(  )
    }
 
    pcnote = new note_data;
-   pcnote->sender = STRALLOC( name.c_str() );
+   pcnote->sender = name;
    pcdata->pnote = pcnote;
 }
 
-// 1: Initial version.
-constexpr int BOARDFILEVER = 1;
+// 0: Original Smaug board format.
+// 1: Initial AFKMud version. Turns out it was broken :(
+// 2: Fixed the file read/write code.
+constexpr int BOARDFILEVER = 2;
 
 void write_boards( void )
 {
@@ -430,9 +419,11 @@ void write_boards( void )
       return;
    }
 
+   fprintf( fpout, "#VERSION    %d\n", BOARDFILEVER );
+
    for( auto* board : bdlist )
    {
-      if( !board->name )
+      if( board->name.empty() )
       {
          log_printf( "{}: Board with a null name! Skipping...", __func__ );
          continue;
@@ -440,22 +431,21 @@ void write_boards( void )
 
       auto expire = std::chrono::system_clock::to_time_t( board->expire );
 
-      fprintf( fpout, "FileVer     %d\n", BOARDFILEVER );
-      fprintf( fpout, "Name        %s~\n", board->name );
-      fprintf( fpout, "Filename    %s~\n", board->filename );
-      if( board->desc )
-         fprintf( fpout, "Desc        %s~\n", board->desc );
+      fprintf( fpout, "Name        %s~\n", board->name.c_str() );
+      fprintf( fpout, "Filename    %s~\n", board->filename.c_str() );
+      if( !board->desc.empty() )
+         fprintf( fpout, "Desc        %s~\n", board->desc.c_str() );
       fprintf( fpout, "ObjVnum     %d\n", board->objvnum );
       fprintf( fpout, "Expire      %ld\n", expire );
       fprintf( fpout, "Flags       %s~\n", bitset_string( board->flags, board_flags ) );
-      if( board->readers )
-         fprintf( fpout, "Readers     %s~\n", board->readers );
-      if( board->posters )
-         fprintf( fpout, "Posters     %s~\n", board->posters );
-      if( board->moderators )
-         fprintf( fpout, "Moderators  %s~\n", board->moderators );
-      if( board->group )
-         fprintf( fpout, "Group       %s~\n", board->group );
+      if( !board->readers.empty() )
+         fprintf( fpout, "Readers     %s~\n", board->readers.c_str() );
+      if( !board->posters.empty() )
+         fprintf( fpout, "Posters     %s~\n", board->posters.c_str() );
+      if( !board->moderators.empty() )
+         fprintf( fpout, "Moderators  %s~\n", board->moderators.c_str() );
+      if( !board->group.empty() )
+         fprintf( fpout, "Group       %s~\n", board->group.c_str() );
       fprintf( fpout, "ReadLevel   %d\n", board->read_level );
       fprintf( fpout, "PostLevel   %d\n", board->post_level );
       fprintf( fpout, "RemoveLevel %d\n", board->remove_level );
@@ -468,13 +458,13 @@ void fwrite_reply( note_data * pnote, FILE * fpout )
 {
    auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
 
-   fprintf( fpout, "Reply-Sender         %s~\n", pnote->sender );
-   fprintf( fpout, "Reply-To             %s~\n", pnote->to_list );
-   fprintf( fpout, "Reply-Subject        %s~\n", pnote->subject );
+   fprintf( fpout, "Reply-Sender         %s~\n", pnote->sender.c_str() );
+   fprintf( fpout, "Reply-To             %s~\n", pnote->to_list.c_str() );
+   fprintf( fpout, "Reply-Subject        %s~\n", pnote->subject.c_str() );
    fprintf( fpout, "Reply-DateStamp      %ld\n", date_stamp );
    fprintf( fpout, "Reply-Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
-   fprintf( fpout, "Reply-Text           %s~\n", pnote->text );
-   fprintf( fpout, "%s\n", "Reply-End" );
+   fprintf( fpout, "Reply-Text           %s~\n", pnote->text.c_str() );
+   fprintf( fpout, "%s\n\n", "Reply-End" );
 }
 
 void fwrite_note( note_data * pnote, FILE * fpout )
@@ -482,7 +472,7 @@ void fwrite_note( note_data * pnote, FILE * fpout )
    if( !pnote )
       return;
 
-   if( !pnote->sender )
+   if( pnote->sender.empty() )
    {
       bug( "{}: Called on a note without a valid sender!", __func__ );
       return;
@@ -491,18 +481,19 @@ void fwrite_note( note_data * pnote, FILE * fpout )
    auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
    auto expire = std::chrono::system_clock::to_time_t( pnote->expire );
 
-   fprintf( fpout, "Sender         %s~\n", pnote->sender );
-   if( pnote->to_list )
-      fprintf( fpout, "To             %s~\n", pnote->to_list );
-   if( pnote->subject )
-      fprintf( fpout, "Subject        %s~\n", pnote->subject );
+   fprintf( fpout, "%s\n", "#NOTE" );
+   fprintf( fpout, "Sender         %s~\n", pnote->sender.c_str() );
+   if( !pnote->subject.empty() )
+      fprintf( fpout, "Subject        %s~\n", pnote->subject.c_str() );
+   if( !pnote->to_list.empty() )
+      fprintf( fpout, "To             %s~\n", pnote->to_list.c_str() );
    fprintf( fpout, "DateStamp      %ld\n", date_stamp );
    fprintf( fpout, "Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
-   if( pnote->to_list ) /* Comments and Project Logs do not use to_list or Expire */
+   if( expire )                  // Comments and Project Logs do not use to_list or Expire
       fprintf( fpout, "Expire         %ld\n", expire );
-   if( pnote->text )
-      fprintf( fpout, "Text           %s~\n", pnote->text );
-   if( pnote->to_list ) /* comments and projects should not have replies */
+   if( !pnote->text.empty() )
+      fprintf( fpout, "Text           %s~\n", pnote->text.c_str() );
+   if( !pnote->to_list.empty() ) /* comments and projects should not have replies */
    {
       int count = 0;
 
@@ -511,7 +502,7 @@ void fwrite_note( note_data * pnote, FILE * fpout )
          note_data *reply = *it;
          ++it;
 
-         if( !reply->sender || !reply->to_list || !reply->subject || !reply->text )
+         if( reply->sender.empty() || reply->to_list.empty() || reply->subject.empty() || reply->text.empty() )
          {
             log_printf( "{}: Destroying a buggy reply on note '{}'!", __func__, pnote->subject );
             --pnote->reply_count;
@@ -525,26 +516,28 @@ void fwrite_note( note_data * pnote, FILE * fpout )
          ++count;
       }
    }
-   fprintf( fpout, "%s\n", "#END" );
+   fprintf( fpout, "%s\n\n", "#END" );
 }
 
 void write_board( board_data * board )
 {
    FILE *fp;
 
-   std::filesystem::path filename = std::format( "{}{}.board", BOARD_DIR, board->filename );
+   std::filesystem::path filename = std::format( "{}{}", BOARD_DIR, board->filename );
    if( !( fp = fopen( filename.c_str(), "w" ) ) )
    {
       bug( "{}: Error opening {}! Board NOT saved!", __func__, filename.string() );
       return;
    }
 
+   fprintf( fp, "#VERSION    %d\n", BOARDFILEVER );
+
    for( auto it = board->nlist.begin(  ); it != board->nlist.end(  ); )
    {
       note_data *pnote = *it;
       ++it;
 
-      if( !pnote->sender || !pnote->to_list || !pnote->subject || !pnote->text )
+      if( pnote->sender.empty() || pnote->to_list.empty() || pnote->subject.empty() || pnote->text.empty() )
       {
          log_printf( "{}: Destroying a buggy note on the {} board!", __func__, board->name );
          --board->msg_count;
@@ -597,8 +590,8 @@ void note_remove( board_data * board, note_data * pnote )
 board_data *read_board( FILE * fp )
 {
    board_data *board;
-   int file_ver = 0;
    char letter;
+   int file_ver = 0;
 
    do
    {
@@ -637,7 +630,7 @@ board_data *read_board( FILE * fp )
             break;
 
          case 'D':
-            KEY( "Desc", board->desc, fread_string_nohash( fp ) );
+            STDSKEY( "Desc", board->desc );
             break;
 
          case 'E':
@@ -649,7 +642,7 @@ board_data *read_board( FILE * fp )
             break;
 
          case 'F':
-            KEY( "Filename", board->filename, fread_string_nohash( fp ) );
+            STDSKEY( "Filename", board->filename );
             KEY( "FileVer", file_ver, fread_number( fp ) );
             if( !str_cmp( word, "Flags" ) )
             {
@@ -662,15 +655,15 @@ board_data *read_board( FILE * fp )
             break;
 
          case 'G':
-            KEY( "Group", board->group, fread_string( fp ) );
+            STDSKEY( "Group", board->group );
             break;
 
          case 'M':
-            KEY( "Moderators", board->moderators, fread_string( fp ) );
+            STDSKEY( "Moderators", board->moderators );
             break;
 
          case 'N':
-            KEY( "Name", board->name, fread_string( fp ) );
+            STDSKEY( "Name", board->name );
             break;
 
          case 'O':
@@ -678,17 +671,24 @@ board_data *read_board( FILE * fp )
             break;
 
          case 'P':
-            KEY( "Posters", board->posters, fread_string( fp ) );
+            STDSKEY( "Posters", board->posters );
             KEY( "PostLevel", board->post_level, fread_number( fp ) );
             break;
 
          case 'R':
-            KEY( "Readers", board->readers, fread_string( fp ) );
+            STDSKEY( "Readers", board->readers );
             KEY( "ReadLevel", board->read_level, fread_number( fp ) );
             KEY( "RemoveLevel", board->remove_level, fread_number( fp ) );
             break;
 
          case '#':
+         {
+            if( !str_cmp( word, "#VERSION" ) )
+            {
+               file_ver = fread_number( fp );
+               break;
+            }
+
             if( !str_cmp( word, "#END" ) )
             {
                board->nlist.clear(  );
@@ -696,12 +696,11 @@ board_data *read_board( FILE * fp )
                   board->objvnum = 0;  /* default to global */
                return board;
             }
-            else
-            {
-               log_printf( "{}: Bad section: {}", __func__, word );
-               deleteptr( board );
-               return nullptr;
-            }
+
+            log_printf( "{}: Bad section: {}", __func__, word );
+            deleteptr( board );
+            return nullptr;
+         }
       }
    }
 }
@@ -748,33 +747,30 @@ board_data *read_old_board( FILE * fp )
             break;
 
          case 'E':
-            KEY( "Extra_readers", board->readers, fread_string( fp ) );
-            KEY( "Extra_removers", board->moderators, fread_string( fp ) );
+            STDSKEY( "Extra_readers", board->readers );
+            STDSKEY( "Extra_removers", board->moderators );
             if( !str_cmp( word, "End" ) )
             {
                board->nlist.clear(  );
                if( !board->objvnum )
                   board->objvnum = 0;  /* default to global */
-               board->desc = strdup( "Newly converted board!" );
+               board->desc = "Newly converted board!";
 
                auto expiry_time = current_time + std::chrono::days( MAX_BOARD_EXPIRE );
                board->expire = expiry_time;
 
-               board->filename = strdup( board->name );
-               if( board->posters[0] == '\0' )
-                  STRFREE( board->posters );
-               if( board->readers[0] == '\0' )
-                  STRFREE( board->readers );
-               if( board->moderators[0] == '\0' )
-                  STRFREE( board->moderators );
-               if( board->group[0] == '\0' )
-                  STRFREE( board->group );
+               std::string filename = std::format( "{}.board", board->name );
+               size_t pos = filename.find( ".brd" );
+               if( pos != std::string::npos )
+                  filename.erase( pos, 4 );
+
+               board->filename = filename;
                return board;
             }
             break;
 
          case 'F':
-            KEY( "Filename", board->name, fread_string( fp ) );
+            STDSKEY( "Filename", board->name );
             break;
 
          case 'M':
@@ -789,11 +785,11 @@ board_data *read_old_board( FILE * fp )
             break;
 
          case 'P':
-            KEY( "Post_group", board->posters, fread_string( fp ) );
+            STDSKEY( "Post_group", board->posters );
             break;
 
          case 'R':
-            KEY( "Read_group", board->group, fread_string( fp ) );
+            STDSKEY( "Read_group", board->group );
             break;
 
          case 'T':
@@ -829,8 +825,6 @@ note_data *read_note( FILE * fp )
    }
    while( isspace( letter ) );
    ungetc( letter, fp );
-
-   pnote = new note_data;
 
    for( ;; )
    {
@@ -875,13 +869,18 @@ note_data *read_note( FILE * fp )
             break;
 
          case 'S':
-            KEY( "Sender", pnote->sender, fread_string( fp ) );
-            KEY( "Subject", pnote->subject, fread_string_nohash( fp ) );
+            if( !str_cmp( word, "Sender" ) )
+            {
+               if( !pnote ) // Fix a broken board that had no #NOTE section yet.
+                  pnote = new note_data;
+               fread_string( pnote->sender, fp );
+            }
+            STDSKEY( "Subject", pnote->subject );
             break;
 
          case 'T':
-            KEY( "To", pnote->to_list, fread_string( fp ) );
-            KEY( "Text", pnote->text, fread_string_nohash( fp ) );
+            STDSKEY( "To", pnote->to_list );
+            STDSKEY( "Text", pnote->text );
             break;
 
          case 'E':
@@ -930,25 +929,25 @@ note_data *read_note( FILE * fp )
 
             if( !str_cmp( word, "Reply-Sender" ) && reply != nullptr )
             {
-               reply->sender = fread_string( fp );
+               fread_string( reply->sender, fp );
                break;
             }
 
             if( !str_cmp( word, "Reply-Subject" ) && reply != nullptr )
             {
-               reply->subject = fread_string_nohash( fp );
+               fread_string( reply->subject, fp );
                break;
             }
 
             if( !str_cmp( word, "Reply-To" ) && reply != nullptr )
             {
-               reply->to_list = fread_string( fp );
+               fread_string( reply->to_list, fp );
                break;
             }
 
             if( !str_cmp( word, "Reply-Text" ) && reply != nullptr )
             {
-               reply->text = fread_string_nohash( fp );
+               fread_string( reply->text, fp );
                break;
             }
 
@@ -966,8 +965,19 @@ note_data *read_note( FILE * fp )
             }
 
          case '#':
+            if( !str_cmp( word, "#NOTE" ) )
+            {
+               pnote = new note_data;
+            }
+
             if( !str_cmp( word, "#END" ) )
             {
+               if( !pnote )
+               {
+                  bug( "{}: No #NOTE section seen yet.", __func__ );
+                  return nullptr;
+               }
+
                // Use the new sticky flag :)
                if( pnote->expire == std::chrono::system_clock::time_point{} )
                   TOGGLE_NOTE_FLAG( pnote, NOTE_STICKY );
@@ -1047,9 +1057,9 @@ note_data *read_old_note( FILE * fp )
                auto pnote_expire = current_time + std::chrono::days( MAX_BOARD_EXPIRE ); // Going to default to the max expire time -X
                pnote->expire = pnote_expire;
 
-               if( !pnote->text )
+               if( pnote->text.empty() )
                {
-                  pnote->text = strdup( "---- Delete this post! ----" );
+                  pnote->text ="---- Delete this post! ----";
 
                   pnote_expire = current_time + std::chrono::days( 1 );
                   pnote->expire = pnote_expire;   /* Or we'll do it for you! */
@@ -1059,19 +1069,19 @@ note_data *read_old_note( FILE * fp )
                /*
                 * For converted notes, lets make a few exceptions 
                 */
-               if( !pnote->sender )
+               if( pnote->sender.empty() )
                {
-                  pnote->sender = STRALLOC( "Converted Msg" );
+                  pnote->sender = "Converted Msg";
                   log_printf( "{}: No sender on converted note! Setting to '{}'", __func__, pnote->sender );
                }
-               if( !pnote->subject )
+               if( pnote->subject.empty() )
                {
-                  pnote->subject = strdup( "Converted Msg" );
+                  pnote->subject = "Converted Msg";
                   log_printf( "{}: No subject on converted note! Setting to '{}'", __func__, pnote->subject );
                }
-               if( !pnote->to_list )
+               if( pnote->to_list.empty() )
                {
-                  pnote->to_list = STRALLOC( "imm" );
+                  pnote->to_list = "imm";
                   log_printf( "{}: No to_list on converted note! Setting to '{}'", __func__, pnote->to_list );
                }
                return pnote;
@@ -1079,22 +1089,22 @@ note_data *read_old_note( FILE * fp )
             break;
 
          case 'S':
-            KEY( "Sender", pnote->sender, fread_string( fp ) );
-            KEY( "Subject", pnote->subject, fread_string_nohash( fp ) );
+            STDSKEY( "Sender", pnote->sender );
+            STDSKEY( "Subject", pnote->subject );
             break;
 
          case 'T':
-            KEY( "To", pnote->to_list, fread_string( fp ) );
-            KEY( "Text", pnote->text, fread_string_nohash( fp ) );
+            STDSKEY( "To", pnote->to_list );
+            STDSKEY( "Text", pnote->text );
             break;
 
          case 'E':
             if( !str_cmp( word, "End" ) )
             {
                pnote->expire = std::chrono::system_clock::time_point{};
-               if( !pnote->text )
+               if( pnote->text.empty() )
                {
-                  pnote->text = strdup( "---- Delete this post! ----" );
+                  pnote->text = "---- Delete this post! ----";
 
                   auto pnote_expire = current_time + std::chrono::days( 1 );
                   pnote->expire = pnote_expire;   /* Or we'll do it for you! */
@@ -1104,19 +1114,19 @@ note_data *read_old_note( FILE * fp )
                /*
                 * For converted notes, lets make a few exceptions 
                 */
-               if( !pnote->sender )
+               if( pnote->sender.empty() )
                {
-                  pnote->sender = STRALLOC( "Converted Msg" );
+                  pnote->sender = "Converted Msg";
                   log_printf( "{}: No sender on converted note! Setting to '{}'", __func__, pnote->sender );
                }
-               if( !pnote->subject )
+               if( pnote->subject.empty() )
                {
-                  pnote->subject = strdup( "Converted Msg" );
+                  pnote->subject = "Converted Msg";
                   log_printf( "{}: No subject on converted note! Setting to '{}'", __func__, pnote->subject );
                }
-               if( !pnote->to_list )
+               if( pnote->to_list.empty() )
                {
-                  pnote->to_list = STRALLOC( "imm" );
+                  pnote->to_list = "imm";
                   log_printf( "{}: No to_list on converted note! Setting to '{}'", __func__, pnote->to_list );
                }
                return pnote;
@@ -1177,14 +1187,15 @@ void load_boards( void )
          board_check_expire( board );
          TOGGLE_BOARD_FLAG( board, BOARD_BU_PRUNED );
       }
-      write_boards(  ); /* save the new boards file */
+      write_boards(  ); // Save the new boards file.
+      std::filesystem::remove( OLD_BOARD_FILE ); // Get rid of the old board file or the conversion will just happen again next boot.
    }
    else
    {
       while( ( board = read_board( board_fp ) ) != nullptr )
       {
          bdlist.push_back( board );
-         notefile = std::format( "{}{}.board", BOARD_DIR, board->filename );
+         notefile = std::format( "{}{}", BOARD_DIR, board->filename );
          if( ( note_fp = fopen( notefile.c_str(), "r" ) ) != nullptr )
          {
             log_string( notefile.c_str() );
@@ -1343,8 +1354,8 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
    }
 
    if( id > 0 && board != nullptr )
-      ch->printf( "&[board3][&[board]Note #&[board2]%d&[board] of &[board2]%d&[board3]]&[board]           -- &[board2]%s&[board] --&D\r\n", id, total_notes( ch, board ),
-                  board->name );
+      ch->print_fmt( "&[board3][&[board]Note #&[board2]{}&[board] of &[board2]{}&[board3]]&[board]           -- &[board2]{}&[board] --&D\r\n",
+            id, total_notes( ch, board ), board->name );
 
    /*
     * Using a negative ID# for a bit of beauty -- Xorith 
@@ -1354,12 +1365,12 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
    if( id == -2 && !board )
       ch->print( "&[board3][&[board2]Player Comment&[board3]]&D\r\n" );
 
-   ch->printf( "&[board]From:    &[board2]%-15s", pnote->sender ? pnote->sender : "--Error--" );
-   if( pnote->to_list )
-      ch->printf( " &[board]To:     &[board2]%-15s", pnote->to_list );
+   ch->print_fmt( "&[board]From:    &[board2]{:<15}", !pnote->sender.empty() ? pnote->sender : "--Error--" );
+   if( !pnote->to_list.empty() )
+      ch->print_fmt( " &[board]To:     &[board2]{:<15}", pnote->to_list );
    ch->print( "&D\r\n" );
    if( pnote->date_stamp != std::chrono::system_clock::time_point{} )
-      ch->printf( "&[board]Date:    &[board2]%s&D\r\n", c_time( pnote->date_stamp, ch->pcdata->timezone ).c_str() );
+      ch->print_fmt( "&[board]Date:    &[board2]{}&D\r\n", c_time( pnote->date_stamp, ch->pcdata->timezone ) );
 
    if( board && can_remove( ch, board ) )
    {
@@ -1370,24 +1381,24 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
          auto duration_elapsed = current_time - pnote->date_stamp;
          auto days_elapsed = std::chrono::floor<std::chrono::days>( duration_elapsed );
 
-         ch->printf( "&[board]This note will expire in &[board2]%ld&[board] day%s.&D\r\n", days_elapsed.count(), days_elapsed.count() == 1 ? "" : "s" );
+         ch->print_fmt( "&[board]This note will expire in &[board2]{}&[board] day{}.&D\r\n", days_elapsed.count(), days_elapsed.count() == 1 ? "" : "s" );
       }
    }
 
-   ch->printf( "&[board]Subject: &[board2]%s&D\r\n", pnote->subject ? pnote->subject : "" );
+   ch->print_fmt( "&[board]Subject: &[board2]{}&D\r\n", !pnote->subject.empty() ? pnote->subject : "" );
    ch->print( "&[board]------------------------------------------------------------------------------&D\r\n" );
-   ch->printf( "&[board2]%s&D\r\n", pnote->text ? pnote->text : "--Error--" );
+   ch->print_fmt( "&[board2]{}&D\r\n", !pnote->text.empty() ? pnote->text : "--Error--" );
    if( !pnote->rlist.empty(  ) )
    {
       for( auto* reply : pnote->rlist )
       {
          ch->print( "\r\n&[board]------------------------------------------------------------------------------&D\r\n" );
-         ch->printf( "&[board3][&[board]Reply #&[board2]%d&[board3]] [&[board2]%s&[board3]]&D\r\n", count, mini_c_time( reply->date_stamp, ch->pcdata->timezone ).c_str() );
-         ch->printf( "&[board]From:    &[board2]%-15s", reply->sender ? reply->sender : "--Error--" );
-         if( reply->to_list )
-            ch->printf( "   &[board]To:     &[board2]%-15s", reply->to_list );
+         ch->print_fmt( "&[board3][&[board]Reply #&[board2]{}&[board3]] [&[board2]{}&[board3]]&D\r\n", count, mini_c_time( reply->date_stamp, ch->pcdata->timezone ) );
+         ch->print_fmt( "&[board]From:    &[board2]{:<15}", !reply->sender.empty() ? reply->sender : "--Error--" );
+         if( !reply->to_list.empty() )
+            ch->print_fmt( "   &[board]To:     &[board2]{:<15}", reply->to_list );
          ch->print( "&D\r\n&[board]------------------------------------------------------------------------------&D\r\n" );
-         ch->printf( "&[board2]%s&D\r\n", reply->text ? reply->text : "--Error--" );
+         ch->print_fmt( "&[board2]{}&D\r\n", !reply->text.empty() ? reply->text : "--Error--" );
          ++count;
       }
    }
@@ -1425,7 +1436,7 @@ CMDF( do_note_set )
       }
    }
    else
-      ch->printf( "&[board]Using current board in room: &[board2]%s&D\r\n", board->name );
+      ch->print_fmt( "&[board]Using current board in room: &[board2]{}&D\r\n", board->name );
 
    if( !can_remove( ch, board ) )
    {
@@ -1439,7 +1450,7 @@ CMDF( do_note_set )
       return;
    }
    argument = one_argument( argument, arg );
-   n_num = atoi( arg.c_str(  ) );
+   n_num = std::stoi( arg );
 
    if( n_num == 0 )
    {
@@ -1470,17 +1481,17 @@ CMDF( do_note_set )
 
    if( !str_cmp( arg, "expire" ) )
    {
-      if( atoi( argument.c_str(  ) ) < 0 || atoi( argument.c_str(  ) ) > MAX_BOARD_EXPIRE )
+      if( std::stoi( argument ) < 0 || std::stoi( argument ) > MAX_BOARD_EXPIRE )
       {
-         ch->printf( "&[board]Expiration days must be a value between &[board2]0&[board] and &[board2]%d&[board].&D\r\n", MAX_BOARD_EXPIRE );
+         ch->print_fmt( "&[board]Expiration days must be a value between &[board2]0&[board] and &[board2]{}&[board].&D\r\n", MAX_BOARD_EXPIRE );
          return;
       }
 
-      value = atoi( argument.c_str() );
+      value = std::stoi( argument );
       auto expiry_time = current_time + std::chrono::days( value );
       pnote->expire = expiry_time;
 
-      ch->printf( "&[board]Set the expiration time for '&[board2]%s&[board]' to &[board2]%d&D\r\n", pnote->subject, value );
+      ch->print_fmt( "&[board]Set the expiration time for '&[board2]{}&[board]' to &[board2]%d&D\r\n", pnote->subject, value );
       write_board( board );
       return;
    }
@@ -1492,9 +1503,8 @@ CMDF( do_note_set )
          ch->print( "&[board]You must specify a new sender.&D\r\n" );
          return;
       }
-      STRFREE( pnote->sender );
-      pnote->sender = STRALLOC( argument.c_str(  ) );
-      ch->printf( "&[board]Set the sender for '&[board2]%s&[board]' to &[board2]%s&D\r\n", pnote->subject, pnote->sender );
+      pnote->sender = argument;
+      ch->print_fmt( "&[board]Set the sender for '&[board2]{}&[board]' to &[board2]{}&D\r\n", pnote->subject, pnote->sender );
       write_board( board );
       return;
    }
@@ -1520,12 +1530,12 @@ CMDF( do_note_set )
             fMatch = true;
             TOGGLE_NOTE_FLAG( pnote, value );
             if( IS_NOTE_FLAG( pnote, value ) )
-               ch->printf( " +%s", arg.c_str(  ) );
+               ch->print_fmt( " +{}", arg );
             else
-               ch->printf( " -%s", arg.c_str(  ) );
+               ch->print_fmt( " -{}", arg );
          }
       }
-      ch->printf( "%s%s&D\r\n", fMatch ? "" : "none", fUnknown ? buf.c_str() : "" );
+      ch->print_fmt( "{}{}&D\r\n", fMatch ? "" : "none", fUnknown ? buf : "" );
       write_boards(  );
       return;
    }
@@ -1537,9 +1547,8 @@ CMDF( do_note_set )
          ch->print( "&[board]You must specify a new to_list.&D\r\n" );
          return;
       }
-      STRFREE( pnote->to_list );
-      pnote->to_list = STRALLOC( argument.c_str(  ) );
-      ch->printf( "&[board]Set the to_list for '&[board2]%s&[board]' to &[board2]%s&D\r\n", pnote->subject, pnote->to_list );
+      pnote->to_list = argument;
+      ch->print_fmt( "&[board]Set the to_list for '&[board2]{}&[board]' to &[board2]{}&D\r\n", pnote->subject, pnote->to_list );
       write_board( board );
       return;
    }
@@ -1551,9 +1560,8 @@ CMDF( do_note_set )
          ch->print( "&[board]You must specify a new subject.&D\r\n" );
          return;
       }
-      ch->printf( "&[board]Set the subject for '&[board2]%s&[board]' to &[board2]%s&D\r\n", pnote->subject, argument.c_str(  ) );
-      DISPOSE( pnote->subject );
-      pnote->subject = strdup( argument.c_str(  ) );
+      ch->print_fmt( "&[board]Set the subject for '&[board2]{}&[board]' to &[board2]{}&D\r\n", pnote->subject, argument );
+      pnote->subject = argument;
       write_board( board );
       return;
    }
@@ -1656,11 +1664,10 @@ void board_parse( descriptor_data * d, const std::string & argument )
                ch->print_fmt( "{}You must specify a recipient:&D   ", s1 );
                return;
             }
-            STRFREE( ch->pcdata->pnote->to_list );
             if( ch->pcdata->pnote->parent )
-               ch->pcdata->pnote->to_list = STRALLOC( ch->pcdata->pnote->parent->sender );
+               ch->pcdata->pnote->to_list = ch->pcdata->pnote->parent->sender;
             else
-               ch->pcdata->pnote->to_list = STRALLOC( "All" );
+               ch->pcdata->pnote->to_list = "All";
 
             if( str_cmp( argument, "all" ) )
                ch->print_fmt( "{}No recipient specified. Defaulting to '{}{}{}'&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1 );
@@ -1674,22 +1681,19 @@ void board_parse( descriptor_data * d, const std::string & argument )
             buf = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
             if( !std::filesystem::exists( buf ) || !check_parse_name( argument, false ) )
             {
-               ch->print_fmt( "{}No such player named '{}{}{}'.\r\nTo whom is this note addressed?   &D", s1, s2, argument.c_str(  ), s1 );
+               ch->print_fmt( "{}No such player named '{}{}{}'.\r\nTo whom is this note addressed?   &D", s1, s2, argument, s1 );
                return;
             }
-            STRFREE( ch->pcdata->pnote->to_list );
-            ch->pcdata->pnote->to_list = STRALLOC( argument.c_str(  ) );
+            ch->pcdata->pnote->to_list = argument;
          }
 
          ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
-         if( ch->pcdata->pnote->subject )
+         if( !ch->pcdata->pnote->subject.empty() )
          {
             ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
             ch->substate = SUB_BOARD_TEXT;
             ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-            if( !ch->pcdata->pnote->text )
-               ch->pcdata->pnote->text = strdup( "" );
-            ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list );
+            ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list.c_str() );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
          }
@@ -1705,17 +1709,14 @@ void board_parse( descriptor_data * d, const std::string & argument )
          }
          else
          {
-            DISPOSE( ch->pcdata->pnote->subject );
-            ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
+            ch->pcdata->pnote->subject = argument;
          }
 
          ch->substate = SUB_BOARD_TEXT;
          ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
          ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
          ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-         if( !ch->pcdata->pnote->text )
-            ch->pcdata->pnote->text = strdup( "" );
-         ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list );
+         ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list.c_str() );
          ch->start_editing( ch->pcdata->pnote->text );
          return;
 
@@ -1823,9 +1824,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             ch->substate = SUB_BOARD_TEXT;
             ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-            if( !ch->pcdata->pnote->text )
-               ch->pcdata->pnote->text = strdup( "" );
-            ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
+            ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list.c_str(), ch->pcdata->pnote->subject.c_str() );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
          }
@@ -1885,7 +1884,7 @@ CMDF( do_board_moderate )
       return;
    }
    argument = one_argument( argument, arg );
-   n_num = atoi( arg.c_str(  ) );
+   n_num = std::stoi( arg );
 
    if( n_num == 0 )
    {
@@ -2047,16 +2046,13 @@ CMDF( do_note_write )
             ch->stop_editing(  );
             return;
          }
-         DISPOSE( ch->pcdata->pnote->text );
-         ch->pcdata->pnote->text = ch->copy_buffer( false );
+         ch->pcdata->pnote->text = ch->copy_buffer( );
          ch->stop_editing(  );
-         if( ch->pcdata->pnote->text[0] == '\0' )
+         if( ch->pcdata->pnote->text.empty() )
          {
             ch->print( "You must enter some text in the body of the note!\r\n" );
             ch->substate = SUB_BOARD_TEXT;
-            if( !ch->pcdata->pnote->text )
-               ch->pcdata->pnote->text = strdup( "" );
-            ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
+            ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list.c_str(), ch->pcdata->pnote->subject.c_str() );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
          }
@@ -2102,7 +2098,7 @@ CMDF( do_note_write )
    }
 
    if( is_number( argument ) )
-      n_num = atoi( argument.c_str(  ) );
+      n_num = std::stoi( argument );
 
    ch->pcdata->board = board;
    buf = std::format( "{}", ROOM_VNUM_LIMBO );
@@ -2147,12 +2143,10 @@ CMDF( do_note_write )
       ch->note_attach(  );
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
-         STRFREE( ch->pcdata->pnote->to_list );
-         ch->pcdata->pnote->to_list = STRALLOC( pnote->sender );
+         ch->pcdata->pnote->to_list = pnote->sender;
       }
       ch->pcdata->pnote->parent = pnote;
-      DISPOSE( ch->pcdata->pnote->subject );
-      strdup_printf( &ch->pcdata->pnote->subject, "Re: %s", ch->pcdata->pnote->parent->subject );
+      ch->pcdata->pnote->subject = std::format( "Re: {}", ch->pcdata->pnote->parent->subject );
       ch->desc->connected = CON_BOARD;
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
@@ -2160,9 +2154,7 @@ CMDF( do_note_write )
          ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
          ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
          ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-         if( !ch->pcdata->pnote->text )
-            ch->pcdata->pnote->text = strdup( "" );
-         ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject );
+         ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list.c_str(), ch->pcdata->pnote->subject.c_str() );
          ch->start_editing( ch->pcdata->pnote->text );
       }
       else
@@ -2180,8 +2172,7 @@ CMDF( do_note_write )
    ch->note_attach(  );
    if( !argument.empty(  ) )
    {
-      DISPOSE( ch->pcdata->pnote->subject );
-      ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
+      ch->pcdata->pnote->subject = argument;
       ch->print_fmt( "{}You begin to write a new note for the {}{}{} board, titled '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, ch->pcdata->pnote->subject, s1 );
    }
    else
@@ -2255,7 +2246,7 @@ CMDF( do_note_read )
 
             if( !has_unread )
             {
-               ch->printf( "%sThere are no boards with unread messages&D\r\n", s1.c_str() );
+               ch->print_fmt( "{}There are no boards with unread messages&D\r\n", s1 );
                return;
             }
          }
@@ -2277,7 +2268,7 @@ CMDF( do_note_read )
 
       if( !pnote )
       {
-         ch->printf( "%sThere are no more unread messages on this board.&D\r\n", s1.c_str() );
+         ch->print_fmt( "{}There are no more unread messages on this board.&D\r\n", s1 );
          ch->pcdata->board = nullptr;
          return;
       }
@@ -2299,20 +2290,20 @@ CMDF( do_note_read )
       argument = one_argument( argument, arg );
       if( !( board = get_board( ch, arg ) ) )
       {
-         ch->printf( "%sNo board found!&D\r\n", s1 .c_str());
+         ch->print_fmt( "{}No board found!&D\r\n", s1 );
          return;
       }
    }
    else
-      ch->printf( "%sUsing current board in room: %s%s&D\r\n", s1.c_str(), s2.c_str(), board->name );
+      ch->print_fmt( "{}Using current board in room: {}{}&D\r\n", s1, s2, board->name );
 
    if( !can_read( ch, board ) )
    {
-      ch->printf( "%sYou are unable to comprehend the notes on this board.&D\r\n", s1.c_str() );
+      ch->print_fmt( "{}You are unable to comprehend the notes on this board.&D\r\n", s1 );
       return;
    }
 
-   n_num = atoi( argument.c_str(  ) );
+   n_num = std::stoi( argument );
 
    /*
     * If we have a board, but no note specified, then treat it as if we're just scanning through 
@@ -2340,7 +2331,7 @@ CMDF( do_note_read )
 
    if( !pnote )
    {
-      ch->printf( "%sNote #%s%d%s not found on the %s%s%s board.&D\r\n", s1.c_str(), s2.c_str(), n_num, s1.c_str(), s2.c_str(), board->name, s1.c_str() );
+      ch->print_fmt( "{}Note #{}{}{} not found on the {}{}{} board.&D\r\n", s1, s2, n_num, s1, s2, board->name, s1 );
       return;
    }
 
@@ -2432,13 +2423,13 @@ CMDF( do_note_list )
       {
          ch->print_fmt( "{}{:2}{}) {} {}[{}{:<15}{}] {}{:<11} {}&D\r\n", s2, count, s3, unread, s3, s2,
                      mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3, s2,
-                     note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 37 ) : "" );
+                     !note->sender.empty() ? note->sender : "--Error--", !note->subject.empty() ? print_lngstr( note->subject, 37 ) : "" );
       }
       else
       {
          ch->print_fmt( "{}{:2}{}) {} {}[ {}{:3}{} ] [{}{:<15}{}] {}{:<11} {:<20}&D\r\n", s2, count, s3, unread, s3, s2,
                      note->reply_count, s3, s2, mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3, s2,
-                     note->sender ? note->sender : "--Error--", note->subject ? print_lngstr( note->subject, 45 ) : "" );
+                     !note->sender.empty() ? note->sender : "--Error--", !note->subject.empty() ? print_lngstr( note->subject, 45 ) : "" );
       }
    }
    ch->print_fmt( "\r\n{}There {} {}{}{} message{} on this board.&D\r\n", s1, count == 1 ? "is" : "are", s2, count, s1, count == 1 ? "" : "s" );
@@ -2473,7 +2464,7 @@ CMDF( do_note_remove )
       }
    }
    else
-      ch->printf( "&[board]Using current board in room: &[board2]%s&D\r\n", board->name );
+      ch->print_fmt( "&[board]Using current board in room: &[board2]{}&D\r\n", board->name );
 
    if( !IS_BOARD_FLAG( board, BOARD_PRIVATE ) && !can_remove( ch, board ) )
    {
@@ -2490,13 +2481,13 @@ CMDF( do_note_remove )
    std::string::size_type pos = argument.find( "." );
    if( pos == std::string::npos )
    {
-      n_num = atoi( argument.c_str(  ) );
+      n_num = std::stoi( argument );
       r_num = -1;
    }
    else
    {
-      n_num = atoi( argument.substr( 0, pos - 1 ).c_str(  ) );
-      r_num = atoi( argument.substr( pos + 1, argument.length(  ) ).c_str(  ) );
+      n_num = std::stoi( argument.substr( 0, pos - 1 ) );
+      r_num = std::stoi( argument.substr( pos + 1, argument.length(  ) ) );
    }
 
    if( n_num == 0 )
@@ -2558,15 +2549,15 @@ CMDF( do_note_remove )
          return;
       }
 
-      ch->printf( "&[board]You remove the reply from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
-                  reply->sender ? reply->sender : "--Error--", reply->subject ? reply->subject : "--Error--", board->name );
+      ch->print_fmt( "&[board]You remove the reply from &[board2]{}&[board], titled '&[board2]{}&[board]' from the &[board2]{}&[board] board.&D\r\n",
+                  !reply->sender.empty() ? reply->sender : "--Error--", !reply->subject.empty() ? reply->subject : "--Error--", board->name );
       note_remove( board, reply );
       act( AT_BOARD, "$n removes a reply from the board.", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
 
-   ch->printf( "&[board]You remove the note from &[board2]%s&[board], titled '&[board2]%s&[board]' from the &[board2]%s&[board] board.&D\r\n",
-               pnote->sender ? pnote->sender : "--Error--", pnote->subject ? pnote->subject : "--Error--", board->name );
+   ch->print_fmt( "&[board]You remove the note from &[board2]{}&[board], titled '&[board2]{}&[board]' from the &[board2]{}&[board] board.&D\r\n",
+               !pnote->sender.empty() ? pnote->sender : "--Error--", !pnote->subject.empty() ? pnote->subject : "--Error--", board->name );
    note_remove( board, pnote );
    act( AT_BOARD, "$n removes a note from the board.", ch, nullptr, nullptr, TO_ROOM );
 }
@@ -2618,8 +2609,8 @@ CMDF( do_board_list )
 
       if( !str_cmp( argument, "info" ) && ch->is_immortal(  ) )
       {
-         ch->printf( "&[board2]%2d&[board3]) &[board2]%-25s ", count + 1, print_lngstr( board->name, 25 ).c_str(  ) );
-         ch->printf( "%-15s ", print_lngstr( board->filename, 15 ).c_str(  ) );
+         ch->print_fmt( "&[board2]{:2}&[board3]) &[board2]{:<25} ", count + 1, print_lngstr( board->name, 25 ) );
+         ch->print_fmt( "{:<15} ", print_lngstr( board->filename, 15 ) );
          if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
             ch->print( "P" );
          else
@@ -2639,27 +2630,26 @@ CMDF( do_board_list )
          {
             std::string buf;
 
-            ch->printf( "%-5d ", board->objvnum );
+            ch->print_fmt( "{:<5} ", board->objvnum );
             buf = std::format( "{}", board->objvnum );
             if( ( obj = ch->get_obj_world( buf ) ) && ( obj->in_room != nullptr ) )
-               ch->printf( "%-5d ", obj->in_room->vnum );
+               ch->print_fmt( "{:<5} ", obj->in_room->vnum );
             else
                ch->print( "----- " );
          }
          else
             ch->print( " N/A   N/A  " );
-         ch->printf( "%-3d  %-3d  %-3d", board->read_level, board->post_level, board->remove_level );
+         ch->print_fmt( "{:<3}  {:<3}  {:<3}", board->read_level, board->post_level, board->remove_level );
       }
       else
       {
-         ch->printf( "&[board2]%2d&[board3])  &[board2]%-15s  &[board3][ &[board2]%3d&[board3]]  ", count + 1, print_lngstr( board->name, 15 ).c_str(  ),
-                     unread_notes( ch, board ) );
+         ch->print_fmt( "&[board2]{:2}&[board3])  &[board2]{:<15}  &[board3][ &[board2]{:3}&[board3]]  ", count + 1, print_lngstr( board->name, 15 ), unread_notes( ch, board ) );
          if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
-            ch->printf( "[&[board2]%3d&[board3]]          ", total_notes( ch, board ) );
+            ch->print_fmt( "[&[board2]{:3}&[board3]]          ", total_notes( ch, board ) );
          else
-            ch->printf( "[&[board2]%3d&[board3]]  [&[board2]%3d&[board3]]   ", total_notes( ch, board ), total_replies( board ) );
+            ch->print_fmt( "[&[board2]{:3}&[board3]]  [&[board2]{:3}&[board3]]   ", total_notes( ch, board ), total_replies( board ) );
 
-         ch->printf( "&[board2]%-25s", board->desc ? print_lngstr( board->desc, 25 ).c_str(  ) : "" );
+         ch->print_fmt( "&[board2]{:<25}", !board->desc.empty() ? print_lngstr( board->desc, 25 ) : "" );
 
          if( ch->is_immortal(  ) )
          {
@@ -2674,7 +2664,7 @@ CMDF( do_board_list )
       ch->print( "&[board]No boards to list.&D\r\n" );
    else
    {
-      ch->printf( "\r\n&[board2]%d&[board] board%s found.&D\r\n", count, count == 1 ? "" : "s" );
+      ch->print_fmt( "\r\n&[board2]{}&[board] board{} found.&D\r\n", count, count == 1 ? "" : "s" );
       if( ch->is_immortal(  ) && str_cmp( argument, "info" ) )
          ch->print( "&[board3](&[board]Use &[board2]BOARDS INFO&[board] to display Immortal information.&[board3])\r\n" );
       else if( !str_cmp( argument, "info" ) && ch->is_immortal(  ) )
@@ -2702,16 +2692,16 @@ CMDF( do_board_alert )
          if( !can_read( ch, pboard ) )
             continue;
          chboard = get_chboard( ch, pboard->name );
-         ch->printf( "%s%-20s   %sAlert: %s%s&D\r\n", s2.c_str(), pboard->name, s1.c_str(), s2.c_str(), chboard ? bd_alert_string[chboard->alert] : bd_alert_string[0] );
+         ch->print_fmt( "{}{:<20}   {}Alert: {}{}&D\r\n", s2, pboard->name, s1, s2, chboard ? bd_alert_string[chboard->alert] : bd_alert_string[0] );
       }
-      ch->printf( "%sTo change an alert for a board, type: %salert <board> <none|announce|ignore>&D\r\n", s1.c_str(), s2.c_str() );
+      ch->print_fmt( "{}To change an alert for a board, type: {}alert <board> <none|announce|ignore>&D\r\n", s1, s2 );
       return;
    }
 
    argument = one_argument( argument, arg );
    if( !( board = get_board( ch, arg ) ) )
    {
-      ch->printf( "%sSorry, but the board '%s%s%s' does not exsist.&D\r\n", s1.c_str(), s2.c_str(), arg.c_str(  ), s1.c_str() );
+      ch->print_fmt( "{}Sorry, but the board '{}{}{}' does not exsist.&D\r\n", s1, s2, arg, s1 );
       return;
    }
 
@@ -2724,14 +2714,14 @@ CMDF( do_board_alert )
 
    if( bd_value == -1 )
    {
-      ch->printf( "%sSorry, but '%s%s%s' is not a valid argument.&D\r\n", s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );
-      ch->printf( "%sPlease choose one of: %snone announce ignore&D\r\n", s1.c_str(), s2.c_str() );
+      ch->print_fmt( "{}Sorry, but '{}{}{}' is not a valid argument.&D\r\n", s1, s2, argument, s1 );
+      ch->print_fmt( "{}Please choose one of: {}none announce ignore&D\r\n", s1, s2 );
       return;
    }
 
    chboard = create_chboard( ch, board->name );
    chboard->alert = bd_value;
-   ch->printf( "%sAlert for the %s%s%s board set to %s%s%s.&D\r\n", s1.c_str(), s2.c_str(), board->name, s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );
+   ch->print_fmt( "{}Alert for the {}{}{} board set to {}{}{}.&D\r\n", s1, s2, board->name, s1, s2, argument, s1 );
 }
 
 /* Much like do_board_list, but I cut out some of the details here for simplicity */
@@ -2746,7 +2736,7 @@ CMDF( do_checkboards )
    s2 = ch->color_str( AT_BOARD2 );
    s3 = ch->color_str( AT_BOARD3 );
 
-   ch->printf( "%s Num  %-20s  Unread  %-40s&D\r\n", s1.c_str(), "Name", "Description" );
+   ch->print_fmt( "{} Num  {:<20}  Unread  {:<40}&D\r\n", s1, "Name", "Description" );
 
    for( auto* board : bdlist )
    {
@@ -2778,7 +2768,7 @@ CMDF( do_checkboards )
       /*
        * Everyone who can see it sees this same information 
        */
-      ch->printf( "%s%3d%s)  %s%-20s  %s[%s%3d%s]  %s%-30s", s2.c_str(), count, s3.c_str(), s2.c_str(), board->name, s3.c_str(), s2.c_str(), unread_notes( ch, board ), s3.c_str(), s2.c_str(), board->desc ? board->desc : "" );
+      ch->print_fmt( "{}{:3}{})  {}{:<20}  {}[{}{:3}{}]  {}{:<30}", s2, count, s3, s2, board->name, s3, s2, unread_notes( ch, board ), s3, s2, !board->desc.empty() ? board->desc : "" );
 
       if( ch->is_immortal(  ) )
       {
@@ -2786,14 +2776,14 @@ CMDF( do_checkboards )
 
          buf = std::format( "{}", board->objvnum );
          if( ( obj = ch->get_obj_world( buf ) ) && ( obj->in_room != nullptr ) )
-            ch->printf( " %s[%sObj# %s%-5d %s@ %sRoom# %s%-5d%s]", s3.c_str(), s1.c_str(), s2.c_str(), board->objvnum, s3.c_str(), s1.c_str(), s2.c_str(), obj->in_room->vnum, s3.c_str() );
+            ch->print_fmt( " {}[{}Obj# {}{:<5} {}@ {}Room# {}{:<5}{}]", s3, s1, s2, board->objvnum, s3, s1, s2, obj->in_room->vnum, s3 );
          else
-            ch->printf( " %s[ %sGlobal Board %s]", s3.c_str(), s2.c_str(), s3.c_str() );
+            ch->print_fmt( " {}[ {}Global Board {}]", s3, s2, s3 );
       }
       ch->print( "&D\r\n" );
    }
    if( count == 0 )
-      ch->printf( "%sNo unread messages...\r\n", s1.c_str() );
+      ch->print_fmt( "{}No unread messages...\r\n", s1 );
 }
 
 CMDF( do_board_stat )
@@ -2813,22 +2803,22 @@ CMDF( do_board_stat )
 
    if( !( board = get_board( ch, argument ) ) )
    {
-      ch->printf( "&wSorry, '&W%s&w' is not a valid board.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "&wSorry, '&W{}&w' is not a valid board.\r\n", argument );
       return;
    }
 
-   ch->printf( "%sFilename: %s%-20s&D\r\n", s1.c_str(), s2.c_str(), board->filename );
-   ch->printf( "%sName:       %s%-30s%s ObjVnum:      ", s1.c_str(), s2.c_str(), board->name, s1.c_str() );
+   ch->print_fmt( "{}Filename: {}{:<20}&D\r\n", s1, s2, board->filename );
+   ch->print_fmt( "{}Name:       {}{:<30}{} ObjVnum:      ", s1, s2, board->name, s1 );
    if( board->objvnum > 0 )
-      ch->printf( "%s%d&D\r\n", s2.c_str(), board->objvnum );
+      ch->print_fmt( "{}{}&D\r\n", s2, board->objvnum );
    else
-      ch->printf( "%sGlobal Board&D\r\n", s2.c_str() );
-   ch->printf( "%sReaders:    %s%-30s%s Read Level:   %s%d&D\r\n", s1.c_str(), s2.c_str(), board->readers ? board->readers : "none set", s1.c_str(), s2.c_str(), board->read_level );
-   ch->printf( "%sPosters:    %s%-30s%s Post Level:   %s%d&D\r\n", s1.c_str(), s2.c_str(), board->posters ? board->posters : "none set", s1.c_str(), s2.c_str(), board->post_level );
-   ch->printf( "%sModerators: %s%-30s%s Remove Level: %s%d&D\r\n", s1.c_str(), s2.c_str(), board->moderators ? board->moderators : "none set", s1.c_str(), s2.c_str(), board->remove_level );
-   ch->printf( "%sGroup:      %s%-30s%s Expiration:   %s%s&D\r\n", s1.c_str(), s2.c_str(), board->group ? board->group : "none set", s1.c_str(), s2.c_str(), mini_c_time( board->expire, ch->pcdata->timezone ).c_str() );
-   ch->printf( "%sFlags: %s[%s%s%s]&D\r\n", s1.c_str(), s3.c_str(), s2.c_str(), board->flags.any(  )? bitset_string( board->flags, board_flags ) : "none set", s3.c_str() );
-   ch->printf( "%sDescription: %s%-30s&D\r\n", s1.c_str(), s2.c_str(), board->desc ? board->desc : "none set" );
+      ch->print_fmt( "{}Global Board&D\r\n", s2 );
+   ch->print_fmt( "{}Readers:    {}{:<30}{} Read Level:   {}{}&D\r\n", s1, s2, !board->readers.empty() ? board->readers : "none set", s1, s2, board->read_level );
+   ch->print_fmt( "{}Posters:    {}{:<30}{} Post Level:   {}{}&D\r\n", s1, s2, !board->posters.empty() ? board->posters : "none set", s1, s2, board->post_level );
+   ch->print_fmt( "{}Moderators: {}{:<30}{} Remove Level: {}{}&D\r\n", s1, s2, !board->moderators.empty() ? board->moderators : "none set", s1, s2, board->remove_level );
+   ch->print_fmt( "{}Group:      {}{:<30}{} Expiration:   {}{}&D\r\n", s1, s2, !board->group.empty() ? board->group : "none set", s1, s2, mini_c_time( board->expire, ch->pcdata->timezone ) );
+   ch->print_fmt( "{}Flags: {}[{}{}{}]&D\r\n", s1, s3, s2, board->flags.any(  )? bitset_string( board->flags, board_flags ) : "none set", s3 );
+   ch->print_fmt( "{}Description: {}{:<30}&D\r\n", s1, s2, !board->desc.empty() ? board->desc : "none set" );
 }
 
 CMDF( do_board_remove )
@@ -2842,14 +2832,14 @@ CMDF( do_board_remove )
 
    if( argument.empty(  ) )
    {
-      ch->printf( "%sYou must select a board to remove.&D\r\n", s1.c_str() );
+      ch->print_fmt( "{}You must select a board to remove.&D\r\n", s1 );
       return;
    }
 
    argument = one_argument( argument, arg );
    if( !( board = get_board( ch, arg ) ) )
    {
-      ch->printf( "%sSorry, '%s%s%s' is not a valid board.&D\r\n", s1.c_str(), s2.c_str(), argument.c_str(  ), s1.c_str() );
+      ch->print_fmt( "{}Sorry, '{}{}{}' is not a valid board.&D\r\n", s1, s2, argument, s1 );
       return;
    }
 
@@ -2857,9 +2847,9 @@ CMDF( do_board_remove )
    {
       std::filesystem::path buf;
 
-      ch->printf( "&RDeleting board '&W%s&R'.&D\r\n", board->name );
+      ch->print_fmt( "&RDeleting board '&W{}&R'.&D\r\n", board->name );
       ch->print( "&wDeleting note file...   " );
-      buf = std::format( "{}{}.board", BOARD_DIR, board->filename );
+      buf = std::format( "{}{}", BOARD_DIR, board->filename );
       std::filesystem::remove( buf );
       ch->print( "&RDeleted&D\r\n&wDeleting board...   " );
       deleteptr( board );
@@ -2871,7 +2861,7 @@ CMDF( do_board_remove )
    else
    {
       // Changed BOARD REMOVE to DELETEBOARD to reflect default AFKMud command name. -- Xorith (9/21/07)
-      ch->printf( "&RRemoving a board will also delete *ALL* posts on that board!\r\n&wTo continue, type: " "&YDELETEBOARD '%s' YES&w.", board->name );
+      ch->print_fmt( "&RRemoving a board will also delete *ALL* posts on that board!\r\n&wTo continue, type: " "&YDELETEBOARD '{}' YES&w.", board->name );
       return;
    }
 }
@@ -2898,9 +2888,9 @@ CMDF( do_board_make )
    smash_tilde( argument );
    board = new board_data;
 
-   board->name = STRALLOC( argument.c_str(  ) );
-   board->filename = strdup( arg.c_str(  ) );
-   board->desc = strdup( "This is a new board!" );
+   board->name = argument;
+   board->filename = arg;
+   board->desc = "This is a new board!";
    board->objvnum = 0;
 
    auto expiry_time = current_time + std::chrono::days( MAX_BOARD_EXPIRE );
@@ -2944,7 +2934,7 @@ CMDF( do_board_set )
    }
 
    if( is_number( argument ) )
-      value = atoi( argument.c_str(  ) );
+      value = std::stoi( argument );
 
    if( !str_cmp( arg1, "purge" ) )
    {
@@ -3039,21 +3029,18 @@ CMDF( do_board_set )
    {
       if( !str_cmp( arg2, "readers" ) )
       {
-         STRFREE( board->readers );
          if( !argument.empty(  ) )
-            board->readers = STRALLOC( argument.c_str(  ) );
+            board->readers = argument;
       }
       else if( !str_cmp( arg2, "posters" ) )
       {
-         STRFREE( board->posters );
          if( !argument.empty(  ) )
-            board->posters = STRALLOC( argument.c_str(  ) );
+            board->posters = argument;
       }
       else if( !str_cmp( arg2, "moderators" ) )
       {
-         STRFREE( board->moderators );
          if( !argument.empty(  ) )
-            board->moderators = STRALLOC( argument.c_str(  ) );
+            board->moderators = argument;
       }
       else
       {
@@ -3077,11 +3064,10 @@ CMDF( do_board_set )
          ch->print( "Please limit board filenames to 20 characters!\r\n" );
          return;
       }
-      filename = std::format( "{}{}.board", BOARD_DIR, board->filename );
+      filename = std::format( "{}{}", BOARD_DIR, board->filename );
       std::filesystem::remove( filename );
       filename = board->filename;
-      DISPOSE( board->filename );
-      board->filename = strdup( argument.c_str(  ) );
+      board->filename = argument;
       write_boards(  );
       write_board( board );
       ch->print_fmt( "{}The filename for '{}{}{}' has been changed to '{}{}{}'.\r\n", s1, s2, filename.string(), s1, s2, board->filename, s1 );
@@ -3103,8 +3089,7 @@ CMDF( do_board_set )
       write_boards(  );
 
       ch->print_fmt( "{}The name for '{}{}{}' has been changed to '{}{}{}'.\r\n", s1, s2, board->name, s1, s2, argument, s1 );
-      STRFREE( board->name );
-      board->name = STRALLOC( argument.c_str(  ) );
+      board->name = argument;
       return;
    }
 
@@ -3160,8 +3145,7 @@ CMDF( do_board_set )
          ch->print( "Please limit your board descriptions to 30 characters.\r\n" );
          return;
       }
-      DISPOSE( board->desc );
-      board->desc = strdup( argument.c_str(  ) );
+      board->desc = argument;
       write_boards(  );
       ch->print_fmt( "{}The desc for {}{}{} has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->desc, s1 );
       return;
@@ -3171,12 +3155,11 @@ CMDF( do_board_set )
    {
       if( argument.empty(  ) )
       {
-         STRFREE( board->group );
+         board->group.clear();
          ch->print( "Group cleared.\r\n" );
          return;
       }
-      STRFREE( board->group );
-      board->group = STRALLOC( argument.c_str(  ) );
+      board->group = argument;
       write_boards(  );
       ch->print_fmt( "{}The group for {}{}{} has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->group, s1 );
       return;
@@ -3288,16 +3271,16 @@ void write_projects( void )
       auto date_stamp = std::chrono::system_clock::to_time_t( proj->date_stamp );
 
       fprintf( fpout, "%s", "Version        2\n" );
-      fprintf( fpout, "Name   %s~\n", proj->name );
-      fprintf( fpout, "Owner  %s~\n", ( proj->owner ) ? proj->owner : "None" );
-      if( proj->coder )
-         fprintf( fpout, "Coder  %s~\n", proj->coder );
-      fprintf( fpout, "Status %s~\n", ( proj->status ) ? proj->status : "No update." );
+      fprintf( fpout, "Name   %s~\n", proj->name.c_str() );
+      fprintf( fpout, "Owner  %s~\n", ( !proj->owner.empty() ) ? proj->owner.c_str() : "None" );
+      if( !proj->coder.empty() )
+         fprintf( fpout, "Coder  %s~\n", proj->coder.c_str() );
+      fprintf( fpout, "Status %s~\n", ( !proj->status.empty() ) ? proj->status.c_str() : "No update." );
       fprintf( fpout, "Date_stamp   %ld\n", date_stamp );
       if( !proj->realm_name.empty() )
          fprintf( fpout, "Realm       %s~\n", proj->realm_name.c_str() );
-      if( proj->description )
-         fprintf( fpout, "Description %s~\n", proj->description );
+      if( !proj->description.empty() )
+         fprintf( fpout, "Description %s~\n", proj->description.c_str() );
 
       for( auto* nlog : proj->nlist )
       {
@@ -3408,8 +3391,8 @@ project_data *read_project( FILE * fp )
             {
                if( project->date_stamp == std::chrono::system_clock::time_point{} )
                   project->date_stamp = current_time;
-               if( !project->status )
-                  project->status = STRALLOC( "No update." );
+               if( project->status.empty() )
+                  project->status = "No update.";
                if( str_cmp( project->owner, "None" ) )
                   project->taken = true;
                return project;
@@ -3505,11 +3488,6 @@ project_data::~project_data(  )
       nlist.remove( note );
       deleteptr( note );
    }
-   STRFREE( coder );
-   DISPOSE( description );
-   DISPOSE( name );
-   STRFREE( owner );
-   DISPOSE( status );
    projlist.remove( this );
 }
 
@@ -3565,8 +3543,7 @@ CMDF( do_project )
          }
          if( ch->pcdata->dest_buf != ch->pcdata->pnote )
             bug( "{}: sub_writing_note: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
-         DISPOSE( ch->pcdata->pnote->text );
-         ch->pcdata->pnote->text = ch->copy_buffer( false );
+         ch->pcdata->pnote->text = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
 
@@ -3579,8 +3556,7 @@ CMDF( do_project )
             return;
          }
          pproject = ( project_data * ) ch->pcdata->dest_buf;
-         DISPOSE( pproject->description );
-         pproject->description = ch->copy_buffer( false );
+         pproject->description = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          write_projects(  );
@@ -3625,20 +3601,20 @@ CMDF( do_project )
       for( auto* proj : projlist )
       {
          ++pcount;
-         if( proj->status && !str_cmp( "Done", proj->status ) )
+         if( !proj->status.empty() && !str_cmp( "Done", proj->status ) )
             continue;
          if( !aflag )
          {
-            ch->pagerf( "%2d%s | %-11s | %-26s | %-15s | %-12s\r\n",
-                        pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)",
-                        print_lngstr( proj->name, 26 ).c_str(  ), mini_c_time( proj->date_stamp, ch->pcdata->timezone ).c_str(), proj->status ? proj->status : "(None)" );
+            ch->pager_fmt( "{:2}{} | {:<11} | {:<26} | {:<15} | {:<12}\r\n",
+                        pcount, proj->realm_name, !proj->owner.empty() ? proj->owner : "(None)",
+                        print_lngstr( proj->name, 26 ), mini_c_time( proj->date_stamp, ch->pcdata->timezone ), !proj->status.empty() ? proj->status : "(None)" );
          }
          else if( !proj->taken )
          {
             if( !projects_available )
                projects_available = true;
-            ch->pagerf( "%2d%s | %-30s | %s\r\n", pcount, proj->realm_name.c_str(),
-                        proj->name ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone ).c_str() );
+            ch->pager_fmt( "{:2}{} | {:<30} | {}\r\n", pcount, proj->realm_name,
+                        !proj->name.empty() ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone ) );
          }
       }
       if( pcount == 0 )
@@ -3664,9 +3640,9 @@ CMDF( do_project )
       for( auto* proj : projlist )
       {
          ++pcount;
-         if( ( proj->status && str_cmp( proj->status, "approved" ) ) || proj->coder != nullptr )
+         if( ( !proj->status.empty() && str_cmp( proj->status, "approved" ) ) || !proj->coder.empty() )
             continue;
-         ch->pagerf( "%2d%s | %-11s | %-26s\r\n", pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)", proj->name ? proj->name : "(None)" );
+         ch->pager_fmt( "{:2}{} | {:<11} | {:<26}\r\n", pcount, proj->realm_name, !proj->owner.empty() ? proj->owner : "(None)", !proj->name.empty() ? proj->name : "(None)" );
       }
       return;
    }
@@ -3687,14 +3663,14 @@ CMDF( do_project )
       for( auto* proj : projlist )
       {
          ++pcount;
-         if( MINE && ( !proj->owner || str_cmp( ch->name, proj->owner ) ) && ( !proj->coder || str_cmp( ch->name, proj->coder ) ) )
+         if( MINE && ( proj->owner.empty() || str_cmp( ch->name, proj->owner ) ) && ( proj->coder.empty() || str_cmp( ch->name, proj->coder ) ) )
             continue;
-         else if( !MINE && proj->status && !str_cmp( "Done", proj->status ) )
+         else if( !MINE && !proj->status.empty() && !str_cmp( "Done", proj->status ) )
             continue;
          int num_logs = proj->nlist.size(  );
-         ch->pagerf( "%2d%s | %-11s | %-26s | %-11s | %-10s | %3d\r\n",
-                     pcount, proj->realm_name.c_str(), proj->owner ? proj->owner : "(None)",
-                     print_lngstr( proj->name, 26 ).c_str(  ), proj->coder ? proj->coder : "(None)", proj->status ? proj->status : "(None)", num_logs );
+         ch->pager_fmt( "{:2}{} | {:<11} | {:<26} | {:<11} | {:<10} | {:3}\r\n",
+                     pcount, proj->realm_name, !proj->owner.empty() ? proj->owner : "(None)",
+                     print_lngstr( proj->name, 26 ), !proj->coder.empty() ? proj->coder : "(None)", !proj->status.empty() ? proj->status : "(None)", num_logs );
       }
       return;
    }
@@ -3722,35 +3698,33 @@ CMDF( do_project )
          realm = get_realm( arg );
          if( !realm )
          {
-            ch->printf( "%s is not a valid realm.\r\n", arg.c_str() );
+            ch->print_fmt( "{} is not a valid realm.\r\n", arg );
             return;
          }
       }
 
       project_data *new_project = new project_data;
-      new_project->name = strdup( argument.c_str(  ) );
-      new_project->coder = nullptr;
+      new_project->name = argument;
       new_project->taken = false;
-      new_project->description = nullptr;
       new_project->realm_name = realm->name;
       new_project->date_stamp = current_time;
       projlist.push_back( new_project );
       write_projects(  );
-      ch->printf( "New %s Project '%s' added.\r\n", new_project->realm_name.c_str(), new_project->name );
+      ch->print_fmt( "New {} Project '{}' added.\r\n", new_project->realm_name, new_project->name );
       return;
    }
 
    if( !is_number( arg ) )
    {
-      ch->printf( "%s is an invalid project!\r\n", arg.c_str(  ) );
+      ch->print_fmt( "{} is an invalid project!\r\n", arg );
       return;
    }
 
-   pnum = atoi( arg.c_str(  ) );
+   pnum = std::stoi( arg );
    pproject = get_project_by_number( pnum );
    if( !pproject )
    {
-      ch->printf( "Project #%d does not exsist.\r\n", pnum );
+      ch->print_fmt( "Project #{} does not exist.\r\n", pnum );
       return;
    }
 
@@ -3763,9 +3737,7 @@ CMDF( do_project )
       ch->tempnum = SUB_NONE;
       ch->substate = SUB_PROJ_DESC;
       ch->pcdata->dest_buf = pproject;
-      if( !pproject->description )
-         pproject->description = strdup( "" );
-      ch->editor_desc_printf( "Project description for project '%s'.", pproject->name ? pproject->name : "(No name)" );
+      ch->editor_desc_printf( "Project description for project '%s'.", !pproject->name.empty() ? pproject->name.c_str() : "(No name)" );
       ch->start_editing( pproject->description );
       return;
    }
@@ -3778,7 +3750,7 @@ CMDF( do_project )
          return;
       }
 
-      ch->printf( "Project '%s' has been deleted.\r\n", pproject->name );
+      ch->print_fmt( "Project '{}' has been deleted.\r\n", pproject->name );
       deleteptr( pproject );
       write_projects(  );
       return;
@@ -3786,10 +3758,10 @@ CMDF( do_project )
 
    if( !str_cmp( arg, "take" ) )
    {
-      if( pproject->taken && pproject->owner && !str_cmp( pproject->owner, ch->name ) )
+      if( pproject->taken && !pproject->owner.empty() && !str_cmp( pproject->owner, ch->name ) )
       {
          pproject->taken = false;
-         STRFREE( pproject->owner );
+         pproject->owner.clear();
          ch->print( "You removed yourself as the owner.\r\n" );
          write_projects(  );
          return;
@@ -3800,62 +3772,60 @@ CMDF( do_project )
          return;
       }
       else if( pproject->taken && IS_PROJECT_ADMIN(ch, pproject) )
-         ch->printf( "Taking Project: '%s' from Owner: '%s'!\r\n", pproject->name, pproject->owner ? pproject->owner : "nullptr" );
+         ch->print_fmt( "Taking Project: '{}' from Owner: '{}'!\r\n", pproject->name, !pproject->owner.empty() ? pproject->owner : "nullptr" );
 
-      STRFREE( pproject->owner );
-      pproject->owner = STRALLOC( ch->name.c_str() );
+      pproject->owner = ch->name;
       pproject->taken = true;
       write_projects(  );
-      ch->printf( "You're now the owner of Project '%s'.\r\n", pproject->name );
+      ch->print_fmt( "You're now the owner of Project '{}'.\r\n", pproject->name );
       return;
    }
 
    if( ( !str_cmp( arg, "coder" ) ) || ( !str_cmp( arg, "builder" ) ) )
    {
-      if( pproject->coder && !str_cmp( ch->name, pproject->coder ) )
+      if( !pproject->coder.empty() && !str_cmp( ch->name, pproject->coder ) )
       {
-         STRFREE( pproject->coder );
-         ch->printf( "You removed yourself as the %s.\r\n", arg.c_str() );
+         pproject->coder.clear();
+         ch->print_fmt( "You removed yourself as the {}.\r\n", arg );
          write_projects(  );
          return;
       }
-      else if( pproject->coder && !IS_PROJECT_ADMIN(ch, pproject) )
+      else if( !pproject->coder.empty() && !IS_PROJECT_ADMIN( ch, pproject ) )
       {
-         ch->printf( "This project already has a %s.\r\n", arg.c_str() );
+         ch->print_fmt( "This project already has a {}.\r\n", arg );
          return;
       }
-      else if( pproject->coder && IS_PROJECT_ADMIN(ch, pproject) )
+      else if( !pproject->coder.empty() && IS_PROJECT_ADMIN( ch, pproject ) )
       {
-         ch->printf( "Removing %s as %s of this project!\r\n", pproject->coder, arg.c_str() );
-         STRFREE( pproject->coder );
+         ch->print_fmt( "Removing {} as {} of this project!\r\n", pproject->coder, arg );
+         pproject->coder.clear();
          ch->print( "Coder removed.\r\n" );
          write_projects(  );
          return;
       }
 
-      pproject->coder = STRALLOC( ch->name.c_str() );
+      pproject->coder = ch->name;
       write_projects(  );
-      ch->printf( "You are now the %s of %s.\r\n", arg.c_str(), pproject->name );
+      ch->print_fmt( "You are now the {} of {}.\r\n", arg, pproject->name );
       return;
    }
 
    if( !str_cmp( arg, "status" ) )
    {
-      if( pproject->owner && str_cmp( pproject->owner, ch->name ) && !IS_PROJECT_ADMIN(ch, pproject) )
+      if( !pproject->owner.empty() && str_cmp( pproject->owner, ch->name ) && !IS_PROJECT_ADMIN( ch, pproject ) )
       {
          ch->print( "This is not your project!\r\n" );
          return;
       }
-      DISPOSE( pproject->status );
-      pproject->status = strdup( argument.c_str(  ) );
+      pproject->status = argument;
       write_projects(  );
-      ch->printf( "Project Status set to: %s\r\n", pproject->status );
+      ch->print_fmt( "Project Status set to: {}\r\n", pproject->status );
       return;
    }
 
    if( !str_cmp( arg, "show" ) )
    {
-      if( pproject->description )
+      if( !pproject->description.empty() )
          ch->print( pproject->description );
       else
          ch->print( "That project does not have a description.\r\n" );
@@ -3870,10 +3840,8 @@ CMDF( do_project )
             ch->note_attach(  );
          ch->substate = SUB_WRITING_NOTE;
          ch->pcdata->dest_buf = ch->pcdata->pnote;
-         if( !ch->pcdata->pnote->text )
-            ch->pcdata->pnote->text = strdup( "" );
          ch->editor_desc_printf( "A log note in project '%s', entitled '%s'.",
-                                 pproject->name ? pproject->name : "(No name)", ch->pcdata->pnote->subject ? ch->pcdata->pnote->subject : "(No subject)" );
+                                 !pproject->name.empty() ? pproject->name.c_str() : "(No name)", !ch->pcdata->pnote->subject.empty() ? ch->pcdata->pnote->subject.c_str() : "(No subject)" );
          ch->start_editing( ch->pcdata->pnote->text );
          return;
       }
@@ -3884,16 +3852,16 @@ CMDF( do_project )
       {
          if( !ch->pcdata->pnote )
             ch->note_attach(  );
-         DISPOSE( ch->pcdata->pnote->subject );
-         ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
-         ch->printf( "Log Subject set to: %s\r\n", ch->pcdata->pnote->subject );
+
+         ch->pcdata->pnote->subject = argument;
+         ch->print_fmt( "Log Subject set to: {}\r\n", ch->pcdata->pnote->subject );
          return;
       }
 
       if( !str_cmp( arg, "post" ) )
       {
-         if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
+         if( ( !pproject->owner.empty() && str_cmp( ch->name, pproject->owner ) )
+             || ( !pproject->coder.empty() && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN( ch, pproject ) )
          {
             ch->print( "This is not your project!\r\n" );
             return;
@@ -3905,13 +3873,13 @@ CMDF( do_project )
             return;
          }
 
-         if( !ch->pcdata->pnote->subject )
+         if( ch->pcdata->pnote->subject.empty() )
          {
             ch->print( "Your log has no subject.\r\n" );
             return;
          }
 
-         if( !ch->pcdata->pnote->text || ch->pcdata->pnote->text[0] == '\0' )
+         if( ch->pcdata->pnote->text.empty() )
          {
             ch->print( "Your log has no text!\r\n" );
             return;
@@ -3925,13 +3893,13 @@ CMDF( do_project )
          {
             int plog_num;
             note_data *tplog;
-            plog_num = atoi( argument.c_str(  ) );
+            plog_num = std::stoi( argument );
 
             tplog = get_log_by_number( pproject, plog_num );
 
             if( !tplog )
             {
-               ch->printf( "Log #%d can not be found.\r\n", plog_num );
+               ch->print_fmt( "Log #{} can not be found.\r\n", plog_num );
                return;
             }
 
@@ -3950,25 +3918,25 @@ CMDF( do_project )
 
       if( !str_cmp( arg, "list" ) )
       {
-         if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
+         if( ( !pproject->owner.empty() && str_cmp( ch->name, pproject->owner ) )
+             || ( !pproject->coder.empty() && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN( ch, pproject ) )
          {
             ch->print( "This is not your project!\r\n" );
             return;
          }
 
          pcount = 0;
-         ch->pagerf( "Project: %-12s: %s\r\n", pproject->owner ? pproject->owner : "(None)", pproject->name );
+         ch->pager_fmt( "Project: {:<12}: {}\r\n", !pproject->owner.empty() ? pproject->owner : "(None)", pproject->name );
 
          for( auto* tlog : pproject->nlist )
          {
             ++pcount;
-            ch->pagerf( "%2d) %-12s: %s\r\n", pcount, tlog->sender ? tlog->sender : "--Error--", tlog->subject ? tlog->subject : "" );
+            ch->pager_fmt( "{:2}) {:<12}: {}\r\n", pcount, !tlog->sender.empty() ? tlog->sender : "--Error--", !tlog->subject.empty() ? tlog->subject : "" );
          }
          if( pcount == 0 )
             ch->print( "No logs available.\r\n" );
          else
-            ch->printf( "%d log%s found.\r\n", pcount, pcount == 1 ? "" : "s" );
+            ch->print_fmt( "{} log{} found.\r\n", pcount, pcount == 1 ? "" : "s" );
          return;
       }
 
@@ -3978,7 +3946,7 @@ CMDF( do_project )
          return;
       }
 
-      pnum = atoi( arg.c_str(  ) );
+      pnum = std::stoi( arg );
 
       note_data *plog = get_log_by_number( pproject, pnum );
       if( !plog )
@@ -3989,8 +3957,8 @@ CMDF( do_project )
 
       if( !str_cmp( argument, "delete" ) )
       {
-         if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
+         if( ( !pproject->owner.empty() && str_cmp( ch->name, pproject->owner ) )
+             || ( !pproject->coder.empty() && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN( ch, pproject ) )
          {
             ch->print( "This is not your project!\r\n" );
             return;
@@ -4004,8 +3972,8 @@ CMDF( do_project )
 
       if( !str_cmp( argument, "read" ) )
       {
-         if( ( pproject->owner && str_cmp( ch->name, pproject->owner ) )
-             || ( pproject->coder && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN(ch, pproject) )
+         if( ( !pproject->owner.empty() && str_cmp( ch->name, pproject->owner ) )
+             || ( !pproject->coder.empty() && str_cmp( ch->name, pproject->coder ) ) || !IS_PROJECT_ADMIN( ch, pproject ) )
          {
             ch->print( "This is not your project!\r\n" );
             return;

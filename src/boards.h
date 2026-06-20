@@ -62,16 +62,16 @@ class note_data
    note_data();
    ~note_data();
 
-   std::list<note_data*> rlist;
-   std::bitset<MAX_NOTE_FLAGS> flags; /* Note Flags */
-   std::chrono::system_clock::time_point date_stamp;   /* Global Board Use */
-   std::chrono::system_clock::time_point expire;  /* Global Board Use */
-   note_data *parent = nullptr;
-   char *sender = nullptr;
-   char *to_list = nullptr;
-   char *subject = nullptr;
-   char *text = nullptr;
-   short reply_count = 0;   /* Keep a count of our replies */
+   note_data *parent = nullptr;                       // Parent for this note.
+   std::list<note_data*> rlist;                       // List of replies to this note.
+   std::bitset<MAX_NOTE_FLAGS> flags;                 // Note Flags
+   std::chrono::system_clock::time_point date_stamp;  // Timestamp when the note was written.
+   std::chrono::system_clock::time_point expire;      // When this note expires and will be deleted.
+   std::string sender;                                // Who sent the note.
+   std::string subject;                               // The subject of the note.
+   std::string to_list;                               // Intended recipients of the note.
+   std::string text;                                  // The full text of the note.
+   short reply_count = 0;                             // Keep a count of our replies.
 };
 
 class board_data
@@ -87,13 +87,13 @@ class board_data
    std::list<note_data*> nlist; /* List of notes on the board */
    std::bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
    std::chrono::system_clock::time_point expire;  /* The time when the note will expire. */
-   char *name = nullptr;         // Name of Board
-   char *filename = nullptr;     // Filename for the board.
-   char *desc = nullptr;         // Short description of the board
-   char *readers = nullptr;      // Readers
-   char *posters = nullptr;      // Posters
-   char *moderators = nullptr;   // Moderators of this board.
-   char *group = nullptr;        // In-Game organization that 'owns' the board.
+   std::string name;             // Name of Board
+   std::string filename;         // Filename for the board.
+   std::string desc;             // Short description of the board
+   std::string readers;          // Readers
+   std::string posters;          // Posters
+   std::string moderators;       // Moderators of this board.
+   std::string group;            // In-Game organization that 'owns' the board.
    int objvnum = 0;              // Object Vnum of a physical board.
    short read_level = 0;         // Minimum Level to read this board.
    short post_level = 0;         // Minimum Level to post this board.
@@ -112,15 +112,15 @@ class project_data
    project_data();
    ~project_data();
 
-   std::list<note_data*> nlist; /* List of note logs for the project */
-   std::string realm_name; // Realm this project belongs to.
-   std::chrono::system_clock::time_point date_stamp;
-   char *name = nullptr;
-   char *owner = nullptr;
-   char *coder = nullptr;
-   char *status = nullptr;
-   char *description = nullptr;
-   bool taken = false;        // Has someone taken project?
+   std::list<note_data*> nlist;  // List of note logs for the project.
+   std::chrono::system_clock::time_point date_stamp;  // Time the project was created.
+   std::string name;             // Name of the person who posted the log entry.
+   std::string owner;            // Who owns the project?
+   std::string coder;            // Coder assigned to the project.
+   std::string realm_name;       // Realm this project belongs to.
+   std::string status;           // Status of the project.
+   std::string description;      // A detailed description of the project.
+   bool taken = false;           // Has someone taken project?
 };
 
 class board_chardata

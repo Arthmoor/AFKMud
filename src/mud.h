@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                          Main mud header file                            *
+ *                             Main Header File                             *
  ****************************************************************************/
 
 #pragma once

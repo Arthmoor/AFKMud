@@ -122,8 +122,7 @@ CMDF( do_comment )
          }
          if( ch->pcdata->dest_buf != ch->pcdata->pnote )
             bug( "{}: sub_writing_note: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
-         DISPOSE( ch->pcdata->pnote->text );
-         ch->pcdata->pnote->text = ch->copy_buffer( false );
+         ch->pcdata->pnote->text = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
 
@@ -170,8 +169,8 @@ CMDF( do_comment )
       for( auto* note : victim->pcdata->comments )
       {
          ++vnum;
-         ch->print_fmt( "{:2}) {:<10} [{}] {}\r\n", vnum, note->sender ? note->sender : "--Error--",
-                     mini_c_time( note->date_stamp, -1 ), note->subject ? note->subject : "--Error--" );
+         ch->print_fmt( "{:2}) {:<10} [{}] {}\r\n", vnum, !note->sender.empty() ? note->sender : "--Error--",
+                     mini_c_time( note->date_stamp, -1 ), !note->subject.empty() ? note->subject : "--Error--" );
          /*
           * Brittany added date to comment list and whois with above change 
           */
@@ -238,8 +237,6 @@ CMDF( do_comment )
          ch->note_attach(  );
       ch->substate = SUB_WRITING_NOTE;
       ch->pcdata->dest_buf = ch->pcdata->pnote;
-      if( !ch->pcdata->pnote->text || ch->pcdata->pnote->text[0] == '\0' )
-         ch->pcdata->pnote->text = strdup( "" );
       ch->set_editor_desc( "A player comment." );
       ch->start_editing( ch->pcdata->pnote->text );
       return;
@@ -249,8 +246,7 @@ CMDF( do_comment )
    {
       if( !ch->pcdata->pnote )
          ch->note_attach(  );
-      DISPOSE( ch->pcdata->pnote->subject );
-      ch->pcdata->pnote->subject = strdup( argument.c_str(  ) );
+      ch->pcdata->pnote->subject = argument;
       ch->print( "Ok.\r\n" );
       return;
    }
@@ -411,7 +407,7 @@ void pc_data::fread_old_comment( FILE * fp )
       pcnote = new note_data;
 
       if( !str_cmp( fread_word( fp ), "sender" ) )
-         pcnote->sender = fread_string( fp );
+         fread_string( pcnote->sender, fp );
 
       if( !str_cmp( fread_word( fp ), "date" ) )
          fread_to_eol( fp );
@@ -420,19 +416,19 @@ void pc_data::fread_old_comment( FILE * fp )
          fread_to_eol( fp );
 
       if( !str_cmp( fread_word( fp ), "subject" ) )
-         pcnote->subject = fread_string_nohash( fp );
+         fread_string( pcnote->subject, fp );
 
       if( !str_cmp( fread_word( fp ), "text" ) )
-         pcnote->text = fread_string_nohash( fp );
+         fread_string( pcnote->text, fp );
 
-      if( !pnote->sender )
-         pcnote->sender = STRALLOC( "None" );
+      if( pnote->sender.empty() )
+         pcnote->sender = "None";
 
-      if( !pnote->subject )
-         pcnote->subject = strdup( "Error: Subject not found" );
+      if( pnote->subject.empty() )
+         pcnote->subject = "Error: Subject not found";
 
-      if( !pnote->text )
-         pcnote->text = strdup( "Error: Comment text not found." );
+      if( pnote->text.empty() )
+         pcnote->text = "Error: Comment text not found.";
 
       pcnote->date_stamp = current_time;
       comments.push_back( pcnote );
