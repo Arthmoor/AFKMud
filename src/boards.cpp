@@ -2538,6 +2538,12 @@ CMDF( do_board_make )
       return;
    }
 
+   if( argument.contains( "." ) || argument.contains( "/" ) || argument.contains( "\\" ) || argument.contains( " " ) )
+   {
+      ch->print( "A board name may not contain a space, '.', '/', or '\\' in it.\r\n" );
+      return;
+   }
+
    smash_tilde( argument );
    board_data *board = new board_data;
 
