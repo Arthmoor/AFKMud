@@ -31,9 +31,10 @@
 #include "descriptor.h"
 #include "boards.h"
 
-void fwrite_note( note_data *, FILE * );
 note_data *read_note( FILE * );
 void note_to_char( char_data *, note_data *, board_data *, short );
+extern const char *note_flags[];
+void TOGGLE_NOTE_FLAG( note_data *, int );
 
 void pc_data::free_comments(  )
 {
@@ -234,7 +235,7 @@ CMDF( do_comment )
    if( !str_cmp( arg, "write" ) )
    {
       if( !ch->pcdata->pnote )
-         ch->note_attach(  );
+         ch->note_attach( NOTE_PLAYER );
       ch->substate = SUB_WRITING_NOTE;
       ch->pcdata->dest_buf = ch->pcdata->pnote;
       ch->set_editor_desc( "A player comment." );
@@ -245,7 +246,7 @@ CMDF( do_comment )
    if( !str_cmp( arg, "subject" ) )
    {
       if( !ch->pcdata->pnote )
-         ch->note_attach(  );
+         ch->note_attach( NOTE_PLAYER );
       ch->pcdata->pnote->subject = argument;
       ch->print( "Ok.\r\n" );
       return;
@@ -362,6 +363,146 @@ CMDF( do_comment )
       ch->print( "     remove <player> <#>\r\n" );
 }
 
+void write_note_fp( note_data * pnote, FILE * fp )
+{
+   if( !pnote )
+   {
+      bug( "{}: Called with a nullptr note.", __func__ );
+      return;
+   }
+
+   if( pnote->sender.empty() )
+   {
+      bug( "{}: Called on a note without a valid sender!", __func__ );
+      return;
+   }
+
+   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
+   auto expire = std::chrono::system_clock::to_time_t( pnote->expire );
+
+   fprintf( fp, "\n%s\n", "\n#COMMENT2\n" );
+   fprintf( fp, "Sender         %s~\n", pnote->sender.c_str() );
+   if( !pnote->subject.empty() )
+      fprintf( fp, "Subject        %s~\n", pnote->subject.c_str() );
+   if( !pnote->to_list.empty() )
+      fprintf( fp, "To             %s~\n", pnote->to_list.c_str() );
+   fprintf( fp, "DateStamp      %ld\n", date_stamp );
+   fprintf( fp, "Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
+   if( expire )                  // Comments and Project Logs do not use to_list or Expire
+      fprintf( fp, "Expire         %ld\n", expire );
+   if( !pnote->text.empty() )
+      fprintf( fp, "Text           %s~\n", pnote->text.c_str() );
+   fprintf( fp, "Type           %d\n", pnote->type );
+
+   fprintf( fp, "%s", "#PLR-COMMENT-END\n\n" );
+}
+
+note_data *read_note_fp( FILE * fp )
+{
+   note_data *pnote = nullptr;
+   note_data *reply = nullptr;
+   char letter;
+
+   do
+   {
+      letter = getc( fp );
+      if( feof( fp ) )
+      {
+         FCLOSE( fp );
+         return nullptr;
+      }
+   }
+   while( isspace( letter ) );
+   ungetc( letter, fp );
+
+   pnote = new note_data;
+   pnote->type = NOTE_PLAYER;
+
+   for( ;; )
+   {
+      const char *word = ( feof( fp ) ? "#END" : fread_word( fp ) );
+
+      if( word[0] == '\0' )
+      {
+         bug( "%s: EOF encountered reading file!", __func__ );
+         word = "#END";
+      }
+
+      switch ( to_upper( word[0] ) )
+      {
+         default:
+            bug( "%s: no match: %s", __func__, word );
+            fread_to_eol( fp );
+            break;
+
+         case '*':
+            fread_to_eol( fp );
+            break;
+
+         case 'F':
+            if( !str_cmp( word, "Flags" ) )
+            {
+               flag_set( fp, pnote->flags, note_flags );
+               break;
+            }
+
+         case 'D':
+            if( !str_cmp( word, "Date" ) )
+            {
+               fread_to_eol( fp );
+               break;
+            }
+            if( !str_cmp( word, "DateStamp" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+
+               pnote->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
+            }
+            break;
+
+         case 'S':
+            STDSKEY( "Sender", pnote->sender );
+            STDSKEY( "Subject", pnote->subject );
+            break;
+
+         case 'T':
+            STDSKEY( "To", pnote->to_list );
+            STDSKEY( "Text", pnote->text );
+            KEY( "Type", pnote->type, fread_short( fp ) );
+            break;
+
+         case 'E':
+            if( !str_cmp( word, "Expire" ) )
+            {
+               time_t loaded_time = fread_long( fp );
+
+               pnote->expire = std::chrono::system_clock::from_time_t( loaded_time );
+            }
+            break;
+
+         case '#':
+            if( !str_cmp( word, "#PLR-COMMENT-END" ) || !str_cmp( word, "#END" ) )
+            {
+               // Use the new sticky flag :)
+               if( pnote->expire == std::chrono::system_clock::time_point{} )
+                  TOGGLE_NOTE_FLAG( pnote, NOTE_STICKY );
+
+               if( pnote->date_stamp == std::chrono::system_clock::time_point{} )
+                  pnote->date_stamp = current_time;
+               return pnote;
+            }
+            else
+            {
+               bug( "%s: Bad section: %s", __func__, word );
+               if( reply ) // In case a half-constructed reply exists.
+                  deleteptr( reply );
+               deleteptr( pnote );
+               return nullptr;
+            }
+      }
+   }
+}
+
 void pc_data::fwrite_comments( FILE * fp )
 {
    if( comments.empty(  ) )
@@ -370,7 +511,7 @@ void pc_data::fwrite_comments( FILE * fp )
    for( auto* note : comments )
    {
       fprintf( fp, "%s", "#COMMENT2\n" ); /* Set to COMMENT2 as to tell from older comments */
-      fwrite_note( note, fp );
+      write_note_fp( note, fp ); // FIXME: Change this once saving a pfile is using std::ofstream. Once done that should allow use of write_note().
    }
 }
 
@@ -378,7 +519,7 @@ void pc_data::fread_comment( FILE * fp )
 {
    note_data *pcnote;
 
-   pcnote = read_note( fp );
+   pcnote = read_note_fp( fp );  // FIXME: Change this once loading a pfile is using std::ifstream. Once done that should allow use of read_note().
    comments.push_back( pcnote );
 }
 
@@ -431,6 +572,7 @@ void pc_data::fread_old_comment( FILE * fp )
          pcnote->text = "Error: Comment text not found.";
 
       pcnote->date_stamp = current_time;
+      pcnote->type = NOTE_PLAYER;
       comments.push_back( pcnote );
       return;
    }

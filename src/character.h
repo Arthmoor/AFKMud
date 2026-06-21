@@ -73,6 +73,14 @@ class pc_data
    void fread_comment( FILE * );
    void fread_old_comment( FILE * );
 
+   class area_data *area = nullptr;                      // For the area a PC has been assigned to build.
+   class clan_data *clan = nullptr;                      // What clan, guild, or order they are a member of.
+   class realm_data *realm = nullptr;                    // What immortal realm they are a part of.
+   class deity_data *deity = nullptr;                    // Which deity they worship.
+   struct editor_data *editor = nullptr;                 // Contains information on what they are currently editing.
+   class note_data *pnote = nullptr;                     // Board stuff.
+   class board_data *board = nullptr;                    // Board stuff.
+   struct game_board_data *game_board = nullptr;         // Chess board they are playing on.
    std::map<std::string, std::string> alias_map;         // Command aliases. These are player defined aliases for the game's commands.
    std::map<int, std::string> qbits;                     // abit/qbit code. Used for tracking quests and other things.
    std::list<class board_chardata *> boarddata;          // Board stuff.
@@ -111,14 +119,7 @@ class pc_data
    std::string subprompt;                                // Substate prompt.
    std::string afkbuf;                                   // afk reason buffer - Samson 8-31-98
    std::string motd_buf;                                 // A temp buffer for editing MOTDs - 12-31-00
-   class area_data *area = nullptr;                      // For the area a PC has been assigned to build.
-   class clan_data *clan = nullptr;                      // What clan, guild, or order they are a member of.
-   class realm_data *realm = nullptr;                    // What immortal realm they are a part of.
-   class deity_data *deity = nullptr;                    // Which deity they worship.
-   struct editor_data *editor = nullptr;                 // Contains information on what they are currently editing.
-   class note_data *pnote = nullptr;                     // Board stuff.
-   class board_data *board = nullptr;                    // Board stuff.
-   struct game_board_data *game_board = nullptr;         // Chess board they are playing on.
+   std::string map_buffer;                               // Buffer used to store a map being written in the mapout.cpp module. Saves to disk if not empty.
    void *spare_ptr = nullptr;                            // Um... sure. It appears to be used as a swapping point in tandem with the dest_buf pointer when dealing with things in the editor.
    void *dest_buf = nullptr;                             // This one is to assign to different things. [What it is is a hackish way to pass pointers through the editor system]
    int pkills = 0;                                       // Number of pkills on behalf of clan.
@@ -289,7 +290,7 @@ class char_data
    std::string copy_buffer(  );
    void set_editor_desc( std::string_view );
    void edit_buffer( std::string & );
-   void note_attach(  );
+   void note_attach( int );
    bool can_charm(  );
    void learn_from_failure( int );
    void learn_racials( int );

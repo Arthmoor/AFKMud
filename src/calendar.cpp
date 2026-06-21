@@ -130,12 +130,20 @@ const std::string c_time( std::chrono::system_clock::time_point curtime, int tz 
    // Select the time zone string.
    auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
 
-   // Create a zoned_time object using the specified zone identifier
-   auto zt = std::chrono::zoned_time{ zone_id, curtime };
+   const std::chrono::time_zone* zone = std::chrono::locate_zone( zone_id );
+
+   // Cut off the nanosecond accuracy of the timestamp. We don't need that.
+   auto secs = std::chrono::floor<std::chrono::seconds>( curtime );
+
+   // Create a zoned_time object using the specified zone identifier.
+   auto zt = std::chrono::zoned_time{ zone_id, secs };
+
+   auto info = zone->get_info( secs );
+   std::string abbrev = info.abbrev;
 
    // Format: Sun Jan 01, 2026 12:00:00 PM UTC
    // %I is 12-hour clock, %p is AM/PM, %Z is zone name.
-   return std::format( "{:%a %b %d, %Y %I:%M:%S %p} {}", zt, zone_id );
+   return std::format( "{:%a %b %d, %Y %I:%M:%S %p} {}", zt, abbrev );
 }
 
 // Returns a compact localized time string.
@@ -144,12 +152,20 @@ const std::string mini_c_time( std::chrono::system_clock::time_point curtime, in
    // Select the time zone string.
    auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
 
-   // Create a zoned_time object using the specified zone identifier
-   auto zt = std::chrono::zoned_time{ zone_id, curtime };
+   const std::chrono::time_zone* zone = std::chrono::locate_zone( zone_id );
 
-   // Format: 05/30/26 12:00PM
+   // Cut off the nanosecond accuracy of the timestamp. We don't need that.
+   auto secs = std::chrono::floor<std::chrono::seconds>( curtime );
+
+   // Create a zoned_time object using the specified zone identifier.
+   auto zt = std::chrono::zoned_time{ zone_id, secs };
+
+   auto info = zone->get_info( secs );
+   std::string abbrev = info.abbrev;
+
+   // Format: 05/30/26 12:00PM UTC
    // %m/%d/%y for date, %I:%M%p for 12hr time.
-   return std::format( "{:%a %b %d, %Y %I:%M:%S %p} %Z", zt );
+   return std::format( "{:%a %b %d, %Y %I:%M%p} {}", zt, abbrev );
 }
 
 /* Time values modified to Alsherok calendar - Samson 5-6-99 */

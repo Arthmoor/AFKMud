@@ -32,8 +32,7 @@
 
 #pragma once
 
-inline constexpr std::string_view BOARD_FILE = "../boards/boards.lst";      // New board file.
-inline constexpr std::string_view OLD_BOARD_FILE = "../boards/boards.txt";  // Old board file.
+inline constexpr std::string_view BOARD_LIST_FILE = "../boards/boards.lst"; // List of board files.
 inline constexpr std::string_view PROJECTS_FILE = "../system/projects.txt"; // For projects.
 
 constexpr int MAX_REPLY = 10;         // How many messages in each level?
@@ -43,12 +42,17 @@ constexpr int BD_ANNOUNCE = 1;
 
 enum bflags
 {
-   BOARD_R1, BOARD_BU_PRUNED, BOARD_PRIVATE, BOARD_ANNOUNCE, MAX_BOARD_FLAGS
+   BOARD_R1, BOARD_R2, BOARD_PRIVATE, BOARD_ANNOUNCE, MAX_BOARD_FLAGS
 };
 
-enum note_flags
+enum note_flag_types
 {
    NOTE_R1, NOTE_STICKY, NOTE_CLOSED, NOTE_HIDDEN, MAX_NOTE_FLAGS
+};
+
+enum note_types
+{
+   NOTE_BOARD, NOTE_PROJECT, NOTE_PLAYER, NOTE_OLCMAP
 };
 
 /* Note Data */
@@ -72,6 +76,7 @@ class note_data
    std::string to_list;                               // Intended recipients of the note.
    std::string text;                                  // The full text of the note.
    short reply_count = 0;                             // Keep a count of our replies.
+   short type;                                        // Is this note for a board, project, or something else?
 };
 
 class board_data
@@ -88,7 +93,7 @@ class board_data
    std::bitset<MAX_BOARD_FLAGS> flags; /* Board Flags */
    std::chrono::system_clock::time_point expire;  /* The time when the note will expire. */
    std::string name;             // Name of Board
-   std::string filename;         // Filename for the board.
+   std::string filename;         // Filename for the board. Set automatically based on the board's name.
    std::string desc;             // Short description of the board
    std::string readers;          // Readers
    std::string posters;          // Posters

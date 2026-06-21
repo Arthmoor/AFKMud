@@ -1135,6 +1135,9 @@ void boot_db( bool fCopyOver )
    log_string( "Loading tongues" );
    load_tongues(  );
 
+   log_string( "Loading boards..." );
+   load_boards(  );
+
    /*
     * abit/qbit code 
     */
@@ -1366,9 +1369,6 @@ void boot_db( bool fCopyOver )
     */
    log_string( "Loading clan/guild shops..." );
    load_shopkeepers(  );
-
-   log_string( "Loading boards..." );
-   load_boards(  );
 
    log_string( "Loading bans..." );
    load_banlist(  );

@@ -25,11 +25,12 @@
  ****************************************************************************
  *                     Completely Revised Boards Module                     *
  ****************************************************************************
- * Revised by:   Xorith                                                     *
- * Last Updated: 09/21/07                                                   *
+ * Revised by:   Xorith 9/21/07                                             *
+ * Last Updated: 6/20/2026 by Samson                                        *
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "boards.h"
 #include "clans.h"
@@ -41,6 +42,7 @@
 
 std::list<board_data *> bdlist;
 std::list<project_data *> projlist;
+std::vector<std::string> board_files;
 
 void check_boards(  );
 bool check_parse_name( std::string, bool );
@@ -174,6 +176,448 @@ void free_boards( void )
 
       deleteptr( board );
    }
+}
+
+void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstream & stream )
+{
+   auto read_line = [&]( char delimiter = '\n' ) -> std::string
+   {
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
+
+      return line;
+   };
+
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "Reply-Sender" )
+         note->sender = read_line('~');
+      else if( key == "Reply-To" )
+         note->to_list = read_line('~');
+      else if( key == "Reply-Subject" )
+         note->subject = read_line('~');
+      else if( key == "Reply-DateStamp" )
+      {
+         time_t loaded_time;
+
+         stream >> loaded_time;
+         note->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Reply-Flags" )
+      {
+         if( file_ver < 1 )
+            stream >> note->flags;
+         else
+         {
+            std::string flags = read_line('~');
+            flag_string_set( flags, note->flags, note_flags );
+         }
+      }
+      else if( key == "Reply-Text" )
+         note->text = read_line('~');
+      else if( key == "#REPLY-END" )
+         return;
+      else
+         bug( "{}: Bad section '{}' in reply - skipping.", __func__, key );
+   }
+}
+
+void read_note( note_data * note, int file_ver, std::ifstream & stream )
+{
+   auto read_line = [&]( char delimiter = '\n' ) -> std::string
+   {
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
+
+      return line;
+   };
+
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "Sender" )
+         note->sender = read_line('~');
+      else if( key == "Subject" )
+         note->subject = read_line('~');
+      else if( key == "To" )
+         note->to_list = read_line('~');
+      else if( key == "DateStamp" )
+      {
+         time_t loaded_time;
+
+         stream >> loaded_time;
+         note->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Flags" )
+      {
+         if( file_ver < 1 )
+            stream >> note->flags;
+         else
+         {
+            std::string flags = read_line('~');
+            flag_string_set( flags, note->flags, note_flags );
+         }
+      }
+      else if( key == "Expire" )
+      {
+         time_t loaded_time;
+
+         stream >> loaded_time;
+         note->expire = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Text" )
+         note->text = read_line('~');
+      else if( key == "Type" )
+         stream >> note->type;
+      else if( key == "#REPLY" )
+      {
+         note_data *reply = new note_data;
+         read_reply( note, reply, file_ver, stream );
+         note->rlist.push_back( reply );
+      }
+      else if( key == "#NOTE-END" || key == "#LOG-END" || key == "#PLR-COMMENT-END" )
+         return;
+      else
+         bug( "{}: Bad section '{}' in note - skipping.", __func__, key );
+   }
+}
+
+void board_check_expire( board_data * );
+
+bool read_board_list( void )
+{
+   std::ifstream stream( std::filesystem::path{BOARD_LIST_FILE} );
+
+   if( !stream.is_open( ) )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, BOARD_LIST_FILE, std::strerror(errno) );
+      return false;
+   }
+
+   board_files.clear();
+
+   std::string line;
+   while( std::getline( stream, line, '~' ) )
+   {
+      strip_whitespace( line );
+
+      if( line.empty() )
+         continue;
+
+      board_files.push_back( line );
+   }
+   stream.close();
+   return true;
+}
+
+void load_boards( void )
+{
+   if( !read_board_list() )
+   {
+      log_printf( "{}: Aborting board reading due to previous error.", __func__ );
+   }
+
+   bdlist.clear(  ); // Probably not necessary but we're going to play it safe.
+
+   int file_ver = 0;
+   for( size_t x = 0; x < board_files.size(); ++x )
+   {
+      std::ifstream stream;
+
+      auto read_line = [&]( char delimiter = '\n' ) -> std::string
+      {
+         std::string line;
+         std::getline( stream, line, delimiter );
+         strip_spaces( line );
+
+         return line;
+      };
+
+      std::filesystem::path board_file = std::format( "{}{}", BOARD_DIR, board_files[x] );
+      stream.open( board_file );
+      if( !stream.is_open() )
+      {
+         bug( "{}: Cannot open {} for reading: {}", __func__, board_file.string(), std::strerror(errno) );
+         continue;
+      }
+
+      log_string( board_file.string() );
+      std::string key;
+      board_data *board = nullptr;
+      while( stream >> key )
+      {
+         if( key == "#VERSION" )
+         {
+            stream >> file_ver;
+            continue;
+         }
+
+         if( key == "#BOARD" )
+         {
+            board = new board_data;
+            continue;
+         }
+
+         if( key == "#BOARD-END" )
+         {
+            if( !board )
+            {
+               bug( "{}: No #BOARD section seen yet!", __func__ );
+               continue;
+            }
+            bdlist.push_back( board );
+            board = nullptr;
+            continue;
+         }
+
+         if( !board )
+         {
+            bug( "{}: Found keyword '{}' outside of #BOARD block in {}", __func__, key, board_file.string() );
+            continue;
+         }
+
+         if( key == "Name" )
+         {
+            board->name = read_line('~');
+            board->filename = board->name + ".board";
+         }
+         else if( key == "Desc" )
+            board->desc = read_line('~');
+         else if( key == "ObjVnum" )
+            stream >> board->objvnum;
+         else if( key == "Expire" )
+         {
+            time_t loaded_time;
+
+            stream >> loaded_time;
+            board->expire = std::chrono::system_clock::from_time_t( loaded_time );
+         }
+         else if( key == "Flags" )
+         {
+            if( file_ver < 1 )
+               stream >> board->flags;
+            else
+            {
+               std::string flags = read_line('~');
+               flag_string_set( flags, board->flags, board_flags );
+            }
+         }
+         else if( key == "Readers" )
+            board->readers = read_line('~');
+         else if( key == "Posters" )
+            board->posters = read_line('~');
+         else if( key == "Moderators" )
+            board->moderators = read_line('~');
+         else if( key == "Group" )
+            board->group = read_line('~');
+         else if( key == "ReadLevel" )
+            stream >> board->read_level;
+         else if( key == "PostLevel" )
+            stream >> board->post_level;
+         else if( key == "RemoveLevel" )
+            stream >> board->remove_level;
+         else if( key == "#NOTE-BEGIN" )
+         {
+            note_data *note = new note_data;
+            read_note( note, file_ver, stream );
+            board->nlist.push_back( note );
+         }
+         else
+            bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, board_file.string() );
+      }
+   }
+
+   /*
+    * Run initial pruning
+    */
+   check_boards(  );
+}
+
+void write_reply( note_data * pnote, std::ofstream & stream )
+{
+   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
+
+   stream << "#REPLY\n";
+   stream << std::format( "Reply-Sender         {}~\n", pnote->sender );
+   stream << std::format( "Reply-To             {}~\n", pnote->to_list );
+   stream << std::format( "Reply-Subject        {}~\n", pnote->subject );
+   stream << std::format( "Reply-DateStamp      {}\n", date_stamp );
+   stream << std::format( "Reply-Flags          {}~\n", bitset_string( pnote->flags, note_flags ) );
+   stream << std::format( "Reply-Text           {}~\n", pnote->text );
+   stream << "#REPLY-END\n\n";
+}
+
+void write_note( note_data * pnote, std::ofstream & stream )
+{
+   if( !pnote )
+   {
+      bug( "{}: Called with a nullptr note.", __func__ );
+      return;
+   }
+
+   if( pnote->sender.empty() )
+   {
+      bug( "{}: Called on a note without a valid sender!", __func__ );
+      return;
+   }
+
+   if( pnote->type < NOTE_BOARD && pnote->type > NOTE_OLCMAP )
+      bug( "{}: Invalid note type passed: %d", __func__, pnote->type );
+
+   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
+   auto expire = std::chrono::system_clock::to_time_t( pnote->expire );
+
+   stream << "\n#NOTE-BEGIN\n";
+   stream << std::format( "Sender         {}~\n", pnote->sender );
+   if( !pnote->subject.empty() )
+      stream << std::format( "Subject        {}~\n", pnote->subject );
+   if( !pnote->to_list.empty() )
+      stream << std::format( "To             {}~\n", pnote->to_list );
+   stream << std::format( "DateStamp      {}\n", date_stamp );
+   stream << std::format( "Flags          {}~\n", bitset_string( pnote->flags, note_flags ) );
+   if( expire )                  // Comments and Project Logs do not use to_list or Expire
+      stream << std::format( "Expire         {}\n", expire );
+   if( !pnote->text.empty() )
+      stream << std::format( "Text           {}~\n", pnote->text );
+   stream << std::format( "Type           {}\n", pnote->type );
+   if( pnote->type == NOTE_BOARD ) // Only board notes will have a reply chain.
+   {
+      int count = 0;
+
+      for( auto it = pnote->rlist.begin(  ); it != pnote->rlist.end(  ); )
+      {
+         note_data *reply = *it;
+         ++it;
+
+         if( reply->sender.empty() || reply->to_list.empty() || reply->subject.empty() || reply->text.empty() )
+         {
+            log_printf( "{}: Destroying a buggy reply on note '{}'!", __func__, pnote->subject );
+            --pnote->reply_count;
+            deleteptr( reply );
+            continue;
+         }
+         if( count == MAX_REPLY )
+            break;
+         write_reply( reply, stream );
+         ++count;
+      }
+   }
+
+   switch( pnote->type )
+   {
+      default:
+      case NOTE_BOARD:
+         stream << "#NOTE-END\n\n";
+         break;
+
+      case NOTE_PROJECT:
+         stream << "#LOG-END\n\n";
+
+      case NOTE_PLAYER:
+         stream << "#PLR-COMMENT-END\n\n";
+
+      case NOTE_OLCMAP: // I have no idea if this one actually saves anywhere, but it's here just in case.
+         stream << "#OLCMAP-END\n\n";
+   }
+}
+
+bool write_board_list( void )
+{
+   std::filesystem::path filename = std::format( "{}{}", BOARD_DIR, BOARD_LIST_FILE );
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
+      return false;
+   }
+
+   for( auto* board : bdlist )
+   {
+      stream << board->filename << "~\n";
+   }
+   stream.close();
+
+   if( stream.fail() )
+   {
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
+      return false;
+   }
+   return true;
+}
+
+// 0: Original Smaug board format.
+// 1: Initial AFKMud version. Turns out it was broken :(
+// 2: The whole system was broken, so it's being rebuilt.
+constexpr int BOARDFILEVER = 2;
+
+void write_board( board_data * board )
+{
+   std::filesystem::path filename = std::format( "{}{}", BOARD_DIR, board->filename );
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
+      return;
+   }
+
+   auto expire = std::chrono::system_clock::to_time_t( board->expire );
+
+   stream << std::format( "#VERSION    {}\n", BOARDFILEVER );
+   stream << "#BOARD\n";
+   stream << std::format( "Name        {}~\n", board->name );
+   if( !board->desc.empty() )
+      stream << std::format( "Desc        {}~\n", board->desc );
+   stream << std::format( "ObjVnum     {}\n", board->objvnum );
+   stream << std::format( "Expire      {}\n", expire );
+   stream << std::format( "Flags       {}~\n", bitset_string( board->flags, board_flags ) );
+   if( !board->readers.empty() )
+      stream << std::format( "Readers     {}~\n", board->readers );
+   if( !board->posters.empty() )
+      stream << std::format( "Posters     {}~\n", board->posters );
+   if( !board->moderators.empty() )
+      stream << std::format( "Moderators  {}~\n", board->moderators );
+   if( !board->group.empty() )
+      stream << std::format( "Group       {}~\n", board->group );
+   stream << std::format( "ReadLevel   {}\n", board->read_level );
+   stream << std::format( "PostLevel   {}\n", board->post_level );
+   stream << std::format( "RemoveLevel {}\n", board->remove_level );
+
+   // Write this board's list of notes now.
+   for( auto it = board->nlist.begin(  ); it != board->nlist.end(  ); )
+   {
+      note_data *pnote = *it;
+      ++it;
+
+      if( pnote->sender.empty() || pnote->to_list.empty() || pnote->subject.empty() || pnote->text.empty() )
+      {
+         log_printf( "{}: Destroying a buggy note on the {} board!", __func__, board->name );
+         --board->msg_count;
+         deleteptr( pnote );
+         continue;
+      }
+      write_note( pnote, stream );
+   }
+   stream << "#BOARD-END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
+}
+
+void write_boards( void )
+{
+   // First make sure the board list file can be written.
+   if( !write_board_list() )
+   {
+      log_printf( "{}: Aborting board writing due to previous error.", __func__ );
+      return;
+   }
+
+   // Now go down the list of boards one by one and save them to their proper filenames.
+   for( auto* board : bdlist )
+      write_board( board );
 }
 
 bool can_remove( char_data * ch, board_data * board )
@@ -312,8 +756,7 @@ bool is_note_to( char_data * ch, note_data * pnote )
    return false;
 }
 
-/* This will get a board by object. This will not get a global board
-   as global boards are noted with a 0 objvnum */
+// This will get a board by object. This will not get a global board as global boards are noted with a 0 objvnum.
 board_data *get_board_by_obj( obj_data * obj )
 {
    for( auto* board : bdlist )
@@ -342,8 +785,11 @@ board_data *get_board( char_data * ch, std::string_view name )
          if( board->objvnum > 0 && !can_remove( ch, board ) && !ch->is_immortal(  ) )
             continue;
       }
-      if( count == std::stoi( name.data() ) )
-         return board;
+      if( is_number( name ) ) // Bugfix 6/21/2026 - Passing a text string here crashes the game.
+      {
+         if( count == std::stoi( name.data() ) )
+            return board;
+      }
       if( !str_cmp( board->name, name ) )
          return board;
       ++count;
@@ -351,7 +797,7 @@ board_data *get_board( char_data * ch, std::string_view name )
    return nullptr;
 }
 
-/* This will find a board on an object in the character's current room */
+// This will find a board on an object in the character's current room.
 board_data *find_board( char_data * ch )
 {
    for( auto* obj : ch->in_room->objects )
@@ -389,7 +835,7 @@ board_chardata *create_chboard( char_data * ch, std::string_view board_name )
    return chboard;
 }
 
-void char_data::note_attach(  )
+void char_data::note_attach( int type )
 {
    note_data *pcnote;
 
@@ -400,153 +846,9 @@ void char_data::note_attach(  )
    }
 
    pcnote = new note_data;
+   pcnote->type = type;
    pcnote->sender = name;
    pcdata->pnote = pcnote;
-}
-
-// 0: Original Smaug board format.
-// 1: Initial AFKMud version. Turns out it was broken :(
-// 2: Fixed the file read/write code.
-constexpr int BOARDFILEVER = 2;
-
-void write_boards( void )
-{
-   FILE *fpout;
-
-   if( !( fpout = fopen( std::filesystem::path( BOARD_FILE ).c_str(), "w" ) ) )
-   {
-      bug( "{}: Unable to open {}{} for writing!", __func__, BOARD_DIR, BOARD_FILE );
-      return;
-   }
-
-   fprintf( fpout, "#VERSION    %d\n", BOARDFILEVER );
-
-   for( auto* board : bdlist )
-   {
-      if( board->name.empty() )
-      {
-         log_printf( "{}: Board with a null name! Skipping...", __func__ );
-         continue;
-      }
-
-      auto expire = std::chrono::system_clock::to_time_t( board->expire );
-
-      fprintf( fpout, "Name        %s~\n", board->name.c_str() );
-      fprintf( fpout, "Filename    %s~\n", board->filename.c_str() );
-      if( !board->desc.empty() )
-         fprintf( fpout, "Desc        %s~\n", board->desc.c_str() );
-      fprintf( fpout, "ObjVnum     %d\n", board->objvnum );
-      fprintf( fpout, "Expire      %ld\n", expire );
-      fprintf( fpout, "Flags       %s~\n", bitset_string( board->flags, board_flags ) );
-      if( !board->readers.empty() )
-         fprintf( fpout, "Readers     %s~\n", board->readers.c_str() );
-      if( !board->posters.empty() )
-         fprintf( fpout, "Posters     %s~\n", board->posters.c_str() );
-      if( !board->moderators.empty() )
-         fprintf( fpout, "Moderators  %s~\n", board->moderators.c_str() );
-      if( !board->group.empty() )
-         fprintf( fpout, "Group       %s~\n", board->group.c_str() );
-      fprintf( fpout, "ReadLevel   %d\n", board->read_level );
-      fprintf( fpout, "PostLevel   %d\n", board->post_level );
-      fprintf( fpout, "RemoveLevel %d\n", board->remove_level );
-      fprintf( fpout, "%s\n", "#END" );
-   }
-   FCLOSE( fpout );
-}
-
-void fwrite_reply( note_data * pnote, FILE * fpout )
-{
-   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
-
-   fprintf( fpout, "Reply-Sender         %s~\n", pnote->sender.c_str() );
-   fprintf( fpout, "Reply-To             %s~\n", pnote->to_list.c_str() );
-   fprintf( fpout, "Reply-Subject        %s~\n", pnote->subject.c_str() );
-   fprintf( fpout, "Reply-DateStamp      %ld\n", date_stamp );
-   fprintf( fpout, "Reply-Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
-   fprintf( fpout, "Reply-Text           %s~\n", pnote->text.c_str() );
-   fprintf( fpout, "%s\n\n", "Reply-End" );
-}
-
-void fwrite_note( note_data * pnote, FILE * fpout )
-{
-   if( !pnote )
-      return;
-
-   if( pnote->sender.empty() )
-   {
-      bug( "{}: Called on a note without a valid sender!", __func__ );
-      return;
-   }
-
-   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
-   auto expire = std::chrono::system_clock::to_time_t( pnote->expire );
-
-   fprintf( fpout, "%s\n", "#NOTE" );
-   fprintf( fpout, "Sender         %s~\n", pnote->sender.c_str() );
-   if( !pnote->subject.empty() )
-      fprintf( fpout, "Subject        %s~\n", pnote->subject.c_str() );
-   if( !pnote->to_list.empty() )
-      fprintf( fpout, "To             %s~\n", pnote->to_list.c_str() );
-   fprintf( fpout, "DateStamp      %ld\n", date_stamp );
-   fprintf( fpout, "Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
-   if( expire )                  // Comments and Project Logs do not use to_list or Expire
-      fprintf( fpout, "Expire         %ld\n", expire );
-   if( !pnote->text.empty() )
-      fprintf( fpout, "Text           %s~\n", pnote->text.c_str() );
-   if( !pnote->to_list.empty() ) /* comments and projects should not have replies */
-   {
-      int count = 0;
-
-      for( auto it = pnote->rlist.begin(  ); it != pnote->rlist.end(  ); )
-      {
-         note_data *reply = *it;
-         ++it;
-
-         if( reply->sender.empty() || reply->to_list.empty() || reply->subject.empty() || reply->text.empty() )
-         {
-            log_printf( "{}: Destroying a buggy reply on note '{}'!", __func__, pnote->subject );
-            --pnote->reply_count;
-            deleteptr( reply );
-            continue;
-         }
-         if( count == MAX_REPLY )
-            break;
-         fprintf( fpout, "%s\n", "Reply" );
-         fwrite_reply( reply, fpout );
-         ++count;
-      }
-   }
-   fprintf( fpout, "%s\n\n", "#END" );
-}
-
-void write_board( board_data * board )
-{
-   FILE *fp;
-
-   std::filesystem::path filename = std::format( "{}{}", BOARD_DIR, board->filename );
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
-   {
-      bug( "{}: Error opening {}! Board NOT saved!", __func__, filename.string() );
-      return;
-   }
-
-   fprintf( fp, "#VERSION    %d\n", BOARDFILEVER );
-
-   for( auto it = board->nlist.begin(  ); it != board->nlist.end(  ); )
-   {
-      note_data *pnote = *it;
-      ++it;
-
-      if( pnote->sender.empty() || pnote->to_list.empty() || pnote->subject.empty() || pnote->text.empty() )
-      {
-         log_printf( "{}: Destroying a buggy note on the {} board!", __func__, board->name );
-         --board->msg_count;
-         deleteptr( pnote );
-         continue;
-      }
-      fwrite_note( pnote, fp );
-   }
-   FCLOSE( fp );
 }
 
 void note_remove( board_data * board, note_data * pnote )
@@ -585,634 +887,6 @@ void note_remove( board_data * board, note_data * pnote )
    }
    deleteptr( pnote );
    write_board( board );
-}
-
-board_data *read_board( FILE * fp )
-{
-   board_data *board;
-   char letter;
-   int file_ver = 0;
-
-   do
-   {
-      letter = getc( fp );
-      if( feof( fp ) )
-      {
-         FCLOSE( fp );
-         return nullptr;
-      }
-   }
-   while( isspace( letter ) );
-
-   ungetc( letter, fp );
-
-   board = new board_data;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "#END" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "#END";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'D':
-            STDSKEY( "Desc", board->desc );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "Expire " ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               board->expire = std::chrono::system_clock::from_time_t( loaded_time );
-            }
-            break;
-
-         case 'F':
-            STDSKEY( "Filename", board->filename );
-            KEY( "FileVer", file_ver, fread_number( fp ) );
-            if( !str_cmp( word, "Flags" ) )
-            {
-               if( file_ver < 1 )
-                  board->flags = fread_long( fp );
-               else
-                  flag_set( fp, board->flags, board_flags );
-               break;
-            }
-            break;
-
-         case 'G':
-            STDSKEY( "Group", board->group );
-            break;
-
-         case 'M':
-            STDSKEY( "Moderators", board->moderators );
-            break;
-
-         case 'N':
-            STDSKEY( "Name", board->name );
-            break;
-
-         case 'O':
-            KEY( "ObjVnum", board->objvnum, fread_number( fp ) );
-            break;
-
-         case 'P':
-            STDSKEY( "Posters", board->posters );
-            KEY( "PostLevel", board->post_level, fread_number( fp ) );
-            break;
-
-         case 'R':
-            STDSKEY( "Readers", board->readers );
-            KEY( "ReadLevel", board->read_level, fread_number( fp ) );
-            KEY( "RemoveLevel", board->remove_level, fread_number( fp ) );
-            break;
-
-         case '#':
-         {
-            if( !str_cmp( word, "#VERSION" ) )
-            {
-               file_ver = fread_number( fp );
-               break;
-            }
-
-            if( !str_cmp( word, "#END" ) )
-            {
-               board->nlist.clear(  );
-               if( !board->objvnum )
-                  board->objvnum = 0;  /* default to global */
-               return board;
-            }
-
-            log_printf( "{}: Bad section: {}", __func__, word );
-            deleteptr( board );
-            return nullptr;
-         }
-      }
-   }
-}
-
-board_data *read_old_board( FILE * fp )
-{
-   board_data *board;
-   char letter;
-
-   do
-   {
-      letter = getc( fp );
-      if( feof( fp ) )
-      {
-         FCLOSE( fp );
-         return nullptr;
-      }
-   }
-   while( isspace( letter ) );
-
-   ungetc( letter, fp );
-
-   board = new board_data;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'E':
-            STDSKEY( "Extra_readers", board->readers );
-            STDSKEY( "Extra_removers", board->moderators );
-            if( !str_cmp( word, "End" ) )
-            {
-               board->nlist.clear(  );
-               if( !board->objvnum )
-                  board->objvnum = 0;  /* default to global */
-               board->desc = "Newly converted board!";
-
-               auto expiry_time = current_time + std::chrono::days( MAX_BOARD_EXPIRE );
-               board->expire = expiry_time;
-
-               std::string filename = std::format( "{}.board", board->name );
-               size_t pos = filename.find( ".brd" );
-               if( pos != std::string::npos )
-                  filename.erase( pos, 4 );
-
-               board->filename = filename;
-               return board;
-            }
-            break;
-
-         case 'F':
-            STDSKEY( "Filename", board->name );
-            break;
-
-         case 'M':
-            KEY( "Min_read_level", board->read_level, fread_number( fp ) );
-            KEY( "Min_remove_level", board->remove_level, fread_number( fp ) );
-            KEY( "Min_post_level", board->post_level, fread_number( fp ) );
-            if( !str_cmp( word, "Max_posts" ) )
-            {
-               word = fread_word( fp );
-               break;
-            }
-            break;
-
-         case 'P':
-            STDSKEY( "Post_group", board->posters );
-            break;
-
-         case 'R':
-            STDSKEY( "Read_group", board->group );
-            break;
-
-         case 'T':
-            if( !str_cmp( word, "Type" ) )
-            {
-               if( fread_number( fp ) == 1 )
-                  TOGGLE_BOARD_FLAG( board, BOARD_PRIVATE );
-               break;
-            }
-            break;
-
-         case 'V':
-            KEY( "Vnum", board->objvnum, fread_number( fp ) );
-            break;
-      }
-   }
-}
-
-note_data *read_note( FILE * fp )
-{
-   note_data *pnote = nullptr;
-   note_data *reply = nullptr;
-   char letter;
-
-   do
-   {
-      letter = getc( fp );
-      if( feof( fp ) )
-      {
-         FCLOSE( fp );
-         return nullptr;
-      }
-   }
-   while( isspace( letter ) );
-   ungetc( letter, fp );
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "#END" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "#END";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               flag_set( fp, pnote->flags, note_flags );
-               break;
-            }
-
-         case 'D':
-            if( !str_cmp( word, "Date" ) )
-            {
-               fread_to_eol( fp );
-               break;
-            }
-            if( !str_cmp( word, "DateStamp" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               pnote->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-            break;
-
-         case 'S':
-            if( !str_cmp( word, "Sender" ) )
-            {
-               if( !pnote ) // Fix a broken board that had no #NOTE section yet.
-                  pnote = new note_data;
-               fread_string( pnote->sender, fp );
-            }
-            STDSKEY( "Subject", pnote->subject );
-            break;
-
-         case 'T':
-            STDSKEY( "To", pnote->to_list );
-            STDSKEY( "Text", pnote->text );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "Expire" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               pnote->expire = std::chrono::system_clock::from_time_t( loaded_time );
-            }
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Reply" ) )
-            {
-               if( pnote->reply_count == MAX_REPLY )
-               {
-                  log_printf( "{}: Reply found when MAX_REPLY has already been reached!", __func__ );
-                  continue;
-               }
-               if( reply != nullptr )
-               {
-                  log_printf( "{}: Unsupported nested reply found!", __func__ );
-                  continue;
-               }
-               reply = new note_data;
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-Date" ) && reply != nullptr )
-            {
-               fread_to_eol( fp );
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-Flags" ) )
-            {
-               flag_set( fp, reply->flags, note_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-DateStamp" ) && reply != nullptr )
-            {
-               time_t loaded_time = fread_long( fp );
-               reply->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-Sender" ) && reply != nullptr )
-            {
-               fread_string( reply->sender, fp );
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-Subject" ) && reply != nullptr )
-            {
-               fread_string( reply->subject, fp );
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-To" ) && reply != nullptr )
-            {
-               fread_string( reply->to_list, fp );
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-Text" ) && reply != nullptr )
-            {
-               fread_string( reply->text, fp );
-               break;
-            }
-
-            if( !str_cmp( word, "Reply-End" ) && reply != nullptr )
-            {
-
-               reply->expire = std::chrono::system_clock::time_point{};
-               if( reply->date_stamp == std::chrono::system_clock::time_point{} )
-                  reply->date_stamp = current_time;
-               reply->parent = pnote;
-               pnote->rlist.push_back( reply );
-               pnote->reply_count += 1;
-               reply = nullptr;
-               break;
-            }
-
-         case '#':
-            if( !str_cmp( word, "#NOTE" ) )
-            {
-               pnote = new note_data;
-            }
-
-            if( !str_cmp( word, "#END" ) )
-            {
-               if( !pnote )
-               {
-                  bug( "{}: No #NOTE section seen yet.", __func__ );
-                  return nullptr;
-               }
-
-               // Use the new sticky flag :)
-               if( pnote->expire == std::chrono::system_clock::time_point{} )
-                  TOGGLE_NOTE_FLAG( pnote, NOTE_STICKY );
-
-               if( pnote->date_stamp == std::chrono::system_clock::time_point{} )
-                  pnote->date_stamp = current_time;
-               return pnote;
-            }
-            else
-            {
-               log_printf( "{}: Bad section: {}", __func__, word );
-               if( reply ) // In case a half-constructed reply exists.
-                  deleteptr( reply );
-               deleteptr( pnote );
-               return nullptr;
-            }
-      }
-   }
-}
-
-note_data *read_old_note( FILE * fp )
-{
-   note_data *pnote = nullptr;
-   char letter;
-
-   do
-   {
-      letter = getc( fp );
-      if( feof( fp ) )
-      {
-         FCLOSE( fp );
-         return nullptr;
-      }
-   }
-   while( isspace( letter ) );
-   ungetc( letter, fp );
-
-   pnote = new note_data;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      /*
-       * Keep the damn thing happy. 
-       */
-      if( !str_cmp( word, "Voting" ) || !str_cmp( word, "Yesvotes" ) || !str_cmp( word, "Novotes" ) || !str_cmp( word, "Abstentions" ) )
-      {
-         word = fread_word( fp );
-         continue;
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            // Since this confused me too, Ctime happens to be the last field in the old note file :) --X
-            if( !str_cmp( word, "Ctime" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               pnote->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
-
-               auto pnote_expire = current_time + std::chrono::days( MAX_BOARD_EXPIRE ); // Going to default to the max expire time -X
-               pnote->expire = pnote_expire;
-
-               if( pnote->text.empty() )
-               {
-                  pnote->text ="---- Delete this post! ----";
-
-                  pnote_expire = current_time + std::chrono::days( 1 );
-                  pnote->expire = pnote_expire;   /* Or we'll do it for you! */
-                  log_printf( "{}: No text on note! Setting to '{}' and expiration to 1 day", __func__, pnote->text );
-               }
-
-               /*
-                * For converted notes, lets make a few exceptions 
-                */
-               if( pnote->sender.empty() )
-               {
-                  pnote->sender = "Converted Msg";
-                  log_printf( "{}: No sender on converted note! Setting to '{}'", __func__, pnote->sender );
-               }
-               if( pnote->subject.empty() )
-               {
-                  pnote->subject = "Converted Msg";
-                  log_printf( "{}: No subject on converted note! Setting to '{}'", __func__, pnote->subject );
-               }
-               if( pnote->to_list.empty() )
-               {
-                  pnote->to_list = "imm";
-                  log_printf( "{}: No to_list on converted note! Setting to '{}'", __func__, pnote->to_list );
-               }
-               return pnote;
-            }
-            break;
-
-         case 'S':
-            STDSKEY( "Sender", pnote->sender );
-            STDSKEY( "Subject", pnote->subject );
-            break;
-
-         case 'T':
-            STDSKEY( "To", pnote->to_list );
-            STDSKEY( "Text", pnote->text );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               pnote->expire = std::chrono::system_clock::time_point{};
-               if( pnote->text.empty() )
-               {
-                  pnote->text = "---- Delete this post! ----";
-
-                  auto pnote_expire = current_time + std::chrono::days( 1 );
-                  pnote->expire = pnote_expire;   /* Or we'll do it for you! */
-                  log_printf( "{}: No text on note! Setting to '{}' and expiration to 1 day", __func__, pnote->text );
-               }
-
-               /*
-                * For converted notes, lets make a few exceptions 
-                */
-               if( pnote->sender.empty() )
-               {
-                  pnote->sender = "Converted Msg";
-                  log_printf( "{}: No sender on converted note! Setting to '{}'", __func__, pnote->sender );
-               }
-               if( pnote->subject.empty() )
-               {
-                  pnote->subject = "Converted Msg";
-                  log_printf( "{}: No subject on converted note! Setting to '{}'", __func__, pnote->subject );
-               }
-               if( pnote->to_list.empty() )
-               {
-                  pnote->to_list = "imm";
-                  log_printf( "{}: No to_list on converted note! Setting to '{}'", __func__, pnote->to_list );
-               }
-               return pnote;
-            }
-            break;
-      }
-   }
-}
-
-void board_check_expire( board_data * );
-void load_boards( void )
-{
-   FILE *board_fp, *note_fp;
-   board_data *board;
-   note_data *pnote;
-   std::filesystem::path notefile, backupfile;
-   bool oldboards = false;
-
-   bdlist.clear(  );
-
-   if( !( board_fp = fopen( std::filesystem::path( BOARD_FILE ).c_str(), "r" ) ) )
-   {
-      if( !( board_fp = fopen( std::filesystem::path( OLD_BOARD_FILE ).c_str(), "r" ) ) )
-         return;
-      oldboards = true;
-      log_string( "Converting older boards..." );
-   }
-
-   if( oldboards )
-   {
-      while( ( board = read_old_board( board_fp ) ) != nullptr )
-      {
-         bdlist.push_back( board );
-         notefile = std::format( "{}{}", BOARD_DIR, board->filename );
-         backupfile = std::format( "{}{}.old", BOARD_DIR, board->filename );
-
-         // Xorith wanted to back up old boards, but using a system command was a bad idea.
-         std::filesystem::copy( notefile, backupfile );
-
-         if( ( note_fp = fopen( notefile.c_str(), "r" ) ) != nullptr )
-         {
-            log_string( notefile.c_str() );
-            while( ( pnote = read_old_note( note_fp ) ) != nullptr )
-            {
-               board->nlist.push_back( pnote );
-               board->msg_count += 1;
-            }
-         }
-         else
-            log_printf( "{}: Note file '{}' for the '{}' board not found!", __func__, notefile.string(), board->name );
-
-         write_board( board );   /* save the converted board */
-
-         // Since I'm now setting the default expire time, I think it's only fair to
-         // Do an initial archiving to remove any old posts, and keep them somewhere that the admins
-         // can easily restore from. --X
-         TOGGLE_BOARD_FLAG( board, BOARD_BU_PRUNED );
-         board_check_expire( board );
-         TOGGLE_BOARD_FLAG( board, BOARD_BU_PRUNED );
-      }
-      write_boards(  ); // Save the new boards file.
-      std::filesystem::remove( OLD_BOARD_FILE ); // Get rid of the old board file or the conversion will just happen again next boot.
-   }
-   else
-   {
-      while( ( board = read_board( board_fp ) ) != nullptr )
-      {
-         bdlist.push_back( board );
-         notefile = std::format( "{}{}", BOARD_DIR, board->filename );
-         if( ( note_fp = fopen( notefile.c_str(), "r" ) ) != nullptr )
-         {
-            log_string( notefile.c_str() );
-            while( ( pnote = read_note( note_fp ) ) != nullptr )
-            {
-               board->nlist.push_back( pnote );
-               board->msg_count += 1;
-            }
-         }
-         else
-            log_printf( "{}: Note file '{}' for the '{}' board not found!", __func__, notefile.string(), board->name );
-      }
-   }
-   /*
-    * Run initial pruning 
-    */
-   check_boards(  );
 }
 
 int unread_notes( char_data * ch, board_data * board )
@@ -1263,9 +937,6 @@ int total_notes( char_data * ch, board_data * board )
 /* Only expire root messages. Replies are pointless to expire. */
 void board_check_expire( board_data * board )
 {
-   FILE *fp;
-   std::filesystem::path filename;
-
    // This defaults everything to sticky anyway...
    if( board->expire == std::chrono::system_clock::time_point{} )
       return;
@@ -1284,18 +955,6 @@ void board_check_expire( board_data * board )
 
       if( current_time >= pnote->expire )
       {
-         if( IS_BOARD_FLAG( board, BOARD_BU_PRUNED ) )
-         {
-            filename = std::format( "{}{}.purged", BOARD_DIR, board->name );
-            if( !( fp = fopen( filename.c_str(), "a" ) ) )
-            {
-               log_printf( "{}: Error opening {}!", __func__, filename.string() );
-               return;
-            }
-            fwrite_note( pnote, fp );
-            log_printf( "Saving expired note '{}' to '{}'", pnote->subject, filename.string() );
-            FCLOSE( fp );
-         }
          log_printf( "Removing expired note '{}'", pnote->subject );
          note_remove( board, pnote );
          continue;
@@ -1393,7 +1052,7 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
       for( auto* reply : pnote->rlist )
       {
          ch->print( "\r\n&[board]------------------------------------------------------------------------------&D\r\n" );
-         ch->print_fmt( "&[board3][&[board]Reply #&[board2]{}&[board3]] [&[board2]{}&[board3]]&D\r\n", count, mini_c_time( reply->date_stamp, ch->pcdata->timezone ) );
+         ch->print_fmt( "&[board3][&[board]Reply #&[board2]{}&[board3]] [&[board2]{}&[board3]]&D\r\n", count, c_time( reply->date_stamp, ch->pcdata->timezone ) );
          ch->print_fmt( "&[board]From:    &[board2]{:<15}", !reply->sender.empty() ? reply->sender : "--Error--" );
          if( !reply->to_list.empty() )
             ch->print_fmt( "   &[board]To:     &[board2]{:<15}", reply->to_list );
@@ -2140,7 +1799,7 @@ CMDF( do_note_write )
 
       ch->print_fmt( "{}You begin to write a reply for {}{}'s{} note '{}{}{}'.&D\r\n", s1, s2, pnote->sender, s1, s2, pnote->subject, s1 );
       act( AT_GREY, "$n departs for a moment, replying to a note.", ch, nullptr, nullptr, TO_ROOM );
-      ch->note_attach(  );
+      ch->note_attach( NOTE_BOARD );
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
          ch->pcdata->pnote->to_list = pnote->sender;
@@ -2169,7 +1828,7 @@ CMDF( do_note_write )
       return;
    }
 
-   ch->note_attach(  );
+   ch->note_attach( NOTE_BOARD );
    if( !argument.empty(  ) )
    {
       ch->pcdata->pnote->subject = argument;
@@ -2227,17 +1886,20 @@ CMDF( do_note_read )
          bool has_unread = false;
          if( !board )
          {
-            for( auto* lboard : bdlist )
+            std::list<board_data *>::iterator bd;
+            for( bd = bdlist.begin(  ); bd != bdlist.end(  ); ++bd )
             {
+               board = *bd;   // Added to fix crashbug -- X (3-23-05)
+
                // Immortals and Moderators can read from anywhere as intended... -X (3-23-05)
-               if( ( !can_remove( ch, lboard ) || !ch->is_immortal(  ) ) && lboard->objvnum > 0 )
+               if( ( !can_remove( ch, board ) || !ch->is_immortal(  ) ) && board->objvnum > 0 )
                   continue;
-               if( !can_read( ch, lboard ) )
+               if( !can_read( ch, board ) )
                   continue;
-               pboard = get_chboard( ch, lboard->name );
+               pboard = get_chboard( ch, board->name );
                if( pboard && pboard->alert == BD_IGNORE )
                   continue;
-               if( unread_notes( ch, lboard ) > 0 )
+               if( unread_notes( ch, board ) > 0 )
                {
                   has_unread = true;
                   break;
@@ -2621,11 +2283,7 @@ CMDF( do_board_list )
          else
             ch->print( "-" );
 
-         if( IS_BOARD_FLAG( board, BOARD_BU_PRUNED ) )
-            ch->print( "B" );
-         else
-            ch->print( "-" );
-         ch->print( "-- " );
+         ch->print( "--- " );
          if( board->objvnum )
          {
             std::string buf;
@@ -2807,8 +2465,8 @@ CMDF( do_board_stat )
       return;
    }
 
-   ch->print_fmt( "{}Filename: {}{:<20}&D\r\n", s1, s2, board->filename );
    ch->print_fmt( "{}Name:       {}{:<30}{} ObjVnum:      ", s1, s2, board->name, s1 );
+   ch->print_fmt( "{}Filename: {}{:<20}&D\r\n", s1, s2, board->filename );
    if( board->objvnum > 0 )
       ch->print_fmt( "{}{}&D\r\n", s2, board->objvnum );
    else
@@ -2868,28 +2526,23 @@ CMDF( do_board_remove )
 
 CMDF( do_board_make )
 {
-   board_data *board;
-   std::string arg;
-
-   argument = one_argument( argument, arg );
-
-   if( argument.empty(  ) || arg.empty(  ) )
+   if( argument.empty(  ) )
    {
-      ch->print( "Usage: makeboard <filename> <name>\r\n" );
+      ch->print( "Usage: makeboard <name>\r\n" );
       return;
    }
 
-   if( argument.length(  ) > 20 || arg.length(  ) > 20 )
+   if( argument.length(  ) > 20 )
    {
-      ch->print( "Please limit board names and filenames to 20 characters!\r\n" );
+      ch->print( "Please limit board names to 20 characters!\r\n" );
       return;
    }
 
    smash_tilde( argument );
-   board = new board_data;
+   board_data *board = new board_data;
 
    board->name = argument;
-   board->filename = arg;
+   board->filename = argument + ".board";
    board->desc = "This is a new board!";
    board->objvnum = 0;
 
@@ -2928,8 +2581,8 @@ CMDF( do_board_set )
       ch->print( "   Or: bset purge (this option forces a check on expired notes)\r\n" );
       ch->print( "\r\nField being one of:\r\n" );
       ch->print( "  objvnum read_level post_level remove_level expire group flags name\r\n" );
-      ch->print( "  readers posters moderators desc raise lower global filename expireall\r\n" );
-      ch->print( "\r\nFlags: \r\nbackup private announce\r\n" );
+      ch->print( "  readers posters moderators desc raise lower global expireall\r\n" );
+      ch->print( "\r\nFlags: \r\n private announce\r\n" );
       return;
    }
 
@@ -2977,7 +2630,7 @@ CMDF( do_board_set )
          }
       }
       ch->print_fmt( "{}{}&D\r\n", fMatch ? "" : "none", fUnknown ? buf : "" );
-      write_boards(  );
+      write_board( board );
       return;
    }
 
@@ -2989,7 +2642,7 @@ CMDF( do_board_set )
          return;
       }
       board->objvnum = value;
-      write_boards(  );
+      write_board( board );
       ch->print_fmt( "{}The objvnum for '{}{}{}' has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->objvnum, s1 );
       return;
    }
@@ -2997,7 +2650,7 @@ CMDF( do_board_set )
    if( !str_cmp( arg2, "global" ) )
    {
       board->objvnum = 0;
-      write_boards(  );
+      write_board( board );
       ch->print_fmt( "{}{}{} is now a global board.\r\n", s2, board->name, s1 );
       return;
    }
@@ -3020,7 +2673,7 @@ CMDF( do_board_set )
          ch->print_fmt( "{}Unknown field '{}{}{}'.&D\r\n", s1, s2, arg2, s1 );
          return;
       }
-      write_boards(  );
+      write_board( board );
       ch->print_fmt( "{}The {}{}{} for '{}{}{}' has been set to '{}{}{}'.&D\r\n", s1, s3, arg2, s1, s2, board->name, s1, s2, value, s1 );
       return;
    }
@@ -3047,30 +2700,8 @@ CMDF( do_board_set )
          ch->print_fmt( "{}Unknown field '{}{}{}'.&D\r\n", s1, s2, arg2, s1 );
          return;
       }
-      write_boards(  );
-      ch->print_fmt( "{}The {}{}{} for '{}{}{}' have been set to '{}{}{}'.\r\n", s1, s3, arg2, s1, s2, board->name, s1, s2, !argument.empty(  ) ? argument : "(nothing)", s1 );
-      return;
-   }
-
-   if( !str_cmp( arg2, "filename" ) )
-   {
-      std::filesystem::path filename;
-
-      if( !is_valid_filename( ch, BOARD_DIR, argument ) )
-         return;
-
-      if( argument.length(  ) > 20 )
-      {
-         ch->print( "Please limit board filenames to 20 characters!\r\n" );
-         return;
-      }
-      filename = std::format( "{}{}", BOARD_DIR, board->filename );
-      std::filesystem::remove( filename );
-      filename = board->filename;
-      board->filename = argument;
-      write_boards(  );
       write_board( board );
-      ch->print_fmt( "{}The filename for '{}{}{}' has been changed to '{}{}{}'.\r\n", s1, s2, filename.string(), s1, s2, board->filename, s1 );
+      ch->print_fmt( "{}The {}{}{} for '{}{}{}' have been set to '{}{}{}'.\r\n", s1, s3, arg2, s1, s2, board->name, s1, s2, !argument.empty(  ) ? argument : "(nothing)", s1 );
       return;
    }
 
@@ -3086,10 +2717,16 @@ CMDF( do_board_set )
          ch->print( "Please limit board names to 20 characters!\r\n" );
          return;
       }
-      write_boards(  );
 
       ch->print_fmt( "{}The name for '{}{}{}' has been changed to '{}{}{}'.\r\n", s1, s2, board->name, s1, s2, argument, s1 );
+
+      // Need to remove the old board file here since we are setting the individual board filenames automatically now.
+      std::filesystem::path filename = std::format( "{}{}.board", BOARD_DIR, board->filename );
+      std::filesystem::remove( filename );
       board->name = argument;
+      board->filename = argument + ".board";
+
+      write_board( board );
       return;
    }
 
@@ -3107,7 +2744,7 @@ CMDF( do_board_set )
       ch->print_fmt( "{}From now on, notes on the {}{}{} board will expire after {}{}{} days.\r\n", s1, s2, board->name, s1, s2, value, s1 );
       ch->print_fmt( "{}Please note: This will not effect notes currently on the board. To effect {}ALL{} notes, "
                   "type: {}bset <board> expireall <days>&D\r\n", s1, s3, s1, s2 );
-      write_boards(  );
+      write_board( board );
       return;
    }
 
@@ -3129,7 +2766,7 @@ CMDF( do_board_set )
       ch->print_fmt( "{}All notes on the {}{}{} board will expire after {}{}{} days.&D\r\n", s1, s2, board->name, s1, s2, value, s1 );
       ch->print( "Performing board pruning now...\r\n" );
       board_check_expire( board );
-      write_boards(  );
+      write_board( board );
       return;
    }
 
@@ -3146,7 +2783,7 @@ CMDF( do_board_set )
          return;
       }
       board->desc = argument;
-      write_boards(  );
+      write_board( board );
       ch->print_fmt( "{}The desc for {}{}{} has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->desc, s1 );
       return;
    }
@@ -3160,7 +2797,7 @@ CMDF( do_board_set )
          return;
       }
       board->group = argument;
-      write_boards(  );
+      write_board( board );
       ch->print_fmt( "{}The group for {}{}{} has been set to '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, board->group, s1 );
       return;
    }
@@ -3185,6 +2822,8 @@ CMDF( do_board_set )
       bdlist.insert( bd, board );
 
       ch->print_fmt( "{}Moved '{}{}{}' above '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, ( *bd )->name, s1 );
+
+      write_board_list(); // Bugfix 6/21/2026 - It doesn't do much good to change the order if you aren't going to save the results.
       return;
    }
 
@@ -3221,6 +2860,8 @@ CMDF( do_board_set )
          bdlist.insert( bd, board );
       }
       ch->print_fmt( "{}Moved '{}{}{}' below '{}{}{}'.&D\r\n", s1, s2, board->name, s1, s2, ( *bd )->name, s1 );
+
+      write_board_list(); // Bugfix 6/21/2026 - It doesn't do much good to change the order if you aren't going to save the results.
       return;
    }
    do_board_set( ch, "" );
@@ -3255,225 +2896,6 @@ note_data *get_log_by_number( project_data * pproject, int pnum )
    return nullptr;
 }
 
-void write_projects( void )
-{
-   FILE *fpout;
-
-   fpout = fopen( std::filesystem::path( PROJECTS_FILE ).c_str(), "w" );
-   if( !fpout )
-   {
-      bug( "{}: FATAL: cannot open projects.txt for writing!", __func__ );
-      return;
-   }
-
-   for( auto* proj : projlist )
-   {
-      auto date_stamp = std::chrono::system_clock::to_time_t( proj->date_stamp );
-
-      fprintf( fpout, "%s", "Version        2\n" );
-      fprintf( fpout, "Name   %s~\n", proj->name.c_str() );
-      fprintf( fpout, "Owner  %s~\n", ( !proj->owner.empty() ) ? proj->owner.c_str() : "None" );
-      if( !proj->coder.empty() )
-         fprintf( fpout, "Coder  %s~\n", proj->coder.c_str() );
-      fprintf( fpout, "Status %s~\n", ( !proj->status.empty() ) ? proj->status.c_str() : "No update." );
-      fprintf( fpout, "Date_stamp   %ld\n", date_stamp );
-      if( !proj->realm_name.empty() )
-         fprintf( fpout, "Realm       %s~\n", proj->realm_name.c_str() );
-      if( !proj->description.empty() )
-         fprintf( fpout, "Description %s~\n", proj->description.c_str() );
-
-      for( auto* nlog : proj->nlist )
-      {
-         fprintf( fpout, "%s\n", "Log" );
-         fwrite_note( nlog, fpout );
-      }
-      fprintf( fpout, "%s\n", "End" );
-   }
-   FCLOSE( fpout );
-}
-
-note_data *read_old_log( FILE * fp )
-{
-   note_data *nlog = new note_data;
-   char *word;
-
-   for( ;; )
-   {
-      word = fread_word( fp );
-
-      if( !str_cmp( word, "Sender" ) )
-         nlog->sender = fread_string( fp );
-      else if( !str_cmp( word, "Date" ) )
-         fread_to_eol( fp );
-      else if( !str_cmp( word, "Subject" ) )
-         nlog->subject = fread_string_nohash( fp );
-      else if( !str_cmp( word, "Text" ) )
-         nlog->text = fread_string_nohash( fp );
-      else if( !str_cmp( word, "Endlog" ) )
-      {
-         fread_to_eol( fp );
-         nlog->date_stamp = current_time;
-         return nlog;
-      }
-      else
-      {
-         deleteptr( nlog );
-         log_printf( "{}: bad key word: {}", __func__, word );
-         return nullptr;
-      }
-   }
-}
-
-project_data *read_project( FILE * fp )
-{
-   char letter;
-   int version = 0;
-
-   do
-   {
-      letter = getc( fp );
-      if( feof( fp ) )
-      {
-         FCLOSE( fp );
-         return nullptr;
-      }
-   }
-   while( isspace( letter ) );
-   ungetc( letter, fp );
-
-   project_data *project = new project_data;
-
-   for( ;; )
-   {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            KEY( "Coder", project->coder, fread_string( fp ) );
-            break;
-
-         case 'D':
-            /*
-             * For passive compatibility with older board files 
-             */
-            if( !str_cmp( word, "Date" ) )
-            {
-               fread_to_eol( fp );
-               break;
-            }
-            if( !str_cmp( word, "Date_stamp" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               project->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-            KEY( "Description", project->description, fread_string_nohash( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( project->date_stamp == std::chrono::system_clock::time_point{} )
-                  project->date_stamp = current_time;
-               if( project->status.empty() )
-                  project->status = "No update.";
-               if( str_cmp( project->owner, "None" ) )
-                  project->taken = true;
-               return project;
-            }
-            break;
-
-         case 'L':
-            if( !str_cmp( word, "Log" ) )
-            {
-               note_data *nlog;
-
-               fread_to_eol( fp );
-
-               if( version == 2 )
-                  nlog = read_note( fp );
-               else
-                  nlog = read_old_log( fp );
-
-               if( !nlog )
-                  log_printf( "{}: couldn't read log!", __func__ );
-               else
-                  project->nlist.push_back( nlog );
-               break;
-            }
-            break;
-
-         case 'N':
-            KEY( "Name", project->name, fread_string_nohash( fp ) );
-            break;
-
-         case 'O':
-            KEY( "Owner", project->owner, fread_string( fp ) );
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Realm" ) )
-            {
-               realm_data *realm = get_realm( fread_flagstring( fp ) );
-
-               if( !realm )
-                  log_printf( "Project {} has no valid realm.", project->name );
-               else
-                  project->realm_name = realm->name;
-               break;
-            }
-            break;
-
-         case 'S':
-            KEY( "Status", project->status, fread_string_nohash( fp ) );
-            break;
-
-         case 'V':
-            if( !str_cmp( word, "Version" ) )
-            {
-               version = fread_number( fp );
-               break;
-            }
-      }
-   }
-}
-
-void load_projects( void ) /* Copied load_boards structure for simplicity */
-{
-   FILE *fp;
-   project_data *project;
-
-   projlist.clear(  );
-
-   if( !( fp = fopen( std::filesystem::path( PROJECTS_FILE ).c_str(), "r" ) ) )
-      return;
-
-   while( ( project = read_project( fp ) ) != nullptr )
-      projlist.push_back( project );
-
-   // Bugfix - CPPcheck flagged this. It's possible for it to be closed in fread_project before getting back here.
-   if( fp )
-   {
-      FCLOSE( fp );
-   }
-}
-
 project_data::project_data(  )
 {
 }
@@ -3501,6 +2923,126 @@ void free_projects( void )
       deleteptr( project );
    }
    return;
+}
+
+// 0: ???
+// 1: ???
+// 2: The apparent current and only version so far?
+constexpr int PROJECTS_VERSION = 2;
+
+void write_projects( void )
+{
+   std::ofstream stream;
+
+   stream.open( std::filesystem::path( PROJECTS_FILE ) );
+   if( !stream.is_open(  ) )
+   {
+      bug( "{}: Cannot open {} for writing: {}", __func__, PROJECTS_FILE, std::strerror(errno) );
+      return;
+   }
+
+   stream << std::format( "#VERSION  {}\n", PROJECTS_VERSION );
+
+   for( auto* proj : projlist )
+   {
+      auto date_stamp = std::chrono::system_clock::to_time_t( proj->date_stamp );
+
+      stream << std::format( "Name   {}~\n", proj->name );
+      stream << std::format( "Owner  {}~\n", ( !proj->owner.empty() ) ? proj->owner : "None" );
+      if( !proj->coder.empty() )
+         stream << std::format( "Coder  %s~\n", proj->coder );
+      stream << std::format( "Status {}~\n", ( !proj->status.empty() ) ? proj->status : "No update." );
+      stream << std::format( "Date_stamp   {}\n", date_stamp );
+      if( !proj->realm_name.empty() )
+         stream << std::format( "Realm       {}~\n", proj->realm_name );
+      if( !proj->description.empty() )
+         stream << std::format( "Description {}~\n", proj->description );
+
+      for( auto* nlog : proj->nlist )
+      {
+         stream << "#LOG\n";
+         write_note( nlog, stream );
+      }
+      stream << "#END\n";
+   }
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, PROJECTS_FILE, std::strerror(errno) );
+}
+
+project_data *read_project( std::ifstream & stream )
+{
+   auto read_line = [&]( char delimiter = '~' ) -> std::string
+   {
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
+
+      return line;
+   };
+
+   project_data *project = new project_data;
+
+   int file_ver = 0;
+   std::string key;
+   while( stream >> key )
+   {
+      note_data *note;
+
+      if( key == "#VERSION" || key == "Version" )
+         stream >> file_ver;
+      else if( key == "#END" ) // Once the main board data is loaded, now we concentrate on reading the actual board files.
+         return project;
+      else if( key == "Name" )
+         project->name = read_line();
+      else if( key == "Owner" )
+         project->owner = read_line();
+      else if( key == "Coder" )
+         project->coder = read_line();
+      else if( key == "Status" )
+         project->status = read_line();
+      else if( key == "Date_stamp" )
+      {
+         time_t loaded_time;
+
+         stream >> loaded_time;
+         project->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+
+      else if( key == "Realm" )
+         project->realm_name = read_line();
+      else if( key == "Description" )
+         project->description = read_line();
+      else if( key == "#LOG" )
+      {
+         note = new note_data;
+         read_note( note, file_ver, stream );
+         project->nlist.push_back( note );
+      }
+      else
+         bug( "{}: Bad section in {} - skipping.", __func__, PROJECTS_FILE );
+   }
+   bug( "{}: Unexpected end of filestream!", __func__ );
+   return nullptr;
+}
+
+void load_projects( void )
+{
+   std::ifstream stream;
+   project_data *project;
+
+   projlist.clear(  );
+
+   stream.open( std::filesystem::path( PROJECTS_FILE ) );
+   if( !stream.is_open(  ) )
+   {
+      // No need to report an error here since you may not have any projects yet.
+      return;
+   }
+
+   while( ( project = read_project( stream ) ) != nullptr )
+      projlist.push_back( project );
+   stream.close();
 }
 
 // Hacky looking ugly define, but fuck having to type all this out all the time.
@@ -3837,7 +3379,7 @@ CMDF( do_project )
       if( !str_cmp( argument, "write" ) )
       {
          if( !ch->pcdata->pnote )
-            ch->note_attach(  );
+            ch->note_attach( NOTE_PROJECT );
          ch->substate = SUB_WRITING_NOTE;
          ch->pcdata->dest_buf = ch->pcdata->pnote;
          ch->editor_desc_printf( "A log note in project '%s', entitled '%s'.",
@@ -3851,7 +3393,7 @@ CMDF( do_project )
       if( !str_cmp( arg, "subject" ) )
       {
          if( !ch->pcdata->pnote )
-            ch->note_attach(  );
+            ch->note_attach( NOTE_PROJECT );
 
          ch->pcdata->pnote->subject = argument;
          ch->print_fmt( "Log Subject set to: {}\r\n", ch->pcdata->pnote->subject );
