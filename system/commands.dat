@@ -2334,6 +2334,15 @@ Flags       ghost
 End
 
 #COMMAND
+Name        mapout
+Code        do_mapout
+Position    dead
+Level       103
+Log         normal
+Flags       ghost
+End
+
+#COMMAND
 Name        mpdoppleganger
 Code        do_mpdoppleganger
 Position    dead

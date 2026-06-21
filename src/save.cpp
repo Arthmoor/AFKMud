@@ -60,6 +60,7 @@ void bind_follower( char_data *, char_data *, int, int );
 void assign_area( char_data * );
 affect_data *fread_afk_affect( FILE * );
 bool is_valid_wear_loc( char_data *, int );
+void restore_map_buffer( char_data * );
 
 /*
  * Increment with every major format change.
@@ -216,6 +217,8 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ).c_str() );
    if( !ch->chardesc.empty() )
       fprintf( fp, "Description  %s~\n", strip_cr( ch->chardesc ).c_str() );
+   if( !ch->pcdata->map_buffer.empty() )
+      fprintf( fp, "OLCMapBuffer %s~\n", ch->pcdata->map_buffer.c_str() );
    fprintf( fp, "Sex          %s~\n", npc_sex[ch->sex] );
    fprintf( fp, "Race         %s~\n", npc_race[ch->race] );
    fprintf( fp, "Class        %s~\n", npc_class[ch->Class] );
@@ -1342,6 +1345,10 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             }
             break;
 
+         case 'O':
+            STDSKEY( "OLCMapBuffer", ch->pcdata->map_buffer );
+            break;
+
          case 'P':
             STDSKEY( "Password", ch->pcdata->pwd );
 
@@ -1722,6 +1729,9 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   add_loginmsg( ch->name, 18, buf );
                   ch->pcdata->realm_name.clear(  );
                }
+
+               if( !ch->pcdata->map_buffer.empty() )
+                  restore_map_buffer( ch );
 
                if( ch->has_pcflag( PCFLAG_ONMAP ) )
                   ch->continent = find_continent_by_room_vnum( ch->in_room->vnum );

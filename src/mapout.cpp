@@ -159,13 +159,13 @@ map_index *get_map_index( int vnum )
 
 void map_stats( char_data* ch, int* rooms, int* rows, int* cols )
 {
-   if( !ch->pcdata->pnote )
+   if( ch->pcdata->map_buffer.empty() )
    {
-      bug("{}: ch->pcdata->pnote == nullptr!", __func__);
+      bug("{}: ch->pcdata->map_buffer is empty!", __func__);
       return;
    }
 
-   const std::string & text = ch->pcdata->pnote->text;
+   const std::string & text = ch->pcdata->map_buffer;
 
    int row = 0;
    int col = 0;
@@ -334,7 +334,7 @@ struct DirRule
    std::string symbols;
 
    // Checks if the immediate connector is a door
-   bool is_door( const map_stuff & m) const { return m.code == ':' || m.code == '='; }
+   bool is_door( const map_stuff & m ) const { return m.code == ':' || m.code == '='; }
 };
 
 const std::vector<DirRule> dir_rules = {
@@ -351,7 +351,7 @@ const std::vector<DirRule> dir_rules = {
 };
 
 /*
- * This function takes the character string in ch->pcdata->pnote and
+ * This function takes the character string in ch->pcdata->map_buffer and
  *  creates rooms laid out in the appropriate configuration.
  */
 void map_to_rooms( char_data* ch, map_index* m_index )
@@ -360,14 +360,14 @@ void map_to_rooms( char_data* ch, map_index* m_index )
    map_index* tmp;
    static map_stuff rmap[49][78];
 
-   if( !ch->pcdata->pnote )
+   if( ch->pcdata->map_buffer.empty() )
    {
-      bug( "{}: ch->pcdata->pnote == nullptr!", __func__ );
+      bug( "{}: ch->pcdata->map_buffer is empty!", __func__ );
       return;
    }
 
-   ch->pcdata->pnote->text = check_map( ch->pcdata->pnote->text );
-   const std::string & text = ch->pcdata->pnote->text;
+   ch->pcdata->map_buffer = check_map( ch->pcdata->map_buffer );
+   const std::string & text = ch->pcdata->map_buffer;
 
    if( !m_index )
    {
@@ -493,6 +493,13 @@ int num_rooms_avail( char_data * ch )
    return n;
 }
 
+void restore_map_buffer( char_data * ch )
+{
+   ch->note_attach( NOTE_OLCMAP );
+   ch->pcdata->pnote->text = ch->pcdata->map_buffer;
+   ch->print( "You have a pending map from your last session. Use 'mapout show' to view it.\r\n" );
+}
+
 CMDF( do_mapout )
 {
    std::string arg;
@@ -531,6 +538,7 @@ CMDF( do_mapout )
             bug( "{}: sub_writing_map: ch->pcdata->dest_buf != ch->pcdata->pnote", __func__ );
          ch->pcdata->pnote->text = ch->copy_buffer( );
          ch->stop_editing(  );
+         ch->pcdata->map_buffer = ch->pcdata->pnote->text; // Cause it would suck if the buffer got trashed because you started writing a note or something.
          return;
    }
 
@@ -540,7 +548,7 @@ CMDF( do_mapout )
 
    if( !str_cmp( arg, "stat" ) )
    {
-      if( !ch->pcdata->pnote )
+      if( ch->pcdata->map_buffer.empty() )
       {
          ch->print( "You have no map in progress.\r\n" );
          return;
@@ -549,47 +557,48 @@ CMDF( do_mapout )
       ch->print_fmt( "Map represents {} rooms, {} rows, and {} columns\r\n", rooms, rows, cols );
       avail_rooms = num_rooms_avail( ch );
       ch->print_fmt( "You currently have {} unused rooms.\r\n", avail_rooms );
-      act( AT_ACTION, "$n glances at an etherial map.", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_ACTION, "$n glances at an ethereal map.", ch, nullptr, nullptr, TO_ROOM );
       return;
    }
 
    if( !str_cmp( arg, "write" ) )
    {
-      ch->note_attach(  );
+      ch->note_attach( NOTE_OLCMAP );
       ch->substate = SUB_WRITING_NOTE;
       ch->pcdata->dest_buf = ch->pcdata->pnote;
+      if( !ch->pcdata->map_buffer.empty() )
+         ch->pcdata->pnote->text = ch->pcdata->map_buffer;
       ch->start_editing( ch->pcdata->pnote->text );
       return;
    }
 
    if( !str_cmp( arg, "clear" ) )
    {
-      if( !ch->pcdata->pnote )
+      if( ch->pcdata->map_buffer.empty() )
       {
          ch->print( "You have no map in progress\r\n" );
          return;
       }
-      deleteptr( ch->pcdata->pnote );
-      ch->pcdata->pnote = nullptr;
+      ch->pcdata->map_buffer.clear();
       ch->print( "Map cleared.\r\n" );
       return;
    }
 
    if( !str_cmp( arg, "show" ) )
    {
-      if( !ch->pcdata->pnote )
+      if( ch->pcdata->map_buffer.empty() )
       {
          ch->print( "You have no map in progress.\r\n" );
          return;
       }
-      ch->print( ch->pcdata->pnote->text );
+      ch->print( ch->pcdata->map_buffer );
       do_mapout( ch, "stat" );
       return;
    }
 
    if( !str_cmp( arg, "create" ) )
    {
-      if( !ch->pcdata->pnote )
+      if( ch->pcdata->map_buffer.empty() )
       {
          ch->print( "You have no map in progress.\r\n" );
          return;
@@ -615,7 +624,7 @@ CMDF( do_mapout )
          if( !( map_obj = map_obj_index->create_object( 1 ) ) )
             log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          ed = set_extra_descr( map_obj, "runes map scrawls" );
-         ed->desc = ch->pcdata->pnote->text;
+         ed->desc = ch->pcdata->map_buffer;
          map_obj->to_char( ch );
       }
       else
@@ -628,9 +637,9 @@ CMDF( do_mapout )
       ch->print( "Ok.\r\n" );
       return;
    }
-   ch->print( "mapout write: create a map in edit buffer.\r\n" );
-   ch->print( "mapout stat: get information about a written, but not yet created map.\r\n" );
-   ch->print( "mapout clear: clear a written, but not yet created map.\r\n" );
-   ch->print( "mapout show: show a written, but not yet created map.\r\n" );
-   ch->print( "mapout create: turn a written map into rooms in your assigned room vnum range.\r\n" );
+   ch->print( "mapout write:  Create a map in edit buffer.\r\n" );
+   ch->print( "mapout stat:   Get information about a written, but not yet created map.\r\n" );
+   ch->print( "mapout clear:  Clear a written, but not yet created map. Be careful with this.\r\n" );
+   ch->print( "mapout show:   Show a written, but not yet created map.\r\n" );
+   ch->print( "mapout create: Turn a written map into rooms in your assigned room vnum range.\r\n" );
 }
