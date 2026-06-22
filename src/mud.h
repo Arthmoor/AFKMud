@@ -158,7 +158,7 @@ extern short gsn_style_standard;
 extern short gsn_style_aggressive;
 extern short gsn_style_berserk;
 
-extern short gsn_backheel;          //Samson 5-31-00
+extern short gsn_backheel;          // Samson 5-31-00
 extern short gsn_metallurgy;        // Samson 5-31-00
 extern short gsn_scout;             // Samson 5-29-00
 extern short gsn_scry;              // Samson 5-29-00
@@ -289,26 +289,6 @@ struct extra_descr_data
 enum sun_positions
 {
    SUN_DARK, SUN_RISE, SUN_LIGHT, SUN_SET
-};
-
-enum sky_conditions
-{
-   SKY_CLOUDLESS, SKY_CLOUDY, SKY_RAINING, SKY_LIGHTNING
-};
-
-enum temp_conditions
-{
-   TEMP_COLD, TEMP_COOL, TEMP_NORMAL, TEMP_WARM, TEMP_HOT
-};
-
-enum precip_conditions
-{
-   PRECIP_ARID, PRECIP_DRY, PRECIP_NORMAL, PRECIP_DAMP, PRECIP_WET
-};
-
-enum wind_conditions
-{
-   WIND_STILL, WIND_CALM, WIND_NORMAL, WIND_BREEZY, WIND_WINDY
 };
 
 struct time_info_data
