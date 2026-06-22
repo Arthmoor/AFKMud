@@ -424,14 +424,6 @@ enum autosave_flags
    SV_ZAPDROP, SV_AUCTION, SV_GET, SV_RECEIVE, SV_IDLE, SV_FILL, SV_EMPTY, SV_MAX
 };
 
-/*
- * Flags for act_string -- Shaddai
- */
-enum act_strings
-{
-   STRING_NONE, STRING_IMM
-};
-
 constexpr int PT_WATER = 100;
 constexpr int PT_AIR = 200;
 constexpr int PT_EARTH = 300;

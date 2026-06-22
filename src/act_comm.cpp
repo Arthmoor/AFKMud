@@ -1288,6 +1288,14 @@ CMDF( do_languages )
    ch->print( "\r\n" );
 }
 
+/*
+ * Flags for act_string -- Shaddai
+ */
+enum act_strings
+{
+   STRING_NONE, STRING_IMM
+};
+
 std::string act_string( std::string_view format, char_data * to, char_data * ch, const void *arg1, const void *arg2, int flags )
 {
    const char *he_she[] = { "it", "he", "she", "it" };
