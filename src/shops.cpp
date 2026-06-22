@@ -355,13 +355,13 @@ CMDF( do_setprice )
 
    if( found && clan != ch->pcdata->clan )
    {
-      ch->printf( "Beat it! I don't work for your %s!\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->print_fmt( "Beat it! I don't work for your {}!\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
       return;
    }
 
    if( str_cmp( ch->name, clan->leader ) && str_cmp( ch->name, clan->number1 ) && str_cmp( ch->name, clan->number2 ) )
    {
-      ch->printf( "Only the %s admins can set prices on inventory.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->print_fmt( "Only the {} admins can set prices on inventory.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
       return;
    }
 
@@ -382,18 +382,18 @@ CMDF( do_setprice )
          obj->from_char(  );
          obj->to_char( ch );
          obj->cost = obj->pIndexData->cost;
-         ch->printf( "%s has been removed from sale.\r\n", obj->short_descr );
+         ch->print_fmt( "{} has been removed from sale.\r\n", obj->short_descr );
          ch->save(  );
       }
       else
       {
          obj->cost = price;
-         ch->printf( "The price for %s has been changed to %d.\r\n", obj->short_descr, price );
+         ch->print_fmt( "The price for {} has been changed to {}.\r\n", obj->short_descr, price );
       }
       save_shop( keeper );
       return;
    }
-   ch->print( "He doesnt have that item!\r\n" );
+   ch->print( "He doesn't have that item!\r\n" );
 }
 
 /*
@@ -715,7 +715,7 @@ CMDF( do_buy )
          double pct = maxgold * x;
          maxgold = maxgold - pct;
 
-         ch->printf( "&[skill]Your bargaining skills have reduced the price by %d gold!\r\n", ( int )pct );
+         ch->print_fmt( "&[skill]Your bargaining skills have reduced the price by {} gold!\r\n", ( int )pct );
       }
       else
       {
@@ -842,8 +842,9 @@ CMDF( do_buy )
       }
       else
       {
-         act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n buys {} $p{}.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
-         act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You buy {} $p{}.", noi, ( obj->short_descr[strlen( obj->short_descr ) - 1] == 's' ? "" : "s" ) );
+         act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n buys {} $p{}.", noi, ( !obj->short_descr.empty() && obj->short_descr.back() == 's' ? "" : "s" ) );
+         act_printf( AT_ACTION, ch, obj, nullptr, TO_CHAR, "You buy {} $p{}.", noi, ( !obj->short_descr.empty() && obj->short_descr.back() == 's' ? "" : "s" ) );
+
          act( AT_ACTION, "$N puts them into a bag and hands it to you.", ch, nullptr, keeper, TO_CHAR );
       }
 
@@ -1217,7 +1218,7 @@ void repair_one_obj( char_data * ch, char_data * keeper, obj_data * obj, std::st
 
    if( !ch->can_drop_obj( obj ) )
    {
-      ch->printf( "You can't let go of %s.\r\n", obj->short_descr );
+      ch->print_fmt( "You can't let go of {}.\r\n", obj->short_descr );
       return;
    }
 
@@ -1361,7 +1362,7 @@ void appraise_all( char_data * ch, char_data * keeper, std::string_view fixstr )
           && ( obj->item_type == ITEM_ARMOR || obj->item_type == ITEM_WEAPON || obj->item_type == ITEM_WAND || obj->item_type == ITEM_STAFF ) )
       {
          if( !ch->can_drop_obj( obj ) )
-            ch->printf( "You can't let go of %s.\r\n", obj->short_descr );
+            ch->print_fmt( "You can't let go of {}.\r\n", obj->short_descr );
          else if( ( cost = get_repaircost( keeper, obj ) ) < 0 )
          {
             if( cost != -2 )

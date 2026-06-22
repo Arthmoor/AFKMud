@@ -530,7 +530,7 @@ obj_data *find_obj( char_data * ch, std::string argument, bool carryonly )
       }
       else if( !carryonly && !( obj = ch->get_obj_here( arg1 ) ) )
       {
-         ch->printf( "I see no %s here.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "I see no {} here.\r\n", arg1 );
          return nullptr;
       }
       return obj;
@@ -551,7 +551,7 @@ obj_data *find_obj( char_data * ch, std::string argument, bool carryonly )
       }
       if( !container->extra_flags.test( ITEM_COVERING ) && IS_SET( container->value[1], CONT_CLOSED ) )
       {
-         ch->printf( "The %s is closed.\r\n", container->name );
+         ch->print_fmt( "The {} is closed.\r\n", container->name );
          return nullptr;
       }
       if( !( obj = get_obj_list( ch, arg1, container->contents ) ) )

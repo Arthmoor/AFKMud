@@ -882,13 +882,13 @@ CMDF( do_identify )
    if( !ch->to_room( original ) )
       log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
-   if( !obj || ( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) ) )
+   if( !obj || obj->buyer.empty() )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       return;
    }
 
-   if( !str_cmp( obj->seller, "" ) || !obj->seller )
+   if( obj->seller.empty() )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       bug( "{}: Object with no seller - {}", __func__, obj->short_descr );
@@ -1059,7 +1059,7 @@ CMDF( do_collect )
       return;
    }
 
-   if( !str_cmp( obj->seller, ch->name ) && ( !str_cmp( obj->buyer, "" ) || obj->buyer == nullptr ) )
+   if( !str_cmp( obj->seller, ch->name ) && obj->buyer.empty() )
    {
       double fee = ( obj->cost * .05 );
 
@@ -1135,8 +1135,8 @@ CMDF( do_collect )
    act( AT_ACTION, "$n collects your money, and hands you $p.", auc, obj, ch, TO_VICT );
    act( AT_ACTION, "$n collects $N's money, and hands $M $p.", auc, obj, ch, TO_NOTVICT );
 
-   STRFREE( obj->seller );
-   STRFREE( obj->buyer );
+   obj->seller.clear();
+   obj->buyer.clear();
    obj->bid = 0;
 }
 
@@ -1177,13 +1177,13 @@ void auction_value( char_data * ch, char_data * auc, std::string_view argument )
    if( !ch->to_room( original ) )
       log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
-   if( !obj || ( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) ) )
+   if( !obj || obj->buyer.empty() )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       return;
    }
 
-   if( !str_cmp( obj->seller, "" ) || obj->seller == nullptr )
+   if( obj->seller.empty() )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       bug( "{}: Object with no seller - {}", __func__, obj->short_descr );
@@ -1242,14 +1242,14 @@ void auction_buy( char_data * ch, char_data * auc, std::string_view argument )
       return;
    }
 
-   if( !str_cmp( obj->seller, "" ) || obj->seller == nullptr )
+   if( obj->seller.empty() )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'There isn't a {} being offered.'", argument );
       bug( "{}: Object with no seller - {}", __func__, obj->short_descr );
       return;
    }
 
-   if( obj->buyer != nullptr && str_cmp( obj->buyer, "" ) )
+   if( !obj->buyer.empty() )
    {
       act_printf( AT_TELL, auc, nullptr, ch, TO_VICT, "$n tells you 'That item has already been sold to {}.'", obj->buyer );
       return;
@@ -1393,9 +1393,8 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
 
    obj->separate(  );
 
-   STRFREE( obj->seller );
-   obj->seller = STRALLOC( ch->name.c_str() );
-   STRFREE( obj->buyer );
+   obj->seller = ch->name;
+   obj->buyer.clear();
    obj->bid = minbid;
    act( AT_AUCTION, "$n offers $p up for auction.", ch, obj, nullptr, TO_ROOM );
    act( AT_AUCTION, "You put $p up for auction.", ch, obj, nullptr, TO_CHAR );

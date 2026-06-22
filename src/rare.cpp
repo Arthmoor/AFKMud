@@ -73,7 +73,7 @@ void inventory_scan( char_data * ch, obj_data * obj )
       if( obj->wear_loc != WEAR_NONE )
          ch->unequip( obj );
       obj->separate(  );
-      ch->printf( "%s dissapears in a cloud of smoke!\r\n", obj->short_descr );
+      ch->print_fmt( "{} dissapears in a cloud of smoke!\r\n", obj->short_descr );
       obj->extract(  );
    }
 

@@ -2069,7 +2069,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
       case 'o':
          if( obj && !obj->extracted(  ) )
          {
-            mob->can_see_obj( obj, false ) ? one_argument( obj->name, t ) : strcpy( t, "something" );
+            mob->can_see_obj( obj, false ) ? one_argument( obj->name.c_str(), t ) : strcpy( t, "something" );
          }
          else
             strcpy( t, "something" );
@@ -2078,7 +2078,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
       case 'O':
          if( obj && !obj->extracted(  ) )
          {
-            mob->can_see_obj( obj, false ) ? strcpy( t, obj->short_descr ) : strcpy( t, "something" );
+            mob->can_see_obj( obj, false ) ? strcpy( t, obj->short_descr.c_str() ) : strcpy( t, "something" );
          }
          else
             strcpy( t, "something" );
@@ -2087,7 +2087,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
       case 'p':
          if( v_obj && !v_obj->extracted(  ) )
          {
-            mob->can_see_obj( v_obj, false ) ? one_argument( v_obj->name, t ) : strcpy( t, "something" );
+            mob->can_see_obj( v_obj, false ) ? one_argument( v_obj->name.c_str(), t ) : strcpy( t, "something" );
          }
          else
             strcpy( t, "something" );
@@ -2096,7 +2096,7 @@ void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_
       case 'P':
          if( v_obj && !v_obj->extracted(  ) )
          {
-            mob->can_see_obj( v_obj, false ) ? strcpy( t, v_obj->short_descr ) : strcpy( t, "something" );
+            mob->can_see_obj( v_obj, false ) ? strcpy( t, v_obj->short_descr.c_str() ) : strcpy( t, "something" );
          }
          else
             strcpy( t, "something" );
@@ -3436,7 +3436,7 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
          return;
       }
 
-      stralloc_printf( &obj->short_descr, obj->short_descr, amount );
+      obj->short_descr = std::vformat( obj->short_descr, std::make_format_args( amount ) );
       obj->value[0] = amount;
       obj = obj->to_char( mob );
       mob->gold -= amount;

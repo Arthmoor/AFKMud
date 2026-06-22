@@ -43,118 +43,73 @@ void raw_kill( char_data *, char_data * );
 extern int top_exit;
 
 /* generate an action description message */
-void actiondesc( char_data * ch, obj_data * obj )
+void actiondesc( char_data *ch, obj_data *obj )
 {
-   liquid_data *liq = nullptr;
-   char charbuf[MSL], roombuf[MSL];
-   char *srcptr = obj->action_desc;
-   char *charptr = charbuf;
-   char *roomptr = roombuf;
-   const char *ichar = "You";
-   const char *iroom = "Someone";
+   if( !obj || obj->action_desc.empty() )
+      return;
 
-   while( *srcptr != '\0' )
+   std::string char_str, room_str;
+   const std::string & src = obj->action_desc;
+
+   for( size_t i = 0; i < src.length(); ++i )
    {
-      if( *srcptr == '$' )
+      if( src[i] == '$' && i + 1 < src.length() )
       {
-         ++srcptr;
-         switch ( *srcptr )
+         char code = src[++i];
+
+         switch( code )
          {
-            case 'e':
-               ichar = "you";
-               iroom = "$e";
-               break;
-
-            case 'm':
-               ichar = "you";
-               iroom = "$m";
-               break;
-
-            case 'n':
-               ichar = "you";
-               iroom = "$n";
-               break;
-
-            case 's':
-               ichar = "your";
-               iroom = "$s";
-               break;
-
-               /*
-                * case 'q':
-                * iroom = "s";
-                * break;
-                */
-
+            case 'e': char_str += "you";  room_str += "$e"; break;
+            case 'm': char_str += "you";  room_str += "$m"; break;
+            case 'n': char_str += "you";  room_str += "$n"; break;
+            case 's': char_str += "your"; room_str += "$s"; break;
             default:
-               --srcptr;
-               *charptr++ = *srcptr;
-               *roomptr++ = *srcptr;
+               char_str += '$';
+               char_str += code;
+               room_str += '$';
+               room_str += code;
                break;
          }
       }
-      else if( *srcptr == '%' && *++srcptr == 's' )
+      else if( src[i] == '%' && i + 1 < src.length() && src[i + 1] == 's' )
       {
-         ichar = "You";
-         iroom = "$n";
+         char_str += "You";
+         room_str += "$n";
+         ++i;
       }
       else
       {
-         *charptr++ = *srcptr;
-         *roomptr++ = *srcptr;
-         ++srcptr;
-         continue;
+         char_str += src[i];
+         room_str += src[i];
       }
-
-      while( ( *charptr = *ichar ) != '\0' )
-      {
-         ++charptr;
-         ++ichar;
-      }
-
-      while( ( *roomptr = *iroom ) != '\0' )
-      {
-         ++roomptr;
-         ++iroom;
-      }
-      ++srcptr;
    }
-   *charptr = '\0';
-   *roomptr = '\0';
 
-   switch ( obj->item_type )
+   switch( obj->item_type )
    {
       case ITEM_BLOOD:
       case ITEM_FOUNTAIN:
-         act( AT_ACTION, charbuf, ch, obj, ch, TO_CHAR );
-         act( AT_ACTION, roombuf, ch, obj, ch, TO_ROOM );
-         return;
-
-      case ITEM_DRINK_CON:
-         if( ( liq = get_liq_vnum( obj->value[2] ) ) == nullptr )
-            bug( "{}: bad liquid number {}.", __func__, obj->value[2] );
-
-         act( AT_ACTION, charbuf, ch, obj, liq->shortdesc.c_str(  ), TO_CHAR );
-         act( AT_ACTION, roombuf, ch, obj, liq->shortdesc.c_str(  ), TO_ROOM );
-         return;
-
-      case ITEM_PIPE:
-         return;
-
-      case ITEM_ARMOR:
-      case ITEM_WEAPON:
-      case ITEM_LIGHT:
-         return;
-
       case ITEM_COOK:
       case ITEM_FOOD:
       case ITEM_PILL:
-         act( AT_ACTION, charbuf, ch, obj, ch, TO_CHAR );
-         act( AT_ACTION, roombuf, ch, obj, ch, TO_ROOM );
-         return;
+         act( AT_ACTION, char_str, ch, obj, ch, TO_CHAR );
+         act( AT_ACTION, room_str, ch, obj, ch, TO_ROOM);
+         break;
+
+      case ITEM_DRINK_CON:
+      {
+         liquid_data *liq = get_liq_vnum( obj->value[2] );
+         if( !liq )
+         {
+            bug( "{}: bad liquid number {}.", __func__, obj->value[2] );
+            return;
+         }
+         act( AT_ACTION, char_str, ch, obj, liq->shortdesc.c_str(), TO_CHAR );
+         act( AT_ACTION, room_str, ch, obj, liq->shortdesc.c_str(), TO_ROOM );
+         break;
+      }
 
       default:
-         return;
+         break;
    }
 }
 
@@ -225,7 +180,7 @@ CMDF( do_eat )
    {
       if( !oprog_use_trigger( ch, obj, nullptr, nullptr ) )
       {
-         if( !obj->action_desc || obj->action_desc[0] == '\0' )
+         if( obj->action_desc.empty() )
          {
             act( AT_ACTION, "$n eats $p.", ch, obj, nullptr, TO_ROOM );
             act( AT_ACTION, "You eat $p.", ch, obj, nullptr, TO_CHAR );
@@ -270,8 +225,7 @@ CMDF( do_eat )
                 * Half Trolls are not affected by bad food 
                 */
                if( ch->race == RACE_HALF_TROLL )
-                  ch->printf( "%s was poisoned, but had no affect on you.\r\n", obj->short_descr );
-
+                  ch->print_fmt( "{} was poisoned, but had no affect on you.\r\n", obj->short_descr );
                else
                {
                   if( obj->value[3] != 0 )
@@ -1338,7 +1292,7 @@ CMDF( do_apply )
 
    if( !oprog_use_trigger( ch, salve, nullptr, nullptr ) )
    {
-      if( !salve->action_desc || salve->action_desc[0] == '\0' )
+      if( salve->action_desc.empty() )
       {
          if( salve->value[1] < 1 )
          {
@@ -1448,8 +1402,7 @@ CMDF( do_invoke )
       obj->value[2] -= 1;
       if( obj->value[2] == 0 )
       {
-         STRFREE( obj->short_descr );
-         obj->short_descr = STRALLOC( "A depleted recall rune" );
+         obj->short_descr = "A depleted recall rune";
          ch->print( "The rune hums softly and is now depleted of power.\r\n" );
       }
       act( AT_ACTION, "$n appears in the room.", ch, nullptr, nullptr, TO_ROOM );
@@ -1514,10 +1467,9 @@ CMDF( do_mark )
 
       obj->value[1] = ch->in_room->vnum;
       obj->value[2] = 5;
-      stralloc_printf( &obj->name, "%s rune", argument.c_str(  ) );
-      stralloc_printf( &obj->short_descr, "A recall rune to %s", capitalize( argument ).c_str(  ) );
-      STRFREE( obj->objdesc );
-      obj->objdesc = STRALLOC( "A small magical rune with a mark inscribed on it lies here." );
+      obj->name = std::format( "{} rune", argument );
+      obj->short_descr = std::format( "A recall rune to {}", capitalize( argument ) );
+      obj->objdesc = "A small magical rune with a mark inscribed on it lies here.";
       ch->print( "&BYou mark the rune with your location.\r\n" );
    }
 }

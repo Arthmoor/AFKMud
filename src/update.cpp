@@ -1571,9 +1571,9 @@ void obj_update( void )
        */
       if( obj->item_type == ITEM_CORPSE_PC && obj->value[5] == 0 )
       {
-         char name[MSL];
-         char *bufptr;
+         std::string name, bufptr;
          int frac = obj->timer / 8;
+
          bufptr = one_argument( obj->short_descr, name );
          bufptr = one_argument( bufptr, name );
          bufptr = one_argument( bufptr, name );
@@ -1583,7 +1583,7 @@ void obj_update( void )
          frac = urange( 1, frac, 5 );
 
          obj->value[3] = frac;   /* Advances decay stage for resurrection spell */
-         stralloc_printf( &obj->objdesc, corpse_descs[frac], bufptr );
+         obj->objdesc = std::vformat( corpse_descs[frac], std::make_format_args( bufptr ) );
 
          /*
           * Why not update the description? 
@@ -1595,18 +1595,18 @@ void obj_update( void )
        * Make sure skeletons get saved as their timers decrease 
        */
       if( obj->item_type == ITEM_CORPSE_PC && obj->value[5] == 1 )
-         write_corpse( obj, obj->short_descr + 14 );
+         write_corpse( obj, obj->short_descr.substr(14) );
 
       if( obj->item_type == ITEM_CORPSE_NPC && obj->timer <= 5 )
       {
-         char name[MSL];
-         char *bufptr;
+         std::string name, bufptr;
+
          bufptr = one_argument( obj->short_descr, name );
          bufptr = one_argument( bufptr, name );
          bufptr = one_argument( bufptr, name );
 
          obj->separate(  );
-         stralloc_printf( &obj->objdesc, corpse_descs[obj->timer], bufptr );
+         obj->objdesc = std::vformat( corpse_descs[obj->timer], std::make_format_args( bufptr ) );
       }
 
       /*
@@ -1721,22 +1721,21 @@ void obj_update( void )
       {
          if( obj->value[5] == 0 )
          {
-            char name[MSL], name2[MSL];
-            char *bufptr;
+            std::string name, name2, bufptr;
 
             bufptr = one_argument( obj->short_descr, name );
             bufptr = one_argument( bufptr, name );
             bufptr = one_argument( bufptr, name );
-            strlcpy( name2, bufptr, MSL );   /* Dunno why, but it's corrupting if I don't do this - Samson */
+            name2 = bufptr; // Dunno why, but it's corrupting if I don't do this - Samson
 
             obj->timer = 250; /* Corpse is now a skeleton */
             obj->value[3] = 0;
             obj->value[5] = 1;
 
-            stralloc_printf( &obj->name, "corpse skeleton %s", name2 );
-            stralloc_printf( &obj->short_descr, "A skeleton of %s", name2 );
-            stralloc_printf( &obj->objdesc, corpse_descs[0], name2 );
-            write_corpse( obj, obj->short_descr + 14 );
+            obj->name = std::format( "corpse skeleton {}", name2 );
+            obj->short_descr = std::format( "A skeleton of {}", name2 );
+            obj->objdesc = std::vformat( corpse_descs[0], std::make_format_args( name2 ) );
+            write_corpse( obj, obj->short_descr.substr(14) );
          }
          else
          {
@@ -1745,7 +1744,7 @@ void obj_update( void )
             else if( obj->in_room )
                obj->empty( nullptr, obj->in_room );
 
-            write_corpse( obj, obj->short_descr + 14 );
+            write_corpse( obj, obj->short_descr.substr(14) );
          }
       }
 

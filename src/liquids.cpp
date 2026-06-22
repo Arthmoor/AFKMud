@@ -1618,7 +1618,7 @@ CMDF( do_fill )
    {
       if( IS_SET( obj->value[1], CONT_CLOSED ) )
       {
-         act( AT_PLAIN, "The $d is closed.", ch, nullptr, obj->name, TO_CHAR );
+         act( AT_PLAIN, "The $d is closed.", ch, nullptr, obj->name.c_str(), TO_CHAR );
          return;
       }
       if( obj->get_real_weight(  ) / obj->count >= obj->value[0] )
@@ -1806,8 +1806,8 @@ CMDF( do_fill )
 
             if( !source->extra_flags.test( ITEM_CLANCORPSE ) || !ch->has_pcflag( PCFLAG_DEADLY ) )
             {
-               char name[MIL];
-               char *pd = source->short_descr;
+               std::string name;
+               std::string pd = source->short_descr;
 
                pd = one_argument( pd, name );
                pd = one_argument( pd, name );
@@ -1830,7 +1830,7 @@ CMDF( do_fill )
          case ITEM_CONTAINER:
             if( source->item_type == ITEM_CONTAINER /* don't remove */  && IS_SET( source->value[1], CONT_CLOSED ) )
             {
-               act( AT_PLAIN, "The $d is closed.", ch, nullptr, source->name, TO_CHAR );
+               act( AT_PLAIN, "The $d is closed.", ch, nullptr, source->name.c_str(), TO_CHAR );
                return;
             }
 
@@ -1980,18 +1980,18 @@ CMDF( do_fill )
 
          if( source->item_type == ITEM_PUDDLE )
          {
-            char buf[20];
+            std::string buf;
             liquid_data *liq = get_liq_vnum( source->value[2] );
 
             if( source->value[1] > 15 )
-               strlcpy( buf, "large", 20 );
+               buf = "large";
             else if( source->value[1] > 10 )
-               strlcpy( buf, "rather large", 20 );
+               buf = "rather large";
             else if( source->value[1] > 5 )
-               strlcpy( buf, "rather small", 20 );
+               buf = "rather small";
             else
-               strlcpy( buf, "small", 20 );
-            stralloc_printf( &source->objdesc, "There is a %s puddle of %s.", buf, ( liq == nullptr ? "water" : liq->name.c_str() ) );
+               buf = "small";
+            source->objdesc = std::format( "There is a {} puddle of {}.", buf, ( liq == nullptr ? "water" : liq->name ) );
          }
          act( AT_ACTION, "You fill $p from $P.", ch, obj, source, TO_CHAR );
          act( AT_ACTION, "$n fills $p from $P.", ch, obj, source, TO_ROOM );
@@ -2051,9 +2051,9 @@ void make_puddle( char_data * ch, obj_data * cont )
       buf = "rather small";
    else
       buf = "small";
-   stralloc_printf( &obj->name, "puddle %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
-   stralloc_printf( &obj->short_descr, "A puddle of %s", ( liq == nullptr ? "water" : liq->name.c_str() ) );
-   stralloc_printf( &obj->objdesc, "This is a %s puddle of %s.", buf.c_str(), ( liq == nullptr ? "water" : liq->name.c_str() ) );
+   obj->name = std::format( "puddle {}", ( liq == nullptr ? "water" : liq->name ) );
+   obj->short_descr = std::format( "A puddle of {}", ( liq == nullptr ? "water" : liq->name ) );
+   obj->objdesc = std::format( "This is a {} puddle of {}.", buf, ( liq == nullptr ? "water" : liq->name ) );
    return;
 }
 
@@ -2116,7 +2116,7 @@ CMDF( do_empty )
       case ITEM_QUIVER:
          if( IS_SET( obj->value[1], CONT_CLOSED ) )
          {
-            act( AT_PLAIN, "The $d is closed.", ch, nullptr, obj->name, TO_CHAR );
+            act( AT_PLAIN, "The $d is closed.", ch, nullptr, obj->name.c_str(), TO_CHAR );
             return;
          }
 
@@ -2176,7 +2176,7 @@ CMDF( do_empty )
 
             if( IS_SET( dest->value[1], CONT_CLOSED ) )
             {
-               act( AT_PLAIN, "The $d is closed.", ch, nullptr, dest->name, TO_CHAR );
+               act( AT_PLAIN, "The $d is closed.", ch, nullptr, dest->name.c_str(), TO_CHAR );
                return;
             }
 

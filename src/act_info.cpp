@@ -1798,11 +1798,11 @@ CMDF( do_examine )
             ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[1], obj->value[0] ) );
             if( obj->value[2] > 0 )
                ch->print_fmt( "Available sockets: {}\r\n", obj->value[2] );
-            if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
+            if( !obj->socket[0].empty() && str_cmp( obj->socket[0], "None" ) )
                ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
-            if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
+            if( !obj->socket[1].empty() && str_cmp( obj->socket[1], "None" ) )
                ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
-            if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
+            if( !obj->socket[2].empty() && str_cmp( obj->socket[2], "None" ) )
                ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
             break;
 
@@ -1811,11 +1811,11 @@ CMDF( do_examine )
             ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ) );
             if( obj->value[7] > 0 )
                ch->print_fmt( "Available sockets: {}\r\n", obj->value[7] );
-            if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
+            if( !obj->socket[0].empty() && str_cmp( obj->socket[0], "None" ) )
                ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
-            if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
+            if( !obj->socket[1].empty() && str_cmp( obj->socket[1], "None" ) )
                ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
-            if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
+            if( !obj->socket[2].empty() && str_cmp( obj->socket[2], "None" ) )
                ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
             break;
 

@@ -453,8 +453,8 @@ void room_to_html( room_index * room, bool complete )
             if( obj->extra_flags.test( ITEM_AUCTION ) )
                continue;
 
-            if( obj->objdesc && obj->objdesc[0] != '\0' )
-               fprintf( fp, "<font color=\"#0000EE\">%s</font><br />\n", obj->objdesc );
+            if( !obj->objdesc.empty() )
+               fprintf( fp, "<font color=\"#0000EE\">%s</font><br />\n", obj->objdesc.c_str() );
          }
 
          for( auto* rch : room->people )

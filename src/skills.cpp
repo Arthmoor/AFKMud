@@ -6006,9 +6006,9 @@ CMDF( do_scribe )
 
    scroll->value[1] = sn;
    scroll->value[0] = ch->level;
-   stralloc_printf( &scroll->short_descr, "%s scroll", skill_table[sn]->name );
-   stralloc_printf( &scroll->objdesc, "A glowing scroll inscribed '%s' lies in the dust.", skill_table[sn]->name );
-   stralloc_printf( &scroll->name, "scroll scribing %s", skill_table[sn]->name );
+   scroll->name = std::format( "scroll scribing {}", skill_table[sn]->name );
+   scroll->short_descr = std::format( "{} scroll", skill_table[sn]->name );
+   scroll->objdesc = std::format( "A glowing scroll inscribed '{}' lies in the dust.", skill_table[sn]->name );
 
    act( AT_MAGIC, "$n magically scribes $p.", ch, scroll, nullptr, TO_ROOM );
    act( AT_MAGIC, "You magically scribe $p.", ch, scroll, nullptr, TO_CHAR );
@@ -6124,9 +6124,9 @@ CMDF( do_brew )
 
    potion->value[1] = sn;
    potion->value[0] = ch->level;
-   stralloc_printf( &potion->short_descr, "%s potion", skill_table[sn]->name );
-   stralloc_printf( &potion->objdesc, "A strange potion labelled '%s' sizzles in a glass flask.", skill_table[sn]->name );
-   stralloc_printf( &potion->name, "flask potion %s", skill_table[sn]->name );
+   potion->name = std::format( "flask potion {}", skill_table[sn]->name );
+   potion->short_descr = std::format( "{} potion", skill_table[sn]->name );
+   potion->objdesc = std::format( "A strange potion labelled '{}' sizzles in a glass flask.", skill_table[sn]->name );
 
    act( AT_MAGIC, "$n brews up $p.", ch, potion, nullptr, TO_ROOM );
    act( AT_MAGIC, "You brew up $p.", ch, potion, nullptr, TO_CHAR );
@@ -6478,9 +6478,9 @@ CMDF( do_slice )
       return;
    }
 
-   stralloc_printf( &slice->name, "meat fresh slice %s", pMobIndex->player_name.c_str() );
-   stralloc_printf( &slice->short_descr, "a slice of raw meat from %s", pMobIndex->short_descr.c_str() );
-   stralloc_printf( &slice->objdesc, "A slice of raw meat from %s lies on the ground.", pMobIndex->short_descr.c_str() );
+   slice->name = std::format( "meat fresh slice {}", pMobIndex->player_name );
+   slice->short_descr = std::format( "a slice of raw meat from {}", pMobIndex->short_descr );
+   slice->objdesc = std::format( "A slice of raw meat from {} lies on the ground.", pMobIndex->short_descr );
 
    act( AT_BLOOD, "$n cuts a slice of meat from $p.", ch, corpse, nullptr, TO_ROOM );
    act( AT_BLOOD, "You cut a slice of meat from $p.", ch, corpse, nullptr, TO_CHAR );
@@ -6712,8 +6712,8 @@ CMDF( do_cook )
       food->value[2] = 3;
       act( AT_MAGIC, "$p catches on fire burning it to a crisp!\r\n", ch, food, nullptr, TO_CHAR );
       act( AT_MAGIC, "$n catches $p on fire burning it to a crisp.", ch, food, nullptr, TO_ROOM );
-      stralloc_printf( &food->short_descr, "a burnt %s", food->pIndexData->name );
-      stralloc_printf( &food->objdesc, "A burnt %s.", food->pIndexData->name );
+      food->short_descr = std::format( "a burnt {}", food->pIndexData->name );
+      food->objdesc = std::format( "A burnt {}.", food->pIndexData->name );
       ch->learn_from_failure( gsn_cook );
       return;
    }
@@ -6724,8 +6724,8 @@ CMDF( do_cook )
       food->value[2] += 2;
       act( AT_MAGIC, "$n overcooks $p.", ch, food, nullptr, TO_ROOM );
       act( AT_MAGIC, "You overcook $p.", ch, food, nullptr, TO_CHAR );
-      stralloc_printf( &food->short_descr, "an overcooked %s", food->pIndexData->name );
-      stralloc_printf( &food->objdesc, "An overcooked %s.", food->pIndexData->name );
+      food->short_descr = std::format( "an overcooked {}", food->pIndexData->name );
+      food->objdesc = std::format( "An overcooked {}.", food->pIndexData->name );
    }
    else
    {
@@ -6733,8 +6733,8 @@ CMDF( do_cook )
       food->value[0] *= 2;
       act( AT_MAGIC, "$n roasts $p.", ch, food, nullptr, TO_ROOM );
       act( AT_MAGIC, "You roast $p.", ch, food, nullptr, TO_CHAR );
-      stralloc_printf( &food->short_descr, "a roasted %s", food->pIndexData->name );
-      stralloc_printf( &food->objdesc, "A roasted %s.", food->pIndexData->name );
+      food->short_descr = std::format( "a roasted {}", food->pIndexData->name );
+      food->objdesc = std::format( "A roasted {}.", food->pIndexData->name );
       ++food->value[2];
    }
 }
@@ -7534,7 +7534,7 @@ CMDF( do_mining )
    {
       obj = ore->create_object( 1 );
       obj = obj->to_char( ch );
-      ch->printf( "After some intense mining, you unearth %s!\r\n", obj->short_descr );
+      ch->print_fmt( "After some intense mining, you unearth {}!\r\n", obj->short_descr );
       return;
    }
    else
@@ -7734,9 +7734,9 @@ CMDF( do_charge )
    wand->value[1] = charge;
    wand->value[2] = charge;
    wand->value[3] = sn;
-   stralloc_printf( &wand->short_descr, "wand of %s", skill_table[sn]->name );
-   stralloc_printf( &wand->objdesc, "A polished wand of '%s' has been left here.", skill_table[sn]->name );
-   stralloc_printf( &wand->name, "wand %s", skill_table[sn]->name );
+   wand->name = std::format( "wand {}", skill_table[sn]->name );
+   wand->short_descr = std::format( "wand of {}", skill_table[sn]->name );
+   wand->objdesc = std::format( "A polished wand of '{}' has been left here.", skill_table[sn]->name );
    act( AT_MAGIC, "$n magically charges $p.", ch, wand, nullptr, TO_ROOM );
    act( AT_MAGIC, "You magically charge $p.", ch, wand, nullptr, TO_CHAR );
 
@@ -8029,9 +8029,9 @@ CMDF( do_tan )
    }
    hide->to_char( ch );
 
-   stralloc_printf( &hide->name, "%s", hidetype.c_str(  ) );
-   stralloc_printf( &hide->short_descr, "%s made from the hide of %s", hidetype.c_str(  ), corpse->short_descr + 14 );
-   stralloc_printf( &hide->objdesc, "%s made from the hide of %s lies here.", hidetype.c_str(  ), corpse->short_descr + 14 );
+   hide->name = hidetype;
+   hide->short_descr = std::format( "{} made from the hide of {}", hidetype, corpse->short_descr.substr(14) );
+   hide->objdesc = std::format( "{} made from the hide of {} lies here.", hidetype, corpse->short_descr.substr(14) );
 
    if( hide->item_type == ITEM_ARMOR )
    {
@@ -8115,7 +8115,7 @@ CMDF( do_throw )
       ch->print( "You are out of thrown weapons\r\n" );
    else
    {
-      ch->printf( "You draw %s\r\n", item->short_descr );
+      ch->print_fmt( "You draw {}\r\n", item->short_descr );
       if( item->in_obj )
       {
          item->from_obj(  );

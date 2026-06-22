@@ -474,8 +474,8 @@ void ev_auction( void *data )
    switch ( ++auction->going )   /* increase the going state */
    {
       default:
-      case 1: /* going once */
-      case 2: /* going twice */
+      case 1: // Going once...
+      case 2: // Going twice...
       {
          talk_auction( "{}: going {} for {}.", auction->item->short_descr, ( ( auction->going == 1 ) ? "once" : "twice" ), auction->bet );
 
@@ -483,7 +483,7 @@ void ev_auction( void *data )
       }
          break;
 
-      case 3: /* SOLD! */
+      case 3: // SOLD!
          if( !auction->buyer && auction->bet )
          {
             bug( "{}: Auction code reached SOLD, with nullptr buyer, but {} gold bid", __func__, auction->bet );
@@ -498,10 +498,9 @@ void ev_auction( void *data )
             talk_auction( "{} sold to {} for {} gold.", auction->item->short_descr,
                           auction->buyer->isnpc(  ) ? auction->buyer->short_descr : auction->buyer->name, auction->bet );
 
-            if( auction->item->buyer ) /* Set final buyer for item - Samson 6-23-99 */
+            if( !auction->item->buyer.empty() ) /* Set final buyer for item - Samson 6-23-99 */
             {
-               STRFREE( auction->item->buyer );
-               auction->item->buyer = STRALLOC( auction->buyer->name.c_str() );
+               auction->item->buyer = auction->buyer->name;
             }
 
             auction->item->bid = auction->bet;  /* Set final bid for item - Samson 6-23-99 */

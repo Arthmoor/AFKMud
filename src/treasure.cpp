@@ -866,9 +866,9 @@ CMDF( do_loadrune )
       ch->print( "&RGeneric rune item is MISSING! Report to Samson.\r\n" );
       return;
    }
-   stralloc_printf( &obj->name, "%s rune", rune->get_name(  ).c_str() );
-   stralloc_printf( &obj->short_descr, "%s Rune", rune->get_name(  ).c_str() );
-   stralloc_printf( &obj->objdesc, "A magical %s Rune lies here pulsating.", rune->get_name(  ).c_str() );
+   obj->name = std::format( "{} rune", rune->get_name(  ) );
+   obj->short_descr = std::format( "{} Rune", rune->get_name(  ) );
+   obj->objdesc = std::format( "A magical {} Rune lies here pulsating.", rune->get_name(  ) );
    obj->value[0] = rune->stat1[0];
    obj->value[1] = rune->stat1[1];
    obj->value[2] = rune->stat2[0];
@@ -1038,9 +1038,9 @@ obj_data *generate_rune( short level )
       return nullptr;
    }
 
-   stralloc_printf( &newrune->name, "%s rune", rune->get_name(  ).c_str() );
-   stralloc_printf( &newrune->short_descr, "%s Rune", rune->get_name(  ).c_str() );
-   stralloc_printf( &newrune->objdesc, "A magical %s Rune lies here pulsating.", rune->get_name(  ).c_str() );
+   newrune->name = std::format( "{} rune", rune->get_name(  ) );
+   newrune->short_descr = std::format( "{} Rune", rune->get_name(  ) );
+   newrune->objdesc = std::format( "A magical {} Rune lies here pulsating.", rune->get_name(  ) );
    newrune->value[0] = rune->stat1[0];
    newrune->value[1] = rune->stat1[1];
    newrune->value[2] = rune->stat2[0];
@@ -1052,7 +1052,7 @@ obj_data *generate_rune( short level )
 obj_data *generate_gem( short level )
 {
    obj_data *gem;
-   const char *gname;
+   std::string gname;
    int cost;
    short gemname, gemtable = number_range( 1, 100 );
 
@@ -1099,9 +1099,9 @@ obj_data *generate_gem( short level )
       cost = 5000;
    }
    gem->item_type = ITEM_TREASURE;
-   stralloc_printf( &gem->name, "gem %s", gname );
-   stralloc_printf( &gem->short_descr, "%s", gname );
-   stralloc_printf( &gem->objdesc, "A chunk of %s lies here gleaming.", gname );
+   gem->name = std::format( "gem {}", gname );
+   gem->short_descr = gname;
+   gem->objdesc = std::format( "A chunk of {} lies here gleaming.", gname );
    gem->cost = cost;
    return gem;
 }
@@ -1239,15 +1239,15 @@ void obj_data::weapongen(  )
    if( value[7] > 0 )
    {
       extra_flags.set( ITEM_MAGIC );
-      stralloc_printf( &name, "socketed %s%s", materials[v9].name, weapon_type[v8].name );
-      stralloc_printf( &short_descr, "Socketed %s%s", materials[v9].name, weapon_type[v8].name );
-      stralloc_printf( &objdesc, "A socketed %s%s lies here on the ground.", materials[v9].name, weapon_type[v8].name );
+      name = std::format( "socketed {}{}", materials[v9].name, weapon_type[v8].name );
+      short_descr = std::format( "Socketed {}{}", materials[v9].name, weapon_type[v8].name );
+      objdesc = std::format( "A socketed {}{} lies here on the ground.", materials[v9].name, weapon_type[v8].name );
    }
    else
    {
-      stralloc_printf( &name, "%s%s", materials[v9].name, weapon_type[v8].name );
-      stralloc_printf( &short_descr, "%s%s", materials[v9].name, weapon_type[v8].name );
-      stralloc_printf( &objdesc, "A %s%s lies here on the ground.", materials[v9].name, weapon_type[v8].name );
+      name = std::format( "{}{}", materials[v9].name, weapon_type[v8].name );
+      short_descr = std::format( "{}{}", materials[v9].name, weapon_type[v8].name );
+      objdesc = std::format( "A {}{} lies here on the ground.", materials[v9].name, weapon_type[v8].name );
    }
 }
 
@@ -1384,30 +1384,30 @@ void obj_data::armorgen(  )
    if( value[2] > 0 )
    {
       extra_flags.set( ITEM_MAGIC );
-      stralloc_printf( &name, "socketed %s%s", materials[v4].name, armor_type[v3].name );
+      name = std::format( "socketed {}{}", materials[v4].name, armor_type[v3].name );
       if( v3 > 12 )
       {
-         stralloc_printf( &short_descr, "Socketed %s%s", materials[v4].name, armor_type[v3].name );
-         stralloc_printf( &objdesc, "A socketed %s%s lies here in a heap.", materials[v4].name, armor_type[v3].name );
+         short_descr = std::format( "Socketed {}{}", materials[v4].name, armor_type[v3].name );
+         objdesc = std::format( "A socketed {}{} lies here in a heap.", materials[v4].name, armor_type[v3].name );
       }
       else
       {
-         stralloc_printf( &short_descr, "Socketed %s%s Chestpiece", materials[v4].name, armor_type[v3].name );
-         stralloc_printf( &objdesc, "A socketed %s%s chestpiece lies here in a heap.", materials[v4].name, armor_type[v3].name );
+         short_descr = std::format( "Socketed {}{} Chestpiece", materials[v4].name, armor_type[v3].name );
+         objdesc = std::format( "A socketed {}{} chestpiece lies here in a heap.", materials[v4].name, armor_type[v3].name );
       }
    }
    else
    {
-      stralloc_printf( &name, "%s%s", materials[v4].name, armor_type[v3].name );
+      name = std::format( "{}{}", materials[v4].name, armor_type[v3].name );
       if( v3 > 12 )
       {
-         stralloc_printf( &short_descr, "%s%s", materials[v4].name, armor_type[v3].name );
-         stralloc_printf( &objdesc, "A %s%s lies here in a heap.", materials[v4].name, armor_type[v3].name );
+         short_descr = std::format( "{}{}", materials[v4].name, armor_type[v3].name );
+         objdesc = std::format( "A {}{} lies here in a heap.", materials[v4].name, armor_type[v3].name );
       }
       else
       {
-         stralloc_printf( &short_descr, "%s%s Chestpiece", materials[v4].name, armor_type[v3].name );
-         stralloc_printf( &objdesc, "A %s%s chestpiece lies here in a heap.", materials[v4].name, armor_type[v3].name );
+         short_descr = std::format( "{}{} Chestpiece", materials[v4].name, armor_type[v3].name );
+         objdesc = std::format( "A {}{} chestpiece lies here in a heap.", materials[v4].name, armor_type[v3].name );
       }
    }
 }
@@ -1491,7 +1491,7 @@ short choose_quality( short level )
 void make_scroll( obj_data * newitem )
 {
    runeword_data *runeword = nullptr;
-   const char *name = "Empty", *desc = "Empty";
+   std::string name = "Empty", desc = "Empty";
    short value = 0, pick2 = 0;
 
    // Curse you Rabbit! Look what you've done!
@@ -1664,9 +1664,9 @@ void make_scroll( obj_data * newitem )
    newitem->value[3] = -1;
    newitem->cost = 200;
    newitem->ego = 0;
-   stralloc_printf( &newitem->name, "%s", name );
-   stralloc_printf( &newitem->short_descr, "%s", desc );
-   stralloc_printf( &newitem->objdesc, "%s", "A parchment scroll lies here on the ground." );
+   newitem->name = name;
+   newitem->short_descr = desc;
+   newitem->objdesc = "A parchment scroll lies here on the ground.";
    if( runeword )
    {
       extra_descr_data *ed = new extra_descr_data;
@@ -1692,7 +1692,7 @@ void make_scroll( obj_data * newitem )
 
 void make_potion( obj_data * newitem )
 {
-   const char *name = "Empty", *desc = "Empty";
+   std::string name = "Empty", desc = "Empty";
    short value = 0, pick2 = 0;
 
    // Curse you Rabbit! Look what you've done!
@@ -1853,14 +1853,14 @@ void make_potion( obj_data * newitem )
    newitem->value[3] = -1;
    newitem->cost = 200;
    newitem->ego = 0;
-   stralloc_printf( &newitem->name, "%s", name );
-   stralloc_printf( &newitem->short_descr, "%s", desc );
-   stralloc_printf( &newitem->objdesc, "%s", "A glass potion flask lies here on the ground." );
+   newitem->name = name;
+   newitem->short_descr = desc;
+   newitem->objdesc = "A glass potion flask lies here on the ground.";
 }
 
 void make_wand( obj_data * newitem )
 {
-   const char *name = "Empty", *desc = "Empty";
+   std::string name = "Empty", desc = "Empty";
    short value = 0, pick2 = 0;
 
    // Curse you Rabbit! Look what you've done!
@@ -1971,9 +1971,9 @@ void make_wand( obj_data * newitem )
    newitem->value[3] = value;
    newitem->cost = 200;
    newitem->ego = 0;
-   stralloc_printf( &newitem->name, "%s", name );
-   stralloc_printf( &newitem->short_descr, "%s", desc );
-   stralloc_printf( &newitem->objdesc, "%s", "A glowing wand lies here on the ground." );
+   newitem->name = name;
+   newitem->short_descr = desc;
+   newitem->objdesc = "A glowing wand lies here on the ground.";
 }
 
 void make_armor( obj_data * newitem )
@@ -2086,7 +2086,7 @@ obj_data *create_money( int amount )
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return nullptr;
       }
-      stralloc_printf( &obj->short_descr, obj->short_descr, amount );
+      obj->short_descr = std::vformat( obj->short_descr, std::make_format_args( amount ) );
       obj->value[0] = amount;
    }
    return obj;
@@ -2329,9 +2329,9 @@ CMDF( do_rttest )
       log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       return;
    }
-   stralloc_printf( &corpse->name, "%s", "corpse random" );
-   stralloc_printf( &corpse->short_descr, corpse->short_descr, "some random thing" );
-   stralloc_printf( &corpse->objdesc, corpse->objdesc, "some random thing" );
+   corpse->name = "corpse random";
+   corpse->short_descr = std::vformat( corpse->short_descr, std::make_format_args( "some random thing" ) );
+   corpse->objdesc = std::vformat( corpse->objdesc, std::make_format_args( "some random thing" ) );
    corpse->to_room( ch->in_room, ch );
 
    for( x = 0; x < times; ++x )
@@ -2341,9 +2341,9 @@ CMDF( do_rttest )
 void rword_descrips( char_data * ch, obj_data * item, runeword_data * rword )
 {
    ch->print_fmt( "&YAs you attach the rune, your {} glows radiantly and becomes {}!\r\n", item->short_descr, rword->get_name(  ) );
-   stralloc_printf( &item->name, "%s %s", item->name, rword->get_name(  ).c_str() );
-   stralloc_printf( &item->short_descr, "%s", rword->get_name(  ).c_str() );
-   stralloc_printf( &item->objdesc, "%s lies here on the ground.", rword->get_name(  ).c_str() );
+   item->name = std::format( "{} {}", item->name, rword->get_name(  ) );
+   item->short_descr = rword->get_name(  );
+   item->objdesc = std::format( "{} lies here on the ground.", rword->get_name(  ) );
 }
 
 void add_rword_affect( obj_data * item, int v1, int v2 )
@@ -2372,10 +2372,10 @@ void check_runewords( char_data * ch, obj_data * item )
    std::list<runeword_data *>::iterator irword;
 
    // Runewords must contain at least 2 runes, so if these first 2 checks fail, bail out. 
-   if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
+   if( item->socket[0].empty() || !str_cmp( item->socket[0], "None" ) )
       return;
 
-   if( !item->socket[1] || !str_cmp( item->socket[1], "None" ) )
+   if( item->socket[1].empty() || !str_cmp( item->socket[1], "None" ) )
       return;
 
    // Only body armors get runewords
@@ -2403,7 +2403,7 @@ void check_runewords( char_data * ch, obj_data * item )
             continue;
          }
 
-         if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
+         if( item->socket[2].empty() || !str_cmp( item->socket[2], "None" ) )
             continue;
 
          if( !str_cmp( rword->get_rune1(  ), item->socket[0] ) && !str_cmp( rword->get_rune2(  ), item->socket[1] ) && !str_cmp( rword->get_rune3(  ), item->socket[2] ) )
@@ -2442,7 +2442,7 @@ void check_runewords( char_data * ch, obj_data * item )
          continue;
       }
 
-      if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
+      if( item->socket[2].empty() || !str_cmp( item->socket[2], "None" ) )
          continue;
 
       if( !str_cmp( rword->get_rune1(  ), item->socket[0] ) && !str_cmp( rword->get_rune2(  ), item->socket[1] ) && !str_cmp( rword->get_rune3(  ), item->socket[2] ) )
@@ -2538,27 +2538,27 @@ CMDF( do_socket )
          return;
       }
 
-      if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
+      if( item->socket[0].empty() || !str_cmp( item->socket[0], "None" ) )
       {
-         stralloc_printf( &item->socket[0], "%s", rune->short_descr );
+         item->socket[0] = rune->short_descr;
          item->value[7] -= 1;
          ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
-      if( !item->socket[1] || !str_cmp( item->socket[1], "None" ) )
+      if( item->socket[1].empty() || !str_cmp( item->socket[1], "None" ) )
       {
-         stralloc_printf( &item->socket[1], "%s", rune->short_descr );
+         item->socket[1] = rune->short_descr;
          item->value[7] -= 1;
          ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
-      if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
+      if( item->socket[2].empty() || !str_cmp( item->socket[2], "None" ) )
       {
-         stralloc_printf( &item->socket[2], "%s", rune->short_descr );
+         item->socket[2] = rune->short_descr;
          item->value[7] -= 1;
          ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
@@ -2577,27 +2577,27 @@ CMDF( do_socket )
          return;
       }
 
-      if( !item->socket[0] || !str_cmp( item->socket[0], "None" ) )
+      if( item->socket[0].empty() || !str_cmp( item->socket[0], "None" ) )
       {
-         stralloc_printf( &item->socket[0], "%s", rune->short_descr );
+         item->socket[0] = rune->short_descr;
          item->value[2] -= 1;
          ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
-      if( !item->socket[1] || !str_cmp( item->socket[1], "None" ) )
+      if( item->socket[1].empty() || !str_cmp( item->socket[1], "None" ) )
       {
-         stralloc_printf( &item->socket[1], "%s", rune->short_descr );
+         item->socket[1] = rune->short_descr;
          item->value[2] -= 1;
          ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );
          return;
       }
 
-      if( !item->socket[2] || !str_cmp( item->socket[2], "None" ) )
+      if( item->socket[2].empty() || !str_cmp( item->socket[2], "None" ) )
       {
-         stralloc_printf( &item->socket[2], "%s", rune->short_descr );
+         item->socket[2] = rune->short_descr;
          item->value[2] -= 1;
          ch->print_fmt( "{} glows brightly as the {} rune is inserted and now feels more powerful!\r\n", item->short_descr, rune->short_descr );
          add_rune_affect( ch, item, rune );

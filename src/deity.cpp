@@ -3050,7 +3050,7 @@ CMDF( do_supplicate )
       else
          obj = obj->to_room( ch->in_room, ch );
 
-      stralloc_printf( &obj->name, "sigil %s", ch->pcdata->deity->name.c_str(  ) );
+      obj->name = std::format( "sigil {}", ch->pcdata->deity->name );
 
       act( AT_MAGIC, "$n weaves $p from divine matter!", ch, obj, nullptr, TO_ROOM );
       act( AT_MAGIC, "You weave $p from divine matter!", ch, obj, nullptr, TO_CHAR );

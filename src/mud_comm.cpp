@@ -1215,15 +1215,13 @@ CMDF( do_mposet )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      STRFREE( obj->name );
-      obj->name = STRALLOC( arg3.c_str(  ) );
+      obj->name = arg3;
       return;
    }
 
    if( !str_cmp( arg2, "short" ) )
    {
-      STRFREE( obj->short_descr );
-      obj->short_descr = STRALLOC( arg3.c_str(  ) );
+      obj->short_descr = arg3;
       if( obj == supermob_obj )
       {
          supermob->short_descr = obj->short_descr;
@@ -1235,26 +1233,24 @@ CMDF( do_mposet )
        * * if it is not already there.
        */
       if( str_infix( "mprename", obj->name ) )
-         stralloc_printf( &obj->name, "%s %s", obj->name, "mprename" );
+         obj->name = std::format( "{} {}", obj->name, "mprename" );
       return;
    }
 
    if( !str_cmp( arg2, "long" ) )
    {
-      STRFREE( obj->objdesc );
-      obj->objdesc = STRALLOC( arg3.c_str(  ) );
+      obj->objdesc = arg3;
       return;
    }
 
    if( !str_cmp( arg2, "actiondesc" ) )
    {
-      if( strstr( arg3.c_str(  ), "%n" ) || strstr( arg3.c_str(  ), "%d" ) || strstr( arg3.c_str(  ), "%l" ) )
+      if( arg3.contains( "%n" ) || arg3.contains( "%d" ) || arg3.contains( "%l" ) )
       {
-         progbug( "MpOset: Illegal actiondesc", ch );
+         progbug( "MpOset: Illegal actiondesc. Actiondesc cannot contain %n, %d, or %l in it.", ch );
          return;
       }
-      STRFREE( obj->action_desc );
-      obj->action_desc = STRALLOC( arg3.c_str(  ) );
+      obj->action_desc = arg3;
       return;
    }
 
@@ -1676,15 +1672,15 @@ CMDF( do_opstat )
 
    if( obj->pIndexData->progtypes.none(  ) )
    {
-      ch->printf( "No programs on object: %s - #%d\r\n", obj->short_descr, obj->pIndexData->vnum );
+      ch->print_fmt( "No programs on object: {} - #{}\r\n", obj->short_descr, obj->pIndexData->vnum );
       return;
    }
 
-   ch->printf( "Name: %s.  Vnum: %d.\r\n", obj->name, obj->pIndexData->vnum );
-   ch->printf( "Short description: %s.\r\n", obj->short_descr );
+   ch->print_fmt( "Name: {}.  Vnum: {}.\r\n", obj->name, obj->pIndexData->vnum );
+   ch->print_fmt( "Short description: {}.\r\n", obj->short_descr );
 
    for( auto* mprog : obj->pIndexData->mudprogs )
-      ch->printf( "%d >%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
+      ch->print_fmt( "{} >{} {}\r\n{}\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
 }
 
 /* Rpstat - Scryn 8/12 */
@@ -3663,8 +3659,7 @@ CMDF( do_mpsindhae )
    victim->print_fmt( "&[magic]{} appears from the mists of the void.\r\r\n\n", prize->short_descr );
 
    prize->extra_flags.set( ITEM_PERSONAL );
-   STRFREE( prize->owner );
-   prize->owner = STRALLOC( victim->name.c_str() );
+   prize->owner = victim->name;
 
    victim->print( "&GYou will now be asked to name your prize.\r\n" );
    victim->print( "When the command prompt appears, enter the name you want your prize to have.\r\n" );

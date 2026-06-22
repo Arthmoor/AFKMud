@@ -1540,21 +1540,21 @@ void oedit_disp_menu( descriptor_data * d )
    /*
     * . Build first half of menu .
     */
-   d->character->printf( "&w-- Item number : [&c%d&w]\r\n"
-                         "&g1&w) Name     : &O%s\r\n"
-                         "&g2&w) S-Desc   : &O%s\r\n"
-                         "&g3&w) L-Desc   :-\r\n&O%s\r\n"
-                         "&g4&w) A-Desc   :-\r\n&O%s\r\n"
-                         "&g5&w) Type        : &c%s\r\n"
-                         "&g6&w) Extra flags : &c%s\r\n",
+   d->character->print_fmt( "&w-- Item number : [&c{}&w]\r\n"
+                         "&g1&w) Name     : &O{}\r\n"
+                         "&g2&w) S-Desc   : &O{}\r\n"
+                         "&g3&w) L-Desc   :-\r\n&O{}\r\n"
+                         "&g4&w) A-Desc   :-\r\n&O{}\r\n"
+                         "&g5&w) Type        : &c{}\r\n"
+                         "&g6&w) Extra flags : &c{}\r\n",
                          obj->pIndexData->vnum, obj->name, obj->short_descr, obj->objdesc,
-                         obj->action_desc ? obj->action_desc : "<not set>\r\n", capitalize( obj->item_type_name(  ) ).c_str(  ), bitset_string( obj->extra_flags, o_flags ) );
+                         !obj->action_desc.empty() ? obj->action_desc : "<not set>\r\n", capitalize( obj->item_type_name(  ) ), bitset_string( obj->extra_flags, o_flags ) );
 
    /*
     * Build second half of the menu 
     */
-   d->character->printf( "&g7&w) Wear flags  : &c%s\r\n" "&g8&w) Weight      : &c%d\r\n" "&g9&w) Cost        : &c%d\r\n" "&gA&w) Ego         : &c%d\r\n" "&gB&w) Timer       : &c%d\r\n" "&gC&w) Level       : &c%d\r\n"   /* -- Object level . */
-                         "&gD&w) Layers      : &c%d\r\n",
+   d->character->print_fmt( "&g7&w) Wear flags  : &c{}\r\n" "&g8&w) Weight      : &c{}\r\n" "&g9&w) Cost        : &c{}\r\n" "&gA&w) Ego         : &c{}\r\n" "&gB&w) Timer       : &c{}\r\n" "&gC&w) Level       : &c{}\r\n"   /* -- Object level . */
+                         "&gD&w) Layers      : &c{}\r\n",
                          bitset_string( obj->wear_flags, w_flags ), obj->weight, obj->cost, obj->ego, obj->timer, obj->level, obj->pIndexData->layers );
 
    ostat_plus( d->character, obj, true );
@@ -1708,12 +1708,11 @@ CMDF( do_oedit_reset )
             ch->substate = SUB_NONE;
             return;
          }
-         STRFREE( obj->objdesc );
-         obj->objdesc = ch->copy_buffer( true );
+         obj->objdesc = ch->copy_buffer( );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->objdesc );
-            obj->pIndexData->objdesc = QUICKLINK( obj->objdesc );
+            obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
          }
          ch->stop_editing(  );
          ch->pcdata->dest_buf = obj;
@@ -1859,47 +1858,43 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          return;  /* end of OEDIT_MAIN_MENU */
 
       case OEDIT_EDIT_NAMELIST:
-         STRFREE( obj->name );
-         obj->name = STRALLOC( arg.c_str(  ) );
+         obj->name = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->name );
-            obj->pIndexData->name = QUICKLINK( obj->name );
+            obj->pIndexData->name = STRALLOC( obj->name.c_str() );
          }
-         olc_log( d, "Changed name to %s", obj->name );
+         olc_log( d, "Changed name to %s", obj->name.c_str() );
          break;
 
       case OEDIT_SHORTDESC:
-         STRFREE( obj->short_descr );
-         obj->short_descr = STRALLOC( arg.c_str(  ) );
+         obj->short_descr = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->short_descr );
-            obj->pIndexData->short_descr = QUICKLINK( obj->short_descr );
+            obj->pIndexData->short_descr = STRALLOC( obj->short_descr.c_str() );
          }
-         olc_log( d, "Changed short to %s", obj->short_descr );
+         olc_log( d, "Changed short to %s", obj->short_descr.c_str() );
          break;
 
       case OEDIT_LONGDESC:
-         STRFREE( obj->objdesc );
-         obj->objdesc = STRALLOC( arg.c_str(  ) );
+         obj->objdesc = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->objdesc );
-            obj->pIndexData->objdesc = QUICKLINK( obj->objdesc );
+            obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
          }
-         olc_log( d, "Changed longdesc to %s", obj->objdesc );
+         olc_log( d, "Changed longdesc to %s", obj->objdesc.c_str() );
          break;
 
       case OEDIT_ACTDESC:
-         STRFREE( obj->action_desc );
-         obj->action_desc = STRALLOC( arg.c_str(  ) );
+         obj->action_desc = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->action_desc );
-            obj->pIndexData->action_desc = QUICKLINK( obj->action_desc );
+            obj->pIndexData->action_desc = STRALLOC( obj->action_desc.c_str() );
          }
-         olc_log( d, "Changed actiondesc to %s", obj->action_desc );
+         olc_log( d, "Changed actiondesc to %s", obj->action_desc.c_str() );
          break;
 
       case OEDIT_TYPE:

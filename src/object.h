@@ -82,28 +82,28 @@ class obj_data
    void armorgen(  );
    void weapongen(  );
 
+   class obj_data *in_obj = nullptr;            // Pointer to the object which this object may be contained in.
+   class obj_index *pIndexData = nullptr;       // Pointer to the object's master index data.
+   class room_index *in_room = nullptr;         // Pointer to the room the object may be sitting in.
+   class char_data *carried_by = nullptr;       // Pointer to the character who may be carrying this object.
+   class continent_data *continent = nullptr;   // Pointer to which continent the object is on for the overland system - Samson 8-21-99
    std::list<obj_data *> contents;              // Objects this object contains.
    std::list<affect_data *> affects;            // List of affects this object has.
    std::list<extra_descr_data *> extradesc;     // List of extra descriptions the object has.
    std::list<class mprog_act_list *> mpact;     // Mudprogs
    std::bitset<MAX_ITEM_FLAG> extra_flags;      // Extra flags for the object.
    std::bitset<MAX_WEAR_FLAG> wear_flags;       // Wear flags for the object.
-   obj_data *in_obj = nullptr;                  // Pointer to the object which this object may be contained in.
-   obj_index *pIndexData = nullptr;             // Pointer to the object's master index data.
-   room_index *in_room = nullptr;               // Pointer to the room the object may be sitting in.
-   char_data *carried_by = nullptr;             // Pointer to the character who may be carrying this object.
-   class continent_data *continent = nullptr;   // Pointer to which continent the object is on for the overland system - Samson 8-21-99
-   char *name = nullptr;                        // Keywords used to interact with this object.
-   char *short_descr = nullptr;                 // The one line description of the object when seen in inventories or equipment lists.
-   char *objdesc = nullptr;                     // Long description seen when the object is in a room.
-   char *action_desc = nullptr;                 // Message displayed when someone interacts with the object. Not fully supported in code.
-   char *owner = nullptr;                       // Who owns this item? Used with personal flag for Sindhae prizes.
-   char *seller = nullptr;                      // Who put the item up for auction?
-   char *buyer = nullptr;                       // Who made the final bid on the item?
-   char *socket[3]{nullptr, nullptr, nullptr};  // Name of rune/gem the item has in each socket - Samson 3-31-02
+   std::string name;                            // Keywords used to interact with this object.
+   std::string short_descr;                     // The one line description of the object when seen in inventories or equipment lists.
+   std::string objdesc;                         // Long description seen when the object is in a room.
+   std::string action_desc;                     // Message displayed when someone interacts with the object. Not fully supported in code.
+   std::string owner;                           // Who owns this item? Used with personal flag for Sindhae prizes.
+   std::string seller;                          // Who put the item up for auction?
+   std::string buyer;                           // Who made the final bid on the item?
+   std::string socket[3];                       // Name of rune/gem the item has in each socket - Samson 3-31-02
    int value[MAX_OBJ_VALUE];                    // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
    int bid = 0;                                 // What was the amount of the final bid on auction?
-   int mpactnum = 0;                            // mudprogs
+   int mpactnum = 0;                            // Mudprogs
    int ego = -2;                                // The ego level the object has. This is used to determine whether a player can use or keep this object long term. -2 triggers an autocalc function.
    int room_vnum = 0;                           // Track it's room vnum for hotbooting and such.
    int cost = 0;                                // Base cost of the object when sold in shops.

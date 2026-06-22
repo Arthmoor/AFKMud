@@ -138,7 +138,7 @@ class board_chardata
    board_chardata();
    ~board_chardata();
 
-   std::string board_name;
-   std::chrono::system_clock::time_point last_read;
-   short alert = 0;
+   std::string board_name;                            // Name of the board.
+   std::chrono::system_clock::time_point last_read;   // The last time the player read something on the board.
+   short alert = 0;                                   // ???
 };

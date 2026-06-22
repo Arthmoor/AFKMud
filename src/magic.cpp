@@ -2077,7 +2077,7 @@ SPELLF( spell_create_water )
          obj->value[1] = obj->value[0];
 
       if( !hasname( obj->name, "water" ) )
-         stralloc_printf( &obj->name, "%s water", obj->name );
+         obj->name = std::format( "{} water", obj->name );
 
       act( AT_MAGIC, "$p is filled.", ch, obj, nullptr, TO_CHAR );
    }
@@ -3531,7 +3531,7 @@ SPELLF( spell_portal )
       return rSPELL_FAILED;
    }
    portalObj->timer = 3;
-   stralloc_printf( &portalObj->short_descr, "a portal created by %s", ch->name.c_str() );
+   portalObj->short_descr = std::format( "a portal created by {}", ch->name );
 
    /*
     * support for new casting messages 
@@ -3561,7 +3561,7 @@ SPELLF( spell_portal )
 
    portalObj = get_obj_index( OBJ_VNUM_PORTAL )->create_object( 1 );
    portalObj->timer = 3;
-   stralloc_printf( &portalObj->short_descr, "a portal created by %s", ch->name.c_str() );
+   portalObj->short_descr = std::format( "a portal created by {}", ch->name );
    portalObj = portalObj->to_room( targetRoom, victim );
    return rNONE;
 }
@@ -4074,12 +4074,12 @@ SPELLF( spell_knock )
    {
       if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
-         ch->printf( "The %s is already open.\r\n", pexit->keyword );
+         ch->print_fmt( "The {} is already open.\r\n", pexit->keyword );
          return rSPELL_FAILED;
       }
       if( !IS_EXIT_FLAG( pexit, EX_LOCKED ) )
       {
-         ch->printf( "The %s is not locked.\r\n", pexit->keyword );
+         ch->print_fmt( "The {} is not locked.\r\n", pexit->keyword );
          return rSPELL_FAILED;
       }
       if( IS_EXIT_FLAG( pexit, EX_PICKPROOF ) )
@@ -4102,7 +4102,7 @@ SPELLF( spell_knock )
    {
       if( obj->item_type != ITEM_CONTAINER )
       {
-         ch->printf( "%s is not even a container!\r\n", obj->short_descr );
+         ch->print_fmt( "{} is not even a container!\r\n", obj->short_descr );
          return rSPELL_FAILED;
       }
       if( !IS_SET( obj->value[1], CONT_CLOSED ) )
@@ -4782,7 +4782,7 @@ SPELLF( spell_obj_inv )
                   obj->value[1] = obj->value[0];
 
                if( !hasname( obj->name, "water" ) )
-                  stralloc_printf( &obj->name, "%s water", obj->name );
+                  obj->name = std::format( "{} water", obj->name );
             }
             successful_casting( skill, ch, nullptr, obj );
             return rNONE;

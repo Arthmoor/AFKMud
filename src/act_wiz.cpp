@@ -972,9 +972,9 @@ CMDF( do_ostat )
 
    ch->print_fmt( "&w|Name   : &G{}&w\r\n", obj->name );
 
-   ch->print_fmt( "|Short  : &G{}&w\r\n|Long   : &G{}&w\r\n", obj->short_descr, ( obj->objdesc && obj->objdesc[0] != '\0' ) ? obj->objdesc : "" );
+   ch->print_fmt( "|Short  : &G{}&w\r\n|Long   : &G{}&w\r\n", obj->short_descr, ( !obj->objdesc.empty() ) ? obj->objdesc : "" );
 
-   if( obj->action_desc && obj->action_desc[0] != '\0' )
+   if( !obj->action_desc.empty() )
       ch->print_fmt( "|Action : &G{}&w\r\n", obj->action_desc );
 
    ch->print_fmt( "|Area   : {}\r\n", obj->pIndexData->area ? obj->pIndexData->area->name : "(NONE)" );
@@ -996,9 +996,9 @@ CMDF( do_ostat )
    ch->print_fmt( "|Wear flags   : &G{}&w\r\n", bitset_string( obj->wear_flags, w_flags ) );
    ch->print_fmt( "|Extra flags  : &G{}&w\r\n", bitset_string( obj->extra_flags, o_flags ) );
    ch->print_fmt( "|Carried by   : &G{}&w\r\n", obj->carried_by == nullptr ? "(NONE)" : obj->carried_by->name );
-   ch->print_fmt( "|Prizeowner   : &G{}&w\r\n", obj->owner == nullptr ? "(NONE)" : obj->owner );
-   ch->print_fmt( "|Seller       : &G{}&w\r\n", obj->seller == nullptr ? "(NONE)" : obj->seller );
-   ch->print_fmt( "|Buyer        : &G{}&w\r\n", obj->buyer == nullptr ? "(NONE)" : obj->buyer );
+   ch->print_fmt( "|Prizeowner   : &G{}&w\r\n", obj->owner.empty() ? "(NONE)" : obj->owner );
+   ch->print_fmt( "|Seller       : &G{}&w\r\n", obj->seller.empty() ? "(NONE)" : obj->seller );
+   ch->print_fmt( "|Buyer        : &G{}&w\r\n", obj->buyer.empty() ? "(NONE)" : obj->buyer );
    ch->print_fmt( "|Current bid  : &G{}&w\r\n", obj->bid );
 
    if( obj->year == 0 )

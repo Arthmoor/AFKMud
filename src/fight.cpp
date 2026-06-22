@@ -195,14 +195,14 @@ void make_corpse( char_data * ch, char_data * killer )
    }
 
    if( ch->CAN_PKILL(  ) && killer->CAN_PKILL(  ) && ch != killer )
-      stralloc_printf( &corpse->action_desc, "%s", killer->name.c_str() );
+      corpse->action_desc = killer->name;
 
    /*
     * Added corpse name - make locate easier, other skills 
     */
-   stralloc_printf( &corpse->name, "corpse %s", name.c_str() );
-   stralloc_printf( &corpse->short_descr, corpse->short_descr, name.c_str() );
-   stralloc_printf( &corpse->objdesc, corpse->objdesc, name.c_str() );
+   corpse->name = std::format( "corpse {}", name );
+   corpse->short_descr = std::vformat( corpse->short_descr, std::make_format_args( name ) );
+   corpse->objdesc = std::vformat( corpse->objdesc, std::make_format_args( name ) );
 
    /*
     * Used in spell_animate_dead to check for dragons, currently. -- Tarl 29 July 2002 
@@ -1523,7 +1523,7 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
    std::string buf1, buf2, buf3;
    const char *vs;
    const char *vp;
-   const char *attack;
+   std::string attack;
    char punct;
    double dampc, d_index;
    class skill_type *skill = nullptr;
@@ -2257,7 +2257,7 @@ const char *part_messages[] = {
  */
 void death_cry( char_data * ch )
 {
-   const char *msg;
+   std::string msg;
    int vnum, i;
 
    if( !ch )
@@ -2267,7 +2267,6 @@ void death_cry( char_data * ch )
    }
 
    vnum = 0;
-   msg = nullptr;
 
    switch ( number_range( 0, 5 ) )
    {
@@ -2326,7 +2325,7 @@ void death_cry( char_data * ch )
 	        }
          }
 
-         if( !msg )
+         if( msg.empty() )
             msg = "You hear $n's death cry.";
          break;
    }
@@ -2354,8 +2353,8 @@ void death_cry( char_data * ch )
       if( ch->has_aflag( AFF_POISON ) )
          obj->value[3] = 10;
 
-      stralloc_printf( &obj->short_descr, obj->short_descr, name.c_str() );
-      stralloc_printf( &obj->objdesc, obj->objdesc, name.c_str() );
+      obj->short_descr = std::vformat( obj->short_descr, std::make_format_args( name ) );
+      obj->objdesc = std::vformat( obj->objdesc, std::make_format_args( name ) );
       obj->to_room( ch->in_room, ch );
    }
 }

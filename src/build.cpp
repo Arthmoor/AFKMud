@@ -2851,14 +2851,13 @@ CMDF( do_oset )
             ch->stop_editing(  );
             return;
          }
-         STRFREE( obj->objdesc );
-         obj->objdesc = ch->copy_buffer( true );
+         obj->objdesc = ch->copy_buffer( );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             if( can_omodify( ch, obj ) )
             {
                STRFREE( obj->pIndexData->objdesc );
-               obj->pIndexData->objdesc = QUICKLINK( obj->objdesc );
+               obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
             }
          }
          tmpobj = ( obj_data * ) ch->pcdata->spare_ptr;
@@ -2980,7 +2979,7 @@ CMDF( do_oset )
    if( !str_cmp( arg2, "on" ) )
    {
       ch->CHECK_SUBRESTRICTED(  );
-      ch->printf( "Oset mode on. (Editing '%s' vnum %d).\r\n", obj->name, obj->pIndexData->vnum );
+      ch->print_fmt( "Oset mode on. (Editing '{}' vnum {}).\r\n", obj->name, obj->pIndexData->vnum );
       ch->substate = SUB_REPEATCMD;
       ch->pcdata->dest_buf = obj;
       ch->pcdata->subprompt = std::format( "<&COset &W#{}&w> %i", obj->pIndexData->vnum );
@@ -2996,8 +2995,7 @@ CMDF( do_oset )
          return;
       }
 
-      STRFREE( obj->owner );
-      obj->owner = STRALLOC( arg3.c_str(  ) );
+      obj->owner = arg3;
       ch->print( "Object owner set.\r\n" );
       return;
    }
@@ -3014,12 +3012,11 @@ CMDF( do_oset )
 
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          proto = true;
-      STRFREE( obj->name );
-      obj->name = STRALLOC( arg3.c_str(  ) );
+      obj->name = arg3;
       if( proto )
       {
          STRFREE( obj->pIndexData->name );
-         obj->pIndexData->name = QUICKLINK( obj->name );
+         obj->pIndexData->name = STRALLOC( obj->name.c_str() );
       }
       ch->print( "Object keywords set.\r\n" );
       return;
@@ -3027,13 +3024,12 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "short" ) )
    {
-      STRFREE( obj->short_descr );
-      obj->short_descr = STRALLOC( arg3.c_str(  ) );
+      obj->short_descr = arg3;
 
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
          STRFREE( obj->pIndexData->short_descr );
-         obj->pIndexData->short_descr = QUICKLINK( obj->short_descr );
+         obj->pIndexData->short_descr = STRALLOC( obj->short_descr.c_str() );
       }
       else
          /*
@@ -3043,7 +3039,7 @@ CMDF( do_oset )
           */
       {
          if( str_infix( "rename", obj->name ) )
-            stralloc_printf( &obj->name, "%s %s", obj->name, "rename" );
+            obj->name = std::format( "{} {}", obj->name, "rename" );
       }
       ch->print( "Object short description set.\r\n" );
       return;
@@ -3053,12 +3049,11 @@ CMDF( do_oset )
    {
       if( !arg3.empty(  ) )
       {
-         STRFREE( obj->objdesc );
-         obj->objdesc = STRALLOC( arg3.c_str(  ) );
+         obj->objdesc = arg3;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
             STRFREE( obj->pIndexData->objdesc );
-            obj->pIndexData->objdesc = QUICKLINK( obj->objdesc );
+            obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
             return;
          }
          ch->print( "Object long description set.\r\n" );
@@ -3075,9 +3070,7 @@ CMDF( do_oset )
          ch->pcdata->spare_ptr = nullptr;
       ch->substate = SUB_OBJ_LONG;
       ch->pcdata->dest_buf = obj;
-      if( !obj->objdesc || obj->objdesc[0] == '\0' )
-         obj->objdesc = STRALLOC( "" );
-      ch->editor_desc_printf( "Object long desc, vnum %d (%s).", obj->pIndexData->vnum, obj->short_descr );
+      ch->editor_desc_printf( "Object long desc, vnum %d (%s).", obj->pIndexData->vnum, obj->short_descr.c_str() );
       ch->start_editing( obj->objdesc );
       return;
    }
@@ -3117,7 +3110,7 @@ CMDF( do_oset )
    {
       if( obj->item_type == ITEM_ARMOR && ( value < 0 || value >= TATP_MAX ) )
       {
-         ch->printf( "Value is out of range for armor type. Range is 0 to %d\r\n", TATP_MAX );
+         ch->print_fmt( "Value is out of range for armor type. Range is 0 to {}\r\n", TATP_MAX );
          return;
       }
 
@@ -3142,7 +3135,7 @@ CMDF( do_oset )
    {
       if( obj->item_type == ITEM_ARMOR && ( value < 0 || value >= TMAT_MAX ) )
       {
-         ch->printf( "Value is out of range for material type. Range is 0 to %d\r\n", TMAT_MAX );
+         ch->print_fmt( "Value is out of range for material type. Range is 0 to {}\r\n", TMAT_MAX );
          return;
       }
 
@@ -3199,7 +3192,7 @@ CMDF( do_oset )
    {
       if( obj->item_type == ITEM_WEAPON && ( value < 0 || value >= TWTP_MAX ) )
       {
-         ch->printf( "Value is out of range for weapon type. Range is 0 to %d\r\n", TWTP_MAX );
+         ch->print_fmt( "Value is out of range for weapon type. Range is 0 to {}\r\n", TWTP_MAX );
          return;
       }
 
@@ -3220,7 +3213,7 @@ CMDF( do_oset )
    {
       if( obj->item_type == ITEM_WEAPON && ( value < 0 || value >= TMAT_MAX ) )
       {
-         ch->printf( "Value is out of range for material type. Range is 0 to %d\r\n", TMAT_MAX );
+         ch->print_fmt( "Value is out of range for material type. Range is 0 to {}\r\n", TMAT_MAX );
          return;
       }
 
@@ -3241,7 +3234,7 @@ CMDF( do_oset )
    {
       if( obj->item_type == ITEM_WEAPON && ( value < 0 || value >= TQUAL_MAX ) )
       {
-         ch->printf( "Value is out of range for quality type. Range is 0 to %d\r\n", TQUAL_MAX );
+         ch->print_fmt( "Value is out of range for quality type. Range is 0 to {}\r\n", TQUAL_MAX );
          return;
       }
 
@@ -3274,7 +3267,7 @@ CMDF( do_oset )
       obj->item_type = ( short )value;
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          obj->pIndexData->item_type = obj->item_type;
-      ch->printf( "Object type set to %s.\r\n", arg3.c_str(  ) );
+      ch->print_fmt( "Object type set to {}.\r\n", arg3 );
       return;
    }
 
@@ -3291,7 +3284,7 @@ CMDF( do_oset )
          argument = one_argument( argument, arg3 );
          value = get_oflag( arg3 );
          if( value < 0 || value >= MAX_ITEM_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
          {
             if( value == ITEM_PROTOTYPE && ch->get_trust(  ) < sysdata->level_modify_proto )
@@ -3323,7 +3316,7 @@ CMDF( do_oset )
          argument = one_argument( argument, arg3 );
          value = get_wflag( arg3 );
          if( value < 0 || value >= MAX_WEAR_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             obj->wear_flags.flip( value );
       }
@@ -3414,25 +3407,23 @@ CMDF( do_oset )
 
    if( !str_cmp( arg2, "prizeowner" ) || !str_cmp( arg2, "owner" ) )
    {
-      STRFREE( obj->owner );
-      obj->owner = STRALLOC( arg3.c_str(  ) );
+      obj->owner = arg3;
       ch->print( "Object prize ownership changed.\r\n" );
       return;
    }
 
    if( !str_cmp( arg2, "actiondesc" ) )
    {
-      if( strstr( arg3.c_str(  ), "%n" ) || strstr( arg3.c_str(  ), "%d" ) || strstr( arg3.c_str(  ), "%l" ) )
+      if( arg3.contains( "%n" ) || arg3.contains( "%d" ) || arg3.contains( "%l" ) )
       {
-         ch->print( "Illegal characters!\r\n" );
+         ch->print( "Illegal characters! Actiondesc cannot contain %n, %d, or %l in it.\r\n" );
          return;
       }
-      STRFREE( obj->action_desc );
-      obj->action_desc = STRALLOC( arg3.c_str(  ) );
+      obj->action_desc = arg3;
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
          STRFREE( obj->pIndexData->action_desc );
-         obj->pIndexData->action_desc = QUICKLINK( obj->action_desc );
+         obj->pIndexData->action_desc = STRALLOC( obj->action_desc.c_str() );
       }
       ch->print( "Object action description set.\r\n" );
       return;
@@ -3444,7 +3435,7 @@ CMDF( do_oset )
    if( !str_cmp( arg2, "effect" ) )
    {
       affect_data *paf;
-      std::bitset < MAX_RIS_FLAG > risabit;
+      std::bitset<MAX_RIS_FLAG> risabit;
       short loc;
       bool found = false;
 
@@ -3671,7 +3662,7 @@ CMDF( do_oset )
          ch->pcdata->spare_ptr = nullptr;
       ch->substate = SUB_OBJ_EXTRA;
       ch->pcdata->dest_buf = ed;
-      ch->editor_desc_printf( "Extra description '%s' on object vnum %d (%s).", arg3.c_str(  ), obj->pIndexData->vnum, obj->short_descr );
+      ch->editor_desc_printf( "Extra description '%s' on object vnum %d (%s).", arg3.c_str(  ), obj->pIndexData->vnum, obj->short_descr.c_str() );
       ch->start_editing( ed->desc );
       return;
    }

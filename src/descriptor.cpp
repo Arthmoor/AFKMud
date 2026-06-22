@@ -3037,8 +3037,7 @@ void descriptor_data::nanny( std::string & argument )
          /*
           * God, I hope this works 
           */
-         STRFREE( prize->short_descr );
-         prize->short_descr = STRALLOC( argument.c_str(  ) );
+         prize->short_descr = argument;
 
          ch->print( "\r\nYour prize will look like this when worn:\r\n" );
          ch->print( prize->format_to_char( ch, true, 1 ) );
@@ -3127,7 +3126,7 @@ void descriptor_data::nanny( std::string & argument )
             write_to_buffer( "\r\n[SINDHAE] Prizekey: " );
             return;
          }
-         stralloc_printf( &prize->name, "%s %s", ch->name.c_str(), argument.c_str(  ) );
+         prize->name = std::format( "{} {}", ch->name, argument );
          ch->print_fmt( "\r\nYou chose these keywords: {}\r\n", prize->name );
          write_to_buffer( "Is this correct? (Y/N)" );
          ch->pcdata->spare_ptr = prize;
@@ -3163,7 +3162,7 @@ void descriptor_data::nanny( std::string & argument )
                interpret( ch, "look" );
                ch->set_color( AT_BLUE );
                if( ch->Class == CLASS_BARD && prize->item_type == ITEM_INSTRUMENT )
-                  stralloc_printf( &prize->name, "minstru %s", prize->name );
+                  prize->name = std::format( "minstru {}", prize->name );
 
                write_to_buffer( "Congratulations! You've completed the redemption.\r\n" );
                write_to_buffer( "Your prize should be in your inventory.\r\n" );
@@ -3174,7 +3173,7 @@ void descriptor_data::nanny( std::string & argument )
             case 'n':
             case 'N':
                write_to_buffer( "\r\nOk, then please enter the correct keywords.\r\n" );
-               ch->printf( "\r\n&RYou are editing %s&R.", prize->short_descr );
+               ch->print_fmt( "\r\n&RYou are editing {}&R.", prize->short_descr );
                write_to_buffer( "[SINDHAE] Prizekey: " );
                connected = CON_PRIZEKEY;
                return;

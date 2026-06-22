@@ -57,7 +57,7 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
 
    if( ch->carry_number + obj->get_number(  ) > ch->can_carry_n(  ) )
    {
-      act( AT_PLAIN, "$d: you can't carry that many items.", ch, nullptr, obj->short_descr, TO_CHAR );
+      act( AT_PLAIN, "$d: you can't carry that many items.", ch, nullptr, obj->short_descr.c_str(), TO_CHAR );
       return;
    }
 
@@ -102,14 +102,14 @@ void get_obj( char_data * ch, obj_data * obj, obj_data * container )
          {
             if( ( ch->carry_weight + weight ) > ch->can_carry_w(  ) )
             {
-               act( AT_PLAIN, "$d: you can't carry that much weight.", ch, nullptr, obj->short_descr, TO_CHAR );
+               act( AT_PLAIN, "$d: you can't carry that much weight.", ch, nullptr, obj->short_descr.c_str(), TO_CHAR );
                return;
             }
          }
       }
       else if( ( ch->carry_weight + weight ) > ch->can_carry_w(  ) )
       {
-         act( AT_PLAIN, "$d: you can't carry that much weight.", ch, nullptr, obj->short_descr, TO_CHAR );
+         act( AT_PLAIN, "$d: you can't carry that much weight.", ch, nullptr, obj->short_descr.c_str(), TO_CHAR );
          return;
       }
    }
@@ -431,7 +431,7 @@ CMDF( do_get )
 
       if( !container->extra_flags.test( ITEM_COVERING ) && IS_SET( container->value[1], CONT_CLOSED ) )
       {
-         act( AT_PLAIN, "The $d is closed.", ch, nullptr, container->name, TO_CHAR );
+         act( AT_PLAIN, "The $d is closed.", ch, nullptr, container->name.c_str(), TO_CHAR );
          return;
       }
 
@@ -442,7 +442,7 @@ CMDF( do_get )
           */
          if( !( obj = get_obj_list( ch, arg1, container->contents ) ) )
          {
-            ch->printf( "I see nothing like that %s the %s.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
+            ch->print_fmt( "I see nothing like that {} the {}.\r\n", container->extra_flags.test( ITEM_COVERING ) ? "beneath" : "in", container->short_descr );
             return;
          }
 
@@ -465,7 +465,7 @@ CMDF( do_get )
           * * --Shaddai
           */
          if( container->item_type == ITEM_CORPSE_PC )
-            write_corpse( container, container->short_descr + 14 );
+            write_corpse( container, container->short_descr.substr(14) );
          check_for_trap( ch, container, TRAP_GET );
          if( ch->char_died(  ) )
             return;
@@ -481,7 +481,7 @@ CMDF( do_get )
          /*
           * 'get all container' or 'get all.obj container' 
           */
-         if( container->extra_flags.test( ITEM_CLANCORPSE ) && !ch->is_immortal(  ) && !ch->isnpc(  ) && str_cmp( ch->name, container->name + 7 ) )
+         if( container->extra_flags.test( ITEM_CLANCORPSE ) && !ch->is_immortal(  ) && !ch->isnpc(  ) && str_cmp( ch->name, container->name.substr(7) ) )
          {
             ch->print( "The gods frown upon such wanton greed!\r\n" );
             return;
@@ -530,7 +530,7 @@ CMDF( do_get )
                if( ch->char_died(  ) || ch->carry_number >= ch->can_carry_n(  ) || ch->carry_weight >= ch->can_carry_w(  ) || ( number && cnt >= number ) )
                {
                   if( container->item_type == ITEM_CORPSE_PC )
-                     write_corpse( container, container->short_descr + 14 );
+                     write_corpse( container, container->short_descr.substr(14) );
                   if( found && sysdata->save_flags.test( SV_GET ) )
                      ch->save(  );
                   return;
@@ -564,7 +564,7 @@ CMDF( do_get )
           * * --Shaddai
           */
          if( container->item_type == ITEM_CORPSE_PC )
-            write_corpse( container, container->short_descr + 14 );
+            write_corpse( container, container->short_descr.substr(14) );
          if( found && sysdata->save_flags.test( SV_GET ) )
             ch->save(  );
       }
@@ -731,7 +731,7 @@ CMDF( do_put )
        * * --Shaddai
        */
       if( container->item_type == ITEM_CORPSE_PC )
-         write_corpse( container, container->short_descr + 14 );
+         write_corpse( container, container->short_descr.substr(14) );
       if( save_char )
          ch->save(  );
 
@@ -835,7 +835,7 @@ CMDF( do_put )
        * * --Shaddai
        */
       if( container->item_type == ITEM_CORPSE_PC )
-         write_corpse( container, container->short_descr + 14 );
+         write_corpse( container, container->short_descr.substr(14) );
 
       /*
        * Clan storeroom check 
@@ -988,7 +988,7 @@ CMDF( do_drop )
        * For when an immortal or anyone else moves a corpse, since picking it up deletes the corpse save - Samson 
        */
       if( obj->item_type == ITEM_CORPSE_PC )
-         write_corpse( obj, obj->short_descr + 14 );
+         write_corpse( obj, obj->short_descr.substr(14) );
 
       /*
        * Clan storeroom saving 
@@ -999,7 +999,7 @@ CMDF( do_drop )
             check_clan_storeroom( ch );
          else
          {
-            ch->printf( "%s is a rare item and cannot be stored here.\r\n", obj->short_descr );
+            ch->print_fmt( "{} is a rare item and cannot be stored here.\r\n", obj->short_descr );
             obj->from_room(  );
             obj->to_char( ch );
          }
@@ -1073,7 +1073,7 @@ CMDF( do_drop )
                   check_clan_storeroom( ch );
                else
                {
-                  ch->printf( "%s is a rare item and cannot be stored here.\r\n", obj->short_descr );
+                  ch->print_fmt( "{} is a rare item and cannot be stored here.\r\n", obj->short_descr );
                   droplist.push_back( obj );
                   continue;
                }
@@ -1092,7 +1092,7 @@ CMDF( do_drop )
          if( fAll )
             ch->print( "You are not carrying anything.\r\n" );
          else
-            ch->printf( "You are not carrying any %s.\r\n", chk.c_str(  ) );
+            ch->print_fmt( "You are not carrying any {}.\r\n", chk );
       }
       else
       {
@@ -1120,8 +1120,8 @@ CMDF( do_drop )
          }
          else
          {
-            ch->printf( "&[action]You drop every %s you own.\r\n", chk.c_str(  ) );
-            act( AT_ACTION, "$n drops every $t $e owns.", ch, chk.c_str(  ), nullptr, TO_ROOM );
+            ch->print_fmt( "&[action]You drop every {} you own.\r\n", chk );
+            act( AT_ACTION, "$n drops every $t $e owns.", ch, chk.c_str(), nullptr, TO_ROOM );
          }
       }
    }
@@ -1295,7 +1295,7 @@ bool remove_obj( char_data * ch, int iWear, bool fReplace )
 
    if( !fReplace && ch->carry_number + obj->get_number(  ) > ch->can_carry_n(  ) )
    {
-      act( AT_PLAIN, "$d: you can't carry that many items.", ch, nullptr, obj->short_descr, TO_CHAR );
+      act( AT_PLAIN, "$d: you can't carry that many items.", ch, nullptr, obj->short_descr.c_str(), TO_CHAR );
       return false;
    }
 
@@ -2471,14 +2471,14 @@ CMDF( do_sacrifice )
 
       ch->gold += xp;
       if( !str_cmp( name, "The Wedgy" ) )
-         ch->printf( "The Wedgy swoops down from the void to scoop up %s!\r\n", obj->short_descr );
+         ch->print_fmt( "The Wedgy swoops down from the void to scoop up {}!\r\n", obj->short_descr );
       else
-         ch->printf( "%s grants you %d gold for your sacrifice.\r\n", name.c_str(  ), xp );
+         ch->print_fmt( "{} grants you {} gold for your sacrifice.\r\n", name, xp );
    }
    else
    {
       ch->gold += 1;
-      ch->printf( "%s gives you one gold coin for your sacrifice.\r\n", name.c_str(  ) );
+      ch->print_fmt( "{} gives you one gold coin for your sacrifice.\r\n", name );
    }
 
    act_printf( AT_ACTION, ch, obj, nullptr, TO_ROOM, "$n sacrifices $p to {}.", name );

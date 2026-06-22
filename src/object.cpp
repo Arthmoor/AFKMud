@@ -97,16 +97,6 @@ obj_data::~obj_data(  )
          deleteptr( RQueue );
       }
    }
-   STRFREE( name );
-   STRFREE( objdesc );
-   STRFREE( short_descr );
-   STRFREE( action_desc );
-   STRFREE( socket[0] );
-   STRFREE( socket[1] );
-   STRFREE( socket[2] );
-   STRFREE( owner );
-   STRFREE( seller );
-   STRFREE( buyer );
 }
 
 obj_data::obj_data(  )
@@ -369,7 +359,7 @@ const std::string obj_data::format_to_char( char_data * ch, bool fShort, int num
    {
       if( glowsee && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_HOLYLIGHT ) ) )
          buf.append( "the faint glow of something" );
-      else if( short_descr )
+      else if( !short_descr.empty() )
       {
          buf.append( short_descr );
          if( num > 1 )
@@ -396,7 +386,7 @@ const std::string obj_data::format_to_char( char_data * ch, bool fShort, int num
    {
       if( glowsee && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_HOLYLIGHT ) ) )
          buf.append( "You see the faint glow of something nearby." );
-      if( objdesc && objdesc[0] != '\0' )
+      if( !objdesc.empty() )
       {
          buf.append( objdesc );
          if( num > 1 )
@@ -929,7 +919,7 @@ void obj_data::from_room(  )
    in_obj = nullptr;
    in_room = nullptr;
    if( pIndexData->vnum == OBJ_VNUM_CORPSE_PC && falling < 1 )
-      write_corpse( this, short_descr + 14 );
+      write_corpse( this, short_descr.substr(14) );
 }
 
 /*
@@ -1002,7 +992,7 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
    }
 
    if( pIndexData->vnum == OBJ_VNUM_CORPSE_PC && falling < 1 )
-      write_corpse( this, short_descr + 14 );
+      write_corpse( this, short_descr.substr(14) );
    return this;
 }
 
@@ -1229,31 +1219,31 @@ obj_data *obj_data::clone(  )
 
    oclone = new obj_data;
 
-   oclone->pIndexData = pIndexData;
-   oclone->name = QUICKLINK( name );
-   oclone->short_descr = QUICKLINK( short_descr );
-   oclone->objdesc = QUICKLINK( objdesc );
-   if( action_desc && action_desc[0] != '\0' )
-      oclone->action_desc = QUICKLINK( action_desc );
-   if( socket[0] && socket[0][0] != '\0' )
-      oclone->socket[0] = QUICKLINK( socket[0] );
-   if( socket[1] && socket[1][0] != '\0' )
-      oclone->socket[1] = QUICKLINK( socket[1] );
-   if( socket[2] && socket[2][0] != '\0' )
-      oclone->socket[2] = QUICKLINK( socket[2] );
-   oclone->item_type = item_type;
-   oclone->extra_flags = extra_flags;
-   oclone->wear_flags = wear_flags;
-   oclone->wear_loc = wear_loc;
-   oclone->weight = weight;
-   oclone->cost = cost;
-   oclone->level = level;
-   oclone->timer = timer;
-   oclone->continent = continent;
-   oclone->map_x = map_x;
-   oclone->map_y = map_y;
+   oclone->pIndexData = this->pIndexData;
+   oclone->name = this->name;
+   oclone->short_descr = this->short_descr;
+   oclone->objdesc = this->objdesc;
+   if( !this->action_desc.empty() )
+      oclone->action_desc = this->action_desc;
+   if( !this->socket[0].empty() )
+      oclone->socket[0] = this->socket[0];
+   if( this->socket[1].empty() )
+      oclone->socket[1] = this->socket[1];
+   if( !this->socket[2].empty() )
+      oclone->socket[2] = this->socket[2];
+   oclone->item_type = this->item_type;
+   oclone->extra_flags = this->extra_flags;
+   oclone->wear_flags = this->wear_flags;
+   oclone->wear_loc = this->wear_loc;
+   oclone->weight = this->weight;
+   oclone->cost = this->cost;
+   oclone->level = this->level;
+   oclone->timer = this->timer;
+   oclone->continent = this->continent;
+   oclone->map_x = this->map_x;
+   oclone->map_y = this->map_y;
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
-      oclone->value[x] = value[x];
+      oclone->value[x] = this->value[x];
    oclone->count = 1;
    ++pIndexData->count;
    ++numobjsloaded;
@@ -1285,7 +1275,7 @@ obj_data *group_obj( obj_data * obj, obj_data * obj2 )
     && !str_cmp( obj->name, obj2->name )
     && !str_cmp( obj->short_descr, obj2->short_descr )
     && !str_cmp( obj->objdesc, obj2->objdesc )
-    && ( obj->action_desc && obj2->action_desc && !str_cmp( obj->action_desc, obj2->action_desc ) )
+    && ( !obj->action_desc.empty() && !obj2->action_desc.empty() && !str_cmp( obj->action_desc, obj2->action_desc ) )
     && !str_cmp( obj->socket[0], obj2->socket[0] )
     && !str_cmp( obj->socket[1], obj2->socket[1] )
     && !str_cmp( obj->socket[2], obj2->socket[2] )
@@ -1545,13 +1535,13 @@ void obj_data::make_scraps(  )
     */
    if( pIndexData->vnum == OBJ_VNUM_SCRAPS )
    {
-      stralloc_printf( &scraps->short_descr, "%s", "some debris" );
-      stralloc_printf( &scraps->objdesc, "%s", "Bits of debris lie on the ground here." );
+      scraps->short_descr = "some debris";
+      scraps->objdesc = "Bits of debris lie on the ground here.";
    }
    else
    {
-      stralloc_printf( &scraps->short_descr, scraps->short_descr, short_descr );
-      stralloc_printf( &scraps->objdesc, scraps->objdesc, short_descr );
+      scraps->short_descr = std::vformat( scraps->short_descr, std::make_format_args( short_descr ) );
+      scraps->objdesc = std::vformat( scraps->objdesc, std::make_format_args( short_descr ) );
    }
 
    if( carried_by )
@@ -1626,13 +1616,13 @@ int obj_data::hitroll(  )
 const std::string obj_data::myobj(  )
 {
    if( !str_prefix( "a ", short_descr ) )
-      return short_descr + 2;
+      return short_descr.substr(2);
    if( !str_prefix( "an ", short_descr ) )
-      return short_descr + 3;
+      return short_descr.substr(3);
    if( !str_prefix( "the ", short_descr ) )
-      return short_descr + 4;
+      return short_descr.substr(4);
    if( !str_prefix( "some ", short_descr ) )
-      return short_descr + 5;
+      return short_descr.substr(5);
    return short_descr;
 }
 
@@ -1711,11 +1701,11 @@ void obj_identify_output( char_data * ch, obj_data * obj )
          ch->print_fmt( "Current condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ) );
          if( obj->value[7] > 0 )
             ch->print_fmt( "Available sockets: {}\r\n", obj->value[7] );
-         if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
+         if( !obj->socket[0].empty() && str_cmp( obj->socket[0], "None" ) )
             ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
-         if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
+         if( !obj->socket[1].empty() && str_cmp( obj->socket[1], "None" ) )
             ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
-         if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
+         if( !obj->socket[2].empty() && str_cmp( obj->socket[2], "None" ) )
             ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
          break;
 
@@ -1726,11 +1716,11 @@ void obj_identify_output( char_data * ch, obj_data * obj )
          ch->print_fmt( "Current condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ) );
          if( obj->value[7] > 0 )
             ch->print_fmt( "Available sockets: {}\r\n", obj->value[7] );
-         if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
+         if( !obj->socket[0].empty() && str_cmp( obj->socket[0], "None" ) )
             ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
-         if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
+         if( !obj->socket[1].empty() && str_cmp( obj->socket[1], "None" ) )
             ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
-         if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
+         if( !obj->socket[2].empty() && str_cmp( obj->socket[2], "None" ) )
             ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
          break;
 
@@ -1747,11 +1737,11 @@ void obj_identify_output( char_data * ch, obj_data * obj )
          ch->print_fmt( "Current condition: {}\r\n", condtxt( obj->value[1], obj->value[0] ) );
          if( obj->value[2] > 0 )
             ch->print_fmt( "Available sockets: {}\r\n", obj->value[2] );
-         if( obj->socket[0] && str_cmp( obj->socket[0], "None" ) )
+         if( !obj->socket[0].empty() && str_cmp( obj->socket[0], "None" ) )
             ch->print_fmt( "Socket 1: {} Rune\r\n", obj->socket[0] );
-         if( obj->socket[1] && str_cmp( obj->socket[1], "None" ) )
+         if( !obj->socket[1].empty() && str_cmp( obj->socket[1], "None" ) )
             ch->print_fmt( "Socket 2: {} Rune\r\n", obj->socket[1] );
-         if( obj->socket[2] && str_cmp( obj->socket[2], "None" ) )
+         if( !obj->socket[2].empty() && str_cmp( obj->socket[2], "None" ) )
             ch->print_fmt( "Socket 3: {} Rune\r\n", obj->socket[2] );
          break;
    }

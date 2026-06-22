@@ -519,14 +519,14 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
          fprintf( fp, "Nest         %d\n", iNest );
       if( obj->count > 1 )
          fprintf( fp, "Count        %d\n", obj->count );
-      if( obj->name && obj->pIndexData->name && str_cmp( obj->name, obj->pIndexData->name ) )
-         fprintf( fp, "Name         %s~\n", obj->name );
-      if( obj->short_descr && obj->pIndexData->short_descr && str_cmp( obj->short_descr, obj->pIndexData->short_descr ) )
-         fprintf( fp, "ShortDescr   %s~\n", obj->short_descr );
-      if( obj->objdesc && obj->pIndexData->objdesc && str_cmp( obj->objdesc, obj->pIndexData->objdesc ) )
-         fprintf( fp, "Description  %s~\n", obj->objdesc );
-      if( obj->action_desc && obj->pIndexData->action_desc && str_cmp( obj->action_desc, obj->pIndexData->action_desc ) )
-         fprintf( fp, "ActionDesc   %s~\n", obj->action_desc );
+      if( !obj->name.empty() && obj->pIndexData->name && str_cmp( obj->name, obj->pIndexData->name ) )
+         fprintf( fp, "Name         %s~\n", obj->name.c_str() );
+      if( !obj->short_descr.empty() && obj->pIndexData->short_descr && str_cmp( obj->short_descr, obj->pIndexData->short_descr ) )
+         fprintf( fp, "ShortDescr   %s~\n", obj->short_descr.c_str() );
+      if( !obj->objdesc.empty() && obj->pIndexData->objdesc && str_cmp( obj->objdesc, obj->pIndexData->objdesc ) )
+         fprintf( fp, "Description  %s~\n", obj->objdesc.c_str() );
+      if( !obj->action_desc.empty() && obj->pIndexData->action_desc && str_cmp( obj->action_desc, obj->pIndexData->action_desc ) )
+         fprintf( fp, "ActionDesc   %s~\n", obj->action_desc.c_str() );
       fprintf( fp, "Ovnum        %d\n", obj->pIndexData->vnum );
       fprintf( fp, "Ego          %d\n", obj->ego );
       if( hotboot && obj->in_room )
@@ -581,14 +581,14 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
          fprintf( fp, "Timer        %d\n", obj->timer );
       if( obj->cost != obj->pIndexData->cost )
          fprintf( fp, "Cost         %d\n", obj->cost );
-      if( obj->seller != nullptr )
-         fprintf( fp, "Seller       %s~\n", obj->seller );
-      if( obj->buyer != nullptr )
-         fprintf( fp, "Buyer        %s~\n", obj->buyer );
+      if( !obj->seller.empty() )
+         fprintf( fp, "Seller       %s~\n", obj->seller.c_str() );
+      if( !obj->buyer.empty() )
+         fprintf( fp, "Buyer        %s~\n", obj->buyer.c_str() );
       if( obj->bid != 0 )
          fprintf( fp, "Bid          %d\n", obj->bid );
-      if( obj->owner != nullptr )
-         fprintf( fp, "Owner        %s~\n", obj->owner );
+      if( !obj->owner.empty() )
+         fprintf( fp, "Owner        %s~\n", obj->owner.c_str() );
       fprintf( fp, "Oday         %d\n", obj->day );
       fprintf( fp, "Omonth       %d\n", obj->month );
       fprintf( fp, "Oyear        %d\n", obj->year );
@@ -597,7 +597,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
       for( x = 0; x < MAX_OBJ_VALUE; ++x )
          fprintf( fp, " %d", obj->value[x] );
       fprintf( fp, "%s", "\n" );
-      fprintf( fp, "Sockets      %s %s %s\n", obj->socket[0] ? obj->socket[0] : "None", obj->socket[1] ? obj->socket[1] : "None", obj->socket[2] ? obj->socket[2] : "None" );
+      fprintf( fp, "Sockets      %s %s %s\n", !obj->socket[0].empty() ? obj->socket[0].c_str() : "None", !obj->socket[1].empty() ? obj->socket[1].c_str() : "None", obj->socket[2].empty() ? obj->socket[2].c_str() : "None" );
 
       switch ( obj->item_type )
       {
@@ -1915,7 +1915,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             {
                if( !fNest || !fVnum )
                {
-                  if( obj->name )
+                  if( !obj->name.empty() )
                      bug( "{}: {} incomplete object. obj_file_ver={}", __func__, obj->name, obj_file_ver );
                   else
                      bug( "{}: incomplete object. obj_file_ver={}", __func__, obj_file_ver );
@@ -1926,16 +1926,16 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                {
                   short wear_loc = obj->wear_loc;
 
-                  if( !obj->name && obj->pIndexData->name != nullptr )
-                     obj->name = QUICKLINK( obj->pIndexData->name );
-                  if( !obj->objdesc && obj->pIndexData->objdesc != nullptr )
-                     obj->objdesc = QUICKLINK( obj->pIndexData->objdesc );
-                  if( !obj->short_descr && obj->pIndexData->short_descr != nullptr )
-                     obj->short_descr = QUICKLINK( obj->pIndexData->short_descr );
-                  if( !obj->action_desc && obj->pIndexData->action_desc != nullptr )
-                     obj->action_desc = QUICKLINK( obj->pIndexData->action_desc );
-                  if( obj->extra_flags.test( ITEM_PERSONAL ) && !obj->owner && ch )
-                     obj->owner = STRALLOC( ch->name.c_str() );
+                  if( obj->name.empty() && obj->pIndexData->name != nullptr )
+                     obj->name = obj->pIndexData->name;
+                  if( obj->short_descr.empty() && obj->pIndexData->short_descr != nullptr )
+                     obj->short_descr = obj->pIndexData->short_descr;
+                  if( obj->objdesc.empty() && obj->pIndexData->objdesc != nullptr )
+                     obj->objdesc = obj->pIndexData->objdesc;
+                  if( obj->action_desc.empty() && obj->pIndexData->action_desc != nullptr )
+                     obj->action_desc = obj->pIndexData->action_desc;
+                  if( obj->extra_flags.test( ITEM_PERSONAL ) && obj->owner.empty() && ch )
+                     obj->owner = ch->name;
                   if( obj->ego > 90 )
                      obj->ego = obj->pIndexData->set_ego(  );
                   objlist.push_back( obj );
@@ -2664,11 +2664,11 @@ void write_corpse( obj_data * corpse, std::string_view name )
    if( corpse->count > 1 )
       fprintf( fp, "Count        %d\n", corpse->count );
    if( str_cmp( corpse->name, corpse->pIndexData->name ) )
-      fprintf( fp, "Name         %s~\n", corpse->name );
+      fprintf( fp, "Name         %s~\n", corpse->name.c_str() );
    if( str_cmp( corpse->short_descr, corpse->pIndexData->short_descr ) )
-      fprintf( fp, "ShortDescr   %s~\n", corpse->short_descr );
+      fprintf( fp, "ShortDescr   %s~\n", corpse->short_descr.c_str() );
    if( str_cmp( corpse->objdesc, corpse->pIndexData->objdesc ) )
-      fprintf( fp, "Description  %s~\n", corpse->objdesc );
+      fprintf( fp, "Description  %s~\n", corpse->objdesc.c_str() );
    fprintf( fp, "Ovnum        %d\n", corpse->pIndexData->vnum );
    if( corpse->in_room )
    {
