@@ -1158,14 +1158,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
             break;
 
          case 'A':
-            if( !str_cmp( word, "Action" ) )
-            {
-               const char *desc = fread_flagstring( fp );
-
-               if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-                  pObjIndex->action_desc = STRALLOC( desc );
-               break;
-            }
+            STDSKEY( "Action", pObjIndex->action_desc );
 
             if( !str_cmp( word, "AffData" ) )
             {
@@ -1186,22 +1179,15 @@ void fread_afk_object( FILE * fp, area_data * tarea )
             break;
 
          case 'K':
-            KEY( "Keywords", pObjIndex->name, fread_string( fp ) );
+            STDSKEY( "Keywords", pObjIndex->name );
             break;
 
          case 'L':
-            if( !str_cmp( word, "Long" ) )
-            {
-               const char *desc = fread_flagstring( fp );
-
-               if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-                  pObjIndex->objdesc = STRALLOC( desc );
-               break;
-            }
+            STDSKEY( "Long", pObjIndex->objdesc );
             break;
 
          case 'S':
-            KEY( "Short", pObjIndex->short_descr, fread_string( fp ) );
+            STDSKEY( "Short", pObjIndex->short_descr );
 
             if( !str_cmp( word, "Spells" ) )
             {
@@ -1252,19 +1238,19 @@ void fread_afk_object( FILE * fp, area_data * tarea )
                pObjIndex->layers = x5;
 
                if( temp[0][0] == '\0' )
-                  pObjIndex->socket[0] = STRALLOC( "None" );
+                  pObjIndex->socket[0] = "None";
                else
-                  pObjIndex->socket[0] = STRALLOC( temp[0] );
+                  pObjIndex->socket[0] = temp[0];
 
                if( temp[1][0] == '\0' )
-                  pObjIndex->socket[1] = STRALLOC( "None" );
+                  pObjIndex->socket[1] = "None";
                else
-                  pObjIndex->socket[1] = STRALLOC( temp[1] );
+                  pObjIndex->socket[1] = temp[1];
 
                if( temp[2][0] == '\0' )
-                  pObjIndex->socket[2] = STRALLOC( "None" );
+                  pObjIndex->socket[2] = "None";
                else
-                  pObjIndex->socket[2] = STRALLOC( temp[2] );
+                  pObjIndex->socket[2] = temp[2];
 
                if( pObjIndex->ego > 90 )
                   pObjIndex->ego = -2;
@@ -2092,13 +2078,13 @@ void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
 
    fprintf( fpout, "%s", "#OBJECT\n" );
    fprintf( fpout, "Vnum      %d\n", pObjIndex->vnum );
-   fprintf( fpout, "Keywords  %s~\n", pObjIndex->name );
+   fprintf( fpout, "Keywords  %s~\n", pObjIndex->name.c_str() );
    fprintf( fpout, "Type      %s~\n", o_types[pObjIndex->item_type] );
-   fprintf( fpout, "Short     %s~\n", pObjIndex->short_descr );
-   if( pObjIndex->objdesc && pObjIndex->objdesc[0] != '\0' )
-      fprintf( fpout, "Long      %s~\n", strip_cr( pObjIndex->objdesc ) );
-   if( pObjIndex->action_desc && pObjIndex->action_desc[0] != '\0' )
-      fprintf( fpout, "Action    %s~\n", pObjIndex->action_desc );
+   fprintf( fpout, "Short     %s~\n", pObjIndex->short_descr.c_str() );
+   if( !pObjIndex->objdesc.empty() )
+      fprintf( fpout, "Long      %s~\n", strip_cr( pObjIndex->objdesc ).c_str() );
+   if( !pObjIndex->action_desc.empty() )
+      fprintf( fpout, "Action    %s~\n", pObjIndex->action_desc.c_str() );
    if( pObjIndex->extra_flags.any(  ) )
       fprintf( fpout, "Flags     %s~\n", bitset_string( pObjIndex->extra_flags, o_flags ) );
    if( pObjIndex->wear_flags.any(  ) )
@@ -2151,7 +2137,7 @@ void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
    fprintf( fpout, "Stats     %d %d %d %d %d %s %s %s\n",
             pObjIndex->weight, pObjIndex->cost, pObjIndex->ego,
             pObjIndex->limit, pObjIndex->layers,
-            pObjIndex->socket[0] ? pObjIndex->socket[0] : "None", pObjIndex->socket[1] ? pObjIndex->socket[1] : "None", pObjIndex->socket[2] ? pObjIndex->socket[2] : "None" );
+            !pObjIndex->socket[0].empty() ? pObjIndex->socket[0].c_str() : "None", !pObjIndex->socket[1].empty() ? pObjIndex->socket[1].c_str() : "None", pObjIndex->socket[2].empty() ? pObjIndex->socket[2].c_str() : "None" );
 
    for( auto* af : pObjIndex->affects )
       fwrite_afk_affect( fpout, af );

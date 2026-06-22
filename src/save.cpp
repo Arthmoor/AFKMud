@@ -519,13 +519,13 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
          fprintf( fp, "Nest         %d\n", iNest );
       if( obj->count > 1 )
          fprintf( fp, "Count        %d\n", obj->count );
-      if( !obj->name.empty() && obj->pIndexData->name && str_cmp( obj->name, obj->pIndexData->name ) )
+      if( !obj->name.empty() && !obj->pIndexData->name.empty() && str_cmp( obj->name, obj->pIndexData->name ) )
          fprintf( fp, "Name         %s~\n", obj->name.c_str() );
-      if( !obj->short_descr.empty() && obj->pIndexData->short_descr && str_cmp( obj->short_descr, obj->pIndexData->short_descr ) )
+      if( !obj->short_descr.empty() && !obj->pIndexData->short_descr.empty() && str_cmp( obj->short_descr, obj->pIndexData->short_descr ) )
          fprintf( fp, "ShortDescr   %s~\n", obj->short_descr.c_str() );
-      if( !obj->objdesc.empty() && obj->pIndexData->objdesc && str_cmp( obj->objdesc, obj->pIndexData->objdesc ) )
+      if( !obj->objdesc.empty() && !obj->pIndexData->objdesc.empty() && str_cmp( obj->objdesc, obj->pIndexData->objdesc ) )
          fprintf( fp, "Description  %s~\n", obj->objdesc.c_str() );
-      if( !obj->action_desc.empty() && obj->pIndexData->action_desc && str_cmp( obj->action_desc, obj->pIndexData->action_desc ) )
+      if( !obj->action_desc.empty() && !obj->pIndexData->action_desc.empty() && str_cmp( obj->action_desc, obj->pIndexData->action_desc ) )
          fprintf( fp, "ActionDesc   %s~\n", obj->action_desc.c_str() );
       fprintf( fp, "Ovnum        %d\n", obj->pIndexData->vnum );
       fprintf( fp, "Ego          %d\n", obj->ego );
@@ -1926,13 +1926,13 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
                {
                   short wear_loc = obj->wear_loc;
 
-                  if( obj->name.empty() && obj->pIndexData->name != nullptr )
+                  if( obj->name.empty() && !obj->pIndexData->name.empty() )
                      obj->name = obj->pIndexData->name;
-                  if( obj->short_descr.empty() && obj->pIndexData->short_descr != nullptr )
+                  if( obj->short_descr.empty() && !obj->pIndexData->short_descr.empty() )
                      obj->short_descr = obj->pIndexData->short_descr;
-                  if( obj->objdesc.empty() && obj->pIndexData->objdesc != nullptr )
+                  if( obj->objdesc.empty() && !obj->pIndexData->objdesc.empty() )
                      obj->objdesc = obj->pIndexData->objdesc;
-                  if( obj->action_desc.empty() && obj->pIndexData->action_desc != nullptr )
+                  if( obj->action_desc.empty() && !obj->pIndexData->action_desc.empty() )
                      obj->action_desc = obj->pIndexData->action_desc;
                   if( obj->extra_flags.test( ITEM_PERSONAL ) && obj->owner.empty() && ch )
                      obj->owner = ch->name;

@@ -1711,8 +1711,7 @@ CMDF( do_oedit_reset )
          obj->objdesc = ch->copy_buffer( );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
-            STRFREE( obj->pIndexData->objdesc );
-            obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
+            obj->pIndexData->objdesc = obj->objdesc;
          }
          ch->stop_editing(  );
          ch->pcdata->dest_buf = obj;
@@ -1861,8 +1860,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          obj->name = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
-            STRFREE( obj->pIndexData->name );
-            obj->pIndexData->name = STRALLOC( obj->name.c_str() );
+            obj->pIndexData->name = obj->name;
          }
          olc_log( d, "Changed name to %s", obj->name.c_str() );
          break;
@@ -1871,8 +1869,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          obj->short_descr = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
-            STRFREE( obj->pIndexData->short_descr );
-            obj->pIndexData->short_descr = STRALLOC( obj->short_descr.c_str() );
+            obj->pIndexData->short_descr = obj->short_descr;
          }
          olc_log( d, "Changed short to %s", obj->short_descr.c_str() );
          break;
@@ -1881,8 +1878,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          obj->objdesc = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
-            STRFREE( obj->pIndexData->objdesc );
-            obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
+            obj->pIndexData->objdesc = obj->objdesc;
          }
          olc_log( d, "Changed longdesc to %s", obj->objdesc.c_str() );
          break;
@@ -1891,8 +1887,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          obj->action_desc = arg;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
-            STRFREE( obj->pIndexData->action_desc );
-            obj->pIndexData->action_desc = STRALLOC( obj->action_desc.c_str() );
+            obj->pIndexData->action_desc = obj->action_desc;
          }
          olc_log( d, "Changed actiondesc to %s", obj->action_desc.c_str() );
          break;

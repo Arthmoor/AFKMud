@@ -46,18 +46,18 @@ class obj_index
    int set_ego(  );
    void oprog_read_programs( FILE * );
 
+   class area_data *area = nullptr;             // Area this objindex is associated with.
    std::list<affect_data *> affects;            // List of affects the object has.
    std::list<extra_descr_data *> extradesc;     // List of extra descriptions the object has.
    std::list<struct mud_prog_data *> mudprogs;  // Mudprogs
    std::bitset<MAX_PROG> progtypes;             // objprogs
    std::bitset<MAX_ITEM_FLAG> extra_flags;      // Extra flags for the object.
    std::bitset<MAX_WEAR_FLAG> wear_flags;       // Wear flags for the object.
-   area_data *area = nullptr;                   // Area this objindex is associated with.
-   char *name = nullptr;                        // Keywords used to interact with this object.
-   char *short_descr = nullptr;                 // The one line description of the object when seen in inventories or equipment lists.
-   char *objdesc = nullptr;                     // Long description seen when the object is in a room.
-   char *action_desc = nullptr;                 // Message displayed when someone interacts with the object. Not fully supported in code.
-   char *socket[3]{nullptr, nullptr, nullptr};  // Name of rune/gem the item has in each socket - Samson 3-31-02
+   std::string name;                            // Keywords used to interact with this object.
+   std::string short_descr;                     // The one line description of the object when seen in inventories or equipment lists.
+   std::string objdesc;                         // Long description seen when the object is in a room.
+   std::string action_desc;                     // Message displayed when someone interacts with the object. Not fully supported in code.
+   std::string socket[3];                       // Name of rune/gem the item has in each socket - Samson 3-31-02
    int value[MAX_OBJ_VALUE];                    // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
    int vnum = 0;                                // Vnum of the objindex. Must be unique.
    int cost = 0;                                // Base cost of the object when sold in shops.

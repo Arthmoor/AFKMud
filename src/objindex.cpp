@@ -115,14 +115,6 @@ obj_index::~obj_index(  )
    }
    mudprogs.clear(  );
 
-   STRFREE( name );
-   STRFREE( short_descr );
-   STRFREE( objdesc );
-   STRFREE( action_desc );
-   STRFREE( socket[0] );
-   STRFREE( socket[1] );
-   STRFREE( socket[2] );
-
    std::map<int, obj_index *>::iterator mobj;
    if( ( mobj = obj_index_table.find( vnum ) ) != obj_index_table.end(  ) )
       obj_index_table.erase( mobj );
@@ -138,13 +130,13 @@ obj_index::obj_index(  )
  */
 void obj_index::clean_obj(  )
 {
-   STRFREE( name );
-   STRFREE( short_descr );
-   STRFREE( objdesc );
-   STRFREE( action_desc );
-   STRFREE( socket[0] );
-   STRFREE( socket[1] );
-   STRFREE( socket[2] );
+   name.clear();
+   short_descr.clear();
+   objdesc.clear();
+   action_desc.clear();
+   socket[0].clear();
+   socket[1].clear();
+   socket[2].clear();
    item_type = 0;
    extra_flags.reset(  );
    wear_flags.reset(  );
@@ -222,28 +214,28 @@ obj_data *obj_index::create_object( int olevel )
    obj->pIndexData = this;
 
    obj->level = olevel;
-   obj->name = QUICKLINK( name );
-   if( short_descr && short_descr[0] != '\0' )
-      obj->short_descr = QUICKLINK( short_descr );
-   if( objdesc && objdesc[0] != '\0' )
-      obj->objdesc = QUICKLINK( objdesc );
-   if( action_desc && action_desc[0] != '\0' )
-      obj->action_desc = QUICKLINK( action_desc );
-   obj->socket[0] = QUICKLINK( socket[0] );
-   obj->socket[1] = QUICKLINK( socket[1] );
-   obj->socket[2] = QUICKLINK( socket[2] );
-   obj->item_type = item_type;
-   obj->extra_flags = extra_flags;
-   obj->wear_flags = wear_flags;
+   obj->name = this->name;
+   if( !this->short_descr.empty() )
+      obj->short_descr = this->short_descr;
+   if( !this->objdesc.empty() )
+      obj->objdesc = this->objdesc;
+   if( !this->action_desc.empty() )
+      obj->action_desc = this->action_desc;
+   obj->socket[0] = this->socket[0];
+   obj->socket[1] = this->socket[1];
+   obj->socket[2] = this->socket[2];
+   obj->item_type = this->item_type;
+   obj->extra_flags = this->extra_flags;
+   obj->wear_flags = this->wear_flags;
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
-      obj->value[x] = value[x];
-   obj->weight = weight;
-   obj->cost = cost;
+      obj->value[x] = this->value[x];
+   obj->weight = this->weight;
+   obj->cost = this->cost;
 
    if( ego == -2 )   /* Calculate */
       obj->ego = set_ego(  );
    else
-      obj->ego = ego;
+      obj->ego = this->ego;
 
    /*
     * Mess with object properties.
@@ -717,11 +709,11 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
 
    if( !cObjIndex )
    {
-      stralloc_printf( &pObjIndex->short_descr, "A newly created %s", name.c_str(  ) );
-      stralloc_printf( &pObjIndex->objdesc, "Some god dropped a newly created %s here.", name.c_str(  ) );
-      pObjIndex->socket[0] = STRALLOC( "None" );
-      pObjIndex->socket[1] = STRALLOC( "None" );
-      pObjIndex->socket[2] = STRALLOC( "None" );
+      pObjIndex->short_descr = std::format( "A newly created {}", name );
+      pObjIndex->objdesc = std::format( "Some god dropped a newly created {} here.", name );
+      pObjIndex->socket[0] = "None";
+      pObjIndex->socket[1] = "None";
+      pObjIndex->socket[2] = "None";
       pObjIndex->short_descr[0] = to_lower( pObjIndex->short_descr[0] );
       pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
       pObjIndex->item_type = ITEM_TRASH;
@@ -737,14 +729,14 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
    }
    else
    {
-      pObjIndex->short_descr = QUICKLINK( cObjIndex->short_descr );
-      if( cObjIndex->objdesc && cObjIndex->objdesc[0] != '\0' )
-         pObjIndex->objdesc = QUICKLINK( cObjIndex->objdesc );
-      if( cObjIndex->action_desc && cObjIndex->action_desc[0] != '\0' )
-         pObjIndex->action_desc = QUICKLINK( cObjIndex->action_desc );
-      pObjIndex->socket[0] = QUICKLINK( cObjIndex->socket[0] );
-      pObjIndex->socket[1] = QUICKLINK( cObjIndex->socket[1] );
-      pObjIndex->socket[2] = QUICKLINK( cObjIndex->socket[2] );
+      pObjIndex->short_descr = cObjIndex->short_descr;
+      if( !cObjIndex->objdesc.empty() )
+         pObjIndex->objdesc = cObjIndex->objdesc;
+      if( !cObjIndex->action_desc.empty() )
+         pObjIndex->action_desc = cObjIndex->action_desc;
+      pObjIndex->socket[0] = cObjIndex->socket[0];
+      pObjIndex->socket[1] = cObjIndex->socket[1];
+      pObjIndex->socket[2] = cObjIndex->socket[2];
       pObjIndex->item_type = cObjIndex->item_type;
       pObjIndex->extra_flags = cObjIndex->extra_flags;
       pObjIndex->extra_flags.set( ITEM_PROTOTYPE );

@@ -2856,8 +2856,7 @@ CMDF( do_oset )
          {
             if( can_omodify( ch, obj ) )
             {
-               STRFREE( obj->pIndexData->objdesc );
-               obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
+               obj->pIndexData->objdesc = obj->objdesc;
             }
          }
          tmpobj = ( obj_data * ) ch->pcdata->spare_ptr;
@@ -3015,8 +3014,7 @@ CMDF( do_oset )
       obj->name = arg3;
       if( proto )
       {
-         STRFREE( obj->pIndexData->name );
-         obj->pIndexData->name = STRALLOC( obj->name.c_str() );
+         obj->pIndexData->name = obj->name;
       }
       ch->print( "Object keywords set.\r\n" );
       return;
@@ -3028,8 +3026,7 @@ CMDF( do_oset )
 
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
-         STRFREE( obj->pIndexData->short_descr );
-         obj->pIndexData->short_descr = STRALLOC( obj->short_descr.c_str() );
+         obj->pIndexData->short_descr = obj->short_descr;
       }
       else
          /*
@@ -3052,9 +3049,7 @@ CMDF( do_oset )
          obj->objdesc = arg3;
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
          {
-            STRFREE( obj->pIndexData->objdesc );
-            obj->pIndexData->objdesc = STRALLOC( obj->objdesc.c_str() );
-            return;
+            obj->pIndexData->objdesc = obj->objdesc;
          }
          ch->print( "Object long description set.\r\n" );
          return;
@@ -3422,8 +3417,7 @@ CMDF( do_oset )
       obj->action_desc = arg3;
       if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
       {
-         STRFREE( obj->pIndexData->action_desc );
-         obj->pIndexData->action_desc = STRALLOC( obj->action_desc.c_str() );
+         obj->pIndexData->action_desc = obj->action_desc;
       }
       ch->print( "Object action description set.\r\n" );
       return;

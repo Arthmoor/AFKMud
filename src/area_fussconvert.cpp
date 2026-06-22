@@ -485,14 +485,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
             break;
 
          case 'A':
-            if( !str_cmp( word, "Action" ) )
-            {
-               const char *desc = fread_flagstring( fp );
-
-               if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-                  pObjIndex->action_desc = STRALLOC( desc );
-               break;
-            }
+            STDSKEY( "Action", pObjIndex->action_desc );
 
             if( !str_cmp( word, "Affect" ) || !str_cmp( word, "AffectData" ) )
             {
@@ -513,22 +506,15 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
             break;
 
          case 'K':
-            KEY( "Keywords", pObjIndex->name, fread_string( fp ) );
+            STDSKEY( "Keywords", pObjIndex->name );
             break;
 
          case 'L':
-            if( !str_cmp( word, "Long" ) )
-            {
-               const char *desc = fread_flagstring( fp );
-
-               if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-                  pObjIndex->objdesc = STRALLOC( desc );
-               break;
-            }
+            STDSKEY( "Long", pObjIndex->objdesc );
             break;
 
          case 'S':
-            KEY( "Short", pObjIndex->short_descr, fread_string( fp ) );
+            STDSKEY( "Short", pObjIndex->short_descr );
 
             if( !str_cmp( word, "Spells" ) )
             {

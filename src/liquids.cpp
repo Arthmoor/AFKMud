@@ -793,7 +793,7 @@ void displaymixture( char_data * ch, mixture_data * mix )
    ch->pager( "    `-.     .-'          |\r\n" );
    ch->pager( "-----{. _ _ .}-------------------\r\n" );
 
-   ch->pagerf( "&gRecipe for Mixture &G%s&g:\r\n", mix->name.c_str(  ) );
+   ch->pager_fmt( "&gRecipe for Mixture &G{}&g:\r\n", mix->name );
    ch->pager( "---------------------------------\r\n" );
    if( !mix->object )   //this is an object
    {
@@ -802,21 +802,21 @@ void displaymixture( char_data * ch, mixture_data * mix )
 
       ch->pager( "&wCombine two liquids to create this mixture:\r\n" );
       if( !ingred1 )
-         ch->pagerf( "Vnum1 (%d) is invalid, tell an Admin\r\n", mix->data[0] );
+         ch->pager_fmt( "Vnum1 ({}) is invalid, tell an Admin\r\n", mix->data[0] );
       else
-         ch->pagerf( "&wOne part &G%s&w (%d)\r\n", ingred1->name.c_str(  ), mix->data[0] );
+         ch->pager_fmt( "&wOne part &G{}&w ({})\r\n", ingred1->name, mix->data[0] );
 
       if( !ingred2 )
-         ch->pagerf( "Vnum2 (%d) is invalid, tell an Admin\r\n", mix->data[1] );
+         ch->pager_fmt( "Vnum2 ({}) is invalid, tell an Admin\r\n", mix->data[1] );
       else
-         ch->pagerf( "&wAnd part &G%s&w (%d)&D\r\n", ingred2->name.c_str(  ), mix->data[1] );
+         ch->pager_fmt( "&wAnd part &G{}&w ({})&D\r\n", ingred2->name, mix->data[1] );
    }
    else
    {
       obj_index *obj = get_obj_index( mix->data[0] );
       if( !obj )
       {
-         ch->pagerf( "%s has a bad object vnum %d, inform an Admin\r\n", mix->name.c_str(  ), mix->data[0] );
+         ch->pager_fmt( "{} has a bad object vnum {}, inform an Admin\r\n", mix->name, mix->data[0] );
          return;
       }
       else
@@ -824,8 +824,8 @@ void displaymixture( char_data * ch, mixture_data * mix )
          liquid_data *ingred1 = get_liq_vnum( mix->data[1] );
 
          ch->pager( "Combine an object and a liquid in this mixture\r\n" );
-         ch->pagerf( "&wMix &G%s&w (%d)\r\n", obj->name, mix->data[0] );
-         ch->pagerf( "&winto one part &G%s&w (%d)&D\r\n", ingred1->name.c_str(  ), mix->data[1] );
+         ch->pager_fmt( "&wMix &G{}&w ({})\r\n", obj->name, mix->data[0] );
+         ch->pager_fmt( "&winto one part &G{}&w ({})&D\r\n", ingred1->name, mix->data[1] );
       }
    }
 }
@@ -865,7 +865,7 @@ CMDF( do_showmixture )
    {
       mixture_data *mx = *imx;
 
-      ch->pagerf( "  %-12s %s\r\n", mx->object ? "&[objects]Object&D" : "&BLiquids&D", mx->name.c_str(  ) );
+      ch->pager_fmt( "  {:<12} {}\r\n", mx->object ? "&[objects]Object&D" : "&BLiquids&D", mx->name );
    }
    ch->pager( "\r\n&gUse 'showmixture [name]' to view individual mixtures.\r\n" );
    ch->pager( "&gUse 'showliquid' to view the liquidtable.\r\n&D" );
@@ -920,10 +920,10 @@ CMDF( do_setmixture )
       ch->pager( "-----------------------\r\n" );
 
       for( auto* mx : mixlist )
-         ch->pagerf( "  %-8s %s\r\n", mx->object ? "Object" : "Liquids", mx->name.c_str(  ) );
+         ch->pager_fmt( "  {:<8} {}\r\n", mx->object ? "Object" : "Liquids", mx->name );
 
-      ch->pagerf( "\r\n&gUse 'showmixture [name]' to view individual mixtures.\r\n" );
-      ch->pagerf( "&gUse 'showliquid' to view the liquidtable.&D\r\n" );
+      ch->pager( "\r\n&gUse 'showmixture [name]' to view individual mixtures.\r\n" );
+      ch->pager( "&gUse 'showliquid' to view the liquidtable.&D\r\n" );
       return;
    }
    else if( !str_cmp( arg, "create" ) )
@@ -1011,13 +1011,13 @@ CMDF( do_setmixture )
             obj_index *obj = get_obj_index( i );
             if( !obj )
             {
-               ch->printf( "Invalid object vnum %d\r\n", i );
+               ch->print_fmt( "Invalid object vnum {}\r\n", i );
                return;
             }
             else
             {
                mix->data[0] = i;
-               ch->printf( "Mixture object set to %d - %s\r\n", i, obj->name );
+               ch->print_fmt( "Mixture object set to {} - {}\r\n", i, obj->name );
             }
          }
          else
@@ -1025,13 +1025,13 @@ CMDF( do_setmixture )
             liq = get_liq_vnum( i );
             if( !liq )
             {
-               ch->printf( "Liquid vnum %d does not exist\r\n", i );
+               ch->print_fmt( "Liquid vnum {} does not exist\r\n", i );
                return;
             }
             else
             {
                mix->data[0] = i;
-               ch->printf( "Mixture Vnum1 set to %s \r\n", liq->name.c_str(  ) );
+               ch->print_fmt( "Mixture Vnum1 set to {} \r\n", liq->name );
             }
          }
       }
@@ -1052,13 +1052,13 @@ CMDF( do_setmixture )
          liq = get_liq_vnum( i );
          if( !liq )
          {
-            ch->printf( "Liquid vnum %d does not exist\r\n", i );
+            ch->print_fmt( "Liquid vnum {} does not exist\r\n", i );
             return;
          }
          else
          {
             mix->data[1] = i;
-            ch->printf( "Mixture Vnum2 set to %s \r\n", liq->name.c_str(  ) );
+            ch->print_fmt( "Mixture Vnum2 set to {} \r\n", liq->name );
          }
       }
       else if( !str_cmp( arg2, "object" ) )
@@ -1085,13 +1085,13 @@ CMDF( do_setmixture )
          liq = get_liq_vnum( i );
          if( !liq )
          {
-            ch->printf( "Liquid vnum %d does not exist\r\n", i );
+            ch->print_fmt( "Liquid vnum {} does not exist\r\n", i );
             return;
          }
          else
          {
             mix->data[2] = i;
-            ch->printf( "Mixture will now turn into %s \r\n", liq->name.c_str(  ) );
+            ch->print_fmt( "Mixture will now turn into {} \r\n", liq->name );
          }
       }
       ch->print( "Changes done. Saving table.\r\n" );

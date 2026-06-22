@@ -349,19 +349,12 @@ void load_objects( area_data * tarea, FILE * fp )
             tarea->hi_vnum = vnum;
       }
       pObjIndex->area = tarea;
-      pObjIndex->name = fread_string( fp );
-      pObjIndex->short_descr = fread_string( fp );
+      fread_string( pObjIndex->name, fp );
+      fread_string( pObjIndex->short_descr, fp );
+      fread_string( pObjIndex->objdesc, fp );
+      fread_string( pObjIndex->action_desc, fp );
 
-      const char *desc = fread_flagstring( fp );
-      if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-         pObjIndex->objdesc = STRALLOC( desc );
-
-      const char *desc2 = fread_flagstring( fp );
-      if( desc2 && desc2[0] != '\0' && str_cmp( desc2, "(null)" ) )
-         pObjIndex->action_desc = STRALLOC( desc2 );
-
-      if( pObjIndex->objdesc != nullptr )
-         pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
+      pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
 
       value = get_otype( fread_flagstring( fp ) );
       if( value < 0 )
