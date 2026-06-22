@@ -61,7 +61,6 @@ void save_sysdata(  );
 void display_map( char_data * );
 void draw_map( char_data *, std::string_view );
 std::string password_hash( std::string_view );
-
 bool is_valid_wear_loc( char_data *, int );
 bool check_parse_name( std::string, bool );
 
@@ -727,7 +726,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
    {
       if( victim->morph != nullptr && victim->morph->morph != nullptr )
       {
-         if( victim->morph->morph->description != nullptr && victim->morph->morph->description[0] != '\0' )
+         if( !victim->morph->morph->description.empty() )
             ch->print( victim->morph->morph->description );
          else
             act( AT_PLAIN, "You see nothing special about $M.", ch, nullptr, victim, TO_CHAR );
@@ -737,7 +736,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
    }
    else
    {
-      if( victim->morph != nullptr && victim->morph->morph != nullptr && ( victim->morph->morph->description != nullptr && victim->morph->morph->description[0] != '\0' ) )
+      if( victim->morph != nullptr && victim->morph->morph != nullptr && !victim->morph->morph->description.empty() )
          ch->print( victim->morph->morph->description );
       else if( victim->isnpc(  ) )
          act( AT_PLAIN, "You see nothing special about $M.", ch, nullptr, victim, TO_CHAR );

@@ -30,6 +30,7 @@
 #include "mud.h"
 #include "deity.h"
 #include "objindex.h"
+#include "olc.h"
 #include "polymorph.h"
 #include "raceclass.h"
 
@@ -40,6 +41,7 @@ int morph_vnum = 0;
  * Local functions
  */
 void copy_morph( morph_data *, morph_data * );
+void unmorph_all( morph_data * );
 CMDF( do_morphstat );
 
 char_morph::char_morph(  )
@@ -48,6 +50,32 @@ char_morph::char_morph(  )
 
 char_morph::~char_morph(  )
 {
+}
+
+morph_data::morph_data(  )
+{
+}
+
+/*
+ * Function that releases all the memory for a morph struct.  Careful not
+ * to use the memory afterwards as it doesn't exist.
+ * --Shaddai
+ */
+morph_data::~morph_data(  )
+{
+   unmorph_all( this );
+}
+
+void free_morphs( void )
+{
+   for( auto it = morphlist.begin(  ); it != morphlist.end(  ); )
+   {
+      morph_data *poly = *it;
+      ++it;
+
+      deleteptr( poly );
+   }
+   morphlist.clear( );
 }
 
 /*
@@ -110,7 +138,7 @@ bool can_morph( char_data * ch, morph_data * morph, bool is_cast )
       return false;
    if( morph->race.any(  ) && !morph->race.test( ch->race ) )
       return false;
-   if( morph->deity && ( !ch->pcdata->deity || !get_deity( morph->deity ) ) )
+   if( !morph->deity.empty() && ( !ch->pcdata->deity || !get_deity( morph->deity ) ) )
       return false;
    if( morph->timeto != -1 && morph->timefrom != -1 )
    {
@@ -159,6 +187,30 @@ morph_data *find_morph( char_data * ch, std::string_view target, bool is_cast )
    return nullptr;
 }
 
+void add_morph_effects( char_data * ch )
+{
+   ch->get_aflags(  ) |= ch->morph->affected_by;
+   ch->get_immunes(  ) |= ch->morph->immune;
+   ch->get_resists(  ) |= ch->morph->resistant;
+   ch->get_susceps(  ) |= ch->morph->suscept;
+   ch->get_absorbs(  ) |= ch->morph->absorb;
+   /*
+   * Right now only morphs have no_ things --Shaddai
+   */
+   ch->get_noaflags(  ) |= ch->morph->no_affected_by;
+   ch->get_noimmunes(  ) |= ch->morph->no_immune;
+   ch->get_noresists(  ) |= ch->morph->no_resistant;
+   ch->get_nosusceps(  ) |= ch->morph->no_suscept;
+}
+
+const std::string MORPHNAME( char_data * ch )
+{
+   if( ch->morph && ch->morph->morph && !ch->morph->morph->short_desc.empty() )
+      return ch->morph->morph->short_desc;
+
+   return( ch->isnpc() ? ch->short_descr : ch->name );
+}
+
 const std::string MORPHPERS( char_data * ch, char_data * looker, bool from )
 {
    if( looker->can_see( ch, from ) )
@@ -179,47 +231,47 @@ void fwrite_morph( FILE * fp, morph_data * morph )
    if( !morph )
       return;
 
-   fprintf( fp, "Morph           %s\n", morph->name );
+   fprintf( fp, "Morph           %s\n", morph->name.c_str() );
    if( morph->obj[0] != 0 || morph->obj[1] != 0 || morph->obj[2] != 0 )
       fprintf( fp, "Objs            %d %d %d\n", morph->obj[0], morph->obj[1], morph->obj[2] );
    if( morph->objuse[0] != 0 || morph->objuse[1] != 0 || morph->objuse[2] != 0 )
       fprintf( fp, "Objuse          %d %d %d\n", morph->objuse[0], morph->objuse[1], morph->objuse[2] );
    if( morph->vnum != 0 )
       fprintf( fp, "Vnum            %d\n", morph->vnum );
-   if( morph->damroll[0] != '\0' )
-      fprintf( fp, "Damroll         %s~\n", morph->damroll );
+   if( !morph->damroll.empty() )
+      fprintf( fp, "Damroll         %s~\n", morph->damroll.c_str() );
    if( morph->defpos != POS_STANDING )
       fprintf( fp, "Defpos          %d\n", morph->defpos );
-   if( morph->description && morph->description[0] != '\0' )
-      fprintf( fp, "Description     %s~\n", strip_cr( morph->description ) );
-   if( morph->help && morph->help[0] != '\0' )
-      fprintf( fp, "Help            %s~\n", strip_cr( morph->help ) );
-   if( morph->hit && morph->hit[0] != '\0' )
-      fprintf( fp, "Hit             %s~\n", morph->hit );
-   if( morph->hitroll && morph->hitroll[0] != '\0' )
-      fprintf( fp, "Hitroll         %s~\n", morph->hitroll );
-   if( morph->key_words && morph->key_words[0] != '\0' )
-      fprintf( fp, "Keywords        %s~\n", morph->key_words );
-   if( morph->long_desc && morph->long_desc[0] != '\0' )
-      fprintf( fp, "Longdesc        %s~\n", strip_cr( morph->long_desc ) );
-   if( morph->mana && morph->mana[0] != '\0' )
-      fprintf( fp, "Mana            %s~\n", morph->mana );
-   if( morph->morph_other && morph->morph_other[0] != '\0' )
-      fprintf( fp, "MorphOther      %s~\n", morph->morph_other );
-   if( morph->morph_self && morph->morph_self[0] != '\0' )
-      fprintf( fp, "MorphSelf       %s~\n", morph->morph_self );
-   if( morph->move && morph->move[0] != '\0' )
-      fprintf( fp, "Move            %s~\n", morph->move );
-   if( morph->no_skills && morph->no_skills[0] != '\0' )
-      fprintf( fp, "NoSkills        %s~\n", morph->no_skills );
-   if( morph->short_desc && morph->short_desc[0] != '\0' )
-      fprintf( fp, "ShortDesc       %s~\n", morph->short_desc );
-   if( morph->skills && morph->skills[0] != '\0' )
-      fprintf( fp, "Skills          %s~\n", morph->skills );
-   if( morph->unmorph_other && morph->unmorph_other[0] != '\0' )
-      fprintf( fp, "UnmorphOther    %s~\n", morph->unmorph_other );
-   if( morph->unmorph_self && morph->unmorph_self[0] != '\0' )
-      fprintf( fp, "UnmorphSelf     %s~\n", morph->unmorph_self );
+   if( !morph->description.empty() )
+      fprintf( fp, "Description     %s~\n", strip_cr( morph->description.c_str() ) );
+   if( !morph->help.empty() )
+      fprintf( fp, "Help            %s~\n", strip_cr( morph->help.c_str() ) );
+   if( !morph->hit.empty() )
+      fprintf( fp, "Hit             %s~\n", morph->hit.c_str() );
+   if( !morph->hitroll.empty() )
+      fprintf( fp, "Hitroll         %s~\n", morph->hitroll.c_str() );
+   if( !morph->key_words.empty() )
+      fprintf( fp, "Keywords        %s~\n", morph->key_words.c_str() );
+   if( !morph->long_desc.empty() )
+      fprintf( fp, "Longdesc        %s~\n", strip_cr( morph->long_desc ).c_str() );
+   if( !morph->mana.empty() )
+      fprintf( fp, "Mana            %s~\n", morph->mana.c_str() );
+   if( !morph->morph_other.empty() )
+      fprintf( fp, "MorphOther      %s~\n", morph->morph_other.c_str() );
+   if( !morph->morph_self.empty() )
+      fprintf( fp, "MorphSelf       %s~\n", morph->morph_self.c_str() );
+   if( !morph->move.empty() )
+      fprintf( fp, "Move            %s~\n", morph->move.c_str() );
+   if( !morph->no_skills.empty() )
+      fprintf( fp, "NoSkills        %s~\n", morph->no_skills.c_str() );
+   if( !morph->short_desc.empty() )
+      fprintf( fp, "ShortDesc       %s~\n", morph->short_desc.c_str() );
+   if( !morph->skills.empty() )
+      fprintf( fp, "Skills          %s~\n", morph->skills.c_str() );
+   if( !morph->unmorph_other.empty() )
+      fprintf( fp, "UnmorphOther    %s~\n", morph->unmorph_other.c_str() );
+   if( !morph->unmorph_self.empty() )
+      fprintf( fp, "UnmorphSelf     %s~\n", morph->unmorph_self.c_str() );
    if( morph->affected_by.any(  ) )
       fprintf( fp, "Affected        %s~\n", bitset_string( morph->affected_by, aff_flags ) );
    if( morph->no_affected_by.any(  ) )
@@ -370,8 +422,7 @@ CMDF( do_morphset )
             return;
          }
          morph = ( morph_data * ) ch->pcdata->dest_buf;
-         DISPOSE( morph->description );
-         morph->description = ch->copy_buffer( false );
+         morph->description = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          if( ch->substate == SUB_REPEATCMD )
@@ -387,8 +438,7 @@ CMDF( do_morphset )
             return;
          }
          morph = ( morph_data * ) ch->pcdata->dest_buf;
-         DISPOSE( morph->help );
-         morph->help = ch->copy_buffer( false );
+         morph->help = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          if( ch->substate == SUB_REPEATCMD )
@@ -510,7 +560,7 @@ CMDF( do_morphset )
    if( !str_cmp( arg2, "on" ) )
    {
       ch->CHECK_SUBRESTRICTED(  );
-      ch->printf( "Morphset mode on. (Editing %s).\r\n", morph->name );
+      ch->print_fmt( "Morphset mode on. (Editing {}).\r\n", morph->name );
       ch->substate = SUB_REPEATCMD;
       ch->pcdata->dest_buf = morph;
       ch->pcdata->subprompt = std::format( "<&CMorphset &W{}&w> %i", morph->name );
@@ -548,7 +598,7 @@ CMDF( do_morphset )
    {
       if( value < 0 || value > POS_STANDING )
       {
-         ch->printf( "Position range is 0 to %d.\r\n", POS_STANDING );
+         ch->print_fmt( "Position range is 0 to {}.\r\n", (int)POS_STANDING );
          return;
       }
       morph->defpos = value;
@@ -654,7 +704,7 @@ CMDF( do_morphset )
    {
       if( value < 0 || value > sysdata->hoursperday - 1 )
       {
-         ch->printf( "Timeto is a value from 0 to %d.\r\n", sysdata->hoursperday - 1 );
+         ch->print_fmt( "Timeto is a value from 0 to {}.\r\n", sysdata->hoursperday - 1 );
          return;
       }
       morph->timeto = value;
@@ -663,7 +713,7 @@ CMDF( do_morphset )
    {
       if( value < 0 || value > sysdata->hoursperday - 1 )
       {
-         ch->printf( "Timefrom is a value from 0 to %d.\r\n", sysdata->hoursperday - 1 );
+         ch->print_fmt( "Timefrom is a value from 0 to {}.\r\n", sysdata->hoursperday - 1 );
          return;
       }
       morph->timefrom = value;
@@ -672,7 +722,7 @@ CMDF( do_morphset )
    {
       if( value < 0 || value > sysdata->dayspermonth - 1 )
       {
-         ch->printf( "Dayto is a value from 0 to %d.\r\n", sysdata->dayspermonth - 1 );
+         ch->print_fmt( "Dayto is a value from 0 to {}.\r\n", sysdata->dayspermonth - 1 );
          return;
       }
       morph->dayto = value;
@@ -681,7 +731,7 @@ CMDF( do_morphset )
    {
       if( value < 0 || value > sysdata->dayspermonth - 1 )
       {
-         ch->printf( "Dayfrom is a value from 0 to %d.\r\n", sysdata->dayspermonth - 1 );
+         ch->print_fmt( "Dayfrom is a value from 0 to {}.\r\n", sysdata->dayspermonth - 1 );
          return;
       }
       morph->dayfrom = value;
@@ -743,23 +793,20 @@ CMDF( do_morphset )
    else if( !str_cmp( arg2, "hp" ) )
    {
       argument = one_argument( argument, arg3 );
-      DISPOSE( morph->hit );
       if( str_cmp( arg3, "0" ) )
-         morph->hit = strdup( arg3.c_str(  ) );
+         morph->hit = arg3;
    }
    else if( !str_cmp( arg2, "mana" ) )
    {
       argument = one_argument( argument, arg3 );
-      DISPOSE( morph->mana );
       if( str_cmp( arg3, "0" ) )
-         morph->mana = strdup( arg3.c_str(  ) );
+         morph->mana = arg3;
    }
    else if( !str_cmp( arg2, "move" ) )
    {
       argument = one_argument( argument, arg3 );
-      DISPOSE( morph->move );
       if( str_cmp( arg3, "0" ) )
-         morph->move = strdup( arg3.c_str(  ) );
+         morph->move = arg3;
    }
    else if( !str_cmp( arg2, "ac" ) )
    {
@@ -773,16 +820,14 @@ CMDF( do_morphset )
    else if( !str_cmp( arg2, "hitroll" ) )
    {
       argument = one_argument( argument, arg3 );
-      DISPOSE( morph->hitroll );
       if( str_cmp( arg3, "0" ) )
-         morph->hitroll = strdup( arg3.c_str(  ) );
+         morph->hitroll = arg3;
    }
    else if( !str_cmp( arg2, "damroll" ) )
    {
       argument = one_argument( argument, arg3 );
-      DISPOSE( morph->damroll );
       if( str_cmp( arg3, "0" ) )
-         morph->damroll = strdup( arg3.c_str(  ) );
+         morph->damroll = arg3;
    }
    else if( !str_cmp( arg2, "dodge" ) )
    {
@@ -839,7 +884,7 @@ CMDF( do_morphset )
    {
       if( value < 0 || value > LEVEL_AVATAR )
       {
-         ch->printf( "Level range is 0 to %d.\r\n", LEVEL_AVATAR );
+         ch->print_fmt( "Level range is 0 to {}.\r\n", LEVEL_AVATAR );
          return;
       }
       morph->level = value;
@@ -893,7 +938,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->resistant.flip( value );
       }
@@ -911,7 +956,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->suscept.flip( value );
       }
@@ -929,7 +974,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->immune.flip( value );
       }
@@ -947,7 +992,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->absorb.flip( value );
       }
@@ -965,7 +1010,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->no_resistant.flip( value );
       }
@@ -983,7 +1028,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->no_suscept.flip( value );
       }
@@ -1001,7 +1046,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->no_immune.flip( value );
       }
@@ -1019,7 +1064,7 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->affected_by.flip( value );
       }
@@ -1037,49 +1082,42 @@ CMDF( do_morphset )
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             morph->no_affected_by.flip( value );
       }
    }
    else if( !str_cmp( arg2, "short" ) )
    {
-      DISPOSE( morph->short_desc );
-      morph->short_desc = strdup( arg3.c_str(  ) );
+      morph->short_desc = arg3;
    }
    else if( !str_cmp( arg2, "morphother" ) )
    {
-      DISPOSE( morph->morph_other );
-      morph->morph_other = strdup( arg3.c_str(  ) );
+      morph->morph_other = arg3;
    }
    else if( !str_cmp( arg2, "morphself" ) )
    {
-      DISPOSE( morph->morph_self );
-      morph->morph_self = strdup( arg3.c_str(  ) );
+      morph->morph_self = arg3;
    }
    else if( !str_cmp( arg2, "unmorphother" ) )
    {
-      DISPOSE( morph->unmorph_other );
-      morph->unmorph_other = strdup( arg3.c_str(  ) );
+      morph->unmorph_other = arg3;
    }
    else if( !str_cmp( arg2, "unmorphself" ) )
    {
-      DISPOSE( morph->unmorph_self );
-      morph->unmorph_self = strdup( arg3.c_str(  ) );
+      morph->unmorph_self = arg3;
    }
    else if( !str_cmp( arg2, "keyword" ) )
    {
-      DISPOSE( morph->key_words );
-      morph->key_words = strdup( arg3.c_str(  ) );
+      morph->key_words = arg3;
    }
    else if( !str_cmp( arg2, "long" ) )
-      strdup_printf( &morph->long_desc, "%s\r\n", arg3.c_str(  ) );
+      morph->long_desc = std::format( "{}\r\n", arg3 );
    else if( !str_cmp( arg2, "description" ) || !str_cmp( arg2, "desc" ) )
    {
       if( !arg3.empty(  ) )
       {
-         DISPOSE( morph->description );
-         morph->description = strdup( arg3.c_str(  ) );
+         morph->description = arg3;
       }
       ch->CHECK_SUBRESTRICTED(  );
       if( ch->substate == SUB_REPEATCMD )
@@ -1088,23 +1126,19 @@ CMDF( do_morphset )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_MORPH_DESC;
       ch->pcdata->dest_buf = morph;
-      if( !morph->description || morph->description[0] == '\0' )
-         morph->description = strdup( "" );
       ch->set_editor_desc( "A morph description." );
       ch->start_editing( morph->description );
       return;
    }
    else if( !str_cmp( arg2, "name" ) )
    {
-      DISPOSE( morph->name );
-      morph->name = strdup( arg3.c_str(  ) );
+      morph->name = arg3;
    }
    else if( !str_cmp( arg2, "help" ) )
    {
       if( !arg3.empty(  ) )
       {
-         DISPOSE( morph->help );
-         morph->help = strdup( arg3.c_str(  ) );
+         morph->help = arg3;
       }
       ch->CHECK_SUBRESTRICTED(  );
       if( ch->substate == SUB_REPEATCMD )
@@ -1113,8 +1147,6 @@ CMDF( do_morphset )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_MORPH_HELP;
       ch->pcdata->dest_buf = morph;
-      if( !morph->help || morph->help[0] == '\0' )
-         morph->help = strdup( "" );
       ch->set_editor_desc( "A morph help file." );
       ch->start_editing( morph->help );
       return;
@@ -1122,30 +1154,24 @@ CMDF( do_morphset )
    else if( !str_cmp( arg2, "skills" ) )
    {
       if( arg3.empty(  ) || !str_cmp( arg3, "none" ) )
-      {
-         DISPOSE( morph->skills );
          return;
-      }
-      if( !morph->skills )
+
+      if( morph->skills.empty() )
          buf = arg3;
       else
          buf = std::format( "{} {}", morph->skills, arg3 );
-      DISPOSE( morph->skills );
-      morph->skills = strdup( buf.c_str() );
+      morph->skills = buf;
    }
    else if( !str_cmp( arg2, "noskills" ) )
    {
       if( arg3.empty(  ) || !str_cmp( arg3, "none" ) )
-      {
-         DISPOSE( morph->no_skills );
          return;
-      }
-      if( !morph->no_skills )
+
+      if( morph->no_skills.empty() )
          buf = arg3;
       else
          buf = std::format( "{} {}", morph->no_skills, arg3 );
-      DISPOSE( morph->no_skills );
-      morph->no_skills = strdup( buf.c_str() );
+      morph->no_skills = buf;
    }
    else if( !str_cmp( arg2, "Class" ) )
    {
@@ -1153,7 +1179,7 @@ CMDF( do_morphset )
 
       if( value < 0 || value >= MAX_PC_CLASS )
       {
-         ch->printf( "Unknown PC Class: %s", arg3.c_str(  ) );
+         ch->print_fmt( "Unknown PC Class: {}", arg3 );
          return;
       }
       morph->Class.flip( value );
@@ -1164,7 +1190,7 @@ CMDF( do_morphset )
 
       if( value < 0 || value >= MAX_PC_RACE )
       {
-         ch->printf( "Unknown PC race: %s", arg3.c_str(  ) );
+         ch->print_fmt( "Unknown PC race: {}", arg3 );
          return;
       }
       morph->race.flip( value );
@@ -1220,7 +1246,7 @@ CMDF( do_morphstat )
 
       for( auto* poly : morphlist )
       {
-         ch->pagerf( "&c[&C%2d&c]   Name:  &C%-13s    &cVnum:  &C%4d  &cUsed:  &C%3d\r\n", count, poly->name, poly->vnum, poly->used );
+         ch->pager_fmt( "&c[&C{}&c]   Name:  &C{:<13}    &cVnum:  &C{:4}  &cUsed:  &C{:3}\r\n", count, poly->name, poly->vnum, poly->used );
          ++count;
       }
       return;
@@ -1238,70 +1264,70 @@ CMDF( do_morphstat )
 
    if( argument.empty(  ) )
    {
-      ch->pagerf( "  &cMorph Name: &C%-20s  Vnum: %4d\r\n", morph->name, morph->vnum );
+      ch->pager_fmt( "  &cMorph Name: &C{:<20}  Vnum: {:4}\r\n", morph->name, morph->vnum );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->pager( "                           &BMorph Restrictions\r\n" );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
-      ch->pagerf( "  &cClasses Allowed   : &w%s\r\n", bitset_string( morph->Class, npc_class ) );
-      ch->pagerf( "  &cRaces Not Allowed: &w%s\r\n", bitset_string( morph->race, npc_race ) );
-      ch->pagerf( "  &cSex:  &C%s   &cPkill:   &C%s   &cTime From:   &C%d   &cTime To:    &C%d\r\n",
+      ch->pager_fmt( "  &cClasses Allowed   : &w{}\r\n", bitset_string( morph->Class, npc_class ) );
+      ch->pager_fmt( "  &cRaces Not Allowed: &w{}\r\n", bitset_string( morph->race, npc_race ) );
+      ch->pager_fmt( "  &cSex:  &C{}   &cPkill:   &C{}   &cTime From:   &C{}   &cTime To:    &C{}\r\n",
                   morph->sex == SEX_MALE ? "male" :
                   morph->sex == SEX_FEMALE ? "female" : "neutral",
                   morph->pkill == ONLY_PKILL ? "YES" : morph->pkill == ONLY_PEACEFULL ? "NO" : "n/a", morph->timefrom, morph->timeto );
-      ch->pagerf( "  &cDay From:  &C%d  &cDay To:  &C%d\r\n", morph->dayfrom, morph->dayto );
-      ch->pagerf( "  &cLevel:  &C%d       &cMorph Via Spell   : &C%s\r\n", morph->level, ( morph->no_cast ) ? "NO" : "yes" );
-      ch->pagerf( " &cCasting Allowed   : &C%s\r\n", ( morph->cast_allowed ? "Yes" : "No" ) );
-      ch->pagerf( "  &cUSAGES:  Mana:  &C%d  &cMove:  &C%d  &cHp:  &C%d  &cFavour:  &C%d\r\n", morph->manaused, morph->moveused, morph->hpused, morph->favourused );
-      ch->pagerf( "  &cObj1: &C%d  &cObjuse1: &C%s   &cObj2: &C%d  &cObjuse2: &C%s   &cObj3: &C%d  &cObjuse3: &c%s\r\n",
+      ch->pager_fmt( "  &cDay From:  &C{}  &cDay To:  &C{}\r\n", morph->dayfrom, morph->dayto );
+      ch->pager_fmt( "  &cLevel:  &C{}       &cMorph Via Spell   : &C{}\r\n", morph->level, ( morph->no_cast ) ? "NO" : "yes" );
+      ch->pager_fmt( " &cCasting Allowed   : &C{}\r\n", ( morph->cast_allowed ? "Yes" : "No" ) );
+      ch->pager_fmt( "  &cUSAGES:  Mana:  &C{}  &cMove:  &C{}  &cHp:  &C{}  &cFavour:  &C{}\r\n", morph->manaused, morph->moveused, morph->hpused, morph->favourused );
+      ch->pager_fmt( "  &cObj1: &C{}  &cObjuse1: &C{}   &cObj2: &C{}  &cObjuse2: &C{}   &cObj3: &C{}  &cObjuse3: &c{}\r\n",
                   morph->obj[0], ( morph->objuse[0] ? "YES" : "no" ), morph->obj[1], ( morph->objuse[1] ? "YES" : "no" ), morph->obj[2], ( morph->objuse[2] ? "YES" : "no" ) );
-      ch->pagerf( "  &cTimer: &w%d\r\n", morph->timer );
+      ch->pager_fmt( "  &cTimer: &w{}\r\n", morph->timer );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->pager( "                       &BEnhancements to the Player\r\n" );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->
-         pagerf
-         ( "  &cStr: &C%2d&c )( Int: &C%2d&c )( Wis: &C%2d&c )( Dex: &C%2d&c )( Con: &C%2d&c )( Cha: &C%2d&c )( Lck: &C%2d&c )\r\n",
+         pager_fmt
+         ( "  &cStr: &C{:2}&c )( Int: &C{:2}&c )( Wis: &C{:2}&c )( Dex: &C{:2}&c )( Con: &C{:2}&c )( Cha: &C{:2}&c )( Lck: &C{:2}&c )\r\n",
            morph->str, morph->inte, morph->wis, morph->dex, morph->con, morph->cha, morph->lck );
-      ch->pagerf( "  &cSave versus: &w%d %d %d %d %d       &cDodge: &w%d  &cParry: &w%d  &cTumble: &w%d\r\n",
+      ch->pager_fmt( "  &cSave versus: &w{} {} {} {} {}       &cDodge: &w{}  &cParry: &w{}  &cTumble: &w{}\r\n",
                   morph->saving_poison_death, morph->saving_wand, morph->saving_para_petri, morph->saving_breath,
                   morph->saving_spell_staff, morph->dodge, morph->parry, morph->tumble );
-      ch->pagerf( "  &cHps     : &w%s    &cMana   : &w%s    &cMove      : &w%s\r\n", morph->hit, morph->mana, morph->move );
-      ch->pagerf( "  &cDamroll : &w%s    &cHitroll: &w%s    &cAC     : &w%d\r\n", morph->damroll, morph->hitroll, morph->ac );
+      ch->pager_fmt( "  &cHps     : &w{}    &cMana   : &w{}    &cMove      : &w{}\r\n", morph->hit, morph->mana, morph->move );
+      ch->pager_fmt( "  &cDamroll : &w{}    &cHitroll: &w{}    &cAC     : &w{}\r\n", morph->damroll, morph->hitroll, morph->ac );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->pager( "                          &BAffects to the Player\r\n" );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
-      ch->pagerf( "  &cAffected by: &C%s\r\n", bitset_string( morph->affected_by, aff_flags ) );
-      ch->pagerf( "  &cImmune     : &w%s\r\n", bitset_string( morph->immune, ris_flags ) );
-      ch->pagerf( "  &cSusceptible: &w%s\r\n", bitset_string( morph->suscept, ris_flags ) );
-      ch->pagerf( "  &cResistant  : &w%s\r\n", bitset_string( morph->resistant, ris_flags ) );
-      ch->pagerf( "  &cAbsorb     : &w%s\r\n", bitset_string( morph->absorb, ris_flags ) );
-      ch->pagerf( "  &cSkills     : &w%s\r\n", morph->skills );
+      ch->pager_fmt( "  &cAffected by: &C{}\r\n", bitset_string( morph->affected_by, aff_flags ) );
+      ch->pager_fmt( "  &cImmune     : &w{}\r\n", bitset_string( morph->immune, ris_flags ) );
+      ch->pager_fmt( "  &cSusceptible: &w{}\r\n", bitset_string( morph->suscept, ris_flags ) );
+      ch->pager_fmt( "  &cResistant  : &w{}\r\n", bitset_string( morph->resistant, ris_flags ) );
+      ch->pager_fmt( "  &cAbsorb     : &w{}\r\n", bitset_string( morph->absorb, ris_flags ) );
+      ch->pager_fmt( "  &cSkills     : &w{}\r\n", morph->skills );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->pager( "                     &BPrevented affects to the Player\r\n" );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
-      ch->pagerf( "  &cNot affected by: &C%s\r\n", bitset_string( morph->no_affected_by, aff_flags ) );
-      ch->pagerf( "  &cNot Immune     : &w%s\r\n", bitset_string( morph->no_immune, ris_flags ) );
-      ch->pagerf( "  &cNot Susceptible: &w%s\r\n", bitset_string( morph->no_suscept, ris_flags ) );
-      ch->pagerf( "  &cNot Resistant  : &w%s\r\n", bitset_string( morph->no_resistant, ris_flags ) );
-      ch->pagerf( "  &cNot Skills     : &w%s\r\n", morph->no_skills );
+      ch->pager_fmt( "  &cNot affected by: &C{}\r\n", bitset_string( morph->no_affected_by, aff_flags ) );
+      ch->pager_fmt( "  &cNot Immune     : &w{}\r\n", bitset_string( morph->no_immune, ris_flags ) );
+      ch->pager_fmt( "  &cNot Susceptible: &w{}\r\n", bitset_string( morph->no_suscept, ris_flags ) );
+      ch->pager_fmt( "  &cNot Resistant  : &w{}\r\n", bitset_string( morph->no_resistant, ris_flags ) );
+      ch->pager_fmt( "  &cNot Skills     : &w{}\r\n", morph->no_skills );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
       ch->pager( "\r\n" );
    }
    else if( !str_cmp( argument, "help" ) || !str_cmp( argument, "desc" ) )
    {
-      ch->pagerf( "  &cMorph Name  : &C%-20s\r\n", morph->name );
-      ch->pagerf( "  &cDefault Pos : &w%d\r\n", morph->defpos );
-      ch->pagerf( "  &cKeywords    : &w%s\r\n", morph->key_words );
-      ch->pagerf( "  &cShortdesc   : &w%s\r\n", ( morph->short_desc && morph->short_desc[0] == '\0' ) ? "(none set)" : morph->short_desc );
-      ch->pagerf( "  &cLongdesc    : &w%s", ( morph->long_desc && morph->long_desc[0] == '\0' ) ? "(none set)\r\n" : morph->long_desc );
-      ch->pagerf( "  &cMorphself   : &w%s\r\n", morph->morph_self );
-      ch->pagerf( "  &cMorphother  : &w%s\r\n", morph->morph_other );
-      ch->pagerf( "  &cUnMorphself : &w%s\r\n", morph->unmorph_self );
-      ch->pagerf( "  &cUnMorphother: &w%s\r\n", morph->unmorph_other );
+      ch->pager_fmt( "  &cMorph Name  : &C{:<20}\r\n", morph->name );
+      ch->pager_fmt( "  &cDefault Pos : &w{}\r\n", morph->defpos );
+      ch->pager_fmt( "  &cKeywords    : &w{}\r\n", morph->key_words );
+      ch->pager_fmt( "  &cShortdesc   : &w{}\r\n", !morph->short_desc.empty() ? "(none set)" : morph->short_desc );
+      ch->pager_fmt( "  &cLongdesc    : &w{}", morph->long_desc.empty() ? "(none set)\r\n" : morph->long_desc );
+      ch->pager_fmt( "  &cMorphself   : &w{}\r\n", morph->morph_self );
+      ch->pager_fmt( "  &cMorphother  : &w{}\r\n", morph->morph_other );
+      ch->pager_fmt( "  &cUnMorphself : &w{}\r\n", morph->unmorph_self );
+      ch->pager_fmt( "  &cUnMorphother: &w{}\r\n", morph->unmorph_other );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
-      ch->pagerf( "                                  &cHelp:\r\n&w%s\r\n", morph->help );
+      ch->pager_fmt( "                                  &cHelp:\r\n&w{}\r\n", morph->help );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
-      ch->pagerf( "                               &cDescription:\r\n&w%s\r\n", morph->description );
+      ch->pager_fmt( "                               &cDescription:\r\n&w{}\r\n", morph->description );
       ch->pager( "&B[----------------------------------------------------------------------------]\r\n" );
    }
    else
@@ -1409,20 +1435,24 @@ void do_morph( char_data * ch, morph_data * morph )
    ch->saving_poison_death += morph->saving_poison_death;
    ch->saving_spell_staff += morph->saving_spell_staff;
    ch->saving_wand += morph->saving_wand;
-   ch_morph->hitroll = morph->hitroll ? dice_parse( ch, morph->level, morph->hitroll ) : 0;
+
+   ch_morph->hitroll = !morph->hitroll.empty() ? dice_parse( ch, morph->level, morph->hitroll ) : 0;
    ch->hitroll += ch_morph->hitroll;
-   ch_morph->damroll = morph->damroll ? dice_parse( ch, morph->level, morph->damroll ) : 0;
+
+   ch_morph->damroll = !morph->damroll.empty() ? dice_parse( ch, morph->level, morph->damroll ) : 0;
    ch->damroll += ch_morph->damroll;
-   ch_morph->hit = morph->hit ? dice_parse( ch, morph->level, morph->hit ) : 0;
+
+   ch_morph->hit = !morph->hit.empty() ? dice_parse( ch, morph->level, morph->hit ) : 0;
    if( ( ch->hit + ch_morph->hit ) > 32700 )
       ch_morph->hit = ( 32700 - ch->hit );
    ch->hit += ch_morph->hit;
-   ch_morph->move = morph->move ? dice_parse( ch, morph->level, morph->move ) : 0;
+
+   ch_morph->move = !morph->move.empty() ? dice_parse( ch, morph->level, morph->move ) : 0;
    if( ( ch->move + ch_morph->move ) > 32700 )
       ch_morph->move = ( 32700 - ch->move );
    ch->move += ch_morph->move;
 
-   ch_morph->mana = morph->mana ? dice_parse( ch, morph->level, morph->mana ) : 0;
+   ch_morph->mana = !morph->mana.empty() ? dice_parse( ch, morph->level, morph->mana ) : 0;
    if( ( ch->mana + ch_morph->mana ) > 32700 )
       ch_morph->mana = ( 32700 - ch->mana );
    ch->mana += ch_morph->mana;
@@ -1659,7 +1689,7 @@ morph_data *fread_morph( FILE * fp, int file_ver )
 
    morph = new morph_data;
 
-   morph->name = strdup( word );
+   morph->name = word;
 
    for( ;; )
    {
@@ -1732,11 +1762,11 @@ morph_data *fread_morph( FILE * fp, int file_ver )
             break;
 
          case 'D':
-            KEY( "Damroll", morph->damroll, fread_string_nohash( fp ) );
+            STDSKEY( "Damroll", morph->damroll );
             KEY( "DayFrom", morph->dayfrom, fread_number( fp ) );
             KEY( "DayTo", morph->dayto, fread_number( fp ) );
             KEY( "Defpos", morph->defpos, fread_number( fp ) );
-            KEY( "Description", morph->description, fread_string_nohash( fp ) );
+            STDSKEY( "Description", morph->description );
             KEY( "Dexterity", morph->dex, fread_number( fp ) );
             KEY( "Dodge", morph->dodge, fread_number( fp ) );
             break;
@@ -1751,9 +1781,9 @@ morph_data *fread_morph( FILE * fp, int file_ver )
             break;
 
          case 'H':
-            KEY( "Help", morph->help, fread_string_nohash( fp ) );
-            KEY( "Hit", morph->hit, fread_string_nohash( fp ) );
-            KEY( "Hitroll", morph->hitroll, fread_string_nohash( fp ) );
+            STDSKEY( "Help", morph->help );
+            STDSKEY( "Hit", morph->hit );
+            STDSKEY( "Hitroll", morph->hitroll );
             KEY( "HpUsed", morph->hpused, fread_number( fp ) );
             break;
 
@@ -1770,26 +1800,26 @@ morph_data *fread_morph( FILE * fp, int file_ver )
             break;
 
          case 'K':
-            KEY( "Keywords", morph->key_words, fread_string_nohash( fp ) );
+            STDSKEY( "Keywords", morph->key_words );
             break;
 
          case 'L':
             KEY( "Level", morph->level, fread_number( fp ) );
-            KEY( "Longdesc", morph->long_desc, fread_string_nohash( fp ) );
+            STDSKEY( "Longdesc", morph->long_desc );
             KEY( "Luck", morph->lck, fread_number( fp ) );
             break;
 
          case 'M':
-            KEY( "Mana", morph->mana, fread_string_nohash( fp ) );
+            STDSKEY( "Mana", morph->mana );
             KEY( "ManaUsed", morph->manaused, fread_number( fp ) );
-            KEY( "MorphOther", morph->morph_other, fread_string_nohash( fp ) );
-            KEY( "MorphSelf", morph->morph_self, fread_string_nohash( fp ) );
-            KEY( "Move", morph->move, fread_string_nohash( fp ) );  /* EEK! This was set wrong! Caught by Matteo 2303 */
+            STDSKEY( "MorphOther", morph->morph_other );
+            STDSKEY( "MorphSelf", morph->morph_self );
+            STDSKEY( "Move", morph->move );  /* EEK! This was set wrong! Caught by Matteo 2303 */
             KEY( "MoveUsed", morph->moveused, fread_number( fp ) );
             break;
 
          case 'N':
-            KEY( "NoSkills", morph->no_skills, fread_string_nohash( fp ) );
+            STDSKEY( "NoSkills", morph->no_skills );
             if( !str_cmp( word, "NoAffected" ) )
             {
                if( file_ver < 1 )
@@ -1884,8 +1914,8 @@ morph_data *fread_morph( FILE * fp, int file_ver )
             KEY( "SaveSpell", morph->saving_spell_staff, fread_number( fp ) );
             KEY( "SaveWand", morph->saving_wand, fread_number( fp ) );
             KEY( "Sex", morph->sex, fread_number( fp ) );
-            KEY( "ShortDesc", morph->short_desc, fread_string_nohash( fp ) );
-            KEY( "Skills", morph->skills, fread_string_nohash( fp ) );
+            STDSKEY( "ShortDesc", morph->short_desc );
+            STDSKEY( "Skills", morph->skills );
             KEY( "Strength", morph->str, fread_number( fp ) );
 
             if( !str_cmp( word, "Suscept" ) )
@@ -1906,8 +1936,8 @@ morph_data *fread_morph( FILE * fp, int file_ver )
             break;
 
          case 'U':
-            KEY( "UnmorphOther", morph->unmorph_other, fread_string_nohash( fp ) );
-            KEY( "UnmorphSelf", morph->unmorph_self, fread_string_nohash( fp ) );
+            STDSKEY( "UnmorphOther", morph->unmorph_other );
+            STDSKEY( "UnmorphSelf", morph->unmorph_self );
             KEY( "Used", morph->used, fread_number( fp ) );
             break;
 
@@ -1995,23 +2025,23 @@ void load_morphs( void )
  */
 void copy_morph( morph_data * morph, morph_data * temp )
 {
-   morph->damroll = strdup( temp->damroll );
-   morph->description = strdup( temp->description );
-   morph->help = strdup( temp->help );
-   morph->hit = strdup( temp->hit );
-   morph->hitroll = strdup( temp->hitroll );
-   morph->key_words = strdup( temp->key_words );
-   morph->long_desc = strdup( temp->long_desc );
-   morph->mana = strdup( temp->mana );
-   morph->morph_other = strdup( temp->morph_other );
-   morph->morph_self = strdup( temp->morph_self );
-   morph->move = strdup( temp->move );
-   morph->name = strdup( temp->name );
-   morph->short_desc = strdup( temp->short_desc );
-   morph->skills = strdup( temp->skills );
-   morph->no_skills = strdup( temp->no_skills );
-   morph->unmorph_other = strdup( temp->unmorph_other );
-   morph->unmorph_self = strdup( temp->unmorph_self );
+   morph->damroll = temp->damroll;
+   morph->description = temp->description;
+   morph->help = temp->help;
+   morph->hit = temp->hit;
+   morph->hitroll = temp->hitroll;
+   morph->key_words = temp->key_words;
+   morph->long_desc = temp->long_desc;
+   morph->mana = temp->mana;
+   morph->morph_other = temp->morph_other;
+   morph->morph_self = temp->morph_self;
+   morph->move = temp->move;
+   morph->name = temp->name;
+   morph->short_desc = temp->short_desc;
+   morph->skills = temp->skills;
+   morph->no_skills = temp->no_skills;
+   morph->unmorph_other = temp->unmorph_other;
+   morph->unmorph_self = temp->unmorph_self;
    morph->affected_by = temp->affected_by;
    morph->Class = temp->Class;
    morph->sex = temp->sex;
@@ -2086,13 +2116,13 @@ CMDF( do_morphcreate )
       {
          if( !( temp = get_morph_vnum( atoi( arg1.c_str(  ) ) ) ) )
          {
-            ch->printf( "No such morph vnum %d exists.\r\n", atoi( arg1.c_str(  ) ) );
+            ch->print_fmt( "No such morph vnum {} exists.\r\n", std::stoi( arg1 ) );
             return;
          }
       }
       else if( !( temp = get_morph( arg1 ) ) )
       {
-         ch->printf( "No such morph %s exists.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "No such morph {} exists.\r\n", arg1 );
          return;
       }
    }
@@ -2103,12 +2133,12 @@ CMDF( do_morphcreate )
       copy_morph( morph, temp );
    else
       morph->name = strdup( arg1.c_str(  ) );
-   if( !morph->short_desc || morph->short_desc[0] == '\0' )
-      morph->short_desc = strdup( arg1.c_str(  ) );
+   if( morph->short_desc.empty() )
+      morph->short_desc = arg1;
    morph->vnum = morph_vnum;
    ++morph_vnum;
    morphlist.push_back( morph );
-   ch->printf( "Morph %s created with vnum %d.\r\n", morph->name, morph->vnum );
+   ch->print_fmt( "Morph {} created with vnum {}.\r\n", morph->name, morph->vnum );
 }
 
 void unmorph_all( morph_data * morph )
@@ -2119,51 +2149,6 @@ void unmorph_all( morph_data * morph )
          continue;
       do_unmorph_char( vch );
    }
-}
-
-morph_data::morph_data(  )
-{
-}
-
-/* 
- * Function that releases all the memory for a morph struct.  Careful not
- * to use the memory afterwards as it doesn't exist.
- * --Shaddai 
- */
-morph_data::~morph_data(  )
-{
-   unmorph_all( this );
-
-   DISPOSE( damroll );
-   DISPOSE( deity );
-   DISPOSE( description );
-   DISPOSE( help );
-   DISPOSE( hit );
-   DISPOSE( hitroll );
-   DISPOSE( key_words );
-   DISPOSE( long_desc );
-   DISPOSE( mana );
-   DISPOSE( morph_other );
-   DISPOSE( morph_self );
-   DISPOSE( move );
-   DISPOSE( name );
-   DISPOSE( short_desc );
-   DISPOSE( skills );
-   DISPOSE( no_skills );
-   DISPOSE( unmorph_other );
-   DISPOSE( unmorph_self );
-}
-
-void free_morphs( void )
-{
-   for( auto it = morphlist.begin(  ); it != morphlist.end(  ); )
-   {
-      morph_data *poly = *it;
-      ++it;
-
-      deleteptr( poly );
-   }
-   morphlist.clear( );
 }
 
 /*
@@ -2186,7 +2171,7 @@ CMDF( do_morphdestroy )
 
    if( !morph )
    {
-      ch->printf( "Unkown morph %s.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "Unknown morph {}.\r\n", argument );
       return;
    }
    deleteptr( morph );
@@ -2209,7 +2194,7 @@ void fwrite_morph_data( char_data * ch, FILE * fp )
    if( morph->morph != nullptr )
    {
       fprintf( fp, "Vnum %d\n", morph->morph->vnum );
-      fprintf( fp, "Name %s~\n", morph->morph->name );
+      fprintf( fp, "Name %s~\n", morph->morph->name.c_str() );
    }
    if( morph->affected_by.any(  ) )
       fprintf( fp, "Affect          %s~\n", bitset_string( morph->affected_by, aff_flags ) );
@@ -2496,7 +2481,7 @@ CMDF( do_imm_morph )
 
    if( morph == nullptr )
    {
-      ch->printf( "No such morph %d exists.\r\n", vnum );
+      ch->print_fmt( "No such morph {} exists.\r\n", vnum );
       return;
    }
    if( argument.empty(  ) )
@@ -2547,5 +2532,5 @@ CMDF( do_morphlist )
    ch->pager( "&G-----+----------------------------------\r\n" );
 
    for( auto* morph : morphlist )
-      ch->pagerf( "&G%-5d  &Y%s\r\n", morph->vnum, morph->name );
+      ch->pager_fmt( "&G{:<5}  &Y{}\r\n", morph->vnum, morph->name );
 }

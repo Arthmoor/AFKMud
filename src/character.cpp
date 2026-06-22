@@ -37,7 +37,6 @@
 #include "mud_prog.h"
 #include "new_auth.h"
 #include "objindex.h"
-#include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
 #include "smaugaffect.h"
@@ -54,6 +53,8 @@ void free_fight( char_data * );
 void queue_extracted_char( char_data *, bool );
 room_index *check_room( char_data *, room_index * );
 void update_room_reset( char_data *, bool );
+void add_morph_effects( char_data * );
+void do_unmorph( char_data * );
 
 extern std::list<rel_data *> relationlist;
 
@@ -98,7 +99,8 @@ char_data::~char_data(  )
       deleteptr( this->desc );
    }
 
-   deleteptr( this->morph );
+   if( this->morph )
+      do_unmorph( this );
 
    for( auto it = this->carrying.begin(); it != this->carrying.end(); )
    {
@@ -1467,20 +1469,7 @@ void char_data::update_aris(  )
     * Add in effects for polymorph 
     */
    if( !this->isnpc(  ) && this->morph )
-   {
-      this->affected_by |= this->morph->affected_by;
-      this->immune |= this->morph->immune;
-      this->resistant |= this->morph->resistant;
-      this->susceptible |= this->morph->suscept;
-      this->absorb |= this->morph->absorb;
-      /*
-       * Right now only morphs have no_ things --Shaddai 
-       */
-      this->no_affected_by |= this->morph->no_affected_by;
-      this->no_immune |= this->morph->no_immune;
-      this->no_resistant |= this->morph->no_resistant;
-      this->no_susceptible |= this->morph->no_suscept;
-   }
+      add_morph_effects( this );
 
    /*
     * If they were hiding before, make them hiding again 

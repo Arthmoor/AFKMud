@@ -120,6 +120,7 @@ class continent_data
    int floodfill( short, short, short, char );        // Used for large scale terrain changing in OLC.
    int unfloodfill( void );
 
+   class area_data *area = nullptr;               // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
    std::list<class mapexit_data *> exits;         // List of exists for this map.
    std::list<class landmark_data *> landmarks;    // List of landmarks for this map.
    std::list<class landing_data *> landing_sites; // List of landing sites for this map.
@@ -127,7 +128,6 @@ class continent_data
    std::string mapfile;                           // .png file where the map data will be loaded from.
    std::string areafile;                          // The area file associated with this map where all of its mobs, objs, and special rooms will go.
    std::string filename;                          // The map's filename. Used during online editing.
-   class area_data *area = nullptr;               // The area associated with this map. This is set during area load based on the areafile string, in the validate_overland_data function in overland.cpp
    unsigned char grid[MAX_X][MAX_Y];              // Grid of sector types. Not stored in the continent's data file. This is loaded indirectly through the .png file.
    int vnum = -1;                                 // VNUM for the master room that controls this map.
    bool nogrid = false;                           // If this is set to true, the continent will have no map grid. This allows continents to be treated as planes. For places like the Astral Plane etc.

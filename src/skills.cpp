@@ -1828,12 +1828,12 @@ bool get_skill_help( char_data * ch, std::string_view argument )
                ch->print( "Duration     :\r\n" );
                found = true;
             }
-            ch->printf( "   Affect    : '%s' for '%s' rounds.\r\n", aff_flags[af->bit], af->duration );
+            ch->print_fmt( "   Affect    : '{}' for '{}' rounds.\r\n", aff_flags[af->bit], af->duration );
          }
       }
    }
 
-   ch->printf( "%-5s Level  : ", skill->type == SKILL_RACIAL ? "Race" : "Class" );
+   ch->print_fmt( "{:<5} Level  : ", skill->type == SKILL_RACIAL ? "Race" : "Class" );
 
    bool firstpass = true;
    if( skill->type != SKILL_RACIAL )
@@ -1877,17 +1877,17 @@ bool get_skill_help( char_data * ch, std::string_view argument )
    ch->print( "\r\n" );
 
    if( skill->dice )
-      ch->printf( "Damage       : %s\r\n", skill->dice );
+      ch->print_fmt( "Damage       : {}\r\n", skill->dice );
 
    if( skill->type == SKILL_SPELL )
    {
       if( skill->saves > 0 )
-         ch->printf( "Save         : vs %s for %s\r\n", spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
-      ch->printf( "Minimum cost : %d mana\r\n", skill->min_mana );
+         ch->print_fmt( "Save         : vs {} for {}\r\n", spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
+      ch->print_fmt( "Minimum cost : {} mana\r\n", skill->min_mana );
    }
 
    if( skill->helptext )
-      ch->printf( "\r\n%s\r\n", skill->helptext );
+      ch->print_fmt( "\r\n{}\r\n", skill->helptext );
    return true;
 }
 
@@ -1911,12 +1911,10 @@ bool can_use_skill( char_data * ch, int percent, int gsn )
       check = true;
    else if( !ch->isnpc(  ) && percent < ch->LEARNED( gsn ) )
       check = true;
-   else if( ch->morph && ch->morph->morph && ch->morph->morph->skills &&
-            ch->morph->morph->skills[0] != '\0' && hasname( ch->morph->morph->skills, skill_table[gsn]->name ) && percent < 85 )
+   else if( ch->morph && ch->morph->morph && !ch->morph->morph->skills.empty() && hasname( ch->morph->morph->skills, skill_table[gsn]->name ) && percent < 85 )
       check = true;
 
-   if( ch->morph && ch->morph->morph && ch->morph->morph->no_skills &&
-       ch->morph->morph->no_skills[0] != '\0' && hasname( ch->morph->morph->no_skills, skill_table[gsn]->name ) )
+   if( ch->morph && ch->morph->morph && !ch->morph->morph->no_skills.empty() && hasname( ch->morph->morph->no_skills, skill_table[gsn]->name ) )
       check = false;
 
    return check;

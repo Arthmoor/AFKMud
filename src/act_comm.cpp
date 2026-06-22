@@ -33,24 +33,17 @@
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "objindex.h"
-#include "polymorph.h"
 #include "raceclass.h"
 #include "roomindex.h"
 
 bool is_inolc( descriptor_data * );
 board_data *find_board( char_data * );
 board_data *get_board( char_data *, std::string_view );
+const std::string MORPHNAME( char_data * );
+const std::string MORPHPERS( char_data *, char_data *, bool );
 
 std::string NAME( char_data * ch )
 {
-   return( ch->isnpc() ? ch->short_descr : ch->name );
-}
-
-std::string MORPHNAME( char_data * ch )
-{
-   if( ch->morph && ch->morph->morph && ch->morph->morph->short_desc != nullptr )
-      return ch->morph->morph->short_desc;
-
    return( ch->isnpc() ? ch->short_descr : ch->name );
 }
 

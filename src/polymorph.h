@@ -61,24 +61,24 @@ class morph_data
    std::bitset<MAX_RIS_FLAG> resistant;         // Resistances added.
    std::bitset<MAX_RIS_FLAG> suscept;           // Suscepts added.
    std::bitset<MAX_RIS_FLAG> absorb;            // Absorbs added - Samson 3-16-00
-   char *damroll = nullptr;                     // Bonus to damage. This is a char* because it can be written as dice formulas to pass to dice_parse().
-   char *deity = nullptr;                       // Players worshiping this deity cannot use this morph.
-   char *description = nullptr;
-   char *help = nullptr;                        // What player sees for info on morph.
-   char *hit = nullptr;                         // Hitpoints added. This is a char* because it can be written as dice formulas to pass to dice_parse().
-   char *hitroll = nullptr;                     // Bonus to hit. This is a char* because it can be written as dice formulas to pass to dice_parse().
-   char *key_words = nullptr;                   // Keywords added to your name.
-   char *long_desc = nullptr;                   // New long_desc for player.
-   char *mana = nullptr;                        // Mana added. This is a char* because it can be written as dice formulas to pass to dice_parse().
-   char *morph_other = nullptr;                 // What others see when you morph.
-   char *morph_self = nullptr;                  // What you see when you morph.
-   char *move = nullptr;                        // Movement points added. This is a char* because it can be written as dice formulas to pass to dice_parse().
-   char *name = nullptr;                        // Name used to polymorph into this.
-   char *short_desc = nullptr;                  // New short desc for player.
-   char *no_skills = nullptr;                   // Prevented Skills.
-   char *skills = nullptr;
-   char *unmorph_other = nullptr;               // What others see when you unmorph.
-   char *unmorph_self = nullptr;                // What you see when you unmorph.
+   std::string damroll;                         // Bonus to damage. This is a string because it can be written as dice formulas to pass to dice_parse().
+   std::string deity;                           // Players worshiping this deity cannot use this morph.
+   std::string description;
+   std::string help;                            // What player sees for info on morph.
+   std::string hit;                             // Hitpoints added. This is a string because it can be written as dice formulas to pass to dice_parse().
+   std::string hitroll;                         // Bonus to hit. This is a string because it can be written as dice formulas to pass to dice_parse().
+   std::string key_words;                       // Keywords added to your name.
+   std::string long_desc;                       // New long_desc for player.
+   std::string mana;                            // Mana added. This is a string because it can be written as dice formulas to pass to dice_parse().
+   std::string morph_other;                     // What others see when you morph.
+   std::string morph_self;                      // What you see when you morph.
+   std::string move;                            // Movement points added. This is a string because it can be written as dice formulas to pass to dice_parse().
+   std::string name;                            // Name used to polymorph into this.
+   std::string short_desc;                      // New short desc for player.
+   std::string no_skills;                       // Prevented Skills.
+   std::string skills;                          // Skills the morph is allowed to use.
+   std::string unmorph_other;                   // What others see when you unmorph.
+   std::string unmorph_self;                    // What you see when you unmorph.
    int obj[3]{0};                               // Object needed to morph you.
    int defpos = POS_STANDING;                   // Default position.
    int timer = -1;                              // Timer for how long it lasts.
