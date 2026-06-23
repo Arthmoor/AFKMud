@@ -979,7 +979,6 @@ void add_loginmsg( std::string_view, short, std::string_view );
 bool hasname( std::string_view, std::string_view );
 void removename( std::string &, const std::string & );
 void addname( std::string &, const std::string & );
-void stralloc_printf( char **, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void strdup_printf( char **, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 void smash_tilde( char * );
 void smash_tilde( std::string & );
