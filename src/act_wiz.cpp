@@ -84,7 +84,7 @@ extern int reboot_counter;
 
 class_type *class_table[MAX_CLASS];
 race_type *race_table[MAX_RACE];
-char *title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
+std::string title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
 int MAX_PC_CLASS;
 int MAX_PC_RACE;
 std::chrono::system_clock::time_point last_restore_all_time;
@@ -6181,22 +6181,6 @@ CMDF( do_cset )
    do_cset( ch, "help" );
 }
 
-void free_all_titles( void )
-{
-   int hash, loopa;
-
-   for( hash = 0; hash < MAX_CLASS; ++hash )
-   {
-      for( loopa = 0; loopa < MAX_LEVEL + 1; ++loopa )
-      {
-         STRFREE( title_table[hash][loopa][SEX_NEUTRAL] );
-         STRFREE( title_table[hash][loopa][SEX_MALE] );
-         STRFREE( title_table[hash][loopa][SEX_FEMALE] );
-         STRFREE( title_table[hash][loopa][SEX_HERMAPHRODYTE] );
-      }
-   }
-}
-
 class_type::class_type(  )
 {
 }
@@ -6369,18 +6353,18 @@ bool load_class_file( const char *fname )
                {
                   if( file_ver < 2 )
                   {
-                     title_table[cl][tlev][SEX_MALE] = fread_string( fp );
-                     title_table[cl][tlev][SEX_FEMALE] = fread_string( fp );
+                     fread_string( title_table[cl][tlev][SEX_MALE], fp );
+                     fread_string( title_table[cl][tlev][SEX_FEMALE], fp );
 
-                     title_table[cl][tlev][SEX_NEUTRAL] = STRALLOC( title_table[cl][tlev][SEX_MALE] );
-                     title_table[cl][tlev][SEX_HERMAPHRODYTE] = STRALLOC( title_table[cl][tlev][SEX_FEMALE] );
+                     title_table[cl][tlev][SEX_NEUTRAL] = title_table[cl][tlev][SEX_MALE];
+                     title_table[cl][tlev][SEX_HERMAPHRODYTE] = title_table[cl][tlev][SEX_FEMALE];
                   }
                   else
                   {
-                     title_table[cl][tlev][SEX_NEUTRAL] = fread_string( fp );
-                     title_table[cl][tlev][SEX_MALE] = fread_string( fp );
-                     title_table[cl][tlev][SEX_FEMALE] = fread_string( fp );
-                     title_table[cl][tlev][SEX_HERMAPHRODYTE] = fread_string( fp );
+                     fread_string( title_table[cl][tlev][SEX_NEUTRAL], fp );
+                     fread_string( title_table[cl][tlev][SEX_MALE], fp );
+                     fread_string( title_table[cl][tlev][SEX_FEMALE], fp );
+                     fread_string( title_table[cl][tlev][SEX_HERMAPHRODYTE], fp );
                   }
 
                   ++tlev;
@@ -6509,7 +6493,7 @@ void write_class_file( int cl )
    }
 
    for( int x = 0; x <= MAX_LEVEL; ++x )
-      fprintf( fpout, "Title\n%s~\n%s~\n%s~\n%s~\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
+      fprintf( fpout, "Title\n%s~\n%s~\n%s~\n%s~\n", title_table[cl][x][SEX_NEUTRAL].c_str(), title_table[cl][x][SEX_MALE].c_str(), title_table[cl][x][SEX_FEMALE].c_str(), title_table[cl][x][SEX_HERMAPHRODYTE].c_str() );
 
    fprintf( fpout, "%s", "End\n" );
    FCLOSE( fpout );
@@ -6629,10 +6613,10 @@ bool create_new_class( int Class, const std::string & argument )
    class_table[Class]->fMana = false;
    for( int i = 0; i < MAX_LEVEL; ++i )
    {
-      title_table[Class][i][SEX_NEUTRAL] = STRALLOC( "Not set." );
-      title_table[Class][i][SEX_MALE] = STRALLOC( "Not set." );
-      title_table[Class][i][SEX_FEMALE] = STRALLOC( "Not set." );
-      title_table[Class][i][SEX_HERMAPHRODYTE] = STRALLOC( "Not set." );
+      title_table[Class][i][SEX_NEUTRAL] = "Not set.";
+      title_table[Class][i][SEX_MALE] = "Not set.";
+      title_table[Class][i][SEX_FEMALE] = "Not set.";
+      title_table[Class][i][SEX_HERMAPHRODYTE] = "Not set.";
    }
    return true;
 }
@@ -6983,13 +6967,12 @@ CMDF( do_setclass )
          ch->print( "Syntax: setclass <Class> ntitle <level> <title>\r\n" );
          return;
       }
-      if( ( x = atoi( arg3.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
+      if( ( x = std::stoi( arg3 ) ) < 0 || x > MAX_LEVEL )
       {
          ch->print( "Invalid level.\r\n" );
          return;
       }
-      STRFREE( title_table[cl][x][SEX_NEUTRAL] );
-      title_table[cl][x][SEX_NEUTRAL] = STRALLOC( argument.c_str(  ) );
+      title_table[cl][x][SEX_NEUTRAL] = argument;
       ch->print( "Done.\r\n" );
       write_class_file( cl );
       return;
@@ -7006,13 +6989,12 @@ CMDF( do_setclass )
          ch->print( "Syntax: setclass <Class> mtitle <level> <title>\r\n" );
          return;
       }
-      if( ( x = atoi( arg3.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
+      if( ( x = std::stoi( arg3 ) ) < 0 || x > MAX_LEVEL )
       {
          ch->print( "Invalid level.\r\n" );
          return;
       }
-      STRFREE( title_table[cl][x][SEX_MALE] );
-      title_table[cl][x][SEX_MALE] = STRALLOC( argument.c_str(  ) );
+      title_table[cl][x][SEX_MALE] = argument;
       ch->print( "Done.\r\n" );
       write_class_file( cl );
       return;
@@ -7030,13 +7012,12 @@ CMDF( do_setclass )
          ch->print( "Syntax: setclass <Class> ftitle <level> <title>\r\n" );
          return;
       }
-      if( ( x = atoi( arg4.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
+      if( ( x = std::stoi( arg4 ) ) < 0 || x > MAX_LEVEL )
       {
          ch->print( "Invalid level.\r\n" );
          return;
       }
-      STRFREE( title_table[cl][x][SEX_FEMALE] );
-      title_table[cl][x][SEX_FEMALE] = STRALLOC( argument.c_str(  ) );
+      title_table[cl][x][SEX_FEMALE] = argument;
       ch->print( "Done\r\n" );
       write_class_file( cl );
       return;
@@ -7054,13 +7035,12 @@ CMDF( do_setclass )
          ch->print( "Syntax: setclass <Class> htitle <level> <title>\r\n" );
          return;
       }
-      if( ( x = atoi( arg4.c_str(  ) ) ) < 0 || x > MAX_LEVEL )
+      if( ( x = std::stoi( arg4 ) ) < 0 || x > MAX_LEVEL )
       {
          ch->print( "Invalid level.\r\n" );
          return;
       }
-      STRFREE( title_table[cl][x][SEX_HERMAPHRODYTE] );
-      title_table[cl][x][SEX_HERMAPHRODYTE] = STRALLOC( argument.c_str(  ) );
+      title_table[cl][x][SEX_HERMAPHRODYTE] = argument;
       ch->print( "Done\r\n" );
       write_class_file( cl );
       return;

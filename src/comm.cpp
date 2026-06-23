@@ -133,7 +133,6 @@ void extract_all_chars(  );
 void extract_all_objs(  );
 void free_all_classes(  );
 void free_all_races(  );
-void free_all_titles(  );
 void free_all_chess_games(  );
 void free_continents(  );
 void free_helps(  );
@@ -945,10 +944,6 @@ void cleanup_memory( void )
    // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED
    fprintf( stdout, "%s", "Auction.\n" );
    clear_auction(  );
-
-   // Title table
-   fprintf( stdout, "%s", "Title table.\n" );
-   free_all_titles(  );
 
    // Skills
    fprintf( stdout, "%s", "Skills and Herbs.\n" );

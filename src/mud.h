@@ -873,7 +873,7 @@ extern int top_herb;
 extern int top_disease;
 extern ch_ret global_retcode;
 
-extern char *title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
+extern std::string title_table[MAX_CLASS][MAX_LEVEL + 1][SEX_MAX];
 extern std::chrono::system_clock::time_point current_time;
 extern bool fLogAll;
 extern time_info_data time_info;
