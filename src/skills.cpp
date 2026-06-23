@@ -326,8 +326,6 @@ smaug_affect::smaug_affect(  )
 
 smaug_affect::~smaug_affect(  )
 {
-   DISPOSE( duration );
-   DISPOSE( modifier );
 }
 
 skill_type::skill_type(  )
@@ -1002,14 +1000,14 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
    {
       if( af->location == APPLY_AFFECT )
          af->location = APPLY_EXT_AFFECT;
-      fprintf( fpout, "Affect       '%s' %d ", af->duration, af->location );
-      modifier = atoi( af->modifier );
+      fprintf( fpout, "Affect       '%s' %d ", af->duration.c_str(), af->location );
+      modifier = std::stoi( af->modifier );
       if( ( af->location == APPLY_WEAPONSPELL
             || af->location == APPLY_WEARSPELL
             || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( modifier ) )
          fprintf( fpout, "'%d' ", skill_table[modifier]->slot );
       else
-         fprintf( fpout, "'%s' ", af->modifier );
+         fprintf( fpout, "'%s' ", af->modifier.c_str() );
       fprintf( fpout, "%d\n", af->bit );
    }
 
@@ -1821,7 +1819,7 @@ bool get_skill_help( char_data * ch, std::string_view argument )
       for( auto* af : skill->affects )
       {
          // Make sure duration isn't null, and is not 0
-         if( af->duration && af->duration[0] != '\0' && af->duration[0] != '0' )
+         if( !af->duration.empty() )
          {
             if( !found )
             {

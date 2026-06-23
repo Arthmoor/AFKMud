@@ -143,8 +143,8 @@ class smaug_affect
    smaug_affect();
    ~smaug_affect();
 
-   char *duration = nullptr;
-   char *modifier = nullptr;
+   std::string duration;
+   std::string modifier;
    int bit = 0;
    short location = 0;
 };
