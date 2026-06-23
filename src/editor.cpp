@@ -31,20 +31,6 @@
 #include "mud.h"
 #include "descriptor.h"
 
-// FIXME: Tagging this for removal once all calls using it have been converted to std::string
-void strdup_printf( char **pointer, const char *fmt, ... )
-{
-   char buf[MSL * 4];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 4, fmt, args );
-   va_end( args );
-
-   DISPOSE( *pointer );
-   *pointer = strdup( buf );
-}
-
 /*
  * Does the list have the member in it?
  *

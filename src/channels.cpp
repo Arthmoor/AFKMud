@@ -558,8 +558,6 @@ void update_channel_history( char_data * ch, mud_channel * channel, const std::s
       entry->name = ch->name;
 
    entry->format = std::format( "  &R[{{}}] &G{{}}{} {}\r\n", emote ? "" : ":", newarg );
-   // strdup_printf( &entry->format, "   &R[%%s] &G%%s%s %s\r\n", emote ? "" : ":", newarg.c_str(  ) );
-
    entry->timestamp = current_time;
 
    if( ch && ch->has_aflag( AFF_INVISIBLE ) )

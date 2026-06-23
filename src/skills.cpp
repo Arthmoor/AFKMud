@@ -795,7 +795,7 @@ void remap_slot_numbers( void )
             if( af->location == APPLY_WEAPONSPELL
                 || af->location == APPLY_WEARSPELL || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL )
             {
-               strdup_printf( &af->modifier, "%d", slot_lookup( atoi( af->modifier ) ) );
+               af->modifier = std::format( "{}", slot_lookup( std::stoi( af->modifier ) ) );
             }
          }
       }
