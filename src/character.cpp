@@ -3761,7 +3761,7 @@ void char_data::gain_exp( double gain )
    }
 }
 
-const char *char_data::get_class(  )
+std::string char_data::get_class(  )
 {
    if( this->isnpc(  ) && this->Class < MAX_NPC_CLASS && this->Class >= 0 )
       return ( npc_class[this->Class] );
@@ -3770,7 +3770,7 @@ const char *char_data::get_class(  )
    return ( "Unknown" );
 }
 
-const char *char_data::get_race(  )
+std::string char_data::get_race(  )
 {
    if( this->race < MAX_PC_RACE && this->race >= 0 )
       return ( race_table[this->race]->race_name );

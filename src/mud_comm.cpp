@@ -4059,7 +4059,6 @@ CMDF( do_mpraceset )
    std::string arg1;
    race_type *race;
    class_type *Class;
-   char *classname;
    obj_data *obj;
    int iLang;
 
@@ -4100,7 +4099,6 @@ CMDF( do_mpraceset )
 
    race = race_table[victim->race];
    Class = class_table[victim->Class];
-   classname = Class->who_name;
 
    victim->set_aflags( race->affected );
    victim->armor += race->ac_plus;
@@ -4146,7 +4144,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->weapon )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class weapon {} not found for Class {}.", Class->weapon, classname );
+         bug( "Class weapon {} not found for Class {}.", Class->weapon, Class->who_name );
       }
       else
       {
@@ -4160,7 +4158,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->armor )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class armor {} not found for Class {}.", Class->armor, classname );
+         bug( "Class armor {} not found for Class {}.", Class->armor, Class->who_name );
       }
       else
       {
@@ -4174,7 +4172,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->legwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class legwear {} not found for Class {}.", Class->legwear, classname );
+         bug( "Class legwear {} not found for Class {}.", Class->legwear, Class->who_name );
       }
       else
       {
@@ -4188,7 +4186,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->headwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class headwear {} not found for Class {}.", Class->headwear, classname );
+         bug( "Class headwear {} not found for Class {}.", Class->headwear, Class->who_name );
       }
       else
       {
@@ -4202,7 +4200,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->armwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class armwear {} not found for Class {}.", Class->armwear, classname );
+         bug( "Class armwear {} not found for Class {}.", Class->armwear, Class->who_name );
       }
       else
       {
@@ -4216,7 +4214,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->footwear )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class footwear {} not found for Class {}.", Class->footwear, classname );
+         bug( "Class footwear {} not found for Class {}.", Class->footwear, Class->who_name );
       }
       else
       {
@@ -4230,7 +4228,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->shield )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class shield {} not found for Class {}.", Class->shield, classname );
+         bug( "Class shield {} not found for Class {}.", Class->shield, Class->who_name );
       }
       else
       {
@@ -4244,7 +4242,7 @@ CMDF( do_mpraceset )
       if( !( obj = get_obj_index( Class->held )->create_object( 1 ) ) )
       {
          log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-         bug( "Class held {} not found for Class {}.", Class->held, classname );
+         bug( "Class held {} not found for Class {}.", Class->held, Class->who_name );
       }
       else
       {

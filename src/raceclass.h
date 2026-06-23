@@ -48,14 +48,14 @@ class race_type
    std::bitset<MAX_RIS_FLAG> resist;               // Bugfix: Samson 5-7-99
    std::bitset<MAX_RIS_FLAG> suscept;              // Bugfix: Samson 5-7-99
    std::bitset<MAX_CLASS> allowed_classes;         // Flags for allowed classes.
-   char *race_name = nullptr;                      // Race name.
-   short str_plus = 0; // Str bonus/penalty
-   short dex_plus = 0; // Dex      "
-   short wis_plus = 0; // Wis      "
-   short int_plus = 0; // Int      "
-   short con_plus = 0; // Con      "
-   short cha_plus = 0; // Cha      "
-   short lck_plus = 0; // Lck      "
+   std::string race_name;                          // Race name.
+   short str_plus = 0;                             // Str bonus/penalty
+   short dex_plus = 0;                             // Dex      "
+   short wis_plus = 0;                             // Wis      "
+   short int_plus = 0;                             // Int      "
+   short con_plus = 0;                             // Con      "
+   short cha_plus = 0;                             // Cha      "
+   short lck_plus = 0;                             // Lck      "
    short hit = 0;
    short mana = 0;
    short ac_plus = 0;
@@ -90,7 +90,7 @@ class class_type
    std::bitset<MAX_AFFECTED_BY> affected; // Default affect bitvectors.
    std::bitset<MAX_RIS_FLAG> resist;
    std::bitset<MAX_RIS_FLAG> suscept;
-   char *who_name = nullptr;  // Name for 'who'.
+   std::string who_name;      // Name for 'who'.
    float thac0_gain = 0.0;    // Thac0 amount gained per level - Dwip 5-11-01
    int weapon = 0;            // Vnum of Weapon given at creation.
    int armor = 0;             // Vnum of Body Armor given at creation - Samson

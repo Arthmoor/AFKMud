@@ -2314,13 +2314,13 @@ CMDF( do_devote )
     */
    if( deity->class_allowed.any(  ) && !deity->class_allowed.test( ch->Class ) )
    {
-      ch->printf( "%s does not accept worshippers of class %s.\r\n", deity->name.c_str(  ), class_table[ch->Class]->who_name );
+      ch->print_fmt( "{} does not accept worshippers of class {}.\r\n", deity->name, class_table[ch->Class]->who_name );
       return;
    }
 
    if( deity->sex != -1 && deity->sex != ch->sex )
    {
-      ch->printf( "%s does not accept %s worshippers.\r\n", deity->name.c_str(  ), npc_sex[ch->sex] );
+      ch->print_fmt( "{} does not accept {} worshippers.\r\n", deity->name, npc_sex[ch->sex] );
       return;
    }
 
@@ -2332,7 +2332,7 @@ CMDF( do_devote )
     */
    if( deity->race_allowed.any(  ) && !deity->race_allowed.test( ch->race ) )
    {
-      ch->printf( "%s does not accept worshippers of the %s race.\r\n", deity->name.c_str(  ), race_table[ch->race]->race_name );
+      ch->print_fmt( "{} does not accept worshippers of the {} race.\r\n", deity->name, race_table[ch->race]->race_name );
       return;
    }
 
@@ -2360,7 +2360,7 @@ CMDF( do_deities )
       {
          deity = *dt;
 
-         ch->pagerf( "&G%-14s   &g%19d\r\n", deity->name.c_str(  ), deity->worshippers );
+         ch->pager_fmt( "&G{:<14}   &g{:19}\r\n", deity->name, deity->worshippers );
          ++count;
       }
       if( !count )
@@ -2377,8 +2377,8 @@ CMDF( do_deities )
       return;
    }
 
-   ch->pagerf( "&gDeity:        &G%s\r\n", deity->name.c_str(  ) );
-   ch->pagerf( "&gDescription:\r\n&G%s", deity->deitydesc.c_str(  ) );
+   ch->pager_fmt( "&gDeity:        &G{}\r\n", deity->name );
+   ch->pager_fmt( "&gDescription:\r\n&G%s", deity->deitydesc.c_str(  ) );
 }
 
 /*
@@ -2407,7 +2407,7 @@ void char_data::adjust_favor( int field, int mod )
       {
          if( pcdata->deity->affected[0] > 0 && !affected_by.test( pcdata->deity->affected[0] ) )
          {
-            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[0]] );
+            print_fmt( "{} looks favorably upon you and bestows {} as a reward.\r\n", pcdata->deity_name, aff_flags[pcdata->deity->affected[0]] );
             affected_by.set( pcdata->deity->affected[0] );
          }
       }
@@ -2415,7 +2415,7 @@ void char_data::adjust_favor( int field, int mod )
       {
          if( pcdata->deity->affected[1] > 0 && !affected_by.test( pcdata->deity->affected[1] ) )
          {
-            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[1]] );
+            print_fmt( "{} looks favorably upon you and bestows {} as a reward.\r\n", pcdata->deity_name, aff_flags[pcdata->deity->affected[1]] );
             affected_by.set( pcdata->deity->affected[1] );
          }
       }
@@ -2423,7 +2423,7 @@ void char_data::adjust_favor( int field, int mod )
       {
          if( pcdata->deity->affected[2] > 0 && !affected_by.test( pcdata->deity->affected[2] ) )
          {
-            printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[2]] );
+            print_fmt( "{} looks favorably upon you and bestows {} as a reward.\r\n", pcdata->deity_name, aff_flags[pcdata->deity->affected[2]] );
             affected_by.set( pcdata->deity->affected[2] );
          }
       }
@@ -2432,7 +2432,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->element[0] != 0 && !has_resist( pcdata->deity->element[0] ) )
          {
             set_resist( pcdata->deity->element[0] );
-            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[0]] );
+            print_fmt( "{} looks favorably upon you and bestows {} resistance upon you.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->element[0]] );
          }
       }
       if( pcdata->favor > pcdata->deity->elementnum[1] )
@@ -2440,7 +2440,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->element[1] != 0 && !has_resist( pcdata->deity->element[1] ) )
          {
             set_resist( pcdata->deity->element[1] );
-            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[1]] );
+            print_fmt( "{} looks favorably upon you and bestows {} resistance upon you.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->element[1]] );
          }
       }
       if( pcdata->favor > pcdata->deity->elementnum[2] )
@@ -2448,7 +2448,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->element[2] != 0 && !has_resist( pcdata->deity->element[2] ) )
          {
             set_resist( pcdata->deity->element[2] );
-            printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[2]] );
+            print_fmt( "{} looks favorably upon you and bestows {} resistance upon you.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->element[2]] );
          }
       }
       if( pcdata->favor < pcdata->deity->susceptnum[0] )
@@ -2456,7 +2456,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->suscept[0] != 0 && !has_suscep( pcdata->deity->suscept[0] ) )
          {
             set_suscep( pcdata->deity->suscept[0] );
-            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[0]] );
+            print_fmt( "{} looks poorly upon you and makes you more vulnerable to {} as punishment.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->suscept[0]] );
          }
       }
       if( pcdata->favor < pcdata->deity->susceptnum[1] )
@@ -2464,7 +2464,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->suscept[1] != 0 && !has_suscep( pcdata->deity->suscept[1] ) )
          {
             set_suscep( pcdata->deity->suscept[1] );
-            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[1]] );
+            print_fmt( "{} looks poorly upon you and makes you more vulnerable to {} as punishment.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->suscept[1]] );
          }
       }
       if( pcdata->favor < pcdata->deity->susceptnum[2] )
@@ -2472,7 +2472,7 @@ void char_data::adjust_favor( int field, int mod )
          if( pcdata->deity->suscept[2] != 0 && !has_suscep( pcdata->deity->suscept[2] ) )
          {
             set_suscep( pcdata->deity->suscept[2] );
-            printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[2]] );
+            print_fmt( "{} looks poorly upon you and makes you more vulnerable to {} as punishment.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->suscept[2]] );
          }
       }
 
@@ -2622,7 +2622,7 @@ void char_data::adjust_favor( int field, int mod )
    {
       if( pcdata->deity->affected[0] > 0 && !affected_by.test( pcdata->deity->affected[0] ) )
       {
-         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[0]] );
+         print_fmt( "{} looks favorably upon you and bestows {} as a reward.\r\n", pcdata->deity_name, aff_flags[pcdata->deity->affected[0]] );
          affected_by.set( pcdata->deity->affected[0] );
       }
    }
@@ -2630,7 +2630,7 @@ void char_data::adjust_favor( int field, int mod )
    {
       if( pcdata->deity->affected[1] > 0 && !affected_by.test( pcdata->deity->affected[1] ) )
       {
-         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[1]] );
+         print_fmt( "{} looks favorably upon you and bestows {} as a reward.\r\n", pcdata->deity_name, aff_flags[pcdata->deity->affected[1]] );
          affected_by.set( pcdata->deity->affected[1] );
       }
    }
@@ -2638,7 +2638,7 @@ void char_data::adjust_favor( int field, int mod )
    {
       if( pcdata->deity->affected[2] > 0 && !affected_by.test( pcdata->deity->affected[2] ) )
       {
-         printf( "%s looks favorably upon you and bestows %s as a reward.\r\n", pcdata->deity_name.c_str(  ), aff_flags[pcdata->deity->affected[2]] );
+         print_fmt( "{} looks favorably upon you and bestows {} as a reward.\r\n", pcdata->deity_name, aff_flags[pcdata->deity->affected[2]] );
          affected_by.set( pcdata->deity->affected[2] );
       }
    }
@@ -2647,7 +2647,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->element[0] != 0 && !has_resist( pcdata->deity->element[0] ) )
       {
          set_resist( pcdata->deity->element[0] );
-         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[0]] );
+         print_fmt( "{} looks favorably upon you and bestows {} resistance upon you.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->element[0]] );
       }
    }
    if( pcdata->favor > pcdata->deity->elementnum[1] )
@@ -2655,7 +2655,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->element[1] != 0 && !has_resist( pcdata->deity->element[1] ) )
       {
          set_resist( pcdata->deity->element[1] );
-         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[1]] );
+         print_fmt( "{} looks favorably upon you and bestows {} resistance upon you.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->element[1]] );
       }
    }
    if( pcdata->favor > pcdata->deity->elementnum[2] )
@@ -2663,7 +2663,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->element[2] != 0 && !has_resist( pcdata->deity->element[2] ) )
       {
          set_resist( pcdata->deity->element[2] );
-         printf( "%s looks favorably upon you and bestows %s resistance upon you.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->element[2]] );
+         print_fmt( "{} looks favorably upon you and bestows {} resistance upon you.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->element[2]] );
       }
    }
    if( pcdata->favor < pcdata->deity->susceptnum[0] )
@@ -2671,7 +2671,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->suscept[0] != 0 && !has_suscep( pcdata->deity->suscept[0] ) )
       {
          set_suscep( pcdata->deity->suscept[0] );
-         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[0]] );
+         print_fmt( "{} looks poorly upon you and makes you more vulnerable to {} as punishment.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->suscept[0]] );
       }
    }
    if( pcdata->favor < pcdata->deity->susceptnum[1] )
@@ -2679,7 +2679,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->suscept[1] != 0 && !has_suscep( pcdata->deity->suscept[1] ) )
       {
          set_suscep( pcdata->deity->suscept[1] );
-         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[1]] );
+         print_fmt( "{} looks poorly upon you and makes you more vulnerable to {} as punishment.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->suscept[1]] );
       }
    }
    if( pcdata->favor < pcdata->deity->susceptnum[2] )
@@ -2687,7 +2687,7 @@ void char_data::adjust_favor( int field, int mod )
       if( pcdata->deity->suscept[2] != 0 && !has_suscep( pcdata->deity->suscept[2] ) )
       {
          set_suscep( pcdata->deity->suscept[2] );
-         printf( "%s looks poorly upon you and makes you more vulnerable to %s as punishment.\r\n", pcdata->deity_name.c_str(  ), ris_flags[pcdata->deity->suscept[2]] );
+         print_fmt( "{} looks poorly upon you and makes you more vulnerable to {} as punishment.\r\n", pcdata->deity_name, ris_flags[pcdata->deity->suscept[2]] );
       }
    }
    /*

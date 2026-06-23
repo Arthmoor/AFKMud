@@ -499,7 +499,7 @@ Level        1
 Oday         0
 Omonth       0
 Oyear        0
-Coords       -1 -1 -1
+Coordinates  -1 -1
 Values       10 2 10 1 1 0 10 0 0 0 0
 Sockets      None None None
 End

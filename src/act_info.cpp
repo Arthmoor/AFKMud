@@ -802,12 +802,11 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
                   victim->level,
                   victim->isnpc(  )? victim->race < MAX_NPC_RACE && victim->race >= 0 ?
                   npc_race[victim->race] : "unknown" : victim->race < MAX_PC_RACE &&
-                  race_table[victim->race]->race_name &&
-                  race_table[victim->race]->race_name[0] != '\0' ?
+                  !race_table[victim->race]->race_name.empty() ?
                   race_table[victim->race]->race_name : "unknown",
                   victim->isnpc(  )? victim->Class < MAX_NPC_CLASS && victim->Class >= 0 ?
                   npc_class[victim->Class] : "unknown" : victim->Class < MAX_PC_CLASS &&
-                  class_table[victim->Class]->who_name && class_table[victim->Class]->who_name[0] != '\0' ? class_table[victim->Class]->who_name : "unknown" );
+                  !class_table[victim->Class]->who_name.empty() ? class_table[victim->Class]->who_name : "unknown" );
    }
 
    if( number_percent(  ) < ch->LEARNED( gsn_peek ) )
@@ -1749,12 +1748,11 @@ CMDF( do_glance )
          ch->print_fmt( "is a level {} {} {}.\r\n", victim->level,
                      victim->isnpc(  )? victim->race < MAX_NPC_RACE && victim->race >= 0 ?
                      npc_race[victim->race] : "unknown" : victim->race < MAX_PC_RACE &&
-                     race_table[victim->race]->race_name &&
-                     race_table[victim->race]->race_name[0] != '\0' ?
+                     !race_table[victim->race]->race_name.empty() ?
                      race_table[victim->race]->race_name : "unknown",
                      victim->isnpc(  )? victim->Class < MAX_NPC_CLASS && victim->Class >= 0 ?
                      npc_class[victim->Class] : "unknown" : victim->Class < MAX_PC_CLASS &&
-                     class_table[victim->Class]->who_name && class_table[victim->Class]->who_name[0] != '\0' ? class_table[victim->Class]->who_name : "unknown" );
+                     !class_table[victim->Class]->who_name.empty() ? class_table[victim->Class]->who_name : "unknown" );
       }
       show_condition( ch, victim );
    }

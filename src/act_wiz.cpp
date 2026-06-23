@@ -6203,7 +6203,6 @@ class_type::class_type(  )
 
 class_type::~class_type(  )
 {
-   STRFREE( who_name );
 }
 
 void free_all_classes( void )
@@ -6282,7 +6281,7 @@ bool load_class_file( const char *fname )
                FCLOSE( fp );
                if( cl < 0 || cl >= MAX_CLASS )
                {
-                  bug( "{}: Class ({}) bad/not found ({})", __func__, Class->who_name ? Class->who_name : "name not found", cl );
+                  bug( "{}: Class ({}) bad/not found ({})", __func__, !Class->who_name.empty() ? Class->who_name : "name not found", cl );
                   deleteptr( Class );
                   return false;
                }
@@ -6311,7 +6310,7 @@ bool load_class_file( const char *fname )
             break;
 
          case 'N':
-            KEY( "Name", Class->who_name, fread_string( fp ) );
+            STDSKEY( "Name", Class->who_name );
             break;
 
          case 'R':
@@ -6452,7 +6451,7 @@ void load_classes(  )
       {
          class_type *Class = new class_type;
 
-         Class->who_name = STRALLOC( "No Class Name" );
+         Class->who_name = "No Class Name";
          class_table[i] = Class;
       }
    }
@@ -6475,7 +6474,7 @@ void write_class_file( int cl )
    }
 
    fprintf( fpout, "Version     %d\n", CLASSFILEVER );
-   fprintf( fpout, "Name        %s~\n", Class->who_name );
+   fprintf( fpout, "Name        %s~\n", Class->who_name.c_str() );
    fprintf( fpout, "Class       %d\n", cl );
    fprintf( fpout, "Attrprime   %d\n", Class->attr_prime );
    fprintf( fpout, "Weapon      %d\n", Class->weapon );
@@ -6534,7 +6533,7 @@ void write_class_list(  )
    }
 
    for( int i = 0; i < MAX_PC_CLASS; ++i )
-      fprintf( fpList, "%s.class\n", class_table[i]->who_name );
+      fprintf( fpList, "%s.class\n", class_table[i]->who_name.c_str() );
    fprintf( fpList, "%s", "$\n" );
    FCLOSE( fpList );
 }
@@ -6572,17 +6571,17 @@ CMDF( do_showclass )
       ch->print( "No such Class.\r\n" );
       return;
    }
-   ch->pagerf( "&wCLASS: &W%s\r\n", Class->who_name );
-   ch->pagerf( "&wStarting Weapon:  &W%-6d &wStarting Armor:     &W%-6d\r\n", Class->weapon, Class->armor );
-   ch->pagerf( "&wStarting Legwear: &W%-6d &wStarting Headwear:  &W%-6d\r\n", Class->legwear, Class->headwear );
-   ch->pagerf( "&wStarting Armwear: &W%-6d &wStarting Footwear:  &W%-6d\r\n", Class->armwear, Class->footwear );
-   ch->pagerf( "&wStarting Shield:  &W%-6d &wStarting Held Item: &W%-6d\r\n", Class->shield, Class->held );
-   ch->pagerf( "&wBaseThac0:        &W%-6d &wThac0Gain: &W%f\r\n", Class->base_thac0, Class->thac0_gain );
-   ch->pagerf( "&wMax Skill Adept:  &W%-3d ", Class->skill_adept );
-   ch->pagerf( "&wHp Min/Hp Max  : &W%-2d/%-2d           &wMana  : &W%-3s\r\n", Class->hp_min, Class->hp_max, Class->fMana ? "yes" : "no " );
-   ch->pagerf( "&wAffected by:  &W%s\r\n", bitset_string( Class->affected, aff_flags ) );
-   ch->pagerf( "&wResistant to: &W%s\r\n", bitset_string( Class->resist, ris_flags ) );
-   ch->pagerf( "&wSusceptible to: &W%s\r\n", bitset_string( Class->suscept, ris_flags ) );
+   ch->pager_fmt( "&wCLASS: &W{}\r\n", Class->who_name );
+   ch->pager_fmt( "&wStarting Weapon:  &W{:<6} &wStarting Armor:     &W{:<6}\r\n", Class->weapon, Class->armor );
+   ch->pager_fmt( "&wStarting Legwear: &W{:<6} &wStarting Headwear:  &W{:<6}\r\n", Class->legwear, Class->headwear );
+   ch->pager_fmt( "&wStarting Armwear: &W{:<6} &wStarting Footwear:  &W{:<6}\r\n", Class->armwear, Class->footwear );
+   ch->pager_fmt( "&wStarting Shield:  &W{:<6} &wStarting Held Item: &W{:<6}\r\n", Class->shield, Class->held );
+   ch->pager_fmt( "&wBaseThac0:        &W{:<6} &wThac0Gain: &W{}\r\n", Class->base_thac0, Class->thac0_gain );
+   ch->pager_fmt( "&wMax Skill Adept:  &W{:<3} ", Class->skill_adept );
+   ch->pager_fmt( "&wHp Min/Hp Max  : &W{:<2}/{:<2}           &wMana  : &W{:<3}\r\n", Class->hp_min, Class->hp_max, Class->fMana ? "yes" : "no " );
+   ch->pager_fmt( "&wAffected by:  &W{}\r\n", bitset_string( Class->affected, aff_flags ) );
+   ch->pager_fmt( "&wResistant to: &W{}\r\n", bitset_string( Class->resist, ris_flags ) );
+   ch->pager_fmt( "&wSusceptible to: &W{}\r\n", bitset_string( Class->suscept, ris_flags ) );
 
    if( !arg2.empty(  ) )
    {
@@ -6592,13 +6591,13 @@ CMDF( do_showclass )
       hi = urange( low, atoi( argument.c_str(  ) ), MAX_LEVEL );
       for( x = low; x <= hi; ++x )
       {
-         ch->pagerf( "&wLevel: &W%d     &wExperience required: &W%ld\r\n", x, exp_level( x ) );
-         ch->pagerf( "&wNeutral: &W%-20s &wMale: &W%-20s &wFemale: &W%-20s &wHermaphrodite: &W%s\r\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
+         ch->pager_fmt( "&wLevel: &W{}     &wExperience required: &W{}\r\n", x, exp_level( x ) );
+         ch->pager_fmt( "&wNeutral: &W{:<20} &wMale: &W{:<20} &wFemale: &W{:<20} &wHermaphrodite: &W{}\r\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
          cnt = 0;
          for( y = 0; y < num_skills; ++y )
             if( skill_table[y]->skill_level[cl] == x )
             {
-               ch->pagerf( "  &[skill]%-7s %-19s%3d     ", skill_tname[skill_table[y]->type], skill_table[y]->name, skill_table[y]->skill_adept[cl] );
+               ch->pager_fmt( "  &[skill]{:<7} {:<19}{:3}     ", skill_tname[skill_table[y]->type], skill_table[y]->name, skill_table[y]->skill_adept[cl] );
                if( ++cnt % 2 == 0 )
                   ch->pager( "\r\n" );
             }
@@ -6616,8 +6615,7 @@ bool create_new_class( int Class, const std::string & argument )
 {
    if( Class >= MAX_CLASS || class_table[Class] == nullptr )
       return false;
-   STRFREE( class_table[Class]->who_name );
-   class_table[Class]->who_name = STRALLOC( capitalize( argument ).c_str(  ) );
+   class_table[Class]->who_name = capitalize( argument );
    class_table[Class]->affected.reset(  );
    class_table[Class]->attr_prime = 0;
    class_table[Class]->resist = 0;
@@ -6672,7 +6670,7 @@ CMDF( do_setclass )
       Class = nullptr;
       for( cl = 0; cl < MAX_CLASS && class_table[cl]; ++cl )
       {
-         if( !class_table[cl]->who_name )
+         if( class_table[cl]->who_name.empty() )
             continue;
          if( !str_cmp( class_table[cl]->who_name, arg1 ) )
          {
@@ -6740,10 +6738,10 @@ CMDF( do_setclass )
          skill->skill_level[cl] = level;
          skill->skill_adept[cl] = adept;
          write_class_file( cl );
-         ch->printf( "Skill \"%s\" added at level %d and %d%%.\r\n", skill->name, level, adept );
+         ch->print_fmt( "Skill '{}' added at level {} and {}%.\r\n", skill->name, level, adept );
       }
       else
-         ch->printf( "No such skill as %s.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "No such skill as {}.\r\n", arg2 );
       return;
    }
 
@@ -6764,7 +6762,7 @@ CMDF( do_setclass )
 
       for( i = 0; i < MAX_PC_CLASS && class_table[i]; ++i )
       {
-         if( !class_table[i]->who_name )
+         if( class_table[i]->who_name.empty() )
             continue;
 
          if( !str_cmp( class_table[i]->who_name, arg1 ) )
@@ -6775,15 +6773,14 @@ CMDF( do_setclass )
       }
       if( ccheck != nullptr )
       {
-         ch->printf( "Already a class called %s.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "Already a class called {}.\r\n", arg1 );
          return;
       }
 
       filename = std::format( "{}{}.class", CLASS_DIR, Class->who_name );
       std::filesystem::remove( filename );
-      STRFREE( Class->who_name );
-      Class->who_name = STRALLOC( capitalize( argument ).c_str(  ) );
-      ch->printf( "Class renamed to %s.\r\n", arg1.c_str(  ) );
+      Class->who_name = capitalize( argument );
+      ch->print_fmt( "Class renamed to {}.\r\n", arg1 );
       write_class_file( cl );
       write_class_list(  );
       ch->print( "Done.\r\n" );
@@ -6802,7 +6799,7 @@ CMDF( do_setclass )
          argument = one_argument( argument, arg2 );
          value = get_aflag( arg2 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg2 );
          else
             Class->affected.flip( value );
       }
@@ -6823,7 +6820,7 @@ CMDF( do_setclass )
          argument = one_argument( argument, arg2 );
          value = get_risflag( arg2 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg2 );
          else
             Class->resist.flip( value );
       }
@@ -6844,7 +6841,7 @@ CMDF( do_setclass )
          argument = one_argument( argument, arg2 );
          value = get_risflag( arg2 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg2.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg2 );
          else
             Class->suscept.flip( value );
       }
@@ -7077,7 +7074,6 @@ race_type::race_type(  )
 
 race_type::~race_type(  )
 {
-   STRFREE( race_name );
 }
 
 void free_all_races( void )
@@ -7319,7 +7315,7 @@ bool load_race_file( const char *fname )
                FCLOSE( fp );
                if( ra < 0 || ra >= MAX_RACE )
                {
-                  bug( "{}: Race ({}) bad/not found ({})", __func__, race->race_name ? race->race_name : "name not found", ra );
+                  bug( "{}: Race ({}) bad/not found ({})", __func__, !race->race_name.empty() ? race->race_name : "name not found", ra );
                   deleteptr( race );
                   return false;
                }
@@ -7361,7 +7357,7 @@ bool load_race_file( const char *fname )
             break;
 
          case 'N':
-            KEY( "Name", race->race_name, fread_string( fp ) );
+            STDSKEY( "Name", race->race_name );
             break;
 
          case 'R':
@@ -7478,7 +7474,7 @@ void load_races(  )
       {
          race_type *race = new race_type;
 
-         race->race_name = STRALLOC( "Unused Race" );
+         race->race_name = "Unused Race";
          race_table[i] = race;
       }
    }
@@ -7493,7 +7489,7 @@ void write_race_file( int ra )
    FILE *fpout;
    race_type *race = race_table[ra];
 
-   if( !race->race_name )
+   if( race->race_name.empty() )
    {
       log_printf( "Race {} has null name, not writing .race file.", ra );
       return;
@@ -7506,7 +7502,7 @@ void write_race_file( int ra )
       return;
    }
    fprintf( fpout, "Version     %d\n", RACEFILEVER );
-   fprintf( fpout, "Name        %s~\n", race->race_name );
+   fprintf( fpout, "Name        %s~\n", race->race_name.c_str() );
    fprintf( fpout, "Race        %d\n", ra );
    fprintf( fpout, "Classes     %s~\n", bitset_string( race->allowed_classes, npc_class ) );
    fprintf( fpout, "Str_Plus    %d\n", race->str_plus );
@@ -7574,7 +7570,7 @@ void write_race_list(  )
       return;
    }
    for( int i = 0; i < MAX_PC_RACE; ++i )
-      fprintf( fpList, "%s.race\n", race_table[i]->race_name );
+      fprintf( fpList, "%s.race\n", race_table[i]->race_name.c_str() );
    fprintf( fpList, "%s", "$\n" );
    FCLOSE( fpList );
 }
@@ -7587,7 +7583,7 @@ bool create_new_race( int race, const std::string & argument )
    if( race >= MAX_RACE || race_table[race] == nullptr )
       return false;
 
-   race_table[race]->race_name = STRALLOC( capitalize( argument ).c_str(  ) );
+   race_table[race]->race_name = capitalize( argument );
    race_table[race]->allowed_classes.reset(  );
    race_table[race]->str_plus = 0;
    race_table[race]->dex_plus = 0;
@@ -7656,7 +7652,7 @@ CMDF( do_setrace )
       race = nullptr;
       for( ra = 0; ra < MAX_RACE && race_table[ra]; ++ra )
       {
-         if( !race_table[ra]->race_name )
+         if( race_table[ra]->race_name.empty() )
             continue;
 
          if( !str_cmp( race_table[ra]->race_name, arg1 ) )
@@ -7726,7 +7722,7 @@ CMDF( do_setrace )
 
       for( i = 0; i < MAX_PC_RACE && race_table[i]; ++i )
       {
-         if( !race_table[i]->race_name )
+         if( race_table[i]->race_name.empty() )
             continue;
 
          if( !str_cmp( race_table[i]->race_name, arg1 ) )
@@ -7737,15 +7733,14 @@ CMDF( do_setrace )
       }
       if( rcheck != nullptr )
       {
-         ch->printf( "Already a race called %s.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "Already a race called {}.\r\n", arg1 );
          return;
       }
 
       filename = std::format( "{}{}.race", RACE_DIR, race->race_name );
       std::filesystem::remove( filename );
 
-      STRFREE( race->race_name );
-      race->race_name = STRALLOC( capitalize( argument ).c_str(  ) );
+      race->race_name = capitalize( argument );
 
       write_race_file( ra );
       write_race_list(  );
@@ -7828,7 +7823,7 @@ CMDF( do_setrace )
          argument = one_argument( argument, arg3 );
          value = get_aflag( arg3 );
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             race->affected.flip( value );
       }
@@ -7849,7 +7844,7 @@ CMDF( do_setrace )
          argument = one_argument( argument, arg3 );
          value = get_partflag( arg3 );
          if( value < 0 || value >= MAX_BPART )
-            ch->printf( "Unknown part: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown part: {}\r\n", arg3 );
          else
             race->body_parts.flip( value );
       }
@@ -7871,7 +7866,7 @@ CMDF( do_setrace )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             race->resist.flip( value );
       }
@@ -7892,7 +7887,7 @@ CMDF( do_setrace )
          argument = one_argument( argument, arg3 );
          value = get_risflag( arg3 );
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             race->suscept.flip( value );
       }
@@ -7907,12 +7902,12 @@ CMDF( do_setrace )
       value = get_langnum( arg3 );
       if( value < 0 || value >= LANG_UNKNOWN )
       {
-         ch->printf( "Unknown language: %s\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "Unknown language: {}\r\n", arg3 );
          return;
       }
       else if( !( value &= VALID_LANGS ) )
       {
-         ch->printf( "Player races may not speak %s.\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "Player races may not speak {}.\r\n", arg3 );
          return;
       }
       race->language.flip( value );
@@ -7939,7 +7934,7 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "acplus" ) )
    {
-      race->ac_plus = atoi( argument.c_str(  ) );
+      race->ac_plus = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -7947,7 +7942,7 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "alignment" ) )
    {
-      race->alignment = atoi( argument.c_str(  ) );
+      race->alignment = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -7965,7 +7960,7 @@ CMDF( do_setrace )
          argument = one_argument( argument, arg3 );
          value = get_defenseflag( arg3 );
          if( value < 0 || value >= MAX_DEFENSE_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             race->defenses.flip( value );
       }
@@ -7985,7 +7980,7 @@ CMDF( do_setrace )
          argument = one_argument( argument, arg3 );
          value = get_attackflag( arg3 );
          if( value < 0 || value >= MAX_ATTACK_TYPE )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             race->attacks.flip( value );
       }
@@ -7995,91 +7990,91 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "minalign" ) )
    {
-      race->minalign = atoi( argument.c_str(  ) );
+      race->minalign = std::stoi( argument  );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "maxalign" ) )
    {
-      race->maxalign = atoi( argument.c_str(  ) );
+      race->maxalign = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "height" ) )
    {
-      race->height = atoi( argument.c_str(  ) );
+      race->height = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "weight" ) )
    {
-      race->weight = atoi( argument.c_str(  ) );
+      race->weight = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "thirstmod" ) )
    {
-      race->thirst_mod = atoi( argument.c_str(  ) );
+      race->thirst_mod = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "hungermod" ) )
    {
-      race->hunger_mod = atoi( argument.c_str(  ) );
+      race->hunger_mod = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "maxalign" ) )
    {
-      race->maxalign = atoi( argument.c_str(  ) );
+      race->maxalign = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "expmultiplier" ) )
    {
-      race->exp_multiplier = atoi( argument.c_str(  ) );
+      race->exp_multiplier = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_poison_death" ) )
    {
-      race->saving_poison_death = atoi( argument.c_str(  ) );
+      race->saving_poison_death = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_wand" ) )
    {
-      race->saving_wand = atoi( argument.c_str(  ) );
+      race->saving_wand = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_para_petri" ) )
    {
-      race->saving_para_petri = atoi( argument.c_str(  ) );
+      race->saving_para_petri = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_breath" ) )
    {
-      race->saving_breath = atoi( argument.c_str(  ) );
+      race->saving_breath = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "saving_spell_staff" ) )
    {
-      race->saving_spell_staff = atoi( argument.c_str(  ) );
+      race->saving_spell_staff = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -8087,14 +8082,14 @@ CMDF( do_setrace )
 
    if( !str_cmp( arg2, "mana_regen" ) )
    {
-      race->mana_regen = atoi( argument.c_str(  ) );
+      race->mana_regen = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
    }
    if( !str_cmp( arg2, "hp_regen" ) )
    {
-      race->hp_regen = atoi( argument.c_str(  ) );
+      race->hp_regen = std::stoi( argument );
       write_race_file( ra );
       ch->print( "Done.\r\n" );
       return;
@@ -8122,14 +8117,14 @@ CMDF( do_showrace )
       for( i = 0; i < MAX_RACE; ++i )
       {
          ++ct;
-         ch->pagerf( "%2d> %-11s", i, race_table[i]->race_name );
+         ch->pager_fmt( "{:2}> {:<11}", i, race_table[i]->race_name );
          if( ct % 5 == 0 )
             ch->pager( "\r\n" );
       }
       ch->pager( "\r\n" );
       return;
    }
-   if( is_number( argument ) && ( ra = atoi( argument.c_str(  ) ) ) >= 0 && ra < MAX_RACE )
+   if( is_number( argument ) && ( ra = std::stoi( argument ) ) >= 0 && ra < MAX_RACE )
       race = race_table[ra];
    else
    {
@@ -8147,7 +8142,7 @@ CMDF( do_showrace )
       return;
    }
 
-   ch->pagerf( "RACE: %s\r\n", race->race_name );
+   ch->pager_fmt( "RACE: {}\r\n", race->race_name );
 
    ct = 0;
    ch->pager( "Allowed Classes: " );
@@ -8156,7 +8151,7 @@ CMDF( do_showrace )
       if( race->allowed_classes.test( i ) )
       {
          ++ct;
-         ch->pagerf( "%s ", class_table[i]->who_name );
+         ch->pager_fmt( "{} ", class_table[i]->who_name );
          if( ct % 6 == 0 )
             ch->pager( "\r\n" );
       }
@@ -8164,27 +8159,27 @@ CMDF( do_showrace )
    if( ( ct % 6 != 0 ) || ( ct == 0 ) )
       ch->pager( "\r\n" );
 
-   ch->pagerf( "Str Plus: %-3d\tDex Plus: %-3d\tWis Plus: %-3d\tInt Plus: %-3d\t\r\n", race->str_plus, race->dex_plus, race->wis_plus, race->int_plus );
+   ch->pager_fmt( "Str Plus: {:<3}\tDex Plus: {:<3}\tWis Plus: {:<3}\tInt Plus: {:<3}\t\r\n", race->str_plus, race->dex_plus, race->wis_plus, race->int_plus );
 
-   ch->pagerf( "Con Plus: %-3d\tCha Plus: %-3d\tLck Plus: %-3d\r\n", race->con_plus, race->cha_plus, race->lck_plus );
+   ch->pager_fmt( "Con Plus: {:<3}\tCha Plus: {:<3}\tLck Plus: {:<3}\r\n", race->con_plus, race->cha_plus, race->lck_plus );
 
-   ch->pagerf( "Hit Pts:  %-3d\tMana: %-3d\tAlign: %-4d\tAC: %-d\r\n", race->hit, race->mana, race->alignment, race->ac_plus );
+   ch->pager_fmt( "Hit Pts:  {:<3}\tMana: {:<3}\tAlign: {:<4}\tAC: {}\r\n", race->hit, race->mana, race->alignment, race->ac_plus );
 
-   ch->pagerf( "Min Align: %d\tMax Align: %-d\t\tXP Mult: %-d%%\r\n", race->minalign, race->maxalign, race->exp_multiplier );
+   ch->pager_fmt( "Min Align: {}\tMax Align: {}\t\tXP Mult: {}%\r\n", race->minalign, race->maxalign, race->exp_multiplier );
 
-   ch->pagerf( "Height: %3d in.\t\tWeight: %4d lbs.\tHungerMod: %d\tThirstMod: %d\r\n", race->height, race->weight, race->hunger_mod, race->thirst_mod );
+   ch->pager_fmt( "Height: {:3} in.\t\tWeight: {:3} lbs.\tHungerMod: {}\tThirstMod: {}\r\n", race->height, race->weight, race->hunger_mod, race->thirst_mod );
 
-   ch->pagerf( "Body Parts: %s\r\n", bitset_string( race->body_parts, part_flags ) );
-   ch->pagerf( "Spoken Languages: %s\r\n", bitset_string( race->language, lang_names ) );
-   ch->pagerf( "Affected by: %s\r\n", bitset_string( race->affected, aff_flags ) );
-   ch->pagerf( "Resistant to: %s\r\n", bitset_string( race->resist, ris_flags ) );
-   ch->pagerf( "Susceptible to: %s\r\n", bitset_string( race->suscept, ris_flags ) );
+   ch->pager_fmt( "Body Parts: {}\r\n", bitset_string( race->body_parts, part_flags ) );
+   ch->pager_fmt( "Spoken Languages: {}\r\n", bitset_string( race->language, lang_names ) );
+   ch->pager_fmt( "Affected by: {}\r\n", bitset_string( race->affected, aff_flags ) );
+   ch->pager_fmt( "Resistant to: {}\r\n", bitset_string( race->resist, ris_flags ) );
+   ch->pager_fmt( "Susceptible to: {}\r\n", bitset_string( race->suscept, ris_flags ) );
 
-   ch->pagerf( "Saves: (P/D) %d (W) %d (P/P) %d (B) %d (S/S) %d\r\n",
+   ch->pager_fmt( "Saves: (P/D) {} (W) {} (P/P) {} (B) {} (S/S) {}\r\n",
                race->saving_poison_death, race->saving_wand, race->saving_para_petri, race->saving_breath, race->saving_spell_staff );
 
-   ch->pagerf( "Innate Attacks: %s\r\n", bitset_string( race->attacks, attack_flags ) );
-   ch->pagerf( "Innate Defenses: %s\r\n", bitset_string( race->defenses, defense_flags ) );
+   ch->pager_fmt( "Innate Attacks: {}\r\n", bitset_string( race->attacks, attack_flags ) );
+   ch->pager_fmt( "Innate Defenses: {}\r\n", bitset_string( race->defenses, defense_flags ) );
 }
 
 /* Simple, small way to make keeping track of small mods easier - Blod */

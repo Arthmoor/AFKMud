@@ -592,7 +592,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
       fprintf( fp, "Oday         %d\n", obj->day );
       fprintf( fp, "Omonth       %d\n", obj->month );
       fprintf( fp, "Oyear        %d\n", obj->year );
-      fprintf( fp, "Coords       %d %d\n", obj->map_x, obj->map_y );
+      fprintf( fp, "Coordinates  %d %d\n", obj->map_x, obj->map_y );
       fprintf( fp, "%s", "Values      " );
       for( x = 0; x < MAX_OBJ_VALUE; ++x )
          fprintf( fp, " %d", obj->value[x] );
@@ -1837,7 +1837,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             break;
 
          case 'A':
-            KEY( "ActionDesc", obj->action_desc, fread_string( fp ) );
+            STDSKEY( "ActionDesc", obj->action_desc );
             if( !str_cmp( word, "Affect" ) || !str_cmp( word, "AffectData" ) )
             {
                affect_data *paf;
@@ -1872,11 +1872,11 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
          case 'B':
             KEY( "Bid", obj->bid, fread_number( fp ) );  /* Samson 6-20-99 */
-            KEY( "Buyer", obj->buyer, fread_string( fp ) ); /* Samson 6-20-99 */
+            STDSKEY( "Buyer", obj->buyer ); /* Samson 6-20-99 */
             break;
 
          case 'C':
-            if( !str_cmp( word, "Coords" ) )
+            if( !str_cmp( word, "Coords" ) || !str_cmp( word, "Coordinates" ) )
             {
                obj->map_x = fread_short( fp );
                obj->map_y = fread_short( fp );
@@ -1890,7 +1890,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             break;
 
          case 'D':
-            KEY( "Description", obj->objdesc, fread_string( fp ) );
+            STDSKEY( "Description", obj->objdesc );
             break;
 
          case 'E':
@@ -2056,7 +2056,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             break;
 
          case 'N':
-            KEY( "Name", obj->name, fread_string( fp ) );
+            STDSKEY( "Name", obj->name );
 
             if( !str_cmp( word, "Nest" ) )
             {
@@ -2075,7 +2075,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             KEY( "Oday", obj->day, fread_number( fp ) );
             KEY( "Omonth", obj->month, fread_number( fp ) );
             KEY( "Oyear", obj->year, fread_number( fp ) );
-            KEY( "Owner", obj->owner, fread_string( fp ) );
+            STDSKEY( "Owner", obj->owner );
             if( !str_cmp( word, "Ovnum" ) )
             {
                int vnum;
@@ -2104,7 +2104,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
             break;
 
          case 'S':
-            KEY( "Seller", obj->seller, fread_string( fp ) );  /* Samson 6-20-99 */
+            STDSKEY( "Seller", obj->seller );  /* Samson 6-20-99 */
             KEY( "ShortDescr", obj->short_descr, fread_string( fp ) );
 
             if( !str_cmp( word, "Spell" ) )
@@ -2319,7 +2319,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                else
                {
                   int sn;
-                  char *sname = fread_word( fp );
+                  std::string sname = fread_word( fp );
 
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
@@ -2362,11 +2362,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             break;
 
          case 'D':
-            if( !str_cmp( word, "Description" ) )
-            {
-               fread_string( mob->chardesc, fp );
-               break;
-            }
+            STDSKEY( "Description", mob->chardesc );
             break;
 
          case 'E':
@@ -2416,19 +2412,11 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
 
          case 'L':
             KEY( "Level", mob->level, fread_number( fp ) );
-            if( !str_cmp( word, "Long" ) )
-            {
-               fread_string( mob->long_descr, fp );
-               break;
-            }
+            STDSKEY( "Long", mob->long_descr );
             break;
 
          case 'N':
-            if( !str_cmp( word, "Name" ) )
-            {
-               fread_string( mob->name, fp );
-               break;
-            }
+            STDSKEY( "Name", mob->name );
             break;
 
          case 'P':
@@ -2440,11 +2428,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             break;
 
          case 'S':
-            if( !str_cmp( word, "Short" ) )
-            {
-               fread_string( mob->short_descr, fp );
-               break;
-            }
+            STDSKEY( "Short", mob->short_descr );
             break;
 
          case 'V':
@@ -2683,7 +2667,7 @@ void write_corpse( obj_data * corpse, std::string_view name )
       fprintf( fp, "Timer        %d\n", corpse->timer );
    if( corpse->cost != corpse->pIndexData->cost )
       fprintf( fp, "Cost         %d\n", corpse->cost );
-   fprintf( fp, "Coords       %d %d\n", corpse->map_x, corpse->map_y );
+   fprintf( fp, "Coordinates  %d %d\n", corpse->map_x, corpse->map_y );
    fprintf( fp, "Values      " );
    for( int x = 0; x < MAX_OBJ_VALUE; ++x )
       fprintf( fp, " %d", corpse->value[x] );

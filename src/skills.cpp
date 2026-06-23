@@ -2393,7 +2393,7 @@ CMDF( do_slist )
       cl = get_npc_class( arg1 );
       if( cl < 0 || cl > MAX_CLASS )
       {
-         ch->printf( "%s isn't a valid class!\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "{} isn't a valid class!\r\n", arg1 );
          return;
       }
 
@@ -2404,7 +2404,7 @@ CMDF( do_slist )
             lowlev = atoi( arg2.c_str(  ) );
             if( lowlev < 1 || lowlev > LEVEL_AVATAR )
             {
-               ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", lowlev, LEVEL_AVATAR );
+               ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", lowlev, LEVEL_AVATAR );
                return;
             }
          }
@@ -2417,7 +2417,7 @@ CMDF( do_slist )
             hilev = atoi( argument.c_str(  ) );
             if( hilev < 1 || hilev > LEVEL_AVATAR )
             {
-               ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", hilev, LEVEL_AVATAR );
+               ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", hilev, LEVEL_AVATAR );
                return;
             }
          }
@@ -2428,7 +2428,7 @@ CMDF( do_slist )
       lowlev = atoi( arg1.c_str(  ) );
       if( lowlev < 1 || lowlev > LEVEL_AVATAR )
       {
-         ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", lowlev, LEVEL_AVATAR );
+         ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", lowlev, LEVEL_AVATAR );
          return;
       }
 
@@ -2437,7 +2437,7 @@ CMDF( do_slist )
          hilev = atoi( arg2.c_str(  ) );
          if( hilev < 1 || hilev > LEVEL_AVATAR )
          {
-            ch->printf( "%d is out of range. Only valid between 1 and %d\r\n", hilev, LEVEL_AVATAR );
+            ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", hilev, LEVEL_AVATAR );
             return;
          }
       }
@@ -2447,7 +2447,7 @@ CMDF( do_slist )
       lowlev = hilev;
 
    ch->set_pager_color( AT_MAGIC );
-   ch->pagerf( "%s Spell & Skill List\r\n", class_table[cl]->who_name );
+   ch->pager_fmt( "{} Spell & Skill List\r\n", class_table[cl]->who_name );
    ch->pager( "--------------------------------------\r\n" );
 
    for( i = lowlev; i <= hilev; ++i )
@@ -2478,11 +2478,10 @@ CMDF( do_slist )
             if( !lFound )
             {
                lFound = 1;
-               ch->pagerf( "Level %d\r\n", i );
+               ch->pager_fmt( "Level {}\r\n", i );
             }
 
-            ch->pagerf( "%7s: %20.20s \t Current: %-3d Max: %-3d  MinPos: %s \r\n",
-                        skn.c_str(), skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[xx], npc_position[skill_table[sn]->minimum_position] );
+            ch->pager_fmt( "{:7}: {:20.20} \t Current: {:<3} Max: {:<3}  MinPos: {} \r\n", skn, skill_table[sn]->name, ch->pcdata->learned[sn], skill_table[sn]->skill_adept[xx], npc_position[skill_table[sn]->minimum_position] );
          }
       }
    }
@@ -2508,7 +2507,7 @@ CMDF( do_slookup )
    if( !str_cmp( argument, "all" ) )
    {
       for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
-         ch->pagerf( "Sn: %4d Slot: %4d Skill/spell: '%-20s' Damtype: %s\r\n",
+         ch->pager_fmt( "Sn: {:4} Slot: {:4} Skill/spell: '{:<20}' Damtype: {}\r\n",
                      sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
    }
    else if( !str_cmp( argument, "null" ) )
@@ -2519,10 +2518,10 @@ CMDF( do_slookup )
          if( ( skill_table[sn]->skill_fun == skill_notfound || skill_table[sn]->skill_fun == nullptr )
              && ( skill_table[sn]->spell_fun == spell_notfound || skill_table[sn]->spell_fun == spell_null ) && skill_table[sn]->type != SKILL_TONGUE )
          {
-            ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s' Damtype: %s\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
+            ch->pager_fmt( "Sn: {:3} Slot: {:3} Name: '{:<24}' Damtype: {}\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
             ++num;
          }
-      ch->pagerf( "%d matches found.\r\n", num );
+      ch->pager_fmt( "{} matches found.\r\n", num );
    }
    else if( !str_cmp( argument, "tongues" ) )
    {
@@ -2531,10 +2530,10 @@ CMDF( do_slookup )
       for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
          if( skill_table[sn]->type == SKILL_TONGUE )
          {
-            ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s'\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name );
+            ch->pager_fmt( "Sn: {:3} Slot: {:3} Name: '{:<24}'\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name );
             ++num;
          }
-      ch->pagerf( "%d matches found.\r\n", num );
+      ch->pager_fmt( "{} matches found.\r\n", num );
    }
    else if( !str_cmp( argument, "smaug" ) )
    {
@@ -2543,15 +2542,15 @@ CMDF( do_slookup )
       for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
          if( skill_table[sn]->spell_fun == spell_smaug )
          {
-            ch->pagerf( "Sn: %3d Slot: %3d Name: '%-24s' Damtype: %s\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
+            ch->pager_fmt( "Sn: {:3} Slot: {:3} Name: '{:<24}' Damtype: {}\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
             ++num;
          }
-      ch->pagerf( "%d matches found.\r\n", num );
+      ch->pager_fmt( "{} matches found.\r\n", num );
    }
    else if( !str_cmp( argument, "herbs" ) )
    {
       for( sn = 0; sn < top_herb && herb_table[sn] && herb_table[sn]->name; ++sn )
-         ch->pagerf( "%d) %s\r\n", sn, herb_table[sn]->name );
+         ch->pager_fmt( "{}) %s\r\n", sn, herb_table[sn]->name );
    }
    else
    {
@@ -2567,7 +2566,7 @@ CMDF( do_slookup )
       }
       else if( is_number( argument ) )
       {
-         sn = atoi( argument.c_str(  ) );
+         sn = std::stoi( argument );
          if( !( skill = get_skilltype( sn ) ) )
          {
             ch->print( "Invalid sn.\r\n" );
@@ -2590,40 +2589,40 @@ CMDF( do_slookup )
          return;
       }
 
-      ch->printf( "Sn: %4d Slot: %4d %s: '%-20s'\r\n", sn, skill->slot, skill_tname[skill->type], skill->name );
+      ch->print_fmt( "Sn: {:4} Slot: {:4} {}: '{:<20}'\r\n", sn, skill->slot, skill_tname[skill->type], skill->name );
       if( skill->author )
-         ch->printf( "Author: %s\r\n", skill->author );
+         ch->print_fmt( "Author: {}\r\n", skill->author );
       if( skill->info )
-         ch->printf( "DamType: %s  ActType: %s   ClassType: %s   PowerType: %s\r\n",
+         ch->print_fmt( "DamType: {}  ActType: {}   ClassType: {}   PowerType: {}\r\n",
                      spell_damage[SPELL_DAMAGE( skill )], spell_action[SPELL_ACTION( skill )], spell_class[SPELL_CLASS( skill )], spell_power[SPELL_POWER( skill )] );
       if( skill->flags.any(  ) )
-         ch->printf( "Flags: %s\r\n", bitset_string( skill->flags, spell_flag ) );
-      ch->printf( "Saves: %s  SaveEffect: %s\r\n", spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
+         ch->print_fmt( "Flags: {}\r\n", bitset_string( skill->flags, spell_flag ) );
+      ch->print_fmt( "Saves: {}  SaveEffect: {}\r\n", spell_saves[( int )skill->saves], spell_save_effect[SPELL_SAVE( skill )] );
 
       if( skill->difficulty != '\0' )
-         ch->printf( "Difficulty: %d\r\n", ( int )skill->difficulty );
+         ch->print_fmt( "Difficulty: {}\r\n", ( int )skill->difficulty );
 
-      ch->printf( "Type: %s  Target: %s  Minpos: %s  Mana: %d  Beats: %d  Range: %d\r\n",
+      ch->print_fmt( "Type: {}  Target: {}  Minpos: {}  Mana: {}  Beats: {}  Range: {}\r\n",
                   skill_tname[skill->type], target_type[urange( TAR_IGNORE, skill->target, TAR_OBJ_INV )],
                   npc_position[skill->minimum_position], skill->min_mana, skill->beats, skill->range );
 
-      ch->printf( "Guild: %d  Value: %d  Info: %d\r\n", skill->guild, skill->value, skill->info );
+      ch->print_fmt( "Guild: {}  Value: {}  Info: {}\r\n", skill->guild, skill->value, skill->info );
 
-      ch->printf( "Ego: %d  Code: %s\r\n", skill->ego, skill->skill_fun ? skill->skill_fun_name : skill->spell_fun_name );
+      ch->print_fmt( "Ego: {}  Code: {}\r\n", skill->ego, skill->skill_fun ? skill->skill_fun_name : skill->spell_fun_name );
 
-      ch->printf( "Dammsg: %s\r\nWearoff: %s\n", skill->noun_damage, skill->msg_off ? skill->msg_off : "(none set)" );
+      ch->print_fmt( "Dammsg: {}\r\nWearoff: {}\n", skill->noun_damage, skill->msg_off ? skill->msg_off : "(none set)" );
 
       if( skill->dice && skill->dice[0] != '\0' )
-         ch->printf( "Dice: %s\r\n", skill->dice );
+         ch->print_fmt( "Dice: {}\r\n", skill->dice );
 
       if( skill->teachers && skill->teachers[0] != '\0' )
-         ch->printf( "Teachers: %s\r\n", skill->teachers );
+         ch->print_fmt( "Teachers: {}\r\n", skill->teachers );
 
       if( skill->components && skill->components[0] != '\0' )
-         ch->printf( "Components: %s\r\n", skill->components );
+         ch->print_fmt( "Components: {}\r\n", skill->components );
 
       if( skill->participants )
-         ch->printf( "Participants: %d\r\n", ( int )skill->participants );
+         ch->print_fmt( "Participants: {}\r\n", ( int )skill->participants );
 
       int cnt = 0;
       for( auto* af : skill->affects )
@@ -2656,43 +2655,43 @@ CMDF( do_slookup )
       ch->print( "\r\n" );
 
       if( skill->hit_char && skill->hit_char[0] != '\0' )
-         ch->printf( "Hitchar   : %s\r\n", skill->hit_char );
+         ch->print_fmt( "Hitchar   : {}\r\n", skill->hit_char );
 
       if( skill->hit_vict && skill->hit_vict[0] != '\0' )
-         ch->printf( "Hitvict   : %s\r\n", skill->hit_vict );
+         ch->print_fmt( "Hitvict   : {}\r\n", skill->hit_vict );
 
       if( skill->hit_room && skill->hit_room[0] != '\0' )
-         ch->printf( "Hitroom   : %s\r\n", skill->hit_room );
+         ch->print_fmt( "Hitroom   : {}\r\n", skill->hit_room );
 
       if( skill->hit_dest && skill->hit_dest[0] != '\0' )
-         ch->printf( "Hitdest   : %s\r\n", skill->hit_dest );
+         ch->print_fmt( "Hitdest   : {}\r\n", skill->hit_dest );
 
       if( skill->miss_char && skill->miss_char[0] != '\0' )
-         ch->printf( "Misschar  : %s\r\n", skill->miss_char );
+         ch->print_fmt( "Misschar  : {}\r\n", skill->miss_char );
 
       if( skill->miss_vict && skill->miss_vict[0] != '\0' )
-         ch->printf( "Missvict  : %s\r\n", skill->miss_vict );
+         ch->print_fmt( "Missvict  : {}\r\n", skill->miss_vict );
 
       if( skill->miss_room && skill->miss_room[0] != '\0' )
-         ch->printf( "Missroom  : %s\r\n", skill->miss_room );
+         ch->print_fmt( "Missroom  : {}\r\n", skill->miss_room );
 
       if( skill->die_char && skill->die_char[0] != '\0' )
-         ch->printf( "Diechar   : %s\r\n", skill->die_char );
+         ch->print_fmt( "Diechar   : {}\r\n", skill->die_char );
 
       if( skill->die_vict && skill->die_vict[0] != '\0' )
-         ch->printf( "Dievict   : %s\r\n", skill->die_vict );
+         ch->print_fmt( "Dievict   : {}\r\n", skill->die_vict );
 
       if( skill->die_room && skill->die_room[0] != '\0' )
-         ch->printf( "Dieroom   : %s\r\n", skill->die_room );
+         ch->print_fmt( "Dieroom   : {}\r\n", skill->die_room );
 
       if( skill->imm_char && skill->imm_char[0] != '\0' )
-         ch->printf( "Immchar   : %s\r\n", skill->imm_char );
+         ch->print_fmt( "Immchar   : {}\r\n", skill->imm_char );
 
       if( skill->imm_vict && skill->imm_vict[0] != '\0' )
-         ch->printf( "Immvict   : %s\r\n", skill->imm_vict );
+         ch->print_fmt( "Immvict   : {}\r\n", skill->imm_vict );
 
       if( skill->imm_room && skill->imm_room[0] != '\0' )
-         ch->printf( "Immroom   : %s\r\n", skill->imm_room );
+         ch->print_fmt( "Immroom   : {}\r\n", skill->imm_room );
 
       if( skill->type != SKILL_HERB )
       {
@@ -2799,14 +2798,14 @@ CMDF( do_sset )
          type = SKILL_HERB;
          if( top_herb >= MAX_HERB )
          {
-            ch->printf( "The current top herb is %d, which is the maximum. "
+            ch->print_fmt( "The current top herb is {}, which is the maximum. "
                         "To add more herbs,\r\nMAX_HERB will have to be raised in mudcfg.h, and the mud recompiled.\r\n", top_herb );
             return;
          }
       }
       else if( num_skills >= MAX_SKILL )
       {
-         ch->printf( "The current top sn is %d, which is the maximum. "
+         ch->print_fmt( "The current top sn is {}, which is the maximum. "
                      "To add more skills,\r\nMAX_SKILL will have to be raised in mudcfg.h, and the mud recompiled.\r\n", num_skills );
          return;
       }
@@ -2850,9 +2849,9 @@ CMDF( do_sset )
    }
 
    if( arg1[0] == 'h' )
-      sn = atoi( arg1.substr( 1, arg1.length(  ) ).c_str(  ) );
+      sn = std::stoi( arg1.substr( 1, arg1.length(  ) ) );
    else
-      sn = atoi( arg1.c_str(  ) );
+      sn = std::stoi( arg1 );
    if( ch->get_trust(  ) > LEVEL_GREATER && sn >= 0 )
    {
       skill_type *skill;
@@ -2878,19 +2877,19 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "difficulty" ) )
       {
-         skill->difficulty = atoi( argument.c_str(  ) );
+         skill->difficulty = std::stoi( argument );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "ego" ) )
       {
-         skill->ego = atoi( argument.c_str(  ) );
+         skill->ego = std::stoi( argument );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "participants" ) )
       {
-         skill->participants = atoi( argument.c_str(  ) );
+         skill->participants = std::stoi( argument );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -2969,7 +2968,7 @@ CMDF( do_sset )
             argument = one_argument( argument, arg3 );
             x = get_sflag( arg3 );
             if( x < 0 || x >= MAX_SF_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
             else
                skill->flags.flip( x );
          }
@@ -3054,43 +3053,43 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "minlevel" ) )
       {
-         skill->min_level = urange( 1, atoi( argument.c_str(  ) ), MAX_LEVEL );
+         skill->min_level = urange( 1, std::stoi( argument ), MAX_LEVEL );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "slot" ) )
       {
-         skill->slot = urange( 0, atoi( argument.c_str(  ) ), 30000 );
+         skill->slot = urange( 0, std::stoi( argument ), 30000 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "mana" ) )
       {
-         skill->min_mana = urange( 0, atoi( argument.c_str(  ) ), 2000 );
+         skill->min_mana = urange( 0, std::stoi( argument ), 2000 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "beats" ) )
       {
-         skill->beats = urange( 0, atoi( argument.c_str(  ) ), 120 );
+         skill->beats = urange( 0, std::stoi( argument ), 120 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "range" ) )
       {
-         skill->range = urange( 0, atoi( argument.c_str(  ) ), 20 );
+         skill->range = urange( 0, std::stoi( argument ), 20 );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "guild" ) )
       {
-         skill->guild = atoi( argument.c_str(  ) );
+         skill->guild = std::stoi( argument );
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "value" ) )
       {
-         skill->value = atoi( argument.c_str(  ) );
+         skill->value = std::stoi( argument );
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3102,7 +3101,7 @@ CMDF( do_sset )
       }
       if( !str_cmp( arg2, "rmaffect" ) )
       {
-         int num = atoi( argument.c_str(  ) );
+         int num = std::stoi( argument );
          int cnt = 0;
 
          if( skill->affects.empty(  ) )
@@ -3154,7 +3153,7 @@ CMDF( do_sset )
          if( !argument.empty(  ) )
          {
             if( ( tmpbit = get_aflag( argument ) ) == -1 )
-               ch->printf( "Unknown bitvector: %s.  See AFFECTED_BY\r\n", argument.c_str(  ) );
+               ch->print_fmt( "Unknown bitvector: {}.  See AFFECTED_BY\r\n", argument );
             else
                bit = tmpbit;
          }
@@ -3205,9 +3204,9 @@ CMDF( do_sset )
          Class = get_pc_class( arg3 );
 
          if( Class >= MAX_PC_CLASS || Class < 0 )
-            ch->printf( "%s is not a valid Class.\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "{} is not a valid Class.\r\n", arg3 );
          else
-            skill->skill_level[Class] = urange( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
+            skill->skill_level[Class] = urange( 0, std::stoi( argument ), MAX_LEVEL );
          return;
       }
 
@@ -3220,9 +3219,9 @@ CMDF( do_sset )
          race = get_pc_race( arg3 );
 
          if( race >= MAX_PC_RACE || race < 0 )
-            ch->printf( "%s is not a valid race.\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "{} is not a valid race.\r\n", arg3 );
          else
-            skill->race_level[race] = urange( 0, atoi( argument.c_str(  ) ), MAX_LEVEL );
+            skill->race_level[race] = urange( 0, std::stoi( argument ), MAX_LEVEL );
          return;
       }
 
@@ -3235,9 +3234,9 @@ CMDF( do_sset )
          Class = get_pc_class( arg3 );
 
          if( Class >= MAX_PC_CLASS || Class < 0 )
-            ch->printf( "%s is not a valid Class.\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "{} is not a valid Class.\r\n", arg3 );
          else
-            skill->skill_adept[Class] = urange( 0, atoi( argument.c_str(  ) ), 100 );
+            skill->skill_adept[Class] = urange( 0, std::stoi( argument ), 100 );
          return;
       }
 
@@ -3250,9 +3249,9 @@ CMDF( do_sset )
          race = get_pc_race( arg3 );
 
          if( race >= MAX_PC_RACE || race < 0 )
-            ch->printf( "%s is not a valid race.\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "{} is not a valid race.\r\n", arg3 );
          else
-            skill->race_adept[race] = urange( 0, atoi( argument.c_str(  ) ), 100 );
+            skill->race_adept[race] = urange( 0, std::stoi( argument ), 100 );
          return;
       }
 

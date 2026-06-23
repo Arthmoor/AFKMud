@@ -256,8 +256,8 @@ class char_data
    void extract( bool );
    void gain_exp( double );
    void set_specfun(  );
-   const char *get_class(  );
-   const char *get_race(  );
+   std::string get_class(  );
+   std::string get_race(  );
    void stop_idling(  );
    bool IS_OUTSIDE(  );
    int GET_AC(  );
