@@ -701,7 +701,7 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
    obj_index *pObjIndex = new obj_index;
 
    pObjIndex->vnum = vnum;
-   pObjIndex->name = STRALLOC( name.c_str(  ) );
+   pObjIndex->name = name;
    pObjIndex->affects.clear(  );
    pObjIndex->extradesc.clear(  );
    pObjIndex->area = area;

@@ -673,7 +673,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          victim->long_descr = std::format( "{}\r\n", arg );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
          {
-            victim->pIndexData->long_descr = STRALLOC( victim->long_descr.c_str() );
+            victim->pIndexData->long_descr = victim->long_descr;
          }
          olc_log( d, "Changed long desc to %s", arg.c_str(  ) );
          break;

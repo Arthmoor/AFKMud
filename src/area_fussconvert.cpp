@@ -560,9 +560,9 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
                pObjIndex->level = x4;
                pObjIndex->layers = x5;
 
-               pObjIndex->socket[0] = STRALLOC( "None" );
-               pObjIndex->socket[1] = STRALLOC( "None" );
-               pObjIndex->socket[2] = STRALLOC( "None" );
+               pObjIndex->socket[0] = "None";
+               pObjIndex->socket[1] = "None";
+               pObjIndex->socket[2] = "None";
 
                if( pObjIndex->ego >= sysdata->minego )
                {

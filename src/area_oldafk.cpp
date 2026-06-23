@@ -415,19 +415,19 @@ void load_objects( area_data * tarea, FILE * fp )
       pObjIndex->layers = x5;
 
       if( temp[0][0] == '\0' )
-         pObjIndex->socket[0] = STRALLOC( "None" );
+         pObjIndex->socket[0] = "None";
       else
-         pObjIndex->socket[0] = STRALLOC( temp[0] );
+         pObjIndex->socket[0] = temp[0];
 
       if( temp[1][0] == '\0' )
-         pObjIndex->socket[1] = STRALLOC( "None" );
+         pObjIndex->socket[1] = "None";
       else
-         pObjIndex->socket[1] = STRALLOC( temp[1] );
+         pObjIndex->socket[1] = temp[1];
 
       if( temp[2][0] == '\0' )
-         pObjIndex->socket[2] = STRALLOC( "None" );
+         pObjIndex->socket[2] = "None";
       else
-         pObjIndex->socket[2] = STRALLOC( temp[2] );
+         pObjIndex->socket[2] = temp[2];
 
       switch ( pObjIndex->item_type )
       {

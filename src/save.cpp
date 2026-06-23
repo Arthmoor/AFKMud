@@ -2130,9 +2130,9 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
             if( !str_cmp( word, "Sockets" ) )
             {
-               obj->socket[0] = STRALLOC( fread_word( fp ) );
-               obj->socket[1] = STRALLOC( fread_word( fp ) );
-               obj->socket[2] = STRALLOC( fread_word( fp ) );
+               obj->socket[0] = fread_word( fp );
+               obj->socket[1] = fread_word( fp );
+               obj->socket[2] = fread_word( fp );
                break;
             }
             break;

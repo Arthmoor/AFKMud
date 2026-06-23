@@ -1142,9 +1142,9 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       /*
        * Set stuff the object won't have in stock 
        */
-      pObjIndex->socket[0] = STRALLOC( "None" );
-      pObjIndex->socket[1] = STRALLOC( "None" );
-      pObjIndex->socket[2] = STRALLOC( "None" );
+      pObjIndex->socket[0] = "None";
+      pObjIndex->socket[1] = "None";
+      pObjIndex->socket[2] = "None";
 
       if( !oldobj )
       {

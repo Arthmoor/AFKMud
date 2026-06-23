@@ -360,7 +360,7 @@ mob_index *make_mobile( int vnum, int cvnum, const std::string & name, area_data
    mob_index *pMobIndex = new mob_index;
 
    pMobIndex->vnum = vnum;
-   pMobIndex->player_name = STRALLOC( name.c_str(  ) );
+   pMobIndex->player_name = name;
    pMobIndex->area = area;
 
    if( !cMobIndex )
