@@ -2132,7 +2132,7 @@ CMDF( do_morphcreate )
    if( !argument.empty(  ) && !str_cmp( argument, "copy" ) && temp )
       copy_morph( morph, temp );
    else
-      morph->name = strdup( arg1.c_str(  ) );
+      morph->name = arg1;
    if( morph->short_desc.empty() )
       morph->short_desc = arg1;
    morph->vnum = morph_vnum;
