@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include <sstream>
 #include "mud.h"
 #include "realms.h"
@@ -182,21 +183,24 @@ void delete_realm( char_data * ch, realm_data * realm )
 
 void write_realm_list( void )
 {
-   FILE *fpout;
+   std::ofstream stream;
 
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, REALM_LIST );
-   fpout = fopen( filename.c_str(), "w" );
-   if( !fpout )
+   stream.open( filename );
+   if( !stream.is_open(  ) )
    {
-      bug( "{}: FATAL: cannot open {} for writing!", __func__, filename.string() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
    for( auto* realm : realmlist )
-      fprintf( fpout, "%s\n", realm->filename.c_str(  ) );
+      stream << std::format( "{}\n", realm->filename );
 
-   fprintf( fpout, "%s", "$\n" );
-   FCLOSE( fpout );
+   stream << "$\n";
+   stream.close();
+
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 void fwrite_realm_memberlist( FILE * fp, realm_data * realm )
@@ -393,17 +397,16 @@ void clean_realm( realm_data * realm )
 /*
  * Load a realm file
  */
-bool load_realm_file( const std::string realmfile )
+bool load_realm_file( std::string_view realmfile )
 {
    realm_data *realm;
    FILE *fp;
-   bool found;
 
    realm = new realm_data;
 
    clean_realm( realm );  /* Default settings so we don't get weird ass stuff */
 
-   found = false;
+   bool found = false;
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realmfile );
 
    if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
@@ -500,35 +503,37 @@ void verify_realms( void )
  */
 void load_realms( void )
 {
-   FILE *fpList;
-
    realmlist.clear(  );
 
    log_string( "Loading realms..." );
 
    std::filesystem::path realmlistfile = std::format( "{}{}", REALM_DIR, REALM_LIST );
-
-   if( !( fpList = fopen( realmlistfile.c_str(), "r" ) ) )
+   std::ifstream stream( std::filesystem::path{realmlistfile} );
+   if( !stream.is_open(  ) )
    {
-      perror( realmlistfile.c_str() );
-      exit( 1 );
+      bug( "{}: Cannot open {} for reading: {}", __func__, realmlistfile.string(), std::strerror(errno) );
+      std::exit( EXIT_FAILURE );
    }
 
    for( ;; )
    {
-      std::string filename = feof( fpList ) ? "$" : fread_word( fpList );
+      std::string filename;
+      std::getline( stream, filename, '\n' );
+
+      strip_whitespace( filename );
 
       if( filename[0] == '$' )
          break;
 
-      log_string( filename.c_str() );
+      log_string( filename );
 
       if( !load_realm_file( filename ) )
-         bug( "{}: Cannot load realm file: {}", __func__, filename );
+         bug( "{}: Cannot load realm file: {} - {}", __func__, filename, std::strerror(errno) );
    }
-   FCLOSE( fpList );
+   stream.close();
+
    verify_realms(  ); /* Check against pfiles to see if realms should still exist */
-   log_string( "Done realms" );
+   log_string( "Done realms." );
 }
 
 CMDF( do_setrealm )
@@ -879,21 +884,21 @@ CMDF( do_realmroster )
    argument = one_argument( argument, arg );
    if( !( realm = get_realm( arg ) ) )
    {
-      ch->printf( "No such realm known as %s\r\n", arg.c_str(  ) );
+      ch->print_fmt( "No such realm known as {}\r\n", arg );
       return;
    }
 
    if( argument.empty(  ) )
    {
-      ch->printf( "Membership roster for %s\r\n\r\n", realm->name.c_str(  ) );
-      ch->printf( "%-15.15s  %s\r\n", "Name", "Joined on" );
+      ch->print_fmt( "Membership roster for {}\r\n\r\n", realm->name );
+      ch->print_fmt( "{:<15.15}  {}\r\n", "Name", "Joined on" );
       ch->print( "---------------------------------------\r\n" );
       for( auto* member : realm->memberlist )
       {
-         ch->printf( "%-15.15s  %s\r\n", member->name.c_str(  ), c_time( member->joined, ch->pcdata->timezone ).c_str() );
+         ch->print_fmt( "{:<15.15}  {}\r\n", member->name, c_time( member->joined, ch->pcdata->timezone ) );
          ++total;
       }
-      ch->printf( "\r\nThere are %d member%s in %s\r\n", total, total == 1 ? "" : "s", realm->name.c_str(  ) );
+      ch->print_fmt( "\r\nThere are {} member{} in {}\r\n", total, total == 1 ? "" : "s", realm->name );
       return;
    }
 
@@ -907,7 +912,7 @@ CMDF( do_realmroster )
       }
       remove_realm_roster( realm, argument );
       save_realm( realm );
-      ch->printf( "%s has been removed from the roster for %s\r\n", argument.c_str(  ), realm->name.c_str(  ) );
+      ch->print_fmt( "{} has been removed from the roster for {}\r\n", argument, realm->name );
       return;
    }
    do_realmroster( ch, "" );
@@ -920,7 +925,7 @@ CMDF( do_realms )
    ch->print( "\r\n&RRealm         Type          Leader        Description:\r\n_________________________________________________________________________\r\n\r\n" );
    for( auto* realm : realmlist )
    {
-      ch->printf( "&w%-13s %-13s %-13s %-13s\r\n", realm->name.c_str(  ), realm_type_names[realm->type], realm->leader.c_str(  ), realm->realmdesc.c_str(  ) );
+      ch->print_fmt( "&w{:<13} {:<13} {:<13} {:<13}\r\n", realm->name, realm_type_names[realm->type], realm->leader, realm->realmdesc );
       ++count;
    }
 

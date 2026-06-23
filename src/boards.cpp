@@ -318,6 +318,7 @@ void load_boards( void )
    if( !read_board_list() )
    {
       log_printf( "{}: Aborting board reading due to previous error.", __func__ );
+      return;
    }
 
    bdlist.clear(  ); // Probably not necessary but we're going to play it safe.
