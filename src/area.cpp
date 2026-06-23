@@ -358,7 +358,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
             break;
 
          case 'D':
-            KEY( "Desc", pexit->exitdesc, fread_string( fp ) );
+            STDSKEY( "Desc", pexit->exitdesc );
             if( !str_cmp( word, "Direction" ) )
             {
                int door = get_dir( fread_flagstring( fp ) );
@@ -383,7 +383,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
          case 'K':
             KEY( "Key", pexit->key, fread_number( fp ) );
-            KEY( "Keywords", pexit->keyword, fread_string( fp ) );
+            STDSKEY( "Keywords", pexit->keyword );
             break;
 
          case 'P':
@@ -1445,7 +1445,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
             break;
 
          case 'D':
-            KEY( "Desc", pRoomIndex->roomdesc, fread_string_nohash( fp ) );
+            STDSKEY( "Desc", pRoomIndex->roomdesc );
             break;
 
          case 'F':
@@ -1457,8 +1457,8 @@ void fread_afk_room( FILE * fp, area_data * tarea )
             break;
 
          case 'N':
-            KEY( "Name", pRoomIndex->name, fread_string( fp ) );
-            KEY( "Nightdesc", pRoomIndex->nitedesc, fread_string_nohash( fp ) );
+            STDSKEY( "Name", pRoomIndex->name );
+            STDSKEY( "Nightdesc", pRoomIndex->nitedesc );
             break;
 
          case 'R':
@@ -1874,10 +1874,10 @@ void fwrite_afk_exit( FILE * fpout, exit_data * pexit )
       fprintf( fpout, "ToCoords  %d %d\n", pexit->map_x, pexit->map_y );
    if( pexit->pull )
       fprintf( fpout, "Pull      %d %d\n", pexit->pulltype, pexit->pull );
-   if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
-      fprintf( fpout, "Desc      %s~\n", strip_cr( pexit->exitdesc ) );
-   if( pexit->keyword && pexit->keyword[0] != '\0' )
-      fprintf( fpout, "Keywords  %s~\n", strip_cr( pexit->keyword ) );
+   if( !pexit->exitdesc.empty() )
+      fprintf( fpout, "Desc      %s~\n", strip_cr( pexit->exitdesc ).c_str() );
+   if( !pexit->keyword.empty() )
+      fprintf( fpout, "Keywords  %s~\n", strip_cr( pexit->keyword ).c_str() );
    if( pexit->flags.any(  ) )
       fprintf( fpout, "Flags     %s~\n", bitset_string( pexit->flags, ex_flags ) );
    fprintf( fpout, "%s", "#ENDEXIT\n\n" );
@@ -2215,7 +2215,7 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       room->flags.reset( ROOM_TRACK );
 
    fprintf( fpout, "Vnum      %d\n", room->vnum );
-   fprintf( fpout, "Name      %s~\n", strip_cr( room->name ) );
+   fprintf( fpout, "Name      %s~\n", strip_cr( room->name ).c_str() );
 
    /*
     * Retain the ORIGINAL sector type to the area file - Samson 7-19-00 
@@ -2245,14 +2245,14 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
    fprintf( fpout, "Flags     %s~\n", bitset_string( room->flags, r_flags ) );
    fprintf( fpout, "Stats     %d %d %d %d %d\n", room->tele_delay, room->tele_vnum, room->tunnel, room->baselight, room->max_weight );
 
-   if( room->roomdesc && room->roomdesc[0] != '\0' )
-      fprintf( fpout, "Desc      %s~\n", strip_cr( room->roomdesc ) );
+   if( !room->roomdesc.empty() )
+      fprintf( fpout, "Desc      %s~\n", strip_cr( room->roomdesc ).c_str() );
 
    /*
     * write NiteDesc's -- Dracones 
     */
-   if( room->nitedesc && room->nitedesc[0] != '\0' )
-      fprintf( fpout, "Nightdesc %s~\n", strip_cr( room->nitedesc ) );
+   if( !room->nitedesc.empty() )
+      fprintf( fpout, "Nightdesc %s~\n", strip_cr( room->nitedesc ).c_str() );
 
    // Save the list of room index affects.
    for( auto* af : room->permaffects )

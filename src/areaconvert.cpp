@@ -1266,11 +1266,8 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          if( vnum > tarea->hi_vnum )
             tarea->hi_vnum = vnum;
       }
-      pRoomIndex->name = fread_string( fp );
-
-      const char *desc = fread_flagstring( fp );
-      if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-         pRoomIndex->roomdesc = strdup( desc );
+      fread_string( pRoomIndex->name, fp );
+      fread_string( pRoomIndex->roomdesc, fp );
 
       /*
        * Area number         fread_number( fp ); 
@@ -1280,9 +1277,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
       sscanf( ln, "%d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9 );
 
       {
-         char *roomflags;
-         const char *sect;
-         char flag[MIL];
+         std::string roomflags, flag;
          int value;
 
          roomflags = flag_string( x2, stock_rflags );
@@ -1297,8 +1292,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                pRoomIndex->flags.set( value );
          }
 
-         sect = stock_sect[x3];
-         pRoomIndex->sector_type = get_sectypes( sect );
+         pRoomIndex->sector_type = get_sectypes( stock_sect[x3] );
          pRoomIndex->winter_sector = -1;
       }
       pRoomIndex->tele_delay = x4;

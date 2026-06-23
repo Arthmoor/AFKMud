@@ -151,8 +151,8 @@ CMDF( do_rcopy )
       return;
    }
 
-   int rvnum = atoi( arg1.c_str(  ) );
-   int cvnum = atoi( argument.c_str(  ) );
+   int rvnum = std::stoi( arg1 );
+   int cvnum = std::stoi( argument );
 
    if( ch->get_trust(  ) < LEVEL_GREATER )
    {
@@ -188,9 +188,9 @@ CMDF( do_rcopy )
    copy->extradesc.clear(  );
    copy->area = ( ch->pcdata->area ) ? ch->pcdata->area : orig->area;
    copy->vnum = cvnum;
-   copy->name = QUICKLINK( orig->name );
-   copy->roomdesc = strdup( orig->roomdesc );
-   copy->nitedesc = strdup( orig->nitedesc );
+   copy->name = orig->name;
+   copy->roomdesc = orig->roomdesc;
+   copy->nitedesc = orig->nitedesc;
    copy->flags = orig->flags;
    copy->sector_type = orig->sector_type;
    copy->baselight = orig->baselight;
@@ -212,9 +212,9 @@ CMDF( do_rcopy )
    for( auto* pexit : orig->exits )
    {
       exit_data *xit = copy->make_exit( get_room_index( pexit->rvnum ), pexit->vdir );
-      xit->keyword = QUICKLINK( pexit->keyword );
-      if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
-         xit->exitdesc = QUICKLINK( pexit->exitdesc );
+      xit->keyword = pexit->keyword;
+      if( !pexit->exitdesc.empty() )
+         xit->exitdesc = pexit->exitdesc;
       xit->key = pexit->key;
       xit->flags = pexit->flags;
    }
@@ -349,9 +349,9 @@ void redit_disp_exit_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( auto* pexit : room->exits )
    {
-      d->character->printf( "&g%2d&w) %-10.10s to %-5d. Key: %d Keywords: %s Flags: %s\r\n",
+      d->character->print_fmt( "&g{:2}&w) {:<10.10} to {:<5}. Key: {} Keywords: {} Flags: %s\r\n",
                             ++cnt, dir_name[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
-                            pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
+                            pexit->key, !pexit->keyword.empty() ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
    }
 
    if( !room->exits.empty(  ) )
@@ -379,12 +379,12 @@ void redit_disp_exit_edit( descriptor_data * d )
 
    d->olc->mode = REDIT_EXIT_EDIT;
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
-   d->character->printf( "&g1&w) Direction  : &c%s\r\n", dir_name[pexit->vdir] );
-   d->character->printf( "&g2&w) To Vnum    : &c%d\r\n", pexit->to_room ? pexit->to_room->vnum : -1 );
-   d->character->printf( "&g3&w) Key        : &c%d\r\n", pexit->key );
-   d->character->printf( "&g4&w) Keyword    : &c%s\r\n", ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)" );
-   d->character->printf( "&g5&w) Flags      : &c%s\r\n", !flags.empty() ? flags.c_str() : "(none)" );
-   d->character->printf( "&g6&w) Description: &c%s\r\n", ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(none)" );
+   d->character->print_fmt( "&g1&w) Direction  : &c{}\r\n", dir_name[pexit->vdir] );
+   d->character->print_fmt( "&g2&w) To Vnum    : &c{}\r\n", pexit->to_room ? pexit->to_room->vnum : -1 );
+   d->character->print_fmt( "&g3&w) Key        : &c{}\r\n", pexit->key );
+   d->character->print_fmt( "&g4&w) Keyword    : &c{}\r\n", !pexit->keyword.empty() ? pexit->keyword : "(none)" );
+   d->character->print_fmt( "&g5&w) Flags      : &c{}\r\n", !flags.empty() ? flags : "(none)" );
+   d->character->print_fmt( "&g6&w) Description: &c{}\r\n", !pexit->exitdesc.empty() ? pexit->exitdesc : "(none)" );
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nEnter choice: " );
 }
@@ -483,7 +483,7 @@ void redit_disp_menu( descriptor_data * d )
                          "Enter choice : ",
                          d->olc->number, room->area ? room->area->name : "None????",
                          room->name, room->roomdesc,
-                         room->nitedesc ? room->nitedesc : "None Set\r\n", bitset_string( room->flags, r_flags ),
+                         !room->nitedesc.empty() ? room->nitedesc : "None Set\r\n", bitset_string( room->flags, r_flags ),
                          sect_types[room->sector_type], room->tunnel, room->tele_delay, room->tele_vnum, room->light );
 
    d->olc->mode = REDIT_MAIN_MENU;
@@ -524,8 +524,7 @@ CMDF( do_redit_reset )
             ch->desc->connected = CON_PLAYING;
             return;
          }
-         DISPOSE( room->roomdesc );
-         room->roomdesc = ch->copy_buffer( false );
+         room->roomdesc = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->pcdata->dest_buf = room;
          ch->desc->connected = CON_REDIT;
@@ -547,8 +546,7 @@ CMDF( do_redit_reset )
             ch->desc->connected = CON_PLAYING;
             return;
          }
-         DISPOSE( room->nitedesc );
-         room->nitedesc = ch->copy_buffer( false );
+         room->nitedesc = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->pcdata->dest_buf = room;
          ch->desc->connected = CON_REDIT;
@@ -606,8 +604,6 @@ void redit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_redit_reset;
 
                d->character->print( "Enter room description:-\r\n" );
-               if( !room->roomdesc )
-                  room->roomdesc = strdup( "" );
                d->character->editor_desc_printf( "Room description for vnum %d", room->vnum );
                d->character->start_editing( room->roomdesc );
                break;
@@ -618,8 +614,6 @@ void redit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_redit_reset;
 
                d->character->print( "Enter room night description:-\r\n" );
-               if( !room->nitedesc )
-                  room->nitedesc = strdup( "" );
                d->character->editor_desc_printf( "Night description for vnum %d", room->vnum );
                d->character->start_editing( room->nitedesc );
                break;
@@ -669,9 +663,8 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_NAME:
-         STRFREE( room->name );
-         room->name = STRALLOC( arg.c_str(  ) );
-         olc_log( d, "Changed name to %s", room->name );
+         room->name = arg;
+         olc_log( d, "Changed name to %s", room->name.c_str() );
          break;
 
       case REDIT_DESC:
@@ -828,9 +821,9 @@ void redit_parse( descriptor_data * d, std::string & arg )
 
       case REDIT_EXIT_DESC:
          if( !arg.empty(  ) )
-            stralloc_printf( &pexit->exitdesc, "%s\r\n", arg.c_str(  ) );
+            pexit->exitdesc = std::format( "{}\r\n", arg );
 
-         olc_log( d, "Changed %s description to %s", dir_name[pexit->vdir], !arg.empty(  )? arg.c_str(  ) : "none" );
+         olc_log( d, "Changed %s description to %s", dir_name[pexit->vdir], !arg.empty(  ) ? arg.c_str(  ) : "none" );
          redit_disp_exit_edit( d );
          return;
 
@@ -966,9 +959,8 @@ void redit_parse( descriptor_data * d, std::string & arg )
          return;
 
       case REDIT_EXIT_KEYWORD:
-         STRFREE( pexit->keyword );
-         pexit->keyword = STRALLOC( arg.c_str(  ) );
-         olc_log( d, "Changed %s keyword to %s", dir_name[pexit->vdir], pexit->keyword );
+         pexit->keyword = arg;
+         olc_log( d, "Changed %s keyword to %s", dir_name[pexit->vdir], pexit->keyword.c_str() );
          redit_disp_exit_edit( d );
          return;
 

@@ -384,7 +384,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
          || IS_EXIT_FLAG( pexit, EX_MEDIUM )
          || IS_EXIT_FLAG( pexit, EX_LIGHT ) || IS_EXIT_FLAG( pexit, EX_CRUMBLING ) ) && ( ch->isnpc(  ) || !ch->has_pcflag( PCFLAG_PASSDOOR ) ) )
    {
-      act( AT_PLAIN, "There is a $d blocking the way.", ch, nullptr, pexit->keyword, TO_CHAR );
+      act( AT_PLAIN, "There is a $d blocking the way.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
       check_sneaks( ch );
       return rSTOP;
    }
@@ -530,11 +530,11 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
       {
          if( drunk )
          {
-            act( AT_PLAIN, "$n runs into the $d in $s drunken state.", ch, nullptr, pexit->keyword, TO_ROOM );
-            act( AT_PLAIN, "You run into the $d in your drunken state.", ch, nullptr, pexit->keyword, TO_CHAR );
+            act( AT_PLAIN, "$n runs into the $d in $s drunken state.", ch, nullptr, pexit->keyword.c_str(), TO_ROOM );
+            act( AT_PLAIN, "You run into the $d in your drunken state.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
          }
          else
-            act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword, TO_CHAR );
+            act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
       }
       else
       {
@@ -1222,7 +1222,7 @@ exit_data *find_door( char_data * ch, std::string_view arg, bool quiet )
       {
          pexit = *iexit;
 
-         if( ( quiet || IS_EXIT_FLAG( pexit, EX_ISDOOR ) ) && pexit->keyword && hasname( pexit->keyword, arg ) )
+         if( ( quiet || IS_EXIT_FLAG( pexit, EX_ISDOOR ) ) && !pexit->keyword.empty() && hasname( pexit->keyword, arg ) )
             return pexit;
       }
       if( !quiet )
@@ -1299,9 +1299,9 @@ CMDF( do_open )
          if( pexit->to_room->flags.test( ROOM_NO_MOB ) )
             return;
       }
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && !pexit->keyword.empty() && !hasname( pexit->keyword, argument ) )
       {
-         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
       }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) || IS_EXIT_FLAG( pexit, EX_DIG ) )
@@ -1330,12 +1330,12 @@ CMDF( do_open )
          return;
       }
 
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( !pexit->keyword.empty() && hasname( pexit->keyword, argument ) ) )
       {
-         act( AT_ACTION, "$n opens the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
-         act( AT_ACTION, "You open the $d.", ch, nullptr, pexit->keyword, TO_CHAR );
+         act( AT_ACTION, "$n opens the $d.", ch, nullptr, pexit->keyword.c_str(), TO_ROOM );
+         act( AT_ACTION, "You open the $d.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
          if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room && !pexit->to_room->people.empty(  ) )
-            act( AT_ACTION, "The $d opens.", ( *pexit->to_room->people.begin(  ) ), nullptr, pexit_rev->keyword, TO_ROOM );
+            act( AT_ACTION, "The $d opens.", ( *pexit->to_room->people.begin(  ) ), nullptr, pexit_rev->keyword.c_str(), TO_ROOM );
          remove_bexit_flag( pexit, EX_CLOSED );
          if( ( door = pexit->vdir ) >= 0 && door < DIR_SOMEWHERE )
             check_room_for_traps( ch, trap_door[door] );
@@ -1396,7 +1396,7 @@ CMDF( do_close )
        */
       exit_data *pexit_rev;
 
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword.c_str() && !hasname( pexit->keyword, argument ) )
       {
          ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
@@ -1411,8 +1411,8 @@ CMDF( do_close )
          ch->print( "It's already closed.\r\n" );
          return;
       }
-      act( AT_ACTION, "$n closes the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
-      act( AT_ACTION, "You close the $d.", ch, nullptr, pexit->keyword, TO_CHAR );
+      act( AT_ACTION, "$n closes the $d.", ch, nullptr, pexit->keyword.c_str(), TO_ROOM );
+      act( AT_ACTION, "You close the $d.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
 
       /*
        * close the other side 
@@ -1421,7 +1421,7 @@ CMDF( do_close )
       {
          SET_EXIT_FLAG( pexit_rev, EX_CLOSED );
          if( !pexit->to_room->people.empty(  ) )
-            act( AT_ACTION, "The $d closes.", ( *pexit->to_room->people.begin(  ) ), nullptr, pexit_rev->keyword, TO_ROOM );
+            act( AT_ACTION, "The $d closes.", ( *pexit->to_room->people.begin(  ) ), nullptr, pexit_rev->keyword.c_str(), TO_ROOM );
       }
       set_bexit_flag( pexit, EX_CLOSED );
       if( ( door = pexit->vdir ) >= 0 && door < 10 )
@@ -1502,9 +1502,9 @@ CMDF( do_lock )
       /*
        * 'lock door' 
        */
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && !pexit->keyword.empty() && !hasname( pexit->keyword, argument ) )
       {
-         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
       }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
@@ -1532,12 +1532,12 @@ CMDF( do_lock )
          ch->print( "It's already locked.\r\n" );
          return;
       }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( !pexit->keyword.empty() && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Click*\r\n" );
          count = key->count;
          key->count = 1;
-         act( AT_ACTION, "$n locks the $d with $p.", ch, key, pexit->keyword, TO_ROOM );
+         act( AT_ACTION, "$n locks the $d with $p.", ch, key, pexit->keyword.c_str(), TO_ROOM );
          key->count = count;
          set_bexit_flag( pexit, EX_LOCKED );
          return;
@@ -1581,7 +1581,7 @@ CMDF( do_lock )
       key->count = count;
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "You see no {} here.\r\n", argument );
 }
 
 CMDF( do_unlock )
@@ -1601,9 +1601,9 @@ CMDF( do_unlock )
       /*
        * 'unlock door' 
        */
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && !pexit->keyword.empty() && !hasname( pexit->keyword, argument ) )
       {
-         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
       }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
@@ -1631,12 +1631,12 @@ CMDF( do_unlock )
          ch->print( "It's already unlocked.\r\n" );
          return;
       }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( !pexit->keyword.empty() && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Click*\r\n" );
          count = key->count;
          key->count = 1;
-         act( AT_ACTION, "$n unlocks the $d with $p.", ch, key, pexit->keyword, TO_ROOM );
+         act( AT_ACTION, "$n unlocks the $d with $p.", ch, key, pexit->keyword.c_str(), TO_ROOM );
          key->count = count;
          if( IS_EXIT_FLAG( pexit, EX_EATKEY ) )
          {
@@ -1691,7 +1691,7 @@ CMDF( do_unlock )
       }
       return;
    }
-   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "You see no {} here.\r\n", argument );
 }
 
 /*
@@ -1709,9 +1709,9 @@ CMDF( do_bolt )
 
    if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && !pexit->keyword.empty() && !hasname( pexit->keyword, argument ) )
       {
-         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
       }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
@@ -1734,15 +1734,15 @@ CMDF( do_bolt )
          ch->print( "It's already bolted.\r\n" );
          return;
       }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( !pexit->keyword.empty() && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Clunk*\r\n" );
-         act( AT_ACTION, "$n bolts the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
+         act( AT_ACTION, "$n bolts the $d.", ch, nullptr, pexit->keyword.c_str(), TO_ROOM );
          set_bexit_flag( pexit, EX_BOLTED );
          return;
       }
    }
-   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "You see no {} here.\r\n", argument );
 }
 
 /*
@@ -1760,9 +1760,9 @@ CMDF( do_unbolt )
 
    if( ( pexit = find_door( ch, argument, true ) ) != nullptr )
    {
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword && !hasname( pexit->keyword, argument ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && !pexit->keyword.empty() && !hasname( pexit->keyword, argument ) )
       {
-         ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
       }
       if( !IS_EXIT_FLAG( pexit, EX_ISDOOR ) )
@@ -1785,15 +1785,15 @@ CMDF( do_unbolt )
          ch->print( "It's already unbolted.\r\n" );
          return;
       }
-      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( pexit->keyword && hasname( pexit->keyword, argument ) ) )
+      if( !IS_EXIT_FLAG( pexit, EX_SECRET ) || ( !pexit->keyword.empty() && hasname( pexit->keyword, argument ) ) )
       {
          ch->print( "*Clunk*\r\n" );
-         act( AT_ACTION, "$n unbolts the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
+         act( AT_ACTION, "$n unbolts the $d.", ch, nullptr, pexit->keyword.c_str(), TO_ROOM );
          remove_bexit_flag( pexit, EX_BOLTED );
          return;
       }
    }
-   ch->printf( "You see no %s here.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "You see no {} here.\r\n", argument );
 }
 
 CMDF( do_bashdoor )
@@ -1822,11 +1822,11 @@ CMDF( do_bashdoor )
       room_index *to_room;
       exit_data *pexit_rev;
       int bashchance;
-      const char *keyword;
+      std::string keyword;
 
       if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
-         ch->print( "Calm down.  It is already open.\r\n" );
+         ch->print( "Calm down. It is already open.\r\n" );
          return;
       }
       ch->WAIT_STATE( skill_table[gsn_bashdoor]->beats );
@@ -1849,8 +1849,8 @@ CMDF( do_bashdoor )
             REMOVE_EXIT_FLAG( pexit, EX_LOCKED );
          SET_EXIT_FLAG( pexit, EX_BASHED );
 
-         act( AT_SKILL, "Crash!  You bashed open the $d!", ch, nullptr, keyword, TO_CHAR );
-         act( AT_SKILL, "$n bashes open the $d!", ch, nullptr, keyword, TO_ROOM );
+         act( AT_SKILL, "Crash! You bashed open the $d!", ch, nullptr, keyword.c_str(), TO_CHAR );
+         act( AT_SKILL, "$n bashes open the $d!", ch, nullptr, keyword.c_str(), TO_ROOM );
 
          if( ( to_room = pexit->to_room ) != nullptr && ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
          {
@@ -1859,22 +1859,22 @@ CMDF( do_bashdoor )
                REMOVE_EXIT_FLAG( pexit_rev, EX_LOCKED );
             SET_EXIT_FLAG( pexit_rev, EX_BASHED );
             if( !to_room->people.empty(  ) )
-               act( AT_SKILL, "The $d crashes open!", ( *to_room->people.begin(  ) ), nullptr, pexit_rev->keyword, TO_ROOM );
+               act( AT_SKILL, "The $d crashes open!", ( *to_room->people.begin(  ) ), nullptr, pexit_rev->keyword.c_str(), TO_ROOM );
          }
          damage( ch, ch, ( ch->max_hit / 20 ), gsn_bashdoor );
       }
       else
       {
-         act( AT_SKILL, "WHAAAAM!!!  You bash against the $d, but it doesn't budge.", ch, nullptr, keyword, TO_CHAR );
-         act( AT_SKILL, "WHAAAAM!!!  $n bashes against the $d, but it holds strong.", ch, nullptr, keyword, TO_ROOM );
+         act( AT_SKILL, "WHAAAAM!!! You bash against the $d, but it doesn't budge.", ch, nullptr, keyword.c_str(), TO_CHAR );
+         act( AT_SKILL, "WHAAAAM!!! $n bashes against the $d, but it holds strong.", ch, nullptr, keyword.c_str(), TO_ROOM );
          ch->learn_from_failure( gsn_bashdoor );
          damage( ch, ch, ( ch->max_hit / 20 ) + 10, gsn_bashdoor );
       }
    }
    else
    {
-      act( AT_SKILL, "WHAAAAM!!!  You bash against the wall, but it doesn't budge.", ch, nullptr, nullptr, TO_CHAR );
-      act( AT_SKILL, "WHAAAAM!!!  $n bashes against the wall, but it holds strong.", ch, nullptr, nullptr, TO_ROOM );
+      act( AT_SKILL, "WHAAAAM!!! You bash against the wall, but it doesn't budge.", ch, nullptr, nullptr, TO_CHAR );
+      act( AT_SKILL, "WHAAAAM!!! $n bashes against the wall, but it holds strong.", ch, nullptr, nullptr, TO_ROOM );
       ch->learn_from_failure( gsn_bashdoor );
       damage( ch, ch, ( ch->max_hit / 20 ) + 10, gsn_bashdoor );
    }

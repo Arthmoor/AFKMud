@@ -3515,8 +3515,8 @@ SPELLF( spell_portal )
    }
 
    pexit = fromRoom->make_exit( targetRoom, DIR_PORTAL );
-   pexit->keyword = STRALLOC( "portal" );
-   pexit->exitdesc = STRALLOC( "You gaze into the shimmering portal...\r\n" );
+   pexit->keyword = "portal";
+   pexit->exitdesc = "You gaze into the shimmering portal...\r\n";
    pexit->key = -1;
    SET_EXIT_FLAG( pexit, EX_PORTAL );
    SET_EXIT_FLAG( pexit, EX_xENTER );
@@ -3551,8 +3551,8 @@ SPELLF( spell_portal )
    portalObj = portalObj->to_room( ch->in_room, ch );
 
    pexit = targetRoom->make_exit( fromRoom, DIR_PORTAL );
-   pexit->keyword = STRALLOC( "portal" );
-   pexit->exitdesc = STRALLOC( "You gaze into the shimmering portal...\r\n" );
+   pexit->keyword = "portal";
+   pexit->exitdesc = "You gaze into the shimmering portal...\r\n";
    pexit->key = -1;
    SET_EXIT_FLAG( pexit, EX_PORTAL );
    SET_EXIT_FLAG( pexit, EX_xENTER );

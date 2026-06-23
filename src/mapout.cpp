@@ -238,8 +238,8 @@ int add_new_room_to_map( char_data * ch, char code )
           * Clones current room  (quietly)
           */
          location->area = ch->pcdata->area;
-         location->name = STRALLOC( "Newly Created Room" );
-         location->roomdesc = STRALLOC( "Newly Created Room\r\n" );
+         location->name = "Newly Created Room";
+         location->roomdesc = "Newly Created Room\r\n";
          location->flags.reset(  );
          location->flags.set( ROOM_PROTOTYPE );
          location->light = 0;
@@ -311,8 +311,6 @@ void link_map_exit( char_data * ch, room_index * from, room_index * to, int dire
    }
 
    auto* xit = from->make_exit( to, direction );
-   xit->keyword = nullptr;
-   xit->exitdesc = nullptr;
    xit->key = -1;
 
    if( is_door )

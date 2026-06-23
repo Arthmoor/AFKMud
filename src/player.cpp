@@ -472,11 +472,11 @@ CMDF( do_level )
       lowlvl = umax( 2, ch->level - 5 );
    hilvl = urange( ch->level, ch->level + 5, MAX_LEVEL );
 
-   ch->printf( "\r\n&[score]Experience required, levels %d to %d:\r\n______________________________________________\r\n\r\n", lowlvl, hilvl );
+   ch->print_fmt( "\r\n&[score]Experience required, levels {} to {}:\r\n______________________________________________\r\n\r\n", lowlvl, hilvl );
    std::string buf = std::format( " exp  (You have: {:11})", ch->exp );
    std::string buf2 = std::format( " exp  (To level: {:11})", exp_level( ch->level + 1 ) - ch->exp );
    for( int x = lowlvl; x <= hilvl; ++x )
-      ch->printf( " (%2d) %11ld%s\r\n", x, exp_level( x ), ( x == ch->level ) ? buf.c_str() : ( x == ch->level + 1 ) ? buf2.c_str() : " exp" );
+      ch->print_fmt( " ({:2}) {:11}{}\r\n", x, exp_level( x ), ( x == ch->level ) ? buf : ( x == ch->level + 1 ) ? buf2 : " exp" );
    ch->print( "______________________________________________\r\n" );
 }
 
@@ -503,7 +503,7 @@ CMDF( do_remains )
       return;
    }
 
-   ch->pagerf( "%s appears in a vision, revealing that your remains... ", ch->pcdata->deity->name.c_str(  ) );
+   ch->pager_fmt( "{} appears in a vision, revealing that your remains... ", ch->pcdata->deity->name );
 
    buf = "the corpse of ";
    buf.append( ch->name );
@@ -512,7 +512,7 @@ CMDF( do_remains )
       if( obj->in_room && !str_cmp( buf, obj->short_descr ) && ( obj->pIndexData->vnum == OBJ_VNUM_CORPSE_PC ) )
       {
          found = true;
-         ch->pagerf( "\r\n  - at %s will endure for %d ticks", obj->in_room->name, obj->timer );
+         ch->pager_fmt( "\r\n  - at {} will endure for {} ticks", obj->in_room->name, obj->timer );
       }
    }
    if( !found )

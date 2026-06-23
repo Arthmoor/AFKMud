@@ -924,20 +924,15 @@ void load_rooms( area_data * tarea, FILE * fp )
          if( vnum > tarea->hi_vnum )
             tarea->hi_vnum = vnum;
       }
-      pRoomIndex->name = fread_string( fp );
-
-      const char *desc = fread_flagstring( fp );
-      if( desc && desc[0] != '\0' && str_cmp( desc, "(null)" ) )
-         pRoomIndex->roomdesc = strdup( desc );
+      fread_string( pRoomIndex->name, fp );
+      fread_string( pRoomIndex->roomdesc, fp );
 
       /*
        * Check for NiteDesc's  -- Dracones 
        */
       if( tarea->version > 13 )
       {
-         const char *ndesc = fread_flagstring( fp );
-         if( ndesc && ndesc[0] != '\0' && str_cmp( ndesc, "(null)" ) )
-            pRoomIndex->nitedesc = strdup( ndesc );
+         fread_string( pRoomIndex->nitedesc, fp );
       }
 
       int sector = get_sectypes( fread_flagstring( fp ) );

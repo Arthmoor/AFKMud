@@ -823,7 +823,7 @@ CMDF( do_rstat )
                      ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0, pexit->key, pexit->keyword, bitset_string( pexit->flags, ex_flags ) );
 
          ch->print_fmt( "Description: &G{}&wExit links back to vnum: &G{}  &wExit's RoomVnum: &G{}&w\r\n\r\n",
-                     ( pexit->exitdesc && pexit->exitdesc[0] != '\0' ) ? pexit->exitdesc : "(NONE)\r\n", pexit->rexit ? pexit->rexit->vnum : 0, pexit->rvnum );
+                     ( !pexit->exitdesc.empty() ) ? pexit->exitdesc : "(NONE)\r\n", pexit->rexit ? pexit->rexit->vnum : 0, pexit->rvnum );
       }
       return;
    }
@@ -866,7 +866,7 @@ CMDF( do_rstat )
    /*
     * NiteDesc rstat added by Dracones 
     */
-   if( location->nitedesc && location->nitedesc[0] != '\0' )
+   if( !location->nitedesc.empty() )
       ch->print_fmt( "NiteDesc:&w\r\n{}&w", location->nitedesc );
 
    if( !location->extradesc.empty(  ) )
@@ -937,7 +937,7 @@ CMDF( do_rstat )
       {
          ch->print_fmt( "{:2}) &G{:<2} &wto &G{:<5}  &wKey: &G{:<5}  &wKeywords: &G{:<12}&w  Flags: &G{}&w\r\n",
                      ++cnt, dir_text[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
-                     pexit->key, ( pexit->keyword && pexit->keyword[0] != '\0' ) ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
+                     pexit->key, !pexit->keyword.empty() ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
 
          if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) )
             ch->print_fmt( "    &wExit coordinates: &G{}&wX &G{}&wY\r\n", pexit->map_x, pexit->map_y );
@@ -5380,7 +5380,7 @@ CMDF( do_vsearch )
       return;
    }
 
-   int argi = atoi( argument.c_str(  ) );
+   int argi = std::stoi( argument );
    if( argi < 1 || argi > sysdata->maxvnum )
    {
       ch->print( "Vnum out of range.\r\n" );
@@ -5398,10 +5398,10 @@ CMDF( do_vsearch )
       for( in_obj = obj; in_obj->in_obj != nullptr; in_obj = in_obj->in_obj );
 
       if( in_obj->carried_by != nullptr )
-         ch->pagerf( "&Y[&W%2d&Y] &GLevel %d %s carried by %s.\r\n", obj_counter, obj->level, obj->oshort(  ).c_str(  ), PERS( in_obj->carried_by, ch, true ).c_str() );
+         ch->pager_fmt( "&Y[&W{:2}&Y] &GLevel {} {} carried by {}.\r\n", obj_counter, obj->level, obj->oshort(  ), PERS( in_obj->carried_by, ch, true ) );
       else
-         ch->pagerf( "&Y[&W%2d&Y] [&W%-5d&Y] &G%s in %s.\r\n", obj_counter,
-                     ( ( in_obj->in_room ) ? in_obj->in_room->vnum : 0 ), obj->oshort(  ).c_str(  ), ( in_obj->in_room == nullptr ) ? "somewhere" : in_obj->in_room->name );
+         ch->pager_fmt( "&Y[&W{:2}&Y] [&W{:<5}&Y] &G{} in {}.\r\n", obj_counter,
+                     ( ( in_obj->in_room ) ? in_obj->in_room->vnum : 0 ), obj->oshort(  ), ( in_obj->in_room == nullptr ) ? "somewhere" : in_obj->in_room->name );
 
       ++obj_counter;
    }

@@ -4264,8 +4264,7 @@ CMDF( do_redit )
             bug( "{}: sub_room_desc: nullptr ch->pcdata->dest_buf", __func__ );
             location = ch->in_room;
          }
-         DISPOSE( location->roomdesc );
-         location->roomdesc = ch->copy_buffer( false );
+         location->roomdesc = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          return;
@@ -4277,8 +4276,7 @@ CMDF( do_redit )
             bug( "{}: sub_room_desc_nite: nullptr ch->pcdata->dest_buf", __func__ );
             location = ch->in_room;
          }
-         DISPOSE( location->nitedesc );
-         location->nitedesc = ch->copy_buffer( false );
+         location->nitedesc = ch->copy_buffer( );
          ch->stop_editing(  );
          ch->substate = ch->tempnum;
          return;
@@ -4357,8 +4355,7 @@ CMDF( do_redit )
          ch->print( "Usage: redit name <Room summary>\r\n" );
          return;
       }
-      STRFREE( location->name );
-      location->name = STRALLOC( argument.c_str(  ) );
+      location->name = argument;
       ch->print( "Room name set.\r\n" );
       return;
    }
@@ -4371,9 +4368,7 @@ CMDF( do_redit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_ROOM_DESC;
       ch->pcdata->dest_buf = location;
-      if( !location->roomdesc || location->roomdesc[0] == '\0' )
-         location->roomdesc = strdup( "" );
-      ch->editor_desc_printf( "Description of room vnum %d (%s).", location->vnum, location->name );
+      ch->editor_desc_printf( "Description of room vnum %d (%s).", location->vnum, location->name.c_str() );
       ch->start_editing( location->roomdesc );
       return;
    }
@@ -4389,9 +4384,7 @@ CMDF( do_redit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_ROOM_DESC_NITE;
       ch->pcdata->dest_buf = location;
-      if( !location->nitedesc || location->nitedesc[0] == '\0' )
-         location->nitedesc = strdup( "" );
-      ch->editor_desc_printf( "Night description of room vnum %d (%s).", location->vnum, location->name );
+      ch->editor_desc_printf( "Night description of room vnum %d (%s).", location->vnum, location->name.c_str() );
       ch->start_editing( location->nitedesc );
       return;
    }
@@ -4481,7 +4474,7 @@ CMDF( do_redit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_ROOM_EXTRA;
       ch->pcdata->dest_buf = ed;
-      ch->editor_desc_printf( "Extra description '%s' on room %d (%s).", argument.c_str(  ), location->vnum, location->name );
+      ch->editor_desc_printf( "Extra description '%s' on room %d (%s).", argument.c_str(  ), location->vnum, location->name.c_str() );
       ch->start_editing( ed->desc );
       return;
    }
@@ -4709,7 +4702,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4722,8 +4715,7 @@ CMDF( do_redit )
          ch->print( "No exit in that direction.  Use 'redit exit ...' first.\r\n" );
          return;
       }
-      STRFREE( xit->keyword );
-      xit->keyword = STRALLOC( argument.c_str(  ) );
+      xit->keyword = argument;
       ch->print( "Exit keywords set.\r\n" );
       return;
    }
@@ -4901,8 +4893,7 @@ CMDF( do_redit )
       argument = one_argument( argument, arg3 );
       if( !arg3.empty(  ) )
       {
-         STRFREE( xit->keyword );
-         xit->keyword = STRALLOC( arg3.c_str(  ) );
+         xit->keyword = arg3;
       }
 
       // And finally set any flags which have been specified.
@@ -5119,9 +5110,8 @@ CMDF( do_redit )
       }
       if( xit )
       {
-         STRFREE( xit->exitdesc );
          if( !argument.empty(  ) )
-            stralloc_printf( &xit->exitdesc, "%s\r\n", argument.c_str(  ) );
+            xit->exitdesc = std::format( "{}\r\n", argument );
          ch->print( "Exit description set.\r\n" );
          return;
       }
@@ -5208,8 +5198,8 @@ CMDF( do_rdig )
       ch->print_fmt( "Digging into room {} to the {}.\r\n", vnum, argument );
    }
 
-   stralloc_printf( &location->name, "%s", ch_location->name );
-   strdup_printf( &location->roomdesc, "%s", ch_location->roomdesc );
+   location->name = ch_location->name;
+   location->roomdesc = ch_location->roomdesc;
    location->sector_type = ch_location->sector_type;
    location->flags = ch_location->flags;
 
@@ -5319,8 +5309,8 @@ CMDF( do_rgrid )
 
          location->area = ch->pcdata->area;
 
-         stralloc_printf( &location->name, "%s", ch_location->name );
-         strdup_printf( &location->roomdesc, "%s", ch_location->roomdesc );
+         location->name = ch_location->name;
+         location->roomdesc = ch_location->roomdesc;
          location->sector_type = ch_location->sector_type;
          location->flags = ch_location->flags;
       }

@@ -1060,18 +1060,18 @@ void print_compass( char_data * ch )
          exit_info[pexit->vdir] = 1;
    }
 
-   ch->printf( "\r\n&[rmname]%-50s         %s%s    %s%s    %s%s\r\n",
+   ch->print_fmt( "\r\n&[rmname]{:<50}         {}{}    {}{}    {}{}\r\n",
                ch->in_room->name, exit_colors[exit_info[DIR_NORTHWEST]],
                exit_info[DIR_NORTHWEST] ? "NW" : "- ", exit_colors[exit_info[DIR_NORTH]], exit_info[DIR_NORTH] ? "N" : "-",
                exit_colors[exit_info[DIR_NORTHEAST]], exit_info[DIR_NORTHEAST] ? "NE" : " -" );
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_ROOMVNUM ) )
-      ch->printf( "&w-<---- &YVnum: %6d &w----------------------------->-        ", ch->in_room->vnum );
+      ch->print_fmt( "&w-<---- &YVnum: {:6} &w----------------------------->-        ", ch->in_room->vnum );
    else
       ch->print( "&w-<----------------------------------------------->-        " );
-   ch->printf( "%s%s&w<-%s%s&w-&W(*)&w-%s%s&w->%s%s\r\n", exit_colors[exit_info[DIR_WEST]], exit_info[DIR_WEST] ? "W" : "-",
+   ch->print_fmt( "{}{}&w<-{}{}&w-&W(*)&w-{}{}&w->{}{}\r\n", exit_colors[exit_info[DIR_WEST]], exit_info[DIR_WEST] ? "W" : "-",
                exit_colors[exit_info[DIR_UP]], exit_info[DIR_UP] ? "U" : "-", exit_colors[exit_info[DIR_DOWN]],
                exit_info[DIR_DOWN] ? "D" : "-", exit_colors[exit_info[DIR_EAST]], exit_info[DIR_EAST] ? "E" : "-" );
-   ch->printf( "                                                           %s%s    %s%s    %s%s\r\n",
+   ch->print_fmt( "                                                           {}{}    {}{}    {}{}\r\n",
                exit_colors[exit_info[DIR_SOUTHWEST]], exit_info[DIR_SOUTHWEST] ? "SW" : "- ",
                exit_colors[exit_info[DIR_SOUTH]], exit_info[DIR_SOUTH] ? "S" : "-", exit_colors[exit_info[DIR_SOUTHEAST]], exit_info[DIR_SOUTHEAST] ? "SE" : " -" );
 }
@@ -1087,14 +1087,14 @@ const std::string roomdesc( char_data * ch )
    {
       if( time_info.hour >= sysdata->hoursunrise && time_info.hour <= sysdata->hoursunset )
       {
-         if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
+         if( !ch->in_room->roomdesc.empty() )
             rdesc = ch->in_room->roomdesc;
       }
       else
       {
-         if( ch->in_room->nitedesc && ch->in_room->nitedesc[0] != '\0' )
+         if( !ch->in_room->nitedesc.empty() )
             rdesc = ch->in_room->nitedesc;
-         else if( ch->in_room->roomdesc && ch->in_room->roomdesc[0] != '\0' )
+         else if( !ch->in_room->roomdesc.empty() )
             rdesc = ch->in_room->roomdesc;
       }
    }
@@ -1570,24 +1570,22 @@ CMDF( do_look )
             ch->print( "Nothing special there.\r\n" );
          else
          {
-            if( pexit->keyword[strlen( pexit->keyword ) - 1] == 's'
-                || ( pexit->keyword[strlen( pexit->keyword ) - 1] == '\'' && pexit->keyword[strlen( pexit->keyword ) - 2] == 's' ) )
-               act( AT_PLAIN, "The $d are closed.", ch, nullptr, pexit->keyword, TO_CHAR );
+            if( pexit->keyword.back() == 's' || ( pexit->keyword.back() == '\'' && pexit->keyword.length() - 2 == 's' ) )
+               act( AT_PLAIN, "The $d are closed.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
             else
-               act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword, TO_CHAR );
+               act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
          }
          return;
       }
       if( IS_EXIT_FLAG( pexit, EX_BASHED ) )
       {
-         if( pexit->keyword[strlen( pexit->keyword ) - 1] == 's'
-             || ( pexit->keyword[strlen( pexit->keyword ) - 1] == '\'' && pexit->keyword[strlen( pexit->keyword ) - 2] == 's' ) )
-            act( AT_PLAIN, "The $d have been bashed from their hinges.", ch, nullptr, pexit->keyword, TO_CHAR );
+         if( pexit->keyword.back() == 's' || ( pexit->keyword.back() == '\'' && pexit->keyword.length() - 2 == 's' ) )
+            act( AT_PLAIN, "The $d have been bashed from their hinges.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
          else
-            act( AT_PLAIN, "The $d has been bashed from its hinges.", ch, nullptr, pexit->keyword, TO_CHAR );
+            act( AT_PLAIN, "The $d has been bashed from its hinges.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
       }
 
-      if( pexit->exitdesc && pexit->exitdesc[0] != '\0' )
+      if( !pexit->exitdesc.empty() )
          ch->print_fmt( "{}\r\n", pexit->exitdesc );
       else
          ch->print( "Nothing special there.\r\n" );

@@ -74,17 +74,17 @@ class exit_data
      exit_data(  );
     ~exit_data(  );
 
-   std::bitset<MAX_EXFLAG> flags;   // door states & other flags
-   exit_data *rexit = nullptr;      // Reverse exit pointer
-   room_index *to_room = nullptr;   // Pointer to destination room
-   char *keyword = nullptr;         // Keywords for exit or door
-   char *exitdesc = nullptr;        // Description of exit
-   int vnum = 0;                    // Vnum of room exit leads to
-   int rvnum = 0;                   // Vnum of room in opposite dir
-   int key = -1;                    // Key vnum
-   short vdir = 0;                  // Physical "direction"
-   short pull = 0;                  // pull of direction (current)
-   short pulltype = 0;              // type of pull (current, wind)
+   exit_data *rexit = nullptr;      // Reverse exit pointer.
+   room_index *to_room = nullptr;   // Pointer to destination room.
+   std::bitset<MAX_EXFLAG> flags;   // door states & other flags.
+   std::string keyword;             // Keywords for exit or door.
+   std::string exitdesc;            // Description of exit.
+   int vnum = 0;                    // Vnum of room exit leads to.
+   int rvnum = 0;                   // Vnum of room in opposite dir.
+   int key = -1;                    // Key vnum.
+   short vdir = 0;                  // Physical "direction".
+   short pull = 0;                  // pull of direction (current).
+   short pulltype = 0;              // type of pull (current, wind).
    short map_x = -1;                // Coordinates to Overland Map - Samson 7-31-99
    short map_y = -1;
 };
@@ -124,6 +124,9 @@ class room_index
    void renumber_put_resets(  );
    void load_reset( FILE *, bool );
 
+   area_data *area = nullptr;                   // Area this room belongs to.
+   reset_data *last_mob_reset = nullptr;
+   reset_data *last_obj_reset = nullptr;
    std::list<reset_data *> resets;              // Things that get loaded in this room.
    std::list<char_data *> people;               // People in the room.
    std::list<obj_data *> objects;               // Objects on the floor.
@@ -135,12 +138,9 @@ class room_index
    std::list<mprog_act_list *> mpact;           // Mudprogs
    std::bitset<ROOM_MAX> flags;                 // Flags on the room.
    std::bitset<MAX_PROG> progtypes;             // Mudprogs
-   area_data *area = nullptr;                   // Area this room belongs to.
-   reset_data *last_mob_reset = nullptr;
-   reset_data *last_obj_reset = nullptr;
-   char *name = nullptr;                        // The room's name.
-   char *roomdesc = nullptr;                    // Detailed description of the room. Pointer name changed so that it can now be more easily grep'd - Samson 10-16-03
-   char *nitedesc = nullptr;                    // Detailed description of this room at night. Added NiteDesc -- Dracones
+   std::string name;                            // The room's name.
+   std::string roomdesc;                        // Detailed description of the room. Pointer name changed so that it can now be more easily grep'd - Samson 10-16-03
+   std::string nitedesc;                        // Detailed description of this room at night. Added NiteDesc -- Dracones
    int vnum = 0;                                // The room's unique Vnum.
    int tele_vnum = 0;                           // Where players get teleported to once the delay timer runs out.
    int weight = 0;                              // Current amount of weight present in the room. - Taken from Smaug 1.8

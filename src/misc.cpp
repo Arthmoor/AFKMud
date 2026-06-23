@@ -849,7 +849,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          {
             char_data *rch = *ich;
 
-            act( AT_ACTION, "The $d opens.", rch, nullptr, pexit->keyword, TO_CHAR );
+            act( AT_ACTION, "The $d opens.", rch, nullptr, pexit->keyword.c_str(), TO_CHAR );
          }
 
          if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
@@ -861,7 +861,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             for( ich = pexit->to_room->people.begin(  ); ich != pexit->to_room->people.end(  ); ++ich )
             {
                char_data *rch = ( *ich );
-               act( AT_ACTION, "The $d opens.", rch, nullptr, pexit_rev->keyword, TO_CHAR );
+               act( AT_ACTION, "The $d opens.", rch, nullptr, pexit_rev->keyword.c_str(), TO_CHAR );
             }
          }
          check_room_for_traps( ch, trap_door[edir] );
@@ -877,7 +877,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
          {
             char_data *rch = *ich;
 
-            act( AT_ACTION, "The $d closes.", rch, nullptr, pexit->keyword, TO_CHAR );
+            act( AT_ACTION, "The $d closes.", rch, nullptr, pexit->keyword.c_str(), TO_CHAR );
          }
 
          if( ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
@@ -890,7 +890,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
             {
                char_data *rch = *ich;
 
-               act( AT_ACTION, "The $d closes.", rch, nullptr, pexit_rev->keyword, TO_CHAR );
+               act( AT_ACTION, "The $d closes.", rch, nullptr, pexit_rev->keyword.c_str(), TO_CHAR );
             }
          }
          check_room_for_traps( ch, trap_door[edir] );
@@ -961,7 +961,7 @@ CMDF( do_rap )
    {
       room_index *to_room;
       exit_data *pexit_rev;
-      const char *keyword;
+      std::string keyword;
 
       if( !IS_EXIT_FLAG( pexit, EX_CLOSED ) )
       {
@@ -972,12 +972,12 @@ CMDF( do_rap )
          keyword = "wall";
       else
          keyword = pexit->keyword;
-      act( AT_ACTION, "You rap loudly on the $d.", ch, nullptr, keyword, TO_CHAR );
-      act( AT_ACTION, "$n raps loudly on the $d.", ch, nullptr, keyword, TO_ROOM );
+      act( AT_ACTION, "You rap loudly on the $d.", ch, nullptr, keyword.c_str(), TO_CHAR );
+      act( AT_ACTION, "$n raps loudly on the $d.", ch, nullptr, keyword.c_str(), TO_ROOM );
       if( ( to_room = pexit->to_room ) != nullptr && ( pexit_rev = pexit->rexit ) != nullptr && pexit_rev->to_room == ch->in_room )
       {
          for( auto* rch : to_room->people )
-            act( AT_ACTION, "Someone raps loudly from the other side of the $d.", rch, nullptr, pexit_rev->keyword, TO_CHAR );
+            act( AT_ACTION, "Someone raps loudly from the other side of the $d.", rch, nullptr, pexit_rev->keyword.c_str(), TO_CHAR );
       }
    }
    else

@@ -4076,8 +4076,8 @@ CMDF( do_search )
       if( ( pexit = ch->in_room->get_exit( door ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_SECRET )
           && IS_EXIT_FLAG( pexit, EX_xSEARCHABLE ) && can_use_skill( ch, percent, gsn_search ) )
       {
-         act( AT_SKILL, "Your search reveals the $d!", ch, nullptr, pexit->keyword, TO_CHAR );
-         act( AT_SKILL, "$n finds the $d!", ch, nullptr, pexit->keyword, TO_ROOM );
+         act( AT_SKILL, "Your search reveals the $d!", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
+         act( AT_SKILL, "$n finds the $d!", ch, nullptr, pexit->keyword.c_str(), TO_ROOM );
          REMOVE_EXIT_FLAG( pexit, EX_SECRET );
          return;
       }
@@ -5299,7 +5299,7 @@ CMDF( do_pick )
 
       REMOVE_EXIT_FLAG( pexit, EX_LOCKED );
       ch->print( "*Click*\r\n" );
-      act( AT_ACTION, "$n picks the $d.", ch, nullptr, pexit->keyword, TO_ROOM );
+      act( AT_ACTION, "$n picks the $d.", ch, nullptr, pexit->keyword.c_str(), TO_ROOM );
       ch->adjust_favor( 9, 1 );
       /*
        * pick the other side 

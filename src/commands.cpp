@@ -707,14 +707,14 @@ void interpret( char_data * ch, std::string argument )
          exit_data *pexit;
 
          /*
-          * check for an auto-matic exit command 
+          * check for an automatic exit command
           */
          if( ( pexit = find_door( ch, command, true ) ) != nullptr && IS_EXIT_FLAG( pexit, EX_xAUTO ) )
          {
             if( IS_EXIT_FLAG( pexit, EX_CLOSED ) && ( !ch->has_aflag( AFF_PASS_DOOR ) || IS_EXIT_FLAG( pexit, EX_NOPASSDOOR ) ) )
             {
                if( !IS_EXIT_FLAG( pexit, EX_SECRET ) )
-                  act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword, TO_CHAR );
+                  act( AT_PLAIN, "The $d is closed.", ch, nullptr, pexit->keyword.c_str(), TO_CHAR );
                else
                   ch->print( "You cannot do that here.\r\n" );
                return;

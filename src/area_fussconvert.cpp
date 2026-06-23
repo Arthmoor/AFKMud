@@ -280,7 +280,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
             break;
 
          case 'D':
-            KEY( "Desc", pRoomIndex->roomdesc, fread_string_nohash( fp ) );
+            STDSKEY( "Desc", pRoomIndex->roomdesc );
             break;
 
          case 'F':
@@ -292,7 +292,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
             break;
 
          case 'N':
-            KEY( "Name", pRoomIndex->name, fread_string( fp ) );
+            STDSKEY( "Name", pRoomIndex->name );
             break;
 
          // Format of this section is identical to AFKMud. Let's cheat :)

@@ -237,10 +237,6 @@ room_index::~room_index(  )
    }
    mudprogs.clear(  );
 
-   STRFREE( name );
-   DISPOSE( roomdesc );
-   DISPOSE( nitedesc );
-
    std::map<int, room_index *>::iterator mroom;
    if( ( mroom = room_index_table.find( vnum ) ) != room_index_table.end(  ) )
       room_index_table.erase( mroom );
@@ -256,9 +252,10 @@ room_index::room_index(  )
  */
 void room_index::clean_room(  )
 {
-   DISPOSE( roomdesc );
-   DISPOSE( nitedesc );
-   STRFREE( name );
+   roomdesc.clear();
+   nitedesc.clear();
+   name.clear();
+
    for( auto it = extradesc.begin(  ); it != extradesc.end(  ); )
    {
       extra_descr_data *desc = *it;
@@ -372,8 +369,6 @@ exit_data::~exit_data(  )
 {
    if( rexit )
       rexit->rexit = nullptr;
-   STRFREE( keyword );
-   STRFREE( exitdesc );
 }
 
 /*
@@ -504,7 +499,7 @@ room_index *make_room( int vnum, area_data * area )
 
    pRoomIndex->area = area;
    pRoomIndex->vnum = vnum;
-   pRoomIndex->name = STRALLOC( "Suspended in the great inky blackness..." );
+   pRoomIndex->name = "Suspended in the great inky blackness...";
    pRoomIndex->flags.set( ROOM_PROTOTYPE );
 
    room_index_table.insert( std::map<int, room_index *>::value_type( vnum, pRoomIndex ) );

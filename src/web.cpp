@@ -426,9 +426,9 @@ void room_to_html( room_index * room, bool complete )
    {
       fprintf( fp, "%s", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n" );
       fprintf( fp, "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n" );
-      fprintf( fp, "<title>%s: %s</title>\n</head>\n\n<body bgcolor=\"#000000\">\n", room->area->name.c_str(), room->name );
+      fprintf( fp, "<title>%s: %s</title>\n</head>\n\n<body bgcolor=\"#000000\">\n", room->area->name.c_str(), room->name.c_str() );
       fprintf( fp, "%s", "<font face=\"Fixedsys\" size=\"3\">\n" );
-      fprintf( fp, "<font color=\"#FF0000\">%s</font><br />\n", room->name );
+      fprintf( fp, "<font color=\"#FF0000\">%s</font><br />\n", room->name.c_str() );
       fprintf( fp, "%s", "<font color=\"#33FF33\">[Exits:" );
 
       for( auto* pexit : room->exits )
