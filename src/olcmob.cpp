@@ -550,7 +550,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_medit_reset;
 
                d->character->print( "Enter new mob description:\r\n" );
-               d->character->editor_desc_printf( "Mob description for vnum %d", victim->pIndexData->vnum );
+               d->character->set_editor_desc( std::format( "Mob description for vnum {}", victim->pIndexData->vnum ) );
                d->character->start_editing( victim->chardesc );
                return;
             case '6':

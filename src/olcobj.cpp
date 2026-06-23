@@ -2785,7 +2785,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_oedit_reset;
 
                d->character->print( "Enter new extra description - :\r\n" );
-               d->character->editor_desc_printf( "Extra description for object vnum %d", obj->pIndexData->vnum );
+               d->character->set_editor_desc( std::format( "Extra description for object vnum {}", obj->pIndexData->vnum ) );
                d->character->start_editing( ed->desc );
                return;
          }

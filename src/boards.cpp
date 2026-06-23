@@ -1353,7 +1353,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
             ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
             ch->substate = SUB_BOARD_TEXT;
             ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-            ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list.c_str() );
+            ch->set_editor_desc( std::format( "A note to {}", ch->pcdata->pnote->to_list ) );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
          }
@@ -1376,7 +1376,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
          ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
          ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
          ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-         ch->editor_desc_printf( "A note to %s", ch->pcdata->pnote->to_list.c_str() );
+         ch->set_editor_desc( std::format( "A note to {}", ch->pcdata->pnote->to_list ) );
          ch->start_editing( ch->pcdata->pnote->text );
          return;
 
@@ -1484,7 +1484,7 @@ void board_parse( descriptor_data * d, const std::string & argument )
          {
             ch->substate = SUB_BOARD_TEXT;
             ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-            ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list.c_str(), ch->pcdata->pnote->subject.c_str() );
+            ch->set_editor_desc( std::format( "A note to {} about {}", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject ) );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
          }
@@ -1712,7 +1712,7 @@ CMDF( do_note_write )
          {
             ch->print( "You must enter some text in the body of the note!\r\n" );
             ch->substate = SUB_BOARD_TEXT;
-            ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list.c_str(), ch->pcdata->pnote->subject.c_str() );
+            ch->set_editor_desc( std::format( "A note to {} about {}", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject ) );
             ch->start_editing( ch->pcdata->pnote->text );
             return;
          }
@@ -1814,7 +1814,7 @@ CMDF( do_note_write )
          ch->print_fmt( "{}To: {}{:<15} {}From: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->to_list, s1, s2, ch->pcdata->pnote->sender );
          ch->print_fmt( "{}Subject: {}{}&D\r\n", s1, s2, ch->pcdata->pnote->subject );
          ch->print_fmt( "{}Please enter the text for your message:&D\r\n", s1 );
-         ch->editor_desc_printf( "A note to %s about %s", ch->pcdata->pnote->to_list.c_str(), ch->pcdata->pnote->subject.c_str() );
+         ch->set_editor_desc( std::format( "A note to {} about {}", ch->pcdata->pnote->to_list, ch->pcdata->pnote->subject ) );
          ch->start_editing( ch->pcdata->pnote->text );
       }
       else
@@ -3286,7 +3286,7 @@ CMDF( do_project )
       ch->tempnum = SUB_NONE;
       ch->substate = SUB_PROJ_DESC;
       ch->pcdata->dest_buf = pproject;
-      ch->editor_desc_printf( "Project description for project '%s'.", !pproject->name.empty() ? pproject->name.c_str() : "(No name)" );
+      ch->set_editor_desc( std::format( "Project description for project '{}'.", !pproject->name.empty() ? pproject->name : "(No name)" ) );
       ch->start_editing( pproject->description );
       return;
    }
@@ -3389,8 +3389,8 @@ CMDF( do_project )
             ch->note_attach( NOTE_PROJECT );
          ch->substate = SUB_WRITING_NOTE;
          ch->pcdata->dest_buf = ch->pcdata->pnote;
-         ch->editor_desc_printf( "A log note in project '%s', entitled '%s'.",
-                                 !pproject->name.empty() ? pproject->name.c_str() : "(No name)", !ch->pcdata->pnote->subject.empty() ? ch->pcdata->pnote->subject.c_str() : "(No subject)" );
+         ch->set_editor_desc( std::format( "A log note in project '{}', entitled '{}'.",
+                                 !pproject->name.empty() ? pproject->name : "(No name)", !ch->pcdata->pnote->subject.empty() ? ch->pcdata->pnote->subject : "(No subject)" ) );
          ch->start_editing( ch->pcdata->pnote->text );
          return;
       }

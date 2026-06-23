@@ -1259,7 +1259,7 @@ CMDF( do_setdeity )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_DEITYDESC;
       ch->pcdata->dest_buf = deity;
-      ch->editor_desc_printf( "Deity description for deity '%s'.", deity->name.c_str(  ) );
+      ch->set_editor_desc( std::format( "Deity description for deity '{}'.", deity->name ) );
       ch->start_editing( deity->deitydesc );
       return;
    }

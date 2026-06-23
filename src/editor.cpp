@@ -403,17 +403,7 @@ std::string invert_string( std::string_view orig )
 }
 
 /* Provided by Remcon to stop crashes with channel history */
-const std::string add_percent( std::string str )
-{
-   if( str.empty() )
-      return "";
-
-   string_replace( str, "%", "%%" );
-
-   return str;
-}
-
-// The std::format version of the above.
+// The std::format version now.
 const std::string escape_formatting( std::string str )
 {
    if( str.empty() )
@@ -759,19 +749,6 @@ void char_data::set_editor_desc( std::string_view new_desc )
       return;
 
    pcdata->editor->desc = new_desc;
-}
-
-// FIXME: Switch to std::format logic. Use character.cpp as an example.
-void char_data::editor_desc_printf( const char *desc_fmt, ... )
-{
-   char buf[MSL * 2];   /* umpf.. */
-   va_list args;
-
-   va_start( args, desc_fmt );
-   vsnprintf( buf, MSL * 2, desc_fmt, args );
-   va_end( args );
-
-   set_editor_desc( buf );
 }
 
 void char_data::stop_editing(  )

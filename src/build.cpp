@@ -2045,9 +2045,9 @@ CMDF( do_mset )
       if( !victim->chardesc.empty() )
          victim->chardesc.clear();
       if( victim->isnpc(  ) )
-         ch->editor_desc_printf( "Description of mob, vnum %d (%s).", victim->pIndexData->vnum, victim->name.c_str() );
+         ch->set_editor_desc( std::format( "Description of mob, vnum {} ({}).", victim->pIndexData->vnum, victim->name ) );
       else
-         ch->editor_desc_printf( "Description of player %s.", capitalize( victim->name ).c_str() );
+         ch->set_editor_desc( std::format( "Description of player {}.", capitalize( victim->name ) ) );
       ch->start_editing( victim->chardesc );
       return;
    }
@@ -3065,7 +3065,7 @@ CMDF( do_oset )
          ch->pcdata->spare_ptr = nullptr;
       ch->substate = SUB_OBJ_LONG;
       ch->pcdata->dest_buf = obj;
-      ch->editor_desc_printf( "Object long desc, vnum %d (%s).", obj->pIndexData->vnum, obj->short_descr.c_str() );
+      ch->set_editor_desc( std::format( "Object long desc, vnum {} ({}).", obj->pIndexData->vnum, obj->short_descr ) );
       ch->start_editing( obj->objdesc );
       return;
    }
@@ -3656,7 +3656,7 @@ CMDF( do_oset )
          ch->pcdata->spare_ptr = nullptr;
       ch->substate = SUB_OBJ_EXTRA;
       ch->pcdata->dest_buf = ed;
-      ch->editor_desc_printf( "Extra description '%s' on object vnum %d (%s).", arg3.c_str(  ), obj->pIndexData->vnum, obj->short_descr.c_str() );
+      ch->set_editor_desc( std::format( "Extra description '{}' on object vnum {} ({}).", arg3, obj->pIndexData->vnum, obj->short_descr ) );
       ch->start_editing( ed->desc );
       return;
    }
@@ -4368,7 +4368,7 @@ CMDF( do_redit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_ROOM_DESC;
       ch->pcdata->dest_buf = location;
-      ch->editor_desc_printf( "Description of room vnum %d (%s).", location->vnum, location->name.c_str() );
+      ch->set_editor_desc( std::format( "Description of room vnum {} ({}).", location->vnum, location->name ) );
       ch->start_editing( location->roomdesc );
       return;
    }
@@ -4384,7 +4384,7 @@ CMDF( do_redit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_ROOM_DESC_NITE;
       ch->pcdata->dest_buf = location;
-      ch->editor_desc_printf( "Night description of room vnum %d (%s).", location->vnum, location->name.c_str() );
+      ch->set_editor_desc( std::format( "Night description of room vnum {} ({}).", location->vnum, location->name ) );
       ch->start_editing( location->nitedesc );
       return;
    }
@@ -4474,7 +4474,7 @@ CMDF( do_redit )
          ch->tempnum = SUB_NONE;
       ch->substate = SUB_ROOM_EXTRA;
       ch->pcdata->dest_buf = ed;
-      ch->editor_desc_printf( "Extra description '%s' on room %d (%s).", argument.c_str(  ), location->vnum, location->name.c_str() );
+      ch->set_editor_desc( std::format( "Extra description '{}' on room {} ({}).", argument, location->vnum, location->name ) );
       ch->start_editing( ed->desc );
       return;
    }
@@ -5717,7 +5717,7 @@ void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, std::string_view 
    ch->substate = SUB_MPROG_EDIT;
    ch->pcdata->dest_buf = mprg;
 
-   ch->editor_desc_printf( "Program '%s %s'.", mprog_type_to_name( mprg->type ).c_str(  ), mprg->arglist );
+   ch->set_editor_desc( std::format( "Program '{} {}'.", mprog_type_to_name( mprg->type ), mprg->arglist ) );
    ch->start_editing( mprg->comlist );
 }
 

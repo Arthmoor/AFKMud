@@ -953,7 +953,7 @@ CMDF( do_description )
       case SUB_NONE:
          ch->substate = SUB_PERSONAL_DESC;
          ch->pcdata->dest_buf = ch;
-         ch->editor_desc_printf( "Your description (%s)", ch->name.c_str() );
+         ch->set_editor_desc( std::format( "Your description ({})", ch->name ) );
          ch->start_editing( ch->chardesc );
          return;
 
@@ -1003,7 +1003,7 @@ CMDF( do_bio )
       case SUB_NONE:
          ch->substate = SUB_PERSONAL_BIO;
          ch->pcdata->dest_buf = ch;
-         ch->editor_desc_printf( "Your bio (%s).", ch->name.c_str() );
+         ch->set_editor_desc( std::format( "Your bio ({}).", ch->name ) );
          ch->start_editing( ch->pcdata->bio );
          return;
 

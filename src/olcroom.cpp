@@ -604,7 +604,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_redit_reset;
 
                d->character->print( "Enter room description:-\r\n" );
-               d->character->editor_desc_printf( "Room description for vnum %d", room->vnum );
+               d->character->set_editor_desc( std::format( "Room description for vnum {}", room->vnum ) );
                d->character->start_editing( room->roomdesc );
                break;
 
@@ -614,7 +614,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_redit_reset;
 
                d->character->print( "Enter room night description:-\r\n" );
-               d->character->editor_desc_printf( "Night description for vnum %d", room->vnum );
+               d->character->set_editor_desc( std::format( "Night description for vnum {}", room->vnum ) );
                d->character->start_editing( room->nitedesc );
                break;
 
@@ -1035,7 +1035,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
                d->character->last_cmd = do_redit_reset;
 
                d->character->print( "Enter new extradesc description: \r\n" );
-               d->character->editor_desc_printf( "Extra description for room %d", room->vnum );
+               d->character->set_editor_desc( std::format( "Extra description for room {}", room->vnum ) );
                d->character->start_editing( ed->desc );
                return;
          }

@@ -1011,7 +1011,6 @@ const char *one_argument( const char *, char * );
 char *one_argument( char *, char * );
 std::string one_argument( std::string_view, std::string & );
 std::string invert_string( std::string_view );
-// const std::string add_percent( std::string );
 const std::string escape_formatting( std::string );
 void string_erase( std::string &, char );
 void string_erase( std::string &, std::string_view );

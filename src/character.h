@@ -282,7 +282,6 @@ class char_data
    void update_pos(  );
    char_data *who_fighting(  );
    void stop_fighting( bool );
-   void editor_desc_printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
    void start_editing( char * );
    void start_editing( std::string );
    void stop_editing(  );

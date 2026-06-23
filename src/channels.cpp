@@ -535,7 +535,6 @@ void show_channel_history( char_data * ch, mud_channel * channel )
          default:
             name = "Someone";
       }
-      // ch->printf( entry->format, mini_c_time( entry->timestamp, ch->pcdata->timezone ).c_str(), name.c_str() );
       std::string formatted_message = std::vformat( entry->format, std::make_format_args( mini_c_time( entry->timestamp, ch->pcdata->timezone ), name ) );
       ch->print( formatted_message );
    }
@@ -545,7 +544,6 @@ void show_channel_history( char_data * ch, mud_channel * channel )
 void update_channel_history( char_data * ch, mud_channel * channel, const std::string & argument, bool emote )
 {
    int type = 0;
-   // const std::string newarg = add_percent( argument );
    const std::string newarg = escape_formatting( argument );
 
    chan_history *entry = new chan_history;

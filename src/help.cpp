@@ -483,7 +483,7 @@ CMDF( do_hedit )
    ch->pcdata->dest_buf = pHelp;
    if( pHelp->text.empty(  ) )
       pHelp->text = "";
-   ch->editor_desc_printf( "Help topic, keyword '%s', level %d.", pHelp->keyword.c_str(  ), pHelp->level );
+   ch->set_editor_desc( std::format( "Help topic, keyword '{}', level {}.", pHelp->keyword, pHelp->level ) );
    ch->start_editing( pHelp->text );
 }
 
