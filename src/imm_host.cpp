@@ -91,7 +91,7 @@ immortal_host_log *fread_imm_host_log( FILE * fp )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "LEnd" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "LEnd" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -134,7 +134,7 @@ immortal_host *fread_imm_host( FILE * fp )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "ZEnd" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "ZEnd" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -213,7 +213,6 @@ void load_imm_host( void )
    for( ;; )
    {
       char letter = fread_letter( fp );
-      char *word;
 
       if( letter == '*' )
       {
@@ -227,7 +226,7 @@ void load_imm_host( void )
          break;
       }
 
-      word = fread_word( fp );
+      std::string word = fread_word( fp );
 
       if( !str_cmp( word, "IMMORTAL" ) )
       {

@@ -71,7 +71,7 @@ bool in_arena( char_data * );
  * Local function prototypes
  */
 void set_supermob( obj_data * );
-int mprog_do_command( char *, char_data *, char_data *, obj_data *, char_data *, obj_data *, char_data *, bool, bool );
+int mprog_do_command( std::string_view, char_data *, char_data *, obj_data *, char_data *, obj_data *, char_data *, bool, bool );
 
 /*
  *  Mudprogram additions
@@ -125,7 +125,7 @@ struct mpsleep_data
    room_index *room = nullptr; /* Room when type is MP_ROOM */
    char_data *victim = nullptr;
    obj_data *target = nullptr;
-   char *com_list = nullptr;
+   std::string com_list;
    mp_types type = MP_MOB; /* Mob, Room or Obj prog */
    int timer = 0;  /* Pulses to sleep */
    int ignorelevel = 0;
@@ -177,7 +177,6 @@ mpsleep_data::mpsleep_data(  )
 
 mpsleep_data::~mpsleep_data(  )
 {
-   STRFREE( com_list );
    sleeplist.remove( this );
 }
 
@@ -333,26 +332,34 @@ void init_supermob( void )
       log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 }
 
-/* Used to get sequential lines of a multi line string (separated by "\r\n")
- * Thus its like one_argument(), but a trifle different. It is destructive
+/*
+ * Used to get sequential lines of a multi line string (separated by "\r\n")
+ * Thus it's like one_argument(), but a trifle different. It is destructive
  * to the multi line string argument, and thus clist must not be shared.
  */
-char *mprog_next_command( char *clist )
+std::string_view mprog_next_command( std::string_view clist )
 {
-   char *pointer = clist;
+   // Find the end of the current line.
+   size_t pos = clist.find_first_of( "\n\r" );
 
-   while( *pointer != '\n' && *pointer != '\0' )
-      ++pointer;
+   if (pos == std::string_view::npos)
+   {
+      // No newline found, we are at the end.
+      return std::string_view();
+   }
 
-   if( *pointer == '\n' )
-      *pointer++ = '\0';
-   if( *pointer == '\r' )
-      *pointer++ = '\0';
+   // Calculate the start of the next line, skipping the newline/carriage return character(s)
+   size_t start_next = pos;
+   while( start_next < clist.size() && ( clist[start_next] == '\n' || clist[start_next] == '\r' ) )
+   {
+      start_next++;
+   }
 
-   return ( pointer );
+   return clist.substr( start_next );
 }
 
-/* These two functions do the basic evaluation of ifcheck operators.
+/*
+ * These two functions do the basic evaluation of ifcheck operators.
  *  It is important to note that the string operations are not what
  *  you probably expect.  Equality is exact and division is substring.
  *  remember that lhs has been stripped of leading space, but can
@@ -414,14 +421,13 @@ constexpr int MAX_IF_ARGS = 6;
  * Redone by Altrag.. kill all that big copy-code that performs the
  * same action on each variable..
  */
-int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, char_data * rndm )
+int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, char_data * rndm )
 {
    char buf[MSL];
    char opr[MIL];
-   const char *chck, *cvar;
    char *argv[MAX_IF_ARGS];
    const char *rval = "";
-   char *q, *p = buf;
+   char *p = buf;
    int argc = 0;
    std::list<char_data *>::iterator ich;
    std::list<descriptor_data *>::iterator ds;
@@ -429,9 +435,11 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
    obj_data *chkobj = nullptr;
    int lhsvl, rhsvl = 0, lang;
 
-   if( !*ifcheck )
+   opr[0] = '\0';
+
+   if( ifcheck.empty() || ifcheck.size() >= MSL )
    {
-      progbug( "Null ifcheck", mob );
+      progbug( "Ifcheck null or too long.", mob );
       return BERR;
    }
 
@@ -440,83 +448,98 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
     * brackets, ie: if leveldiff($n, $i) > 10
     * It's also smaller, cleaner and probably faster
     */
-   strcpy( buf, ifcheck );
-   opr[0] = '\0';
-   while( isspace( *p ) )
-      ++p;
-   argv[argc++] = p;
-   while( isalnum( *p ) )
-      ++p;
-   while( isspace( *p ) )
-      *p++ = '\0';
-   if( *p != '(' )
+   memcpy( buf, ifcheck.data(), ifcheck.size() );
+   buf[ifcheck.size()] = '\0';
+
+   std::string_view sv(buf);
+
+   size_t start = sv.find_first_not_of( " \t\r\n" );
+   if( start == std::string_view::npos )
    {
-      progbug( "Ifcheck Syntax error (missing left bracket)", mob );
+      progbug( "Ifcheck error - there was only whitespace.", mob );
       return BERR;
    }
 
-   *p++ = '\0';
+   size_t name_end = sv.find_first_of( " \t(", start );
+   if( name_end == std::string_view::npos )
+   {
+      progbug( "Ifcheck syntax error - missing left parenthesis.", mob );
+      return BERR;
+   }
+
+   buf[name_end] = '\0';
+   argv[argc++] = &buf[start];
+
+   size_t paren = sv.find( '(', name_end );
+   if( paren == std::string_view::npos )
+   {
+      progbug( "Ifcheck Syntax error - missing left parenthesis.", mob );
+      return BERR;
+   }
+
+   p = &buf[paren + 1];
 
    /*
     * Need to check for spaces or if name( $n ) isn't legal --Shaddai 
     */
-   while( isspace( *p ) )
-      *p++ = '\0';
-   for( ;; )
+   std::string_view inside_parens = sv.substr( paren + 1, sv.find( ')' ) - paren - 1 );
+   size_t arg_start = 0;
+   while( arg_start < inside_parens.size() && argc < MAX_IF_ARGS )
    {
+      // Trim leading space
+      arg_start = inside_parens.find_first_not_of( " \t", arg_start );
+      if( arg_start == std::string_view::npos )
+         break;
+
+      // Find the end of this argument (comma or end of string)
+      size_t end = inside_parens.find( ',', arg_start );
+      std::string_view arg = ( end == std::string_view::npos ) ? inside_parens.substr( arg_start ) : inside_parens.substr( arg_start, end - arg_start );
+
+      // Trim trailing space from the argument.
+      arg = arg.substr( 0, arg.find_last_not_of( " \t" ) + 1 );
+
+      // Copy to buffer to keep legacy argv working.
+      size_t len = std::min( arg.size(), (size_t)MIL - 1 );
+      memcpy( p, arg.data(), len );
+      buf[p - buf + len] = '\0';
       argv[argc++] = p;
-      while( *p == '$' || isalnum( *p ) || *p == ':' )
-         ++p;
-      while( isspace( *p ) )
-         *p++ = '\0';
-      switch ( *p )
+      p += len + 1; // Move p forward
+
+      if( end == std::string_view::npos )
+         break;
+      arg_start = end + 1;
+   }
+
+   std::string_view op_view;
+
+   size_t close_paren = sv.find( ')' );
+   if( close_paren != std::string_view::npos )
+   {
+      std::string_view rem = sv.substr( close_paren + 1 );
+
+      size_t op_start = rem.find_first_not_of( " \t" );
+      if( op_start != std::string_view::npos )
       {
-         case ',':
-            *p++ = '\0';
-            while( isspace( *p ) )
-               *p++ = '\0';
-            if( argc >= MAX_IF_ARGS )
-            {
-               while( *p && *p != ')' )
-                  ++p;
-               if( *p )
-                  *p++ = '\0';
-               while( isspace( *p ) )
-                  *p++ = '\0';
-               goto doneargs;
-            }
-            break;
+         size_t op_end = rem.find_first_of( " \t", op_start );
+         op_view = rem.substr( op_start, op_end - op_start );
 
-         case ')':
-            *p++ = '\0';
-            while( isspace( *p ) )
-               *p++ = '\0';
-            goto doneargs;
+         size_t copy_len = std::min( op_view.size(), (size_t)MIL - 1 );
+         memcpy( opr, op_view.data(), copy_len );
+         opr[copy_len] = '\0';
 
-         default:
-            progbug( "Ifcheck Syntax warning (missing right bracket)", mob );
-            goto doneargs;
+         if( op_end != std::string_view::npos )
+         {
+            std::string_view rval_view = rem.substr( op_end );
+            size_t rval_start = rval_view.find_first_not_of( " \t" );
+            rval = ( rval_start != std::string_view::npos ) ? rval_view.data() + rval_start : "";
+         }
       }
    }
 
- doneargs:
-   q = p;
-   while( isoperator( *p ) )
-      ++p;
-   strncpy( opr, q, p - q );
-   opr[p - q] = '\0';
-   while( isspace( *p ) )
-      *p++ = '\0';
-   rval = p;
-   /*
-    * while ( *p && !isspace(*p) ) ++p;
-    */
-   while( *p )
-      ++p;
-   *p = '\0';
+   const char *chck = argv[0] ? argv[0] : "";
+   const char *cvar = argv[1] ? argv[1] : "";
 
-   chck = argv[0] ? argv[0] : "";
-   cvar = argv[1] ? argv[1] : "";
+   progbugf( mob, "DEBUG: Arg0={}, Arg1={}, Opr={}, RVal={}", argv[0], argv[1], opr, rval );
 
    /*
     * chck contains check, cvar is the variable in the (), opr is the
@@ -546,7 +569,7 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
             chkobj = target;
             break;
          default:
-            progbugf( mob, "Bad argument '%c' to '%s'", cvar[0], chck );
+            progbugf( mob, "Bad argument '{}' to '{}'", cvar[0], chck );
             return BERR;
       }
       if( !chkchar && !chkobj )
@@ -1832,340 +1855,168 @@ int mprog_do_ifcheck( char *ifcheck, char_data * mob, char_data * actor, obj_dat
  *
  *  Added char_died and obj_extracted checks	-Thoric
  */
-void mprog_translate( char ch, char *t, char_data * mob, char_data * actor, obj_data * obj, char_data * vict, obj_data * v_obj, char_data * rndm )
+std::string mprog_translate( char ch, char_data *mob, char_data *actor, obj_data *obj, char_data *vict, obj_data *v_obj, char_data *rndm )
 {
    static const char *he_she[] = { "it", "he", "she" };
    static const char *him_her[] = { "it", "him", "her" };
    static const char *his_her[] = { "its", "his", "her" };
 
-   *t = '\0';
-   switch ( ch )
+   // Helper for character name/title logic
+   auto get_name = []( char_data *ch_ptr )
+   {
+      if( ch_ptr->isnpc() )
+         return ch_ptr->short_descr;
+      return ch_ptr->name + ch_ptr->pcdata->title;
+   };
+
+   switch (ch)
    {
       case 'i':
-         if( mob && !mob->char_died(  ) )
-         {
-            if( !mob->name.empty() )
-               one_argument( mob->name.c_str(), t );
+         if (mob && !mob->char_died() && !mob->name.empty()) {
+            std::string first;
+            one_argument(mob->name, first);
+            return first;
          }
-         else
-            strcpy( t, "someone" );
-         break;
+         return "someone";
 
       case 'I':
-         if( mob && !mob->char_died(  ) )
-         {
-            if( !mob->short_descr.empty() )
-            {
-               strcpy( t, mob->short_descr.c_str() );
-            }
-            else
-            {
-               strcpy( t, "someone" );
-            }
-         }
-         else
-            strcpy( t, "someone" );
-         break;
+         return (mob && !mob->char_died() && !mob->short_descr.empty()) ? mob->short_descr : "someone";
 
       case 'n':
-         if( actor && !actor->char_died(  ) )
-         {
-            if( mob->can_see( actor, false ) )
-               one_argument( actor->name.c_str(), t );
-            else
-               strcpy( t, "someone" );
-            if( !actor->isnpc(  ) )
-               *t = to_upper( *t );
+         if (actor && !actor->char_died() && mob->can_see(actor, false)) {
+            std::string first;
+            one_argument(actor->name, first);
+            if (!actor->isnpc() && !first.empty()) first[0] = toupper(first[0]);
+            return first;
          }
-         else
-            strcpy( t, "someone" );
-         break;
+         return "someone";
 
       case 'N':
-         if( actor && !actor->char_died(  ) )
-         {
-            if( mob->can_see( actor, false ) )
-            {
-               if( actor->isnpc(  ) )
-                  strcpy( t, actor->short_descr.c_str() );
-               else
-               {
-                  strcpy( t, actor->name.c_str() );
-                  strcat( t, actor->pcdata->title.c_str() );
-               }
-            }
-            else
-               strcpy( t, "someone" );
-         }
-         else
-            strcpy( t, "someone" );
-         break;
+         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? get_name(actor) : "someone";
 
       case 't':
-         if( vict && !vict->char_died(  ) )
-         {
-            if( mob->can_see( vict, false ) )
-               one_argument( vict->name.c_str(), t );
-            if( !vict->isnpc(  ) )
-               *t = to_upper( *t );
+         if (vict && !vict->char_died() && mob->can_see(vict, false)) {
+            std::string first;
+            one_argument(vict->name, first);
+            if (!vict->isnpc() && !first.empty()) first[0] = toupper(first[0]);
+            return first;
          }
-         else
-            strcpy( t, "someone" );
-
-         break;
+         return "someone";
 
       case 'T':
-         if( vict && !vict->char_died(  ) )
-         {
-            if( mob->can_see( vict, false ) )
-            {
-               if( vict->isnpc(  ) )
-                  strcpy( t, vict->short_descr.c_str() );
-               else
-               {
-                  strcpy( t, vict->name.c_str() );
-                  strcat( t, vict->pcdata->title.c_str() );
-               }
-            }
-            else
-               strcpy( t, "someone" );
-         }
-         else
-            strcpy( t, "someone" );
-         break;
+         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? get_name(vict) : "someone";
 
       case 'r':
-         if( rndm && !rndm->char_died(  ) )
-         {
-            if( mob->can_see( rndm, false ) )
-            {
-               one_argument( rndm->name.c_str(), t );
-            }
-            if( !rndm->isnpc(  ) )
-            {
-               *t = to_upper( *t );
-            }
+         if (rndm && !rndm->char_died() && mob->can_see(rndm, false)) {
+            std::string first;
+            one_argument(rndm->name, first);
+            if (!rndm->isnpc() && !first.empty()) first[0] = toupper(first[0]);
+            return first;
          }
-         else
-            strcpy( t, "someone" );
-         break;
+         return "someone";
 
       case 'R':
-         if( rndm && !rndm->char_died(  ) )
-         {
-            if( mob->can_see( rndm, false ) )
-            {
-               if( rndm->isnpc(  ) )
-                  strcpy( t, rndm->short_descr.c_str() );
-               else
-               {
-                  strcpy( t, rndm->name.c_str() );
-                  strcat( t, rndm->pcdata->title.c_str() );
-               }
-            }
-            else
-               strcpy( t, "someone" );
-         }
-         else
-            strcpy( t, "someone" );
-         break;
+         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? get_name(rndm) : "someone";
 
       case 'e':
-         if( actor && !actor->char_died(  ) )
-            mob->can_see( actor, false ) ? strcpy( t, he_she[actor->sex] ) : strcpy( t, "someone" );
-         else
-            strcpy( t, "it" );
-         break;
+         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? he_she[actor->sex] : "someone";
 
       case 'm':
-         if( actor && !actor->char_died(  ) )
-            mob->can_see( actor, false ) ? strcpy( t, him_her[actor->sex] ) : strcpy( t, "someone" );
-         else
-            strcpy( t, "it" );
-         break;
+         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? him_her[actor->sex] : "someone";
 
       case 's':
-         if( actor && !actor->char_died(  ) )
-            mob->can_see( actor, false ) ? strcpy( t, his_her[actor->sex] ) : strcpy( t, "someone's" );
-         else
-            strcpy( t, "its'" );
-         break;
+         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? his_her[actor->sex] : "someone's";
 
       case 'E':
-         if( vict && !vict->char_died(  ) )
-            mob->can_see( vict, false ) ? strcpy( t, he_she[vict->sex] ) : strcpy( t, "someone" );
-         else
-            strcpy( t, "it" );
-         break;
+         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? he_she[vict->sex] : "someone";
 
       case 'M':
-         if( vict && !vict->char_died(  ) )
-            mob->can_see( vict, false ) ? strcpy( t, him_her[vict->sex] ) : strcpy( t, "someone" );
-         else
-            strcpy( t, "it" );
-         break;
+         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? him_her[vict->sex] : "someone";
 
       case 'S':
-         if( vict && !vict->char_died(  ) )
-            mob->can_see( vict, false ) ? strcpy( t, his_her[vict->sex] ) : strcpy( t, "someone's" );
-         else
-            strcpy( t, "its'" );
-         break;
+         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? his_her[vict->sex] : "someone's";
 
       case 'j':
-         if( mob && !mob->char_died(  ) )
-         {
-            strcpy( t, he_she[mob->sex] );
-         }
-         else
-         {
-            strcpy( t, "it" );
-         }
-         break;
+         return (mob && !mob->char_died()) ? he_she[mob->sex] : "it";
 
       case 'k':
-         if( mob && !mob->char_died(  ) )
-         {
-            strcpy( t, him_her[mob->sex] );
-         }
-         else
-         {
-            strcpy( t, "it" );
-         }
-         break;
+         return (mob && !mob->char_died()) ? him_her[mob->sex] : "it";
 
       case 'l':
-         if( mob && !mob->char_died(  ) )
-         {
-            strcpy( t, his_her[mob->sex] );
-         }
-         else
-         {
-            strcpy( t, "it" );
-         }
-         break;
+         return (mob && !mob->char_died()) ? his_her[mob->sex] : "it";
 
       case 'J':
-         if( rndm && !rndm->char_died(  ) )
-            mob->can_see( rndm, false ) ? strcpy( t, he_she[rndm->sex] ) : strcpy( t, "someone" );
-         else
-            strcpy( t, "it" );
-         break;
+         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? he_she[rndm->sex] : "someone";
 
       case 'K':
-         if( rndm && !rndm->char_died(  ) )
-            mob->can_see( rndm, false ) ? strcpy( t, him_her[rndm->sex] ) : strcpy( t, "someone's" );
-         else
-            strcpy( t, "its'" );
-         break;
+         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? him_her[rndm->sex] : "someone's";
 
       case 'L':
-         if( rndm && !rndm->char_died(  ) )
-            mob->can_see( rndm, false ) ? strcpy( t, his_her[rndm->sex] ) : strcpy( t, "someone" );
-         else
-            strcpy( t, "its" );
-         break;
+         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? his_her[rndm->sex] : "someone";
 
       case 'o':
-         if( obj && !obj->extracted(  ) )
-         {
-            mob->can_see_obj( obj, false ) ? one_argument( obj->name.c_str(), t ) : strcpy( t, "something" );
+         if (obj && !obj->extracted()) {
+            if (mob->can_see_obj(obj, false)) {
+               std::string first;
+               one_argument(obj->name, first);
+               return first;
+            }
          }
-         else
-            strcpy( t, "something" );
-         break;
+         return "something";
 
       case 'O':
-         if( obj && !obj->extracted(  ) )
-         {
-            mob->can_see_obj( obj, false ) ? strcpy( t, obj->short_descr.c_str() ) : strcpy( t, "something" );
-         }
-         else
-            strcpy( t, "something" );
-         break;
+         return (obj && !obj->extracted() && mob->can_see_obj(obj, false)) ? obj->short_descr : "something";
 
       case 'p':
-         if( v_obj && !v_obj->extracted(  ) )
-         {
-            mob->can_see_obj( v_obj, false ) ? one_argument( v_obj->name.c_str(), t ) : strcpy( t, "something" );
+         if (v_obj && !v_obj->extracted()) {
+            if (mob->can_see_obj(v_obj, false)) {
+               std::string first;
+               one_argument(v_obj->name, first);
+               return first;
+            }
          }
-         else
-            strcpy( t, "something" );
-         break;
+         return "something";
 
       case 'P':
-         if( v_obj && !v_obj->extracted(  ) )
-         {
-            mob->can_see_obj( v_obj, false ) ? strcpy( t, v_obj->short_descr.c_str() ) : strcpy( t, "something" );
-         }
-         else
-            strcpy( t, "something" );
-         break;
+         return (v_obj && !v_obj->extracted() && mob->can_see_obj(v_obj, false)) ? v_obj->short_descr : "something";
 
       case 'a':
-         if( obj && !obj->extracted(  ) )
-         {
-            strcpy( t, aoran( obj->name ) );
-/*
-          switch ( *( obj->name ) )
-	    {
-	      case 'a': case 'e': case 'i':
-            case 'o': case 'u': strcpy( t, "an" );
-	      break;
-            default: strcpy( t, "a" );
-          }
-*/
-         }
-         else
-            strcpy( t, "a" );
-         break;
+         return (obj && !obj->extracted()) ? aoran(obj->name) : "a";
 
       case 'A':
-         if( v_obj && !v_obj->extracted(  ) )
-         {
-            strcpy( t, aoran( v_obj->name ) );
-         }
-         else
-            strcpy( t, "a" );
-         break;
+         return (v_obj && !v_obj->extracted()) ? aoran(v_obj->name) : "a";
 
       case '$':
-         strcpy( t, "$" );
-         break;
+         return "$";
 
       default:
-         progbug( "Bad $var", mob );
-         break;
+         progbug("Bad $var", mob);
+         return "";
    }
 }
 
-/*  The main focus of the MOBprograms.  This routine is called 
- *  whenever a trigger is successful.  It is responsible for parsing
+/*
+ *  The main focus of the MOBprograms. This routine is called
+ *  whenever a trigger is successful. It is responsible for parsing
  *  the command list and figuring out what to do. However, like all
  *  complex procedures, everything is farmed out to the other guys.
  *
  *  This function rewritten by Narn for Realms of Despair, Dec/95.
- *
  */
-void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, bool single_step )
+void mprog_driver( std::string_view com_list, char_data *mob, char_data *actor, obj_data *obj, char_data *victim, obj_data *target, bool single_step )
 {
-   char tmpcmndlst[MSL];
-   char *command_list;
    static int prog_nest;
    static int serial;
-   int curr_serial, ignorelevel = 0, rand_pick = 0;
-   room_index *supermob_room;
-   char_data *rndm = nullptr;
-   obj_data *true_supermob_obj;
+   int curr_serial;
+   room_index *supermob_room = nullptr;
+   obj_data *true_supermob_obj = nullptr;
    bool rprog_oprog = ( mob == supermob );
-   bool ifstate[MAX_IFS][DO_ELSE + 1];
-   bool oldMPSilent;
 
    if( mob->has_aflag( AFF_CHARM ) || mob->has_aflag( AFF_POSSESS ) )
       return;
 
    /*
-    * Next couple of checks stop program looping. -- Altrag 
+    * Next couple of checks stop program looping. -- Altrag
     */
    if( mob == actor )
    {
@@ -2179,8 +2030,6 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
       supermob_room = mob->in_room;
       true_supermob_obj = supermob_obj;
    }
-   else
-      true_supermob_obj = nullptr, supermob_room = nullptr;
    curr_serial = serial;
 
    if( ++prog_nest > MAX_PROG_NEST )
@@ -2191,18 +2040,10 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
    }
 
    /*
-    * Make sure all ifstate bools are set to false 
+    * Make sure all ifstate bools are set to false
     */
-   int iflevel, count;
-   for( iflevel = 0; iflevel < MAX_IFS; ++iflevel )
-   {
-      for( count = 0; count < DO_ELSE; ++count )
-      {
-         ifstate[iflevel][count] = false;
-      }
-   }
-
-   iflevel = 0;
+   bool ifstate[MAX_IFS][DO_ELSE + 1] = {false};
+   int iflevel = 0, ignorelevel = 0;
 
    /*
     * get a random visible player who is in the room with the mob.
@@ -2216,7 +2057,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
     *
     * This used to ignore players MAX_LEVEL - 3 and higher (standard
     * Merc has 4 immlevels).  Thought about changing it to ignore all
-    * imms, but decided to just take it out.  If the mob can see you, 
+    * imms, but decided to just take it out.  If the mob can see you,
     * you may be chosen as the random player. -Narn
     *
     * BUGFIX - Reported by Aurin on the SmaugMuds forum.
@@ -2225,95 +2066,79 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
     *  on what looked like dodgy dynamic array allocation. This is safer as it doesn't
     *  need to do anything like that.
     */
-   count = 0;
-
-   std::list<char_data *>::iterator ich;
-   for( ich = mob->in_room->people.begin(  ); ich != mob->in_room->people.end(  ); ++ich )
+   char_data *rndm = nullptr;
+   int count = 0;
+   for( auto vch : mob->in_room->people )
    {
-      char_data *vch = *ich;
-
-      if( !vch->isnpc(  ) && mob->can_see( vch, false ) )
-         ++count;
+      if( !vch->isnpc() && mob->can_see( vch, false ) )
+         count++;
    }
-   rand_pick = number_range( 1, count );
 
-   // Now that we have the count and have picked a random number in that range, run the list again if there's a point in doing so.
    if( count > 0 )
    {
-      for( ich = mob->in_room->people.begin(  ); ich != mob->in_room->people.end(  ); ++ich )
-      {
-         char_data *vch = *ich;
+      int rand_pick = number_range( 1, count );
+      count = 0;
 
-         if( !vch->isnpc(  ) && mob->can_see( vch, false ) )
+      for( auto vch : mob->in_room->people )
+      {
+         if( !vch->isnpc() && mob->can_see( vch, false ) )
          {
-            if( count == rand_pick )
+            if( ++count == rand_pick )
             {
                rndm = vch;
                break;
             }
-            ++count;
          }
       }
    }
 
-   strlcpy( tmpcmndlst, com_list, MSL );
-   command_list = tmpcmndlst;
-
    /*
-    * mpsleep - Restore the environment  -rkb 
+    * mpsleep - Restore the environment  -rkb
     */
    if( current_mpsleep )
    {
       ignorelevel = current_mpsleep->ignorelevel;
       iflevel = current_mpsleep->iflevel;
-      int count2;
 
       if( single_step )
          mob->mpscriptpos = 0;
 
-      for( count = 0; count < MAX_IFS; ++count )
-      {
-         for( count2 = 0; count2 <= DO_ELSE; ++count2 )
-            ifstate[count][count2] = current_mpsleep->ifstate[count][count2];
-      }
+      for( int i = 0; i < MAX_IFS; ++i )
+         for( int j = 0; j <= DO_ELSE; ++j )
+            ifstate[i][j] = current_mpsleep->ifstate[i][j];
       current_mpsleep = nullptr;
    }
 
+   std::string_view remaining = com_list;
    if( single_step )
    {
-      if( mob->mpscriptpos > strlen( tmpcmndlst ) )
+      if( mob->mpscriptpos >= com_list.size() )
          mob->mpscriptpos = 0;
       else
-         command_list += mob->mpscriptpos;
-      if( *command_list == '\0' )
+         remaining = com_list.substr( mob->mpscriptpos );
+
+      if( remaining.empty() )
       {
-         command_list = tmpcmndlst;
+         remaining = com_list;
          mob->mpscriptpos = 0;
       }
    }
 
-   oldMPSilent = MPSilent;
+   bool oldMPSilent = MPSilent;
    MPSilent = false;
 
    /*
     * From here on down, the function is all mine.  The original code
-    * did not support nested ifs, so it had to be redone.  The max 
-    * logiclevel (MAX_IFS) is defined at the beginning of this file, 
-    * use it to increase/decrease max allowed nesting.  -Narn 
+    * did not support nested ifs, so it had to be redone.  The max
+    * logiclevel (MAX_IFS) is defined at the beginning of this file,
+    * use it to increase/decrease max allowed nesting.  -Narn
     */
-   while( true )
+   while( !remaining.empty() )
    {
-      /*
-       * With these two lines, cmnd becomes the current line from the prog,
-       * and command_list becomes everything after that line. 
-       */
-      char *cmnd = command_list;
-      command_list = mprog_next_command( command_list );
+      size_t line_end = remaining.find_first_of("\n\r");
+      std::string_view cmnd = ( line_end == std::string_view::npos ) ? remaining : remaining.substr( 0, line_end );
 
-      /*
-       * Are we at the end? 
-       */
-      if( cmnd[0] == '\0' )
+      if( cmnd.empty() )
       {
          if( ifstate[iflevel][IN_IF] || ifstate[iflevel][IN_ELSE] )
          {
@@ -2324,13 +2149,19 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          return;
       }
 
+      size_t next_start = ( line_end == std::string_view::npos ) ? remaining.size() : line_end;
+      while( next_start < remaining.size() && ( remaining[next_start] == '\n' || remaining[next_start] == '\r' ) )
+         next_start++;
+
+      std::string_view next_remaining = remaining.substr( next_start );
+
       /*
-       * mpsleep - Check if we should sleep  -rkb 
+       * mpsleep - Check if we should sleep  -rkb
        */
       if( !str_prefix( "mpsleep", cmnd ) )
       {
          /*
-          * We are ignoring it, so just skip to the next one. 
+          * We are ignoring it, so just skip to the next one.
           */
          if( ( ifstate[iflevel][IN_IF] && !ifstate[iflevel][DO_IF] ) || ( ifstate[iflevel][IN_ELSE] && !ifstate[iflevel][DO_ELSE] ) )
             continue;
@@ -2338,7 +2169,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          mpsleep_data *mpsleep = new mpsleep_data;
 
          /*
-          * State variables 
+          * State variables
           */
          mpsleep->ignorelevel = ignorelevel;
          mpsleep->iflevel = iflevel;
@@ -2352,9 +2183,9 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          }
 
          /*
-          * Driver arguments 
+          * Driver arguments
           */
-         mpsleep->com_list = STRALLOC( command_list );
+         mpsleep->com_list = std::string( remaining );
          mpsleep->mob = mob;
          mpsleep->actor = actor;
          mpsleep->obj = obj;
@@ -2363,15 +2194,15 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          mpsleep->single_step = single_step;
 
          /*
-          * Time to sleep 
+          * Time to sleep
           */
-         char arg[MIL];
+         std::string arg;
          cmnd = one_argument( cmnd, arg );
          cmnd = one_argument( cmnd, arg );
-         if( arg[0] == '\0' )
+         if( arg.empty() )
             mpsleep->timer = 4;
          else
-            mpsleep->timer = atoi( arg );
+            mpsleep->timer = std::stoi( arg );
 
          if( mpsleep->timer < 1 )
          {
@@ -2380,7 +2211,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          }
 
          /*
-          * Save type of prog, room, object or mob 
+          * Save type of prog, room, object or mob
           */
          if( mpsleep->mob->pIndexData->vnum == MOB_VNUM_SUPERMOB )
          {
@@ -2402,53 +2233,49 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          return;
       }
 
+      remaining = next_remaining;
+
       /*
-       * Evaluate/execute the command, check what happened. 
+       * Evaluate/execute the command, check what happened.
        */
       int result = mprog_do_command( cmnd, mob, actor, obj, victim, target, rndm,
-                                     ( ifstate[iflevel][IN_IF] && !ifstate[iflevel][DO_IF] )
-                                     || ( ifstate[iflevel][IN_ELSE] && !ifstate[iflevel][DO_ELSE] ), ( ignorelevel > 0 ) );
+                                    ( ifstate[iflevel][IN_IF] && !ifstate[iflevel][DO_IF] )
+                                    || ( ifstate[iflevel][IN_ELSE] && !ifstate[iflevel][DO_ELSE] ),
+                                    ( ignorelevel > 0 ) );
 
       if( rprog_oprog )
          uphold_supermob( &curr_serial, serial, &supermob_room, true_supermob_obj );
 
       /*
-       * Script prog support - Thoric 
+       * Script prog support - Thoric
        */
       if( single_step )
       {
-         mob->mpscriptpos = command_list - tmpcmndlst;
+         mob->mpscriptpos = ( remaining.data() - com_list.data() );
          --prog_nest;
          MPSilent = oldMPSilent;
          return;
       }
 
-      /*
-       * This is the complicated part.  Act on the returned value from
-       * mprog_do_command according to the current logic state. 
-       */
-      switch ( result )
+      switch( result )
       {
          case COMMANDOK:
             /*
-             * Ok, this one's a no-brainer. 
+             * Ok, this one's a no-brainer.
              */
             continue;
 
          case IFTRUE:
             /*
-             * An if was evaluated and found true.  Note that we are in an
-             * if section and that we want to execute it. 
+             * An if was evaluated and found true. Note that we are in an if section and that we want to execute it.
              */
-            ++iflevel;
-            if( iflevel == MAX_IFS )
+            if( ++iflevel >= MAX_IFS )
             {
-               progbug( "Maximum nested ifs exceeded", mob );
+               progbug( "Maximum nested ifs exceeded.", mob );
                --prog_nest;
                MPSilent = oldMPSilent;
                return;
             }
-
             ifstate[iflevel][IN_IF] = true;
             ifstate[iflevel][DO_IF] = true;
             break;
@@ -2457,12 +2284,11 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             /*
              * An if was evaluated and found false.  Note that we are in an
              * if section and that we don't want to execute it unless we find
-             * an or that evaluates to true. 
+             * an or that evaluates to true.
              */
-            ++iflevel;
-            if( iflevel == MAX_IFS )
+            if( ++iflevel >= MAX_IFS )
             {
-               progbug( "Maximum nested ifs exceeded", mob );
+               progbug( "Maximum nested ifs exceeded.", mob );
                --prog_nest;
                MPSilent = oldMPSilent;
                return;
@@ -2473,8 +2299,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
 
          case ORTRUE:
             /*
-             * An or was evaluated and found true.  We should already be in an
-             * if section, so note that we want to execute it. 
+             * An or was evaluated and found true. We should already be in an if section, so note that we want to execute it.
              */
             if( !ifstate[iflevel][IN_IF] )
             {
@@ -2491,7 +2316,7 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
              * An or was evaluated and found false.  We should already be in an
              * if section, and we don't need to do much.  If the if was true or
              * there were/will be other ors that evaluate(d) to true, they'll set
-             * do_if to true. 
+             * do_if to true.
              */
             if( !ifstate[iflevel][IN_IF] )
             {
@@ -2505,22 +2330,20 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
          case FOUNDELSE:
             /*
              * Found an else.  Make sure we're in an if section, bug out if not.
-             * If this else is not one that we wish to ignore, note that we're now 
-             * in an else section, and look at whether or not we executed the if 
-             * section to decide whether to execute the else section.  Ca marche 
-             * bien. 
+             * If this else is not one that we wish to ignore, note that we're now
+             * in an else section, and look at whether or not we executed the if
+             * section to decide whether to execute the else section.  Ca marche
+             * bien.
              */
             if( ignorelevel > 0 )
                continue;
-
             if( ifstate[iflevel][IN_ELSE] )
             {
-               progbug( "Found else in an else section", mob );
+               progbug( "Found else in an else section.", mob );
                --prog_nest;
                MPSilent = oldMPSilent;
                return;
             }
-
             if( !ifstate[iflevel][IN_IF] )
             {
                progbug( "Unmatched else", mob );
@@ -2528,21 +2351,19 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
                MPSilent = oldMPSilent;
                return;
             }
-
             ifstate[iflevel][IN_ELSE] = true;
             ifstate[iflevel][DO_ELSE] = !ifstate[iflevel][DO_IF];
             ifstate[iflevel][IN_IF] = false;
             ifstate[iflevel][DO_IF] = false;
-
             break;
 
          case FOUNDENDIF:
             /*
              * Hmm, let's see... FOUNDENDIF must mean that we found an endif.
              * So let's make sure we were expecting one, return if not.  If this
-             * endif matches the if or else that we're executing, note that we are 
-             * now no longer executing an if.  If not, keep track of what we're 
-             * ignoring. 
+             * endif matches the if or else that we're executing, note that we are
+             * now no longer executing an if.  If not, keep track of what we're
+             * ignoring.
              */
             if( !( ifstate[iflevel][IN_IF] || ifstate[iflevel][IN_ELSE] ) )
             {
@@ -2551,25 +2372,22 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
                MPSilent = oldMPSilent;
                return;
             }
-
             if( ignorelevel > 0 )
             {
                --ignorelevel;
                continue;
             }
-
             ifstate[iflevel][IN_IF] = false;
             ifstate[iflevel][DO_IF] = false;
             ifstate[iflevel][IN_ELSE] = false;
             ifstate[iflevel][DO_ELSE] = false;
-
             --iflevel;
             break;
 
          case IFIGNORED:
             if( !( ifstate[iflevel][IN_IF] || ifstate[iflevel][IN_ELSE] ) )
             {
-               progbug( "Parse error, ignoring if while not in if or else", mob );
+               progbug( "Parse error, ignoring if while not in if or else,", mob );
                --prog_nest;
                MPSilent = oldMPSilent;
                return;
@@ -2585,7 +2403,6 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
                MPSilent = oldMPSilent;
                return;
             }
-
             if( ignorelevel == 0 )
             {
                progbug( "Parse error, mistakenly ignoring or", mob );
@@ -2595,151 +2412,90 @@ void mprog_driver( char *com_list, char_data * mob, char_data * actor, obj_data 
             }
             break;
 
-         default:
          case BERR:
+         default:
             --prog_nest;
             MPSilent = oldMPSilent;
             return;
-      }
-   }
+      } // End result switch.
+   } // End while loop
+
    --prog_nest;
    MPSilent = oldMPSilent;
 }
 
-/* This function replaces mprog_process_cmnd.  It is called from 
- * mprog_driver, once for each line in a mud prog.  This function
+/*
+ * This function replaces mprog_process_cmnd. It is called from
+ * mprog_driver, once for each line in a mud prog. This function
  * checks what the line is, executes if/or checks and calls interpret
- * to perform the the commands.  Written by Narn, Dec 95.
+ * to perform the the commands. Written by Narn, Dec 95.
  */
-int mprog_do_command( char *cmnd, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, char_data * rndm, bool ignore_ifs, bool ignore_ors )
+int mprog_do_command( std::string_view cmnd, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, char_data * rndm, bool ignore_ifs, bool ignore_ors )
 {
-   char firstword[MIL];
-   char *ifcheck;
-   char buf[MIL];
-   char tmp[MIL];
-   char *point, *str, *i;
-   int validif, vnum;
+   std::string firstword;
+   std::string_view ifcheck = one_argument( cmnd, firstword );
 
-   /*
-    * Isolate the first word of the line, it gives us a clue what
-    * we want to do. 
-    */
-   ifcheck = one_argument( cmnd, firstword );
-
-   if( !str_cmp( firstword, "if" ) )
+   if( firstword == "if" )
    {
-      /*
-       * Ok, we found an if.  According to the boolean 'ignore', either
-       * ignore the ifcheck and report that back to mprog_driver or do
-       * the ifcheck and report whether it was successful. 
-       */
       if( ignore_ifs )
          return IFIGNORED;
-      else
-         validif = mprog_do_ifcheck( ifcheck, mob, actor, obj, victim, target, rndm );
-
-      if( validif == 1 )
-         return IFTRUE;
-
-      if( validif == 0 )
-         return IFFALSE;
-
-      return BERR;
+      int validif = mprog_do_ifcheck( ifcheck, mob, actor, obj, victim, target, rndm );
+      return( validif == 1 ) ? IFTRUE : ( validif == 0 ) ? IFFALSE : BERR;
    }
 
-   if( !str_cmp( firstword, "or" ) )
+   if( firstword == "or" )
    {
-      /*
-       * Same behavior as with ifs, but use the boolean 'ignore_ors' to
-       * decide which way to go. 
-       */
       if( ignore_ors )
          return ORIGNORED;
-      else
-         validif = mprog_do_ifcheck( ifcheck, mob, actor, obj, victim, target, rndm );
-
-      if( validif == 1 )
-         return ORTRUE;
-
-      if( validif == 0 )
-         return ORFALSE;
-
-      return BERR;
+      int validif = mprog_do_ifcheck( ifcheck, mob, actor, obj, victim, target, rndm );
+      return( validif == 1 ) ? ORTRUE : ( validif == 0 ) ? ORFALSE : BERR;
    }
 
-   /*
-    * For else and endif, just report back what we found.  Mprog_driver
-    * keeps track of logiclevels. 
-    */
-   if( !str_cmp( firstword, "else" ) )
-   {
+   if( firstword == "else" )
       return FOUNDELSE;
-   }
-
-   if( !str_cmp( firstword, "endif" ) )
-   {
+   if( firstword == "endif" )
       return FOUNDENDIF;
-   }
-
-   /*
-    * Ok, didn't find an if, an or, an else or an endif.  
-    * If the command is in an if or else section that is not to be 
-    * performed, the boolean 'ignore' is set to true and we just 
-    * return.  If not, we try to execute the command. 
-    */
 
    if( ignore_ifs )
       return COMMANDOK;
-
-   /*
-    * If the command is 'break', that's all folks. 
-    */
-   if( !str_cmp( firstword, "break" ) )
+   if( firstword == "break" )
       return BERR;
 
-   if( !str_cmp( firstword, "silent" ) )
+   bool local_silent = false;
+   if( firstword == "silent" )
    {
-      MPSilent = true;
-      cmnd = one_argument( cmnd, firstword );
+      local_silent = true;
+      cmnd = ifcheck;
    }
 
-   vnum = mob->pIndexData->vnum;
-   point = buf;
-   str = cmnd;
+   std::string final_cmd;
+   final_cmd.reserve( cmnd.size() * 1.2 );
 
-   /*
-    * This chunk of code taken from mprog_process_cmnd. 
-    */
-   while( *str != '\0' )
+   for( size_t i = 0; i < cmnd.size(); ++i )
    {
-      if( *str != '$' )
+      if( cmnd[i] == '$' && ( i + 1 ) < cmnd.size() )
       {
-         *point++ = *str++;
-         continue;
+         final_cmd += mprog_translate( cmnd[++i], mob, actor, obj, victim, target, rndm );
       }
-      ++str;
-      mprog_translate( *str, tmp, mob, actor, obj, victim, target, rndm );
-      i = tmp;
-      ++str;
-      while( ( *point = *i ) != '\0' )
-         ++point, ++i;
+      else
+      {
+         final_cmd += cmnd[i];
+      }
    }
-   *point = '\0';
 
-   interpret( mob, buf );
+   bool oldMPSilent = MPSilent;
+   if( local_silent )
+      MPSilent = true;
 
-   MPSilent = false;
+   interpret( mob, final_cmd );
 
-   /*
-    * If the mob is mentally unstable and does things like fireball
-    * itself, let's make sure it's still alive. 
-    */
-   if( mob->char_died(  ) )
+   MPSilent = oldMPSilent;
+
+   if( mob->char_died() )
    {
-      bug( "{}: Mob died while executing program, vnum {}.", __func__, vnum );
+      bug( "{}: Mob died while executing program, vnum {}.", __func__, mob->pIndexData->vnum );
       return BERR;
    }
-
    return COMMANDOK;
 }
 
@@ -2812,43 +2568,61 @@ void mpsleep_update( void )
    }
 }
 
-bool mprog_keyword_check( std::string_view argu, const char *argl )
+bool mprog_keyword_check( std::string_view argu, std::string_view argl )
 {
-   char word[MIL], arg1[MIL], arg2[MIL];
-   char *arg, *arglist, *start, *end;
+   std::string arg{ argu };
+   std::string arglist{ argl };
 
-   strcpy( arg1, argu.data() );
-   arg = strlower( arg1 );
+   strlower( arg );
+   strlower( arglist );
 
-   strcpy( arg2, argl );
-   arglist = strlower( arg2 );
-
-   if( ( arglist[0] == 'p' ) && ( arglist[1] == ' ' ) )
+   if( arglist.size() >= 2 && arglist[0] == 'p' && arglist[1] == ' ' )
    {
-      arglist += 2;
-      while( ( start = strstr( arg, arglist ) ) )
-         if( ( start == arg || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( arglist ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
+      std::string_view phrase{ arglist.c_str() + 2 };
+      size_t pos = arg.find( phrase );
+
+      while( pos != std::string::npos )
+      {
+         bool start_ok = ( pos == 0 || arg[pos - 1] == ' ' );
+         bool end_ok = ( ( pos + phrase.size() ) == arg.size() || arg[pos + phrase.size()] == ' ' );
+
+         if( start_ok && end_ok )
             return true;
-         else
-            arg = start + 1;
+
+         pos = arg.find( phrase, pos + 1 );
+      }
    }
    else
    {
-      arglist = one_argument( arglist, word );
-      for( ; word[0] != '\0'; arglist = one_argument( arglist, word ) )
-         while( ( start = strstr( arg, word ) ) )
-            if( ( start == arg || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( word ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
+      std::string word;
+      std::string_view remaining = arglist;
+
+      while( !remaining.empty() )
+      {
+         remaining = one_argument( remaining, word );
+         if( word.empty() )
+            break;
+
+         size_t pos = arg.find( word );
+         while( pos != std::string::npos )
+         {
+            bool start_ok = ( pos == 0 || arg[pos - 1] == ' ' );
+            bool end_ok = ( ( pos + word.size() ) == arg.size() || arg[pos + word.size()] == ' ' );
+
+            if( start_ok && end_ok )
                return true;
-            else
-               arg = start + 1;
+
+            pos = arg.find( word, pos + 1 );
+         }
+      }
    }
    return false;
 }
 
 /*
  * The next two routines are the basic trigger types. Either trigger
- *  on a certain percent, or trigger on a keyword or word phrase.
- *  To see how this works, look at the various trigger routines..
+ * on a certain percent, or trigger on a keyword or word phrase.
+ * To see how this works, look at the various trigger routines..
  */
 bool mprog_and_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {

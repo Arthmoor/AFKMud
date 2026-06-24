@@ -705,16 +705,14 @@ int scan_pfiles( const std::string & dirname, const std::string & filename, bool
    for( ;; )
    {
       int vnum = 0, counter = 1;
-      char letter;
-      const char *word;
       obj_index *pObjIndex = nullptr;
 
-      letter = fread_letter( fpChar );
+      char letter = fread_letter( fpChar );
 
       if( ( letter != '#' ) && ( !feof( fpChar ) ) )
          continue;
 
-      word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
+      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
 
       if( word[0] == '\0' )
       {
@@ -822,16 +820,14 @@ void corpse_scan( std::string_view filename )
    for( ;; )
    {
       int vnum, counter = 1;
-      char letter;
-      const char *word;
       obj_index *pObjIndex;
 
-      letter = fread_letter( fpChar );
+      char letter = fread_letter( fpChar );
 
       if( ( letter != '#' ) && ( !feof( fpChar ) ) )
          continue;
 
-      word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
+      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
 
       if( word[0] == '\0' )
       {
@@ -902,16 +898,14 @@ void mobfile_scan( void )
    for( ;; )
    {
       int vnum, counter = 1;
-      char letter;
-      const char *word;
       obj_index *pObjIndex;
 
-      letter = fread_letter( fpChar );
+      char letter = fread_letter( fpChar );
 
       if( ( letter != '#' ) && ( !feof( fpChar ) ) )
          continue;
 
-      word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
+      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
 
       if( word[0] == '\0' )
       {
@@ -985,16 +979,14 @@ void objfile_scan( std::string_view filename )
    for( ;; )
    {
       int vnum, counter = 1;
-      char letter;
-      const char *word;
       obj_index *pObjIndex;
 
-      letter = fread_letter( fpChar );
+      char letter = fread_letter( fpChar );
 
       if( ( letter != '#' ) && ( !feof( fpChar ) ) )
          continue;
 
-      word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
+      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
 
       if( word[0] == '\0' )
       {

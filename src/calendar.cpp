@@ -189,7 +189,7 @@ void fread_timedata( FILE * fp )
 {
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -255,7 +255,6 @@ bool load_timedata( void )
       for( ;; )
       {
          char letter = '\0';
-         char *word = nullptr;
 
          letter = fread_letter( fp );
          if( letter == '*' )
@@ -270,7 +269,7 @@ bool load_timedata( void )
             break;
          }
 
-         word = fread_word( fp );
+         std::string word = fread_word( fp );
          if( !str_cmp( word, "TIME" ) )
          {
             fread_timedata( fp );

@@ -202,7 +202,7 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 {
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -972,7 +972,7 @@ bool load_deity_file( std::string_view deityfile )
       for( ;; )
       {
          char letter;
-         char *word;
+         std::string word;
 
          letter = fread_letter( fp );
          if( letter == '*' )
@@ -1036,9 +1036,9 @@ void load_deity( void )
 
    for( ;; )
    {
-      const char* filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
+      std::string filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
 
-      if( filename[0] == '\0' )
+      if( filename.empty() )
       {
          bug( "{}: EOF encountered reading file!", __func__ );
          break;

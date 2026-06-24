@@ -224,7 +224,7 @@ void fread_realm_memberlist( realm_data * realm, FILE * fp )
 
    for( ;; )
    {
-      const char *word = feof( fp ) ? "End" : fread_word( fp );
+      std::string word = feof( fp ) ? "End" : fread_word( fp );
 
       switch ( to_upper( word[0] ) )
       {
@@ -316,7 +316,7 @@ void fread_realm( realm_data * realm, FILE * fp )
 
    for( ;; )
    {
-      const char *word = feof( fp ) ? "End" : fread_word( fp );
+      std::string word = feof( fp ) ? "End" : fread_word( fp );
 
       switch ( to_upper( word[0] ) )
       {
@@ -414,10 +414,7 @@ bool load_realm_file( std::string_view realmfile )
       found = true;
       for( ;; )
       {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
+         char letter = fread_letter( fp );
          if( letter == '*' )
          {
             fread_to_eol( fp );
@@ -430,7 +427,7 @@ bool load_realm_file( std::string_view realmfile )
             break;
          }
 
-         word = fread_word( fp );
+         std::string word = fread_word( fp );
          if( !str_cmp( word, "REALM" ) )
             fread_realm( realm, fp );
          else if( !str_cmp( word, "ROSTER" ) )

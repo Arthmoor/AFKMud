@@ -866,7 +866,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
    do
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -889,7 +889,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Ability" ) )
             {
                int value = fread_number( fp );
-               char *ability = fread_word( fp );
+               std::string ability = fread_word( fp );
                int sn = find_ability( nullptr, ability, false );
 
                if( sn < 0 )
@@ -944,7 +944,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                else
                {
                   int sn;
-                  char *sname = fread_word( fp );
+                  std::string sname = fread_word( fp );
                   paf = new affect_data;
 
                   if( ( sn = skill_lookup( sname ) ) < 0 )
@@ -1086,7 +1086,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Combat" ) )
             {
                int value = fread_number( fp );
-               char *combat = fread_word( fp );
+               std::string combat = fread_word( fp );
                int sn = find_combat( nullptr, combat, false );
 
                if( sn < 0 )
@@ -1283,7 +1283,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Lore" ) )
             {
                int value = fread_number( fp );
-               char *lore = fread_word( fp );
+               std::string lore = fread_word( fp );
                int sn = find_lore( nullptr, lore, false );
 
                if( sn < 0 )
@@ -1530,7 +1530,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Skill" ) )
             {
                int value = fread_number( fp );
-               char *skill = fread_word( fp );
+               std::string skill = fread_word( fp );
                int sn = find_skill( nullptr, skill, false );
 
                if( sn < 0 )
@@ -1577,7 +1577,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Spell" ) )
             {
                int value = fread_number( fp );
-               char *spell = fread_word( fp );
+               std::string spell = fread_word( fp );
                int sn = find_spell( nullptr, spell, false );
 
                if( sn < 0 )
@@ -1744,7 +1744,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             if( !str_cmp( word, "Tongue" ) )
             {
                int value = fread_number( fp );
-               char *tongue = fread_word( fp );
+               std::string tongue = fread_word( fp );
                int sn = find_tongue( nullptr, tongue, false );
 
                if( sn < 0 )
@@ -1816,7 +1816,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -2230,7 +2230,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 char_data *fread_mobile( FILE * fp, bool shopmob )
 {
    char_data *mob = nullptr;
-   const char *word;
+   std::string word;
    int inroom = 0;
    room_index *pRoomIndex = nullptr;
    mob_index *pMobIndex = nullptr;
@@ -2516,13 +2516,10 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
        * Cheat so that bug will show line #'s -- Altrag 
        */
       fpArea = fp;
-      strlcpy( strArea, strsave.c_str(), MIL );
+      strArea = strsave;
       for( ;; )
       {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
+         char letter = fread_letter( fp );
          if( letter == '*' )
          {
             fread_to_eol( fp );
@@ -2535,7 +2532,7 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
             break;
          }
 
-         word = fread_word( fp );
+         std::string word = fread_word( fp );
          if( !str_cmp( word, "PLAYER" ) )
          {
             fread_char( ch, fp, preload, copyover );
@@ -2577,7 +2574,7 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
       }
       FCLOSE( fp );
       fpArea = nullptr;
-      strlcpy( strArea, "$", MIL );
+      strArea = "$";
    }
 
    if( !found )
@@ -2692,20 +2689,17 @@ void load_corpses( void )
       if( filename.empty() || filename[0] == '.' )
          continue;
 
-      snprintf( strArea, MIL, "%s%s", CORPSE_DIR.data(), filename.c_str() );
-      fprintf( stderr, "Corpse -> %s\n", strArea );
-      if( !( fpArea = fopen( strArea, "r" ) ) )
+      strArea = std::format( "{}{}", CORPSE_DIR, filename );
+      fprintf( stderr, "Corpse -> %s\n", strArea.c_str() );
+      if( !( fpArea = fopen( strArea.c_str(), "r" ) ) )
       {
-         perror( strArea );
+         bug( "{}: Unable to open corpse file {} for reading.", __func__, strArea );
          continue;
       }
 
       for( ;; )
       {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fpArea );
+         char letter = fread_letter( fpArea );
          if( letter == '*' )
          {
             fread_to_eol( fpArea );
@@ -2716,7 +2710,7 @@ void load_corpses( void )
             bug( "{}: # not found.", __func__ );
             break;
          }
-         word = fread_word( fpArea );
+         std::string word = fread_word( fpArea );
          if( !str_cmp( word, "CORPSE" ) )
             fread_obj( nullptr, fpArea, OS_CORPSE );
          else if( !str_cmp( word, "OBJECT" ) )
@@ -2731,7 +2725,7 @@ void load_corpses( void )
       }
       FCLOSE( fpArea );
    }
-   strlcpy( strArea, "$", MIL );
+   strArea = "$";
    falling = 0;
 }
 

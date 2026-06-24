@@ -757,6 +757,16 @@ bool is_note_to( char_data * ch, note_data * pnote )
    return false;
 }
 
+board_data *get_board_by_name( std::string_view name )
+{
+   for( auto* board : bdlist )
+   {
+      if( !str_cmp( board->name, name ) )
+         return board;
+   }
+   return nullptr;
+}
+
 // This will get a board by object. This will not get a global board as global boards are noted with a 0 objvnum.
 board_data *get_board_by_obj( obj_data * obj )
 {
@@ -2539,9 +2549,15 @@ CMDF( do_board_make )
       return;
    }
 
-   if( argument.contains( "." ) || argument.contains( "/" ) || argument.contains( "\\" ) || argument.contains( " " ) )
+   if( has_illegal_file_chars( argument, false ) )
    {
-      ch->print( "A board name may not contain a space, '.', '/', or '\\' in it.\r\n" );
+      ch->print( "A board name may not contain a '.', '/', or '\\' in it.\r\n" );
+      return;
+   }
+
+   if( get_board_by_name( argument ) != nullptr )
+   {
+      ch->print_fmt( "A board named {} already exists.", argument );
       return;
    }
 

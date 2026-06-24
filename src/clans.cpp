@@ -465,7 +465,7 @@ void fread_memberlist( clan_data * clan, FILE * fp )
 
    for( ;; )
    {
-      const char *word = feof( fp ) ? "End" : fread_word( fp );
+      std::string word = feof( fp ) ? "End" : fread_word( fp );
 
       switch ( to_upper( word[0] ) )
       {
@@ -634,7 +634,7 @@ void fread_clan( clan_data * clan, FILE * fp )
 
    for( ;; )
    {
-      const char *word = feof( fp ) ? "End" : fread_word( fp );
+      std::string word = feof( fp ) ? "End" : fread_word( fp );
 
       switch ( to_upper( word[0] ) )
       {
@@ -854,12 +854,12 @@ void clean_clan( clan_data * clan )
 /*
  * Load a clan file
  */
-bool load_clan_file( const char *clanfile )
+bool load_clan_file( std::string_view clanfile )
 {
    FILE *fp;
 
    clan_data *clan = new clan_data;
-   clean_clan( clan );  /* Default settings so we don't get wierd ass stuff */
+   clean_clan( clan );  /* Default settings so we don't get weird ass stuff */
 
    bool found = false;
    std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, clanfile );
@@ -870,7 +870,6 @@ bool load_clan_file( const char *clanfile )
       for( ;; )
       {
          char letter;
-         char *word;
 
          letter = fread_letter( fp );
          if( letter == '*' )
@@ -885,7 +884,7 @@ bool load_clan_file( const char *clanfile )
             break;
          }
 
-         word = fread_word( fp );
+         std::string word = fread_word( fp );
          if( !str_cmp( word, "CLAN" ) )
             fread_clan( clan, fp );
          else if( !str_cmp( word, "ROSTER" ) )
@@ -921,7 +920,6 @@ bool load_clan_file( const char *clanfile )
          for( ;; )
          {
             char letter;
-            char *word;
 
             letter = fread_letter( fp );
             if( letter == '*' )
@@ -936,7 +934,7 @@ bool load_clan_file( const char *clanfile )
                break;
             }
 
-            word = fread_word( fp );
+            std::string word = fread_word( fp );
             if( !str_cmp( word, "OBJECT" ) ) /* Objects  */
             {
                supermob->tempnum = -9999;
@@ -1126,7 +1124,7 @@ void verify_clans( void )
 void load_clans( void )
 {
    FILE *fpList;
-   const char *filename;
+   std::string filename;
 
    clanlist.clear(  );
 
@@ -1174,12 +1172,12 @@ void check_clan_info( char_data * ch )
       clan->leader = ch->name;
       clan->getleader = false;
       save_clan( clan );
-      ch->printf( "Your %s's leader no longer existed. You have been made the new leader.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->print_fmt( "Your {}'s leader no longer exists. You have been made the new leader.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
       if( clan->getone == true || clan->gettwo == true )
       {
          ch->
-            printf
-            ( "Other admins of your %s are also missing, it is advised that you pick new ones to avoid\r\nhaving them chosen for you.\r\n",
+            print_fmt
+            ( "Other admins of your {} are also missing, it is advised that you pick new ones to avoid\r\nhaving them chosen for you.\r\n",
               clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
       }
    }
@@ -1189,7 +1187,7 @@ void check_clan_info( char_data * ch )
       clan->number1 = ch->name;
       clan->getone = false;
       save_clan( clan );
-      ch->printf( "Your %s's first officer no longer existed. You have been made the new first officer.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->print_fmt( "Your {}'s first officer no longer exists. You have been made the new first officer.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
    }
 
    if( clan->gettwo == true && str_cmp( ch->name, clan->leader ) && str_cmp( ch->name, clan->number1 ) )
@@ -1197,7 +1195,7 @@ void check_clan_info( char_data * ch )
       clan->number2 = ch->name;
       clan->gettwo = false;
       save_clan( clan );
-      ch->printf( "Your %s's second officer no longer existed. You have been made the new second officer.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->print_fmt( "Your {}'s second officer no longer exists. You have been made the new second officer.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
    }
 }
 

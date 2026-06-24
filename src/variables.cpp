@@ -510,7 +510,7 @@ void fread_variable( char_data * ch, FILE * fp )
 
    do
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {

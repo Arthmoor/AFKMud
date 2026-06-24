@@ -119,7 +119,7 @@ int top_repair;
  */
 bool fBootDb;
 FILE *fpArea;
-char strArea[MIL];
+std::string strArea;
 
 extern int astral_target;
 
@@ -225,6 +225,20 @@ bool exists_file( std::string_view name )
    return false;
 }
 
+bool has_illegal_file_chars( std::string_view filename, bool check_spaces )
+{
+   /*
+    * Illegal characters
+    */
+   if( filename.contains( "." ) || filename.contains( "/" ) || filename.contains( "\\" ) )
+      return true;
+
+   if( check_spaces && filename.contains( " " ) )
+      return true;
+
+   return false;
+}
+
 bool is_valid_filename( char_data * ch, std::string_view direct, std::string_view filename )
 {
    /*
@@ -239,12 +253,9 @@ bool is_valid_filename( char_data * ch, std::string_view direct, std::string_vie
       return false;
    }
 
-   /*
-    * Illegal characters 
-    */
-   if( filename.contains( ".." ) || filename.contains( "/" ) || filename.contains( "\\" ) )
+   if( has_illegal_file_chars( filename, true ) )
    {
-      ch->print( "A filename may not contain a '..', '/', or '\\' in it.\r\n" );
+      ch->print( "A filename may not contain a '.', '/', space, or '\\' in it.\r\n" );
       return false;
    }
 
@@ -465,9 +476,9 @@ void fread_line( std::string & newstring, FILE* fp )
 /*
  * Read one word (into static buffer).
  */
-char* fread_word( FILE* fp )
+std::string fread_word( FILE* fp )
 {
-   static std::string word;
+   std::string word;
 
    int c;
 
@@ -483,7 +494,7 @@ char* fread_word( FILE* fp )
          std::exit( EXIT_FAILURE );
       }
       word.clear();
-      return word.data();
+      return word;
    }
 
    word.clear();
@@ -521,8 +532,7 @@ char* fread_word( FILE* fp )
          std::exit( EXIT_FAILURE );
    }
 
-   word.push_back('\0');
-   return word.data();
+   return word;
 }
 
 /*
@@ -576,7 +586,7 @@ void load_buildlist( void )
 
       std::filesystem::path full_path = std::filesystem::path( BUILD_DIR ) / filename;
 
-      strlcpy( strArea, filename.c_str(), MIL );
+      strArea = filename;
       set_alarm( AREA_FILE_ALARM );
       alarm_section = "load_buildlist: read prototype area files";
 
@@ -1250,7 +1260,7 @@ void boot_db( bool fCopyOver )
             bug( "{}: EOF encountered reading area list - no $ found at end of file.", __func__ );
             break;
          }
-         strlcpy( strArea, fread_word( fpList ), MIL );
+         strArea = fread_word( fpList );
          if( strArea[0] == '$' )
             break;
 
@@ -1263,7 +1273,7 @@ void boot_db( bool fCopyOver )
       log_string( "...done reading in area files." );
    }
 
-   strlcpy( strArea, "NO FILE", MIL );
+   strArea = "NO FILE";
 
    log_string( "Validating overland data with areas..." );
    validate_overland_data(  );
@@ -1303,7 +1313,7 @@ void boot_db( bool fCopyOver )
    log_string( "Loading prototype area files..." );
    load_buildlist(  );
 
-   strlcpy( strArea, "NO FILE", MIL );
+   strArea = "NO FILE";
 
    log_string( "Fixing prototype zone exits..." );
    fix_exits(  );

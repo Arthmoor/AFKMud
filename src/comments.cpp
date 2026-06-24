@@ -420,7 +420,7 @@ note_data *read_note_fp( FILE * fp )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#END" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#END" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {

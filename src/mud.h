@@ -550,7 +550,7 @@ if( !str_cmp( word, (literal) ) ) \
 
 // This reads a string value into a C++ string variable using the tilde as a delimiter - Samson 10-3-04
 #define STDSKEY( literal, field )      \
-if( !strcasecmp( word, (literal) ) )   \
+if( !str_cmp( word, (literal) ) )      \
 {                                      \
    (field).clear();                    \
    fread_string( (field), fp );        \
@@ -559,7 +559,7 @@ if( !strcasecmp( word, (literal) ) )   \
 
 // This reads a string value into a C++ string variable using line-feed as a delimiter - Samson 10-3-04
 #define STDSLINE( literal, field )     \
-if( !strcasecmp( word, (literal) ) )   \
+if( !str_cmp( word, (literal) ) )      \
 {                                      \
    (field).clear();                    \
    fread_line( (field), fp );          \
@@ -821,7 +821,7 @@ extern int top_room;
 extern std::string str_boot_time;
 extern char_data *timechar;
 extern bool fBootDb;
-extern char strArea[MIL];
+extern std::string strArea;
 extern int falling;
 
 extern std::string target_name;
@@ -912,6 +912,7 @@ void check_switch( char_data * );
 
 // db.cpp
 void process_bug( std::string_view );
+bool has_illegal_file_chars( std::string_view, bool );
 bool is_valid_filename( char_data *, std::string_view, std::string_view );
 void shutdown_mud( std::string_view );
 bool exists_file( std::string_view );
@@ -920,7 +921,7 @@ char *fread_string( FILE * );
 const char *fread_flagstring( FILE * );
 void fread_to_eol( FILE * );
 const char *fread_line( FILE * );
-char *fread_word( FILE * );
+std::string fread_word( FILE * );
 void fread_string( std::string &, FILE * );
 void fread_line( std::string &, FILE * );
 int number_percent( void );

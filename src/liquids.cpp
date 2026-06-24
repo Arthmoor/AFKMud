@@ -175,7 +175,7 @@ liquid_data *fread_liquid( FILE * fp )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -261,7 +261,6 @@ void load_liquids( void )
    for( ;; )
    {
       char letter = fread_letter( fp );
-      char *word;
 
       if( letter == '*' )
       {
@@ -275,7 +274,7 @@ void load_liquids( void )
          return;
       }
 
-      word = fread_word( fp );
+      std::string word = fread_word( fp );
       if( !str_cmp( word, "VERSION" ) )
       {
          file_version = fread_number( fp );
@@ -344,7 +343,7 @@ mixture_data *fread_mixture( FILE * fp )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -420,7 +419,6 @@ void load_mixtures( void )
    for( ;; )
    {
       char letter = fread_letter( fp );
-      char *word;
 
       if( letter == '*' )
       {
@@ -434,7 +432,7 @@ void load_mixtures( void )
          return;
       }
 
-      word = fread_word( fp );
+      std::string word = fread_word( fp );
       if( !str_cmp( word, "VERSION" ) )
       {
          file_version = fread_number( fp );

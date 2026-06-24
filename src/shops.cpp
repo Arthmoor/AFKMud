@@ -119,10 +119,7 @@ void load_shopkeepers( void )
 
          for( ;; )
          {
-            char letter;
-            char *word;
-
-            letter = fread_letter( fp );
+            char letter = fread_letter( fp );
             if( letter == '*' )
             {
                fread_to_eol( fp );
@@ -135,15 +132,15 @@ void load_shopkeepers( void )
                break;
             }
 
-            word = fread_word( fp );
-            if( !strcmp( word, "SHOP" ) )
+            std::string word = fread_word( fp );
+            if( !str_cmp( word, "SHOP" ) )
                mob = fread_mobile( fp, true );
-            else if( !strcmp( word, "OBJECT" ) )
+            else if( !str_cmp( word, "OBJECT" ) )
             {
                mob->tempnum = -9999;
                fread_obj( mob, fp, OS_CARRY );
             }
-            else if( !strcmp( word, "END" ) )
+            else if( !str_cmp( word, "END" ) )
                break;
          }
          FCLOSE( fp );

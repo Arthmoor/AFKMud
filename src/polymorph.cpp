@@ -1676,7 +1676,7 @@ morph_data *fread_morph( FILE * fp, int file_ver )
    std::string arg, temp;
    int i;
 
-   const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+   std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
    if( word[0] == '\0' )
    {
@@ -1978,7 +1978,7 @@ void load_morphs( void )
    while( my_continue )
    {
       morph_data *morph = nullptr;
-      const char *word = ( feof( fp ) ? "#END" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#END" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -2305,7 +2305,7 @@ void fread_morph_data( char_data * ch, FILE * fp )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {

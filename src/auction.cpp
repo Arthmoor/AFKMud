@@ -273,7 +273,7 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
       for( ;; )
       {
          char letter;
-         char *word;
+         std::string word;
 
          letter = fread_letter( fp );
          if( letter == '*' )

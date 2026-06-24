@@ -513,13 +513,9 @@ room_index *make_room( int vnum, area_data * area )
  */
 void room_index::rprog_read_programs( FILE * fp )
 {
-   mud_prog_data *mprg;
-   char letter;
-   const char *word;
-
    for( ;; )
    {
-      letter = fread_letter( fp );
+      char letter = fread_letter( fp );
 
       if( letter == '|' )
          return;
@@ -529,10 +525,10 @@ void room_index::rprog_read_programs( FILE * fp )
          bug( "{}: vnum {} MUDPROG char", __func__, vnum );
          std::exit( EXIT_FAILURE );
       }
-      mprg = new mud_prog_data;
+      mud_prog_data *mprg = new mud_prog_data;
       mudprogs.push_back( mprg );
 
-      word = fread_word( fp );
+      std::string word = fread_word( fp );
       mprg->type = mprog_name_to_type( word );
 
       switch ( mprg->type )

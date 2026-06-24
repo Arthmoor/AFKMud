@@ -197,7 +197,7 @@ char_data *load_mobile( FILE * fp )
    int inroom = 0;
    room_index *pRoomIndex = nullptr;
 
-   const char *word = ( feof( fp ) ? "EndMobile" : fread_word( fp ) );
+   std::string word = ( feof( fp ) ? "EndMobile" : fread_word( fp ) );
 
    if( word[0] == '\0' )
    {
@@ -308,7 +308,7 @@ char_data *load_mobile( FILE * fp )
                   paf->rismod.reset(  );
 
                   int sn;
-                  char *sname = fread_word( fp );
+                  std::string sname = fread_word( fp );
 
                   if( ( sn = skill_lookup( sname ) ) < 0 )
                   {
@@ -477,7 +477,7 @@ void read_obj_file( int vnum )
       for( ;; )
       {
          char letter;
-         char *word;
+         std::string word;
 
          letter = fread_letter( fp );
          if( letter == '*' )
@@ -557,7 +557,6 @@ void load_obj_files( )
 void load_world( void )
 {
    FILE *mobfp;
-   char *word;
    int done = 0;
    bool mobfile = false;
 
@@ -579,7 +578,7 @@ void load_world( void )
             ++done;
          else
          {
-            word = fread_word( mobfp );
+            std::string word = fread_word( mobfp );
             if( str_cmp( word, "#END" ) )
                load_mobile( mobfp );
             else

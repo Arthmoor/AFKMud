@@ -164,7 +164,7 @@ int get_fuss_npc_class( const std::string & type )
    return -1;
 }
 
-affect_data *fread_fuss_affect( FILE * fp, const char *word )
+affect_data *fread_fuss_affect( FILE * fp, std::string_view word )
 {
    int pafmod;
 
@@ -176,7 +176,7 @@ affect_data *fread_fuss_affect( FILE * fp, const char *word )
    paf->modifier = 0;
    paf->rismod.reset(  );
 
-   if( !strcmp( word, "Affect" ) )
+   if( !str_cmp( word, "Affect" ) )
    {
       paf->type = fread_number( fp );
    }
@@ -214,7 +214,7 @@ void fread_fuss_room( FILE * fp, area_data * tarea )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDROOM" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDROOM" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -437,7 +437,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDOBJECT" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDOBJECT" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -698,7 +698,7 @@ void fread_fuss_mobile( FILE * fp, area_data * tarea )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDMOBILE" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDMOBILE" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -1144,7 +1144,7 @@ void fread_fuss_areadata( FILE * fp, area_data * tarea )
 {
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDAREADATA" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDAREADATA" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -1245,7 +1245,7 @@ area_data *fread_smaugfuss_area( FILE * fp )
    for( ;; )
    {
       char letter;
-      const char *word;
+      std::string word;
 
       letter = fread_letter( fp );
       if( letter == '*' )

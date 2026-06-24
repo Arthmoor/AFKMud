@@ -785,13 +785,9 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
  */
 void obj_index::oprog_read_programs( FILE * fp )
 {
-   mud_prog_data *mprg;
-   char letter;
-   const char *word;
-
    for( ;; )
    {
-      letter = fread_letter( fp );
+      char letter = fread_letter( fp );
 
       if( letter == '|' )
          return;
@@ -801,10 +797,10 @@ void obj_index::oprog_read_programs( FILE * fp )
          bug( "{}: vnum {} MUDPROG char", __func__, vnum );
          std::exit( EXIT_FAILURE );
       }
-      mprg = new mud_prog_data;
+      mud_prog_data *mprg = new mud_prog_data;
       mudprogs.push_back( mprg );
 
-      word = fread_word( fp );
+      std::string word = fread_word( fp );
       mprg->type = mprog_name_to_type( word );
 
       switch ( mprg->type )

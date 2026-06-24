@@ -221,7 +221,7 @@ void reset_colors( char_data * ch )
 
          while( !feof( fp ) )
          {
-            char *word = fread_word( fp );
+            std::string word = fread_word( fp );
 
             if( !str_cmp( word, "MaxColors" ) )
             {
@@ -278,7 +278,6 @@ CMDF( do_color )
    if( !str_cmp( arg, "savetheme" ) && ch->is_imp(  ) )
    {
       FILE *fp;
-      std::filesystem::path filename;
 
       if( argument.empty(  ) )
       {
@@ -286,16 +285,16 @@ CMDF( do_color )
          return;
       }
 
-      if( strstr( argument.c_str(  ), ".." ) || strstr( argument.c_str(  ), "/" ) || strstr( argument.c_str(  ), "\\" ) )
+      if( has_illegal_file_chars( argument, true ) )
       {
-         ch->print( "Invalid theme name.\r\n" );
+         ch->print( "Invalid theme name. Cannot contain a space, '.', '/', or '\\'.\r\n" );
          return;
       }
 
-      filename = std::format( "{}{}", COLOR_DIR, argument );
+      std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, argument );
       if( !( fp = fopen( filename.c_str(), "w" ) ) )
       {
-         ch->printf( "Unable to write to color file %s\n\r", filename.c_str() );
+         ch->print_fmt( "Unable to write to color file {}\n\r", filename.string() );
          return;
       }
       fprintf( fp, "%s", "#COLORTHEME\n" );
@@ -306,14 +305,13 @@ CMDF( do_color )
          fprintf( fp, " %d", ch->pcdata->colors[x] );
       fprintf( fp, "%s", "\nEnd\n" );
       FCLOSE( fp );
-      ch->printf( "Color theme %s saved.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "Color theme {} saved.\r\n", argument );
       return;
    }
 
    if( !str_cmp( arg, "theme" ) )
    {
       FILE *fp;
-      std::filesystem::path filename;
       int max_colors = 0;
 
       if( argument.empty(  ) )
@@ -322,22 +320,22 @@ CMDF( do_color )
          return;
       }
 
-      if( strstr( argument.c_str(  ), ".." ) || strstr( argument.c_str(  ), "/" ) || strstr( argument.c_str(  ), "\\" ) )
+      if( has_illegal_file_chars( argument, true ) )
       {
-         ch->print( "Invalid theme.\r\n" );
+         ch->print( "Invalid theme. Cannot contain a space, '.', '/', or '\\'.\r\n" );
          return;
       }
 
-      filename = std::format( "{}{}", COLOR_DIR, argument );
+      std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, argument );
       if( !( fp = fopen( filename.c_str(), "r" ) ) )
       {
-         ch->printf( "There is no theme called %s.\r\n", filename.c_str(  ) );
+         ch->print_fmt( "There is no theme called {}.\r\n", argument );
          return;
       }
 
       while( !feof( fp ) )
       {
-         char *word = fread_word( fp );
+         std::string word = fread_word( fp );
          if( !str_cmp( word, "MaxColors" ) )
          {
             max_colors = fread_number( fp );
@@ -354,13 +352,13 @@ CMDF( do_color )
          if( !str_cmp( word, "End" ) )
          {
             FCLOSE( fp );
-            ch->printf( "Color theme has been changed to %s.\r\n", argument.c_str(  ) );
+            ch->print_fmt( "Color theme has been changed to {}.\r\n", argument );
             ch->save(  );
             return;
          }
       }
       FCLOSE( fp );
-      ch->printf( "An error occured while trying to set color theme %s.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "An error occurred while trying to set color theme {}.\r\n", argument );
       return;
    }
 
@@ -465,7 +463,7 @@ CMDF( do_color )
 
       if( !dMatch )
       {
-         ch->printf( "%s is an invalid color type.\r\n", arg.c_str(  ) );
+         ch->print_fmt( "{} is an invalid color type.\r\n", arg );
          ch->print( "Type color with no arguments to see available options.\r\n" );
          return;
       }
@@ -473,7 +471,7 @@ CMDF( do_color )
       if( !str_cmp( arg2, "default" ) )
       {
          ch->pcdata->colors[count] = default_set[count];
-         ch->printf( "Display %s set back to default.\r\n", pc_displays[count] );
+         ch->print_fmt( "Display {} set back to default.\r\n", pc_displays[count] );
          return;
       }
 
@@ -493,7 +491,7 @@ CMDF( do_color )
    if( !cMatch )
    {
       if( !arg.empty(  ) )
-         ch->pagerf( "Invalid color for type %s.\r\n", arg.c_str(  ) );
+         ch->pager_fmt( "Invalid color for type {}.\r\n", arg );
       else
          ch->pager( "Invalid color.\r\n" );
 
@@ -504,13 +502,13 @@ CMDF( do_color )
          if( count % 5 == 0 && count != 0 )
             ch->pager( "\r\n" );
 
-         ch->pagerf( "%-10s", valid_color[count] );
+         ch->pager_fmt( "{:<10}", valid_color[count] );
       }
-      ch->pagerf( "%-10s\r\n", "default" );
+      ch->pager_fmt( "{:<10}\r\n", "default" );
       return;
    }
    else
-      ch->pagerf( "Color type %s set to color %s.\r\n", count == -1 ? "_all_" : pc_displays[count], valid_color[y] );
+      ch->pager_fmt( "Color type {} set to color {}.\r\n", count == -1 ? "_all_" : pc_displays[count], valid_color[y] );
 
    if( !str_cmp( argument, "blink" ) )
       y += AT_BLINK;
@@ -524,7 +522,7 @@ CMDF( do_color )
 
       ch->set_pager_color( y );
 
-      ch->pagerf( "All color types set to color %s%s.%s\r\n", valid_color[y > AT_BLINK ? y - AT_BLINK : y], y > AT_BLINK ? " [BLINKING]" : "", ANSI_RESET );
+      ch->pager_fmt( "All color types set to color {}{}.{}\r\n", valid_color[y > AT_BLINK ? y - AT_BLINK : y], y > AT_BLINK ? " [BLINKING]" : "", ANSI_RESET );
    }
    else
    {
@@ -533,9 +531,9 @@ CMDF( do_color )
       ch->set_color( count );
 
       if( !str_cmp( argument, "blink" ) )
-         ch->printf( "Display %s set to color %s [BLINKING]%s\r\n", pc_displays[count], valid_color[y - AT_BLINK], ANSI_RESET );
+         ch->print_fmt( "Display {} set to color {} [BLINKING]{}\r\n", pc_displays[count], valid_color[y - AT_BLINK], ANSI_RESET );
       else
-         ch->printf( "Display %s set to color %s.\r\n", pc_displays[count], valid_color[y] );
+         ch->print_fmt( "Display {} set to color {}.\r\n", pc_displays[count], valid_color[y] );
    }
 }
 

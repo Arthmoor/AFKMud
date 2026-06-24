@@ -6200,9 +6200,9 @@ void free_all_classes( void )
    }
 }
 
-bool load_class_file( const char *fname )
+bool load_class_file( std::string_view fname )
 {
-   std::string buf;
+   std::filesystem::path buf;
    class_type *Class;
    int cl = -1, tlev = 0, file_ver = 0;
    FILE *fp;
@@ -6210,7 +6210,7 @@ bool load_class_file( const char *fname )
    buf = std::format( "{}{}", CLASS_DIR, fname );
    if( !( fp = fopen( buf.c_str(), "r" ) ) )
    {
-      perror( buf.c_str() );
+      bug( "{}: unable to open {} for reading!", __func__, buf.c_str() );
       return false;
    }
 
@@ -6218,7 +6218,7 @@ bool load_class_file( const char *fname )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -6405,15 +6405,15 @@ void load_classes(  )
    std::filesystem::path classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
    if( !( fpList = fopen( classlist.c_str(), "r" ) ) )
    {
-      perror( classlist.c_str() );
-      exit( 1 );
+      bug( "{}: Unable to load class list file.", __func__ );
+      std::exit( EXIT_FAILURE );
    }
 
    for( ;; )
    {
-      const char *filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
+      std::string filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
 
-      if( filename[0] == '\0' )
+      if( filename.empty() )
       {
          log_printf( "{}: EOF encountered reading class list!", __func__ );
          break;
@@ -7188,7 +7188,7 @@ void set_bodypart_where_names( race_type *race )
       race->bodypart_where_names.push_back( "<BODY PART SLOT ERROR>" );
 }
 
-bool load_race_file( const char *fname )
+bool load_race_file( std::string_view fname )
 {
    race_type *race;
    int ra = -1, file_ver = 0;
@@ -7197,7 +7197,7 @@ bool load_race_file( const char *fname )
    std::filesystem::path buf = std::format( "{}{}", RACE_DIR, fname );
    if( !( fp = fopen( buf.c_str(), "r" ) ) )
    {
-      perror( buf.c_str() );
+      bug( "{}: Unable to open {} for reading!", __func__, buf.c_str() );
       return false;
    }
 
@@ -7207,7 +7207,7 @@ bool load_race_file( const char *fname )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -7426,15 +7426,15 @@ void load_races(  )
    std::filesystem::path racelist = std::format( "{}{}", RACE_DIR, RACE_LIST );
    if( !( fpList = fopen( racelist.c_str(), "r" ) ) )
    {
-      perror( racelist.c_str() );
-      exit( 1 );
+      bug( "{}: Unable to open race list file!", __func__ );
+      std::exit( EXIT_FAILURE );
    }
 
    for( ;; )
    {
-      const char *filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
+      std::string filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
 
-      if( filename[0] == '\0' )
+      if( filename.empty() )
       {
          log_printf( "{}: EOF encountered reading file!", __func__ );
          break;
@@ -7448,6 +7448,7 @@ void load_races(  )
       else
          ++MAX_PC_RACE;
    }
+
    for( int i = 0; i < MAX_RACE; ++i )
    {
       if( !race_table[i] )

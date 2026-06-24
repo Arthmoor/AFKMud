@@ -185,8 +185,6 @@ void load_tongues(  )
 {
    FILE *fp;
    lang_data *lng;
-   char *word;
-   char letter;
 
    std::filesystem::path filename = TONGUE_FILE;
    if( !( fp = fopen( filename.c_str(), "r" ) ) )
@@ -196,7 +194,7 @@ void load_tongues(  )
    }
    for( ;; )
    {
-      letter = fread_letter( fp );
+      char letter = fread_letter( fp );
       if( letter == EOF )
          break;
       else if( letter == '*' )
@@ -209,7 +207,7 @@ void load_tongues(  )
          bug( "{}: Letter '{}' not #.", __func__, letter );
          std::exit( EXIT_FAILURE );
       }
-      word = fread_word( fp );
+      std::string word = fread_word( fp );
       if( !str_cmp( word, "end" ) )
          break;
       fread_to_eol( fp );

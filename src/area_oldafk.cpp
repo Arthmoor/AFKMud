@@ -518,8 +518,8 @@ void load_objects( area_data * tarea, FILE * fp )
             }
             else
             {
-               char *loc = nullptr;
-               char *aff = nullptr;
+               std::string loc;
+               std::string aff;
 
                loc = fread_word( fp );
                value = get_atype( loc );
@@ -985,8 +985,8 @@ void load_rooms( area_data * tarea, FILE * fp )
          if( letter == 'A' )
          {
             affect_data *paf;
-            char *loc = nullptr;
-            char *aff = nullptr;
+            std::string loc;
+            std::string aff;
 
             paf = new affect_data;
             paf->type = -1;
@@ -1190,7 +1190,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
          std::exit( EXIT_FAILURE );
       }
 
-      const char *word = fread_word( fpArea );
+      std::string word = fread_word( fpArea );
 
       if( word[0] == '$' )
          break;
@@ -1350,7 +1350,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
          for( ;; )
          {
             mob_index *pMobIndex;
-            char *temp;
+            std::string temp;
             char letter;
 
             switch ( letter = fread_letter( fpArea ) )

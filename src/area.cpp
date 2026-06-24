@@ -335,7 +335,7 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDEXIT" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDEXIT" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -415,8 +415,8 @@ void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
 
 affect_data *fread_afk_affect( FILE * fp )
 {
-   char *loc = nullptr;
-   char *aff = nullptr;
+   std::string loc;
+   std::string aff;
    int value;
    bool setaff = true;
 
@@ -475,7 +475,7 @@ extra_descr_data *fread_afk_exdesc( FILE * fp )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDEXDESC" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDEXDESC" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -520,7 +520,7 @@ void fread_afk_areadata( FILE * fp, area_data * tarea )
 {
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDAREADATA" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDAREADATA" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -711,7 +711,7 @@ void fread_afk_mobile( FILE * fp, area_data * tarea )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDMOBILE" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDMOBILE" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -1109,7 +1109,7 @@ void fread_afk_object( FILE * fp, area_data * tarea )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDOBJECT" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDOBJECT" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -1379,7 +1379,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDROOM" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDROOM" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -1595,7 +1595,7 @@ area_data *fread_afk_area( FILE * fp )
    for( ;; )
    {
       char letter;
-      const char *word;
+      std::string word;
 
       letter = fread_letter( fp );
       if( letter == '*' )
@@ -1659,7 +1659,6 @@ void process_sorting( area_data * tarea, bool isproto )
 void load_area_file( const std::string & filename, bool isproto )
 {
    area_data *tarea = nullptr;
-   char *word;
 
    if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
    {
@@ -1682,7 +1681,7 @@ void load_area_file( const std::string & filename, bool isproto )
       }
    }
 
-   word = fread_word( fpArea );
+   std::string word = fread_word( fpArea );
 
    // New AFKMud area format support -- Samson 10/28/06
    if( !str_cmp( word, "AFKAREA" ) )
@@ -1715,7 +1714,7 @@ void load_area_file( const std::string & filename, bool isproto )
    {
       tarea = create_area();
 
-      tarea->filename = strArea;
+      tarea->filename = filename;
       fread_string( tarea->name, fpArea );
    }
    else

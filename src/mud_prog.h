@@ -169,7 +169,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
 {
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "#ENDPROG" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "#ENDPROG" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -245,7 +245,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
          break;
       }
 
-      const char *word = ( feof( progfile ) ? "ENDFILE" : fread_word( progfile ) );
+      std::string word = ( feof( progfile ) ? "ENDFILE" : fread_word( progfile ) );
 
       if( word[0] == '\0' )
       {

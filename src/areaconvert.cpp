@@ -1837,7 +1837,6 @@ void load_strepairs( FILE * fp )
 void load_stock_area_file( const std::string & filename, bool manual )
 {
    area_data *tarea = nullptr;
-   char *word;
    std::chrono::system_clock::time_point umod = std::chrono::system_clock::time_point::min();
    std::filesystem::path target_path = manual ? std::filesystem::path( AREA_CONVERT_DIR ) / filename : std::filesystem::path( filename );
 
@@ -1864,7 +1863,9 @@ void load_stock_area_file( const std::string & filename, bool manual )
          return;
       }
    }
-   word = fread_word( fpArea );
+
+   std::string word = fread_word( fpArea );
+
    if( !str_cmp( word, "AREA" ) )
    {
       tarea = create_area(  );
@@ -2064,7 +2065,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          for( ;; )
          {
             mob_index *pMobIndex;
-            char *temp;
+            std::string temp;
             char letter;
 
             switch ( letter = fread_letter( fpArea ) )
@@ -2208,7 +2209,7 @@ CMDF( do_areaconvert )
 
    area_failed = false;
 
-   strlcpy( strArea, arg.c_str(  ), MIL );
+   strArea = arg;
 
    if( ch )
    {

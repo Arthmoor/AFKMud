@@ -1071,7 +1071,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
    for( ;; )
    {
-      const char *word = ( feof( fp ) ? "End" : fread_word( fp ) );
+      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -1385,10 +1385,7 @@ void load_skill_table( void )
       num_skills = 0;
       for( ;; )
       {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
+         char letter = fread_letter( fp );
          if( letter == '*' )
          {
             fread_to_eol( fp );
@@ -1401,7 +1398,7 @@ void load_skill_table( void )
             break;
          }
 
-         word = fread_word( fp );
+         std::string word = fread_word( fp );
          if( !str_cmp( word, "VERSION" ) )
          {
             version = fread_number( fp );
@@ -1447,10 +1444,7 @@ void load_herb_table(  )
       top_herb = 0;
       for( ;; )
       {
-         char letter;
-         char *word;
-
-         letter = fread_letter( fp );
+         char letter = fread_letter( fp );
          if( letter == '*' )
          {
             fread_to_eol( fp );
@@ -1463,7 +1457,7 @@ void load_herb_table(  )
             break;
          }
 
-         word = fread_word( fp );
+         std::string word = fread_word( fp );
          if( !str_cmp( word, "VERSION" ) )
          {
             version = fread_number( fp );
