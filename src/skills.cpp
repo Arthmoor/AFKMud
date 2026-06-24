@@ -1098,7 +1098,7 @@ skill_type *fread_skill( FILE * fp, int version )
                std::string mod;
 
                aff = new smaug_affect;
-               aff->duration = strdup( fread_word( fp ) );
+               aff->duration = fread_word( fp );
                aff->location = fread_number( fp );
                mod = fread_word( fp );
 
@@ -2779,10 +2779,10 @@ CMDF( do_sset )
       else
          skill_table[num_skills++] = skill;
 
-      skill->name = strdup( argument.c_str(  ) );
+      skill->name = argument;
       skill->spell_fun = spell_smaug;
       skill->type = type;
-      skill->author = STRALLOC( ch->name.c_str() );
+      skill->author = ch->name;
       if( !str_cmp( arg2, "ability" ) )
          skill->type = SKILL_RACIAL;
       if( !str_cmp( arg2, "lore" ) )
@@ -3112,7 +3112,7 @@ CMDF( do_sset )
          }
          aff = new smaug_affect;
 
-         aff->duration = strdup( duration.c_str(  ) );
+         aff->duration = duration;
          aff->location = loc;
          if( loc == APPLY_AFFECT || loc == APPLY_EXT_AFFECT )
          {
@@ -3141,7 +3141,7 @@ CMDF( do_sset )
                modval = 0;
             modifier = ris_flags[modval];
          }
-         aff->modifier = strdup( modifier.c_str(  ) );
+         aff->modifier = modifier;
          aff->bit = bit;
          skill->affects.push_back( aff );
          ch->print( "Ok.\r\n" );
