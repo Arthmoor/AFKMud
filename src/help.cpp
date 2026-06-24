@@ -580,7 +580,7 @@ CMDF( do_hlist )
    int min, max, minlimit, maxlimit, cnt;
    std::string arg;
    bool minfound, maxfound;
-   char *idx = nullptr;
+   std::string idx;
 
    maxlimit = ch->get_trust(  );
    minlimit = maxlimit >= LEVEL_GREATER ? -1 : 0;
@@ -595,12 +595,12 @@ CMDF( do_hlist )
    {
       if( !isdigit( arg[0] ) )
       {
-         if( idx )
+         if( !idx.empty() )
          {
             ch->print( "You may only use a single keyword to index the list.\r\n" );
             return;
          }
-         idx = STRALLOC( arg.c_str(  ) );
+         idx = arg;
       }
       else
       {
@@ -631,23 +631,21 @@ CMDF( do_hlist )
    }
 
    ch->set_pager_color( AT_HELP );
-   ch->pagerf( "Help Topics in level range %d to %d:\r\r\n\n", min, max );
+   ch->pager_fmt( "Help Topics in level range {} to {}:\r\r\n\n", min, max );
 
    cnt = 0;
    for( auto* help : helplist )
    {
-      if( help->level >= min && help->level <= max && ( !idx || hasname( help->keyword, idx ) ) )
+      if( help->level >= min && help->level <= max && ( idx.empty() || hasname( help->keyword, idx ) ) )
       {
-         ch->pagerf( "  %3d %s\r\n", help->level, help->keyword.c_str(  ) );
+         ch->pager_fmt( "  {:3} {}\r\n", help->level, help->keyword );
          ++cnt;
       }
    }
    if( cnt )
-      ch->pagerf( "\r\n%d pages found.\r\n", cnt );
+      ch->pager_fmt( "\r\n{} pages found.\r\n", cnt );
    else
       ch->print( "None found.\r\n" );
-
-   STRFREE( idx );
 }
 
 /* 
