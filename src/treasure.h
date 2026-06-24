@@ -84,8 +84,8 @@ struct weapontable
 {
    weapontable(  );
 
-   const char *name = nullptr;   // Descriptive name.
-   char *flags = nullptr;        // Default flag set.
+   std::string name;             // Descriptive name.
+   std::string flags;            // Default flag set.
    float weight = 0.0;           // Base weight.
    float cost = 0;               // Base cost/value.
    short type = 0;               // Weapon type.

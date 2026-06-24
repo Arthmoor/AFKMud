@@ -223,7 +223,7 @@ void load_weapontable(  )
       else if( key == "Type" )
          wt->type = std::stoi( value );
       else if( key == "Name" )
-         wt->name = STRALLOC( value.c_str(  ) );
+         wt->name = value;
       else if( key == "BaseDam" )
          wt->basedam = std::stoi( value );
       else if( key == "Weight" )
@@ -235,7 +235,7 @@ void load_weapontable(  )
       else if( key == "DamType" )
          wt->damtype = std::stoi( value );
       else if( key == "Flags" )
-         wt->flags = STRALLOC( value.c_str(  ) );
+         wt->flags = value;
       else if( key == "End" )
          w_table.push_back( wt );
       else
