@@ -243,9 +243,9 @@ void fwrite_morph( FILE * fp, morph_data * morph )
    if( morph->defpos != POS_STANDING )
       fprintf( fp, "Defpos          %d\n", morph->defpos );
    if( !morph->description.empty() )
-      fprintf( fp, "Description     %s~\n", strip_cr( morph->description.c_str() ) );
+      fprintf( fp, "Description     %s~\n", strip_cr( morph->description ).c_str() );
    if( !morph->help.empty() )
-      fprintf( fp, "Help            %s~\n", strip_cr( morph->help.c_str() ) );
+      fprintf( fp, "Help            %s~\n", strip_cr( morph->help ).c_str() );
    if( !morph->hit.empty() )
       fprintf( fp, "Hit             %s~\n", morph->hit.c_str() );
    if( !morph->hitroll.empty() )

@@ -340,7 +340,6 @@ void strip_spaces( std::string & line )
 std::string strip_cr( std::string_view str )
 {
    std::string result( str );
-   std::string::size_type x;
 
    std::erase( result, '\r' );
 

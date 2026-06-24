@@ -1866,7 +1866,7 @@ void fwrite_afk_exdesc( FILE * fpout, extra_descr_data * desc )
 void fwrite_afk_exit( FILE * fpout, exit_data * pexit )
 {
    fprintf( fpout, "%s", "#EXIT\n" );
-   fprintf( fpout, "Direction %s~\n", strip_cr( dir_name[pexit->vdir] ) );
+   fprintf( fpout, "Direction %s~\n", strip_cr( dir_name[pexit->vdir] ).c_str(  ) );
    fprintf( fpout, "ToRoom    %d\n", pexit->vnum );
    if( pexit->key > 0 )
       fprintf( fpout, "Key       %d\n", pexit->key );
@@ -1893,7 +1893,7 @@ bool mprog_write_prog( FILE * fpout, mud_prog_data * mprog )
       fprintf( fpout, "Arglist   %s~\n", mprog->arglist );
 
       if( mprog->comlist && mprog->comlist[0] != '\0' && !mprog->fileprog )
-         fprintf( fpout, "Comlist   %s~\n", strip_cr( mprog->comlist ) );
+         fprintf( fpout, "Comlist   %s~\n", strip_cr( mprog->comlist ).c_str(  ) );
 
       fprintf( fpout, "%s", "#ENDPROG\n\n" );
       return true;
@@ -2222,7 +2222,7 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
     */
    if( time_info.season == SEASON_WINTER && room->winter_sector != -1 )
       room->sector_type = room->winter_sector;
-   fprintf( fpout, "Sector    %s~\n", strip_cr( sect_types[room->sector_type] ) );
+   fprintf( fpout, "Sector    %s~\n", strip_cr( sect_types[room->sector_type] ).c_str(  ) );
 
    /*
     * And change it back again so that the season is not disturbed in play - Samson 7-19-00 
