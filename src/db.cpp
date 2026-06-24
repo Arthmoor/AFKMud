@@ -371,17 +371,6 @@ void fread_string( std::string & newstring, FILE* fp )
 }
 
 /*
- * Read a string from file fp using strdup (ie: no string hashing)
- * This will probably become obsolete after the std::string conversions are done.
- */
-char* fread_string_nohash( FILE* fp )
-{
-   std::string temp = internal_fread_flagstring( fp );
-
-   return temp.empty() ? nullptr : strdup( temp.c_str() );
-}
-
-/*
  * Read to end of line (for comments).
  */
 void fread_to_eol( FILE* fp )
