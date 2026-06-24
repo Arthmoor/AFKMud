@@ -5710,9 +5710,8 @@ void mpedit( char_data * ch, mud_prog_data * mprg, int mptype, std::string_view 
    if( mptype != -1 )
    {
       mprg->type = mptype;
-      STRFREE( mprg->arglist );
       if( !argument.empty(  ) )
-         mprg->arglist = STRALLOC( argument.data(  ) );
+         mprg->arglist = argument;
    }
    ch->substate = SUB_MPROG_EDIT;
    ch->pcdata->dest_buf = mprg;
@@ -5762,8 +5761,7 @@ CMDF( do_mpedit )
             return;
          }
          mprog = ( mud_prog_data * ) ch->pcdata->dest_buf;
-         STRFREE( mprog->comlist );
-         mprog->comlist = ch->copy_buffer( true );
+         mprog->comlist = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
 
@@ -5852,7 +5850,7 @@ CMDF( do_mpedit )
          {
             mprog = *mprg;
 
-            ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, ( str_cmp( "full", arg3 ) ? mprog->comlist : "" ) );
+            ch->print_fmt( "{}>{} {}\r\n{}\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist, ( str_cmp( "full", arg3 ) ? mprog->comlist : "" ) );
          }
          return;
       }
@@ -5862,7 +5860,7 @@ CMDF( do_mpedit )
 
          if( ++cnt == value )
          {
-            ch->printf( "%d>%s %s\r\n%s\r\n", cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
+            ch->print_fmt( "{}>{} {}\r\n{}\r\n", cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
             return;
          }
       }
@@ -6044,8 +6042,7 @@ CMDF( do_opedit )
             return;
          }
          mprog = ( mud_prog_data * ) ch->pcdata->dest_buf;
-         STRFREE( mprog->comlist );
-         mprog->comlist = ch->copy_buffer( true );
+         mprog->comlist = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
 
@@ -6059,7 +6056,7 @@ CMDF( do_opedit )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
    argument = one_argument( argument, arg3 );
-   value = atoi( arg3.c_str(  ) );
+   value = std::stoi( arg3 );
 
    if( arg1.empty(  ) || arg2.empty(  ) )
    {
@@ -6129,7 +6126,7 @@ CMDF( do_opedit )
       {
          mprog = *mprg;
 
-         ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
+         ch->print_fmt( "{}>{} {}\r\n{}\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
       }
       return;
    }
@@ -6306,8 +6303,7 @@ CMDF( do_rpedit )
             return;
          }
          mprog = ( mud_prog_data * ) ch->pcdata->dest_buf;
-         STRFREE( mprog->comlist );
-         mprog->comlist = ch->copy_buffer( true );
+         mprog->comlist = ch->copy_buffer( );
          ch->stop_editing(  );
          return;
 
@@ -6320,10 +6316,7 @@ CMDF( do_rpedit )
    smash_tilde( argument );
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   value = atoi( arg2.c_str(  ) );
-   /*
-    * argument = one_argument( argument, arg3 ); 
-    */
+   value = std::stoi( arg2 );
 
    if( arg1.empty(  ) )
    {
@@ -6369,7 +6362,7 @@ CMDF( do_rpedit )
       {
          mprog = *mprg;
 
-         ch->printf( "%d>%s %s\r\n%s\r\n", ++cnt, mprog_type_to_name( mprog->type ).c_str(  ), mprog->arglist, mprog->comlist );
+         ch->print_fmt( "{}>{} {}\r\n{}\r\n", ++cnt, mprog_type_to_name( mprog->type ), mprog->arglist, mprog->comlist );
       }
       return;
    }
@@ -6518,8 +6511,8 @@ void mpcopy( mud_prog_data * source, mud_prog_data * destination )
    destination->type = source->type;
    destination->triggered = source->triggered;
    destination->resetdelay = source->resetdelay;
-   destination->arglist = QUICKLINK( source->arglist );
-   destination->comlist = QUICKLINK( source->comlist );
+   destination->arglist = source->arglist;
+   destination->comlist = source->comlist;
 }
 
 CMDF( do_opcopy )
@@ -6531,13 +6524,13 @@ CMDF( do_opcopy )
 
    if( ch->isnpc(  ) )
    {
-      ch->print( "Mob's can't opcopy\r\n" );
+      ch->print( "Mob's can't opcopy.\r\n" );
       return;
    }
 
    if( !ch->desc )
    {
-      ch->print( "You have no descriptor\r\n" );
+      ch->print( "You have no descriptor.\r\n" );
       return;
    }
 
@@ -6649,7 +6642,7 @@ CMDF( do_opcopy )
          ch->print( "No such program in source object\r\n" );
          return;
       }
-      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, sobj.c_str(  ), dobj.c_str(  ) );
+      ch->print_fmt( "{} programs successfully copied from {} to {}.\r\n", cnt, sobj, dobj );
       return;
    }
 
@@ -6672,7 +6665,7 @@ CMDF( do_opcopy )
          mpcopy( source_oprg, dest_oprg );
          destination->pIndexData->mudprogs.push_back( dest_oprg );
          destination->pIndexData->progtypes.set( dest_oprg->type );
-         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog.c_str(  ), value, sobj.c_str(  ), dobj.c_str(  ) );
+         ch->print_fmt( "{} program {} from {} successfully copied to {}.\r\n", prog, value, sobj, dobj );
          return;
       }
    }
@@ -6808,10 +6801,10 @@ CMDF( do_mpcopy )
       }
       if( cnt == 0 )
       {
-         ch->printf( "No such program in source mobile\r\n" );
+         ch->print( "No such program in source mobile.\r\n" );
          return;
       }
-      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, smob.c_str(  ), dmob.c_str(  ) );
+      ch->print_fmt( "{} programs successfully copied from {} to {}.\r\n", cnt, smob, dmob );
       return;
    }
 
@@ -6834,7 +6827,7 @@ CMDF( do_mpcopy )
          mpcopy( source_mprg, dest_mprg );
          destination->pIndexData->mudprogs.push_back( dest_mprg );
          destination->pIndexData->progtypes.set( dest_mprg->type );
-         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog.c_str(  ), value, smob.c_str(  ), dmob.c_str(  ) );
+         ch->print_fmt( "{} program {} from {} successfully copied to {}.\r\n", prog, value, smob, dmob );
          return;
       }
    }
@@ -6898,7 +6891,7 @@ CMDF( do_rpcopy )
       return;
    }
 
-   if( !is_number( droom ) || !( destination = get_room_index( atoi( droom.c_str(  ) ) ) ) )
+   if( !is_number( droom ) || !( destination = get_room_index( std::stoi( droom ) ) ) )
    {
       ch->print( "Destination room does not exist.\r\n" );
       return;
@@ -6946,7 +6939,7 @@ CMDF( do_rpcopy )
          ch->print( "No such program in source room.\r\n" );
          return;
       }
-      ch->printf( "%d programs successfully copied from %s to %s.\r\n", cnt, sroom.c_str(  ), droom.c_str(  ) );
+      ch->print_fmt( "{} programs successfully copied from {} to {}.\r\n", cnt, sroom, droom );
       return;
    }
 
@@ -6969,7 +6962,7 @@ CMDF( do_rpcopy )
          mpcopy( source_rprg, dest_rprg );
          destination->mudprogs.push_back( dest_rprg );
          destination->progtypes.set( dest_rprg->type );
-         ch->printf( "%s program %d from %s successfully copied to %s.\r\n", prog.c_str(  ), value, sroom.c_str(  ), droom.c_str(  ) );
+         ch->print_fmt( "{} program {} from {} successfully copied to {}.\r\n", prog, value, sroom, droom );
          return;
       }
    }
@@ -6996,13 +6989,13 @@ CMDF( do_makerooms )
       ch->print( "Usage: makerooms <# of rooms>\r\n" );
       return;
    }
-   x = atoi( argument.c_str(  ) );
+   x = std::stoi( argument );
 
-   ch->printf( "Attempting to create a block of %d rooms.\r\n", x );
+   ch->print_fmt( "Attempting to create a block of {} rooms.\r\n", x );
 
    if( x > 1000 )
    {
-      ch->printf( "The maximum number of rooms this mud can create at once is 1000.\r\n" );
+      ch->print( "The maximum number of rooms this mud can create at once is 1000.\r\n" );
       return;
    }
 
@@ -7048,7 +7041,7 @@ CMDF( do_makerooms )
       }
       ++vnum;
    }
-   ch->printf( "%d rooms created.\r\n", room_count );
+   ch->print_fmt( "{} rooms created.\r\n", room_count );
 }
 
 bool check_area_conflict( area_data * area, int low_range, int hi_range )

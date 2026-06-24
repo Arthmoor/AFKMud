@@ -243,11 +243,11 @@ void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_are
          if( new_vnum != NOT_FOUND )
          {
             if( verbose )
-               ch->pagerf( "...   container %d; fixing objval2 (key vnum) %d -> %d\r\n", i, obj->value[2], new_vnum );
+               ch->pager_fmt( "...   container {}; fixing objval2 (key vnum) {} -> %d\r\n", i, obj->value[2], new_vnum );
             obj->value[2] = new_vnum;
          }
          else if( verbose )
-            ch->pagerf( "...    container %d; no need to fix.\r\n", i );
+            ch->pager_fmt( "...    container {}; no need to fix.\r\n", i );
       }
       else if( obj->item_type == ITEM_SWITCH || obj->item_type == ITEM_LEVER || obj->item_type == ITEM_PULLCHAIN || obj->item_type == ITEM_BUTTON )
       {
@@ -263,7 +263,7 @@ void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_are
             if( new_vnum != NOT_FOUND )
             {
                if( verbose )
-                  ch->pagerf( "...    lever %d: fixing source room (%d -> %d)\r\n", i, obj->value[1], new_vnum );
+                  ch->pager_fmt( "...    lever {}: fixing source room ({} -> {})\r\n", i, obj->value[1], new_vnum );
                obj->value[1] = new_vnum;
             }
             if( IS_SET( obj->value[0], TRIG_DOOR ) && IS_SET( obj->value[0], TRIG_PASSAGE ) )
@@ -272,7 +272,7 @@ void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_are
                if( new_vnum != NOT_FOUND )
                {
                   if( verbose )
-                     ch->pagerf( "...    lever %d: fixing dest room (passage) (%d -> %d)\r\n", i, obj->value[2], new_vnum );
+                     ch->pager_fmt( "...    lever {}: fixing dest room (passage) ({} -> {})\r\n", i, obj->value[2], new_vnum );
                   obj->value[2] = new_vnum;
                }
             }
@@ -283,33 +283,39 @@ void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_are
 
 void warn_in_prog( char_data * ch, int low, int high, std::string_view where, int vnum, mud_prog_data * mprog, renumber_areas * r_area )
 {
-   char *p, *start_number, cTmp;
-   int num;
+   std::string_view text{mprog->comlist};
 
-   p = mprog->comlist;
-   while( *p )
+   while( !text.empty() )
    {
-      if( isdigit( *p ) )
+      auto pos = text.find_first_of( "0123456789" );
+      if( pos == std::string_view::npos )
+         break;
+
+      text.remove_prefix( pos );
+
+      std::string_view::size_type end = 0;
+      while( end < text.size() && std::isdigit( static_cast<unsigned char>( text[end] ) ) )
+         ++end;
+
+      std::string_view num_str = text.substr( 0, end );
+      int num = 0;
+
+      auto [ptr, ec] = std::from_chars( num_str.data(), num_str.data() + num_str.size(), num );
+
+      if( ec == std::errc{} )
       {
-         start_number = p;
-         while( isdigit( *p ) && *p )
-            ++p;
-         cTmp = *p;
-         *p = 0;
-         num = atoi( start_number );
-         *p = cTmp;
          if( num >= low && num <= high )
          {
-            ch->
-               pager_fmt
-               ( "Warning! {} prog in {} vnum {} might contain a reference to {}.\r\n(Translation: Room {}, Obj {}, Mob {})\r\n",
-                 mprog_type_to_name( mprog->type ), where, vnum, num, find_translation( num, r_area->r_room ),
-                 find_translation( num, r_area->r_obj ), find_translation( num, r_area->r_mob ) );
+            ch->pager_fmt(
+               "Warning! {} prog in {} vnum {} might contain a reference to {}.\r\n"
+               "(Translation: Room {}, Obj {}, Mob {})\r\n",
+                          mprog_type_to_name(mprog->type), where, vnum, num,
+                          find_translation( num, r_area->r_room ),
+                          find_translation( num, r_area->r_obj ),
+                          find_translation( num, r_area->r_mob ) );
          }
-         if( *p == '\0' )
-            break;
       }
-      ++p;
+      text.remove_prefix( end );
    }
 }
 

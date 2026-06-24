@@ -136,8 +136,8 @@ struct mud_prog_data
      mud_prog_data(  );
     ~mud_prog_data(  );
 
-   char *arglist = nullptr;
-   char *comlist = nullptr;
+   std::string arglist;
+   std::string comlist;
    int resetdelay = 0;
    short type = 0;
    bool triggered = false;
@@ -190,7 +190,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
          case 'A':
             if( !str_cmp( word, "Arglist" ) )
             {
-               mprg->arglist = fread_string( fp );
+               fread_string( mprg->arglist, fp );
                mprg->fileprog = false;
 
                switch ( mprg->type )
@@ -206,7 +206,7 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
             break;
 
          case 'C':
-            KEY( "Comlist", mprg->comlist, fread_string( fp ) );
+            STDSKEY( "Comlist", mprg->comlist );
             break;
 
          case 'P':
@@ -221,15 +221,15 @@ template < class N > void fread_afk_mudprog( FILE * fp, mud_prog_data * mprg, N 
    }
 }
 
-template < class N > void mprog_file_read( N * prog_target, const char *f )
+template < class N > void mprog_file_read( N * prog_target, const std::string & file )
 {
    mud_prog_data *mprg = nullptr;
    char MUDProgfile[256];
-   FILE *progfile;
+   FILE *fp;
 
-   snprintf( MUDProgfile, 256, "%s%s", PROG_DIR.data(), f );
+   snprintf( MUDProgfile, 256, "%s%s", PROG_DIR.data(), file.c_str() );
 
-   if( !( progfile = fopen( MUDProgfile, "r" ) ) )
+   if( !( fp = fopen( MUDProgfile, "r" ) ) )
    {
       bug( "{}: couldn't open mudprog file", __func__ );
       return;
@@ -237,7 +237,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
    for( ;; )
    {
-      char letter = fread_letter( progfile );
+      char letter = fread_letter( fp );
 
       if( letter != '#' )
       {
@@ -245,7 +245,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
          break;
       }
 
-      std::string word = ( feof( progfile ) ? "ENDFILE" : fread_word( progfile ) );
+      std::string word = ( feof( fp ) ? "ENDFILE" : fread_word( fp ) );
 
       if( word[0] == '\0' )
       {
@@ -262,7 +262,7 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
 
          for( ;; )
          {
-            word = ( feof( progfile ) ? "#ENDPROG" : fread_word( progfile ) );
+            word = ( feof( fp ) ? "#ENDPROG" : fread_word( fp ) );
 
             if( word[0] == '\0' )
             {
@@ -281,13 +281,13 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
             {
                default:
                   log_printf( "{}: no match: {}", __func__, word );
-                  fread_to_eol( progfile );
+                  fread_to_eol( fp );
                   break;
 
                case 'A':
                   if( !str_cmp( word, "Arglist" ) )
                   {
-                     mprg->arglist = fread_string( progfile );
+                     fread_string( mprg->arglist, fp );
                      mprg->fileprog = false;
 
                      switch ( mprg->type )
@@ -305,13 +305,13 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
                   break;
 
                case 'C':
-                  KEY( "Comlist", mprg->comlist, fread_string( progfile ) );
+                  STDSKEY( "Comlist", mprg->comlist );
                   break;
 
                case 'P':
                   if( !str_cmp( word, "Progtype" ) )
                   {
-                     mprg->type = mprog_name_to_type( fread_flagstring( progfile ) );
+                     mprg->type = mprog_name_to_type( fread_flagstring( fp ) );
                      break;
                   }
                   break;
@@ -319,5 +319,5 @@ template < class N > void mprog_file_read( N * prog_target, const char *f )
          }
       }
    }
-   FCLOSE( progfile );
+   FCLOSE( fp );
 }

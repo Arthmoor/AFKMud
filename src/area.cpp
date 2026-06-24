@@ -1885,13 +1885,13 @@ void fwrite_afk_exit( FILE * fpout, exit_data * pexit )
 // Write a prog
 bool mprog_write_prog( FILE * fpout, mud_prog_data * mprog )
 {
-   if( ( mprog->arglist && mprog->arglist[0] != '\0' ) )
+   if( !mprog->arglist.empty() )
    {
       fprintf( fpout, "%s", "#MUDPROG\n" );
       fprintf( fpout, "Progtype  %s~\n", mprog_type_to_name( mprog->type ).c_str(  ) );
-      fprintf( fpout, "Arglist   %s~\n", mprog->arglist );
+      fprintf( fpout, "Arglist   %s~\n", mprog->arglist.c_str() );
 
-      if( mprog->comlist && mprog->comlist[0] != '\0' && !mprog->fileprog )
+      if( !mprog->comlist.empty() && !mprog->fileprog )
          fprintf( fpout, "Comlist   %s~\n", strip_cr( mprog->comlist ).c_str(  ) );
 
       fprintf( fpout, "%s", "#ENDPROG\n\n" );

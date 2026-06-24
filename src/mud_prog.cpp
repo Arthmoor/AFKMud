@@ -96,8 +96,6 @@ mud_prog_data::mud_prog_data(  )
 
 mud_prog_data::~mud_prog_data(  )
 {
-   STRFREE( arglist );
-   STRFREE( comlist );
 }
 
 mprog_act_list::mprog_act_list(  )
@@ -404,8 +402,6 @@ bool mprog_veval( int lhs, std::string_view opr, int rhs, char_data * mob )
    return 0;
 }
 
-// I don't want to touch this define because this whole function scares the crap out of me and I don't want to break it.
-#define isoperator(c) ((c)=='='||(c)=='<'||(c)=='>'||(c)=='!'||(c)=='&'||(c)=='|')
 constexpr int MAX_IF_ARGS = 6;
 
 /*
@@ -1833,8 +1829,6 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
    return BERR;
 }
 
-#undef isoperator
-
 /*
  * This routine handles the variables for command expansion.
  * If you want to add any go right ahead, it should be fairly
@@ -1869,128 +1863,139 @@ std::string mprog_translate( char ch, char_data *mob, char_data *actor, obj_data
       return ch_ptr->name + ch_ptr->pcdata->title;
    };
 
-   switch (ch)
+   switch( ch )
    {
       case 'i':
-         if (mob && !mob->char_died() && !mob->name.empty()) {
+         if( mob && !mob->char_died() && !mob->name.empty() )
+         {
             std::string first;
-            one_argument(mob->name, first);
+            one_argument( mob->name, first );
             return first;
          }
          return "someone";
 
       case 'I':
-         return (mob && !mob->char_died() && !mob->short_descr.empty()) ? mob->short_descr : "someone";
+         return( mob && !mob->char_died() && !mob->short_descr.empty() ) ? mob->short_descr : "someone";
 
       case 'n':
-         if (actor && !actor->char_died() && mob->can_see(actor, false)) {
+         if( actor && !actor->char_died() && mob->can_see( actor, false ) )
+         {
             std::string first;
-            one_argument(actor->name, first);
-            if (!actor->isnpc() && !first.empty()) first[0] = toupper(first[0]);
+            one_argument( actor->name, first );
+            if( !actor->isnpc() && !first.empty() )
+               first[0] = to_upper( first[0] );
             return first;
          }
          return "someone";
 
       case 'N':
-         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? get_name(actor) : "someone";
+         return( actor && !actor->char_died() && mob->can_see( actor, false ) ) ? get_name(actor) : "someone";
 
       case 't':
-         if (vict && !vict->char_died() && mob->can_see(vict, false)) {
+         if( vict && !vict->char_died() && mob->can_see( vict, false ) )
+         {
             std::string first;
-            one_argument(vict->name, first);
-            if (!vict->isnpc() && !first.empty()) first[0] = toupper(first[0]);
+            one_argument( vict->name, first );
+            if( !vict->isnpc() && !first.empty() )
+               first[0] = to_upper( first[0] );
             return first;
          }
          return "someone";
 
       case 'T':
-         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? get_name(vict) : "someone";
+         return( vict && !vict->char_died() && mob->can_see( vict, false ) ) ? get_name( vict ) : "someone";
 
       case 'r':
-         if (rndm && !rndm->char_died() && mob->can_see(rndm, false)) {
+         if( rndm && !rndm->char_died() && mob->can_see( rndm, false ) )
+         {
             std::string first;
-            one_argument(rndm->name, first);
-            if (!rndm->isnpc() && !first.empty()) first[0] = toupper(first[0]);
+            one_argument( rndm->name, first );
+            if( !rndm->isnpc() && !first.empty() )
+               first[0] = to_upper( first[0] );
             return first;
          }
          return "someone";
 
       case 'R':
-         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? get_name(rndm) : "someone";
+         return( rndm && !rndm->char_died() && mob->can_see( rndm, false ) ) ? get_name( rndm ) : "someone";
 
       case 'e':
-         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? he_she[actor->sex] : "someone";
+         return( actor && !actor->char_died() && mob->can_see( actor, false ) ) ? he_she[actor->sex] : "someone";
 
       case 'm':
-         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? him_her[actor->sex] : "someone";
+         return( actor && !actor->char_died() && mob->can_see( actor, false ) ) ? him_her[actor->sex] : "someone";
 
       case 's':
-         return (actor && !actor->char_died() && mob->can_see(actor, false)) ? his_her[actor->sex] : "someone's";
+         return( actor && !actor->char_died() && mob->can_see( actor, false ) ) ? his_her[actor->sex] : "someone's";
 
       case 'E':
-         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? he_she[vict->sex] : "someone";
+         return( vict && !vict->char_died() && mob->can_see( vict, false ) ) ? he_she[vict->sex] : "someone";
 
       case 'M':
-         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? him_her[vict->sex] : "someone";
+         return( vict && !vict->char_died() && mob->can_see( vict, false ) ) ? him_her[vict->sex] : "someone";
 
       case 'S':
-         return (vict && !vict->char_died() && mob->can_see(vict, false)) ? his_her[vict->sex] : "someone's";
+         return( vict && !vict->char_died() && mob->can_see( vict, false ) ) ? his_her[vict->sex] : "someone's";
 
       case 'j':
-         return (mob && !mob->char_died()) ? he_she[mob->sex] : "it";
+         return( mob && !mob->char_died() ) ? he_she[mob->sex] : "it";
 
       case 'k':
-         return (mob && !mob->char_died()) ? him_her[mob->sex] : "it";
+         return( mob && !mob->char_died() ) ? him_her[mob->sex] : "it";
 
       case 'l':
-         return (mob && !mob->char_died()) ? his_her[mob->sex] : "it";
+         return( mob && !mob->char_died() ) ? his_her[mob->sex] : "it";
 
       case 'J':
-         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? he_she[rndm->sex] : "someone";
+         return( rndm && !rndm->char_died() && mob->can_see( rndm, false ) ) ? he_she[rndm->sex] : "someone";
 
       case 'K':
-         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? him_her[rndm->sex] : "someone's";
+         return( rndm && !rndm->char_died() && mob->can_see( rndm, false ) ) ? him_her[rndm->sex] : "someone's";
 
       case 'L':
-         return (rndm && !rndm->char_died() && mob->can_see(rndm, false)) ? his_her[rndm->sex] : "someone";
+         return( rndm && !rndm->char_died() && mob->can_see( rndm, false ) ) ? his_her[rndm->sex] : "someone";
 
       case 'o':
-         if (obj && !obj->extracted()) {
-            if (mob->can_see_obj(obj, false)) {
+         if( obj && !obj->extracted() )
+         {
+            if( mob->can_see_obj( obj, false ) )
+            {
                std::string first;
-               one_argument(obj->name, first);
+               one_argument( obj->name, first );
                return first;
             }
          }
          return "something";
 
       case 'O':
-         return (obj && !obj->extracted() && mob->can_see_obj(obj, false)) ? obj->short_descr : "something";
+         return( obj && !obj->extracted() && mob->can_see_obj( obj, false ) ) ? obj->short_descr : "something";
 
       case 'p':
-         if (v_obj && !v_obj->extracted()) {
-            if (mob->can_see_obj(v_obj, false)) {
+         if( v_obj && !v_obj->extracted() )
+         {
+            if( mob->can_see_obj( v_obj, false ) )
+            {
                std::string first;
-               one_argument(v_obj->name, first);
+               one_argument( v_obj->name, first );
                return first;
             }
          }
          return "something";
 
       case 'P':
-         return (v_obj && !v_obj->extracted() && mob->can_see_obj(v_obj, false)) ? v_obj->short_descr : "something";
+         return( v_obj && !v_obj->extracted() && mob->can_see_obj( v_obj, false ) ) ? v_obj->short_descr : "something";
 
       case 'a':
-         return (obj && !obj->extracted()) ? aoran(obj->name) : "a";
+         return( obj && !obj->extracted() ) ? aoran( obj->name ) : "a";
 
       case 'A':
-         return (v_obj && !v_obj->extracted()) ? aoran(v_obj->name) : "a";
+         return( v_obj && !v_obj->extracted() ) ? aoran( v_obj->name ) : "a";
 
       case '$':
          return "$";
 
       default:
-         progbug("Bad $var", mob);
+         progbugf( mob, "Bad $var: {}", ch );
          return "";
    }
 }
@@ -2570,50 +2575,61 @@ void mpsleep_update( void )
 
 bool mprog_keyword_check( std::string_view argu, std::string_view argl )
 {
-   std::string arg{ argu };
-   std::string arglist{ argl };
+   // Create lowercase copies for case-insensitive comparison.
+   std::string arg{argu};
+   strlower (arg );
 
-   strlower( arg );
+   std::string arglist{argl};
    strlower( arglist );
 
-   if( arglist.size() >= 2 && arglist[0] == 'p' && arglist[1] == ' ' )
-   {
-      std::string_view phrase{ arglist.c_str() + 2 };
-      size_t pos = arg.find( phrase );
+   std::string_view arg_view{arg};
+   std::string_view list_view{arglist};
 
-      while( pos != std::string::npos )
+   // Phrase matches ("p ")
+   if( list_view.starts_with( "p " ) )
+   {
+      std::string_view phrase = list_view.substr(2);
+      size_t pos = arg_view.find( phrase );
+      while( pos != std::string_view::npos )
       {
-         bool start_ok = ( pos == 0 || arg[pos - 1] == ' ' );
-         bool end_ok = ( ( pos + phrase.size() ) == arg.size() || arg[pos + phrase.size()] == ' ' );
+         bool start_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( arg_view[pos - 1] ) ) );
+         bool end_ok = ( ( pos + phrase.size() ) == arg_view.size() || std::isspace( static_cast<unsigned char>( arg_view[pos + phrase.size()] ) ) );
 
          if( start_ok && end_ok )
             return true;
-
-         pos = arg.find( phrase, pos + 1 );
+         pos = arg_view.find( phrase, pos + 1 );
       }
    }
    else
    {
-      std::string word;
-      std::string_view remaining = arglist;
-
+      // Word list matches
+      std::string_view remaining = list_view;
       while( !remaining.empty() )
       {
-         remaining = one_argument( remaining, word );
-         if( word.empty() )
+         // Skip spaces to find the start of the next word.
+         auto start = remaining.find_first_not_of( ' ' );
+         if( start == std::string_view::npos )
             break;
+         remaining.remove_prefix( start );
 
-         size_t pos = arg.find( word );
-         while( pos != std::string::npos )
+         // Find the end of the word.
+         auto end = remaining.find( ' ' );
+         std::string_view word = ( end == std::string_view::npos ) ? remaining : remaining.substr( 0, end );
+
+         size_t pos = arg_view.find(word);
+         while( pos != std::string_view::npos )
          {
-            bool start_ok = ( pos == 0 || arg[pos - 1] == ' ' );
-            bool end_ok = ( ( pos + word.size() ) == arg.size() || arg[pos + word.size()] == ' ' );
+            bool start_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( arg_view[pos - 1] ) ) );
+            bool end_ok = ( ( pos + word.size() ) == arg_view.size() || std::isspace( static_cast<unsigned char>( arg_view[pos + word.size()] ) ) );
 
             if( start_ok && end_ok )
                return true;
-
-            pos = arg.find( word, pos + 1 );
+            pos = arg_view.find( word, pos + 1 );
          }
+
+         if( end == std::string_view::npos )
+            break;
+         remaining.remove_prefix( end );
       }
    }
    return false;
@@ -2626,320 +2642,450 @@ bool mprog_keyword_check( std::string_view argu, std::string_view argl )
  */
 bool mprog_and_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {
-   char temp1[MSL], temp2[MIL], word[MIL];
-   char *list, *start, *dupl, *end;
-   size_t j, i;
-   bool executed = false;
+   if( !mob || !mob->pIndexData )
+      return false;
+
+   // Create a lowercase working copy of the input.
+   std::string dupl{arg};
+   strlower( dupl );
+   std::string_view dupl_view{dupl};
 
    for( auto* mprg : mob->pIndexData->mudprogs )
    {
-      if( mprg->type == type )
+      if( mprg->type != type )
+         continue;
+
+      std::string list_copy{mprg->arglist};
+      strlower( list_copy );
+
+      size_t total_words = 0;
+      size_t match_count = 0;
+
+      std::string_view remaining = list_copy;
+
+      while( !remaining.empty() )
       {
-         strcpy( temp1, mprg->arglist );
-         list = temp1;
-         for( i = 0; i < strlen( list ); ++i )
-            list[i] = to_lower( list[i] );
+         auto start = remaining.find_first_not_of( ' ' );
+         if( start == std::string_view::npos )
+            break;
+         remaining.remove_prefix( start );
 
-         strcpy( temp2, arg.data() );
-         dupl = temp2;
+         auto space_pos = remaining.find( ' ' );
+         std::string_view word = ( space_pos == std::string_view::npos ) ? remaining : remaining.substr( 0, space_pos );
 
-         for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = to_lower( dupl[i] );
+         if( !word.empty() )
          {
-            j = 0;
-            for( i = 0; i < strlen( list ); ++i )
+            total_words++;
+
+            // Verify if this specific word exists in the input 'arg' with proper boundaries.
+            size_t pos = dupl_view.find( word );
+            while( pos != std::string_view::npos )
             {
-               if( isspace( list[i] ) )
-                  ++j;
-            }
-            ++j;
-            list = one_argument( list, word );
-            i = 0;
-            for( ; word[0] != '\0'; list = one_argument( list, word ) )
-            {
-               if( ( start = strstr( dupl, word ) ) )
+               bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+               size_t end_pos = pos + word.size();
+               bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+               if( left_ok && right_ok )
                {
-                  if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( word ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
-                     ++i;
-                  if( i == j )
-                  {
-                     mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-                     executed = true;
-                     break;
-                  }
+                  match_count++;
+                  break; // Found this word, move to next token in arglist.
                }
+               pos = dupl_view.find( word, pos + 1 );
             }
          }
+         remaining = ( space_pos == std::string_view::npos ) ? "" : remaining.substr( space_pos + 1 );
+      }
+
+      // Only trigger if all words from the arglist were found in the input.
+      if( total_words > 0 && match_count == total_words )
+      {
+         mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
+         return true;
       }
    }
-   return executed;
+   return false;
 }
 
 bool mprog_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {
-   char temp1[MSL], temp2[MIL], word[MIL];
-   char *list, *start, *dupl, *end;
-   size_t i;
+   if( !mob || !mob->pIndexData )
+      return false;
+
    bool executed = false;
+
+   // Create a lowercase working copy of the input.
+   std::string dupl{arg};
+   strlower( dupl );
+   std::string_view dupl_view{dupl};
 
    for( auto* mprg : mob->pIndexData->mudprogs )
    {
-      if( mprg->type == type )
+      if( mprg->type != type )
+         continue;
+
+      std::string list_copy{mprg->arglist};
+      strlower( list_copy );
+      std::string_view list_view{list_copy};
+
+      // Phrase matches ("p ")
+      if( list_view.starts_with( "p " ) )
       {
-         strcpy( temp1, mprg->arglist );
-         list = temp1;
-         for( i = 0; i < strlen( list ); ++i )
-            list[i] = to_lower( list[i] );
-
-         strcpy( temp2, arg.data() );
-         dupl = temp2;
-         for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = to_lower( dupl[i] );
-
-         if( ( list[0] == 'p' ) && ( list[1] == ' ' ) )
+         std::string_view phrase = list_view.substr(2);
+         auto pos = dupl_view.find( phrase );
+         while( pos != std::string_view::npos )
          {
-            list += 2;
-            while( ( start = strstr( dupl, list ) ) )
-               if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( list ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
-               {
-                  mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-                  executed = true;
-                  break;
-               }
-               else
-                  dupl = start + 1;
+            bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+            size_t end_pos = pos + phrase.size();
+            bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+            if( left_ok && right_ok )
+            {
+               mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
+               executed = true;
+               break;
+            }
+            pos = dupl_view.find( phrase, pos + 1 );
          }
-         else
+      }
+      else
+      {
+         // Word list matches
+         std::string_view remaining = list_view;
+         while( !remaining.empty() )
          {
-            list = one_argument( list, word );
-            for( ; word[0] != '\0'; list = one_argument( list, word ) )
-               while( ( start = strstr( dupl, word ) ) )
-                  if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( word ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
+            auto space_pos = remaining.find( ' ' );
+            std::string_view word = ( space_pos == std::string_view::npos ) ? remaining : remaining.substr( 0, space_pos );
+
+            if( !word.empty() )
+            {
+               auto pos = dupl_view.find( word );
+               while( pos != std::string_view::npos )
+               {
+                  bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+                  size_t end_pos = pos + word.size();
+                  bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+                  if( left_ok && right_ok )
                   {
                      mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
                      executed = true;
                      break;
                   }
-                  else
-                     dupl = start + 1;
+                  pos = dupl_view.find( word, pos + 1 );
+               }
+            }
+            if( executed )
+               break;
+            remaining = ( space_pos == std::string_view::npos ) ? "" : remaining.substr( space_pos + 1 );
          }
       }
+      if( executed )
+         break;
    }
    return executed;
 }
 
 bool oprog_and_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, obj_data * iobj )
 {
-   char temp1[MSL], temp2[MIL], word[MIL];
-   char *list, *start, *dupl, *end;
-   size_t i, j;
-   bool executed = false;
+   if( !iobj || !iobj->pIndexData )
+      return false;
+
+   // Create a lowercase working copy of the input.
+   std::string dupl{arg};
+   strlower( dupl );
+   std::string_view dupl_view{dupl};
 
    for( auto* mprg : iobj->pIndexData->mudprogs )
    {
-      if( mprg->type == type )
+      if( mprg->type != type )
+         continue;
+
+      std::string list_copy{mprg->arglist};
+      strlower( list_copy );
+
+      size_t total_words = 0;
+      size_t match_count = 0;
+
+      std::string_view remaining = list_copy;
+
+      while( !remaining.empty() )
       {
-         strcpy( temp1, mprg->arglist );
-         list = temp1;
-         for( i = 0; i < strlen( list ); ++i )
-            list[i] = to_lower( list[i] );
-
-         strcpy( temp2, arg.data() );
-         dupl = temp2;
-         for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = to_lower( dupl[i] );
-
-         j = 0;
-         for( i = 0; i < strlen( list ); ++i )
-         {
-            if( isspace( list[i] ) )
-               ++j;
-         }
-         ++j;
-         list = one_argument( list, word );
-         i = 0;
-         for( ; word[0] != '\0'; list = one_argument( list, word ) )
-            if( ( start = strstr( dupl, word ) ) )
-               if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( word ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
-                  ++i;
-         if( i == j )
-         {
-            set_supermob( iobj );
-            mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-            release_supermob(  );
-            executed = true;
+         auto start = remaining.find_first_not_of( ' ' );
+         if( start == std::string_view::npos )
             break;
+         remaining.remove_prefix( start );
+
+         auto space_pos = remaining.find( ' ' );
+         std::string_view word = ( space_pos == std::string_view::npos ) ? remaining : remaining.substr( 0, space_pos );
+
+         if( !word.empty() )
+         {
+            total_words++;
+
+            // Verify if this specific word exists in the input arg with boundary checks.
+            size_t pos = dupl_view.find( word );
+            while( pos != std::string_view::npos )
+            {
+               bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+               size_t end_pos = pos + word.size();
+               bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+               if( left_ok && right_ok )
+               {
+                  match_count++;
+                  break;
+               }
+               pos = dupl_view.find( word, pos + 1 );
+            }
          }
+         remaining = ( space_pos == std::string_view::npos ) ? "" : remaining.substr( space_pos + 1 );
+      }
+
+      // Trigger only if every word in the arglist was found.
+      if( total_words > 0 && match_count == total_words )
+      {
+         set_supermob( iobj );
+         mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
+         release_supermob();
+         return true;
       }
    }
-   return executed;
+   return false;
 }
 
 bool oprog_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, obj_data * iobj )
 {
-   char temp1[MSL], temp2[MIL], word[MIL];
-   char *list, *start, *dupl, *end;
-   size_t i;
+   if( !iobj || !iobj->pIndexData )
+      return false;
+
    bool executed = false;
+
+   // Create a lowercase working copy of the input.
+   std::string dupl{arg};
+   strlower( dupl );
+   std::string_view dupl_view{dupl};
 
    for( auto* mprg : iobj->pIndexData->mudprogs )
    {
-      if( mprg->type == type )
+      if( mprg->type != type )
+         continue;
+
+      std::string list_copy{mprg->arglist};
+      strlower( list_copy );
+      std::string_view list_view{list_copy};
+
+      // Phrase matches ("p ")
+      if( list_view.starts_with( "p " ) )
       {
-         strcpy( temp1, mprg->arglist );
-         list = temp1;
-         for( i = 0; i < strlen( list ); ++i )
-            list[i] = to_lower( list[i] );
-
-         strcpy( temp2, arg.data() );
-         dupl = temp2;
-         for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = to_lower( dupl[i] );
-
-         if( ( list[0] == 'p' ) && ( list[1] == ' ' ) )
+         std::string_view phrase = list_view.substr(2);
+         auto pos = dupl_view.find( phrase );
+         while( pos != std::string_view::npos )
          {
-            list += 2;
-            while( ( start = strstr( dupl, list ) ) )
-               if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( list ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
-               {
-                  set_supermob( iobj );
-                  mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-                  executed = true;
-                  release_supermob(  );
-                  break;
-               }
-               else
-                  dupl = start + 1;
+            bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+            size_t end_pos = pos + phrase.size();
+            bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+            if( left_ok && right_ok )
+            {
+               set_supermob( iobj );
+               mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
+               executed = true;
+               release_supermob();
+               break;
+            }
+            pos = dupl_view.find( phrase, pos + 1 );
          }
-         else
+      }
+      else
+      {
+         // Word list matches
+         std::string_view remaining = list_view;
+         while( !remaining.empty() )
          {
-            list = one_argument( list, word );
-            for( ; word[0] != '\0'; list = one_argument( list, word ) )
-               while( ( start = strstr( dupl, word ) ) )
-                  if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( word ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
+            auto space_pos = remaining.find( ' ' );
+            std::string_view word = ( space_pos == std::string_view::npos ) ? remaining : remaining.substr( 0, space_pos );
+
+            if( !word.empty() )
+            {
+               auto pos = dupl_view.find( word );
+               while( pos != std::string_view::npos )
+               {
+                  bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+                  size_t end_pos = pos + word.size();
+                  bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+                  if( left_ok && right_ok )
                   {
                      set_supermob( iobj );
                      mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
                      executed = true;
-                     release_supermob(  );
+                     release_supermob();
                      break;
                   }
-                  else
-                     dupl = start + 1;
+                  pos = dupl_view.find( word, pos + 1 );
+               }
+            }
+            if( executed )
+               break;
+            remaining = ( space_pos == std::string_view::npos ) ? "" : remaining.substr( space_pos + 1 );
          }
       }
+      if( executed )
+         break;
    }
    return executed;
 }
 
 bool rprog_and_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, room_index * room )
 {
-   char temp1[MSL], temp2[MIL], word[MIL];
-   char *list, *start, *dupl, *end;
-   size_t i, j;
-   bool executed = false;
-
-   if( actor && !actor->char_died(  ) && actor->in_room )
+   if( actor && !actor->char_died() && actor->in_room )
       room = actor->in_room;
+
+   // Create a lowercase copy of the input for matching.
+   std::string dupl{arg};
+   strlower( dupl );
+   std::string_view dupl_view{dupl};
 
    for( auto* mprg : room->mudprogs )
    {
-      if( mprg->type == type )
+      if( mprg->type != type )
+         continue;
+
+      std::string list_copy{mprg->arglist};
+      strlower( list_copy );
+
+      // Count total words in the arglist.
+      size_t total_words = 0;
+      size_t match_count = 0;
+
+      std::string_view remaining = list_copy;
+
+      while( !remaining.empty() )
       {
-         strcpy( temp1, mprg->arglist );
-         list = temp1;
-         for( i = 0; i < strlen( list ); ++i )
-            list[i] = to_lower( list[i] );
+         // Skip leading spaces.
+         auto start = remaining.find_first_not_of( ' ' );
+         if( start == std::string_view::npos )
+            break;
+         remaining.remove_prefix( start );
 
-         strcpy( temp2, arg.data() );
-         dupl = temp2;
-         for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = to_lower( dupl[i] );
+         auto space_pos = remaining.find( ' ' );
+         std::string_view word = ( space_pos == std::string_view::npos ) ? remaining : remaining.substr( 0, space_pos );
 
-         j = 0;
-         for( i = 0; i < strlen( list ); ++i )
+         if (!word.empty())
          {
-            if( isspace( list[i] ) )
+            total_words++;
+
+            // Check if this word exists in the input 'arg' with proper boundaries.
+            size_t pos = dupl_view.find( word );
+            while( pos != std::string_view::npos )
             {
-               ++j;
+               bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+               size_t end_pos = pos + word.size();
+               bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+               if( left_ok && right_ok )
+               {
+                  match_count++;
+                  break; // Found this word, move to next word in list.
+               }
+               pos = dupl_view.find( word, pos + 1 );
             }
          }
-         ++j;
-         list = one_argument( list, word );
-         i = 0;
-         for( ; word[0] != '\0'; list = one_argument( list, word ) )
-            if( ( start = strstr( dupl, word ) ) )
-               if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( word ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
-                  ++i;
-         if( i == j )
-         {
-            rset_supermob( room );
-            mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-            release_supermob(  );
-            executed = true;
-            break;
-         }
+
+         remaining = ( space_pos == std::string_view::npos ) ? "" : remaining.substr( space_pos + 1 );
+      }
+
+      // Only trigger if all words from the arglist were found in the input.
+      if( total_words > 0 && match_count == total_words )
+      {
+         rset_supermob( room );
+         mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
+         release_supermob();
+         return true; // The program executed.
       }
    }
-   return executed;
+   return false;
 }
 
 bool rprog_wordlist_check( std::string_view arg, char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type, room_index * room )
 {
-   char temp1[MSL], temp2[MIL], word[MIL];
-   char *list, *start, *dupl, *end;
-   size_t i;
+   if( actor && !actor->char_died() && actor->in_room )
+      room = actor->in_room;
+
    bool executed = false;
 
-   if( actor && !actor->char_died(  ) && actor->in_room )
-      room = actor->in_room;
+   // Create lowercase working copy of the input.
+   std::string dupl{arg};
+   strlower( dupl );
+   std::string_view dupl_view{dupl};
 
    for( auto* mprg : room->mudprogs )
    {
-      if( mprg->type == type )
+      if( mprg->type != type )
+         continue;
+
+      std::string list_copy{mprg->arglist};
+      strlower( list_copy );
+      std::string_view list_view{list_copy};
+
+      // Phrase matches ("p ")
+      if( list_view.starts_with( "p " ) )
       {
-         strcpy( temp1, mprg->arglist );
-         list = temp1;
-         for( i = 0; i < strlen( list ); ++i )
-            list[i] = to_lower( list[i] );
-
-         strcpy( temp2, arg.data() );
-         dupl = temp2;
-         for( i = 0; i < strlen( dupl ); ++i )
-            dupl[i] = to_lower( dupl[i] );
-
-         if( ( list[0] == 'p' ) && ( list[1] == ' ' ) )
+         std::string_view phrase = list_view.substr(2);
+         auto pos = dupl_view.find( phrase );
+         while( pos != std::string_view::npos )
          {
-            list += 2;
-            while( ( start = strstr( dupl, list ) ) )
-               if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( list ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
-               {
-                  rset_supermob( room );
-                  mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
-                  executed = true;
-                  release_supermob(  );
-                  break;
-               }
-               else
-                  dupl = start + 1;
+            bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+            size_t end_pos = pos + phrase.size();
+            bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+            if (left_ok && right_ok)
+            {
+               rset_supermob( room );
+               mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
+               executed = true;
+               release_supermob();
+               break;
+            }
+            pos = dupl_view.find( phrase, pos + 1 );
          }
-         else
+      }
+      else
+      {
+         // Word list matches.
+         std::string_view remaining = list_view;
+         while( !remaining.empty() )
          {
-            list = one_argument( list, word );
-            for( ; word[0] != '\0'; list = one_argument( list, word ) )
-               while( ( start = strstr( dupl, word ) ) )
-                  if( ( start == dupl || *( start - 1 ) == ' ' ) && ( *( end = start + strlen( word ) ) == ' ' || *end == '\n' || *end == '\r' || *end == '\0' ) )
+            auto space_pos = remaining.find( ' ' );
+            std::string_view word = ( space_pos == std::string_view::npos ) ? remaining : remaining.substr( 0, space_pos );
+
+            if( !word.empty() )
+            {
+               auto pos = dupl_view.find( word );
+               while( pos != std::string_view::npos )
+               {
+                  bool left_ok = ( pos == 0 || std::isspace( static_cast<unsigned char>( dupl_view[pos - 1] ) ) );
+                  size_t end_pos = pos + word.size();
+                  bool right_ok = ( end_pos == dupl_view.size() || std::isspace( static_cast<unsigned char>( dupl_view[end_pos] ) ) );
+
+                  if (left_ok && right_ok )
                   {
                      rset_supermob( room );
                      mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
                      executed = true;
-                     release_supermob(  );
+                     release_supermob();
                      break;
                   }
-                  else
-                     dupl = start + 1;
+                  pos = dupl_view.find( word, pos + 1 );
+               }
+            }
+            if( executed )
+               break;
+            remaining = ( space_pos == std::string_view::npos ) ? "" : remaining.substr( space_pos + 1 );
          }
       }
+      if( executed )
+         break;
    }
    return executed;
 }
@@ -2948,7 +3094,7 @@ void mprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
 {
    for( auto* mprg : mob->pIndexData->mudprogs )
    {
-      if( ( mprg->type == type ) && mprg->arglist != nullptr && ( number_percent(  ) <= atoi( mprg->arglist ) ) )
+      if( ( mprg->type == type ) && !mprg->arglist.empty() && ( number_percent(  ) <= std::stoi( mprg->arglist ) ) )
       {
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
          if( type != GREET_PROG && type != ALL_GREET_PROG && type != LOGIN_PROG && type != VOID_PROG && type != GREET_IN_FIGHT_PROG )
@@ -2963,7 +3109,7 @@ void mprog_time_check( char_data * mob, char_data * actor, obj_data * obj, char_
 
    for( auto* mprg : mob->pIndexData->mudprogs )
    {
-      trigger_time = ( time_info.hour == atoi( mprg->arglist ) );
+      trigger_time = ( time_info.hour == std::stoi( mprg->arglist ) );
 
       if( !trigger_time )
       {
@@ -3097,7 +3243,7 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
 
       if( HAS_PROG( vobj->pIndexData, KEYWORD_PROG ) )
       {
-         char *buf = nullptr;
+         std::string buf;
 
          for( auto* mprg : vobj->pIndexData->mudprogs )
          {
@@ -3107,8 +3253,7 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
             if( mprg->type != KEYWORD_PROG )
                continue;
 
-            STRFREE( buf );
-            buf = STRALLOC( mprg->arglist );
+            buf = mprg->arglist;
             /*
              * Allow for room or inv only triggers 
              */
@@ -3116,8 +3261,7 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
             {
                if( mprg->arglist[0] == 'r' )
                {
-                  STRFREE( buf );
-                  buf = STRALLOC( mprg->arglist + 2 );
+                  buf = mprg->arglist.substr(2);
                }
                else
                   continue;
@@ -3143,7 +3287,7 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
 
       if( HAS_PROG( vobj->pIndexData, KEYWORD_PROG ) )
       {
-         char *buf = nullptr;
+         std::string buf;
 
          for( auto* mprg : vobj->pIndexData->mudprogs )
          {
@@ -3152,8 +3296,8 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
 
             if( mprg->type != KEYWORD_PROG )
                continue;
-            STRFREE( buf );
-            buf = STRALLOC( mprg->arglist );
+
+            buf = mprg->arglist;
             /*
              * Allow for room or inv only triggers 
              */
@@ -3161,18 +3305,15 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
             {
                if( mprg->arglist[0] == 'i' && vobj->wear_loc == -1 )
                {
-                  STRFREE( buf );
-                  buf = STRALLOC( mprg->arglist + 2 );
+                  buf = mprg->arglist.substr(2);
                }
                else if( mprg->arglist[0] == 'e' && vobj->wear_loc > -1 )
                {
-                  STRFREE( buf );
-                  buf = STRALLOC( mprg->arglist + 2 );
+                  buf = mprg->arglist.substr(2);
                }
                else if( mprg->arglist[0] == 'c' )
                {
-                  STRFREE( buf );
-                  buf = STRALLOC( mprg->arglist + 2 );
+                  buf = mprg->arglist.substr(2);
                }
                else
                   continue;
@@ -3217,11 +3358,11 @@ void mprog_bribe_trigger( char_data * mob, char_data * ch, int amount )
 
       for( auto* mprg : mob->pIndexData->mudprogs )
       {
-         if( ( mprg->type == BRIBE_PROG ) && ( amount >= atoi( mprg->arglist ) ) )
+         if( ( mprg->type == BRIBE_PROG ) && ( amount >= std::stoi( mprg->arglist ) ) )
          {
             if( tprg )
             {	
-               if( atoi( tprg->arglist ) < atoi( mprg->arglist ) )
+               if( std::stoi( tprg->arglist ) < std::stoi( mprg->arglist ) )
                   tprg = mprg; 
             }
             else
@@ -3447,7 +3588,7 @@ void mprog_hitprcnt_trigger( char_data * mob, char_data * ch )
    {
       for( auto* mprg : mob->pIndexData->mudprogs )
       {
-         if( mprg->type == HITPRCNT_PROG && ( 100 * mob->hit / mob->max_hit ) < atoi( mprg->arglist ) )
+         if( mprg->type == HITPRCNT_PROG && ( 100 * mob->hit / mob->max_hit ) < std::stoi( mprg->arglist ) )
          {
             mprog_driver( mprg->comlist, mob, ch, nullptr, nullptr, nullptr, false );
             break;
@@ -3537,7 +3678,7 @@ void mprog_script_trigger( char_data * mob )
    {
       for( auto* mprg : mob->pIndexData->mudprogs )
       {
-         if( mprg->type == SCRIPT_PROG && ( mprg->arglist[0] == '\0' || mob->mpscriptpos != 0 || atoi( mprg->arglist ) == time_info.hour ) )
+         if( mprg->type == SCRIPT_PROG && ( mprg->arglist.empty() || mob->mpscriptpos != 0 || std::stoi( mprg->arglist ) == time_info.hour ) )
             mprog_driver( mprg->comlist, mob, nullptr, nullptr, nullptr, nullptr, true );
       }
    }
@@ -3551,7 +3692,7 @@ void oprog_script_trigger( obj_data * obj )
       {
          if( mprg->type == SCRIPT_PROG )
          {
-            if( mprg->arglist[0] == '\0' || obj->mpscriptpos != 0 || atoi( mprg->arglist ) == time_info.hour )
+            if( mprg->arglist.empty() || obj->mpscriptpos != 0 || std::stoi( mprg->arglist ) == time_info.hour )
             {
                set_supermob( obj );
                mprog_driver( mprg->comlist, supermob, nullptr, nullptr, nullptr, nullptr, true );
@@ -3585,7 +3726,7 @@ void rprog_script_trigger( room_index * room )
       {
          if( mprg->type == SCRIPT_PROG )
          {
-            if( mprg->arglist[0] == '\0' || room->mpscriptpos != 0 || atoi( mprg->arglist ) == time_info.hour )
+            if( mprg->arglist.empty() || room->mpscriptpos != 0 || std::stoi( mprg->arglist ) == time_info.hour )
             {
                rset_supermob( room );
                mprog_driver( mprg->comlist, supermob, nullptr, nullptr, nullptr, nullptr, true );
@@ -3684,7 +3825,7 @@ bool oprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
 
    for( auto* mprg : obj->pIndexData->mudprogs )
    {
-      if( mprg->type == type && ( number_percent(  ) <= atoi( mprg->arglist ) ) )
+      if( mprg->type == type && ( number_percent(  ) <= std::stoi( mprg->arglist ) ) )
       {
          executed = true;
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
@@ -3986,7 +4127,7 @@ void rprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
 
    for( auto* mprg : mob->in_room->mudprogs )
    {
-      if( mprg->type == type && number_percent(  ) <= atoi( mprg->arglist ) )
+      if( mprg->type == type && number_percent(  ) <= std::stoi( mprg->arglist ) )
       {
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
          if( type != ENTRY_PROG )
@@ -4137,7 +4278,7 @@ void rprog_time_check( char_data * mob, char_data * actor, obj_data * obj, room_
 
    for( auto* mprg : room->mudprogs )
    {
-      trigger_time = ( time_info.hour == atoi( mprg->arglist ) );
+      trigger_time = ( time_info.hour == std::stoi( mprg->arglist ) );
 
       if( !trigger_time )
       {
@@ -4184,7 +4325,7 @@ void mprog_month_check( char_data * mob, char_data * actor, obj_data * obj, char
 {
    for( auto* mprg : mob->pIndexData->mudprogs )
    {
-      if( mprg->type == type && time_info.month == atoi( mprg->arglist ) )
+      if( mprg->type == type && time_info.month == std::stoi( mprg->arglist ) )
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
    }
 }
@@ -4193,7 +4334,7 @@ void rprog_month_check( char_data * mob, char_data * actor, obj_data * obj, room
 {
    for( auto* mprg : room->mudprogs )
    {
-      if( mprg->type == type && time_info.month == atoi( mprg->arglist ) )
+      if( mprg->type == type && time_info.month == std::stoi( mprg->arglist ) )
          mprog_driver( mprg->comlist, mob, actor, obj, nullptr, nullptr, false );
    }
 }
@@ -4202,7 +4343,7 @@ void oprog_month_check( char_data * mob, char_data * actor, obj_data * obj, char
 {
    for( auto* mprg : obj->pIndexData->mudprogs )
    {
-      if( mprg->type == type && time_info.month == atoi( mprg->arglist ) )
+      if( mprg->type == type && time_info.month == std::stoi( mprg->arglist ) )
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
    }
 }
