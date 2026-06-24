@@ -583,43 +583,6 @@ if( !strcasecmp( word, (literal) ) )   \
 #define REMOVE_EXIT_FLAG(var, bit) (var)->flags.reset((bit))
 
 // Memory allocation macros. Your days are numbered...
-#if defined(__FreeBSD__)
-#define DISPOSE(point)                      \
-do                                          \
-{                                           \
-   if( (point) )                            \
-   {                                        \
-      free( (point) );                      \
-      (point) = nullptr;                    \
-   }                                        \
-} while(0)
-#else
-#define DISPOSE(point)                         \
-do                                             \
-{                                              \
-   if( (point) )                               \
-   {                                           \
-      if( typeid((point)) == typeid(char*) || typeid((point)) == typeid(const char*) ) \
-      {                                        \
-         if( in_hash_table( (point) ) )        \
-         {                                     \
-            log_printf( "&RDISPOSE called on STRALLOC pointer: {}, line {}\n", __FILE__, __LINE__ ); \
-            log_string( "Attempting to correct." ); \
-            if( str_free( (point) ) == -1 )    \
-               log_printf( "&RSTRFREEing bad pointer: {}, line {}\n", __FILE__, __LINE__ ); \
-         }                                     \
-         else                                  \
-            free( (point) );                   \
-      }                                        \
-      else                                     \
-         free( (point) );                      \
-      (point) = nullptr;                       \
-   }                                           \
-   else                                        \
-      (point) = nullptr;                       \
-} while(0)
-#endif
-
 #define STRALLOC(point)		str_alloc((point), __func__, __FILE__, __LINE__)
 #define QUICKLINK(point)	quick_link((point))
 #if defined(__FreeBSD__)
