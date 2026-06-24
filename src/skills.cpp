@@ -197,7 +197,7 @@ const char *att_kick_miss_vic[] = {
    "You laugh as $n dents $s foot on your bark.",
    "You easily avoid a sloppy kick from $n.",
    "$n's kick parts your hair but does little else.",
-   "$n's light kick to your shin bearly gets your attention.",
+   "$n's light kick to your shin barely gets your attention.",
    "$n passes through you with $s puny kick.",
    "You nimbly flitter away from $n's kick.",
    "You sneer as you sidestep $n's kick.",
@@ -243,7 +243,7 @@ const char *att_kick_hit_ch[] = {
    "Your kick hits $N, sending small branches and leaves everywhere.",
    "Your kick contacts with $N, dislodging little pieces of $M.",
    "Your kick hits $N right in the stomach, $N is rendered breathless.",
-   "You stomp on $N's foot. After all, thats about all you can do to a giant.",
+   "You stomp on $N's foot. After all, that's about all you can do to a giant.",
    "",   /* GHOST */
    "Your kick  sends $N reeling through the air.",
    "You kick $N and feel rotten bones crunch from the blow.",
@@ -293,7 +293,7 @@ const char *att_kick_hit_room[] = {
    "$n sends $N reeling through the air with a mighty kick.",
    "$n kicks $N causing parts of $N to cave in!",
    "$n kicks $N in the side with a hefty roundhouse kick.",
-   "$n kicks $N, cracking exo-skelelton.",
+   "$n kicks $N, cracking exoskeleton.",
    "$n kicks $N hard, sending scales flying!",
    "$n leaps up and nails $N with a mighty kick.",
    "."
@@ -345,29 +345,6 @@ skill_type::~skill_type(  )
          deleteptr( af );
       }
    }
-   DISPOSE( name );
-   STRFREE( author );
-   DISPOSE( noun_damage );
-   DISPOSE( msg_off );
-   DISPOSE( hit_char );
-   DISPOSE( hit_vict );
-   DISPOSE( hit_room );
-   DISPOSE( hit_dest );
-   DISPOSE( miss_char );
-   DISPOSE( miss_vict );
-   DISPOSE( miss_room );
-   DISPOSE( die_char );
-   DISPOSE( die_vict );
-   DISPOSE( die_room );
-   DISPOSE( imm_char );
-   DISPOSE( imm_vict );
-   DISPOSE( imm_room );
-   DISPOSE( dice );
-   DISPOSE( components );
-   DISPOSE( teachers );
-   DISPOSE( spell_fun_name );
-   DISPOSE( skill_fun_name );
-   DISPOSE( helptext );
 }
 
 bool SPELL_FLAG( const skill_type * skill, int flag )
@@ -734,9 +711,9 @@ int herb_lookup( std::string_view name )
 {
    for( int sn = 0; sn < top_herb; ++sn )
    {
-      if( !herb_table[sn] || !herb_table[sn]->name )
+      if( !herb_table[sn] || herb_table[sn]->name.empty() )
          return -1;
-      if( to_lower( name.front() ) == to_lower( herb_table[sn]->name[0] ) && !str_prefix( name, herb_table[sn]->name ) )
+      if( to_lower( name.front() ) == to_lower( herb_table[sn]->name.front() ) && !str_prefix( name, herb_table[sn]->name ) )
          return sn;
    }
    return -1;
@@ -802,46 +779,29 @@ void remap_slot_numbers( void )
 
 bool IS_VALID_SN( int sn )
 {
-   if( sn >= 0 && sn < MAX_SKILL && skill_table[sn] && skill_table[sn]->name )
+   if( sn >= 0 && sn < MAX_SKILL && skill_table[sn] && !skill_table[sn]->name.empty() )
       return true;
    return false;
 }
 
 bool IS_VALID_HERB( int sn )
 {
-   if( sn >= 0 && sn < MAX_HERB && herb_table[sn] && herb_table[sn]->name )
+   if( sn >= 0 && sn < MAX_HERB && herb_table[sn] && !herb_table[sn]->name.empty() )
       return true;
    return false;
 }
 
 bool IS_VALID_DISEASE( int sn )
 {
-   if( sn >= 0 && sn < MAX_DISEASE && disease_table[sn] && disease_table[sn]->name )
+   if( sn >= 0 && sn < MAX_DISEASE && disease_table[sn] && !disease_table[sn]->name.empty() )
       return true;
    return false;
 }
 
-/*
- * Function used by qsort to sort skills; sorts by name, not case sensitive.
- */
-int skill_comp( skill_type ** sk1, skill_type ** sk2 )
-{
-   skill_type *skill1 = ( *sk1 );
-   skill_type *skill2 = ( *sk2 );
-
-   if( !skill1 && skill2 )
-      return 1;
-   if( skill1 && !skill2 )
-      return -1;
-   if( !skill1 && !skill2 )
-      return 0;
-   // Sort without regard to case.
-   return strcasecmp( skill1->name, skill2->name );
-}
-
 void update_skill_index( skill_type * skill, int sn )
 {
-   std::string buf = strlower( skill->name );
+   std::string buf = skill->name;
+   strlower( buf );
 
    skill_table__index[buf] = sn;
 
@@ -878,24 +838,23 @@ void update_skill_index( skill_type * skill, int sn )
 }
 
 /*
- * Sort the skill table with qsort
+ * Sort the skill table.
  */
-void sort_skill_table(  )
+void populate_skill_indexes()
 {
-   log_string( "Sorting skill table..." );
-   // Jury is still out on whether or not we care if this is sorted: qsort( &skill_table[1], num_skills - 1, sizeof( skill_type * ), ( int ( * )( const void *, const void * ) )skill_comp );
+   log_string( "Populating skill indexes..." );
 
    // Populate index
-   skill_type *cur;
    for( int sn = 1; sn < num_skills; ++sn )
    {
-      if( !( cur = skill_table[sn] ) || !cur->name )
-         continue;
-      update_skill_index( cur, sn );
+      if( skill_table[sn] && !skill_table[sn]->name.empty() )
+      {
+         update_skill_index( skill_table[sn], sn );
+      }
    }
 }
 
-int get_skill( const std::string & skilltype )
+int get_skill( std::string_view skilltype )
 {
    if( !str_cmp( skilltype, "Racial" ) )
       return SKILL_RACIAL;
@@ -919,11 +878,11 @@ int get_skill( const std::string & skilltype )
  */
 void fwrite_skill( FILE * fpout, skill_type * skill )
 {
-   fprintf( fpout, "Name         %s~\n", skill->name );
+   fprintf( fpout, "Name         %s~\n", skill->name.c_str() );
    fprintf( fpout, "Type         %s\n", skill_tname[skill->type] );
    fprintf( fpout, "Info         %d\n", skill->info );
-   if( skill->author && skill->author[0] != '\0' )
-      fprintf( fpout, "Author       %s~\n", skill->author );
+   if( !skill->author.empty() )
+      fprintf( fpout, "Author       %s~\n", skill->author.c_str() );
    if( skill->flags.any(  ) )
       fprintf( fpout, "Flags        %s~\n", bitset_string( skill->flags, spell_flag ) );
    if( skill->target )
@@ -945,55 +904,55 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
    if( skill->ego )
       fprintf( fpout, "Ego          %d\n", skill->ego );
    if( skill->skill_fun )
-      fprintf( fpout, "Code         %s\n", skill->skill_fun_name );
+      fprintf( fpout, "Code         %s\n", skill->skill_fun_name.c_str() );
    else if( skill->spell_fun )
-      fprintf( fpout, "Code         %s\n", skill->spell_fun_name );
-   fprintf( fpout, "Dammsg       %s~\n", skill->noun_damage );
-   if( skill->msg_off && skill->msg_off[0] != '\0' )
-      fprintf( fpout, "Wearoff      %s~\n", skill->msg_off );
+      fprintf( fpout, "Code         %s\n", skill->spell_fun_name.c_str() );
+   fprintf( fpout, "Dammsg       %s~\n", skill->noun_damage.c_str() );
+   if( !skill->msg_off.empty() )
+      fprintf( fpout, "Wearoff      %s~\n", skill->msg_off.c_str() );
 
-   if( skill->hit_char && skill->hit_char[0] != '\0' )
-      fprintf( fpout, "Hitchar      %s~\n", skill->hit_char );
-   if( skill->hit_vict && skill->hit_vict[0] != '\0' )
-      fprintf( fpout, "Hitvict      %s~\n", skill->hit_vict );
-   if( skill->hit_room && skill->hit_room[0] != '\0' )
-      fprintf( fpout, "Hitroom      %s~\n", skill->hit_room );
-   if( skill->hit_dest && skill->hit_dest[0] != '\0' )
-      fprintf( fpout, "Hitdest      %s~\n", skill->hit_dest );
+   if( !skill->hit_char.empty() )
+      fprintf( fpout, "Hitchar      %s~\n", skill->hit_char.c_str() );
+   if( !skill->hit_vict.empty() )
+      fprintf( fpout, "Hitvict      %s~\n", skill->hit_vict.c_str() );
+   if( !skill->hit_room.empty() )
+      fprintf( fpout, "Hitroom      %s~\n", skill->hit_room.c_str() );
+   if( !skill->hit_dest.empty() )
+      fprintf( fpout, "Hitdest      %s~\n", skill->hit_dest.c_str() );
 
-   if( skill->miss_char && skill->miss_char[0] != '\0' )
-      fprintf( fpout, "Misschar     %s~\n", skill->miss_char );
-   if( skill->miss_vict && skill->miss_vict[0] != '\0' )
-      fprintf( fpout, "Missvict     %s~\n", skill->miss_vict );
-   if( skill->miss_room && skill->miss_room[0] != '\0' )
-      fprintf( fpout, "Missroom     %s~\n", skill->miss_room );
+   if( !skill->miss_char.empty() )
+      fprintf( fpout, "Misschar     %s~\n", skill->miss_char.c_str() );
+   if( !skill->miss_vict.empty() )
+      fprintf( fpout, "Missvict     %s~\n", skill->miss_vict.c_str() );
+   if( !skill->miss_room.empty() )
+      fprintf( fpout, "Missroom     %s~\n", skill->miss_room.c_str() );
 
-   if( skill->die_char && skill->die_char[0] != '\0' )
-      fprintf( fpout, "Diechar      %s~\n", skill->die_char );
-   if( skill->die_vict && skill->die_vict[0] != '\0' )
-      fprintf( fpout, "Dievict      %s~\n", skill->die_vict );
-   if( skill->die_room && skill->die_room[0] != '\0' )
-      fprintf( fpout, "Dieroom      %s~\n", skill->die_room );
+   if( !skill->die_char .empty() )
+      fprintf( fpout, "Diechar      %s~\n", skill->die_char.c_str() );
+   if( !skill->die_vict.empty() )
+      fprintf( fpout, "Dievict      %s~\n", skill->die_vict.c_str() );
+   if( !skill->die_room.empty() )
+      fprintf( fpout, "Dieroom      %s~\n", skill->die_room.c_str() );
 
-   if( skill->imm_char && skill->imm_char[0] != '\0' )
-      fprintf( fpout, "Immchar      %s~\n", skill->imm_char );
-   if( skill->imm_vict && skill->imm_vict[0] != '\0' )
-      fprintf( fpout, "Immvict      %s~\n", skill->imm_vict );
-   if( skill->imm_room && skill->imm_room[0] != '\0' )
-      fprintf( fpout, "Immroom      %s~\n", skill->imm_room );
+   if( !skill->imm_char.empty() )
+      fprintf( fpout, "Immchar      %s~\n", skill->imm_char.c_str() );
+   if( !skill->imm_vict.empty() )
+      fprintf( fpout, "Immvict      %s~\n", skill->imm_vict.c_str() );
+   if( !skill->imm_room.empty() )
+      fprintf( fpout, "Immroom      %s~\n", skill->imm_room.c_str() );
 
-   if( skill->dice && skill->dice[0] != '\0' )
-      fprintf( fpout, "Dice         %s~\n", skill->dice );
+   if( !skill->dice.empty() )
+      fprintf( fpout, "Dice         %s~\n", skill->dice.c_str() );
    if( skill->value )
       fprintf( fpout, "Value        %d\n", skill->value );
    if( skill->difficulty )
       fprintf( fpout, "Difficulty   %d\n", skill->difficulty );
    if( skill->participants )
       fprintf( fpout, "Participants %d\n", skill->participants );
-   if( skill->components && skill->components[0] != '\0' )
-      fprintf( fpout, "Components   %s~\n", skill->components );
-   if( skill->teachers && skill->teachers[0] != '\0' )
-      fprintf( fpout, "Teachers     %s~\n", skill->teachers );
+   if( !skill->components.empty() )
+      fprintf( fpout, "Components   %s~\n", skill->components.c_str() );
+   if( !skill->teachers.empty() )
+      fprintf( fpout, "Teachers     %s~\n", skill->teachers.c_str() );
 
    int modifier;
    for( auto* af : skill->affects )
@@ -1026,8 +985,8 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
          if( skill->race_level[y] < min )
             min = skill->race_level[y];
    }
-   if( skill->helptext && skill->helptext[0] != '\0' )
-      fprintf( fpout, "Helptext     %s~\n", strip_cr( skill->helptext ) );
+   if( !skill->helptext.empty() )
+      fprintf( fpout, "Helptext     %s~\n", strip_cr( skill->helptext ).c_str() );
    fprintf( fpout, "%s", "End\n\n" );
 }
 
@@ -1056,7 +1015,7 @@ void save_skill_table( void )
 
    for( x = 0; x < num_skills; ++x )
    {
-      if( !skill_table[x]->name || skill_table[x]->name[0] == '\0' )
+      if( skill_table[x]->name.empty() )
          break;
       fprintf( fpout, "%s", "#SKILL\n" );
       fwrite_skill( fpout, skill_table[x] );
@@ -1085,7 +1044,7 @@ void save_herb_table(  )
 
    for( x = 0; x < top_herb; ++x )
    {
-      if( !herb_table[x]->name || herb_table[x]->name[0] == '\0' )
+      if( herb_table[x]->name.empty() )
          break;
       fprintf( fpout, "%s", "#HERB\n" );
       fwrite_skill( fpout, herb_table[x] );
@@ -1132,16 +1091,16 @@ skill_type *fread_skill( FILE * fp, int version )
             break;
 
          case 'A':
-            KEY( "Author", skill->author, fread_string( fp ) );
+            STDSKEY( "Author", skill->author );
             if( !str_cmp( word, "Affect" ) )
             {
                smaug_affect *aff;
-               char mod[MIL];
+               std::string mod;
 
                aff = new smaug_affect;
                aff->duration = strdup( fread_word( fp ) );
                aff->location = fread_number( fp );
-               strlcpy( mod, fread_word( fp ), MIL );
+               mod = fread_word( fp );
 
                // Conversion needed because Samson was stupid and didn't think. Again. *sigh*
                if( version < 5 )
@@ -1168,15 +1127,15 @@ skill_type *fread_skill( FILE * fp, int version )
                   {
                      if( aff->location == APPLY_AFFECT || aff->location == APPLY_EXT_AFFECT )
                      {
-                        int mvalue = atoi( mod );
+                        int mvalue = std::stoi( mod );
 
-                        strlcpy( mod, aff_flags[mvalue], MIL );
+                        mod = aff_flags[mvalue];
                      }
                      if( aff->location == APPLY_RESISTANT || aff->location == APPLY_IMMUNE || aff->location == APPLY_ABSORB || aff->location == APPLY_SUSCEPTIBLE )
                      {
-                        int mvalue = atoi( mod );
+                        int mvalue = std::stoi( mod );
 
-                        strlcpy( mod, flag_string( mvalue, old_ris_flags ), MIL );
+                        mod = flag_string( mvalue, old_ris_flags );
                      }
                   }
                   else
@@ -1185,16 +1144,16 @@ skill_type *fread_skill( FILE * fp, int version )
                          || ( aff->location == APPLY_IMMUNE && is_number( mod ) )
                          || ( aff->location == APPLY_ABSORB && is_number( mod ) ) || ( aff->location == APPLY_SUSCEPTIBLE && is_number( mod ) ) )
                      {
-                        int mvalue = atoi( mod );
+                        int mvalue = std::stoi( mod );
 
-                        strlcpy( mod, flag_string( mvalue, old_ris_flags ), MIL );
+                        mod = flag_string( mvalue, old_ris_flags );
                      }
                   }
                }
 
                if( aff->location == APPLY_AFFECT )
                   aff->location = APPLY_EXT_AFFECT;
-               aff->modifier = strdup( mod );
+               aff->modifier = mod;
                aff->bit = fread_number( fp );
                if( version < 3 && aff->bit > -1 )
                   ++aff->bit;
@@ -1216,7 +1175,7 @@ skill_type *fread_skill( FILE * fp, int version )
             {
                SPELL_FUN *spellfun = nullptr;
                DO_FUN *dofun = nullptr;
-               char *w = fread_word( fp );
+               std::string w = fread_word( fp );
 
                if( validate_spec_fun( w ) )
                {
@@ -1228,13 +1187,13 @@ skill_type *fread_skill( FILE * fp, int version )
                {
                   skill->skill_fun = dofun;
                   skill->spell_fun = nullptr;
-                  skill->skill_fun_name = strdup( w );
+                  skill->skill_fun_name =  w;
                }
                else if( str_prefix( "do_", w ) && ( spellfun = spell_function( w ) ) != spell_notfound )
                {
                   skill->spell_fun = spellfun;
                   skill->skill_fun = nullptr;
-                  skill->spell_fun_name = strdup( w );
+                  skill->spell_fun_name = w;
                }
                else
                {
@@ -1243,15 +1202,15 @@ skill_type *fread_skill( FILE * fp, int version )
                }
                break;
             }
-            KEY( "Components", skill->components, fread_string_nohash( fp ) );
+            STDSKEY( "Components", skill->components );
             break;
 
          case 'D':
-            KEY( "Dammsg", skill->noun_damage, fread_string_nohash( fp ) );
-            KEY( "Dice", skill->dice, fread_string_nohash( fp ) );
-            KEY( "Diechar", skill->die_char, fread_string_nohash( fp ) );
-            KEY( "Dieroom", skill->die_room, fread_string_nohash( fp ) );
-            KEY( "Dievict", skill->die_vict, fread_string_nohash( fp ) );
+            STDSKEY( "Dammsg", skill->noun_damage );
+            STDSKEY( "Dice", skill->dice );
+            STDSKEY( "Diechar", skill->die_char );
+            STDSKEY( "Dieroom", skill->die_room );
+            STDSKEY( "Dievict", skill->die_vict );
             KEY( "Difficulty", skill->difficulty, fread_number( fp ) );
             break;
 
@@ -1264,8 +1223,8 @@ skill_type *fread_skill( FILE * fp, int version )
                   bug( "{}: {}: Has saving throw ({}) with no saving effect.", __func__, skill->name, skill->saves );
                   SET_SSAV( skill, SE_NEGATE );
                }
-               if( !skill->author )
-                  skill->author = STRALLOC( "Smaug" );
+               if( skill->author.empty() )
+                  skill->author = "Smaug";
                if( skill->ego > 90 )
                   skill->ego /= 1000;
                return skill;
@@ -1288,17 +1247,17 @@ skill_type *fread_skill( FILE * fp, int version )
             break;
 
          case 'H':
-            KEY( "Helptext", skill->helptext, fread_string_nohash( fp ) );
-            KEY( "Hitchar", skill->hit_char, fread_string_nohash( fp ) );
-            KEY( "Hitdest", skill->hit_dest, fread_string_nohash( fp ) );
-            KEY( "Hitroom", skill->hit_room, fread_string_nohash( fp ) );
-            KEY( "Hitvict", skill->hit_vict, fread_string_nohash( fp ) );
+            STDSKEY( "Helptext", skill->helptext );
+            STDSKEY( "Hitchar", skill->hit_char );
+            STDSKEY( "Hitdest", skill->hit_dest );
+            STDSKEY( "Hitroom", skill->hit_room );
+            STDSKEY( "Hitvict", skill->hit_vict );
             break;
 
          case 'I':
-            KEY( "Immchar", skill->imm_char, fread_string_nohash( fp ) );
-            KEY( "Immroom", skill->imm_room, fread_string_nohash( fp ) );
-            KEY( "Immvict", skill->imm_vict, fread_string_nohash( fp ) );
+            STDSKEY( "Immchar", skill->imm_char );
+            STDSKEY( "Immroom", skill->imm_room );
+            STDSKEY( "Immvict", skill->imm_vict );
             KEY( "Info", skill->info, fread_number( fp ) );
             break;
 
@@ -1354,9 +1313,7 @@ skill_type *fread_skill( FILE * fp, int version )
                }
                else
                {
-                  int position;
-
-                  position = get_npc_position( fread_flagstring( fp ) );
+                  int position = get_npc_position( fread_flagstring( fp ) );
 
                   if( position < 0 || position >= POS_MAX )
                   {
@@ -1367,13 +1324,13 @@ skill_type *fread_skill( FILE * fp, int version )
                   break;
                }
             }
-            KEY( "Misschar", skill->miss_char, fread_string_nohash( fp ) );
-            KEY( "Missroom", skill->miss_room, fread_string_nohash( fp ) );
-            KEY( "Missvict", skill->miss_vict, fread_string_nohash( fp ) );
+            STDSKEY( "Misschar", skill->miss_char );
+            STDSKEY( "Missroom", skill->miss_room );
+            STDSKEY( "Missvict", skill->miss_vict );
             break;
 
          case 'N':
-            KEY( "Name", skill->name, fread_string_nohash( fp ) );
+            STDSKEY( "Name", skill->name );
             break;
 
          case 'P':
@@ -1401,7 +1358,7 @@ skill_type *fread_skill( FILE * fp, int version )
 
          case 'T':
             KEY( "Target", skill->target, fread_number( fp ) );
-            KEY( "Teachers", skill->teachers, fread_string_nohash( fp ) );
+            STDSKEY( "Teachers", skill->teachers );
             KEY( "Type", skill->type, get_skill( fread_word( fp ) ) );
             break;
 
@@ -1410,7 +1367,7 @@ skill_type *fread_skill( FILE * fp, int version )
             break;
 
          case 'W':
-            KEY( "Wearoff", skill->msg_off, fread_string_nohash( fp ) );
+            STDSKEY( "Wearoff", skill->msg_off );
             break;
       }
    }
@@ -1599,7 +1556,7 @@ void char_data::learn_racials( int sn )
             gain = sklvl * 1000;
             if( Class == CLASS_MAGE )
                gain = gain * 2;
-            printf( "&WYou are now an adept of %s! You gain %d bonus experience!\r\n", skill_table[sn]->name, gain );
+            print_fmt( "&WYou are now an adept of {}! You gain %d bonus experience!\r\n", skill_table[sn]->name, gain );
             gain_exp( gain );
          }
       }
@@ -1645,7 +1602,7 @@ void char_data::learn_from_failure( int sn )
       if( pcdata->learned[sn] < adept )
       {
          if( skill_table[sn]->type == SKILL_COMBAT )
-            printf( "&RYou have improved in %s!&D\r\n", skill_table[sn]->name );
+            print_fmt( "&RYou have improved in {}!&D\r\n", skill_table[sn]->name );
 
          pcdata->learned[sn] += 1;
 
@@ -1658,7 +1615,7 @@ void char_data::learn_from_failure( int sn )
 
             if( Class == CLASS_MAGE )
                gain = gain * 2;
-            printf( "&WYou are now an adept of %s! You gain %d bonus experience!\r\n", skill_table[sn]->name, gain );
+            print_fmt( "&WYou are now an adept of {}! You gain {} bonus experience!\r\n", skill_table[sn]->name, gain );
             gain_exp( gain );
          }
       }
@@ -1688,14 +1645,14 @@ CMDF( do_viewskills )
    if( !victim->isnpc(  ) )
    {
       ch->set_color( AT_SKILL );
-      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && !skill_table[sn]->name.empty(); ++sn )
       {
-         if( skill_table[sn]->name == nullptr )
+         if( skill_table[sn]->name.empty() )
             break;
          if( victim->pcdata->learned[sn] == 0 )
             continue;
 
-         ch->printf( "%20s %3d%% ", skill_table[sn]->name, victim->pcdata->learned[sn] );
+         ch->print_fmt( "{:20} {:3}% ", skill_table[sn]->name, victim->pcdata->learned[sn] );
 
          if( ++col % 3 == 0 )
             ch->print( "\r\n" );
@@ -1874,7 +1831,7 @@ bool get_skill_help( char_data * ch, std::string_view argument )
    }
    ch->print( "\r\n" );
 
-   if( skill->dice )
+   if( !skill->dice.empty() )
       ch->print_fmt( "Damage       : {}\r\n", skill->dice );
 
    if( skill->type == SKILL_SPELL )
@@ -1884,7 +1841,7 @@ bool get_skill_help( char_data * ch, std::string_view argument )
       ch->print_fmt( "Minimum cost : {} mana\r\n", skill->min_mana );
    }
 
-   if( skill->helptext )
+   if( !skill->helptext.empty() )
       ch->print_fmt( "\r\n{}\r\n", skill->helptext );
    return true;
 }
@@ -2454,7 +2411,7 @@ CMDF( do_slist )
       std::string skn = "Spell";
       for( sn = 0; sn < num_skills; ++sn )
       {
-         if( !skill_table[sn]->name )
+         if( skill_table[sn]->name.empty() )
             break;
 
          if( skill_table[sn]->type != lasttype )
@@ -2504,7 +2461,7 @@ CMDF( do_slookup )
 
    if( !str_cmp( argument, "all" ) )
    {
-      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && !skill_table[sn]->name.empty(); ++sn )
          ch->pager_fmt( "Sn: {:4} Slot: {:4} Skill/spell: '{:<20}' Damtype: {}\r\n",
                      sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
    }
@@ -2512,7 +2469,7 @@ CMDF( do_slookup )
    {
       int num = 0;
 
-      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && !skill_table[sn]->name.empty(); ++sn )
          if( ( skill_table[sn]->skill_fun == skill_notfound || skill_table[sn]->skill_fun == nullptr )
              && ( skill_table[sn]->spell_fun == spell_notfound || skill_table[sn]->spell_fun == spell_null ) && skill_table[sn]->type != SKILL_TONGUE )
          {
@@ -2525,7 +2482,7 @@ CMDF( do_slookup )
    {
       int num = 0;
 
-      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && !skill_table[sn]->name.empty(); ++sn )
          if( skill_table[sn]->type == SKILL_TONGUE )
          {
             ch->pager_fmt( "Sn: {:3} Slot: {:3} Name: '{:<24}'\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name );
@@ -2537,7 +2494,7 @@ CMDF( do_slookup )
    {
       int num = 0;
 
-      for( sn = 0; sn < num_skills && skill_table[sn] && skill_table[sn]->name; ++sn )
+      for( sn = 0; sn < num_skills && skill_table[sn] && !skill_table[sn]->name.empty(); ++sn )
          if( skill_table[sn]->spell_fun == spell_smaug )
          {
             ch->pager_fmt( "Sn: {:3} Slot: {:3} Name: '{:<24}' Damtype: {}\r\n", sn, skill_table[sn]->slot, skill_table[sn]->name, spell_damage[SPELL_DAMAGE( skill_table[sn] )] );
@@ -2547,7 +2504,7 @@ CMDF( do_slookup )
    }
    else if( !str_cmp( argument, "herbs" ) )
    {
-      for( sn = 0; sn < top_herb && herb_table[sn] && herb_table[sn]->name; ++sn )
+      for( sn = 0; sn < top_herb && herb_table[sn] && !herb_table[sn]->name.empty(); ++sn )
          ch->pager_fmt( "{}) %s\r\n", sn, herb_table[sn]->name );
    }
    else
@@ -2588,7 +2545,7 @@ CMDF( do_slookup )
       }
 
       ch->print_fmt( "Sn: {:4} Slot: {:4} {}: '{:<20}'\r\n", sn, skill->slot, skill_tname[skill->type], skill->name );
-      if( skill->author )
+      if( !skill->author.empty() )
          ch->print_fmt( "Author: {}\r\n", skill->author );
       if( skill->info )
          ch->print_fmt( "DamType: {}  ActType: {}   ClassType: {}   PowerType: {}\r\n",
@@ -2608,15 +2565,15 @@ CMDF( do_slookup )
 
       ch->print_fmt( "Ego: {}  Code: {}\r\n", skill->ego, skill->skill_fun ? skill->skill_fun_name : skill->spell_fun_name );
 
-      ch->print_fmt( "Dammsg: {}\r\nWearoff: {}\n", skill->noun_damage, skill->msg_off ? skill->msg_off : "(none set)" );
+      ch->print_fmt( "Dammsg: {}\r\nWearoff: {}\n", skill->noun_damage, !skill->msg_off.empty() ? skill->msg_off : "(none set)" );
 
-      if( skill->dice && skill->dice[0] != '\0' )
+      if( !skill->dice.empty() )
          ch->print_fmt( "Dice: {}\r\n", skill->dice );
 
-      if( skill->teachers && skill->teachers[0] != '\0' )
+      if( !skill->teachers.empty() )
          ch->print_fmt( "Teachers: {}\r\n", skill->teachers );
 
-      if( skill->components && skill->components[0] != '\0' )
+      if( !skill->components.empty() )
          ch->print_fmt( "Components: {}\r\n", skill->components );
 
       if( skill->participants )
@@ -2652,43 +2609,43 @@ CMDF( do_slookup )
       }
       ch->print( "\r\n" );
 
-      if( skill->hit_char && skill->hit_char[0] != '\0' )
+      if( !skill->hit_char.empty() )
          ch->print_fmt( "Hitchar   : {}\r\n", skill->hit_char );
 
-      if( skill->hit_vict && skill->hit_vict[0] != '\0' )
+      if( !skill->hit_vict.empty() )
          ch->print_fmt( "Hitvict   : {}\r\n", skill->hit_vict );
 
-      if( skill->hit_room && skill->hit_room[0] != '\0' )
+      if( !skill->hit_room.empty() )
          ch->print_fmt( "Hitroom   : {}\r\n", skill->hit_room );
 
-      if( skill->hit_dest && skill->hit_dest[0] != '\0' )
+      if( !skill->hit_dest.empty() )
          ch->print_fmt( "Hitdest   : {}\r\n", skill->hit_dest );
 
-      if( skill->miss_char && skill->miss_char[0] != '\0' )
+      if( !skill->miss_char.empty() )
          ch->print_fmt( "Misschar  : {}\r\n", skill->miss_char );
 
-      if( skill->miss_vict && skill->miss_vict[0] != '\0' )
+      if( !skill->miss_vict.empty() )
          ch->print_fmt( "Missvict  : {}\r\n", skill->miss_vict );
 
-      if( skill->miss_room && skill->miss_room[0] != '\0' )
+      if( !skill->miss_room.empty() )
          ch->print_fmt( "Missroom  : {}\r\n", skill->miss_room );
 
-      if( skill->die_char && skill->die_char[0] != '\0' )
+      if( !skill->die_char.empty() )
          ch->print_fmt( "Diechar   : {}\r\n", skill->die_char );
 
-      if( skill->die_vict && skill->die_vict[0] != '\0' )
+      if( !skill->die_vict.empty() )
          ch->print_fmt( "Dievict   : {}\r\n", skill->die_vict );
 
-      if( skill->die_room && skill->die_room[0] != '\0' )
+      if( !skill->die_room.empty() )
          ch->print_fmt( "Dieroom   : {}\r\n", skill->die_room );
 
-      if( skill->imm_char && skill->imm_char[0] != '\0' )
+      if( !skill->imm_char.empty() )
          ch->print_fmt( "Immchar   : {}\r\n", skill->imm_char );
 
-      if( skill->imm_vict && skill->imm_vict[0] != '\0' )
+      if( !skill->imm_vict.empty() )
          ch->print_fmt( "Immvict   : {}\r\n", skill->imm_vict );
 
-      if( skill->imm_room && skill->imm_room[0] != '\0' )
+      if( !skill->imm_room.empty() )
          ch->print_fmt( "Immroom   : {}\r\n", skill->imm_room );
 
       if( skill->type != SKILL_HERB )
@@ -3001,15 +2958,13 @@ CMDF( do_sset )
          {
             skill->skill_fun = skillfun;
             skill->spell_fun = nullptr;
-            DISPOSE( skill->skill_fun_name );
-            skill->skill_fun_name = strdup( argument.c_str(  ) );
+            skill->skill_fun_name = argument;
          }
          else if( ( spellfun = spell_function( argument ) ) != spell_notfound )
          {
             skill->spell_fun = spellfun;
             skill->skill_fun = nullptr;
-            DISPOSE( skill->skill_fun_name );
-            skill->spell_fun_name = strdup( argument.c_str(  ) );
+            skill->spell_fun_name = argument;
          }
          else
          {
@@ -3255,8 +3210,7 @@ CMDF( do_sset )
 
       if( !str_cmp( arg2, "name" ) )
       {
-         DISPOSE( skill->name );
-         skill->name = strdup( argument.c_str(  ) );
+         skill->name = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
@@ -3267,152 +3221,133 @@ CMDF( do_sset )
             ch->print( "Sorry, only admins can change this.\r\n" );
             return;
          }
-         STRFREE( skill->author );
-         skill->author = STRALLOC( argument.c_str(  ) );
+         skill->author = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "dammsg" ) )
       {
-         DISPOSE( skill->noun_damage );
          if( str_cmp( argument, "clear" ) )
-            skill->noun_damage = strdup( argument.c_str(  ) );
+            skill->noun_damage = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "wearoff" ) )
       {
-         DISPOSE( skill->msg_off );
          if( str_cmp( argument, "clear" ) )
-            skill->msg_off = strdup( argument.c_str(  ) );
+            skill->msg_off = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "hitchar" ) )
       {
-         DISPOSE( skill->hit_char );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_char = strdup( argument.c_str(  ) );
+            skill->hit_char = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "hitvict" ) )
       {
-         DISPOSE( skill->hit_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_vict = strdup( argument.c_str(  ) );
+            skill->hit_vict = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "hitroom" ) )
       {
-         DISPOSE( skill->hit_room );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_room = strdup( argument.c_str(  ) );
+            skill->hit_room = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "hitdest" ) )
       {
-         DISPOSE( skill->hit_dest );
          if( str_cmp( argument, "clear" ) )
-            skill->hit_dest = strdup( argument.c_str(  ) );
+            skill->hit_dest = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "misschar" ) )
       {
-         DISPOSE( skill->miss_char );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_char = strdup( argument.c_str(  ) );
+            skill->miss_char = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "missvict" ) )
       {
-         DISPOSE( skill->miss_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_vict = strdup( argument.c_str(  ) );
+            skill->miss_vict = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "missroom" ) )
       {
-         DISPOSE( skill->miss_room );
          if( str_cmp( argument, "clear" ) )
-            skill->miss_room = strdup( argument.c_str(  ) );
+            skill->miss_room = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "diechar" ) )
       {
-         DISPOSE( skill->die_char );
          if( str_cmp( argument, "clear" ) )
-            skill->die_char = strdup( argument.c_str(  ) );
+            skill->die_char = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "dievict" ) )
       {
-         DISPOSE( skill->die_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->die_vict = strdup( argument.c_str(  ) );
+            skill->die_vict = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "dieroom" ) )
       {
-         DISPOSE( skill->die_room );
          if( str_cmp( argument, "clear" ) )
-            skill->die_room = strdup( argument.c_str(  ) );
+            skill->die_room = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "immchar" ) )
       {
-         DISPOSE( skill->imm_char );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_char = strdup( argument.c_str(  ) );
+            skill->imm_char = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "immvict" ) )
       {
-         DISPOSE( skill->imm_vict );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_vict = strdup( argument.c_str(  ) );
+            skill->imm_vict = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "immroom" ) )
       {
-         DISPOSE( skill->imm_room );
          if( str_cmp( argument, "clear" ) )
-            skill->imm_room = strdup( argument.c_str(  ) );
+            skill->imm_room = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "dice" ) )
       {
-         DISPOSE( skill->dice );
          if( str_cmp( argument, "clear" ) )
-            skill->dice = strdup( argument.c_str(  ) );
+            skill->dice = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "components" ) )
       {
-         DISPOSE( skill->components );
          if( str_cmp( argument, "clear" ) )
-            skill->components = strdup( argument.c_str(  ) );
+            skill->components = argument;
          ch->print( "Ok.\r\n" );
          return;
       }
       if( !str_cmp( arg2, "teachers" ) )
       {
-         DISPOSE( skill->teachers );
          if( str_cmp( argument, "clear" ) )
-            skill->teachers = strdup( argument.c_str(  ) );
+            skill->teachers = argument;
          ch->print( "Ok.\r\n" );
          return;
       }

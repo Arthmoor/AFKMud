@@ -1370,8 +1370,8 @@ void race_practice( char_data * ch, char_data * mob, int sn )
    {
       --ch->pcdata->practice;
       ch->pcdata->learned[sn] += ( 4 + int_app[ch->get_curr_int(  )].learn );
-      act( AT_ACTION, "You practice $T.", ch, nullptr, skill_table[sn]->name, TO_CHAR );
-      act( AT_ACTION, "$n practices $T.", ch, nullptr, skill_table[sn]->name, TO_ROOM );
+      act( AT_ACTION, "You practice $T.", ch, nullptr, skill_table[sn]->name.c_str(), TO_CHAR );
+      act( AT_ACTION, "$n practices $T.", ch, nullptr, skill_table[sn]->name.c_str(), TO_ROOM );
       if( ch->pcdata->learned[sn] >= adept )
       {
          ch->pcdata->learned[sn] = adept;
@@ -1592,7 +1592,7 @@ CMDF( do_practice )
       /*
        * Skill requires a special teacher
        */
-      if( skill_table[sn]->teachers && skill_table[sn]->teachers[0] != '\0' )
+      if( !skill_table[sn]->teachers.empty() )
       {
          std::string buf = std::to_string( mob->pIndexData->vnum );
          if( !hasname( skill_table[sn]->teachers, buf ) )
@@ -1636,8 +1636,8 @@ CMDF( do_practice )
       {
          --ch->pcdata->practice;
          ch->pcdata->learned[sn] += ( 4 + int_app[ch->get_curr_int(  )].learn );
-         act( AT_ACTION, "You practice $T.", ch, nullptr, skill_table[sn]->name, TO_CHAR );
-         act( AT_ACTION, "$n practices $T.", ch, nullptr, skill_table[sn]->name, TO_ROOM );
+         act( AT_ACTION, "You practice $T.", ch, nullptr, skill_table[sn]->name.c_str(), TO_CHAR );
+         act( AT_ACTION, "$n practices $T.", ch, nullptr, skill_table[sn]->name.c_str(), TO_ROOM );
          if( ch->pcdata->learned[sn] >= adept )
          {
             ch->pcdata->learned[sn] = adept;

@@ -1847,7 +1847,7 @@ void fwrite_afk_affect( FILE * fpout, affect_data * af )
             || af->location == APPLY_WEARSPELL
             || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
       fprintf( fpout, "AffData %s '%s' %d %d %d\n", a_types[af->location],
-               IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN", af->type, af->duration, af->bit );
+               IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name.c_str() : "UNKNOWN", af->type, af->duration, af->bit );
    else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
       fprintf( fpout, "AffData %s %s~ %d %d %d\n", a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
    else
@@ -2151,20 +2151,20 @@ void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
       case ITEM_POTION:
       case ITEM_SCROLL:
          fprintf( fpout, "Spells       '%s' '%s' '%s'\n",
-                  IS_VALID_SN( pObjIndex->value[1] ) ? skill_table[pObjIndex->value[1]]->name : "NONE",
-                  IS_VALID_SN( pObjIndex->value[2] ) ? skill_table[pObjIndex->value[2]]->name : "NONE",
-                  IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name : "NONE" );
+                  IS_VALID_SN( pObjIndex->value[1] ) ? skill_table[pObjIndex->value[1]]->name.c_str() : "NONE",
+                  IS_VALID_SN( pObjIndex->value[2] ) ? skill_table[pObjIndex->value[2]]->name.c_str() : "NONE",
+                  IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name.c_str() : "NONE" );
          break;
 
       case ITEM_STAFF:
       case ITEM_WAND:
-         fprintf( fpout, "Spells       '%s'\n", IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name : "NONE" );
+         fprintf( fpout, "Spells       '%s'\n", IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name.c_str() : "NONE" );
          break;
 
       case ITEM_SALVE:
          fprintf( fpout, "Spells       '%s' '%s'\n",
-                  IS_VALID_SN( pObjIndex->value[4] ) ? skill_table[pObjIndex->value[4]]->name : "NONE",
-                  IS_VALID_SN( pObjIndex->value[5] ) ? skill_table[pObjIndex->value[5]]->name : "NONE" );
+                  IS_VALID_SN( pObjIndex->value[4] ) ? skill_table[pObjIndex->value[4]]->name.c_str() : "NONE",
+                  IS_VALID_SN( pObjIndex->value[5] ) ? skill_table[pObjIndex->value[5]]->name.c_str() : "NONE" );
          break;
    }
 

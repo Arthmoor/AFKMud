@@ -1622,17 +1622,17 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          {
             bool found = false;
 
-            if( skill->miss_char && skill->miss_char[0] != '\0' )
+            if( !skill->miss_char.empty() )
             {
                act( AT_HIT, skill->miss_char, ch, nullptr, victim, TO_CHAR );
                found = true;
             }
-            if( skill->miss_vict && skill->miss_vict[0] != '\0' )
+            if( !skill->miss_vict.empty() )
             {
                act( AT_HITME, skill->miss_vict, ch, nullptr, victim, TO_VICT );
                found = true;
             }
-            if( skill->miss_room && skill->miss_room[0] != '\0' )
+            if( !skill->miss_room.empty() )
             {
                if( str_cmp( skill->miss_room, "supress" ) )
                   act( AT_ACTION, skill->miss_room, ch, nullptr, victim, TO_NOTVICT );
@@ -1651,11 +1651,11 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
          }
          else
          {
-            if( skill->hit_char && skill->hit_char[0] != '\0' )
+            if( !skill->hit_char.empty() )
                act( AT_HIT, skill->hit_char, ch, nullptr, victim, TO_CHAR );
-            if( skill->hit_vict && skill->hit_vict[0] != '\0' )
+            if( !skill->hit_vict.empty() )
                act( AT_HITME, skill->hit_vict, ch, nullptr, victim, TO_VICT );
-            if( skill->hit_room && skill->hit_room[0] != '\0' )
+            if( !skill->hit_room.empty() )
                act( AT_ACTION, skill->hit_room, ch, nullptr, victim, TO_NOTVICT );
          }
       }
@@ -2131,7 +2131,7 @@ void strip_grapple( char_data * ch )
    {
       ch->affect_strip( gsn_grapple );
       ch->set_color( AT_WEAROFF );
-      ch->printf( "%s\r\n", skill_table[gsn_grapple]->msg_off );
+      ch->print_fmt( "{}\r\n", skill_table[gsn_grapple]->msg_off );
       if( ch->get_timer( TIMER_PKILLED ) > 0 )
          ch->remove_timer( TIMER_ASUPRESSED );
    }
@@ -2144,7 +2144,7 @@ void strip_grapple( char_data * ch )
       {
          vch->affect_strip( gsn_grapple );
          vch->set_color( AT_WEAROFF );
-         vch->printf( "%s\r\n", skill_table[gsn_grapple]->msg_off );
+         vch->print_fmt( "{}\r\n", skill_table[gsn_grapple]->msg_off );
 
          if( vch->get_timer( TIMER_PKILLED ) > 0 )
             vch->remove_timer( TIMER_ASUPRESSED );
@@ -2697,17 +2697,17 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             bool found = false;
             skill_type *skill = skill_table[dt];
 
-            if( skill->imm_char && skill->imm_char[0] != '\0' )
+            if( !skill->imm_char.empty() )
             {
                act( AT_HIT, skill->imm_char, ch, nullptr, victim, TO_CHAR );
                found = true;
             }
-            if( skill->imm_vict && skill->imm_vict[0] != '\0' )
+            if( !skill->imm_vict.empty() )
             {
                act( AT_HITME, skill->imm_vict, ch, nullptr, victim, TO_VICT );
                found = true;
             }
-            if( skill->imm_room && skill->imm_room[0] != '\0' )
+            if( !skill->imm_room.empty() )
             {
                act( AT_ACTION, skill->imm_room, ch, nullptr, victim, TO_NOTVICT );
                found = true;
@@ -3005,11 +3005,11 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
          {
             skill_type *skill = skill_table[dt];
 
-            if( skill->die_char && skill->die_char[0] != '\0' )
+            if( !skill->die_char.empty() )
                act( AT_DEAD, skill->die_char, ch, nullptr, victim, TO_CHAR );
-            if( skill->die_vict && skill->die_vict[0] != '\0' )
+            if( !skill->die_vict.empty() )
                act( AT_DEAD, skill->die_vict, ch, nullptr, victim, TO_VICT );
-            if( skill->die_room && skill->die_room[0] != '\0' )
+            if( !skill->die_room.empty() )
                act( AT_DEAD, skill->die_room, ch, nullptr, victim, TO_NOTVICT );
          }
          act( AT_DEAD, "$n is DEAD!!", victim, 0, 0, TO_ROOM );
@@ -3539,17 +3539,17 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
          skill_type *skill = skill_table[dt];
          bool found = false;
 
-         if( skill->imm_char && skill->imm_char[0] != '\0' )
+         if( !skill->imm_char.empty() )
          {
             act( AT_HIT, skill->imm_char, ch, nullptr, victim, TO_CHAR );
             found = true;
          }
-         if( skill->imm_vict && skill->imm_vict[0] != '\0' )
+         if( !skill->imm_vict.empty() )
          {
             act( AT_HITME, skill->imm_vict, ch, nullptr, victim, TO_VICT );
             found = true;
          }
-         if( skill->imm_room && skill->imm_room[0] != '\0' )
+         if( !skill->imm_room.empty() )
          {
             act( AT_ACTION, skill->imm_room, ch, nullptr, victim, TO_NOTVICT );
             found = true;

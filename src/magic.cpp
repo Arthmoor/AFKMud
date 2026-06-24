@@ -117,14 +117,14 @@ void successful_casting( skill_type * skill, char_data * ch, char_data * victim,
 
    if( ch && ch != victim )
    {
-      if( skill->hit_char && skill->hit_char[0] != '\0' )
+      if( !skill->hit_char.empty() )
          act( chit, skill->hit_char, ch, obj, victim, TO_CHAR );
       else if( skill->type == SKILL_SPELL )
          act( chit, "Ok.", ch, nullptr, nullptr, TO_CHAR );
    }
-   if( ch && skill->hit_room && skill->hit_room[0] != '\0' )
+   if( ch && !skill->hit_room.empty() )
       act( chitroom, skill->hit_room, ch, obj, victim, TO_NOTVICT );
-   if( ch && victim && skill->hit_vict && skill->hit_vict[0] != '\0' )
+   if( ch && victim && !skill->hit_vict.empty() )
    {
       if( ch != victim )
          act( chitme, skill->hit_vict, ch, obj, victim, TO_VICT );
@@ -135,7 +135,7 @@ void successful_casting( skill_type * skill, char_data * ch, char_data * victim,
       act( chitme, "Ok.", ch, nullptr, nullptr, TO_CHAR );
    else if( ch && ch == victim && skill->type == SKILL_SKILL )
    {
-      if( skill->hit_char && ( skill->hit_char[0] != '\0' ) )
+      if( !skill->hit_char.empty() )
          act( chit, skill->hit_char, ch, obj, victim, TO_CHAR );
       else
          act( chit, "Ok.", ch, nullptr, nullptr, TO_CHAR );
@@ -159,15 +159,15 @@ void failed_casting( skill_type * skill, char_data * ch, char_data * victim, obj
 
    if( ch && ch != victim )
    {
-      if( skill->miss_char && skill->miss_char[0] != '\0' )
+      if( !skill->miss_char.empty() )
          act( chit, skill->miss_char, ch, obj, victim, TO_CHAR );
       else if( skill->type == SKILL_SPELL )
          act( chit, "You failed.", ch, nullptr, nullptr, TO_CHAR );
    }
-   if( ch && skill->miss_room && skill->miss_room[0] != '\0' && str_cmp( skill->miss_room, "supress" ) )
+   if( ch && !skill->miss_room.empty() && str_cmp( skill->miss_room, "supress" ) )
       act( chitroom, skill->miss_room, ch, obj, victim, TO_NOTVICT );
 
-   if( ch && victim && skill->miss_vict && skill->miss_vict[0] != '\0' )
+   if( ch && victim && !skill->miss_vict.empty() )
    {
       if( ch != victim )
          act( chitme, skill->miss_vict, ch, obj, victim, TO_VICT );
@@ -176,7 +176,7 @@ void failed_casting( skill_type * skill, char_data * ch, char_data * victim, obj
    }
    else if( ch && ch == victim )
    {
-      if( skill->miss_char && skill->miss_char[0] != '\0' )
+      if( !skill->miss_char.empty() )
          act( chitme, skill->miss_char, ch, obj, victim, TO_CHAR );
       else if( skill->type == SKILL_SPELL )
          act( chitme, "You failed.", ch, nullptr, nullptr, TO_CHAR );
@@ -200,25 +200,25 @@ void immune_casting( skill_type * skill, char_data * ch, char_data * victim, obj
 
    if( ch && ch != victim )
    {
-      if( skill->imm_char && skill->imm_char[0] != '\0' )
+      if( !skill->imm_char.empty() )
          act( chit, skill->imm_char, ch, obj, victim, TO_CHAR );
-      else if( skill->miss_char && skill->miss_char[0] != '\0' )
+      else if( !skill->miss_char.empty() )
          act( chit, skill->miss_char, ch, obj, victim, TO_CHAR );
       else if( skill->type == SKILL_SPELL || skill->type == SKILL_SKILL )
          act( chit, "That appears to have no effect.", ch, nullptr, nullptr, TO_CHAR );
    }
-   if( ch && skill->imm_room && skill->imm_room[0] != '\0' )
+   if( ch && !skill->imm_room.empty() )
       act( chitroom, skill->imm_room, ch, obj, victim, TO_NOTVICT );
-   else if( ch && skill->miss_room && skill->miss_room[0] != '\0' )
+   else if( ch && !skill->miss_room.empty() )
       act( chitroom, skill->miss_room, ch, obj, victim, TO_NOTVICT );
-   if( ch && victim && skill->imm_vict && skill->imm_vict[0] != '\0' )
+   if( ch && victim && !skill->imm_vict.empty() )
    {
       if( ch != victim )
          act( chitme, skill->imm_vict, ch, obj, victim, TO_VICT );
       else
          act( chitme, skill->imm_vict, ch, obj, victim, TO_CHAR );
    }
-   else if( ch && victim && skill->miss_vict && skill->miss_vict[0] != '\0' )
+   else if( ch && victim && !skill->miss_vict.empty() )
    {
       if( ch != victim )
          act( chitme, skill->miss_vict, ch, obj, victim, TO_VICT );
@@ -227,9 +227,9 @@ void immune_casting( skill_type * skill, char_data * ch, char_data * victim, obj
    }
    else if( ch && ch == victim )
    {
-      if( skill->imm_char && skill->imm_char[0] != '\0' )
+      if( !skill->imm_char.empty() )
          act( chit, skill->imm_char, ch, obj, victim, TO_CHAR );
-      else if( skill->miss_char && skill->miss_char[0] != '\0' )
+      else if( !skill->miss_char.empty() )
          act( chit, skill->miss_char, ch, obj, victim, TO_CHAR );
       else if( skill->type == SKILL_SPELL || skill->type == SKILL_SKILL )
          act( chit, "That appears to have no affect.", ch, nullptr, nullptr, TO_CHAR );
@@ -239,87 +239,68 @@ void immune_casting( skill_type * skill, char_data * ch, char_data * victim, obj
 /*
  * Utter mystical words for an sn.
  */
-void say_spell( char_data * ch, int sn )
+void say_spell( char_data* ch, int sn )
 {
-   std::string buf, buf2;
-   char *pName;
-   int iSyl, length;
-   skill_type *skill = get_skilltype( sn );
+   skill_type* skill = get_skilltype( sn );
+   if( !skill )
+      return;
 
-   struct syl_type
-   {
-      const char *old;
-      const char *snew;
+   struct syl_type { std::string_view old_s; std::string_view new_s; };
+
+   static constexpr std::array syl_table = {
+      syl_type{"ar", "abra"}, syl_type{"au", "kada"},
+      syl_type{"bless", "fido"}, syl_type{"blind", "nose"},
+      syl_type{"bur", "mosa"}, syl_type{"cu", "judi"},
+      syl_type{"de", "oculo"}, syl_type{"en", "unso"},
+      syl_type{"light", "dies"}, syl_type{"lo", "hi"},
+      syl_type{"mor", "zak"}, syl_type{"move", "sido"},
+      syl_type{"ness", "lacri"}, syl_type{"ning", "illa"},
+      syl_type{"per", "duda"}, syl_type{"polymorph", "iaddahs"},
+      syl_type{"ra", "gru"}, syl_type{"re", "candus"},
+      syl_type{"son", "sabru"}, syl_type{"tect", "infra"},
+      syl_type{"tri", "cula"}, syl_type{"ven", "nofo"},
+      syl_type{"a", "a"},   syl_type{"b", "b"},   syl_type{"c", "q"},   syl_type{"d", "e"},
+      syl_type{"e", "z"},   syl_type{"f", "y"},   syl_type{"g", "o"},   syl_type{"h", "p"},
+      syl_type{"i", "u"},   syl_type{"j", "y"},   syl_type{"k", "t"},   syl_type{"l", "r"},
+      syl_type{"m", "w"},   syl_type{"n", "i"},   syl_type{"o", "a"},   syl_type{"p", "s"},
+      syl_type{"q", "d"},   syl_type{"r", "f"},   syl_type{"s", "g"},   syl_type{"t", "h"},
+      syl_type{"u", "j"},   syl_type{"v", "z"},   syl_type{"w", "x"},   syl_type{"x", "n"},
+      syl_type{"y", "l"},   syl_type{"z", "k"}
    };
 
-   static const struct syl_type syl_table[] = {
-      {" ", " "},
-      {"ar", "abra"},
-      {"au", "kada"},
-      {"bless", "fido"},
-      {"blind", "nose"},
-      {"bur", "mosa"},
-      {"cu", "judi"},
-      {"de", "oculo"},
-      {"en", "unso"},
-      {"light", "dies"},
-      {"lo", "hi"},
-      {"mor", "zak"},
-      {"move", "sido"},
-      {"ness", "lacri"},
-      {"ning", "illa"},
-      {"per", "duda"},
-      {"polymorph", "iaddahs"},
-      {"ra", "gru"},
-      {"re", "candus"},
-      {"son", "sabru"},
-      {"tect", "infra"},
-      {"tri", "cula"},
-      {"ven", "nofo"},
-      {"a", "a"}, {"b", "b"}, {"c", "q"}, {"d", "e"},
-      {"e", "z"}, {"f", "y"}, {"g", "o"}, {"h", "p"},
-      {"i", "u"}, {"j", "y"}, {"k", "t"}, {"l", "r"},
-      {"m", "w"}, {"n", "i"}, {"o", "a"}, {"p", "s"},
-      {"q", "d"}, {"r", "f"}, {"s", "g"}, {"t", "h"},
-      {"u", "j"}, {"v", "z"}, {"w", "x"}, {"x", "n"},
-      {"y", "l"}, {"z", "k"},
-      {"", ""}
-   };
+   std::string spell_words;
+   std::string_view remaining{skill->name};
 
-   buf = "";
-   for( pName = skill->name; *pName != '\0'; pName += length )
+   while( !remaining.empty() )
    {
-      for( iSyl = 0; ( length = strlen( syl_table[iSyl].old ) ) != 0; ++iSyl )
+      bool found = false;
+
+      for( const auto& syl : syl_table )
       {
-         if( !str_prefix( syl_table[iSyl].old, pName ) )
+         if( !str_prefix( syl.old_s, remaining ) )
          {
-            buf.append( syl_table[iSyl].snew );
+            spell_words.append( syl.new_s );
+            remaining.remove_prefix( syl.old_s.length() );
+            found = true;
             break;
          }
       }
-      if( length == 0 )
-         length = 1;
+
+      if( !found )
+      {
+         spell_words.push_back( remaining[0] );
+         remaining.remove_prefix( 1 );
+      }
    }
 
-   if( ch->Class == CLASS_BARD )
-   {
-      buf2 = "$n plays a song.";
-      buf = std::format( "$n plays the song, '{}'.", skill->name );
-   }
-
-   else
-   {
-      buf2 = std::format( "$n utters the words, '{}'.", buf );
-      buf = std::format( "$n utters the words, '{}'.", skill->name );
-   }
+   const bool is_bard = ( ch->Class == CLASS_BARD );
+   std::string_view msg_masked = is_bard ? "$n plays a song." : std::format( "$n utters the words, '{}'.", spell_words );
+   std::string_view msg_clear = is_bard ? std::format( "$n plays the song, '{}'.", skill->name ) : std::format( "$n utters the words, '{}'.", skill->name );
 
    for( auto* rch : ch->in_room->people )
    {
-      if( rch != ch )
-      {
-         if( is_same_char_map( ch, rch ) )
-            act( AT_MAGIC, ch->Class == rch->Class ? buf : buf2, ch, nullptr, rch, TO_VICT );
-      }
+      if( rch != ch && is_same_char_map( ch, rch ) )
+         act( AT_MAGIC, (ch->Class == rch->Class) ? msg_clear.data() : msg_masked.data(), ch, nullptr, rch, TO_VICT );
    }
 }
 
@@ -632,9 +613,8 @@ bool saves_spell_staff( int level, char_data * victim )
 bool process_spell_components( char_data * ch, int sn )
 {
    skill_type *skill = get_skilltype( sn );
-   char *comp = skill->components;
-   char *check;
-   char arg[MIL]; // Leave this one be as it throws a fit over what's going on in that switch statement down there.
+   std::string comp = skill->components;
+   std::string check, arg;
    bool consume, fail, found;
    int val, value;
    obj_data *obj;
@@ -643,10 +623,10 @@ bool process_spell_components( char_data * ch, int sn )
    /*
     * if no components necessary, then everything is cool 
     */
-   if( !comp || comp[0] == '\0' )
+   if( comp.empty() )
       return true;
 
-   while( comp[0] != '\0' )
+   while( !comp.empty() )
    {
       comp = one_argument( comp, arg );
       consume = true;
@@ -655,45 +635,45 @@ bool process_spell_components( char_data * ch, int sn )
       switch ( arg[1] )
       {
          default:
-            check = arg + 1;
+            check = arg.substr(1);
             break;
          case '!':
-            check = arg + 2;
+            check = arg.substr(2);
             fail = true;
             break;
          case '+':
-            check = arg + 2;
+            check = arg.substr(2);
             consume = false;
             break;
          case '@':
-            check = arg + 2;
+            check = arg.substr(2);
             val = 0;
             break;
          case '#':
-            check = arg + 2;
+            check = arg.substr(2);
             val = 1;
             break;
          case '$':
-            check = arg + 2;
+            check = arg.substr(2);
             val = 2;
             break;
          case '%':
-            check = arg + 2;
+            check = arg.substr(2);
             val = 3;
             break;
          case '^':
-            check = arg + 2;
+            check = arg.substr(2);
             val = 4;
             break;
          case '&':
-            check = arg + 2;
+            check = arg.substr(2);
             val = 5;
             break;
             /*
              * reserve '*', '(' and ')' for v6, v7 and v8   
              */
       }
-      value = atoi( check );
+      value = std::stoi( check );
       obj = nullptr;
       switch ( to_upper( arg[0] ) )
       {
@@ -1623,10 +1603,10 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
             break;
 
          case 1:
-            act( AT_MAGIC, "The $t spell backfires!", ch, skill->name, victim, TO_CHAR );
+            act( AT_MAGIC, "The $t spell backfires!", ch, skill->name.c_str(), victim, TO_CHAR );
             if( victim )
-               act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_VICT );
-            act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_NOTVICT );
+               act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name.c_str(), victim, TO_VICT );
+            act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name.c_str(), victim, TO_NOTVICT );
             return damage( ch, ch, number_range( 1, level ), TYPE_UNDEFINED );
 
          case 2:
@@ -1634,10 +1614,10 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
             break;
 
          case 3:
-            act( AT_MAGIC, "The $t spell backfires!", ch, skill->name, victim, TO_CHAR );
+            act( AT_MAGIC, "The $t spell backfires!", ch, skill->name.c_str(), victim, TO_CHAR );
             if( victim )
-               act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_VICT );
-            act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name, victim, TO_NOTVICT );
+               act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name.c_str(), victim, TO_VICT );
+            act( AT_MAGIC, "$n's $t spell backfires!", ch, skill->name.c_str(), victim, TO_NOTVICT );
             return damage( ch, ch, number_range( 1, level ), TYPE_UNDEFINED );
       }
       return rNONE;
@@ -2173,8 +2153,8 @@ SPELLF( spell_dispel_magic )
       {
          if( skill->type == SKILL_SPELL )
          {
-            if( skill->msg_off )
-               victim->printf( "%s\r\n", skill->msg_off );
+            if( !skill->msg_off.empty() )
+               victim->print_fmt( "{}\r\n", skill->msg_off );
             victim->unset_aflag( aff->bit );
             victim->affect_remove( aff );
          }
@@ -3536,15 +3516,15 @@ SPELLF( spell_portal )
    /*
     * support for new casting messages 
     */
-   if( !skill->hit_char || skill->hit_char[0] == '\0' )
+   if( skill->hit_char.empty() )
       ch->print( "&[magic]You utter an incantation, and a portal forms in front of you!\r\n" );
    else
       act( AT_MAGIC, skill->hit_char, ch, nullptr, victim, TO_CHAR );
-   if( !skill->hit_room || skill->hit_room[0] == '\0' )
+   if( skill->hit_room.empty() )
       act( AT_MAGIC, "$n utters an incantation, and a portal forms in front of you!", ch, nullptr, nullptr, TO_ROOM );
    else
       act( AT_MAGIC, skill->hit_room, ch, nullptr, victim, TO_ROOM );
-   if( !skill->hit_vict || skill->hit_vict[0] == '\0' )
+   if( skill->hit_vict.empty() )
       act( AT_MAGIC, "A shimmering portal forms in front of you!", victim, nullptr, nullptr, TO_ROOM );
    else
       act( AT_MAGIC, skill->hit_vict, victim, nullptr, victim, TO_ROOM );
@@ -4417,7 +4397,7 @@ SPELLF( spell_attack )
       failed_casting( skill, ch, victim, nullptr );
       return rSPELL_FAILED;
    }
-   if( skill->dice )
+   if( !skill->dice.empty() )
       dam = umax( 0, dice_parse( ch, level, skill->dice ) );
    else
       dam = dice( 1, level / 2 );
@@ -4441,9 +4421,9 @@ SPELLF( spell_attack )
             break;
 
          case SE_ABSORB:  /* victim absorbs spell for hp's */
-            act( AT_MAGIC, "$N absorbs your $t!", ch, skill->noun_damage, victim, TO_CHAR );
-            act( AT_MAGIC, "You absorb $N's $t!", victim, skill->noun_damage, ch, TO_CHAR );
-            act( AT_MAGIC, "$N absorbs $n's $t!", ch, skill->noun_damage, victim, TO_NOTVICT );
+            act( AT_MAGIC, "$N absorbs your $t!", ch, skill->noun_damage.c_str(), victim, TO_CHAR );
+            act( AT_MAGIC, "You absorb $N's $t!", victim, skill->noun_damage.c_str(), ch, TO_CHAR );
+            act( AT_MAGIC, "$N absorbs $n's $t!", ch, skill->noun_damage.c_str(), victim, TO_NOTVICT );
             victim->hit = urange( 0, victim->hit + dam, victim->max_hit );
             victim->update_pos(  );
             if( !skill->affects.empty(  ) )
@@ -4476,9 +4456,9 @@ SPELLF( spell_area_attack )
    }
 
    bool affects = ( !skill->affects.empty(  )? true : false );
-   if( skill->hit_char && skill->hit_char[0] != '\0' )
+   if( !skill->hit_char.empty() )
       act( AT_MAGIC, skill->hit_char, ch, nullptr, nullptr, TO_CHAR );
-   if( skill->hit_room && skill->hit_room[0] != '\0' )
+   if( !skill->hit_room.empty() )
       act( AT_MAGIC, skill->hit_room, ch, nullptr, nullptr, TO_ROOM );
 
    for( auto it = ch->in_room->people.begin(); it != ch->in_room->people.end(); )
@@ -4508,7 +4488,7 @@ SPELLF( spell_area_attack )
             failed_casting( skill, ch, vch, nullptr );
             continue;
          }
-         else if( skill->dice )
+         else if( !skill->dice.empty() )
             dam = dice_parse( ch, level, skill->dice );
          else
             dam = dice( 1, level / 2 );
@@ -4532,9 +4512,9 @@ SPELLF( spell_area_attack )
                   break;
 
                case SE_ABSORB:  /* victim absorbs spell for hp's */
-                  act( AT_MAGIC, "$N absorbs your $t!", ch, skill->noun_damage, vch, TO_CHAR );
-                  act( AT_MAGIC, "You absorb $N's $t!", vch, skill->noun_damage, ch, TO_CHAR );
-                  act( AT_MAGIC, "$N absorbs $n's $t!", ch, skill->noun_damage, vch, TO_NOTVICT );
+                  act( AT_MAGIC, "$N absorbs your $t!", ch, skill->noun_damage.c_str(), vch, TO_CHAR );
+                  act( AT_MAGIC, "You absorb $N's $t!", vch, skill->noun_damage.c_str(), ch, TO_CHAR );
+                  act( AT_MAGIC, "$N absorbs $n's $t!", ch, skill->noun_damage.c_str(), vch, TO_NOTVICT );
                   vch->hit = urange( 0, vch->hit + dam, vch->max_hit );
                   vch->update_pos(  );
                   continue;
@@ -4643,23 +4623,23 @@ SPELLF( spell_affect )
    }
    else
    {
-      if( skill->hit_char && skill->hit_char[0] != '\0' )
+      if( !skill->hit_char.empty() )
       {
-         if( strstr( skill->hit_char, "$N" ) )
+         if( skill->hit_char.contains( "$N" ) )
             hitchar = true;
          else
             act( AT_MAGIC, skill->hit_char, ch, nullptr, nullptr, TO_CHAR );
       }
 
-      if( skill->hit_room && skill->hit_room[0] != '\0' )
+      if( !skill->hit_room.empty() )
       {
-         if( strstr( skill->hit_room, "$N" ) )
+         if( skill->hit_room.contains( "$N" ) )
             hitroom = true;
          else
             act( AT_MAGIC, skill->hit_room, ch, nullptr, nullptr, TO_ROOM );
       }
 
-      if( skill->hit_vict && skill->hit_vict[0] != '\0' )
+      if( !skill->hit_vict.empty() )
          hitvict = true;
 
       if( victim )
@@ -4767,7 +4747,7 @@ SPELLF( spell_obj_inv )
                return rSPELL_FAILED;
             }
 
-            water = umin( ( skill->dice ? dice_parse( ch, level, skill->dice ) : level ) * ( getPrecip( cell ) >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
+            water = umin( ( !skill->dice.empty() ? dice_parse( ch, level, skill->dice ) : level ) * ( getPrecip( cell ) >= 0 ? 2 : 1 ), obj->value[0] - obj->value[1] );
 
             if( water > 0 )
             {
@@ -4867,7 +4847,7 @@ SPELLF( spell_obj_inv )
                   return rNONE;
                }
                clone = obj->clone(  );
-               clone->timer = skill->dice ? dice_parse( ch, level, skill->dice ) : 0;
+               clone->timer = !skill->dice.empty() ? dice_parse( ch, level, skill->dice ) : 0;
                clone->to_char( ch );
                successful_casting( skill, ch, nullptr, obj );
                break;
@@ -4895,7 +4875,7 @@ SPELLF( spell_obj_inv )
          }
          return rNONE;
       case SA_OBSCURE: /* make obj invis */
-         if( obj->extra_flags.test( ITEM_INVIS ) || ch->chance( skill->dice ? dice_parse( ch, level, skill->dice ) : 20 ) )
+         if( obj->extra_flags.test( ITEM_INVIS ) || ch->chance( !skill->dice.empty() ? dice_parse( ch, level, skill->dice ) : 20 ) )
          {
             failed_casting( skill, ch, nullptr, nullptr );
             return rSPELL_FAILED;
@@ -4941,7 +4921,7 @@ SPELLF( spell_create_obj )
       failed_casting( skill, ch, nullptr, nullptr );
       return rNONE;
    }
-   obj->timer = skill->dice ? dice_parse( ch, level, skill->dice ) : 0;
+   obj->timer = !skill->dice.empty() ? dice_parse( ch, level, skill->dice ) : 0;
    successful_casting( skill, ch, nullptr, obj );
    if( obj->wear_flags.test( ITEM_TAKE ) )
       obj->to_char( ch );
@@ -4998,7 +4978,7 @@ SPELLF( spell_create_mob )
       failed_casting( skill, ch, nullptr, nullptr );
       return rNONE;
    }
-   mob->level = umin( lvl, skill->dice ? dice_parse( ch, level, skill->dice ) : mob->level );
+   mob->level = umin( lvl, !skill->dice.empty() ? dice_parse( ch, level, skill->dice ) : mob->level );
    mob->armor = interpolate( mob->level, 100, -100 );
 
    mob->max_hit = mob->level * 8 + number_range( mob->level * mob->level / 4, mob->level * mob->level );

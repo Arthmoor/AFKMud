@@ -80,29 +80,29 @@ public:
    std::bitset<MAX_SF_FLAG> flags;           // Flags
    SPELL_FUN *spell_fun = nullptr;           // Spell pointer (for spells)
    DO_FUN *skill_fun = nullptr;              // Skill pointer (for skills)
-   char *name = nullptr;                     // Name of skill.
-   char *author = nullptr;                   // Skill's author.
-   char *spell_fun_name = nullptr;           // Spell function name - Trax
-   char *skill_fun_name = nullptr;           // Skill function name - Trax
-   char *noun_damage = nullptr;              // Damage message.
-   char *msg_off = nullptr;                  // Wear off message.
-   char *hit_char = nullptr;                 // Success message to caster.
-   char *hit_vict = nullptr;                 // Success message to victim.
-   char *hit_room = nullptr;                 // Success message to room.
-   char *hit_dest = nullptr;                 // Success message to dest room.
-   char *miss_char = nullptr;                // Failure message to caster.
-   char *miss_vict = nullptr;                // Failure message to victim.
-   char *miss_room = nullptr;                // Failure message to room.
-   char *die_char = nullptr;                 // Victim death msg to caster.
-   char *die_vict = nullptr;                 // Victim death msg to victim.
-   char *die_room = nullptr;                 // Victim death msg to room.
-   char *imm_char = nullptr;                 // Victim immune msg to caster.
-   char *imm_vict = nullptr;                 // Victim immune msg to victim.
-   char *imm_room = nullptr;                 // Victim immune msg to room.
-   char *dice = nullptr;                     // Dice roll.
-   char *components = nullptr;               // Spell components, if any.
-   char *teachers = nullptr;                 // Skill requires a special teacher.
-   char *helptext = nullptr;                 // Help description for dynamic system.
+   std::string name;                         // Name of skill.
+   std::string author;                       // Skill's author.
+   std::string spell_fun_name;               // Spell function name - Trax
+   std::string skill_fun_name;               // Skill function name - Trax
+   std::string noun_damage;                  // Damage message.
+   std::string msg_off;                      // Wear off message.
+   std::string hit_char;                     // Success message to caster.
+   std::string hit_vict;                     // Success message to victim.
+   std::string hit_room;                     // Success message to room.
+   std::string hit_dest;                     // Success message to dest room.
+   std::string miss_char;                    // Failure message to caster.
+   std::string miss_vict;                    // Failure message to victim.
+   std::string miss_room;                    // Failure message to room.
+   std::string die_char;                     // Victim death msg to caster.
+   std::string die_vict;                     // Victim death msg to victim.
+   std::string die_room;                     // Victim death msg to room.
+   std::string imm_char;                     // Victim immune msg to caster.
+   std::string imm_vict;                     // Victim immune msg to victim.
+   std::string imm_room;                     // Victim immune msg to room.
+   std::string dice;                         // Dice roll.
+   std::string components;                   // Spell components, if any.
+   std::string teachers;                     // Skill requires a special teacher.
+   std::string helptext;                     // Help description for dynamic system.
    int info = 0;                             // Spell action/class/etc.
    int ego = -2;                             // Adjusted ego value used in object creation, accounts for SMAUG_AFF's.
    int value = 0;                            // Misc value.

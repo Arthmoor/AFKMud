@@ -539,8 +539,8 @@ void affect_update( char_data * ch )
       else
       {
             skill_type *skill = get_skilltype( aff->type );
-         if( aff->type > 0 && skill && skill->msg_off )
-            ch->printf( "&[wearoff]%s\r\n", skill->msg_off );
+         if( aff->type > 0 && skill && !skill->msg_off.empty() )
+            ch->print_fmt( "&[wearoff]{}\r\n", skill->msg_off );
          ch->affect_remove( aff );
       }
    }

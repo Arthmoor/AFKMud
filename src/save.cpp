@@ -339,32 +339,32 @@ void fwrite_char( char_data * ch, FILE * fp )
 
    for( int sn = 1; sn < num_skills; ++sn )
    {
-      if( skill_table[sn]->name && ch->pcdata->learned[sn] > 0 )
+      if( !skill_table[sn]->name.empty() && ch->pcdata->learned[sn] > 0 )
       {
          switch ( skill_table[sn]->type )
          {
             default:
-               fprintf( fp, "Skill        %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name );
+               fprintf( fp, "Skill        %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name.c_str() );
                break;
 
             case SKILL_SPELL:
-               fprintf( fp, "Spell        %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name );
+               fprintf( fp, "Spell        %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name.c_str() );
                break;
 
             case SKILL_COMBAT:
-               fprintf( fp, "Combat       %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name );
+               fprintf( fp, "Combat       %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name.c_str() );
                break;
 
             case SKILL_TONGUE:
-               fprintf( fp, "Tongue       %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name );
+               fprintf( fp, "Tongue       %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name.c_str() );
                break;
 
             case SKILL_RACIAL:
-               fprintf( fp, "Ability      %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name );
+               fprintf( fp, "Ability      %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name.c_str() );
                break;
 
             case SKILL_LORE:
-               fprintf( fp, "Lore         %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name );
+               fprintf( fp, "Lore         %d '%s'\n", ch->pcdata->learned[sn], skill_table[sn]->name.c_str() );
          }
       }
    }
@@ -377,7 +377,7 @@ void fwrite_char( char_data * ch, FILE * fp )
          continue;
 
       if( af->type >= 0 && af->type < TYPE_PERSONAL )
-         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name, af->duration, af->modifier, af->location, af->bit );
+         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name.c_str(), af->duration, af->modifier, af->location, af->bit );
       else
       {
          if( af->location == APPLY_AFFECT )
@@ -386,7 +386,7 @@ void fwrite_char( char_data * ch, FILE * fp )
                   || af->location == APPLY_WEARSPELL
                   || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
             fprintf( fp, "Affect %s '%s' %d %d %d\n", a_types[af->location],
-                     IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN", af->type, af->duration, af->bit );
+                     IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name.c_str() : "UNKNOWN", af->type, af->duration, af->bit );
          else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
             fprintf( fp, "Affect %s %s~ %d %d %d\n", a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
          else
@@ -608,24 +608,24 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
          case ITEM_POTION:
          case ITEM_SCROLL:
             if( IS_VALID_SN( obj->value[1] ) )
-               fprintf( fp, "Spell 1      '%s'\n", skill_table[obj->value[1]]->name );
+               fprintf( fp, "Spell 1      '%s'\n", skill_table[obj->value[1]]->name.c_str() );
             if( IS_VALID_SN( obj->value[2] ) )
-               fprintf( fp, "Spell 2      '%s'\n", skill_table[obj->value[2]]->name );
+               fprintf( fp, "Spell 2      '%s'\n", skill_table[obj->value[2]]->name.c_str() );
             if( IS_VALID_SN( obj->value[3] ) )
-               fprintf( fp, "Spell 3      '%s'\n", skill_table[obj->value[3]]->name );
+               fprintf( fp, "Spell 3      '%s'\n", skill_table[obj->value[3]]->name.c_str() );
             break;
 
          case ITEM_STAFF:
          case ITEM_WAND:
             if( IS_VALID_SN( obj->value[3] ) )
-               fprintf( fp, "Spell 3      '%s'\n", skill_table[obj->value[3]]->name );
+               fprintf( fp, "Spell 3      '%s'\n", skill_table[obj->value[3]]->name.c_str() );
             break;
 
          case ITEM_SALVE:
             if( IS_VALID_SN( obj->value[4] ) )
-               fprintf( fp, "Spell 4      '%s'\n", skill_table[obj->value[4]]->name );
+               fprintf( fp, "Spell 4      '%s'\n", skill_table[obj->value[4]]->name.c_str() );
             if( IS_VALID_SN( obj->value[5] ) )
-               fprintf( fp, "Spell 5      '%s'\n", skill_table[obj->value[5]]->name );
+               fprintf( fp, "Spell 5      '%s'\n", skill_table[obj->value[5]]->name.c_str() );
             break;
       }
 
@@ -646,7 +646,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
          }
          else
             fprintf( fp, "AffectData   '%s' %d %d %d %d\n",
-                     skill_table[af->type]->name, af->duration,
+                     skill_table[af->type]->name.c_str(), af->duration,
                      ( ( af->location == APPLY_WEAPONSPELL
                          || af->location == APPLY_WEARSPELL
                          || af->location == APPLY_REMOVESPELL
@@ -712,7 +712,7 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
          continue;
 
       if( af->type >= 0 && af->type < TYPE_PERSONAL )
-         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name, af->duration, af->modifier, af->location, af->bit );
+         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name.c_str(), af->duration, af->modifier, af->location, af->bit );
       else
          fprintf( fp, "Affect       %3d %3d %3d %3d %d\n", af->type, af->duration, af->modifier, af->location, af->bit );
    }

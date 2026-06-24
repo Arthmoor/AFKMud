@@ -1371,7 +1371,7 @@ CMDF( do_induct )
 
       for( sn = 0; sn < num_skills; ++sn )
       {
-         if( skill_table[sn]->guild == clan->Class && skill_table[sn]->name != nullptr )
+         if( skill_table[sn]->guild == clan->Class && !skill_table[sn]->name.empty() )
          {
             victim->pcdata->learned[sn] = victim->GET_ADEPT( sn );
             victim->print_fmt( "{} instructs you in the ways of {}.\r\n", ch->name, skill_table[sn]->name );
@@ -1488,10 +1488,10 @@ CMDF( do_outcast )
       int sn;
 
       for( sn = 0; sn < num_skills; ++sn )
-         if( skill_table[sn]->guild == victim->pcdata->clan->Class && skill_table[sn]->name != nullptr )
+         if( skill_table[sn]->guild == victim->pcdata->clan->Class && !skill_table[sn]->name.empty() )
          {
             victim->pcdata->learned[sn] = 0;
-            victim->printf( "You forget the ways of %s.\r\n", skill_table[sn]->name );
+            victim->print_fmt( "You forget the ways of {}.\r\n", skill_table[sn]->name );
          }
    }
 

@@ -170,7 +170,7 @@ void load_boards(  );
 void load_projects(  );
 void assign_gsn_data(  );
 void load_connhistory(  );
-void sort_skill_table(  );
+void populate_skill_indexes(  );
 void load_classes(  );
 void load_races(  );
 void load_herb_table(  );
@@ -1107,7 +1107,7 @@ void boot_db( bool fCopyOver )
 
    log_string( "Loading skill table..." );
    load_skill_table(  );
-   sort_skill_table(  );
+   populate_skill_indexes(  );
    remap_slot_numbers(  ); /* must be after the sort */
    num_sorted_skills = num_skills;
 

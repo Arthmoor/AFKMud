@@ -6486,10 +6486,10 @@ void write_class_file( int cl )
    {
       int y;
 
-      if( !skill_table[x]->name || skill_table[x]->name[0] == '\0' )
+      if( skill_table[x]->name.empty() )
          break;
       if( ( y = skill_table[x]->skill_level[cl] ) < LEVEL_IMMORTAL )
-         fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name, y, skill_table[x]->skill_adept[cl] );
+         fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name.c_str(), y, skill_table[x]->skill_adept[cl] );
    }
 
    for( int x = 0; x <= MAX_LEVEL; ++x )
@@ -7524,10 +7524,10 @@ void write_race_file( int ra )
    {
       int y;
 
-      if( !skill_table[x]->name || skill_table[x]->name[0] == '\0' )
+      if( skill_table[x]->name.empty() )
          break;
       if( ( y = skill_table[x]->race_level[ra] ) < LEVEL_IMMORTAL )
-         fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name, y, skill_table[x]->race_adept[ra] );
+         fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name.c_str(), y, skill_table[x]->race_adept[ra] );
    }
    fprintf( fpout, "%s", "End\n" );
    FCLOSE( fpout );

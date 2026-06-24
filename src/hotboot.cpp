@@ -122,7 +122,7 @@ void save_mobile( FILE * fp, char_data * mob )
          continue;
 
       if( af->type >= 0 && af->type < TYPE_PERSONAL )
-         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name, af->duration, af->modifier, af->location, af->bit );
+         fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name.c_str(), af->duration, af->modifier, af->location, af->bit );
       else
          fwrite_afk_affect( fp, af );
    }

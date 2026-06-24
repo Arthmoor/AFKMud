@@ -460,17 +460,17 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
          skill_type *skill = skill_table[dt];
          bool found = false;
 
-         if( skill->imm_char && skill->imm_char[0] != '\0' )
+         if( !skill->imm_char.empty() )
          {
             act( AT_HIT, skill->imm_char, ch, nullptr, victim, TO_CHAR );
             found = true;
          }
-         if( skill->imm_vict && skill->imm_vict[0] != '\0' )
+         if( !skill->imm_vict.empty() )
          {
             act( AT_HITME, skill->imm_vict, ch, nullptr, victim, TO_VICT );
             found = true;
          }
-         if( skill->imm_room && skill->imm_room[0] != '\0' )
+         if( !skill->imm_room.empty() )
          {
             act( AT_ACTION, skill->imm_room, ch, nullptr, victim, TO_NOTVICT );
             found = true;
@@ -598,7 +598,7 @@ ch_ret projectile_hit( char_data * ch, char_data * victim, obj_data * wield, obj
 /*
  * Perform the actual attack on a victim			-Thoric
  */
-ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon, obj_data * projectile, short dist, short dt, const char *stxt, short color )
+ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon, obj_data * projectile, short dist, short dt, std::string_view stxt, short color )
 {
    /*
     * added wtype for check to determine skill used for ranged attacks - Grimm 
@@ -612,13 +612,13 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
        */
       if( projectile )
       {
-         ch->printf( "Your %s is blasted from existance by a godly presense.", projectile->myobj(  ).c_str(  ) );
+         ch->print_fmt( "Your {} is blasted from existence by a godly presence.", projectile->myobj(  ) );
          act( color, "A godly presence smites $p!", ch, projectile, nullptr, TO_ROOM );
          projectile->extract(  );
       }
       else
       {
-         ch->printf( "Your %s is blasted from existance by a godly presense.", stxt );
+         ch->print_fmt( "Your {} is blasted from existence by a godly presence.", stxt );
          act( color, "A godly presence smites $t!", ch, aoran( stxt ), nullptr, TO_ROOM );
       }
       return rNONE;
@@ -981,7 +981,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
    }
 
    room_index *was_in_room = ch->in_room;
-   const char *stxt = "burst of energy";
+   std::string stxt = "burst of energy";
    if( projectile )
    {
       projectile->separate(  );
@@ -1016,7 +1016,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
    }
    else if( skill )
    {
-      if( skill->noun_damage && skill->noun_damage[0] != '\0' )
+      if( !skill->noun_damage.empty() )
          stxt = skill->noun_damage;
       else
          stxt = skill->name;
@@ -1030,13 +1030,13 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
          if( pexit )
          {
             act( AT_MAGIC, "You release $t $T.", ch, aoran( stxt ), dir_name[dir], TO_CHAR );
-            act( AT_MAGIC, "$n releases $s $t $T.", ch, stxt, dir_name[dir], TO_ROOM );
+            act( AT_MAGIC, "$n releases $s $t $T.", ch, stxt.c_str(), dir_name[dir], TO_ROOM );
          }
          else
          {
             act( AT_MAGIC, "You release $t at $N.", ch, aoran( stxt ), victim, TO_CHAR );
-            act( AT_MAGIC, "$n releases $s $t at $N.", ch, stxt, victim, TO_NOTVICT );
-            act( AT_MAGIC, "$n releases $s $t at you!", ch, stxt, victim, TO_VICT );
+            act( AT_MAGIC, "$n releases $s $t at $N.", ch, stxt.c_str(), victim, TO_NOTVICT );
+            act( AT_MAGIC, "$n releases $s $t at you!", ch, stxt.c_str(), victim, TO_VICT );
          }
       }
    }
@@ -1150,7 +1150,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
          }
          else
          {
-            act( AT_MAGIC, "Your $t fizzles out harmlessly to the $T.", ch, stxt, dir_name[dir], TO_CHAR );
+            act( AT_MAGIC, "Your $t fizzles out harmlessly to the $T.", ch, stxt.c_str(), dir_name[dir], TO_CHAR );
             act( AT_MAGIC, "$t flies in from $T and fizzles out harmlessly.", ch, aoran( stxt ), dtxt.c_str(), TO_ROOM );
          }
          break;
@@ -1170,7 +1170,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
          }
          else
          {
-            act( AT_MAGIC, "Your $t harmlessly hits a wall to the $T.", ch, stxt, dir_name[dir], TO_CHAR );
+            act( AT_MAGIC, "Your $t harmlessly hits a wall to the $T.", ch, stxt.c_str(), dir_name[dir], TO_CHAR );
             act( AT_MAGIC, "$t strikes the $Tsern wall and falls harmlessly to the ground.", ch, aoran( stxt ), dir_name[dir], TO_ROOM );
          }
          break;

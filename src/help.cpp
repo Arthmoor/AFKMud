@@ -702,7 +702,7 @@ CMDF( do_helpcheck )
              */
             if( !( help = get_help( ch, command->name ) ) && command->level <= ch->level )
             {
-               ch->pagerf( "&cNot found: &C%s&w\r\n", command->name.c_str(  ) );
+               ch->pager_fmt( "&cNot found: &C{}&w\r\n", command->name );
                ++total;
             }
             else
@@ -718,7 +718,7 @@ CMDF( do_helpcheck )
       {
          if( !( help = get_help( ch, skill_table[sn]->name ) ) )  /* no help entry */
          {
-            ch->pagerf( "&gNot found: &G%s&w\r\n", skill_table[sn]->name );
+            ch->pager_fmt( "&gNot found: &G{}&w\r\n", skill_table[sn]->name );
             ++total;
          }
          else
@@ -728,5 +728,5 @@ CMDF( do_helpcheck )
    /*
     * tally up the total number of missing entries and finish up 
     */
-   ch->pagerf( "\r\n&Y%d missing entries found.&w\r\n", total );
+   ch->pager_fmt( "\r\n&Y{} missing entries found.&w\r\n", total );
 }

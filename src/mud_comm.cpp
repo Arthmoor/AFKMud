@@ -2578,10 +2578,9 @@ CMDF( do_mpechozone )   /* Blod, late 97 */
  */
 CMDF( do_mp_practice )
 {
-   std::string arg1, arg2;
+   std::string arg1, arg2, skillname;
    char_data *victim;
    int sn, max, adept;
-   char *skillname;
 
    if( !can_use_mprog( ch ) )
       return;
@@ -2615,7 +2614,7 @@ CMDF( do_mp_practice )
 
    skillname = skill_table[sn]->name;
 
-   max = atoi( argument.c_str(  ) );
+   max = std::stoi( argument );
    if( max < 0 || max > 100 )
    {
       progbugf( ch, "mp_practice: Invalid maxpercent: {}", max );
@@ -2643,7 +2642,7 @@ CMDF( do_mp_practice )
    /*
     * past here, victim learns something 
     */
-   act( AT_ACTION, "$N demonstrates $t to you. You feel more learned in this subject.", victim, skill_table[sn]->name, ch, TO_CHAR );
+   act( AT_ACTION, "$N demonstrates $t to you. You feel more learned in this subject.", victim, skill_table[sn]->name.c_str(), ch, TO_CHAR );
 
    victim->pcdata->learned[sn] = max;
 
