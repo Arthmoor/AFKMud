@@ -437,18 +437,18 @@ void load_boards( void )
    check_boards(  );
 }
 
-void write_reply( note_data *pnote, std::ofstream & stream )
+void write_reply( note_data * pnote, std::ofstream & stream )
 {
    auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
 
-   std::println( stream, "#REPLY");
-   std::println( stream, "Reply-Sender         {}~", pnote->sender );
-   std::println( stream, "Reply-To             {}~", pnote->to_list );
-   std::println( stream, "Reply-Subject        {}~", pnote->subject );
-   std::println( stream, "Reply-DateStamp      {}", date_stamp );
-   std::println( stream, "Reply-Flags          {}~", bitset_string( pnote->flags, note_flags ) );
-   std::println( stream, "Reply-Text           {}~", pnote->text );
-   std::println( stream, "#REPLY-END\n");
+   stream << "#REPLY\n";
+   stream << std::format( "Reply-Sender         {}~\n", pnote->sender );
+   stream << std::format( "Reply-To             {}~\n", pnote->to_list );
+   stream << std::format( "Reply-Subject        {}~\n", pnote->subject );
+   stream << std::format( "Reply-DateStamp      {}\n", date_stamp );
+   stream << std::format( "Reply-Flags          {}~\n", bitset_string( pnote->flags, note_flags ) );
+   stream << std::format( "Reply-Text           {}~\n", pnote->text );
+   stream << "#REPLY-END\n\n";
 }
 
 void write_note( note_data * pnote, std::ofstream & stream )
