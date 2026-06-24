@@ -329,57 +329,57 @@ void strip_tspace( std::string & line )
       line = line.substr( 0, space + 1 );
 }
 
-// Strip both leading and trailing spaces from a string
+// Strip both leading and trailing spaces from a string.
 void strip_spaces( std::string & line )
 {
    strip_tspace( line );
    strip_lspace( line );
 }
 
-std::string strip_cr( const std::string & str )
+// Strip only the carriage returns from a string.
+std::string strip_cr( std::string_view str )
 {
-   std::string newstr = str;
+   std::string result( str );
    std::string::size_type x;
 
-   while( ( x = newstr.find( '\r' ) ) != std::string::npos )
-      newstr = newstr.erase( x, 1 );
-   return newstr;
-}
+   std::erase( result, '\r' );
 
-/*
- * Remove carriage returns from a line
- */
-const char *strip_cr( const char *str )
-{
-   static char newstr[MSL];
-   int i, j = 0;
-
-   if( !str || str[0] == '\0' )
-      return "";
-
-   for( i = 0; str[i] != '\0'; ++i )
-      if( str[i] != '\r' )
-         newstr[j++] = str[i];
-   newstr[j] = '\0';
-   return newstr;
+   return result;
 }
 
 // Strip off carriage returns and line feeds.
 std::string strip_crlf( std::string_view str )
 {
-   std::string newstr = str.data();
+   std::string result( str );
 
-   std::erase( newstr, '\r' );
-   std::erase( newstr, '\n' );
+   std::erase( result, '\r' );
+   std::erase( result, '\n' );
 
-   return newstr;
+   return result;
 }
 
 // Strips off any leading and trailing spaces, plus any stray tabs, carriage returns, or newlines.
 void strip_whitespace( std::string & str )
 {
-   str = strip_crlf( str );
-   strip_spaces( str );
+   std::string_view sv = str;
+
+   // Look for whitespace characters.
+   auto start = sv.find_first_not_of( " \t\r\n" );
+
+   // The string is either empty or is nothing but whitespace. Return an empty string.
+   if( start == std::string_view::npos )
+   {
+      str.clear();
+      return;
+   }
+   auto end = sv.find_last_not_of( " \t\r\n" );
+
+   // If the string was already clean, don't do anything.
+   if( start == 0 && end == sv.size() - 1 )
+      return;
+
+   // Otherwise, assign the trimmed view back to the original string.
+   str = sv.substr( start, end - start + 1 );
 }
 
 /*
