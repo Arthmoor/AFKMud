@@ -472,9 +472,7 @@ void load_objects( area_data * tarea, FILE * fp )
 
             if( tarea->version < 20 )
             {
-               char *aff = nullptr;
-               char *risa = nullptr;
-               char flag[MIL];
+               std::string aff, risa, flag;
 
                paf->location = fread_number( fp );
 
@@ -503,7 +501,7 @@ void load_objects( area_data * tarea, FILE * fp )
                   value = fread_number( fp );
                   risa = flag_string( value, ris_flags );
 
-                  while( risa[0] != '\0' )
+                  while( !risa.empty() )
                   {
                      risa = one_argument( risa, flag );
                      value = get_risflag( flag );
@@ -518,8 +516,7 @@ void load_objects( area_data * tarea, FILE * fp )
             }
             else
             {
-               std::string loc;
-               std::string aff;
+               std::string loc, aff;
 
                loc = fread_word( fp );
                value = get_atype( loc );

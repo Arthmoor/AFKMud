@@ -455,20 +455,7 @@ std::string capitalize( std::string_view str )
    return result;
 }
 
-/*
- * Returns a lowercase string.
- */
-char *strlower( const char *str )
-{
-   static char strlow[MSL];
-   int i;
-
-   for( i = 0; str[i] != '\0'; ++i )
-      strlow[i] = tolower( str[i] );
-   strlow[i] = '\0';
-   return strlow;
-}
-
+// Returns a lowercase string.
 void strlower( std::string & str )
 {
    std::transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::tolower );
@@ -485,20 +472,7 @@ char to_upper( char c )
    return static_cast<char>( std::toupper( static_cast<unsigned char>(c) ) );
 }
 
-/*
- * Returns an uppercase string.
- */
-char *strupper( const char *str )
-{
-   static char strup[MSL];
-   int i;
-
-   for( i = 0; str[i] != '\0'; ++i )
-      strup[i] = toupper( str[i] );
-   strup[i] = '\0';
-   return strup;
-}
-
+// Returns an uppercase string.
 void strupper( std::string & str )
 {
    std::transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::toupper );
@@ -1016,13 +990,13 @@ void char_data::edit_buffer( std::string & argument )
          /*
           * Changed to a case-sensitive version of string compare --Cynshard 
           */
-         if( !strcmp( word1.c_str(  ), word2.c_str(  ) ) )
+         if( word1 == word2 )
          {
             print( "Done.\r\n> " );
             return;
          }
 
-         printf( "Replacing all occurrences of %s with %s...\r\n", word1.c_str(  ), word2.c_str(  ) );
+         print_fmt( "Replacing all occurrences of {} with {}...\r\n", word1, word2 );
          for( x = 0; x < edit->numlines; ++x )
          {
             lwptr = edit->line[x];
@@ -1034,7 +1008,7 @@ void char_data::edit_buffer( std::string & argument )
 
             strlcpy( edit->line[x], buf, 81 );
          }
-         printf( "Found and replaced \"%s\" with \"%s\".\r\n> ", word1.c_str(  ), word2.c_str(  ) );
+         print_fmt( "Found and replaced \"{}\" with \"{}\".\r\n> ", word1, word2 );
          return;
       }
 
@@ -1051,7 +1025,7 @@ void char_data::edit_buffer( std::string & argument )
          char temp_buf[MSL + max_buf_lines];
          int ep, old_p, end_mark, p = 0;
 
-         pager( "Reformating...\r\n" );
+         pager( "Reformatting...\r\n" );
 
          for( x = 0; x < edit->numlines; ++x )
          {
@@ -1093,7 +1067,7 @@ void char_data::edit_buffer( std::string & argument )
             old_p = p + 1;
             p += 75;
          }
-         pager( "Reformating done.\r\n> " );
+         pager( "Reformatting done.\r\n> " );
          return;
       }
 
@@ -1110,7 +1084,7 @@ void char_data::edit_buffer( std::string & argument )
          else
          {
             if( argument[2] == ' ' )
-               line = atoi( argument.c_str(  ) + 2 ) - 1;
+               line = std::stoi( argument.substr(2) ) - 1;
             else
                line = edit->on_line;
             if( line < 0 )
@@ -1135,7 +1109,7 @@ void char_data::edit_buffer( std::string & argument )
          else
          {
             if( argument[2] == ' ' )
-               line = atoi( argument.c_str(  ) + 2 ) - 1;
+               line = std::stoi( argument.substr(2) ) - 1;
             else
                line = edit->on_line;
             if( line < 0 )
@@ -1170,7 +1144,7 @@ void char_data::edit_buffer( std::string & argument )
          else
          {
             if( argument[2] == ' ' )
-               line = atoi( argument.c_str(  ) + 2 ) - 1;
+               line = std::stoi( argument.substr(2) ) - 1;
             else
             {
                print( "Goto what line?\r\n> " );
@@ -1183,7 +1157,7 @@ void char_data::edit_buffer( std::string & argument )
             else
             {
                edit->on_line = line;
-               printf( "(On line %d)\r\n> ", line + 1 );
+               print_fmt( "(On line {})\r\n> ", line + 1 );
             }
          }
          return;

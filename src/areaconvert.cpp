@@ -567,13 +567,12 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             pMobIndex->weight = x4;
 
             {
-               char *speaks = nullptr, *speaking = nullptr;
-               char flag[MIL];
+               std::string speaks, speaking, flag;
                int value;
 
                speaks = flag_string( x5, stock_lang_names );
 
-               while( speaks[0] != '\0' )
+               while( !speaks.empty() )
                {
                   speaks = one_argument( speaks, flag );
                   value = get_langnum( flag );
@@ -585,7 +584,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
                speaking = flag_string( x6, stock_lang_names );
 
-               while( speaking[0] != '\0' )
+               while( !speaking.empty() )
                {
                   speaking = one_argument( speaking, flag );
                   value = get_langnum( flag );
@@ -607,7 +606,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
 
             {
-               const char *srace, *sclass;
+               std::string srace, sclass;
 
                if( x1 >= 0 && x1 < 90 )
                   srace = stock_race[x1];
@@ -679,7 +678,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             temp = fread_bitvector( fp );
             attacks = ext_flag_string( temp, stock_attack_flags );
 
-            while( attacks[0] != '\0' )
+            while( !attacks.empty() )
             {
                attacks = one_argument( attacks, flag );
                value = get_attackflag( flag );
@@ -692,7 +691,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             temp = fread_bitvector( fp );
             defenses = ext_flag_string( temp, stock_defense_flags );
 
-            while( defenses[0] != '\0' )
+            while( !defenses.empty() )
             {
                defenses = one_argument( defenses, flag );
                value = get_defenseflag( flag );
@@ -1042,8 +1041,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          if( letter == 'A' )
          {
             affect_data *paf;
-            char *risa = nullptr;
-            char flag[MIL];
+            std::string risa, flag;
             int value;
 
             paf = new affect_data;
@@ -1064,7 +1062,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
                value = fread_number( fp );
                risa = flag_string( value, ris_flags );
 
-               while( risa[0] != '\0' )
+               while( !risa.empty() )
                {
                   risa = one_argument( risa, flag );
                   value = get_risflag( flag );
@@ -1460,13 +1458,12 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                      break;
                   default:
                   {
-                     char *oldexits = nullptr;
-                     char flag[MIL];
+                     std::string oldexits, flag;
                      int value;
 
                      oldexits = flag_string( locks, stock_ex_flags );
 
-                     while( oldexits[0] != '\0' )
+                     while( !oldexits.empty() )
                      {
                         oldexits = one_argument( oldexits, flag );
                         value = get_exflag( flag );
@@ -1491,8 +1488,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          else if( letter == 'A' )   // This section was added in SmaugFUSS 1.8
          {
             affect_data *paf;
-            char *risa = nullptr;
-            char flag[MIL];
+            std::string risa, flag;
             int value;
 
             paf = new affect_data;
@@ -1513,7 +1509,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                value = fread_number( fp );
                risa = flag_string( value, ris_flags );
 
-               while( risa[0] != '\0' )
+               while( !risa.empty() )
                {
                   risa = one_argument( risa, flag );
                   value = get_risflag( flag );
@@ -1998,8 +1994,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
       else if( !str_cmp( word, "FLAGS" ) )
       {
          const char *ln;
-         char *aflags;
-         char flag[MIL];
+         std::string aflags, flag;
          int x1, x2, value;
 
          ln = fread_line( fpArea );
@@ -2008,7 +2003,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
 
          aflags = flag_string( x1, stock_area_flags );
 
-         while( aflags[0] != '\0' )
+         while( !aflags.empty() )
          {
             aflags = one_argument( aflags, flag );
             value = get_areaflag( flag );

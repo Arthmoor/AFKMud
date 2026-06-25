@@ -252,8 +252,6 @@ CMDF( do_mptag )
 CMDF( do_mprmtag )
 {
    char_data *victim;
-   const char *p;
-   char tmp[MSL];
    std::string arg1, arg2;
    int vnum = 0;
 
@@ -278,10 +276,13 @@ CMDF( do_mprmtag )
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != nullptr ) 
+   std::string_view arg_view = arg2;
+   auto pos = arg_view.find( ':' );
+
+   if( pos != std::string_view::npos )
    {
-      strlcpy( tmp, p, MSL );
-      vnum = atoi( tmp );
+      std::string_view remainder = arg_view.substr( pos + 1 );
+      vnum = std::stoi( remainder.data() );
    }
    else
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
