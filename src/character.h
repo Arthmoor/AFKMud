@@ -285,7 +285,6 @@ class char_data
    void start_editing( char * );
    void start_editing( std::string );
    void stop_editing(  );
-   char *copy_buffer( bool );
    std::string copy_buffer(  );
    void set_editor_desc( std::string_view );
    void edit_buffer( std::string & );

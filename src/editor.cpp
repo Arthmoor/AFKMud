@@ -923,40 +923,6 @@ std::string char_data::copy_buffer(  )
    return oss.str();
 }
 
-char *char_data::copy_buffer( bool hash )
-{
-   char buf[MSL], tmp[100];
-   short i, len;
-
-   if( !pcdata->editor )
-   {
-      bug( "{}: null editor", __func__ );
-      if( hash )
-         return STRALLOC( "" );
-      return strdup( "" );
-   }
-
-   buf[0] = '\0';
-   for( i = 0; i < pcdata->editor->numlines; ++i )
-   {
-      strlcpy( tmp, pcdata->editor->line[i], 100 );
-      len = strlen( tmp );
-      if( len > 0 && tmp[len - 1] == '~' )
-         tmp[len - 1] = '\0';
-      else
-         strlcat( tmp, "\n", 100 );
-      smash_tilde( tmp );
-      strlcat( buf, tmp, MSL );
-   }
-   if( hash )
-   {
-      if( buf[0] != '\0' )
-         return STRALLOC( buf );
-      return nullptr;
-   }
-   return strdup( buf );
-}
-
 /*
  * Simple but nice and handy line editor. - Thoric
  */
