@@ -1433,8 +1433,8 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             else
             {
                pexit = pRoomIndex->make_exit( nullptr, door );
-               pexit->exitdesc = fread_string( fp );
-               pexit->keyword = fread_string( fp );
+               fread_string( pexit->exitdesc, fp );
+               fread_string( pexit->keyword, fp );
                pexit->flags.reset(  );
                ln = fread_line( fp );
                x1 = x2 = x3 = x4 = x5 = x6 = 0;

@@ -280,7 +280,7 @@ bool is_valid_filename( char_data * ch, std::string_view direct, std::string_vie
  * If an area file encounters EOF, the fread_* functions will shutdown the
  * MUD, as all area files should be read in in full or bad things will
  * happen during the game.  Any files loaded in without fBootDb which
- * encounter EOF will return what they have read so far.   These files
+ * encounter EOF will return what they have read so far. These files
  * should include player files, and in-progress areas that are not loaded
  * upon bootup.
  * -- Altrag
@@ -367,15 +367,7 @@ const char* fread_flagstring( FILE* fp )
    return buffer.c_str();
 }
 
-// Read a string from file and allocate it to the shared string hash.
-char* fread_string( FILE* fp )
-{
-   std::string temp = internal_fread_flagstring( fp );
-
-   return temp.empty() ? nullptr : STRALLOC( temp.c_str() );
-}
-
-// Read a string from a file and assign it to a std::string
+// Read a string from a file and assign it to a std::string.
 void fread_string( std::string & newstring, FILE* fp )
 {
    newstring = internal_fread_flagstring( fp );
@@ -392,16 +384,16 @@ void fread_to_eol( FILE* fp )
    {
       if( c == '\n' || c == '\r' )
       {
-         // Peek at the next character to see if we have a \r\n pair
+         // Peek at the next character to see if we have a \r\n pair.
          int next = std::getc( fp );
 
-         // If the next character is the other half of a CRLF pair, consume it
+         // If the next character is the other half of a CRLF pair, consume it.
          if( next != EOF && next != c && ( next == '\n' || next == '\r' ) )
          {
             return;
          }
 
-         // Otherwise, put the character back so the next read starts fresh
+         // Otherwise, put the character back so the next read starts fresh.
          if( next != EOF )
          {
             std::ungetc( next, fp );

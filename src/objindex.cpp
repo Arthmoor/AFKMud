@@ -810,7 +810,7 @@ void obj_index::oprog_read_programs( FILE * fp )
             std::exit( EXIT_FAILURE );
 
          case IN_FILE_PROG:
-            mprg->arglist = fread_string( fp );
+            fread_string( mprg->arglist, fp );
             mprg->fileprog = false;
             mprog_file_read( this, mprg->arglist );
             break;
@@ -818,8 +818,8 @@ void obj_index::oprog_read_programs( FILE * fp )
          default:
             progtypes.set( mprg->type );
             mprg->fileprog = false;
-            mprg->arglist = fread_string( fp );
-            mprg->comlist = fread_string( fp );
+            fread_string( mprg->arglist, fp );
+            fread_string( mprg->comlist, fp );
             break;
       }
    }

@@ -339,12 +339,12 @@ void fread_loginmsg( FILE * fp )
             break;
 
          case 'N':
-            KEY( "Name", lmsg->name, fread_string( fp ) );
+            STDSKEY( "Name", lmsg->name );
             break;
 
          case 'T':
             KEY( "Type", lmsg->type, fread_short( fp ) );
-            KEY( "Text", lmsg->text, fread_string( fp ) );
+            STDSKEY( "Text", lmsg->text );
             break;
       }
    }

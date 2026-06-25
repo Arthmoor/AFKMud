@@ -619,11 +619,7 @@ void fread_variable( char_data * ch, FILE * fp )
 
          case 'S':
             // Legacy data
-            if( !str_cmp( word, "Str" ) )
-            {
-               pvd->varstring = fread_string( fp );
-               break;
-            }
+            STDSKEY( "Str", pvd->varstring );
             break;
 
          case 'T':

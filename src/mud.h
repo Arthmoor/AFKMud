@@ -582,41 +582,6 @@ if( !str_cmp( word, (literal) ) )      \
 #define SET_EXIT_FLAG(var, bit)    (var)->flags.set((bit))
 #define REMOVE_EXIT_FLAG(var, bit) (var)->flags.reset((bit))
 
-// Memory allocation macros. Your days are numbered...
-#define STRALLOC(point)		str_alloc((point), __func__, __FILE__, __LINE__)
-#define QUICKLINK(point)	quick_link((point))
-#if defined(__FreeBSD__)
-#define STRFREE(point)                          \
-do                                              \
-{                                               \
-   if((point))                                  \
-   {                                            \
-      if( str_free((point)) == -1 )             \
-         log_printf( "&RSTRFREEing bad pointer: {}, line {}", __FILE__, __LINE__ ); \
-      (point) = nullptr;                        \
-   }                                            \
-} while(0)
-#else
-#define STRFREE(point)                           \
-do                                               \
-{                                                \
-   if((point))                                   \
-   {                                             \
-      if( !in_hash_table( (point) ) )            \
-      {                                          \
-         log_printf( "&RSTRFREE called on strdup pointer: {}, line {}\n", __FILE__, __LINE__ ); \
-         log_string( "Attempting to correct." ); \
-         free( (point) );                        \
-      }                                          \
-      else if( str_free( (point) ) == -1 )       \
-         log_printf( "&RSTRFREEing bad pointer: {}, line {}\n", __FILE__, __LINE__ ); \
-      (point) = nullptr;                         \
-   }                                             \
-   else                                          \
-      (point) = nullptr;                         \
-} while(0)
-#endif
-
 // Safe fclose macro adopted from DOTD Codebase.
 // Now updated to protect against being inside unguarded if/else blocks. - Samson 6/7/2026.
 #define FCLOSE(fp) do { if ((fp)) { fclose((fp)); (fp) = nullptr; } } while(0)
@@ -917,7 +882,6 @@ bool is_valid_filename( char_data *, std::string_view, std::string_view );
 void shutdown_mud( std::string_view );
 bool exists_file( std::string_view );
 char fread_letter( FILE * );
-char *fread_string( FILE * );
 const char *fread_flagstring( FILE * );
 void fread_to_eol( FILE * );
 const char *fread_line( FILE * );

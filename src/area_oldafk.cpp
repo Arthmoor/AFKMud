@@ -1042,8 +1042,8 @@ void load_rooms( area_data * tarea, FILE * fp )
             else
             {
                exit_data *pexit = pRoomIndex->make_exit( nullptr, door );
-               pexit->exitdesc = fread_string( fp );
-               pexit->keyword = fread_string( fp );
+               fread_string( pexit->exitdesc, fp );
+               fread_string( pexit->keyword, fp );
 
                flag_set( fp, pexit->flags, ex_flags );
 
@@ -1256,7 +1256,8 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       else if( !str_cmp( word, "CONTINENT" ) )
       {
          continent_data *continent = nullptr;
-         std::string value = fread_string( fpArea );
+         std::string value;
+         fread_string( value, fpArea );
 
          if( !( continent = find_continent_by_name( value ) ) )
          {

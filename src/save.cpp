@@ -2105,7 +2105,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
 
          case 'S':
             STDSKEY( "Seller", obj->seller );  /* Samson 6-20-99 */
-            KEY( "ShortDescr", obj->short_descr, fread_string( fp ) );
+            STDSKEY( "ShortDescr", obj->short_descr );
 
             if( !str_cmp( word, "Spell" ) )
             {
