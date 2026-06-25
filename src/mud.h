@@ -902,55 +902,12 @@ void make_wizlist( );
 void show_file( char_data *, std::string_view );
 void add_loginmsg( std::string_view, short, std::string_view );
 
-// editor.cpp
-bool hasname( std::string_view, std::string_view );
-void removename( std::string &, const std::string & );
-void addname( std::string &, const std::string & );
-void smash_tilde( char * );
-void smash_tilde( std::string & );
-void hide_tilde( std::string & );
-const char *show_tilde( const char * );
-const std::string show_tilde( const std::string & );
-bool str_cmp( std::string_view, std::string_view );
-bool str_prefix( std::string_view, std::string_view );
-bool str_infix( std::string_view, std::string_view );
-bool str_suffix( std::string_view, std::string_view );
-std::string capitalize( std::string_view );
-void strlower( std::string & );
-void strupper( std::string & );
-char to_lower( char );
-char to_upper( char );
-const char *aoran( std::string_view );
-void strip_tilde( std::string & );
-void strip_lspace( std::string & );
-void strip_tspace( std::string & );
-void strip_spaces( std::string & );
-std::string strip_cr( std::string_view );
-std::string strip_crlf( std::string_view );
-void strip_whitespace( std::string & );
-bool is_number( std::string_view );
-int number_argument( std::string_view, std::string & );
-int number_argument( char *, char * );
-const char *one_argument( const char *, char * );
-char *one_argument( char *, char * );
-std::string one_argument( std::string_view, std::string & );
-std::string invert_string( std::string_view );
-const std::string escape_formatting( std::string );
-void string_erase( std::string &, char );
-void string_erase( std::string &, std::string_view );
-void string_replace( std::string &, std::string_view, std::string_view );
-const char *print_array_string( const char *flagarray[], size_t );
-
 // fight.cpp
 ch_ret multi_hit( char_data *, char_data *, int );
 ch_ret damage( char_data *, char_data *, double, int );
 
 // handler.cpp
 long exp_level( int );
-bool nifty_is_name_prefix( std::string, std::string );
-bool nifty_is_name_prefix( char *, char * );
-bool is_name2_prefix( std::string_view, std::string );
-bool is_name2_prefix( const char *, char * );
 obj_data *get_obj_list( char_data *, std::string_view, std::list<obj_data *> );
 ch_ret check_for_trap( char_data *, obj_data *, int );
 ch_ret spring_trap( char_data *, obj_data * );
@@ -1007,6 +964,42 @@ int skill_lookup( std::string_view );
 int herb_lookup( std::string_view );
 int slot_lookup( int );
 CMDF( skill_notfound );
+
+// string_tools.cpp
+bool hasname( std::string_view, std::string_view );
+void removename( std::string &, const std::string & );
+void addname( std::string &, const std::string & );
+void smash_tilde( std::string & );
+void hide_tilde( std::string & );
+const std::string show_tilde( const std::string & );
+bool str_cmp( std::string_view, std::string_view );
+bool str_prefix( std::string_view, std::string_view );
+bool str_infix( std::string_view, std::string_view );
+bool str_suffix( std::string_view, std::string_view );
+std::string capitalize( std::string_view );
+void strlower( std::string & );
+void strupper( std::string & );
+char to_lower( char );
+char to_upper( char );
+const char *aoran( std::string_view );
+void strip_tilde( std::string & );
+void strip_lspace( std::string & );
+void strip_tspace( std::string & );
+void strip_spaces( std::string & );
+std::string strip_cr( std::string_view );
+std::string strip_crlf( std::string_view );
+void strip_whitespace( std::string & );
+bool is_number( std::string_view );
+int number_argument( std::string_view, std::string & );
+std::string one_argument( std::string_view, std::string & );
+std::string invert_string( std::string_view );
+const std::string escape_formatting( std::string );
+void string_erase( std::string &, char );
+void string_erase( std::string &, std::string_view );
+void string_replace( std::string &, std::string_view, std::string_view );
+const char *print_array_string( const char *flagarray[], size_t );
+bool nifty_is_name_prefix( std::string, std::string );
+bool is_name2_prefix( std::string_view, std::string );
 
 // tables.cpp
 SPELL_FUN *spell_function( std::string_view );

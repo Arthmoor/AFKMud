@@ -101,7 +101,7 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           object.cpp objindex.cpp olcmob.cpp olcobj.cpp olcroom.cpp overland.cpp \
           pfiles.cpp player.cpp polymorph.cpp rare.cpp realms.cpp renumber.cpp reset.cpp \
           roomindex.cpp save.cpp sha256.cpp sha512.cpp ships.cpp shops.cpp \
-          skills.cpp skyship.cpp slay.cpp tables.cpp track.cpp treasure.cpp \
+          skills.cpp skyship.cpp slay.cpp string_tools.cpp tables.cpp track.cpp treasure.cpp \
           update.cpp variables.cpp weather.cpp web.cpp
 
 ifdef LIB_MYSQL

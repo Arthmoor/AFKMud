@@ -400,7 +400,7 @@ CMDF( do_homepage )
    if( argument.empty(  ) )
    {
       if( !ch->pcdata->homepage.empty(  ) )
-         ch->printf( "Your homepage is: %s\r\n", show_tilde( ch->pcdata->homepage ).c_str(  ) );
+         ch->print_fmt( "Your homepage is: {}\r\n", show_tilde( ch->pcdata->homepage ) );
       else
          ch->print( "You have no homepage set yet.\r\n" );
       return;
