@@ -364,27 +364,25 @@ void medit_disp_aff_flags( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( i = 0; i < MAX_AFFECTED_BY; ++i )
    {
-      d->character->printf( "&g%2d&w) %-20.20s  ", i + 1, aff_flags[i] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20}  ", i + 1, aff_flags[i] );
       if( !( ++columns % 2 ) )
          d->character->print( "\r\n" );
    }
 
    if( d->olc->mode == OEDIT_AFFECT_MODIFIER )
    {
-      char buf[MSL];
-
-      buf[0] = '\0';
+      std::string buf;
 
       for( i = 0; i < 32; ++i )
          if( IS_SET( d->character->tempnum, 1 << i ) )
          {
-            strlcat( buf, " ", MSL );
-            strlcat( buf, aff_flags[i], MSL );
+            buf += " ";
+            buf += aff_flags[i];
          }
-      d->character->printf( "\r\nCurrent flags   : &c%s&w\r\n", buf );
+      d->character->print_fmt( "\r\nCurrent flags   : &c{}&w\r\n", buf );
    }
    else
-      d->character->printf( "\r\nCurrent flags   : &c%s&w\r\n", bitset_string( victim->get_aflags(  ), aff_flags ) );
+      d->character->print_fmt( "\r\nCurrent flags   : &c{}&w\r\n", bitset_string( victim->get_aflags(  ), aff_flags ) );
    d->character->print( "Enter affected flags (0 to quit) : " );
 }
 
@@ -396,12 +394,12 @@ void medit_disp_parts( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int count = 0; count < MAX_BPART; ++count )
    {
-      d->character->printf( "&g%2d&w) %-20.20s    ", count + 1, part_flags[count] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20}    ", count + 1, part_flags[count] );
 
       if( ++columns % 2 == 0 )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nCurrent flags: %s\r\nEnter flag or 0 to exit: ", bitset_string( victim->get_bparts(  ), part_flags ) );
+   d->character->print_fmt( "\r\nCurrent flags: {}\r\nEnter flag or 0 to exit: ", bitset_string( victim->get_bparts(  ), part_flags ) );
 }
 
 void medit_disp_classes( descriptor_data * d )
@@ -411,7 +409,7 @@ void medit_disp_classes( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int iClass = 0; iClass < MAX_NPC_CLASS; ++iClass )
    {
-      d->character->printf( "&g%2d&w) %-20.20s     ", iClass, npc_class[iClass] );
+      d->character->print_fmt( "&g{}d&w) {:<20.20}     ", iClass, npc_class[iClass] );
       if( ++columns % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -425,7 +423,7 @@ void medit_disp_races( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int iRace = 0; iRace < MAX_NPC_RACE; ++iRace )
    {
-      d->character->printf( "&g%2d&w) %-20.20s  ", iRace, npc_race[iRace] );
+      d->character->print_fmt( "&g{}&w) {:<20.20}  ", iRace, npc_race[iRace] );
       if( ++columns % 3 == 0 )
          d->character->print( "\r\n" );
    }
