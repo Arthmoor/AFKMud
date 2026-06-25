@@ -53,8 +53,8 @@ ifndef IS_CYGWIN
 endif
 
 # These protect against stack smashing and buffer overflows in production.
-# We add -D_FORTIFY_SOURCE=2 to perform runtime checks on string/memory functions.
-HARDENING_FLAGS = -fstack-protector-strong -D_FORTIFY_SOURCE=2
+# We add -D_FORTIFY_SOURCE=3 to perform runtime checks on string/memory functions.
+HARDENING_FLAGS = -fstack-protector-strong -D_FORTIFY_SOURCE=3
 
 #AFKMud now requires at least C++23 to be enabled. This will work in GCC 13.1 or later, which should be more than sufficient.
 #You can try out any *later* standard, but not an earlier one since the code uses many C++23 features.
@@ -66,9 +66,9 @@ ifndef IS_CYGWIN
 endif
 
 ifneq ($(CC), clang++)
-   W_FLAGS = -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wstrict-null-sentinel -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   W_FLAGS = -Wall -Wshadow -Wpedantic -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wuseless-cast -Wwrite-strings -Wformat=2 -Wformat-security -Wformat-signedness -Wtype-limits
 else
-   W_FLAGS = -Wall -Wshadow -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat -Wformat-security -Wformat-signedness -Wtype-limits
+   W_FLAGS = -Wall -Wshadow -Wpedantic -Wmissing-format-attribute -Wpointer-arith -Wcast-align -Wredundant-decls -Wswitch-default -Wwrite-strings -Wformat=2 -Wformat-security -Wformat-signedness -Wtype-limits
 endif
 
 ifndef IS_CYGWIN
