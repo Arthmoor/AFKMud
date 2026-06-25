@@ -1378,7 +1378,7 @@ std::string extract_command_names( char_data * ch )
 
    while( !tbuf.empty(  ) )
    {
-      if( !strstr( tcomm.c_str(  ), ".are" ) )
+      if( !tcomm.contains( ".are" ) )
       {
          if( comm_names.empty(  ) )
             comm_names = tcomm;
@@ -1471,7 +1471,7 @@ CMDF( do_bestow )
 
    while( !argument.empty(  ) )
    {
-      if( strstr( arg.c_str(  ), ".are" ) )
+      if( arg.contains( ".are" ) )
       {
          ch->print_fmt( "'{}' is not a valid command to bestow.\r\n", arg );
          ch->print( "You cannot bestow an area with 'bestow'. Use 'bestowarea'.\r\n" );

@@ -30,7 +30,7 @@
 
 #include <bitset>
 #include <chrono>
-#include <cstring> // Can't be rid of me until you've converted every last string in the code to std::string, or at least move it to any files still needing it for things like strdup.
+#include <cstring>
 #include <format>
 #include <list>
 #include <map>

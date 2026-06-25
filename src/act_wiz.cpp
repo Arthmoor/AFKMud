@@ -5117,14 +5117,14 @@ CMDF( do_for )
    /*
     * do not allow # to make it easier 
     */
-   if( fEverywhere && strchr( argument.c_str(  ), '#' ) )
+   if( fEverywhere && argument.contains( "#" ) )
    {
       ch->print( "Cannot use FOR EVERYWHERE with the # thingie.\r\n" );
       return;
    }
 
    ch->set_color( AT_PLAIN );
-   if( strchr( argument.c_str(  ), '#' ) )   /* replace # ? */
+   if( argument.contains( "#" ) )   /* replace # ? */
    {
       for( auto it = charlist.begin(  ); it != charlist.end(  ); )
       {
@@ -5231,7 +5231,7 @@ CMDF( do_for )
                log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          }  /* if found */
       }  /* for every room in a bucket */
-   }  /* if strchr */
+   }  /* if .contains() */
 }  /* do_for */
 
 CMDF( do_hell )

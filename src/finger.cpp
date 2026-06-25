@@ -413,7 +413,7 @@ CMDF( do_homepage )
       return;
    }
 
-   if( strstr( argument.c_str(  ), "://" ) )
+   if( argument.contains( "://" ) )
       buf = argument;
    else
       buf = "https://" + argument;

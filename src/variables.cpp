@@ -208,10 +208,13 @@ CMDF( do_mptag )
       return;
    }
 
-   if( ( p = strchr( arg2.c_str(  ), ':' ) ) != nullptr ) 
+   std::string_view arg_view = arg2;
+   auto pos = arg_view.find( ':' );
+
+   if( pos != std::string_view::npos )
    {
-      std::string tmp = p;
-      vnum = std::stoi( tmp );
+      std::string_view remainder = arg_view.substr( pos + 1 );
+      vnum = std::stoi( remainder.data() );
    }
    else
       vnum = ch->pIndexData ? ch->pIndexData->vnum : 0;
