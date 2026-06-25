@@ -1915,9 +1915,30 @@ CMDF( do_examine )
             if( obj->extra_flags.test( ITEM_COVERING ) )
                break;
 
+         // Bugfix: Nothing was here before. Added code to show what kind of liquid is inside. Also fixed the missing break.. - Samson 6/24/2026
          case ITEM_DRINK_CON:
+         {
+            if( obj->value[1] <= 0 )
+            {
+               ch->print( "It is empty.\r\n" );
+               break;
+            }
+
+            liquid_data *liq = get_liq_vnum( obj->value[2] );
+
+            ch->print_fmt( "It's {} full of a {} liquid.\r\n", ( obj->value[1] * 10 ) < ( obj->value[0] * 10 ) / 4
+            ? "less than halfway" : ( obj->value[1] * 10 ) < 2 * ( obj->value[0] * 10 ) / 4
+            ? "around halfway" : ( obj->value[1] * 10 ) < 3 * ( obj->value[0] * 10 ) / 4
+            ? "more than halfway" : obj->value[1] == obj->value[0] ? "completely" : "almost", liq->color );
+
+            break;
+         }
+
+         // Bugfix: Nothing was being shown to the player when examining a quiver. A simple function call fixes this. Also fixed the missing break. - Samson 6/24/2026.
          case ITEM_QUIVER:
             ch->print( "When you look inside, you see:\r\n" );
+            show_list_to_char( ch, obj->contents, true, true );
+            break;
 
          case ITEM_KEYRING:
             EXA_prog_trigger = false;
