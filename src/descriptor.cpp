@@ -27,9 +27,10 @@
  ****************************************************************************/
 
 #include <arpa/telnet.h>
-#include <netdb.h>
-#include <sys/wait.h>
 #include <fcntl.h>
+#include <netdb.h>
+#include <poll.h>
+#include <sys/wait.h>
 #include <filesystem>
 #include <fstream>
 #include "mud.h"
@@ -57,15 +58,12 @@ struct dns_data
    std::chrono::system_clock::time_point time;
 };
 
-int maxdesc, newdesc;
+int newdesc;
 std::list<descriptor_data *> dlist;
 std::list<dns_data *> dnslist;
 std::list<lmsg_data *> login_messages;
 
 extern const char *alarm_section;
-extern fd_set in_set;
-extern fd_set out_set;
-extern fd_set exc_set;
 extern bool bootlock;
 extern int num_logins;
 #ifdef MULTIPORT
@@ -540,18 +538,6 @@ std::string default_prompt( char_data * ch )
    if( ch->isnpc(  ) || ch->is_immortal(  ) )
       buf.append( "&W%i%R&D" );
    return buf;
-}
-
-bool check_bad_desc( int desc )
-{
-   if( FD_ISSET( desc, &exc_set ) )
-   {
-      FD_CLR( desc, &in_set );
-      FD_CLR( desc, &out_set );
-      log_string( "Bad FD caught and disposed." );
-      return true;
-   }
-   return false;
 }
 
 /*
@@ -1563,6 +1549,16 @@ void descriptor_data::resolve_dns( const std::string & ip )
    }
 }
 
+bool check_bad_desc( int desc )
+{
+   if( control_has_exception )
+   {
+      log_string( "Bad FD caught and disposed." );
+      return true;
+   }
+   return false;
+}
+
 void new_descriptor( int new_desc )
 {
    descriptor_data *dnew;
@@ -1618,7 +1614,7 @@ void new_descriptor( int new_desc )
        */
       char *final_ip = host_buf;
 
-      // Optional: Strip "::ffff:" prefix if you strictly want IPv4 notation
+      // Optional: Strip "::ffff:" prefix if you strictly want IPv4 notation.
       if( strncmp( host_buf, "::ffff:", 7 ) == 0 )
       {
          final_ip = host_buf + 7;
@@ -1652,7 +1648,7 @@ void new_descriptor( int new_desc )
          dnew->hostname = buf;
    }
 
-   // Ban notice is given in the ban.cpp file
+   // Ban notice is given in the ban.cpp file.
    if( is_banned( dnew ) )
    {
       deleteptr( dnew );
@@ -1665,24 +1661,16 @@ void new_descriptor( int new_desc )
 
    dlist.push_back( dnew );
 
-   /*
-    * Terminal detect 
-    */
+   // Terminal detection
    dnew->write_to_buffer( std::string_view{ reinterpret_cast<const char*>( do_term_type.data() ), do_term_type.size() } );
 
-   /*
-    * MCCP Compression 
-    */
+   // MCCP Detection
    dnew->write_to_buffer( std::string_view{ reinterpret_cast<const char*>( will_compress2_str.data() ), will_compress2_str.size() } );
 
-   /*
-    * Mud Sound Protocol 
-    */
+   // Mud Sound Protocol
    dnew->write_to_buffer( std::string_view{ reinterpret_cast<const char*>( will_msp_str.data() ), will_msp_str.size() } );
 
-   /*
-    * Send the greeting. No longer handled kludgely by a global variable.
-    */
+   // Send the greeting. No longer handled kludgely by a global variable.
    dnew->send_greeting(  );
 
    dnew->send_color( "Enter your character's name, or type new: &d" );
@@ -1701,46 +1689,69 @@ void new_descriptor( int new_desc )
 
 void accept_new( int ctrl )
 {
-   static struct timeval null_time;
-
-   /*
-    * Poll all active descriptors.
-    */
-   FD_ZERO( &in_set );
-   FD_ZERO( &out_set );
-   FD_ZERO( &exc_set );
-   FD_SET( ctrl, &in_set );
-
-   maxdesc = ctrl;
    newdesc = 0;
+   control_has_input = false;
+   control_has_exception = false;
 
+   // Build the vector of descriptors to monitor.
+   std::vector<struct pollfd> poll_fds;
+
+   // Main listening socket.
+   poll_fds.push_back( { ctrl, POLLIN | POLLERR | POLLHUP, 0 } );
+
+   // Player sockets.
    for( auto* d : dlist )
    {
-      maxdesc = umax( maxdesc, d->descriptor );
-      FD_SET( d->descriptor, &in_set );
-      FD_SET( d->descriptor, &out_set );
-      FD_SET( d->descriptor, &exc_set );
+      short events = POLLIN | POLLERR | POLLHUP;
+
+      // Only look for outbound capacity if they actually have data to send.
+      if( d->fcommand || d->outbuf.length() > 0 || d->pagebuf.length() > 0 )
+         events |= POLLOUT;
+
+      poll_fds.push_back( { d->descriptor, events, 0 } );
+
+      if( d->ifd != -1 && d->ipid != -1 )
+         poll_fds.push_back( { d->ifd, POLLIN, 0 } );
+   }
+
+   // 2. Non-blocking poll call
+   if( poll( poll_fds.data(), poll_fds.size(), 0 ) < 0 )
+   {
+      perror( "accept_new: poll" );
+      std::exit( EXIT_FAILURE );
+   }
+
+   size_t idx = 0;
+
+   // Control socket results.
+   auto& ctrl_pfd = poll_fds[idx++];
+   if( ctrl_pfd.revents & (POLLERR | POLLHUP | POLLNVAL) )
+      control_has_exception = true;
+   else if( ctrl_pfd.revents & POLLIN )
+      control_has_input = true;
+
+   // Player socket results.
+   for( auto* d : dlist )
+   {
+      auto& pfd = poll_fds[idx++];
+
+      d->has_exception    = ( pfd.revents & (POLLERR | POLLHUP | POLLNVAL) );
+      d->has_input_ready  = ( pfd.revents & POLLIN );
+      d->has_output_ready = ( pfd.revents & POLLOUT );
 
       if( d->ifd != -1 && d->ipid != -1 )
       {
-         maxdesc = umax( maxdesc, d->ifd );
-         FD_SET( d->ifd, &in_set );
+         auto& dns_pfd = poll_fds[idx++];
+         d->dns_has_input = ( dns_pfd.revents & POLLIN );
       }
    }
 
-   if( select( maxdesc + 1, &in_set, &out_set, &exc_set, &null_time ) < 0 )
-   {
-      perror( "accept_new: select: poll" );
-      exit( 1 );
-   }
-
-   if( FD_ISSET( ctrl, &exc_set ) )
+   // Handle incoming connections.
+   if( control_has_exception )
    {
       bug( "{}: Exception raised on controlling descriptor {}", __func__, ctrl );
-      FD_CLR( ctrl, &in_set );
-      FD_CLR( ctrl, &out_set );
    }
-   else if( FD_ISSET( ctrl, &in_set ) )
+   else if( control_has_input )
    {
       newdesc = ctrl;
       new_descriptor( newdesc );
@@ -2048,8 +2059,6 @@ void close_socket( descriptor_data * d, bool force )
       }
    }
    dlist.remove( d );
-   if( d->descriptor == maxdesc )
-      --maxdesc;
    --num_descriptors;
    deleteptr( d );
 

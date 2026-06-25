@@ -56,9 +56,6 @@ std::chrono::system_clock::time_point mud_start_time;    // Used only by MSSP fo
 std::string str_boot_time;                               // A string representation of the MUD's startup time.
 std::string lastplayercmd = "No commands issued yet.";   // Global buffer to hold the last command a player used.
 int control = -1;                                        // Controlling descriptor the MUD uses to accept new connections on.
-fd_set in_set;                                           // Set of descriptors for reading on each pass through game_loop().
-fd_set out_set;                                          // Set of descriptors for writing on each pass through game_loop().
-fd_set exc_set;                                          // Set of descriptors with exceptions on each pass through game_loop(). These will be flagged for disconnection.
 const char *alarm_section = "(unknown)";                 // Message sent when the "lag alarm" goes off to help identify where it happened.
 bool winter_freeze = false;                              // Whether or not the MUD has entered the winter season and if flagged rooms should switch to their frozen states.
 int mud_port = 7500;                                     // The default port the MUD listens on for new connections.
@@ -513,9 +510,8 @@ static void caught_alarm( int signum )
 
    if( newdesc )
    {
-      FD_CLR( newdesc, &in_set );
-      FD_CLR( newdesc, &out_set );
-      FD_CLR( newdesc, &exc_set );
+      bug( "Lag alarm tripped while processing new descriptor {}", newdesc );
+      control_has_input = false;
       log_string( "clearing newdesc" );
    }
 
@@ -592,7 +588,7 @@ void process_input( void )
 #endif
 
       // Check for disconnect, or an exception. Hasta la vista baby!
-      if( d->disconnect || FD_ISSET( d->descriptor, &exc_set ) )
+      if( d->disconnect || d->has_exception )
       {
          if( d->character && d->connected >= CON_PLAYING )
             d->character->save(  );
@@ -614,7 +610,7 @@ void process_input( void )
          d->fcommand = false;
 
          // Check to see if they have input ready.
-         if( FD_ISSET( d->descriptor, &in_set ) )
+         if( d->has_input_ready )
          {
             d->idle = 0;
 
@@ -624,7 +620,7 @@ void process_input( void )
             // Something bad must have happened while attempting to read. Clear the output flags and disconnect them.
             if( !d->read(  ) )
             {
-               FD_CLR( d->descriptor, &out_set );
+               d->has_output_ready = false;
                if( d->character && d->connected >= CON_PLAYING )
                   d->character->save(  );
                d->outbuf.clear(  );
@@ -634,8 +630,8 @@ void process_input( void )
             }
          }
 
-         // Check for input from the dns 
-         if( ( d->connected == CON_PLAYING || d->character ) && d->ifd != -1 && FD_ISSET( d->ifd, &in_set ) )
+         // Check for input from the dns.
+         if( ( d->connected == CON_PLAYING || d->character ) && d->ifd != -1 && d->dns_has_input )
             d->process_dns(  );
 
          // If they're waiting on a cooldown to finish, decrement and process them again in the next loop.
@@ -705,7 +701,7 @@ void process_output( void )
          continue;
       }
 
-      if( ( d->fcommand || d->outbuf.length(  ) > 0 || d->pagebuf.length(  ) > 0 ) && FD_ISSET( d->descriptor, &out_set ) )
+      if( ( d->fcommand || d->outbuf.length(  ) > 0 || d->pagebuf.length(  ) > 0 ) && d->has_output_ready )
       {
          if( !d->pagebuf.empty(  ) )
          {

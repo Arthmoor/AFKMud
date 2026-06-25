@@ -154,7 +154,14 @@ class descriptor_data
    bool is_compressing = false;           // Is the client currently using MCCP?
    bool xterm256 = false;                 // Can the client support XTerm 256 color?
    bool disconnect = false;               // Is this connection scheduled to be disconnected?
+   bool has_input_ready  = false;
+   bool has_output_ready = false;
+   bool has_exception    = false;
+   bool dns_has_input    = false;
 };
+
+inline bool control_has_input     = false;
+inline bool control_has_exception = false;
 
 extern std::list<descriptor_data*> dlist;
 void free_all_descs(  );
