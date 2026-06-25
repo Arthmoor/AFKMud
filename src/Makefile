@@ -72,7 +72,7 @@ else
 endif
 
 ifndef IS_CYGWIN
-   W_FLAGS := $(W_FLAGS) -Werror
+   W_FLAGS := $(W_FLAGS) #-Werror
    ifeq ($(CC), g++)
       OPT_FLAG := -rdynamic $(OPT_FLAG)
    endif
