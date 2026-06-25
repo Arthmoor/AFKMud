@@ -129,42 +129,32 @@ bool SAME_COLOR( game_board_data * board, int x1, int y1, int x2, int y2 )
 
 std::string print_big_board( game_board_data * board )
 {
-   std::string buf, buf2;
-   int x, y;
-
+   std::string retbuf = WHITE_FOREGROUND "\r\n&g     1      2      3      4      5      6      7      8\r\n";
    std::string s1 = "&Y&W";
    std::string s2 = "&z&z";
 
-   std::string retbuf = WHITE_FOREGROUND "\r\n&g     1      2      3      4      5      6      7      8\r\n";
-
-   for( x = 0; x < 8; ++x )
+   for( int x = 0; x < 8; ++x )
    {
-      retbuf += "  ";
-      for( y = 0; y < 8; ++y )
+      // Loop twice: once for the top half of the pieces [0], once for the bottom [1].
+      for( int part = 0; part < 2; ++part )
       {
-         buf = std::format( "{}{}",
-                   x % 2 == 0 ? ( y % 2 == 0 ? BLACK_BACKGROUND : WHITE_BACKGROUND ) :
-                   ( y % 2 == 0 ? WHITE_BACKGROUND : BLACK_BACKGROUND ), big_pieces[board->board[x][y]][0] );
-         buf2 = buf;
-         buf2.append( IS_WHITE( board->board[x][y] ) ? s1 : s2 );
-         retbuf.append( buf2 );
-      }
-      retbuf.append( BLACK_BACKGROUND "\r\n" );
+         // Add the row letter only on the second pass.
+         if( part == 1 )
+            retbuf += std::format( WHITE_FOREGROUND "&g{} ", static_cast<char>( 'A' + x ) );
+         else
+            retbuf += "  ";
 
-      buf = std::format( WHITE_FOREGROUND "&g{} ", static_cast<char>( 'A' + x ) );
-      retbuf.append( buf );
-      for( y = 0; y < 8; ++y )
-      {
-         buf = std::format( "{}{}",
-                   x % 2 == 0 ? ( y % 2 == 0 ? BLACK_BACKGROUND : WHITE_BACKGROUND ) :
-                   ( y % 2 == 0 ? WHITE_BACKGROUND : BLACK_BACKGROUND ), big_pieces[board->board[x][y]][1] );
-         buf2 = buf;
-         buf2.append( IS_WHITE( board->board[x][y] ) ? s1 : s2 );
-         retbuf.append( buf2 );
+         for( int y = 0; y < 8; ++y )
+         {
+            auto color = ( ( x + y ) % 2 == 0 ) ? BLACK_BACKGROUND : WHITE_BACKGROUND;
+
+            std::string buf = std::format( "{}{}", color, big_pieces[board->board[x][y]][part] );
+            buf.append( IS_WHITE( board->board[x][y] ) ? s1 : s2 );
+            retbuf.append( buf );
+         }
+         retbuf.append( BLACK_BACKGROUND "\r\n" );
       }
-      retbuf.append( BLACK_BACKGROUND "\r\n" );
    }
-
    return retbuf;
 }
 
