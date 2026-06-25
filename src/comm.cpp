@@ -139,6 +139,7 @@ void free_helps(  );
 void free_wizlist_data( );
 void free_wizlist_web_data( );
 void clear_auction( );
+void free_weapon_table( );
 #if defined(SQL)
  void close_db(  );
 #endif
@@ -851,6 +852,9 @@ void cleanup_memory( void )
 
    fprintf( stdout, "%s", "Mixtures and Liquids.\n" );
    free_liquiddata(  );
+
+   fprintf( stdout, "%s", "Treasure weapon table.\n" );
+   free_weapon_table(  );
 
    fprintf( stdout, "%s", "DNS Cache data.\n" );
    free_dns_list(  );

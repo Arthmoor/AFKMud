@@ -180,10 +180,10 @@ void free_boards( void )
 
 void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstream & stream )
 {
-   auto read_line = [&]( char delimiter = '\n' ) -> std::string
+   auto read_line = [&]() -> std::string
    {
       std::string line;
-      std::getline( stream, line, delimiter );
+      std::getline( stream, line, '~' );
       strip_whitespace( line ); // Once you have the line, it's best to strip it of any potential whitespace characters to eliminate the possibility of a bloat loop later on when the value is written back to disk.
 
       return line;
@@ -193,11 +193,11 @@ void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstrea
    while( stream >> key )
    {
       if( key == "Reply-Sender" )
-         note->sender = read_line('~');
+         note->sender = read_line();
       else if( key == "Reply-To" )
-         note->to_list = read_line('~');
+         note->to_list = read_line();
       else if( key == "Reply-Subject" )
-         note->subject = read_line('~');
+         note->subject = read_line();
       else if( key == "Reply-DateStamp" )
       {
          time_t loaded_time;
@@ -211,12 +211,12 @@ void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstrea
             stream >> note->flags;
          else
          {
-            std::string flags = read_line('~');
+            std::string flags = read_line();
             flag_string_set( flags, note->flags, note_flags );
          }
       }
       else if( key == "Reply-Text" )
-         note->text = read_line('~');
+         note->text = read_line();
       else if( key == "#REPLY-END" )
          return;
       else
@@ -327,16 +327,6 @@ void load_boards( void )
    for( size_t x = 0; x < board_files.size(); ++x )
    {
       std::ifstream stream;
-
-      auto read_line = [&]( char delimiter = '\n' ) -> std::string
-      {
-         std::string line;
-         std::getline( stream, line, delimiter );
-         strip_spaces( line );
-
-         return line;
-      };
-
       std::filesystem::path board_file = std::format( "{}{}", BOARD_DIR, board_files[x] );
       stream.open( board_file );
       if( !stream.is_open() )
@@ -344,6 +334,15 @@ void load_boards( void )
          bug( "{}: Cannot open {} for reading: {}", __func__, board_file.string(), std::strerror(errno) );
          continue;
       }
+
+      auto read_line = [&]() -> std::string
+      {
+         std::string line;
+         std::getline( stream, line, '~' );
+         strip_whitespace( line );
+
+         return line;
+      };
 
       log_string( board_file.string() );
       std::string key;
@@ -382,11 +381,11 @@ void load_boards( void )
 
          if( key == "Name" )
          {
-            board->name = read_line('~');
+            board->name = read_line();
             board->filename = board->name + ".board";
          }
          else if( key == "Desc" )
-            board->desc = read_line('~');
+            board->desc = read_line();
          else if( key == "ObjVnum" )
             stream >> board->objvnum;
          else if( key == "Expire" )
@@ -402,18 +401,18 @@ void load_boards( void )
                stream >> board->flags;
             else
             {
-               std::string flags = read_line('~');
+               std::string flags = read_line();
                flag_string_set( flags, board->flags, board_flags );
             }
          }
          else if( key == "Readers" )
-            board->readers = read_line('~');
+            board->readers = read_line();
          else if( key == "Posters" )
-            board->posters = read_line('~');
+            board->posters = read_line();
          else if( key == "Moderators" )
-            board->moderators = read_line('~');
+            board->moderators = read_line();
          else if( key == "Group" )
-            board->group = read_line('~');
+            board->group = read_line();
          else if( key == "ReadLevel" )
             stream >> board->read_level;
          else if( key == "PostLevel" )
@@ -429,6 +428,7 @@ void load_boards( void )
          else
             bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, board_file.string() );
       }
+      stream.close();
    }
 
    /*

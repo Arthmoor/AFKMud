@@ -5465,46 +5465,46 @@ CMDF( do_cset )
       ch->pager( "&WThe following options may be set:\r\n\r\n" );
       ch->pager( "&GSite Parameters\r\n" );
       ch->pager( "---------------\r\n" );
-      ch->pagerf( "&BMudname  &c: %s &BEmail&c: %s &BPassword&c: [not shown]\r\n", sysdata->mud_name.c_str(  ), sysdata->admin_email.c_str(  ) );
-      ch->pagerf( "&BURL      &c: %s &BTelnet&c: %s\r\n", show_tilde( sysdata->http ).c_str(  ), sysdata->telnet.c_str(  ) );
-      ch->pagerf( "&BDB Server&c: %s &BDB Name&c: %s &BDB User&c: %s &BDB Password&c: [not shown]\r\n\r\n",
-                  sysdata->dbserver.c_str(  ), sysdata->dbname.c_str(  ), sysdata->dbuser.c_str(  ) );
+      ch->pager_fmt( "&BMudname  &c: {} &BEmail&c: {} &BPassword&c: [not shown]\r\n", sysdata->mud_name, sysdata->admin_email );
+      ch->pager_fmt( "&BURL      &c: {} &BTelnet&c: {}\r\n", show_tilde( sysdata->http ), sysdata->telnet );
+      ch->pager_fmt( "&BDB Server&c: {} &BDB Name&c: {} &BDB User&c: {} &BDB Password&c: [not shown]\r\n\r\n",
+                  sysdata->dbserver, sysdata->dbname, sysdata->dbuser );
 
       ch->pager( "&GGame Toggles\r\n" );
       ch->pager( "------------\r\n" );
-      ch->pagerf( "&BNameauth&c: %s &BImmhost Checking&c: %s &BTestmode&c: %s &BMinimum Ego&c: %d\r\n",
+      ch->pager_fmt( "&BNameauth&c: {} &BImmhost Checking&c: {} &BTestmode&c: {} &BMinimum Ego&c: {}\r\n",
                   sysdata->WAIT_FOR_AUTH ? "Enabled" : "Disabled", sysdata->check_imm_host ? "Enabled" : "Disabled", sysdata->TESTINGMODE ? "On" : "Off", sysdata->minego );
-      ch->pagerf( "&BPet Save&c: %s &BPfile Pruning&c: %s\r\n",
+      ch->pager_fmt( "&BPet Save&c: {} &BPfile Pruning&c: {}\r\n",
                   sysdata->save_pets ? "On" : "Off", sysdata->CLEANPFILES ? "Enabled" : "Disabled" );
 
       if( sysdata->CLEANPFILES )
       {
-         ch->pagerf( "   &BNewbie Purge &c: %d days\r\n", sysdata->newbie_purge );
-         ch->pagerf( "   &BRegular Purge&c: %d days\r\n", sysdata->regular_purge );
+         ch->pager_fmt( "   &BNewbie Purge &c: {} days\r\n", sysdata->newbie_purge );
+         ch->pager_fmt( "   &BRegular Purge&c: {} days\r\n", sysdata->regular_purge );
       }
 
       ch->pager( "\r\n&GGame Settings - Note: Altering these can have drastic affects on the game. Use with caution.\r\n" );
       ch->pager( "-------------\r\n" );
-      ch->pagerf( "&BMaxVnum&c: %d &BOverland Radius&c: %d &BReboot Count&c: %d &BAuction Seconds&c: %d\r\n",
+      ch->pager_fmt( "&BMaxVnum&c: {} &BOverland Radius&c: {} &BReboot Count&c: {} &BAuction Seconds&c: {}\r\n",
                   sysdata->maxvnum, sysdata->mapsize, sysdata->rebootcount, sysdata->auctionseconds );
-      ch->pagerf( "&BMin Guild Level&c: %d &BMax Condition Value&c: %d &BMax Ignores&c: %zu &BMax Item Impact&c: %d &BInit Weapon Condition&c: %d\r\n",
+      ch->pager_fmt( "&BMin Guild Level&c: {} &BMax Condition Value&c: {} &BMax Ignores&c: %zu &BMax Item Impact&c: {} &BInit Weapon Condition&c: {}\r\n",
            sysdata->minguildlevel, sysdata->maxcondval, sysdata->maxign, sysdata->maximpact, sysdata->initcond );
 
       int freq = sysdata->save_frequency.count();
-      ch->pagerf( "&BForce Players&c: %d &BPrivate Override&c: %d &BGet Notake&c: %d &BAutosave-Freq&c: %d &BMax Holidays&c: %zu\r\n",
+      ch->pager_fmt( "&BForce Players&c: {} &BPrivate Override&c: {} &BGet Notake&c: {} &BAutosave-Freq&c: {} &BMax Holidays&c: %zu\r\n",
            sysdata->level_forcepc, sysdata->level_override_private, sysdata->level_getobjnotake, freq, sysdata->maxholiday );
 
-      ch->pagerf( "&BProto Mod&c: %d &B &BMset Player&c: %d &BBestow Diff&c: %d &BBuild Level&c: %d\r\n",
+      ch->pager_fmt( "&BProto Mod&c: {} &B &BMset Player&c: {} &BBestow Diff&c: {} &BBuild Level&c: {}\r\n",
                   sysdata->level_modify_proto, sysdata->level_mset_player, sysdata->bestow_dif, sysdata->build_level );
-      ch->pagerf( "&BRead all mail&c: %d &BTake all mail&c: %d &BRead mail free&c: %d &BWrite mail free&c: %d\r\n",
+      ch->pager_fmt( "&BRead all mail&c: {} &BTake all mail&c: {} &BRead mail free&c: {} &BWrite mail free&c: {}\r\n",
                   sysdata->read_all_mail, sysdata->take_others_mail, sysdata->read_mail_free, sysdata->write_mail_free );
-      ch->pagerf( "&BHours per day&c: %d &BDays per week&c: %d &BDays per month&c: %d &BMonths per year&c: %d &RDays per year&W: %d\r\n",
+      ch->pager_fmt( "&BHours per day&c: {} &BDays per week&c: {} &BDays per month&c: {} &BMonths per year&c: {} &RDays per year&W: {}\r\n",
            sysdata->hoursperday, sysdata->daysperweek, sysdata->dayspermonth, sysdata->monthsperyear, sysdata->daysperyear );
-      ch->pagerf( "&BSave Flags&c: %s\r\n", bitset_string( sysdata->save_flags, save_flag ) );
-      ch->pagerf( "&BWebwho&c: %d &BGame Alarm&c: %d\r\n", sysdata->webwho, sysdata->gameloopalarm );
-      ch->pagerf( "\r\n&BSeconds per tick&c: %d   &BPulse per second&c: %d\r\n", sysdata->secpertick, sysdata->pulsepersec );
-      ch->pagerf( "   &RPULSE_TICK&W: %d &RPULSE_VIOLENCE&W: %d &RPULSE_MOBILE&W: %d\r\n", sysdata->pulsetick, sysdata->pulseviolence, sysdata->pulsemobile );
-      ch->pagerf( "   &RPULSE_CALENDAR&W: %d &RPULSE_ENVIRONMENT&W: %d\r\n", sysdata->pulsecalendar, sysdata->pulseenvironment );
+      ch->pager_fmt( "&BSave Flags&c: {}\r\n", bitset_string( sysdata->save_flags, save_flag ) );
+      ch->pager_fmt( "&BWebwho&c: {} &BGame Alarm&c: {}\r\n", sysdata->webwho, sysdata->gameloopalarm );
+      ch->pager_fmt( "\r\n&BSeconds per tick&c: {}   &BPulse per second&c: {}\r\n", sysdata->secpertick, sysdata->pulsepersec );
+      ch->pager_fmt( "   &RPULSE_TICK&W: {} &RPULSE_VIOLENCE&W: {} &RPULSE_MOBILE&W: {}\r\n", sysdata->pulsetick, sysdata->pulseviolence, sysdata->pulsemobile );
+      ch->pager_fmt( "   &RPULSE_CALENDAR&W: {} &RPULSE_ENVIRONMENT&W: {}\r\n", sysdata->pulsecalendar, sysdata->pulseenvironment );
       return;
    }
 
@@ -5529,7 +5529,7 @@ CMDF( do_cset )
       {
          smash_tilde( argument );
          sysdata->mud_name = argument;
-         ch->printf( "Mud name set to: %s\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Mud name set to: {}\r\n", argument );
       }
       save_sysdata(  );
       return;
@@ -5539,13 +5539,13 @@ CMDF( do_cset )
    {
       std::string pwdnew;
 
-      if( argument.length(  ) < 5 )
+      if( argument.length(  ) < 12 )
       {
-         ch->print( "New password must be at least five characters long.\r\n" );
+         ch->print( "New password must be at least 12 characters long.\r\n" );
          return;
       }
 
-      if( argument[0] == '!' )
+      if( argument.front() == '!' )
       {
          ch->print( "New password cannot begin with the '!' character.\r\n" );
          return;
@@ -5569,7 +5569,7 @@ CMDF( do_cset )
       {
          smash_tilde( argument );
          sysdata->admin_email = argument;
-         ch->printf( "Email address set to %s\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Email address set to {}\r\n", argument );
       }
       save_sysdata(  );
       return;
@@ -5586,7 +5586,7 @@ CMDF( do_cset )
       {
          hide_tilde( argument );
          sysdata->http = argument;
-         ch->printf( "HTTP address set to %s\r\n", show_tilde( sysdata->http ).c_str(  ) );
+         ch->print_fmt( "HTTP address set to {}\r\n", show_tilde( sysdata->http ) );
       }
       save_sysdata(  );
       return;
@@ -5603,7 +5603,7 @@ CMDF( do_cset )
       {
          smash_tilde( argument );
          sysdata->telnet = argument;
-         ch->printf( "Telnet address set to %s\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Telnet address set to {}\r\n", argument );
       }
       save_sysdata(  );
       return;
@@ -5620,7 +5620,7 @@ CMDF( do_cset )
       {
          smash_tilde( argument );
          sysdata->dbserver = argument;
-         ch->printf( "Database server set to: %s\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Database server set to: {}\r\n", argument );
       }
       save_sysdata(  );
       return;
@@ -5628,13 +5628,13 @@ CMDF( do_cset )
 
    if( !str_cmp( arg, "db-password" ) )
    {
-      if( argument.length(  ) < 5 )
+      if( argument.length(  ) < 12 )
       {
-         ch->print( "New password must be at least five characters long.\r\n" );
+         ch->print( "New password must be at least 12 characters long.\r\n" );
          return;
       }
 
-      if( argument[0] == '!' )
+      if( argument.front() == '!' )
       {
          ch->print( "New password cannot begin with the '!' character.\r\n" );
          return;
@@ -5657,7 +5657,7 @@ CMDF( do_cset )
       {
          smash_tilde( argument );
          sysdata->dbname = argument;
-         ch->printf( "Database name set to: %s\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Database name set to: {}\r\n", argument );
       }
       save_sysdata(  );
       return;
@@ -5674,7 +5674,7 @@ CMDF( do_cset )
       {
          smash_tilde( argument );
          sysdata->dbuser = argument;
-         ch->printf( "Database username set to: %s\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Database username set to: {}\r\n", argument );
       }
       save_sysdata(  );
       return;
@@ -5762,7 +5762,7 @@ CMDF( do_cset )
          return;
       }
       sysdata->save_flags.flip( x );
-      ch->printf( "%s flag toggled.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "{} flag toggled.\r\n", argument );
       save_sysdata(  );
       return;
    }
@@ -5785,7 +5785,7 @@ CMDF( do_cset )
       return;
    }
 
-   value = atoi( argument.c_str(  ) );
+   value = std::stoi( argument );
 
    /*
     * Typical size range of integers 
@@ -5806,7 +5806,7 @@ CMDF( do_cset )
       }
       else
       {
-         ch->printf( "Webwho refresh set to %d seconds.\r\n", value );
+         ch->print_fmt( "Webwho refresh set to {} seconds.\r\n", value );
          add_event( value, ev_webwho_refresh, nullptr );
       }
       return;
@@ -5815,7 +5815,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "game-alarm" ) )
    {
       sysdata->gameloopalarm = value;
-      ch->printf( "Game loop alarm time has been set to %d seconds.\r\n", value );
+      ch->print_fmt( "Game loop alarm time has been set to {} seconds.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5823,7 +5823,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "reboot-count" ) )
    {
       sysdata->rebootcount = value;
-      ch->printf( "Reboot time counter set to %d minutes.\r\n", value );
+      ch->print_fmt( "Reboot time counter set to {} minutes.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5831,7 +5831,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "auction-seconds" ) )
    {
       sysdata->auctionseconds = value;
-      ch->printf( "Auction timer set to %d seconds.\r\n", value );
+      ch->print_fmt( "Auction timer set to {} seconds.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5844,7 +5844,7 @@ CMDF( do_cset )
          return;
       }
       sysdata->newbie_purge = value;
-      ch->printf( "Newbie Purge set to %d.\r\n", value );
+      ch->print_fmt( "Newbie Purge set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5857,7 +5857,7 @@ CMDF( do_cset )
          return;
       }
       sysdata->regular_purge = value;
-      ch->printf( "Regular Purge set to %d.\r\n", value );
+      ch->print_fmt( "Regular Purge set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5865,7 +5865,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "minimum-ego" ) )
    {
       sysdata->minego = value;
-      ch->printf( "Minimum Ego set to %d.\r\n", value );
+      ch->print_fmt( "Minimum Ego set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5886,18 +5886,18 @@ CMDF( do_cset )
 
       if( value <= vnum )
       {
-         ch->printf( "&RError: Cannot set MaxVnum to %d, existing areas extend to %d.\r\n", value, vnum );
+         ch->print_fmt( "&RError: Cannot set MaxVnum to {}, existing areas extend to {}.\r\n", value, vnum );
          return;
       }
 
       if( value - vnum < 1000 )
       {
-         ch->printf( "Warning: Setting MaxVnum to %d leaves you with less than 1000 vnums beyond the highest area.\r\n", value );
-         ch->printf( "Highest area %s ends with vnum %d.\r\n", lbuf.c_str(), vnum );
+         ch->print_fmt( "Warning: Setting MaxVnum to {} leaves you with less than 1000 vnums beyond the highest area.\r\n", value );
+         ch->print_fmt( "Highest area {} ends with vnum {}.\r\n", lbuf, vnum );
       }
 
       sysdata->maxvnum = value;
-      ch->printf( "MaxVnum changed to %d.\r\n", value );
+      ch->print_fmt( "MaxVnum changed to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5910,7 +5910,7 @@ CMDF( do_cset )
          return;
       }
       sysdata->mapsize = value;
-      ch->printf( "Overland Radius set to %d.\r\n", value );
+      ch->print_fmt( "Overland Radius set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5919,11 +5919,11 @@ CMDF( do_cset )
    {
       if( value > LEVEL_AVATAR )
       {
-         ch->printf( "&RError: Cannot set Min Guild Level above level %d.\r\n", LEVEL_AVATAR );
+         ch->print_fmt( "&RError: Cannot set Min Guild Level above level {}.\r\n", LEVEL_AVATAR );
          return;
       }
       sysdata->minguildlevel = value;
-      ch->printf( "Min Guild Level set to %d.\r\n", value );
+      ch->print_fmt( "Min Guild Level set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5931,7 +5931,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "max-condition-value" ) )
    {
       sysdata->maxcondval = value;
-      ch->printf( "Max Condition Value set to %d.\r\n", value );
+      ch->print_fmt( "Max Condition Value set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5939,7 +5939,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "max-ignores" ) )
    {
       sysdata->maxign = value;
-      ch->printf( "Max Ignores set to %d.\r\n", value );
+      ch->print_fmt( "Max Ignores set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5947,7 +5947,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "max-item-impact" ) )
    {
       sysdata->maximpact = value;
-      ch->printf( "Max Item Impact set to %d.\r\n", value );
+      ch->print_fmt( "Max Item Impact set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5955,7 +5955,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "init-weapon-condition" ) )
    {
       sysdata->initcond = value;
-      ch->printf( "Init Weapon Condition set to %d.\r\n", value );
+      ch->print_fmt( "Init Weapon Condition set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5964,11 +5964,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Force Players above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Force Players above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->level_forcepc = value;
-      ch->printf( "Force Players set to %d.\r\n", value );
+      ch->print_fmt( "Force Players set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5977,11 +5977,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Private Override above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Private Override above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->level_override_private = value;
-      ch->printf( "Private Override set to %d.\r\n", value );
+      ch->print_fmt( "Private Override set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -5990,11 +5990,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Get Notake above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Get Notake above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->level_getobjnotake = value;
-      ch->printf( "Get Notake set to %d.\r\n", value );
+      ch->print_fmt( "Get Notake set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6007,7 +6007,7 @@ CMDF( do_cset )
          return;
       }
       sysdata->save_frequency = std::chrono::minutes( value );
-      ch->printf( "Autosave Freq set to %d minutes.\r\n", value );
+      ch->print_fmt( "Autosave Freq set to {} minutes.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6015,7 +6015,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "max-holidays" ) )
    {
       sysdata->maxholiday = value;
-      ch->printf( "Max Holiday set to %d.\r\n", value );
+      ch->print_fmt( "Max Holiday set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6024,11 +6024,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Proto Mod above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Proto Mod above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->level_modify_proto = value;
-      ch->printf( "Proto Mod set to %d.\r\n", value );
+      ch->print_fmt( "Proto Mod set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6037,11 +6037,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Mset Player above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Mset Player above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->level_mset_player = value;
-      ch->printf( "Mset Player set to %d.\r\n", value );
+      ch->print_fmt( "Mset Player set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6050,11 +6050,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL )
       {
-         ch->printf( "&RError: Cannot set Bestow Diff above %d.\r\n", MAX_LEVEL );
+         ch->print_fmt( "&RError: Cannot set Bestow Diff above {}.\r\n", MAX_LEVEL );
          return;
       }
       sysdata->bestow_dif = value;
-      ch->printf( "Bestow Diff set to %d.\r\n", value );
+      ch->print_fmt( "Bestow Diff set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6063,11 +6063,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Build Level above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Build Level above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->build_level = value;
-      ch->printf( "Build Level set to %d.\r\n", value );
+      ch->print_fmt( "Build Level set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6076,11 +6076,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Read all mail above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Read all mail above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->read_all_mail = value;
-      ch->printf( "Read all mail set to %d.\r\n", value );
+      ch->print_fmt( "Read all mail set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6089,11 +6089,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL || value < LEVEL_IMMORTAL )
       {
-         ch->printf( "&RError: Cannot set Take all mail above level %d, or below level %d.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
+         ch->print_fmt( "&RError: Cannot set Take all mail above level {}, or below level {}.\r\n", MAX_LEVEL, LEVEL_IMMORTAL );
          return;
       }
       sysdata->take_others_mail = value;
-      ch->printf( "Take all mail set to %d.\r\n", value );
+      ch->print_fmt( "Take all mail set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6102,11 +6102,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL )
       {
-         ch->printf( "&RError: Cannot set Read mail free above level %d.\r\n", MAX_LEVEL );
+         ch->print_fmt( "&RError: Cannot set Read mail free above level {}.\r\n", MAX_LEVEL );
          return;
       }
       sysdata->read_mail_free = value;
-      ch->printf( "Read mail free set to %d.\r\n", value );
+      ch->print_fmt( "Read mail free set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6115,11 +6115,11 @@ CMDF( do_cset )
    {
       if( value > MAX_LEVEL )
       {
-         ch->printf( "&RError: Cannot set Write mail free above level %d.\r\n", MAX_LEVEL );
+         ch->print_fmt( "&RError: Cannot set Write mail free above level {}.\r\n", MAX_LEVEL );
          return;
       }
       sysdata->write_mail_free = value;
-      ch->printf( "Write mail free set to %d.\r\n", value );
+      ch->print_fmt( "Write mail free set to {}.\r\n", value );
       save_sysdata(  );
       return;
    }
@@ -6127,7 +6127,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "hours-per-day" ) )
    {
       sysdata->hoursperday = value;
-      ch->printf( "Hours per day set to %d.\r\n", value );
+      ch->print_fmt( "Hours per day set to {}.\r\n", value );
       update_calendar(  );
       save_sysdata(  );
       return;
@@ -6136,7 +6136,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "days-per-week" ) )
    {
       sysdata->daysperweek = value;
-      ch->printf( "Days per week set to %d.\r\n", value );
+      ch->print_fmt( "Days per week set to {}.\r\n", value );
       update_calendar(  );
       save_sysdata(  );
       return;
@@ -6145,7 +6145,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "days-per-month" ) )
    {
       sysdata->dayspermonth = value;
-      ch->printf( "Days per month set to %d.\r\n", value );
+      ch->print_fmt( "Days per month set to {}.\r\n", value );
       update_calendar(  );
       save_sysdata(  );
       return;
@@ -6154,7 +6154,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "months-per-year" ) )
    {
       sysdata->monthsperyear = value;
-      ch->printf( "Months per year set to %d.\r\n", value );
+      ch->print_fmt( "Months per year set to {}.\r\n", value );
       update_calendar(  );
       save_sysdata(  );
       return;
@@ -6163,7 +6163,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "seconds-per-tick" ) )
    {
       sysdata->secpertick = value;
-      ch->printf( "Seconds per tick set to %d.\r\n", value );
+      ch->print_fmt( "Seconds per tick set to {}.\r\n", value );
       update_timers(  );
       save_sysdata(  );
       return;
@@ -6172,7 +6172,7 @@ CMDF( do_cset )
    if( !str_cmp( arg, "pulse-per-second" ) )
    {
       sysdata->pulsepersec = value;
-      ch->printf( "Pulse per second set to %d.\r\n", value );
+      ch->print_fmt( "Pulse per second set to {}.\r\n", value );
       update_timers(  );
       save_sysdata(  );
       return;
