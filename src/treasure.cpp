@@ -162,86 +162,95 @@ weapontable::weapontable(  )
 {
 }
 
+weapontable::~weapontable(  )
+{
+}
+
+void free_weapon_table( void )
+{
+   for( auto it = w_table.begin(); it != w_table.end(); )
+   {
+      weapontable *wt = *it;
+      ++it;
+
+      deleteptr( wt );
+   }
+}
+
 void save_weapontable(  )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( WTYPE_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ofstream stream( std::filesystem::path{WTYPE_FILE} );
+   if( !stream.is_open() )
    {
-      log_string( "Couldn't write to weapontypes file." );
+      bug( "{}: Cannot open {} for writing: {}", __func__, WTYPE_FILE, std::strerror(errno) );
       return;
    }
 
-   for( int x = 0; x < TWTP_MAX; ++x )
+   for( auto* wt : w_table )
    {
-      stream << "#WTYPE" << std::endl;
-      stream << "Type    " << weapon_type[x].type << std::endl;
-      stream << "Name    " << weapon_type[x].name << std::endl;
-      stream << "BaseDam " << weapon_type[x].wd << std::endl;
-      stream << "Weight  " << weapon_type[x].weight << std::endl;
-      stream << "Cost    " << weapon_type[x].cost << std::endl;
-      stream << "Skill   " << weapon_type[x].skill << std::endl;
-      stream << "DamType " << weapon_type[x].damage << std::endl;
-      stream << "Flags   " << weapon_type[x].flags << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << "#WTYPE\n";
+      stream << std::format( "Name    {}\n", wt->name );
+      stream << std::format( "Type    {}\n", wt->type );
+      stream << std::format( "BaseDam {}\n", wt->basedam );
+      stream << std::format( "Weight  {}\n", wt->weight );
+      stream << std::format( "Cost    {}\n", wt->cost );
+      stream << std::format( "Skill   {}\n", wt->skill );
+      stream << std::format( "DamType {}\n", wt->damtype );
+      stream << std::format( "Flags   {}\n", wt->flags );
+      stream << "End\n\n";
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, WTYPE_FILE, std::strerror(errno) );
 }
 
 void load_weapontable(  )
 {
-   std::ifstream stream;
-   weapontable *wt = nullptr;
-
-   w_table.clear(  );
-
-   stream.open( std::filesystem::path( WTYPE_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{WTYPE_FILE} );
+   if( !stream.is_open() )
    {
-      log_string( "Couldn't read from weapontypes file." );
+      bug( "{}: Cannot open {} for reading: {}", __func__, WTYPE_FILE, std::strerror(errno) );
       return;
    }
 
-   do
+   auto read_line = [&]() -> std::string
    {
-      std::string key, value;
-      char buf[MIL];
+      std::string line;
+      std::getline( stream, line, '\n' );
+      strip_whitespace( line );
 
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
+      return line;
+   };
 
-      strip_lspace( value );
-      strip_lspace( key );
+   weapontable *wt = nullptr;
+   w_table.clear(  );
+   std::string key;
 
-      if( key.empty(  ) )
-         continue;
-
+   while( stream >> key )
+   {
       if( key == "#WTYPE" )
          wt = new weapontable;
-      else if( key == "Type" )
-         wt->type = std::stoi( value );
       else if( key == "Name" )
-         wt->name = value;
+         wt->name = read_line();
+      else if( key == "Type" )
+         stream >> wt->type;
       else if( key == "BaseDam" )
-         wt->basedam = std::stoi( value );
+         stream >> wt->basedam;
       else if( key == "Weight" )
-         wt->weight = std::stoi( value );
+         stream >> wt->weight;
       else if( key == "Cost" )
-         wt->cost = std::stoi( value );
+         stream >> wt->cost;
       else if( key == "Skill" )
-         wt->skill = std::stoi( value );
+         stream >> wt->skill;
       else if( key == "DamType" )
-         wt->damtype = std::stoi( value );
+         stream >> wt->damtype;
       else if( key == "Flags" )
-         wt->flags = value;
+         wt->flags = read_line();
       else if( key == "End" )
          w_table.push_back( wt );
       else
-         log_printf( "{}: Bad line in weapon types file: {} {}", __func__, key, value );
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, WTYPE_FILE );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
@@ -255,12 +264,10 @@ CMDF( do_wtload )
 {
    load_weapontable(  );
 
-   for( size_t x = 0; x < w_table.size(  ); ++x )
+   for( auto* wt : w_table )
    {
-      weapontable *w = w_table[x];
-
-      ch->print_fmt( "Type {}, Name {}, BaseDam {}, Weight {}, Cost {}, Skill {}, DamType {}, Flags {}\r\n",
-                  w->type, w->name, w->basedam, w->weight, w->cost, w->skill, w->damtype, w->flags );
+      ch->print_fmt( "Name {}, Type {}, BaseDam {}, Weight {}, Cost {}, Skill {}, DamType {}, Flags: {}\r\n",
+                  wt->name, wt->type, wt->basedam, wt->weight, wt->cost, wt->skill, wt->damtype, wt->flags );
    }
 }
 

@@ -80,14 +80,20 @@ struct weaponT
    std::string flags;   // Default flag set.
 };
 
-struct weapontable
+class weapontable
 {
+ private:
+   weapontable( const weapontable & r );
+   weapontable & operator=( const weapontable & );
+
+public:
    weapontable(  );
+   ~weapontable(  );
 
    std::string name;             // Descriptive name.
    std::string flags;            // Default flag set.
    float weight = 0.0;           // Base weight.
-   float cost = 0;               // Base cost/value.
+   float cost = 0.0;               // Base cost/value.
    short type = 0;               // Weapon type.
    short basedam = 0;            // Base damage.
    short skill = 0;              // Skill type.
