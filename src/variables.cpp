@@ -169,7 +169,6 @@ CMDF( do_mptag )
    std::string::const_iterator ptr;
    char_data *victim;
    variable_data *vd;
-   const char *p;
    std::string arg1, arg2;
    int vnum = 0, exp = 0;
    bool error = false;

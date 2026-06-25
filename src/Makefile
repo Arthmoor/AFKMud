@@ -95,7 +95,7 @@ C_FILES = act_comm.cpp act_info.cpp act_move.cpp act_obj.cpp act_wiz.cpp \
           character.cpp chess.cpp clans.cpp color.cpp comm.cpp commands.cpp comments.cpp \
           connhist.cpp const.cpp db.cpp deity.cpp descriptor.cpp editor.cpp environment.cpp \
           event.cpp event_handler.cpp features.cpp fight.cpp finger.cpp handler.cpp \
-          hashstr.cpp help.cpp hotboot.cpp imm_host.cpp liquids.cpp magic.cpp \
+          help.cpp hotboot.cpp imm_host.cpp liquids.cpp magic.cpp \
           mapout.cpp mapper.cpp misc.cpp mobindex.cpp \
           mspecial.cpp mssp.cpp mudcfg.cpp mud_comm.cpp mud_prog.cpp new_auth.cpp \
           object.cpp objindex.cpp olcmob.cpp olcobj.cpp olcroom.cpp overland.cpp \

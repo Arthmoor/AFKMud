@@ -181,8 +181,6 @@ void init_chess(  );
 void load_continents( const int );
 void validate_overland_data(  );
 void make_webwiz(  );
-std::string check_hash( const char * );
-std::string hash_stats( );
 void init_auction( );
 void load_name_generator( );
 void load_reserved_names( );
@@ -1422,11 +1420,7 @@ CMDF( do_basereport )
 
 CMDF( do_memory )
 {
-   std::string arg;
-   int hash;
-
-   argument = one_argument( argument, arg );
-   ch->print( "\r\n&wSystem Memory [arguments - hash, check, showhigh]\r\n" );
+   ch->print( "\r\n&wSystem Memory\r\n" );
    ch->print_fmt( "&wAffects: &W{:5}\t\t\t&wAreas:   &W{:5}\r\n", top_affect, top_area );
    ch->print_fmt( "&wExtDes:  &W{:5}\t\t\t&wExits:   &W{:5}\r\n", top_ed, top_exit );
    ch->print_fmt( "&wResets:  &W{:5}\r\n", top_reset );
@@ -1442,31 +1436,6 @@ CMDF( do_memory )
 #if defined(SQL)
    ch->print_fmt( "&wMySQL Connection Active:  &W{}\r\n\r\n", ( db && db->ping() ) ? "YES" : ( db ? db->get_error() : "NO" ) );
 #endif
-
-   if( !arg.empty() )
-   {
-      if( !str_cmp( arg, "check" ) )
-      {
-         ch->print( check_hash( argument.c_str(  ) ).c_str() );
-         return;
-      }
-      if( !str_cmp( arg, "showhigh" ) )
-      {
-         show_high_hash( atoi( argument.c_str(  ) ) );
-         return;
-      }
-      if( !argument.empty(  ) )
-         hash = atoi( argument.c_str(  ) );
-      else
-         hash = -1;
-      if( !str_cmp( arg, "hash" ) )
-      {
-         ch->print( "Hash statistics:\r\n" );
-         ch->print( hash_stats() );
-         if( hash != -1 )
-            hash_dump( hash );
-      }
-   }
 }
 
 /* Dummy code added to block number_fuzzy from messing things up - Samson 3-28-98 */

@@ -957,15 +957,6 @@ ch_ret spring_trap( char_data *, obj_data * );
 obj_data *find_obj( char_data *, std::string, bool );
 bool ms_find_obj( char_data * );
 
-// hashstr.cpp
-char *str_alloc( const char *, const char *, const char *, int );
-char *quick_link( char * );
-int str_free( const char * );
-void show_hash( int );
-void hash_dump( int );
-void show_high_hash( int );
-bool in_hash_table( const char * );
-
 // magic.cpp
 bool process_spell_components( char_data *, int );
 bool saves_poison_death( int, char_data * );

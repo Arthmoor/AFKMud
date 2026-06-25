@@ -967,12 +967,6 @@ void cleanup_memory( void )
    fprintf( stdout, "%s", "Web Wizlist Data\n" );
    free_wizlist_web_data( );
 
-   fprintf( stdout, "%s", "Checking string hash for leftovers.\n" );
-   {
-      for( int hash = 0; hash < 1024; ++hash )
-         hash_dump( hash );
-   }
-
 #if defined(SQL)
    fprintf( stdout, "%s", "Closing database connection.\n" );
    close_db(  );
