@@ -108,16 +108,15 @@ std::string web_colourconv( std::string_view txt )
 
 void web_who(  )
 {
-   FILE *webwho = nullptr;
    std::list<descriptor_data *>::iterator ds;
    std::ostringstream webbuf, buf1, buf2;
    std::string rank, outbuf, stats, clan_name;
    int pcount = 0, amount, xx = 0, yy = 0;
 
-   std::filesystem::path filename = std::format( "{}", WEBWHO_FILE );
-   if( !( webwho = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( std::filesystem::path{WEBWHO_FILE} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Unable to open webwho file for writing!", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, WEBWHO_FILE, std::strerror(errno) );
       return;
    }
 
@@ -248,32 +247,38 @@ void web_who(  )
    webbuf << "&Y[&d&W" << num_logins << " login" << ( num_logins == 1 ? "" : "s" ) << " since last reboot on " << str_boot_time << "&d&Y]&d\n";
 
    std::string final_output = web_colourconv( webbuf.str() );
-   fprintf( webwho, "%s", final_output.c_str() );
-   FCLOSE( webwho );
+   stream << final_output;
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, WEBWHO_FILE, std::strerror(errno) );
 }
 
 void web_arealist(  )
 {
-   FILE *fp;
-   const char *print_string =
-      "<tr><td><font color=\"red\">%s   </font></td><td><font color=\"yellow\">%s</font></td><td><font color=\"green\">%d - %d   </font></td><td><font color=\"blue\">%d - %d</font></td></tr>\n";
-
-   if( !( fp = fopen( AREALIST_FILE.data(), "w" ) ) )
+   std::filesystem::path filename = std::format( "{}", AREALIST_FILE );
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: Unable to open arealist file for writing!", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   fprintf( fp,
-            "<table><tr><td><font color=\"red\">Author   </font></td><td><font color=\"yellow\">Area</font></td><td><font color=\"green\">Recommened   </font></td><td><font color=\"blue\">Enforced</font></td></tr>\n" );
+   std::string print_string =
+      "<tr><td><font color=\"red\">{}   </font></td><td><font color=\"yellow\">{}</font></td><td><font color=\"green\">{} - {}   </font></td><td><font color=\"blue\">{} - {}</font></td></tr>\n";
+
+   stream << "<table><tr><td><font color=\"red\">Author   </font></td><td><font color=\"yellow\">Area</font></td><td><font color=\"green\">Recommended   </font></td><td><font color=\"blue\">Enforced</font></td></tr>\n";
 
    for( auto* area : area_nsort )
    {
       if( !area->flags.test( AFLAG_PROTOTYPE ) )
-         fprintf( fp, print_string, area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+      {
+         stream << std::vformat( print_string, std::make_format_args( area->author, area->name, area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range ) ) << "\n";
+      }
    }
-   fprintf( fp, "%s", "</table>\n" );
-   FCLOSE( fp );
+   stream << "</table>\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 /*
@@ -367,10 +372,15 @@ void make_webwiz( )
    wizlistweb.sort( []( const std::unique_ptr<wizentweb>& a, const std::unique_ptr<wizentweb>& b ) { return a->level > b->level; } );
 
    // Open WEBWIZ_FILE file for writing.
-   std::ofstream out( std::filesystem::path{WEBWIZ_FILE}, std::ios::trunc );
+   std::ofstream stream( std::filesystem::path{WEBWIZ_FILE}, std::ios::trunc );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for writing: {}", __func__, WEBWIZ_FILE, std::strerror(errno) );
+      return;
+   }
 
    // Center the top banner with the MUD's name.
-   out << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
+   stream << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
 
    int current_level = -1;
    std::string line_buffer;
@@ -382,9 +392,9 @@ void make_webwiz( )
       if( wiz->level != current_level )
       {
          if( !line_buffer.empty() )
-            out << std::format( "{:^78}\n ", line_buffer );
+            stream << std::format( "{:^78}\n ", line_buffer );
 
-         out << std::format( "\n{:^78}\n ", get_formatted_web_title( wiz->level, is_first ) );
+         stream << std::format( "\n{:^78}\n ", get_formatted_web_title( wiz->level, is_first ) );
          line_buffer.clear();
          current_level = wiz->level;
          is_first = false;
@@ -396,7 +406,7 @@ void make_webwiz( )
 
       if( line_buffer.length() + wiz->name.length() > 70 )
       {
-         out << std::format( "{:^78}\n", line_buffer );
+         stream << std::format( "{:^78}\n", line_buffer );
          line_buffer.clear();
       }
 
@@ -404,75 +414,80 @@ void make_webwiz( )
    }
 
    if( !line_buffer.empty() )
-      out << std::format( "{:^78}\n", line_buffer );
+      stream << std::format( "{:^78}\n", line_buffer );
 
-   out << "</div>\n";
-
-   // File stream will close automatically when function goes out of scope.
+   stream << "</div>\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, WEBWIZ_FILE, std::strerror(errno) );
 }
 
 /* Aurora's room-to-web toy - this could be quite fun to mess with */
 void room_to_html( room_index * room, bool complete )
 {
-   FILE *fp = nullptr;
-   bool found = false;
-
    if( !room )
       return;
 
    std::filesystem::path filename = std::format( "{}{}.html", WEB_ROOMS, room->vnum );
-
-   if( ( fp = fopen( filename.c_str(), "w" ) ) != nullptr )
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
-      fprintf( fp, "%s", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n" );
-      fprintf( fp, "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n" );
-      fprintf( fp, "<title>%s: %s</title>\n</head>\n\n<body bgcolor=\"#000000\">\n", room->area->name.c_str(), room->name.c_str() );
-      fprintf( fp, "%s", "<font face=\"Fixedsys\" size=\"3\">\n" );
-      fprintf( fp, "<font color=\"#FF0000\">%s</font><br />\n", room->name.c_str() );
-      fprintf( fp, "%s", "<font color=\"#33FF33\">[Exits:" );
-
-      for( auto* pexit : room->exits )
-      {
-         if( pexit->to_room ) /* Set any controls you want here, ie: not closed doors, etc */
-         {
-            found = true;
-            fprintf( fp, " <a href=\"%d.html\">%s</a>", pexit->to_room->vnum, dir_name[pexit->vdir] );
-         }
-      }
-      if( !found )
-         fprintf( fp, "%s", " None.]</font><br />\n" );
-      else
-         fprintf( fp, "%s", "]</font><br />\n" );
-      std::string room_desc = web_colourconv( room->roomdesc );
-      fprintf( fp, "<font color=\"#999999\">%s</font><br />\n", room_desc.c_str() );
-
-      if( complete )
-      {
-         for( auto* obj : room->objects )
-         {
-            if( obj->extra_flags.test( ITEM_AUCTION ) )
-               continue;
-
-            if( !obj->objdesc.empty() )
-               fprintf( fp, "<font color=\"#0000EE\">%s</font><br />\n", obj->objdesc.c_str() );
-         }
-
-         for( auto* rch : room->people )
-         {
-            if( rch->isnpc(  ) )
-               fprintf( fp, "<font color=\"#FF00FF\">%s</font><br />\n", rch->long_descr.c_str() );
-            else
-            {
-               std::string pctitle = web_colourconv( rch->pcdata->title );
-               fprintf( fp, "<font color=\"#FF00FF\">%s %s</font><br />\n", rch->name.c_str(), pctitle.c_str() );
-            }
-         }
-      }
-      fprintf( fp, "%s", "</font>\n</body>\n</html>\n" );
-      FCLOSE( fp );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
+      return;
    }
+
+   stream << "<!DOCTYPE html>>\n";
+   stream << "<html lang=\"en-US\">\n <head>\n  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+   stream << std::format( "<title>{}: {}</title>\n", room->area->name, room->name );
+   stream << "<meta name=\"generator\" content=\"AFKMud\">\n</head>\n\n";
+   stream << "<body bgcolor=\"#000000\">\n";
+   stream << "<font face=\"Fixedsys\" size=\"3\">\n";
+   stream << std::format( "<font color=\"#FF0000\">{}</font><br>\n", room->name );
+   stream << "<font color=\"#33FF33\">[Exits:";
+
+   bool found = false;
+   for( auto* pexit : room->exits )
+   {
+      if( pexit->to_room ) /* Set any controls you want here, ie: not closed doors, etc */
+      {
+         found = true;
+         stream << std::format( " <a href=\"{}.html\">{}</a>", pexit->to_room->vnum, dir_name[pexit->vdir] );
+      }
+   }
+   if( !found )
+      stream << " None.]</font><br>\n";
    else
-      bug( "{}: Error Opening room to html index stream!", __func__ );
+      stream << "]</font><br>\n";
+
+   std::string room_desc = web_colourconv( room->roomdesc );
+   stream << std::format( "<font color=\"#999999\">{}</font><br>\n", room_desc );
+
+   if( complete )
+   {
+      for( auto* obj : room->objects )
+      {
+         if( obj->extra_flags.test( ITEM_AUCTION ) )
+            continue;
+
+         if( !obj->objdesc.empty() )
+            stream << std::format( "<font color=\"#0000EE\">{}</font><br>\n", obj->objdesc );
+      }
+
+      for( auto* rch : room->people )
+      {
+         if( rch->isnpc(  ) )
+            stream << std::format( "<font color=\"#FF00FF\">{}</font><br>\n", rch->long_descr );
+         else
+         {
+            std::string pctitle = web_colourconv( rch->pcdata->title );
+            stream << std::format( "<font color=\"#FF00FF\">{} {}</font><br>\n", rch->name, pctitle );
+         }
+      }
+   }
+   stream << "</font>\n</body>\n</html>\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 CMDF( do_webroom )
