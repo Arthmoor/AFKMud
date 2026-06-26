@@ -32,9 +32,9 @@
 #include <chrono>
 #include <cstring>
 #include <format>
+#include <iosfwd>
 #include <list>
 #include <map>
-#include <typeinfo>
 
 /*
  * Used in basereport and world commands - don't remove these!
@@ -46,8 +46,8 @@ inline constexpr std::string_view CODEVERSION = "3.0.0";
 inline constexpr std::string_view COPYRIGHT   = "Copyright The Alsherok Team 1997-2026. All rights reserved.";
 
 // String and memory management parameters. Will one day be a thing of the past once all the char[] arrays that use them are upgraded.
-constexpr int MSL = 8192; // MAX_STRING_LENGTH
-constexpr int MIL = 2048; // MAX_INPUT_LENGTH
+constexpr int MSL = 8192; // MAX_STRING_LENGTH - This is used almost exclusively for file reads now and not random strings throughout the code.
+constexpr int MIL = 2048; // MAX_INPUT_LENGTH - Same here. This is almost exclusively for file reads and one portion of the shell code.
 
 // No idea what the purpose in doing this is, but BERR appears to be something Smaug made up and it's better defined this way.
 constexpr short BERR = 255;
@@ -872,6 +872,10 @@ void check_switches(  );
 void check_switch( char_data * );
 
 // db.cpp
+void fread_to_eol( std::ifstream & );
+std::string fread_word( std::ifstream & );
+std::string fread_line( std::ifstream &, char delimiter = '~' ); // Default to using the tilde, since this gets used mostly for string names. So be careful to specify a different one when needed!
+
 void process_bug( std::string_view );
 bool has_illegal_file_chars( std::string_view, bool );
 bool is_valid_filename( char_data *, std::string_view, std::string_view );

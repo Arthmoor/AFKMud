@@ -30,7 +30,7 @@ Dammsg       acetum primus~
 Wearoff      !Acetum Primus!~
 Hitchar      &GYou invoke a stream of corrosive acid which burns $N!&z~
 Hitvict      &GYou are corroded by a stream of acid from $n's hands!&z~
-Hitroom      &G$n burns $N horribly with a stream of acid from $s hands!&z ~
+Hitroom      &G$n burns $N horribly with a stream of acid from $s hands!&z~
 Misschar     &GYour stream of acid misses $N by a hair!&z~
 Missvict     &G$n very nearly misses you with $s stream of acid!&z~
 Missroom     &G$n misses spraying $N with $s stream of acid!&z~
@@ -97,7 +97,7 @@ Code         spell_acid_breath
 Dammsg       breath of acid~
 Wearoff      !Acid Breath!~
 Hitchar      &GYou rear back and breathe a stream of acid onto $N!&z~
-Hitvict      &G$n rears back and breathes corrosive acid onto you!&z ~
+Hitvict      &G$n rears back and breathes corrosive acid onto you!&z~
 Hitroom      &G$n rears back and breathes a corrosive stream of acid at $N!&z~
 Misschar     &GYour breath of acid misses hitting $N!&z~
 Missvict     &GYou manage to leap out of the path of $n's acid breath!&z~
@@ -1998,7 +1998,7 @@ Components   K+minstru~
 Minlevel     78
 Helptext     After studying music and magic for many years, a bard can unlease this powerful
 spell. The tune that is played with this spell is usually referred to as deep
-and depressing. ~
+and depressing.~
 End
 
 #SKILL
@@ -2057,7 +2057,7 @@ Mana         60
 Rounds       24
 Ego          32
 Code         spell_disruption
-Dammsg       Disruption ~
+Dammsg       Disruption~
 Wearoff      !WEAROFF!~
 Minlevel     58
 Helptext     Works on undead only. Instead of trying to turn away the undead as
@@ -2974,7 +2974,7 @@ Dammsg       shield of flame~
 Hitchar      &R$N is burned by your fireshield!&z~
 Hitvict      &RYou are burned by $n's shield of fire!&z~
 Hitroom      &R$N is burned by $n's fireshield!&z~
-Missroom     &RTongues of flame from the fireshield fail to hit $N.&z ~
+Missroom     &RTongues of flame from the fireshield fail to hit $N.&z~
 Diechar      &R$N is reduced to ashes by your fireshield!&z~
 Dievict      &RYou are reduced to ashes by $n's fireshield!&z~
 Dieroom      &R$N is reduced to ashes by $n's fireshield!&z~
@@ -6929,7 +6929,7 @@ Dammsg       ~
 Wearoff      Your enthusiasm for battle returns.~
 Hitchar      You intimidate and demoralize your foes!~
 Hitvict      Your lust for battle is stolen by $n.~
-Hitroom      $n inspires defeat and fear in $s enemies!  ~
+Hitroom      $n inspires defeat and fear in $s enemies!~
 Misschar     You fail to demoralize $M with your intimidating words.~
 Affect       'l' 18 '-(l/20)' -1
 Minlevel     52
@@ -7537,7 +7537,7 @@ Ego          -2
 Code         spell_smaug
 Dammsg       ~
 Hitvict      You are now immune to all forms of poison.~
-Missvict     You need more training. ~
+Missvict     You need more training.~
 Affect       '' 28 'poison' -1
 Minlevel     65
 Helptext     A high level Monk after years of training body and mind is able to be
@@ -7657,7 +7657,7 @@ Hitroom      $n jabs at $N with a low hand chop.~
 Misschar     $N manages to dodge your hand jab.~
 Missvict     You dodge by $n's hand jab.~
 Missroom     $n's jab misses hitting $N.~
-Diechar      Your hand jab shatters $N's throat. ~
+Diechar      Your hand jab shatters $N's throat.~
 Dievict      You barely manage to blink before $n's jab shatters your throat, killing you.~
 Dieroom      $n jabs at $N, shattering $S throat in one fell blow.~
 Dice         ld3{95~
@@ -8027,7 +8027,7 @@ Missvict     You duck to the side as $n tries to punch you.~
 Missroom     $n punches air as $N dodges out of the way.~
 Diechar      Your powerful punch shatters $N's skull in one blow.~
 Dievict      You feel a burst of pain before blacking out.~
-Dieroom      $N's skull is shattered by $n's powerful punch! ~
+Dieroom      $N's skull is shattered by $n's powerful punch!~
 Dice         l{45~
 Minlevel     7
 Helptext     Using your fist, you are able to inflict slight damage on an opponent,
@@ -9302,9 +9302,9 @@ Hitchar      You slam brutally into $N!~
 Hitvict      $n charges and slams forcefully into you!~
 Hitroom      $N is smashed backwards as $n slams into $M!~
 Misschar     You are off-balanced as your miss $N with your rush!~
-Missvict     $n attempts to rush brutally at you but $e misses by a hair! ~
+Missvict     $n attempts to rush brutally at you but $e misses by a hair!~
 Missroom     $n is temporarily off-balance as $e rushes past $N!~
-Diechar      You rush at $N, caving in $S ribcage with your weapon! ~
+Diechar      You rush at $N, caving in $S ribcage with your weapon!~
 Dievict      The last thing you feel as you slip into darkness is the splintering of your ribs!~
 Dieroom      $n smashes into $N so brutally that $e smashes $N's upper torso!~
 Dice         S*2+(l/2)~
@@ -9451,7 +9451,7 @@ Wearoff      &PThe drow fire around you dies away...&z~
 Hitchar      &PYou gesture towards $N, and drow fire outlines $S form!&z~
 Hitvict      &P$n summons unburning drow fire which outlines your form!&z~
 Hitroom      &PDrow fire begins to outline $N's form!&z~
-Misschar     You fail to call upon your innate ability of summoning drow fire... ~
+Misschar     You fail to call upon your innate ability of summoning drow fire...~
 Affect       '(i+l)*2' 84 'faerie_fire' -1
 Minlevel     101
 Helptext     This spell is just like the faerie fire spell. It outlines the
@@ -10270,7 +10270,7 @@ Missroom     $N rolls out of $n's path, missing $s thundering hooves!~
 Diechar      $N is trampled to death by your hooves...~
 Dievict      You are trampled to death by $n's hooves...~
 Dieroom      $N is trampled to a pulp under $n's pounding hooves!~
-Dice         (l/2)+(S*3) ~
+Dice         (l/2)+(S*3)~
 Minlevel     101
 Helptext     Using their body to the max, Centaurs attempt to run over an
 enemy, causing moderate damage.~

@@ -28,6 +28,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "mudcfg.h"
 #include "fight.h"
@@ -91,7 +92,7 @@ const char *old_ris_flags[] = {
    "lash"
 };
 
-const char *skill_tname[] = { "unknown", "Spell", "Skill", "Combat", "Tongue", "Herb", "Racial", "Disease", "Lore" };
+const char *skill_tname[] = { "Unknown", "Spell", "Skill", "Combat", "Tongue", "Herb", "Racial", "Disease", "Lore" };
 
 const char *att_kick_kill_ch[] = {
    "Your kick caves $N's chest in, which kills $M.",
@@ -876,98 +877,100 @@ int get_skill( std::string_view skilltype )
 /*
  * Write skill data to a file
  */
-void fwrite_skill( FILE * fpout, skill_type * skill )
+void fwrite_skill( std::ofstream & stream, skill_type * skill )
 {
-   fprintf( fpout, "Name         %s~\n", skill->name.c_str() );
-   fprintf( fpout, "Type         %s\n", skill_tname[skill->type] );
-   fprintf( fpout, "Info         %d\n", skill->info );
+   stream << std::format( "Name         {}~\n", skill->name );
+   stream << std::format( "Type         {}\n", skill_tname[skill->type] );
+   stream << std::format( "Info         {}\n", skill->info );
    if( !skill->author.empty() )
-      fprintf( fpout, "Author       %s~\n", skill->author.c_str() );
+      stream << std::format( "Author       {}~\n", skill->author );
    if( skill->flags.any(  ) )
-      fprintf( fpout, "Flags        %s~\n", bitset_string( skill->flags, spell_flag ) );
+      stream << std::format( "Flags        {}~\n", bitset_string( skill->flags, spell_flag ) );
    if( skill->target )
-      fprintf( fpout, "Target       %d\n", skill->target );
+      stream << std::format( "Target       {}\n", skill->target );
    if( skill->minimum_position )
-      fprintf( fpout, "Minpos       %s~\n", npc_position[skill->minimum_position] );
+      stream << std::format( "Minpos       {}~\n", npc_position[skill->minimum_position] );
    if( skill->saves )
-      fprintf( fpout, "Saves        %d\n", skill->saves );
+      stream << std::format( "Saves        {}\n", skill->saves );
    if( skill->slot )
-      fprintf( fpout, "Slot         %d\n", skill->slot );
+      stream << std::format( "Slot         {}\n", skill->slot );
    if( skill->min_mana )
-      fprintf( fpout, "Mana         %d\n", skill->min_mana );
+      stream << std::format( "Mana         {}\n", skill->min_mana );
    if( skill->beats )
-      fprintf( fpout, "Rounds       %d\n", skill->beats );
+      stream << std::format( "Rounds       {}\n", skill->beats );
    if( skill->range )
-      fprintf( fpout, "Range        %d\n", skill->range );
+      stream << std::format( "Range        {}\n", skill->range );
    if( skill->guild != -1 )
-      fprintf( fpout, "Guild        %d\n", skill->guild );
+      stream << std::format( "Guild        {}\n", skill->guild );
    if( skill->ego )
-      fprintf( fpout, "Ego          %d\n", skill->ego );
+      stream << std::format( "Ego          {}\n", skill->ego );
    if( skill->skill_fun )
-      fprintf( fpout, "Code         %s\n", skill->skill_fun_name.c_str() );
+      stream << std::format( "Code         {}\n", skill->skill_fun_name );
    else if( skill->spell_fun )
-      fprintf( fpout, "Code         %s\n", skill->spell_fun_name.c_str() );
-   fprintf( fpout, "Dammsg       %s~\n", skill->noun_damage.c_str() );
+      stream << std::format( "Code         {}\n", skill->spell_fun_name );
+   stream << std::format( "Dammsg       {}~\n", skill->noun_damage );
    if( !skill->msg_off.empty() )
-      fprintf( fpout, "Wearoff      %s~\n", skill->msg_off.c_str() );
+      stream << std::format( "Wearoff      {}~\n", skill->msg_off );
 
    if( !skill->hit_char.empty() )
-      fprintf( fpout, "Hitchar      %s~\n", skill->hit_char.c_str() );
+      stream << std::format( "Hitchar      {}~\n", skill->hit_char );
    if( !skill->hit_vict.empty() )
-      fprintf( fpout, "Hitvict      %s~\n", skill->hit_vict.c_str() );
+      stream << std::format( "Hitvict      {}~\n", skill->hit_vict );
    if( !skill->hit_room.empty() )
-      fprintf( fpout, "Hitroom      %s~\n", skill->hit_room.c_str() );
+      stream << std::format( "Hitroom      {}~\n", skill->hit_room );
    if( !skill->hit_dest.empty() )
-      fprintf( fpout, "Hitdest      %s~\n", skill->hit_dest.c_str() );
+      stream << std::format( "Hitdest      {}~\n", skill->hit_dest );
 
    if( !skill->miss_char.empty() )
-      fprintf( fpout, "Misschar     %s~\n", skill->miss_char.c_str() );
+      stream << std::format( "Misschar     {}~\n", skill->miss_char );
    if( !skill->miss_vict.empty() )
-      fprintf( fpout, "Missvict     %s~\n", skill->miss_vict.c_str() );
+      stream << std::format( "Missvict     {}~\n", skill->miss_vict );
    if( !skill->miss_room.empty() )
-      fprintf( fpout, "Missroom     %s~\n", skill->miss_room.c_str() );
+      stream << std::format( "Missroom     {}~\n", skill->miss_room );
 
    if( !skill->die_char .empty() )
-      fprintf( fpout, "Diechar      %s~\n", skill->die_char.c_str() );
+      stream << std::format( "Diechar      {}~\n", skill->die_char );
    if( !skill->die_vict.empty() )
-      fprintf( fpout, "Dievict      %s~\n", skill->die_vict.c_str() );
+      stream << std::format( "Dievict      {}~\n", skill->die_vict );
    if( !skill->die_room.empty() )
-      fprintf( fpout, "Dieroom      %s~\n", skill->die_room.c_str() );
+      stream << std::format( "Dieroom      {}~\n", skill->die_room );
 
    if( !skill->imm_char.empty() )
-      fprintf( fpout, "Immchar      %s~\n", skill->imm_char.c_str() );
+      stream << std::format( "Immchar      {}~\n", skill->imm_char );
    if( !skill->imm_vict.empty() )
-      fprintf( fpout, "Immvict      %s~\n", skill->imm_vict.c_str() );
+      stream << std::format( "Immvict      {}~\n", skill->imm_vict );
    if( !skill->imm_room.empty() )
-      fprintf( fpout, "Immroom      %s~\n", skill->imm_room.c_str() );
+      stream << std::format( "Immroom      {}~\n", skill->imm_room );
 
    if( !skill->dice.empty() )
-      fprintf( fpout, "Dice         %s~\n", skill->dice.c_str() );
+      stream << std::format( "Dice         {}~\n", skill->dice );
    if( skill->value )
-      fprintf( fpout, "Value        %d\n", skill->value );
+      stream << std::format( "Value        {}\n", skill->value );
    if( skill->difficulty )
-      fprintf( fpout, "Difficulty   %d\n", skill->difficulty );
+      stream << std::format( "Difficulty   {}\n", skill->difficulty );
    if( skill->participants )
-      fprintf( fpout, "Participants %d\n", skill->participants );
+      stream << std::format( "Participants {}\n", skill->participants );
    if( !skill->components.empty() )
-      fprintf( fpout, "Components   %s~\n", skill->components.c_str() );
+      stream << std::format( "Components   {}~\n", skill->components );
    if( !skill->teachers.empty() )
-      fprintf( fpout, "Teachers     %s~\n", skill->teachers.c_str() );
+      stream << std::format( "Teachers     {}~\n", skill->teachers );
 
-   int modifier;
    for( auto* af : skill->affects )
    {
       if( af->location == APPLY_AFFECT )
          af->location = APPLY_EXT_AFFECT;
-      fprintf( fpout, "Affect       '%s' %d ", af->duration.c_str(), af->location );
-      modifier = std::stoi( af->modifier );
-      if( ( af->location == APPLY_WEAPONSPELL
-            || af->location == APPLY_WEARSPELL
-            || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( modifier ) )
-         fprintf( fpout, "'%d' ", skill_table[modifier]->slot );
+      stream << std::format( "Affect       '{}' {} ", af->duration, af->location );
+      if( is_number( af->modifier ) ) // Bugfix: Validate it being numeric before being passed to std::stoi(). - Samson 6/26/2026.
+      {
+         int modifier = std::stoi( af->modifier );
+         if( ( af->location == APPLY_WEAPONSPELL || af->location == APPLY_WEARSPELL || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL ) && IS_VALID_SN( modifier ) )
+            stream << std::format( "'{}' ", skill_table[modifier]->slot );
+         else
+            stream << std::format( "'{}' ", af->modifier ); // And make sure it writes this properly if "modifier" fails its validity check.
+      }
       else
-         fprintf( fpout, "'%s' ", af->modifier.c_str() );
-      fprintf( fpout, "%d\n", af->bit );
+         stream << std::format( "'{}' ", af->modifier );
+      stream << std::format( "{}\n", af->bit );
    }
 
    if( skill->type != SKILL_HERB )
@@ -978,7 +981,7 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
          if( skill->skill_level[y] < min )
             min = skill->skill_level[y];
 
-      fprintf( fpout, "Minlevel     %d\n", min );
+      stream << std::format( "Minlevel     {}\n", min );
 
       min = 1000;
       for( y = 0; y < MAX_PC_RACE; ++y )
@@ -986,42 +989,42 @@ void fwrite_skill( FILE * fpout, skill_type * skill )
             min = skill->race_level[y];
    }
    if( !skill->helptext.empty() )
-      fprintf( fpout, "Helptext     %s~\n", strip_cr( skill->helptext ).c_str() );
-   fprintf( fpout, "%s", "End\n\n" );
+      stream << std::format( "Helptext     {}~\n", strip_cr( skill->helptext ) );
+   stream << "End\n\n";
+   // Return back to the calling function - don't close this here.
 }
 
 /*
  * Save the skill table to disk
  */
 constexpr int SKILLVERSION = 5;
-/* Updated to 1 for position text - Samson 4-26-00 */
-/* Updated to 2 for std::bitset flags - Samson 7-10-04 */
-/* Updated to 3 for AFF_NONE insertion - Samson 7-27-04 */
-/* Updated to 4 for bug corrections - Samson 1-28-06 */
+// Updated to 1 for position text - Samson 4-26-00
+// Updated to 2 for std::bitset flags - Samson 7-10-04
+// Updated to 3 for AFF_NONE insertion - Samson 7-27-04
+// Updated to 4 for bug corrections - Samson 1-28-06
 // Updated to 5 because Samson got stupid. Again. *ugh* - Samson 8/11/07
 void save_skill_table( void )
 {
-   int x;
-   FILE *fpout;
-
-   std::filesystem::path filename = SKILL_FILE;
-   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( std::filesystem::path{SKILL_FILE} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot open skills.dat for writing", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, SKILL_FILE, std::strerror(errno) );
       return;
    }
 
-   fprintf( fpout, "#VERSION %d\n", SKILLVERSION );
+   stream << std::format( "#VERSION {}\n", SKILLVERSION );
 
-   for( x = 0; x < num_skills; ++x )
+   for( int x = 0; x < num_skills; ++x )
    {
       if( skill_table[x]->name.empty() )
          break;
-      fprintf( fpout, "%s", "#SKILL\n" );
-      fwrite_skill( fpout, skill_table[x] );
+      stream << "#SKILL\n";
+      fwrite_skill( stream, skill_table[x] );
    }
-   fprintf( fpout, "%s", "#END\n" );
-   FCLOSE( fpout );
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, SKILL_FILE, std::strerror(errno) );
 }
 
 /*
@@ -1030,30 +1033,29 @@ void save_skill_table( void )
 /* Uses the same format as skills, therefore the skill version applies */
 void save_herb_table(  )
 {
-   int x;
-   FILE *fpout;
-
-   std::filesystem::path filename = HERB_FILE;
-   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( std::filesystem::path{HERB_FILE} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot open herbs.dat for writing", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, HERB_FILE, std::strerror(errno) );
       return;
    }
 
-   fprintf( fpout, "#VERSION %d\n", SKILLVERSION );
+   stream << std::format( "#VERSION {}\n", SKILLVERSION );
 
-   for( x = 0; x < top_herb; ++x )
+   for( int x = 0; x < top_herb; ++x )
    {
       if( herb_table[x]->name.empty() )
          break;
-      fprintf( fpout, "%s", "#HERB\n" );
-      fwrite_skill( fpout, herb_table[x] );
+      stream << "#HERB\n";
+      fwrite_skill( stream, herb_table[x] );
    }
-   fprintf( fpout, "%s", "#END\n" );
-   FCLOSE( fpout );
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, HERB_FILE, std::strerror(errno) );
 }
 
-skill_type *fread_skill( FILE * fp, int version )
+skill_type *fread_skill( std::ifstream & stream, int version )
 {
    skill_type *skill = new skill_type;
 
@@ -1069,38 +1071,42 @@ skill_type *fread_skill( FILE * fp, int version )
       skill->race_adept[x] = 95;
    }
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key.empty() || stream.eof() )
       {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
+         bug( "{}: EOF encountered reading skill!", __func__ );
+         key = "End";
       }
 
-      switch ( to_upper( word[0] ) )
+      switch( to_upper( key[0] ) )
       {
          default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
+            bug( "{}: no match: {} in skill '{}'", __func__, key, ( skill && !skill->name.empty() ) ? skill->name : "Unknown" );
+            fread_to_eol( stream );
             break;
 
          case '*':
-            fread_to_eol( fp );
+            fread_to_eol( stream );
             break;
 
          case 'A':
-            STDSKEY( "Author", skill->author );
-            if( !str_cmp( word, "Affect" ) )
+            if( key == "Author" )
+            {
+               skill->author = fread_line( stream );
+               break;
+            }
+
+            if( key == "Affect" )
             {
                smaug_affect *aff;
                std::string mod;
 
                aff = new smaug_affect;
-               aff->duration = fread_word( fp );
-               aff->location = fread_number( fp );
-               mod = fread_word( fp );
+               aff->duration = fread_word( stream );
+               stream >> aff->location;
+               mod = fread_word( stream );
 
                // Conversion needed because Samson was stupid and didn't think. Again. *sigh*
                if( version < 5 )
@@ -1154,7 +1160,7 @@ skill_type *fread_skill( FILE * fp, int version )
                if( aff->location == APPLY_AFFECT )
                   aff->location = APPLY_EXT_AFFECT;
                aff->modifier = mod;
-               aff->bit = fread_number( fp );
+               stream >> aff->bit;
                if( version < 3 && aff->bit > -1 )
                   ++aff->bit;
                skill->affects.push_back( aff );
@@ -1163,19 +1169,21 @@ skill_type *fread_skill( FILE * fp, int version )
             break;
 
          case 'C':
-            if( !str_cmp( word, "Class" ) )
+            if( key == "Class" )
             {
-               int Class = fread_number( fp );
+               int Class;
+               stream >> Class;
 
-               skill->skill_level[Class] = fread_number( fp );
-               skill->skill_adept[Class] = fread_number( fp );
+               stream >> skill->skill_level[Class];
+               stream >> skill->skill_adept[Class];
                break;
             }
-            if( !str_cmp( word, "Code" ) )
+
+            if( key == "Code" )
             {
                SPELL_FUN *spellfun = nullptr;
                DO_FUN *dofun = nullptr;
-               std::string w = fread_word( fp );
+               std::string w = fread_line( stream, '\n' );
 
                if( validate_spec_fun( w ) )
                {
@@ -1202,21 +1210,66 @@ skill_type *fread_skill( FILE * fp, int version )
                }
                break;
             }
-            STDSKEY( "Components", skill->components );
+
+            if( key == "Components" )
+            {
+               skill->components = fread_line( stream );
+               break;
+            }
             break;
 
          case 'D':
-            STDSKEY( "Dammsg", skill->noun_damage );
-            STDSKEY( "Dice", skill->dice );
-            STDSKEY( "Diechar", skill->die_char );
-            STDSKEY( "Dieroom", skill->die_room );
-            STDSKEY( "Dievict", skill->die_vict );
-            KEY( "Difficulty", skill->difficulty, fread_number( fp ) );
+            if( key == "Dammsg" )
+            {
+               skill->noun_damage = fread_line( stream );
+               break;
+            }
+
+            if( key == "Dice" )
+            {
+               skill->dice = fread_line( stream );
+               break;
+            }
+
+            if( key == "Dice" )
+            {
+               skill->dice = fread_line( stream );
+               break;
+            }
+
+            if( key == "Diechar" )
+            {
+               skill->die_char = fread_line( stream );
+               break;
+            }
+
+            if( key == "Dieroom" )
+            {
+               skill->die_room = fread_line( stream );
+               break;
+            }
+
+            if( key == "Dievict" )
+            {
+               skill->die_vict = fread_line( stream );
+               break;
+            }
+
+            if( key == "Difficulty" )
+            {
+               stream >> skill->difficulty;
+               break;
+            }
             break;
 
          case 'E':
-            KEY( "Ego", skill->ego, fread_number( fp ) );
-            if( !str_cmp( word, "End" ) )
+            if( key == "Ego" )
+            {
+               stream >> skill->ego;
+               break;
+            }
+
+            if( key == "End" )
             {
                if( skill->saves != 0 && SPELL_SAVE( skill ) == SE_NONE )
                {
@@ -1232,47 +1285,104 @@ skill_type *fread_skill( FILE * fp, int version )
             break;
 
          case 'F':
-            if( !str_cmp( word, "Flags" ) )
+            if( key == "Flags" )
             {
                if( version < 4 )
-                  skill->flags = fread_number( fp );
+                  stream >> skill->flags;
                else
-                  flag_set( fp, skill->flags, spell_flag );
+               {
+                  std::string flags;
+
+                  flags = fread_line( stream );
+                  flag_string_set( flags, skill->flags, spell_flag );
+               }
                break;
             }
             break;
 
          case 'G':
-            KEY( "Guild", skill->guild, fread_number( fp ) );
+            if( key == "Guild" )
+            {
+               stream >> skill->guild;
+               break;
+            }
             break;
 
          case 'H':
-            STDSKEY( "Helptext", skill->helptext );
-            STDSKEY( "Hitchar", skill->hit_char );
-            STDSKEY( "Hitdest", skill->hit_dest );
-            STDSKEY( "Hitroom", skill->hit_room );
-            STDSKEY( "Hitvict", skill->hit_vict );
+            if( key == "Helptext" )
+            {
+               skill->helptext = fread_line( stream );
+               break;
+            }
+
+            if( key == "Hitchar" )
+            {
+               skill->hit_char = fread_line( stream );
+               break;
+            }
+
+            if( key == "Hitdest" )
+            {
+               skill->hit_dest = fread_line( stream );
+               break;
+            }
+
+            if( key == "Hitroom" )
+            {
+               skill->hit_room = fread_line( stream );
+               break;
+            }
+
+            if( key == "Hitvict" )
+            {
+               skill->hit_vict = fread_line( stream );
+               break;
+            }
             break;
 
          case 'I':
-            STDSKEY( "Immchar", skill->imm_char );
-            STDSKEY( "Immroom", skill->imm_room );
-            STDSKEY( "Immvict", skill->imm_vict );
-            KEY( "Info", skill->info, fread_number( fp ) );
+            if( key == "Immchar" )
+            {
+               skill->imm_char = fread_line( stream );
+               break;
+            }
+
+            if( key == "Immroom" )
+            {
+               skill->imm_room = fread_line( stream );
+               break;
+            }
+
+            if( key == "Immvict" )
+            {
+               skill->imm_vict = fread_line( stream );
+               break;
+            }
+
+            if( key == "Info" )
+            {
+               stream >> skill->info;
+               break;
+            }
             break;
 
          case 'M':
-            KEY( "Mana", skill->min_mana, fread_number( fp ) );
-            if( !str_cmp( word, "Minlevel" ) )
+            if( key == "Mana" )
             {
-               fread_to_eol( fp );
+               stream >> skill->min_mana;
                break;
             }
-            if( !str_cmp( word, "Minpos" ) )
+
+            if( key == "Minlevel" )
+            {
+               fread_to_eol( stream );
+               break;
+            }
+            if( key == "Minpos" )
             {
                if( version < 1 )
                {
-                  skill->minimum_position = fread_number( fp );
+                  stream >> skill->minimum_position;
                   if( skill->minimum_position < 100 )
                   {
                      switch ( skill->minimum_position )
@@ -1313,7 +1423,7 @@ skill_type *fread_skill( FILE * fp, int version )
                }
                else
                {
-                  int position = get_npc_position( fread_flagstring( fp ) );
+                  int position = get_npc_position( fread_line( stream ) );
 
                   if( position < 0 || position >= POS_MAX )
                   {
@@ -1324,173 +1434,215 @@ skill_type *fread_skill( FILE * fp, int version )
                   break;
                }
             }
-            STDSKEY( "Misschar", skill->miss_char );
-            STDSKEY( "Missroom", skill->miss_room );
-            STDSKEY( "Missvict", skill->miss_vict );
+
+            if( key == "Misschar" )
+            {
+               skill->miss_char = fread_line( stream );
+               break;
+            }
+
+            if( key == "Missroom" )
+            {
+               skill->miss_room = fread_line( stream );
+               break;
+            }
+
+            if( key == "Missvict" )
+            {
+               skill->miss_vict = fread_line( stream );
+               break;
+            }
             break;
 
          case 'N':
-            STDSKEY( "Name", skill->name );
+            if( key == "Name" )
+            {
+               skill->name = fread_line( stream );
+               break;
+            }
             break;
 
          case 'P':
-            KEY( "Participants", skill->participants, fread_number( fp ) );
+            if( key == "Participants" )
+            {
+               stream >> skill->participants;
+               break;
+            }
             break;
 
          case 'R':
-            KEY( "Range", skill->range, fread_number( fp ) );
-            KEY( "Rounds", skill->beats, fread_number( fp ) );
-            KEY( "Rent", skill->ego, fread_number( fp ) );
-            if( !str_cmp( word, "Race" ) )
+            if( key == "Range" )
             {
-               int race = fread_number( fp );
+               stream >> skill->range;
+               break;
+            }
 
-               skill->race_level[race] = fread_number( fp );
-               skill->race_adept[race] = fread_number( fp );
+            if( key == "Rounds" )
+            {
+               stream >> skill->beats;
+               break;
+            }
+
+            if( key == "Rent" )
+            {
+               stream >> skill->ego;
+               break;
+            }
+
+            if( key == "Race" )
+            {
+               int race;
+               stream >> race;
+
+               stream >> skill->race_level[race];
+               stream >> skill->race_adept[race];
                break;
             }
             break;
 
          case 'S':
-            KEY( "Slot", skill->slot, fread_number( fp ) );
-            KEY( "Saves", skill->saves, fread_number( fp ) );
+            if( key == "Slot" )
+            {
+               stream >> skill->slot;
+               break;
+            }
+
+            if( key == "Saves" )
+            {
+               stream >> skill->saves;
+               break;
+            }
             break;
 
          case 'T':
-            KEY( "Target", skill->target, fread_number( fp ) );
-            STDSKEY( "Teachers", skill->teachers );
-            KEY( "Type", skill->type, get_skill( fread_word( fp ) ) );
+            if( key == "Target" )
+            {
+               stream >> skill->target;
+               break;
+            }
+
+            if( key == "Teachers" )
+            {
+               skill->teachers = fread_line( stream );
+               break;
+            }
+
+            if( key == "Type" )
+            {
+               int type = get_skill( fread_line( stream, '\n' ) );
+
+               skill->type = type;
+               break;
+            }
             break;
 
          case 'V':
-            KEY( "Value", skill->value, fread_number( fp ) );
+            if( key == "Value" )
+            {
+               stream >> skill->value;
+               break;
+            }
             break;
 
          case 'W':
-            STDSKEY( "Wearoff", skill->msg_off );
+            if( key == "Wearoff" )
+            {
+               skill->msg_off = fread_line( stream );
+               break;
+            }
             break;
       }
    }
+   bug( "{}: Control fell through to the end reading skill {}. File is corrupted.", __func__, skill->name.empty() ? "Unknown" : skill->name );
+   std::exit( EXIT_FAILURE );
 }
 
 void load_skill_table( void )
 {
-   FILE *fp;
-   int version = 0;
-
-   std::filesystem::path filename = SKILL_FILE;
-   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
+   std::ifstream stream( std::filesystem::path{SKILL_FILE} );
+   if( !stream.is_open() )
    {
-      fpArea = fp;
-      num_skills = 0;
-      for( ;; )
-      {
-         char letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "{}: # not found.", __func__ );
-            break;
-         }
-
-         std::string word = fread_word( fp );
-         if( !str_cmp( word, "VERSION" ) )
-         {
-            version = fread_number( fp );
-            continue;
-         }
-         if( !str_cmp( word, "SKILL" ) )
-         {
-            if( num_skills >= MAX_SKILL )
-            {
-               bug( "{}: more skills than MAX_SKILL {}", __func__, MAX_SKILL );
-               FCLOSE( fp );
-               fpArea = nullptr;
-               return;
-            }
-            skill_table[num_skills++] = fread_skill( fp, version );
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "{}: bad section: {}", __func__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
-      fpArea = nullptr;
-   }
-   else
-   {
-      bug( "{}: Cannot open skills.dat", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, SKILL_FILE, std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
+
+   int version = 0;
+   num_skills = 0;
+
+   std::string key;
+   stream >> key;
+   if( key == "#VERSION" )
+      stream >> version;
+
+   while( stream >> key )
+   {
+      if( key.front() == '*' )
+         fread_to_eol( stream );
+      else if( key == "#SKILL" )
+      {
+         if( num_skills >= MAX_SKILL )
+         {
+            bug( "{}: more skills than MAX_SKILL {}", __func__, MAX_SKILL );
+            stream.close();
+            return;
+         }
+         skill_table[num_skills++] = fread_skill( stream, version );
+         continue;
+      }
+      else if( key == "#END" )
+         break;
+      else
+      {
+         bug( "{}: bad section: {}", __func__, key );
+         continue;
+      }
+   }
+   stream.close();
 }
 
-void load_herb_table(  )
+void load_herb_table( void )
 {
-   FILE *fp;
-   int version = 0;
-
-   if( ( fp = fopen( HERB_FILE.data(), "r" ) ) != nullptr )
+   std::ifstream stream( std::filesystem::path{HERB_FILE} );
+   if( !stream.is_open() )
    {
-      top_herb = 0;
-      for( ;; )
-      {
-         char letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "{}: # not found.", __func__ );
-            break;
-         }
-
-         std::string word = fread_word( fp );
-         if( !str_cmp( word, "VERSION" ) )
-         {
-            version = fread_number( fp );
-            continue;
-         }
-         if( !str_cmp( word, "HERB" ) )
-         {
-            if( top_herb >= MAX_HERB )
-            {
-               bug( "{}: more herbs than MAX_HERB {}", __func__, MAX_HERB );
-               FCLOSE( fp );
-               return;
-            }
-            herb_table[top_herb++] = fread_skill( fp, version );
-            if( herb_table[top_herb - 1]->slot == 0 )
-               herb_table[top_herb - 1]->slot = top_herb - 1;
-            continue;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "{}: bad section: {}", __func__, word );
-            continue;
-         }
-      }
-      FCLOSE( fp );
-   }
-   else
-   {
-      bug( "{}: Cannot open herbs.dat", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, HERB_FILE, std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
+
+   int version = 0;
+   top_herb = 0;
+
+   std::string key;
+   stream >> key;
+   if( key == "#VERSION" )
+      stream >> version;
+
+   while( stream >> key )
+   {
+      if( key.front() == '*' )
+         fread_to_eol( stream );
+      else if( key == "#HERB" )
+      {
+         if( top_herb >= MAX_HERB )
+         {
+            bug( "{}: more herbs than MAX_HERB {}", __func__, MAX_HERB );
+            stream.close();
+            return;
+         }
+         herb_table[top_herb++] = fread_skill( stream, version );
+         if( herb_table[top_herb - 1]->slot == 0 )
+            herb_table[top_herb - 1]->slot = top_herb - 1;
+         continue;
+      }
+      else if( key == "#END" )
+         break;
+      else
+      {
+         bug( "{}: bad section: {}", __func__, key );
+         continue;
+      }
+   }
+   stream.close();
 }
 
 void free_skills( void )

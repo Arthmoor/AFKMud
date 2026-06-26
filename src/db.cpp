@@ -378,35 +378,28 @@ void fread_to_eol( FILE* fp )
 {
    int c;
 
-   while( ( c = std::getc( fp ) ) != EOF )
+   while( ( c = std::getc( fp ) ) != EOF && c != '\n' );
+
+   if( c == EOF && ferror( fp ) )
    {
-      if( c == '\n' || c == '\r' )
+      bug( "{}: EOF encountered on read.", __func__ );
+
+      if( fBootDb )
       {
-         // Peek at the next character to see if we have a \r\n pair.
-         int next = std::getc( fp );
-
-         // If the next character is the other half of a CRLF pair, consume it.
-         if( next != EOF && next != c && ( next == '\n' || next == '\r' ) )
-         {
-            return;
-         }
-
-         // Otherwise, put the character back so the next read starts fresh.
-         if( next != EOF )
-         {
-            std::ungetc( next, fp );
-         }
-         return;
+         shutdown_mud( "Corrupt file somewhere." );
+         std::exit( EXIT_FAILURE );
       }
    }
+}
 
-   bug( "{}: EOF encountered on read.", __func__ );
-
-   if( fBootDb )
-   {
-      shutdown_mud( "Corrupt file somewhere." );
-      std::exit( EXIT_FAILURE );
-   }
+/*
+ * C++23 version of the above. When called for a file comment, will ignore up to MSL characters, or it hits a newline.
+ * The chances of this overflowing the MSL buffer size is extremely remote because someone would have to have written a book to fill that much space.
+ * Even though this isn't the "right" way to do it, it avoided a massive amount of inclusion bloat.
+ */
+void fread_to_eol( std::ifstream & stream )
+{
+   stream.ignore( static_cast<std::streamsize>(MSL), '\n' );
 }
 
 static std::string internal_fread_line( FILE* fp )
@@ -463,16 +456,26 @@ void fread_line( std::string & newstring, FILE* fp )
    newstring = internal_fread_line( fp );
 }
 
+// Read one line into a std::string, with delimiter check. Usually a '~' but can be overridden at the call site.
+std::string fread_line( std::ifstream & stream, char delimiter )
+{
+   std::string line;
+
+   if( std::getline( stream, line, delimiter ) )
+      strip_whitespace( line );
+
+   return line;
+}
+
 /*
- * Read one word (into static buffer).
+ * Read one word from a file. Can be wrapped in '' or "".
  */
 std::string fread_word( FILE* fp )
 {
-   std::string word;
-
    int c;
 
-   while( ( c = std::getc( fp ) ) != EOF && std::isspace( static_cast<unsigned char>( c ) ) );
+   // Skip leading whitespace.
+   while( ( c = std::getc(fp) ) != EOF && std::isspace( static_cast<unsigned char>(c) ) );
 
    if( c == EOF )
    {
@@ -480,48 +483,95 @@ std::string fread_word( FILE* fp )
 
       if( fBootDb )
       {
-         shutdown_mud( "Corrupt file somewhere." );
+         shutdown_mud( "Corrupt file." );
          std::exit( EXIT_FAILURE );
       }
-      word.clear();
+      return {};
+   }
+
+   std::string word;
+   word.reserve(64);
+
+   if( c == '\'' || c == '"' )
+   {
+      const int cEnd = c;
+
+      while( ( c = std::getc(fp) ) != EOF && c != cEnd )
+      {
+         word.push_back( static_cast<char>(c) );
+      }
+
+      if( c == EOF )
+      {
+         bug( "{}: EOF encountered inside quoted string.", __func__ );
+         if( fBootDb )
+            std::exit( EXIT_FAILURE );
+      }
       return word;
    }
 
-   word.clear();
-
-   char cEnd = ( c == '\'' || c == '"' ) ? static_cast<char>( c ) : ' ';
-
-   if( cEnd == ' ' )
+   word.push_back( static_cast<char>(c) );
+   while( ( c = std::getc(fp) ) != EOF )
    {
-      word.push_back( static_cast<char>( c ) );
-   }
-
-   while( ( c = std::getc( fp ) ) != EOF )
-   {
-      if( cEnd == ' ' )
+      if( std::isspace( static_cast<unsigned char>(c) ) )
       {
-         if( std::isspace( static_cast<unsigned char>( c ) ) )
-         {
-            std::ungetc( c, fp );
-            break;
-         }
+         std::ungetc( c, fp );
+         break;
       }
-      else
-      {
-         if( c == cEnd )
-            break;
-      }
-      word.push_back( static_cast<char>( c ) );
+      word.push_back( static_cast<char>(c) );
    }
+   return word;
+}
 
-   if( c == EOF && cEnd != ' ' )
+std::string fread_word( std::ifstream & stream )
+{
+   char c;
+
+   // Skip leading whitespace.
+   while( stream.get(c) && std::isspace( static_cast<unsigned char>(c) ) );
+
+   if( stream.eof() )
    {
-      bug( "{}: EOF encountered inside quoted string.", __func__ );
-
+      bug( "{}: EOF encountered on read.", __func__ );
       if( fBootDb )
+      {
+         shutdown_mud( "Corrupt file." );
          std::exit( EXIT_FAILURE );
+      }
+      return {};
    }
 
+   std::string word;
+   word.reserve(64);
+
+   if( c == '\'' || c == '"' )
+   {
+      const char delimiter = c;
+
+      while( stream.get(c) && c != delimiter )
+      {
+         word.push_back(c);
+      }
+
+      if( stream.eof() )
+      {
+         bug( "{}: EOF encountered inside quoted string.", __func__ );
+         if( fBootDb )
+            std::exit( EXIT_FAILURE );
+      }
+      return word;
+   }
+
+   word.push_back(c);
+   while( stream.get(c) )
+   {
+      if( std::isspace( static_cast<unsigned char>(c) ) )
+      {
+         stream.unget();
+         break;
+      }
+      word.push_back(c);
+   }
    return word;
 }
 
@@ -1044,6 +1094,7 @@ void boot_db( bool fCopyOver )
       update_calendar(  );
       save_sysdata(  );
    }
+   log_string( "Done: System Data." );
 
    log_string( "Initializing libdl support..." );
    /*
@@ -1057,11 +1108,13 @@ void boot_db( bool fCopyOver )
       shutdown_mud( "libdl failure" );
       std::exit( EXIT_FAILURE );
    }
+   log_string( "Done: libdl." );
 
 #if defined(SQL)
    log_string( "Initializing MySQL support..." );
    init_mysql(  );
    add_event( 1800, ev_mysql_ping, nullptr );
+   log_string( "Done: SQL." );
 #endif
 
    log_string( "Verifying existence of login greeting..." );
@@ -1069,7 +1122,7 @@ void boot_db( bool fCopyOver )
    if( !std::filesystem::exists( lbuf ) )
    {
       bug( "{}: Login greeting not found!", __func__ );
-      shutdown_mud( "Missing login greeting" );
+      shutdown_mud( "Missing login greeting!" );
       std::exit( EXIT_FAILURE );
    }
    else
@@ -1094,11 +1147,12 @@ void boot_db( bool fCopyOver )
    log_string( "Loading socials..." );
    load_socials(  );
 
-   log_string( "Loading skill table..." );
+   log_string( "Loading Skill Table..." );
    load_skill_table(  );
    populate_skill_indexes(  );
    remap_slot_numbers(  ); /* must be after the sort */
    num_sorted_skills = num_skills;
+   log_string( "Done: Skill Table." );
 
    log_string( "Loading classes" );
    load_classes(  );
@@ -1118,10 +1172,11 @@ void boot_db( bool fCopyOver )
    log_string( "Loading mixture table" );
    load_mixtures(  );
 
-   log_string( "Loading herb table" );
+   log_string( "Loading Herb Table..." );
    load_herb_table(  );
+   log_string( "Done: Herb Table." );
 
-   log_string( "Loading tongues" );
+   log_string( "Loading tongues..." );
    load_tongues(  );
 
    log_string( "Loading boards..." );
