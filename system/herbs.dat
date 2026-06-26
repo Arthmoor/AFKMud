@@ -1,11 +1,12 @@
-#VERSION	1
+#VERSION 5
 #HERB
 Name         pipeweed~
 Type         Herb
 Info         0
-Author	    Smaug~
-Flags        0
+Author       Smaug~
+Minpos       standing~
 Rounds       5
+Ego          -2
 Dammsg       smoke~
 End
 
@@ -13,12 +14,12 @@ End
 Name         black gwyvel~
 Type         Herb
 Info         0
-Author	    Smaug~
-Flags        0
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Slot         1
 Rounds       12
+Ego          -2
 Code         spell_smaug
 Dammsg       smoke~
 Hitvict      You start to cough and choke!~
@@ -29,12 +30,12 @@ End
 Name         vermeir~
 Type         Herb
 Info         0
-Author	    Smaug~
-Flags        0
+Author       Smaug~
 Target       3
 Minpos       sitting~
 Slot         2
 Rounds       4
+Ego          -2
 Code         spell_smaug
 Dammsg       ~
 Hitchar      .~
@@ -47,18 +48,19 @@ End
 Name         nooracht~
 Type         Herb
 Info         0
-Author	    Smaug~
-Flags        1024
+Author       Smaug~
+Flags        recastable~
 Target       3
 Minpos       sitting~
 Slot         3
 Rounds       4
+Ego          -2
 Code         spell_smaug
 Dammsg       ~
 Wearoff      Your feet slowly lower to the ground.~
 Hitvict      The acrid taste of the smoke overwhelms your senses. You feel light headed.~
 Hitroom      $N grimaces at the acrid flavor of the nooracht.~
-Affect       '30' 0 '' 21
+Affect       '30' 0 '' 22
 Affect       '' 12 '20' -1
 End
 
@@ -66,10 +68,11 @@ End
 Name         occadaal~
 Type         Herb
 Info         0
-Author	    Smaug~
-Flags        0
+Author       Smaug~
 Target       3
+Minpos       standing~
 Slot         4
+Ego          -2
 Code         spell_smaug
 Dammsg       ~
 Hitvict      The sharp flavor of the smoke sends a flow of warmth through your body.~
@@ -81,17 +84,17 @@ End
 Name         breadl~
 Type         Herb
 Info         0
-Author	    Smaug~
-Flags        0
+Author       Smaug~
 Target       3
 Minpos       sitting~
 Slot         5
+Ego          -2
 Code         spell_smaug
 Dammsg       ~
 Wearoff      Everything about you takes on it's normal drab tone.~
 Hitvict      Life takes on a brighter, crisper outlook as you savor the breadl's flavor.~
 Hitroom      $N smiles as $s enjoys the mellow flavor of the breadl.~
-Affect       '10' 0 '' 22
+Affect       '10' 0 '' 23
 End
 
 #END

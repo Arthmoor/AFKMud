@@ -1,11 +1,10 @@
-#VERSION 4
+#VERSION 5
 #SKILL
 Name         reserved~
 Type         Spell
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
-Slot         0
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -17,7 +16,7 @@ End
 Name         acetum primus~
 Type         Spell
 Info         10125
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -51,7 +50,7 @@ End
 Name         acid blast~
 Type         Spell
 Info         9101
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -85,7 +84,7 @@ End
 Name         acid breath~
 Type         Spell
 Info         10125
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -119,7 +118,7 @@ End
 Name         acidmist~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -150,7 +149,7 @@ End
 Name         acidshot~
 Type         Spell
 Info         1421
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -174,7 +173,7 @@ End
 Name         alertness~
 Type         Spell
 Info         536
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       evasive~
 Slot         102
@@ -196,7 +195,7 @@ End
 Name         animal senses~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         44
@@ -219,7 +218,7 @@ End
 Name         animate dead~
 Type         Spell
 Info         1352
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         231
@@ -251,7 +250,7 @@ End
 Name         antimagic shell~
 Type         Spell
 Info         1560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       2
 Minpos       evasive~
@@ -274,7 +273,7 @@ End
 Name         aqua breath~
 Type         Spell
 Info         568
-Author	      Smaug~
+Author       Smaug~
 Flags        recastable~
 Target       2
 Minpos       evasive~
@@ -300,7 +299,7 @@ End
 Name         arcane perception~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -325,7 +324,7 @@ End
 Name         armor~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       evasive~
 Slot         1
@@ -349,7 +348,7 @@ End
 Name         astral walk~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind group~
 Minpos       evasive~
 Slot         90
@@ -369,7 +368,7 @@ End
 Name         bark skin~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       3
 Minpos       defensive~
@@ -393,7 +392,7 @@ End
 Name         beacon~
 Type         Spell
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Minpos       standing~
 Slot         586
@@ -409,7 +408,7 @@ End
 Name         benediction~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew group~
 Target       2
 Minpos       defensive~
@@ -434,7 +433,7 @@ End
 Name         benefic aura~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -462,7 +461,7 @@ End
 Name         black fist~
 Type         Spell
 Info         9615
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       1
 Minpos       fighting~
@@ -494,7 +493,7 @@ End
 Name         black hand~
 Type         Spell
 Info         9103
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -526,7 +525,7 @@ End
 Name         black lightning~
 Type         Spell
 Info         10124
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        5
@@ -559,7 +558,7 @@ End
 Name         blade barrier~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -590,7 +589,7 @@ End
 Name         blades~
 Type         Spell
 Info         1420
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       defensive~
@@ -615,7 +614,7 @@ End
 Name         blazebane~
 Type         Spell
 Info         3104
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       defensive~
@@ -642,7 +641,7 @@ End
 Name         blazeward~
 Type         Spell
 Info         1048
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       evasive~
 Slot         215
@@ -665,7 +664,7 @@ End
 Name         bless~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       defensive~
 Slot         3
@@ -690,7 +689,7 @@ End
 Name         blindness~
 Type         Spell
 Info         2560
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -719,7 +718,7 @@ End
 Name         bloodslash~
 Type         Spell
 Info         1416
-Author	      Rathian~
+Author       Rathian~
 Target       1
 Minpos       fighting~
 Slot         593
@@ -746,7 +745,7 @@ End
 Name         burning hands~
 Type         Spell
 Info         905
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobrew~
 Minpos       fighting~
 Slot         5
@@ -775,7 +774,7 @@ End
 Name         cacophony~
 Type         Spell
 Info         10124
-Author	      Karangi~
+Author       Karangi~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        5
@@ -809,7 +808,7 @@ End
 Name         call lightning~
 Type         Spell
 Info         9235
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Minpos       fighting~
 Saves        5
@@ -827,7 +826,7 @@ End
 Name         calm~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       fighting~
 Slot         534
@@ -847,7 +846,7 @@ End
 Name         carrion stench~
 Type         Spell
 Info         3470
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        1
@@ -880,7 +879,7 @@ End
 Name         cause critical~
 Type         Spell
 Info         852
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -909,7 +908,7 @@ End
 Name         cause light~
 Type         Spell
 Info         852
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -938,7 +937,7 @@ End
 Name         cause serious~
 Type         Spell
 Info         848
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -967,7 +966,7 @@ End
 Name         caustic fount~
 Type         Spell
 Info         10125
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        5
@@ -1000,7 +999,7 @@ End
 Name         celestial lightning~
 Type         Spell
 Info         9555
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -1037,7 +1036,7 @@ End
 Name         celestial thunder~
 Type         Spell
 Info         9552
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        5
@@ -1069,7 +1068,7 @@ End
 Name         chain lightning~
 Type         Spell
 Info         9219
-Author	      Samson~
+Author       Samson~
 Flags        area nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -1096,7 +1095,7 @@ End
 Name         change form~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         530
@@ -1113,7 +1112,7 @@ End
 Name         change sex~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       evasive~
 Slot         82
@@ -1123,7 +1122,7 @@ Ego          5
 Code         spell_change_sex
 Dammsg       ~
 Wearoff      Your body feels familiar again.~
-Affect       'l*5' 6 '1' -1
+Affect       'l*5' 25 '1' -1
 Minlevel     101
 End
 
@@ -1131,7 +1130,7 @@ End
 Name         chaos armor~
 Type         Spell
 Info         1560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -1157,7 +1156,7 @@ End
 Name         charged beacon~
 Type         Spell
 Info         3072
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -1182,7 +1181,7 @@ End
 Name         charm person~
 Type         Spell
 Info         2560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       evasive~
@@ -1207,7 +1206,7 @@ End
 Name         chill touch~
 Type         Spell
 Info         850
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -1238,7 +1237,7 @@ End
 Name         colour spray~
 Type         Spell
 Info         9044
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobrew~
 Minpos       fighting~
 Saves        5
@@ -1270,7 +1269,7 @@ End
 Name         cone of cold~
 Type         Spell
 Info         9610
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobrew~
 Minpos       fighting~
 Saves        5
@@ -1301,7 +1300,7 @@ End
 Name         continual light~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        object~
 Minpos       evasive~
 Slot         57
@@ -1324,7 +1323,7 @@ End
 Name         control weather~
 Type         Spell
 Info         1080
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         11
@@ -1346,7 +1345,7 @@ End
 Name         counterspell~
 Type         Spell
 Info         1024
-Author	      Rathian~
+Author       Rathian~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       fighting~
@@ -1374,7 +1373,7 @@ End
 Name         create fire~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        object~
 Minpos       standing~
 Slot         85
@@ -1398,7 +1397,7 @@ End
 Name         create food~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        object~
 Minpos       standing~
 Slot         12
@@ -1422,7 +1421,7 @@ End
 Name         create mistletoe~
 Type         Spell
 Info         520
-Author	      Karangi~
+Author       Karangi~
 Flags        nobind noscribe nobrew object~
 Minpos       standing~
 Slot         577
@@ -1447,7 +1446,7 @@ End
 Name         create paladin symbol~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind object~
 Minpos       standing~
 Slot         504
@@ -1470,7 +1469,7 @@ End
 Name         create spring~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind object~
 Minpos       standing~
 Slot         80
@@ -1493,7 +1492,7 @@ End
 Name         create symbol~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind object~
 Minpos       standing~
 Slot         101
@@ -1515,7 +1514,7 @@ End
 Name         create water~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Target       4
 Minpos       standing~
 Slot         13
@@ -1537,7 +1536,7 @@ End
 Name         creeping doom~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         532
@@ -1563,7 +1562,7 @@ End
 Name         crystal blades~
 Type         Spell
 Info         9556
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -1594,7 +1593,7 @@ End
 Name         cure blindness~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         14
@@ -1613,7 +1612,7 @@ End
 Name         cure critical~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         15
@@ -1634,7 +1633,7 @@ End
 Name         cure light~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         16
@@ -1655,7 +1654,7 @@ End
 Name         cure poison~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         43
@@ -1673,7 +1672,7 @@ End
 Name         cure serious~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         61
@@ -1694,7 +1693,7 @@ End
 Name         curse~
 Type         Spell
 Info         2560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -1722,7 +1721,7 @@ End
 Name         dark ritual~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       3
 Minpos       standing~
@@ -1750,7 +1749,7 @@ End
 Name         death aura~
 Type         Spell
 Info         10127
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        1
@@ -1783,7 +1782,7 @@ End
 Name         death chant~
 Type         Spell
 Info         3471
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind nobrew~
 Minpos       fighting~
 Saves        5
@@ -1812,7 +1811,7 @@ End
 Name         death spell~
 Type         Spell
 Info         3983
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        1
@@ -1845,7 +1844,7 @@ End
 Name         demonskin~
 Type         Spell
 Info         1048
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       3
 Minpos       evasive~
@@ -1867,7 +1866,7 @@ End
 Name         despair~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       fighting~
 Slot         537
@@ -1885,7 +1884,7 @@ End
 Name         detect evil~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         18
@@ -1907,7 +1906,7 @@ End
 Name         detect invis~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         19
@@ -1929,7 +1928,7 @@ End
 Name         detect magic~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         20
@@ -1951,7 +1950,7 @@ End
 Name         detect poison~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       4
 Minpos       standing~
 Slot         21
@@ -1973,7 +1972,7 @@ End
 Name         disintegrate~
 Type         Spell
 Info         10120
-Author	      Karangi~
+Author       Karangi~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -2006,7 +2005,7 @@ End
 Name         dispel evil~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       fighting~
@@ -2026,7 +2025,7 @@ End
 Name         dispel magic~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -2049,7 +2048,7 @@ End
 Name         disruption~
 Type         Spell
 Info         1932
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       fighting~
@@ -2071,7 +2070,7 @@ End
 Name         divine aid~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       defensive~
 Slot         512
@@ -2102,7 +2101,7 @@ End
 Name         divine fury~
 Type         Spell
 Info         1912
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       berserk~
@@ -2129,7 +2128,7 @@ End
 Name         divinity~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       2
 Minpos       defensive~
@@ -2152,7 +2151,7 @@ End
 Name         dragon ride~
 Type         Spell
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       2
 Minpos       standing~
@@ -2171,7 +2170,7 @@ End
 Name         dragon wit~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         227
@@ -2184,7 +2183,7 @@ Wearoff      The wit of the dragon withdraws from your mind.~
 Hitchar      $N's eyes glimmer with the wit of the dragon.~
 Hitvict      Your mind awakens in reception to the dragon's wit.~
 Hitroom      $N's eyes glimmer with the wit of the dragon.~
-Affect       'l*4' 3 '1+(l/25)' -1
+Affect       'l*4' 2 '1+(l/25)' -1
 Minlevel     35
 Helptext     This spell increases your ability to reason for its duration.~
 End
@@ -2193,7 +2192,7 @@ End
 Name         dragonskin~
 Type         Spell
 Info         1048
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       3
 Minpos       evasive~
@@ -2215,7 +2214,7 @@ End
 Name         dream~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         233
@@ -2233,7 +2232,7 @@ End
 Name         earthquake~
 Type         Spell
 Info         1360
-Author	      Smaug~
+Author       Smaug~
 Flags        earth area nobrew~
 Minpos       fighting~
 Slot         23
@@ -2264,7 +2263,7 @@ End
 Name         eldritch sphere~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -2288,7 +2287,7 @@ End
 Name         elemental shield~
 Type         Spell
 Info         1560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -2315,7 +2314,7 @@ End
 Name         elven beauty~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         226
@@ -2328,7 +2327,7 @@ Wearoff      Your elven features wane and you feel less charismatic.~
 Hitchar      $N's ears grow pointed and $S voice takes on a musical aspect.~
 Hitvict      Your face is blessed with elven features as you grow more attractive.~
 Hitroom      $N's ears grow pointed and $S voice takes on a musical aspect.~
-Affect       'l*4' 25 '1+(l/25)' -1
+Affect       'l*4' 6 '1+(l/25)' -1
 Minlevel     15
 Helptext     This spell makes you more charismatic for its duration.~
 End
@@ -2337,7 +2336,7 @@ End
 Name         enchant armor~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       4
 Minpos       standing~
@@ -2375,7 +2374,7 @@ End
 Name         enchant weapon~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       4
 Minpos       standing~
@@ -2408,9 +2407,10 @@ End
 Name         energy blast~
 Type         Spell
 Info         10124
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
+Minpos       standing~
 Saves        5
 Slot         315
 Ego          -2
@@ -2434,7 +2434,7 @@ End
 Name         energy drain~
 Type         Spell
 Info         3079
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Saves        1
@@ -2452,7 +2452,7 @@ End
 Name         enrage~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Minpos       fighting~
 Slot         587
@@ -2470,7 +2470,7 @@ End
 Name         entangle~
 Type         Spell
 Info         2560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -2489,7 +2489,7 @@ Misschar     $N manages to escape from the hold of your plants!~
 Missvict     You kick away $n's entangling plants!~
 Missroom     The entangling plants fail to hold $N!~
 Affect       '' 14 '-(2d40)' -1
-Affect       'l/2' 2 '-1' -1
+Affect       'l/2' 4 '-1' -1
 Affect       'l/2' 17 '15' -1
 Affect       'l/2' 68 '-(10+l/4)' -1
 Minlevel     23
@@ -2502,7 +2502,7 @@ End
 Name         ethereal funnel~
 Type         Spell
 Info         1056
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       1
 Minpos       defensive~
@@ -2527,7 +2527,7 @@ End
 Name         ethereal shield~
 Type         Spell
 Info         1048
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -2550,7 +2550,7 @@ End
 Name         faerie fire~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         72
@@ -2578,7 +2578,7 @@ End
 Name         faerie fog~
 Type         Spell
 Info         3072
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Minpos       standing~
 Saves        5
@@ -2600,7 +2600,7 @@ End
 Name         farsight~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         222
@@ -2619,7 +2619,7 @@ End
 Name         fatigue~
 Type         Spell
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Slot         103
@@ -2643,7 +2643,7 @@ End
 Name         feebleness~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       defensive~
 Slot         107
@@ -2667,7 +2667,7 @@ End
 Name         fiery dragon~
 Type         Spell
 Info         9553
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -2701,7 +2701,7 @@ End
 Name         find traps~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       2
 Minpos       standing~
@@ -2724,7 +2724,7 @@ End
 Name         finger of death~
 Type         Spell
 Info         3983
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       standing~
@@ -2759,7 +2759,7 @@ End
 Name         fire breath~
 Type         Spell
 Info         10121
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -2787,7 +2787,7 @@ End
 Name         fireball~
 Type         Spell
 Info         9609
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobrew~
 Minpos       fighting~
 Saves        5
@@ -2808,19 +2808,19 @@ Diechar      &RYour fireball reduces $N into a writhing pile of burnt flesh!&z~
 Dievict      &RYou are blasted into oblivion by $n's fireball....&z~
 Dieroom      &R$n's fireball reduces $N to a smoking pile of burnt flesh!&z~
 Dice         ld6 { 400~
+Minlevel     51
 Helptext     With this spell the caster directs large volumes of searing flame at a
 room. This damages all non-grouped things in the rooms. As with other
 damaging spells, this can wreck equip. People with infravision who are
 not affected by truesight and are in a dark room will be momentarily
 blinded. This spell may also start fires, in flammable areas.~
-Minlevel     51
 End
 
 #SKILL
 Name         fireseed~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       fighting~
 Slot         535
@@ -2841,7 +2841,7 @@ End
 Name         fireshield~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -2875,7 +2875,7 @@ End
 Name         firestorm~
 Type         Spell
 Info         10121
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        5
@@ -2907,7 +2907,7 @@ End
 Name         flame blade~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew object~
 Minpos       berserk~
 Slot         502
@@ -2930,7 +2930,7 @@ End
 Name         flamestrike~
 Type         Spell
 Info         9609
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -2961,7 +2961,7 @@ End
 Name         flare~
 Type         Spell
 Info         1417
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       defensive~
@@ -2986,7 +2986,7 @@ End
 Name         fletch~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew object~
 Minpos       standing~
 Slot         511
@@ -3009,7 +3009,7 @@ End
 Name         float~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        recastable~
 Target       2
 Minpos       evasive~
@@ -3041,7 +3041,7 @@ End
 Name         fly~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        recastable~
 Target       2
 Minpos       evasive~
@@ -3068,7 +3068,7 @@ End
 Name         fortify~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       fighting~
@@ -3091,7 +3091,7 @@ End
 Name         frost breath~
 Type         Spell
 Info         10122
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -3119,7 +3119,7 @@ End
 Name         galvanic whip~
 Type         Spell
 Info         10123
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -3148,7 +3148,7 @@ End
 Name         gas breath~
 Type         Spell
 Info         10126
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        4
@@ -3176,7 +3176,7 @@ End
 Name         gate~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         220
@@ -3194,7 +3194,7 @@ End
 Name         ghoulish touch~
 Type         Spell
 Info         9610
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -3227,7 +3227,7 @@ End
 Name         goodberry~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        object~
 Minpos       evasive~
 Slot         501
@@ -3250,7 +3250,7 @@ End
 Name         grounding~
 Type         Spell
 Info         1048
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       evasive~
 Slot         104
@@ -3273,7 +3273,7 @@ End
 Name         group armor~
 Type         Spell
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -3299,7 +3299,7 @@ End
 Name         group float~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -3322,7 +3322,7 @@ End
 Name         group fly~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind recastable noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -3345,7 +3345,7 @@ End
 Name         group refresh~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -3369,7 +3369,7 @@ End
 Name         group shield~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -3395,7 +3395,7 @@ End
 Name         group waterbreath~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind recastable noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -3420,7 +3420,7 @@ End
 Name         groupgate~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Flags        nobind noscribe nobrew group~
 Minpos       standing~
 Slot         589
@@ -3438,7 +3438,7 @@ End
 Name         gust of wind~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Minpos       fighting~
 Slot         531
@@ -3463,7 +3463,7 @@ End
 Name         harm~
 Type         Spell
 Info         1364
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -3492,7 +3492,7 @@ End
 Name         harmonic aura~
 Type         Spell
 Info         1560
-Author	      Rathian~
+Author       Rathian~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -3521,7 +3521,7 @@ End
 Name         haste~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Flags        nobind noscribe nobrew~
 Target       2
 Minpos       standing~
@@ -3542,7 +3542,7 @@ End
 Name         heal~
 Type         Spell
 Info         1344
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       2
 Minpos       fighting~
@@ -3566,7 +3566,7 @@ End
 Name         heroes feast~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Minpos       standing~
 Slot         524
@@ -3587,7 +3587,7 @@ End
 Name         hold person~
 Type         Spell
 Info         3076
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -3614,7 +3614,7 @@ End
 Name         holy sanctity~
 Type         Spell
 Info         1856
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Minpos       evasive~
 Slot         111
@@ -3639,7 +3639,7 @@ End
 Name         holy strength~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       standing~
@@ -3664,7 +3664,7 @@ End
 Name         holy word~
 Type         Spell
 Info         3976
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        3
@@ -3696,7 +3696,7 @@ End
 Name         iceshard~
 Type         Spell
 Info         1418
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       defensive~
@@ -3721,7 +3721,7 @@ End
 Name         iceshield~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -3752,7 +3752,7 @@ End
 Name         identify~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Minpos       standing~
 Slot         53
@@ -3775,7 +3775,7 @@ End
 Name         ill fortune~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Slot         108
@@ -3789,7 +3789,7 @@ Hitchar      $N's luck suddenly turns ill.~
 Hitvict      Your luck suddenly turns ill.~
 Hitroom      $N's luck suddenly turns ill.~
 Immchar      Your spell has no effect upon $N.~
-Affect       'l*5' 31 '-3' -1
+Affect       'l*5' 7 '-3' -1
 Minlevel     18
 Helptext     Ill Fortune reduces the victim's luck by three.~
 End
@@ -3798,7 +3798,7 @@ End
 Name         indignation~
 Type         Spell
 Info         1864
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       evasive~
@@ -3825,7 +3825,7 @@ End
 Name         infravision~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         77
@@ -3851,7 +3851,7 @@ End
 Name         inner warmth~
 Type         Spell
 Info         1048
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       evasive~
 Slot         213
@@ -3874,7 +3874,7 @@ End
 Name         invisibility~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Slot         29
 Mana         20
@@ -3896,7 +3896,7 @@ End
 Name         kindred strength~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         538
@@ -3919,7 +3919,7 @@ End
 Name         knock~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Minpos       standing~
 Slot         234
@@ -3938,7 +3938,7 @@ End
 Name         know alignment~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       2
 Minpos       standing~
@@ -3958,7 +3958,7 @@ End
 Name         leech~
 Type         Spell
 Info         9103
-Author	      Dwip~
+Author       Dwip~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -3986,7 +3986,7 @@ End
 Name         lethargy~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       evasive~
 Slot         109
@@ -4000,7 +4000,7 @@ Hitchar      $N is assailed by a magical lethargy.~
 Hitvict      You are assailed by a magical lethargy.~
 Hitroom      $N is assailed by a magical lethargy.~
 Immchar      Your spell has no effect upon $N.~
-Affect       'l*4' 2 '-2' -1
+Affect       'l*4' 4 '-2' -1
 Minlevel     32
 Helptext     This spell reduces the victims dex, making him easier to hit and easier
 to dodge.~
@@ -4010,7 +4010,7 @@ End
 Name         lich curse~
 Type         Spell
 Info         3976
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Target       1
 Minpos       standing~
@@ -4048,7 +4048,7 @@ End
 Name         life surge~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       standing~
@@ -4072,7 +4072,7 @@ End
 Name         lifelift~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        distant nobind noscribe nobrew character~
 Minpos       standing~
 Slot         78
@@ -4096,7 +4096,7 @@ End
 Name         lightning bolt~
 Type         Spell
 Info         9555
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -4127,7 +4127,7 @@ End
 Name         lightning breath~
 Type         Spell
 Info         9731
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -4155,7 +4155,7 @@ End
 Name         locate object~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Minpos       standing~
 Slot         31
@@ -4176,7 +4176,7 @@ End
 Name         magic missile~
 Type         Spell
 Info         852
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Slot         32
@@ -4206,7 +4206,7 @@ End
 Name         magnetic thrust~
 Type         Spell
 Info         9611
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       1
 Minpos       fighting~
@@ -4241,7 +4241,7 @@ End
 Name         major invocation~
 Type         Spell
 Info         1864
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       evasive~
@@ -4266,7 +4266,7 @@ End
 Name         major track~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe~
 Target       2
 Minpos       standing~
@@ -4290,7 +4290,7 @@ End
 Name         mana drain~
 Type         Spell
 Info         9615
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -4324,7 +4324,7 @@ End
 Name         mana leech~
 Type         Spell
 Info         9103
-Author	      Dwip~
+Author       Dwip~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -4349,7 +4349,7 @@ End
 Name         mana surge~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       standing~
@@ -4373,7 +4373,7 @@ End
 Name         mass invis~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -4397,7 +4397,7 @@ End
 Name         meteor swarm~
 Type         Spell
 Info         10068
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        5
@@ -4426,7 +4426,7 @@ End
 Name         minor invocation~
 Type         Spell
 Info         1352
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       evasive~
@@ -4452,7 +4452,7 @@ End
 Name         minor track~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe~
 Target       2
 Minpos       standing~
@@ -4476,7 +4476,7 @@ End
 Name         necromantic touch~
 Type         Spell
 Info         9615
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -4507,7 +4507,7 @@ End
 Name         paralyze~
 Type         Spell
 Info         3076
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -4538,7 +4538,7 @@ End
 Name         plant pass~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         291
@@ -4560,7 +4560,7 @@ End
 Name         poison~
 Type         Spell
 Info         2566
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -4594,7 +4594,7 @@ End
 Name         polymorph~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         294
@@ -4616,7 +4616,7 @@ End
 Name         portal~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Minpos       evasive~
 Slot         540
@@ -4636,7 +4636,7 @@ End
 Name         primal fury~
 Type         Spell
 Info         1912
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -4665,7 +4665,7 @@ End
 Name         protection from evil~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -4689,7 +4689,7 @@ End
 Name         quantum spike~
 Type         Spell
 Info         10124
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -4728,7 +4728,7 @@ End
 Name         quickening~
 Type         Spell
 Info         840
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -4743,7 +4743,7 @@ Hitvict      You feel your pulse quicken!~
 Hitroom      $n's movements become quicker and more fluid!~
 Missvict     You fail to gather enough magic to perform this spell.~
 Affect       'l+100' 17 '-10' -1
-Affect       'l+100' 2 '+2' -1
+Affect       'l+100' 4 '+2' -1
 Minlevel     27
 Helptext     This spell speeds you up and pumps adrenaline into your system at
 extremely high levels.  It raises your dexterity and modifies your
@@ -4755,7 +4755,7 @@ End
 Name         razorbait~
 Type         Spell
 Info         3104
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       1
 Minpos       defensive~
@@ -4781,7 +4781,7 @@ End
 Name         recall~
 Type         Spell
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Minpos       standing~
 Slot         539
@@ -4796,7 +4796,7 @@ End
 Name         recharge~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       4
 Minpos       standing~
@@ -4819,7 +4819,7 @@ End
 Name         refresh~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         81
@@ -4842,7 +4842,7 @@ End
 Name         rejuvenate~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Flags        nobind noscribe nobrew~
 Target       2
 Minpos       standing~
@@ -4866,7 +4866,7 @@ End
 Name         remove curse~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         35
@@ -4886,7 +4886,7 @@ End
 Name         remove invis~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Minpos       fighting~
 Slot         230
@@ -4905,7 +4905,7 @@ End
 Name         remove paralysis~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         525
@@ -4923,7 +4923,7 @@ End
 Name         remove silence~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         526
@@ -4941,7 +4941,7 @@ End
 Name         remove trap~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Minpos       standing~
 Slot         87
@@ -4959,7 +4959,7 @@ End
 Name         resilience~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       2
 Minpos       evasive~
@@ -4983,7 +4983,7 @@ End
 Name         restoration~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Minpos       defensive~
 Slot         113
@@ -5005,7 +5005,7 @@ End
 Name         restore mana~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nofight~
 Target       2
 Minpos       defensive~
@@ -5028,7 +5028,7 @@ End
 Name         righteousness~
 Type         Spell
 Info         840
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       2
 Minpos       evasive~
@@ -5054,7 +5054,7 @@ End
 Name         sagacity~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         228
@@ -5067,7 +5067,7 @@ Wearoff      Furrowing your brow, you sense the weight of wisdom leave you.~
 Hitchar      $N grows serious as wisdom takes root within $M.~
 Hitvict      The wisdom of your elders blossoms within you.~
 Hitroom      $N grows serious as wisdom takes root within $M.~
-Affect       'l*4' 4 '1+(l/25)' -1
+Affect       'l*4' 3 '1+(l/25)' -1
 Minlevel     30
 Helptext     This spell increases your wisdom for its duration.~
 End
@@ -5076,7 +5076,7 @@ End
 Name         sanctuary~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       2
 Minpos       standing~
@@ -5100,7 +5100,7 @@ End
 Name         scorching surge~
 Type         Spell
 Info         10065
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -5131,7 +5131,7 @@ End
 Name         scry~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       evasive~
 Slot         91
@@ -5155,7 +5155,7 @@ End
 Name         shadowform~
 Type         Spell
 Info         1560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -5179,7 +5179,7 @@ End
 Name         shield~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Slot         67
@@ -5203,7 +5203,7 @@ End
 Name         shocking grasp~
 Type         Spell
 Info         907
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Slot         51
@@ -5232,7 +5232,7 @@ End
 Name         shockshield~
 Type         Spell
 Info         1536
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -5262,7 +5262,7 @@ End
 Name         silence~
 Type         Spell
 Info         2560
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -5290,7 +5290,7 @@ End
 Name         skeletal armor~
 Type         Spell
 Info         1560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -5317,7 +5317,7 @@ End
 Name         skull of death~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind object~
 Minpos       standing~
 Slot         500
@@ -5340,7 +5340,7 @@ End
 Name         sleep~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Minpos       fighting~
 Slot         38
 Mana         15
@@ -5358,7 +5358,7 @@ End
 Name         slink~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         205
@@ -5371,7 +5371,7 @@ Wearoff      You suddenly feel less coordinated...~
 Hitchar      $N suddenly appears more agile...~
 Hitvict      You suddenly feel more nimble...~
 Hitroom      $N suddenly appears more agile...~
-Affect       'l*4' 2 '1+(l/25)' -1
+Affect       'l*4' 4 '1+(l/25)' -1
 Minlevel     31
 Helptext     This spell makes you more dexterous for its duration.~
 End
@@ -5380,7 +5380,7 @@ End
 Name         slow~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Flags        nobind noscribe nobrew~
 Target       2
 Minpos       standing~
@@ -5400,7 +5400,7 @@ End
 Name         sonic resonance~
 Type         Spell
 Info         9100
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -5434,7 +5434,7 @@ End
 Name         soothe~
 Type         Spell
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       2
 Minpos       fighting~
 Slot         599
@@ -5458,7 +5458,7 @@ End
 Name         soul scream~
 Type         Spell
 Info         10124
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        1
@@ -5491,7 +5491,7 @@ End
 Name         spectral furor~
 Type         Spell
 Info         10124
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -5522,7 +5522,7 @@ End
 Name         spiral blast~
 Type         Spell
 Info         1540
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -5543,7 +5543,7 @@ End
 Name         spiritual hammer~
 Type         Spell
 Info         9100
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       fighting~
@@ -5574,7 +5574,7 @@ End
 Name         spiritual wrath~
 Type         Spell
 Info         10124
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobind noscribe nobrew~
 Minpos       fighting~
 Saves        4
@@ -5607,7 +5607,7 @@ End
 Name         stinking cloud~
 Type         Spell
 Info         3470
-Author	      Smaug~
+Author       Smaug~
 Flags        area nobrew~
 Minpos       fighting~
 Saves        1
@@ -5639,7 +5639,7 @@ End
 Name         stone skin~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       fighting~
@@ -5663,7 +5663,7 @@ End
 Name         succor~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        object~
 Minpos       standing~
 Slot         356
@@ -5685,7 +5685,7 @@ End
 Name         sulfurous spray~
 Type         Spell
 Info         9613
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       fighting~
@@ -5721,7 +5721,7 @@ End
 Name         summon~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         40
@@ -5744,7 +5744,7 @@ End
 Name         sunray~
 Type         Spell
 Info         3072
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       fighting~
 Saves        5
@@ -5774,7 +5774,7 @@ End
 Name         swordbait~
 Type         Spell
 Info         3104
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       1
 Minpos       defensive~
@@ -5800,7 +5800,7 @@ End
 Name         teleport~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       defensive~
 Slot         2
@@ -5820,7 +5820,7 @@ End
 Name         torrent~
 Type         Spell
 Info         1419
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       fighting~
@@ -5845,7 +5845,7 @@ End
 Name         towngate~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         590
@@ -5862,7 +5862,7 @@ End
 Name         toxin shot~
 Type         Spell
 Info         2958
-Author	      Raine~
+Author       Raine~
 Flags        noscribe nobrew~
 Target       1
 Minpos       standing~
@@ -5893,7 +5893,7 @@ End
 Name         transport~
 Type         Spell
 Info         1024
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         219
@@ -5911,7 +5911,7 @@ End
 Name         tree transport~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         591
@@ -5931,7 +5931,7 @@ End
 Name         treespeak~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Minpos       resting~
 Slot         592
 Mana         15
@@ -5951,7 +5951,7 @@ End
 Name         trollish vigor~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Slot         206
@@ -5964,7 +5964,7 @@ Wearoff      Your vigor subsides, leaving you more charismatic.~
 Hitchar      $N's face contorts with a bestial vigor...~
 Hitvict      You sense a bestial vigor consume you...~
 Hitroom      $N's face contorts with a bestial vigor...~
-Affect       'l*4' 25 '-2' -1
+Affect       'l*4' 6 '-2' -1
 Affect       'l*4' 5 '1+(l/25)' -1
 Minlevel     43
 Helptext     This spell increases your stamina during its duration.~
@@ -5974,7 +5974,7 @@ End
 Name         true sight~
 Type         Spell
 Info         1344
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       standing~
@@ -6000,7 +6000,7 @@ End
 Name         unravel defense~
 Type         Spell
 Info         3616
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -6027,7 +6027,7 @@ End
 Name         uplift~
 Type         Spell
 Info         1344
-Author	      Smaug~
+Author       Smaug~
 Flags        distant nobind noscribe nobrew character~
 Minpos       standing~
 Slot         124
@@ -6055,7 +6055,7 @@ End
 Name         valiance~
 Type         Spell
 Info         1048
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       defensive~
 Slot         208
@@ -6078,7 +6078,7 @@ End
 Name         vampiric touch~
 Type         Spell
 Info         10127
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -6111,7 +6111,7 @@ End
 Name         venomshield~
 Type         Spell
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       evasive~
@@ -6141,7 +6141,7 @@ End
 Name         venomshot~
 Type         Spell
 Info         1422
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -6165,7 +6165,7 @@ End
 Name         ventriloquate~
 Type         Spell
 Info         960
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       evasive~
 Slot         41
@@ -6190,7 +6190,7 @@ End
 Name         vine whip~
 Type         Spell
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew object~
 Minpos       berserk~
 Slot         507
@@ -6212,7 +6212,7 @@ End
 Name         warmount~
 Type         Spell
 Info         768
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         536
@@ -6231,7 +6231,7 @@ End
 Name         warsteed~
 Type         Spell
 Info         768
-Author	      Karangi~
+Author       Karangi~
 Flags        nobind noscribe nobrew~
 Minpos       standing~
 Slot         581
@@ -6250,7 +6250,7 @@ End
 Name         weaken~
 Type         Spell
 Info         2560
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -6274,7 +6274,7 @@ End
 Name         web~
 Type         Spell
 Info         2560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobrew~
 Target       1
 Minpos       fighting~
@@ -6293,7 +6293,7 @@ Misschar     You fail to trap $N within your web spell!~
 Missvict     You step out of the way of $n's web spell!~
 Missroom     $N dodges out of the way of $n's web spell!~
 Affect       'l/2' 17 '20' -1
-Affect       'l/2' 2 '-2' -1
+Affect       'l/2' 4 '-2' -1
 Affect       '' 14 '-(2d60)' -1
 Affect       'l/2' 68 '-(10+l/3)' -1
 Minlevel     26
@@ -6305,7 +6305,7 @@ End
 Name         windstorm~
 Type         Spell
 Info         9556
-Author	      Smaug~
+Author       Smaug~
 Flags        air nobind noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -6334,7 +6334,7 @@ End
 Name         winter mist~
 Type         Spell
 Info         3104
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       defensive~
 Saves        5
@@ -6359,7 +6359,7 @@ End
 Name         withering hand~
 Type         Spell
 Info         9559
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind nobrew~
 Target       1
 Minpos       fighting~
@@ -6392,7 +6392,7 @@ End
 Name         wizardeye~
 Type         Spell
 Info         0
-Author	      Samson~
+Author       Samson~
 Target       2
 Minpos       standing~
 Slot         580
@@ -6412,7 +6412,7 @@ End
 Name         word of recall~
 Type         Spell
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind group~
 Minpos       fighting~
 Slot         42
@@ -6434,7 +6434,7 @@ End
 Name         wraithform~
 Type         Spell
 Info         1560
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       evasive~
@@ -6465,7 +6465,7 @@ End
 Name         adaptation~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind~
 Target       3
 Minpos       sleeping~
@@ -6489,7 +6489,7 @@ End
 Name         adrenaline rush~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Mana         40
@@ -6501,10 +6501,10 @@ Wearoff      You feel the adrenaline rush drain away.~
 Hitvict      Adrenaline pumps through your blood.~
 Missvict     You just cannot seem to get the adrenaline going.~
 Affect       'l' 1 '1d6' -1
-Affect       'l' 2 '1d6' -1
+Affect       'l' 4 '1d6' -1
 Affect       'l' 5 '1d6' -1
-Affect       'l' 4 '-(1d6)' -1
 Affect       'l' 3 '-(1d6)' -1
+Affect       'l' 2 '-(1d6)' -1
 Minlevel     42
 Helptext     In the thick of battle, a Warrior or Monk can cause adrenaline to flow
 within himself, resulting in an increased strength, dexterity and
@@ -6517,7 +6517,7 @@ End
 Name         aid~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       fighting~
 Rounds       12
 Ego          -2
@@ -6531,7 +6531,7 @@ End
 Name         anatomical lore~
 Type         Skill
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Mana         30
@@ -6554,7 +6554,7 @@ End
 Name         assassinate~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       12
 Ego          -2
@@ -6568,7 +6568,7 @@ End
 Name         backstab~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       12
 Ego          -2
@@ -6591,7 +6591,7 @@ End
 Name         bandage~
 Type         Skill
 Info         0
-Author	      Karangi~
+Author       Karangi~
 Target       2
 Minpos       standing~
 Rounds       12
@@ -6615,7 +6615,7 @@ End
 Name         bash~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       24
@@ -6637,7 +6637,7 @@ End
 Name         battle fury~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Mana         30
@@ -6660,7 +6660,7 @@ End
 Name         beguile~
 Type         Skill
 Info         2048
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       evasive~
 Saves        3
@@ -6677,7 +6677,7 @@ End
 Name         berserk~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       resting~
 Rounds       4
@@ -6692,7 +6692,7 @@ End
 Name         bind~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       4
 Minpos       standing~
 Rounds       36
@@ -6707,7 +6707,7 @@ End
 Name         bite~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       8
@@ -6722,7 +6722,7 @@ End
 Name         blitz~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        area noscribe nobrew~
 Minpos       fighting~
 Rounds       18
@@ -6749,7 +6749,7 @@ End
 Name         blur~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Mana         20
@@ -6771,7 +6771,7 @@ End
 Name         brew~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       4
 Minpos       standing~
 Rounds       12
@@ -6786,7 +6786,7 @@ End
 Name         circle~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       berserk~
 Rounds       12
 Ego          -2
@@ -6804,7 +6804,7 @@ End
 Name         cirkick~
 Type         Skill
 Info         904
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -6831,7 +6831,7 @@ End
 Name         claw~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       resting~
 Rounds       8
@@ -6858,7 +6858,7 @@ End
 Name         climb~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       standing~
 Rounds       10
@@ -6873,7 +6873,7 @@ End
 Name         cook~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       14
 Ego          -2
@@ -6887,7 +6887,7 @@ End
 Name         crushing blow~
 Type         Skill
 Info         2952
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -6917,7 +6917,7 @@ End
 Name         demoralize~
 Type         Skill
 Info         2440
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -6941,7 +6941,7 @@ End
 Name         deride~
 Type         Skill
 Info         2048
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -6958,7 +6958,7 @@ Missvict     You ignore $n's deriding taunts.~
 Missroom     $N ignores $n's merciless taunting.~
 Affect       'l/2' 18 '-2' -1
 Affect       'l/2' 19 '-2' -1
-Affect       'l/2' 2 '-1' -1
+Affect       'l/2' 4 '-1' -1
 Minlevel     23
 Helptext     An expert in taunting the rogues have developed the art of angering 
 their foes into rash actions. By continual taunting an opponent he
@@ -6969,7 +6969,7 @@ End
 Name         detect traps~
 Type         Skill
 Info         0
-Author	      Dwip~
+Author       Dwip~
 Target       3
 Minpos       standing~
 Rounds       24
@@ -6990,7 +6990,7 @@ End
 Name         detrap~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       24
 Ego          -2
@@ -7005,7 +7005,7 @@ End
 Name         dig~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       20
 Ego          -2
@@ -7031,7 +7031,7 @@ End
 Name         disarm~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       berserk~
 Rounds       24
 Ego          -2
@@ -7053,7 +7053,7 @@ End
 Name         dodge~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       berserk~
 Ego          -2
 Code         spell_null
@@ -7066,7 +7066,7 @@ End
 Name         doorbash~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       24
 Ego          -2
@@ -7080,7 +7080,7 @@ End
 Name         dragon palm~
 Type         Skill
 Info         392
-Author	      Dwip~
+Author       Dwip~
 Target       1
 Minpos       fighting~
 Rounds       18
@@ -7109,7 +7109,7 @@ End
 Name         dual wield~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       berserk~
 Ego          -2
 Code         spell_null
@@ -7122,7 +7122,7 @@ End
 Name         eagle claw~
 Type         Skill
 Info         904
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -7149,7 +7149,7 @@ End
 Name         elbow~
 Type         Skill
 Info         8584
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       berserk~
@@ -7176,7 +7176,7 @@ End
 Name         endurance~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nofight~
 Target       3
 Minpos       sitting~
@@ -7200,7 +7200,7 @@ End
 Name         enhanced damage~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       resting~
 Ego          -2
 Code         spell_null
@@ -7213,7 +7213,7 @@ End
 Name         enlightenment~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Mana         100
@@ -7235,7 +7235,7 @@ End
 Name         feign death~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       fighting~
 Rounds       12
 Ego          -2
@@ -7252,7 +7252,7 @@ End
 Name         flying kick~
 Type         Skill
 Info         904
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -7281,7 +7281,7 @@ End
 Name         focus~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew nofight~
 Target       3
 Minpos       sitting~
@@ -7304,7 +7304,7 @@ End
 Name         fortitude~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Rounds       12
@@ -7325,7 +7325,7 @@ End
 Name         frenzy~
 Type         Skill
 Info         904
-Author	      Dwip~
+Author       Dwip~
 Flags        area~
 Minpos       fighting~
 Rounds       18
@@ -7354,7 +7354,7 @@ End
 Name         garrotte~
 Type         Skill
 Info         2952
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       standing~
@@ -7388,7 +7388,7 @@ End
 Name         gouge~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       resting~
 Rounds       12
 Ego          -2
@@ -7421,7 +7421,7 @@ End
 Name         grip~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       resting~
 Ego          -2
 Code         spell_null
@@ -7434,7 +7434,7 @@ End
 Name         headbutt~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       resting~
@@ -7462,7 +7462,7 @@ End
 Name         heightened senses~
 Type         Skill
 Info         840
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       sitting~
 Mana         30
@@ -7487,7 +7487,7 @@ End
 Name         hide~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Rounds       12
@@ -7510,7 +7510,7 @@ End
 Name         hitall~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       12
 Ego          -2
@@ -7529,7 +7529,7 @@ End
 Name         immunity to poison~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Rounds       12
@@ -7548,7 +7548,7 @@ End
 Name         imperviousness~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Mana         60
@@ -7572,7 +7572,7 @@ End
 Name         inspire~
 Type         Skill
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew group~
 Target       2
 Minpos       standing~
@@ -7595,7 +7595,7 @@ End
 Name         ironskin~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Mana         60
@@ -7621,7 +7621,7 @@ End
 Name         item lore~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       sitting~
 Mana         25
 Rounds       24
@@ -7643,7 +7643,7 @@ End
 Name         jab~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       berserk~
@@ -7670,7 +7670,7 @@ End
 Name         karmic aura~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Mana         100
@@ -7695,26 +7695,26 @@ End
 Name         kick~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       12
 Ego          -2
 Code         do_kick
 Dammsg       kick~
+Minlevel     1
 Helptext     The success of a kick depends upon how well you are learned. The higher
 level you are, the harder you kick. There is one small catch - whenever
 you  kick (or miss) you will be unable to type any command for the next
 three rounds of 'Violence' - so be sure that you do not need to flee!
 This is one of the monks' most awesome weapons. Use it wisely.~
-Minlevel     1
 End
 
 #SKILL
 Name         knee~
 Type         Skill
 Info         8584
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       berserk~
@@ -7740,7 +7740,7 @@ End
 Name         leap~
 Type         Skill
 Info         904
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       resting~
@@ -7768,7 +7768,7 @@ End
 Name         levitation~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       sleeping~
 Mana         20
@@ -7791,7 +7791,7 @@ End
 Name         liquidate~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       4
 Minpos       standing~
 Mana         60
@@ -7809,7 +7809,7 @@ End
 Name         lunge~
 Type         Skill
 Info         8584
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       berserk~
@@ -7837,7 +7837,7 @@ End
 Name         mastery of body~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Rounds       12
@@ -7857,7 +7857,7 @@ End
 Name         meditate~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew nofight~
 Target       3
 Minpos       resting~
@@ -7881,7 +7881,7 @@ End
 Name         mount~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       10
 Ego          -2
@@ -7895,7 +7895,7 @@ End
 Name         neutralize poison~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       sleeping~
 Mana         15
@@ -7912,7 +7912,7 @@ End
 Name         parry~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       berserk~
 Ego          -2
 Code         spell_null
@@ -7926,7 +7926,7 @@ End
 Name         peek~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       12
 Ego          -2
@@ -7943,7 +7943,7 @@ End
 Name         pick lock~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       12
 Ego          -2
@@ -7958,7 +7958,7 @@ End
 Name         poison weapon~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       4
 Minpos       standing~
 Rounds       12
@@ -7984,7 +7984,7 @@ End
 Name         pummel~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       resting~
@@ -8012,7 +8012,7 @@ End
 Name         punch~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       12
@@ -8039,7 +8039,7 @@ End
 Name         quivering palm~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Mana         100
 Rounds       36
@@ -8057,7 +8057,7 @@ End
 Name         rally~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        group~
 Minpos       fighting~
 Mana         30
@@ -8079,7 +8079,7 @@ End
 Name         rampage~
 Type         Skill
 Info         904
-Author	      Karangi~
+Author       Karangi~
 Flags        area~
 Minpos       fighting~
 Mana         10
@@ -8109,7 +8109,7 @@ End
 Name         recuperate~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        nofight~
 Target       3
 Minpos       resting~
@@ -8131,7 +8131,7 @@ End
 Name         rescue~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       resting~
 Rounds       12
 Ego          -2
@@ -8145,7 +8145,7 @@ End
 Name         retreat~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       aggressive~
 Rounds       18
 Ego          -2
@@ -8161,7 +8161,7 @@ End
 Name         roguish blessing~
 Type         Skill
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Mana         20
@@ -8172,7 +8172,7 @@ Dammsg       ~
 Wearoff      You feel less lucky.~
 Hitvict      The dice of fate is rolled and you feel luckier.~
 Missvict     No point in trying...~
-Affect       'l*5' 31 '1d6' -1
+Affect       'l*5' 7 '1d6' -1
 Minlevel     28
 Helptext     By using this skill, a Rogue calls upon his lucky stars to increase his
 luck by 1d6. This is a personal skill and cannot be used on others.~
@@ -8182,7 +8182,7 @@ End
 Name         roundhouse~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       berserk~
@@ -8208,8 +8208,9 @@ End
 Name         safe fall~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       2
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       safe fall~
@@ -8223,7 +8224,7 @@ End
 Name         scribe~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       4
 Minpos       standing~
 Rounds       12
@@ -8237,7 +8238,7 @@ End
 Name         search~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       20
 Ego          -2
@@ -8250,7 +8251,7 @@ End
 Name         sense of balance~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Mana         20
@@ -8262,7 +8263,7 @@ Wearoff      You regain your normal sense of balance.~
 Hitvict      Your sense of balance increases.~
 Missvict     You feel really clumsy.~
 Affect       'l*5' 52 '20' -1
-Affect       'l*5' 2 '1d6' -1
+Affect       'l*5' 4 '1d6' -1
 Minlevel     22
 Helptext     By concentrating hard, a Rogue or Monk can increase temporarily his sense of
 balance. This aids when climbing and also improves the dexterity of the
@@ -8273,7 +8274,7 @@ End
 Name         sidestep~
 Type         Skill
 Info         840
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Rounds       12
@@ -8295,7 +8296,7 @@ End
 Name         sixth sense~
 Type         Skill
 Info         0
-Author	      Dwip~
+Author       Dwip~
 Target       3
 Minpos       fighting~
 Mana         20
@@ -8318,7 +8319,7 @@ End
 Name         slice~
 Type         Skill
 Info         392
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       standing~
 Rounds       12
@@ -8335,7 +8336,7 @@ End
 Name         sneak~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Rounds       12
@@ -8360,7 +8361,8 @@ End
 Name         spamguard~
 Type         Skill
 Info         0
-Author	      Samson~
+Author       Samson~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8372,7 +8374,7 @@ End
 Name         spinkick~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -8400,8 +8402,9 @@ End
 Name         spring leap~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       2
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       spring leap~
@@ -8414,7 +8417,7 @@ End
 Name         spy~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Rounds       15
@@ -8437,7 +8440,7 @@ End
 Name         steal~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       24
 Ego          -2
@@ -8455,7 +8458,7 @@ End
 Name         sting~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       8
@@ -8469,7 +8472,7 @@ End
 Name         strike~
 Type         Skill
 Info         8584
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       berserk~
@@ -8496,7 +8499,7 @@ End
 Name         stun~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       berserk~
 Rounds       24
@@ -8513,7 +8516,7 @@ End
 Name         swipe~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -8541,7 +8544,7 @@ End
 Name         tail~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Mana         95
@@ -8557,7 +8560,7 @@ End
 Name         tan~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       5
 Ego          -2
@@ -8571,7 +8574,7 @@ End
 Name         tend~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       standing~
 Mana         40
@@ -8597,7 +8600,7 @@ End
 Name         track~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       14
 Ego          -2
@@ -8615,7 +8618,7 @@ End
 Name         trance~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew nofight~
 Target       3
 Minpos       resting~
@@ -8640,7 +8643,8 @@ End
 Name         treetalk~
 Type         Skill
 Info         0
-Author	      Samson~
+Author       Samson~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8652,7 +8656,7 @@ End
 Name         tumble~
 Type         Skill
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       berserk~
 Ego          -2
@@ -8666,7 +8670,7 @@ End
 Name         uppercut~
 Type         Skill
 Info         8584
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       fighting~
@@ -8694,7 +8698,7 @@ End
 Name         vault~
 Type         Skill
 Info         9096
-Author	      Smaug~
+Author       Smaug~
 Flags        noscribe nobrew~
 Target       1
 Minpos       resting~
@@ -8721,7 +8725,7 @@ End
 Name         withering touch~
 Type         Skill
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       12
@@ -8743,7 +8747,8 @@ End
 Name         aggressive style~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Rounds       4
 Ego          -2
 Code         spell_null
@@ -8756,7 +8761,8 @@ End
 Name         archery~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8767,7 +8773,8 @@ End
 Name         axes~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8778,7 +8785,8 @@ End
 Name         berserk style~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Rounds       4
 Ego          -2
 Code         spell_null
@@ -8791,7 +8799,8 @@ End
 Name         blowguns~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8802,7 +8811,8 @@ End
 Name         daggers~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8813,7 +8823,8 @@ End
 Name         defensive style~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Rounds       4
 Ego          -2
 Code         spell_null
@@ -8826,7 +8837,8 @@ End
 Name         evasive style~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Rounds       4
 Ego          -2
 Code         spell_null
@@ -8839,7 +8851,8 @@ End
 Name         maces and hammers~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8850,7 +8863,8 @@ End
 Name         pugilism~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8861,7 +8875,8 @@ End
 Name         slings~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8872,7 +8887,8 @@ End
 Name         spears~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8883,7 +8899,8 @@ End
 Name         standard style~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Rounds       4
 Ego          -2
 Code         spell_null
@@ -8895,7 +8912,8 @@ End
 Name         staves~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8906,7 +8924,8 @@ End
 Name         swords~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8917,7 +8936,8 @@ End
 Name         talonous arms~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8928,7 +8948,8 @@ End
 Name         whips~
 Type         Combat
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8939,7 +8960,8 @@ End
 Name         centaur~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8950,7 +8972,8 @@ End
 Name         common~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8961,7 +8984,8 @@ End
 Name         dwarven~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8972,7 +8996,8 @@ End
 Name         elvish~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8983,7 +9008,8 @@ End
 Name         gith~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -8994,7 +9020,8 @@ End
 Name         gnomish~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9005,7 +9032,8 @@ End
 Name         goblin~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9016,7 +9044,8 @@ End
 Name         halfling~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9027,7 +9056,8 @@ End
 Name         insectoid~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9038,7 +9068,8 @@ End
 Name         minotaur~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9049,7 +9080,8 @@ End
 Name         ogre~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9060,7 +9092,8 @@ End
 Name         orcish~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9071,7 +9104,8 @@ End
 Name         pixie~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9082,7 +9116,8 @@ End
 Name         reptile~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9093,7 +9128,8 @@ End
 Name         sahuagin~
 Type         Tongue
 Info         0
-Author	      Dwip~
+Author       Dwip~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9104,7 +9140,8 @@ End
 Name         trollese~
 Type         Tongue
 Info         0
-Author	      Smaug~
+Author       Smaug~
+Minpos       standing~
 Ego          -2
 Code         spell_null
 Dammsg       ~
@@ -9115,7 +9152,7 @@ End
 Name         ambidexterity~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       fighting~
 Mana         15
@@ -9137,7 +9174,7 @@ End
 Name         astral projection~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       evasive~
 Mana         30
@@ -9159,7 +9196,7 @@ End
 Name         backheel~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       10
@@ -9176,7 +9213,7 @@ End
 Name         bargain~
 Type         Racial
 Info         0
-Author	      Karangi~
+Author       Karangi~
 Minpos       standing~
 Rounds       12
 Ego          -2
@@ -9189,7 +9226,7 @@ End
 Name         bladesong~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       fighting~
 Rounds       15
 Ego          -2
@@ -9202,7 +9239,7 @@ End
 Name         blood frenzy~
 Type         Racial
 Info         0
-Author	      Dwip~
+Author       Dwip~
 Flags        nobind noscribe nobrew~
 Target       3
 Minpos       fighting~
@@ -9229,7 +9266,7 @@ End
 Name         bloodlust~
 Type         Racial
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Mana         30
@@ -9254,7 +9291,7 @@ End
 Name         brute rush~
 Type         Racial
 Info         904
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       12
@@ -9280,7 +9317,7 @@ End
 Name         carapace~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         25
@@ -9304,7 +9341,7 @@ End
 Name         curiosity~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       evasive~
 Rounds       12
@@ -9327,7 +9364,7 @@ End
 Name         deathsong~
 Type         Racial
 Info         512
-Author	      Rathian~
+Author       Rathian~
 Target       3
 Minpos       fighting~
 Mana         30
@@ -9345,7 +9382,7 @@ End
 Name         detonate~
 Type         Racial
 Info         9097
-Author	      Rathian~
+Author       Rathian~
 Flags        area~
 Minpos       fighting~
 Saves        5
@@ -9378,7 +9415,7 @@ End
 Name         discern scent~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         5
@@ -9401,7 +9438,7 @@ End
 Name         drow fire~
 Type         Racial
 Info         2560
-Author	      Rathian~
+Author       Rathian~
 Target       1
 Minpos       fighting~
 Saves        5
@@ -9426,7 +9463,7 @@ End
 Name         elemental synergy~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         30
@@ -9451,7 +9488,7 @@ End
 Name         elvensong~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       15
 Ego          -2
@@ -9467,7 +9504,7 @@ End
 Name         enlarge~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         10
@@ -9494,7 +9531,7 @@ End
 Name         enrapture~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         30
@@ -9518,7 +9555,7 @@ End
 Name         faerie speed~
 Type         Racial
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Mana         30
@@ -9545,7 +9582,7 @@ End
 Name         faeriedust~
 Type         Racial
 Info         520
-Author	      Smaug~
+Author       Smaug~
 Flags        nobind noscribe nobrew object~
 Minpos       standing~
 Mana         15
@@ -9568,7 +9605,7 @@ End
 Name         forage~
 Type         Racial
 Info         0
-Author	      Rathian~
+Author       Rathian~
 Minpos       standing~
 Rounds       30
 Ego          -2
@@ -9584,7 +9621,7 @@ End
 Name         globe of darkness~
 Type         Racial
 Info         3056
-Author	      Rathian~
+Author       Rathian~
 Flags        area~
 Target       1
 Minpos       fighting~
@@ -9612,7 +9649,7 @@ End
 Name         hunt~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Rounds       12
@@ -9635,7 +9672,7 @@ End
 Name         impale~
 Type         Racial
 Info         904
-Author	      Karangi~
+Author       Karangi~
 Target       1
 Minpos       fighting~
 Rounds       12
@@ -9664,7 +9701,7 @@ End
 Name         intuition~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       fighting~
 Mana         10
@@ -9687,7 +9724,7 @@ End
 Name         mandible~
 Type         Racial
 Info         904
-Author	      Karangi~
+Author       Karangi~
 Target       1
 Minpos       fighting~
 Rounds       12
@@ -9717,7 +9754,7 @@ End
 Name         mental fortitude~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         20
@@ -9741,7 +9778,7 @@ End
 Name         metallurgy~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       24
 Ego          -2
@@ -9754,7 +9791,7 @@ End
 Name         mindblast~
 Type         Racial
 Info         904
-Author	      Karangi~
+Author       Karangi~
 Target       1
 Minpos       fighting~
 Mana         15
@@ -9785,7 +9822,7 @@ End
 Name         mining~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       24
 Ego          -2
@@ -9803,7 +9840,7 @@ End
 Name         nimbleness~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Rounds       12
@@ -9829,7 +9866,7 @@ End
 Name         orcish vigour~
 Type         Racial
 Info         512
-Author	      Rathian~
+Author       Rathian~
 Target       3
 Minpos       standing~
 Mana         20
@@ -9853,7 +9890,7 @@ End
 Name         regeneration~
 Type         Racial
 Info         0
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       stunned~
 Mana         30
@@ -9877,7 +9914,7 @@ End
 Name         reverie~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       15
 Ego          -2
@@ -9895,7 +9932,7 @@ End
 Name         rushing maul~
 Type         Racial
 Info         904
-Author	      Rathian~
+Author       Rathian~
 Target       1
 Minpos       fighting~
 Rounds       15
@@ -9924,7 +9961,7 @@ End
 Name         scout~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Rounds       15
@@ -9946,7 +9983,7 @@ End
 Name         secretion~
 Type         Racial
 Info         512
-Author	      Rathian~
+Author       Rathian~
 Target       3
 Minpos       standing~
 Mana         30
@@ -9972,7 +10009,7 @@ End
 Name         sense life~
 Type         Racial
 Info         512
-Author	      Rathian~
+Author       Rathian~
 Target       3
 Minpos       standing~
 Mana         5
@@ -9995,7 +10032,7 @@ End
 Name         sharktooth~
 Type         Racial
 Info         904
-Author	      Dwip~
+Author       Dwip~
 Target       1
 Minpos       fighting~
 Mana         5
@@ -10025,7 +10062,7 @@ End
 Name         sleepdart~
 Type         Racial
 Info         2896
-Author	      Smaug~
+Author       Smaug~
 Minpos       fighting~
 Saves        1
 Mana         20
@@ -10058,7 +10095,7 @@ End
 Name         steel will~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         30
@@ -10082,7 +10119,7 @@ End
 Name         sudden strike~
 Type         Racial
 Info         904
-Author	      Karangi~
+Author       Karangi~
 Target       1
 Minpos       fighting~
 Rounds       8
@@ -10111,7 +10148,7 @@ End
 Name         swim~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Target       2
 Minpos       fighting~
 Rounds       10
@@ -10135,7 +10172,7 @@ End
 Name         tenacity~
 Type         Racial
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Minpos       fighting~
 Rounds       12
 Ego          -2
@@ -10152,7 +10189,7 @@ End
 Name         thicken hide~
 Type         Racial
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       standing~
 Mana         10
@@ -10175,7 +10212,7 @@ End
 Name         tinker~
 Type         Racial
 Info         0
-Author	      Karangi~
+Author       Karangi~
 Minpos       standing~
 Rounds       30
 Ego          -2
@@ -10193,7 +10230,7 @@ End
 Name         toxin resistance~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         20
@@ -10217,7 +10254,7 @@ End
 Name         trample~
 Type         Racial
 Info         904
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       12
@@ -10243,7 +10280,7 @@ End
 Name         trip~
 Type         Racial
 Info         904
-Author	      Smaug~
+Author       Smaug~
 Target       1
 Minpos       fighting~
 Rounds       12
@@ -10272,7 +10309,7 @@ End
 Name         trollhide~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Mana         30
@@ -10298,7 +10335,7 @@ End
 Name         venomspit~
 Type         Racial
 Info         2958
-Author	      Rathian~
+Author       Rathian~
 Target       1
 Minpos       fighting~
 Saves        1
@@ -10331,7 +10368,7 @@ End
 Name         versatility~
 Type         Racial
 Info         512
-Author	      Karangi~
+Author       Karangi~
 Target       3
 Minpos       standing~
 Rounds       12
@@ -10359,7 +10396,7 @@ End
 Name         wardance~
 Type         Racial
 Info         512
-Author	      Smaug~
+Author       Smaug~
 Target       3
 Minpos       fighting~
 Mana         40
@@ -10385,7 +10422,7 @@ End
 Name         woodcall~
 Type         Racial
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Rounds       35
 Ego          -2
@@ -10403,7 +10440,7 @@ End
 Name         Loreholder~
 Type         Lore
 Info         0
-Author	      Smaug~
+Author       Smaug~
 Minpos       standing~
 Ego          -2
 Code         spell_null
