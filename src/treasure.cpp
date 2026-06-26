@@ -213,25 +213,16 @@ void load_weapontable(  )
       return;
    }
 
-   auto read_line = [&]() -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, '\n' );
-      strip_whitespace( line );
-
-      return line;
-   };
-
    weapontable *wt = nullptr;
    w_table.clear(  );
-   std::string key;
 
+   std::string key;
    while( stream >> key )
    {
       if( key == "#WTYPE" )
          wt = new weapontable;
       else if( key == "Name" )
-         wt->name = read_line();
+         wt->name = fread_line( stream, '\n' );
       else if( key == "Type" )
          stream >> wt->type;
       else if( key == "BaseDam" )
@@ -245,7 +236,7 @@ void load_weapontable(  )
       else if( key == "DamType" )
          stream >> wt->damtype;
       else if( key == "Flags" )
-         wt->flags = read_line();
+         wt->flags = fread_line( stream, '\n' );
       else if( key == "End" )
          w_table.push_back( wt );
       else
@@ -343,22 +334,13 @@ void load_runewords( void )
    rwordlist.clear(  );
    runeword_data *rword = nullptr;
 
-   auto read_line = [&]() -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, '\n' );
-      strip_spaces( line );
-
-      return line;
-   };
-
    std::string key;
    while( stream >> key )
    {
       if( key == "#RWORD" )
          rword = new runeword_data;
       else if( key == "Name" )
-         rword->set_name( read_line() );
+         rword->set_name( fread_line( stream, '\n' ) );
       else if( key == "Type" )
       {
          int value;
@@ -367,11 +349,11 @@ void load_runewords( void )
          rword->set_type( value );
       }
       else if( key == "Rune1" )
-         rword->set_rune1( read_line() );
+         rword->set_rune1( fread_line( stream, '\n' ) );
       else if( key == "Rune2" )
-         rword->set_rune2( read_line() );
+         rword->set_rune2( fread_line( stream, '\n' ) );
       else if( key == "Rune3" )
-         rword->set_rune3( read_line() );
+         rword->set_rune3( fread_line( stream, '\n' ) );
       else if( key == "Stat1" )
          stream >> rword->stat1[0] >> rword->stat1[1];
       else if( key == "Stat2" )
@@ -418,15 +400,6 @@ void load_runes( void )
 
    runelist.clear();
 
-   auto read_line = [&]() -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, '~' );
-      strip_whitespace( line );
-
-      return line;
-   };
-
    rune_data *rune = nullptr;
    std::string key;
    while( stream >> key )
@@ -434,7 +407,7 @@ void load_runes( void )
       if( key == "#RUNE" )
          rune = new rune_data;
       else if( key == "Name" )
-         rune->set_name( read_line() );
+         rune->set_name( fread_line( stream ) );
       else if( key == "Rarity" )
       {
          int value;

@@ -79,15 +79,6 @@ void load_slays( )
    int file_ver = 0;
    std::unique_ptr<slay_data> current_slay = nullptr;
 
-   auto read_line = [&]( char delimiter = '\n' ) -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, delimiter );
-      strip_whitespace( line );
-
-      return line;
-   };
-
    std::string key;
    stream >> key;
    if( key != "#VERSION" )
@@ -115,12 +106,12 @@ void load_slays( )
          if( file_ver == 1 )
             delim = (char)0xA2; // This was a stupid idea and it needs to be undone now.
 
-         if( key == "Type" ) current_slay->set_type( read_line() );
-         else if( key == "Owner" ) current_slay->set_owner( read_line() );
-         else if( key == "Color" ) current_slay->set_color( std::stoi( read_line() ) );
-         else if( key == "Cmessage" ) current_slay->set_cmsg( read_line( delim ) );
-         else if( key == "Vmessage" ) current_slay->set_vmsg( read_line( delim ) );
-         else if( key == "Rmessage" ) current_slay->set_rmsg( read_line( delim ) );
+         if( key == "Type" ) current_slay->set_type( fread_line( stream, '\n' ) );
+         else if( key == "Owner" ) current_slay->set_owner( fread_line( stream, '\n' ) );
+         else if( key == "Color" ) current_slay->set_color( std::stoi( fread_line( stream, '\n' ) ) );
+         else if( key == "Cmessage" ) current_slay->set_cmsg( fread_line( stream, delim ) );
+         else if( key == "Vmessage" ) current_slay->set_vmsg( fread_line( stream, delim ) );
+         else if( key == "Rmessage" ) current_slay->set_rmsg( fread_line( stream, delim ) );
          else log_printf( "{}: Bad line: {}", __func__, key );
       }
    }
