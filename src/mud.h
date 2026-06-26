@@ -510,7 +510,6 @@ inline constexpr std::string_view CLASS_LIST       = "class.lst";               
 inline constexpr std::string_view COMMAND_FILE     = "../system/commands.dat";  // Commands
 inline constexpr std::string_view FIXED_FILE       = "../system/fixed.txt";     // For 'fixed' command.
 inline constexpr std::string_view GREETING_FILE    = "../motd/greeting.dat";    // The MUD's standard greeting file, seen by everyone logging in.
-inline constexpr std::string_view HERB_FILE        = "../system/herbs.dat";     // Herb table.
 inline constexpr std::string_view HOTBOOT_FILE     = "../system/copyover.dat";  // Stores descriptor information for hotboots.
 inline constexpr std::string_view IDEA_FILE        = "../system/ideas.txt";     // For 'idea' command.
 inline constexpr std::string_view IMM_HOST_FILE    = "../system/immortal.host"; // For stopping hackers. Or something.
@@ -523,13 +522,10 @@ inline constexpr std::string_view MOTD_FILE        = "../motd/motd.dat";        
 inline constexpr std::string_view PBUG_FILE        = "../system/pbugs.txt";     // For 'bug' command.
 inline constexpr std::string_view RACE_LIST        = "race.lst";                // List of races.
 inline constexpr std::string_view SHUTDOWN_FILE    = "shutdown.txt";            // For 'shutdown'. Logs the reason why it happened (hopefully).
-inline constexpr std::string_view SKILL_FILE       = "../system/skills.dat";    // Skill table. Holds all the data on every skill in the game.
 inline constexpr std::string_view SOCIAL_FILE      = "../system/socials.dat";   // Socials
 inline constexpr std::string_view SPEC_MOTD        = "../motd/specmotd.dat";    // Special MOTD - cannot be ignored on login by anyone.
 inline constexpr std::string_view TONGUE_FILE      = "../system/tongues.dat";   // Tongue tables.
 inline constexpr std::string_view TYPO_FILE        = "../system/typos.txt";     // For 'typo' command.
-inline constexpr std::string_view WEBWHO_FILE      = "../web/WEBWHO";           // HTML Who output file.
-inline constexpr std::string_view WEBWIZ_FILE      = "../web/WEBWIZ";           // HTML wizlist file.
 inline constexpr std::string_view WIZLIST_FILE     = "../system/WIZLIST";       // Wizlist - Used with 'who' command, and 'wizlist' command.
 
 // This damn thing is used in so many places it was about time to just move it here - Samson 10-4-03

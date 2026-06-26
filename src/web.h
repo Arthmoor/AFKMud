@@ -28,8 +28,10 @@
 
 #pragma once
 
-inline constexpr std::string_view WEB_DIR   = "../web/";           // HTML static files.
-inline constexpr std::string_view WEB_ROOMS = "../public_html/";
+inline constexpr std::string_view WEB_DIR     = "../web/";           // HTML static files.
+inline constexpr std::string_view WEB_ROOMS   = "../public_html/";
+inline constexpr std::string_view WEBWHO_FILE = "../web/WEBWHO";     // HTML Who output file.
+inline constexpr std::string_view WEBWIZ_FILE = "../web/WEBWIZ";     // HTML wizlist file.
 
 // Structure used to build wizlist
 class wizentweb

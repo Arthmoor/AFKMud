@@ -31,6 +31,9 @@
 
 #include <climits>
 
+inline constexpr std::string_view SKILL_FILE       = "../system/skills.dat";    // Skill table. Holds all the data on every skill in the game.
+inline constexpr std::string_view HERB_FILE        = "../system/herbs.dat";     // Herb table.
+
 /*
  * Types of skill numbers.  Used to keep separate lists of sn's
  * Must be non-overlapping with spell/skill types,

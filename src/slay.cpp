@@ -136,7 +136,7 @@ constexpr int SLAY_VERSION = 2;
 void save_slays( )
 {
    std::ofstream stream( std::filesystem::path{SLAY_FILE} );
-   if( !stream )
+   if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, SLAY_FILE, std::strerror(errno) );
       return;
