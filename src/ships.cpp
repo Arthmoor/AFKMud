@@ -146,31 +146,29 @@ constexpr int SHIPFILEVERSION = 1;
 
 void save_ships( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( SHIP_FILE ) );
+   std::ofstream stream( std::filesystem::path{SHIP_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, SHIP_FILE, std::strerror(errno) );
       return;
    }
 
-   stream << "#VERSION  " << SHIPFILEVERSION << std::endl;
+   stream << std::format( "#VERSION  {}\n", SHIPFILEVERSION );
    for( auto* ship : shiplist )
    {
-      stream << "#SHIP" << std::endl;
-      stream << "Name      " << ship->name << std::endl;
-      stream << "Owner     " << ship->owner << std::endl;
-      stream << "Flags     " << bitset_string( ship->flags, ship_flags ) << std::endl;
-      stream << "Vnum      " << ship->vnum << std::endl;
-      stream << "Room      " << ship->room << std::endl;
-      stream << "Type      " << ship_type[ship->type] << std::endl;
-      stream << "Hull      " << ship->hull << std::endl;
-      stream << "Max_hull  " << ship->max_hull << std::endl;
-      stream << "Fuel      " << ship->fuel << std::endl;
-      stream << "Max_fuel  " << ship->max_fuel << std::endl;
-      stream << "Coordinates " << ship->map_x << " " << ship->map_y << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << "#SHIP\n";
+      stream << std::format( "Name      {}\n", ship->name );
+      stream << std::format( "Owner     {}\n", ship->owner );
+      stream << std::format( "Flags     {}\n", bitset_string( ship->flags, ship_flags ) );
+      stream << std::format( "Vnum      {}\n", ship->vnum );
+      stream << std::format( "Room      {}\n", ship->room );
+      stream << std::format( "Type      {}\n", ship_type[ship->type] );
+      stream << std::format( "Hull      {}\n", ship->hull );
+      stream << std::format( "Max_hull  {}\n", ship->max_hull );
+      stream << std::format( "Fuel      {}\n", ship->fuel );
+      stream << std::format( "Max_fuel  {}\n", ship->max_fuel );
+      stream << std::format( "Coordinates {} {}\n", ship->map_x, ship->map_y );
+      stream << "End\n\n";
    }
    stream.close(  );
    if( stream.fail() )
@@ -179,90 +177,77 @@ void save_ships( void )
 
 void load_ships( void )
 {
-   std::ifstream stream;
-   ship_data *ship = nullptr;
-   int file_ver = 0;
-
    shiplist.clear(  );
 
-   stream.open( std::filesystem::path( SHIP_FILE ) );
+   std::ifstream stream( std::filesystem::path{SHIP_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, SHIP_FILE, std::strerror(errno) );
       return;
    }
 
-   do
+   int file_ver = 0;
+   ship_data *ship = nullptr;
+   std::string key;
+
+   stream >> key;
+   if( key == "#VERSION" )
+     stream >> file_ver;
+
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#SHIP" )
          ship = new ship_data;
-      else if( key == "#VERSION" )
-         file_ver = std::stoi( value );
       else if( key == "Name" )
-         ship->name = value;
+         ship->name = fread_line( stream, '\n' );
       else if( key == "Owner" )
-         ship->owner = value;
+         ship->owner = fread_line( stream, '\n' );
       else if( key == "Flags" )
-         flag_string_set( value, ship->flags, ship_flags );
-      else if( key == "Vnum" )
-         ship->vnum = std::stoi( value );
-      else if( key == "Room" )
-         ship->room = std::stoi( value );
-      else if( key == "Type" )
       {
-         ship->type = get_shiptype( value );
+         std::string flags = fread_line( stream, '\n' );
 
-         ship->type = urange( SHIP_NONE, ship->type, SHIP_WARSHIP );
+         flag_string_set( flags, ship->flags, ship_flags );
       }
+      else if( key == "Vnum" )
+         stream >> ship->vnum;
+      else if( key == "Room" )
+         stream >> ship->room;
+      else if( key == "Type" )
+         ship->type = get_shiptype( fread_line( stream, '\n' ) );
       else if( key == "Hull" )
-         ship->hull = std::stoi( value );
+         stream >> ship->hull;
       else if( key == "Max_hull" )
-         ship->max_hull = std::stoi( value );
+         stream >> ship->max_hull;
       else if( key == "Fuel" )
-         ship->fuel = std::stoi( value );
+         stream >> ship->fuel;
       else if( key == "Max_fuel" )
-         ship->max_fuel = std::stoi( value );
+         stream >> ship->max_fuel;
       else if( key == "Coordinates" && file_ver < 1 )
       {
-         std::string coord;
+         int eat;
+         stream >> eat; // Eat this first one.
 
-         // Eat this first one.
-         value = one_argument( value, coord );
-
-         value = one_argument( value, coord );
-         ship->map_x = std::stoi( coord );
-
-         ship->map_y = std::stoi( value );
+         stream >> ship->map_x >> ship->map_y;
       }
       else if( key == "Coordinates" && file_ver >= 1 )
-      {
-         std::string coord;
-
-         value = one_argument( value, coord );
-         ship->map_x = std::stoi( coord );
-
-         ship->map_y = std::stoi( value );
-      }
+         stream >> ship->map_x >> ship->map_y;
       else if( key == "End" )
+      {
+         // Normalize values in case of funkiness in the files.
+         ship->hull = umin( ship->hull, ship->max_hull );
+         ship->fuel = umin( ship->fuel, ship->max_fuel );
+         ship->type = urange( SHIP_NONE, ship->type, SHIP_WARSHIP );
+
+         if( !get_room_index( ship->room ) )
+         {
+            bug( "{}: Ship, '{}', in non-existent room. Moving to Limbo.", __func__, ship->name );
+            ship->room = ROOM_VNUM_LIMBO; // You're in trouble if this doesn't actually exist.
+         }
          shiplist.push_back( ship );
+      }
       else
-         log_printf( "{}: Bad line in ships file: {} {}", __func__, key, value );
+         log_printf( "{}: Bad line in ships file: {}", __func__, key );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
