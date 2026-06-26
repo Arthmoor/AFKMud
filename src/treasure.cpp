@@ -337,7 +337,7 @@ void load_runewords( void )
    if( !stream.is_open( ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, RUNEWORD_FILE, std::strerror(errno) );
-      return false;
+      return;
    }
 
    rwordlist.clear(  );
@@ -400,7 +400,7 @@ void load_runewords( void )
             rwordlist.push_back( rword );
       }
       else
-         log_printf( "{}: Bad line in runewords file: {} {}", __func__, key, value );
+         log_printf( "{}: Bad line in runewords file: {}", __func__, key );
    }
    stream.close(  );
 }
@@ -413,7 +413,7 @@ void load_runes( void )
    if( !stream.is_open( ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, RUNE_FILE, std::strerror(errno) );
-      return false;
+      return;
    }
 
    runelist.clear();
@@ -421,12 +421,13 @@ void load_runes( void )
    auto read_line = [&]() -> std::string
    {
       std::string line;
-      std::getline( stream, line, delimiter );
-      strip_spaces( line );
+      std::getline( stream, line, '~' );
+      strip_whitespace( line );
 
       return line;
    };
 
+   rune_data *rune = nullptr;
    std::string key;
    while( stream >> key )
    {
@@ -481,7 +482,7 @@ void load_runes( void )
          }
       }
       else
-         log_printf( "{}: Bad line in runes file: {} {}", __func__, key, value );
+         log_printf( "{}: Bad line in runes file: {}", __func__, key );
    }
    stream.close(  );
 
@@ -494,7 +495,7 @@ void save_runes( void )
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, RUNE_FILE, std::strerror(errno) );
-      return false;
+      return;
    }
 
    for( auto* rune : runelist )

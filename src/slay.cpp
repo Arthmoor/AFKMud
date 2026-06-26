@@ -69,10 +69,9 @@ void free_slays( void )
 void load_slays( )
 {
    std::ifstream stream( std::filesystem::path{SLAY_FILE} );
-
-   if( !stream )
+   if( !stream.is_open( ) )
    {
-      log_string( "No slay.dat file found." );
+      bug( "{}: Cannot open {} for reading: {}", __func__, SLAY_FILE, std::strerror(errno) );
       return;
    }
 
@@ -84,25 +83,27 @@ void load_slays( )
    {
       std::string line;
       std::getline( stream, line, delimiter );
-      strip_spaces( line );
+      strip_whitespace( line );
 
       return line;
    };
 
    std::string key;
+   stream >> key;
+   if( key != "#VERSION" )
+   {
+      bug( "{}: Slay file has corrupted header.", __func__ );
+      stream.close();
+      return;
+   }
+   else
+      stream >> file_ver;
+
    while( stream >> key )
    {
-      std::string_view sv = key;
-
-      if( sv == "#VERSION" )
-      {
-         file_ver = std::stoi( read_line() );
-      }
-      else if( sv == "#SLAY" )
-      {
+      if( key == "#SLAY" )
          current_slay = std::make_unique<slay_data>();
-      }
-      else if( sv == "End" )
+      else if( key == "End" )
       {
          if( current_slay )
             slaylist.push_back( std::move( current_slay ) );
@@ -114,15 +115,16 @@ void load_slays( )
          if( file_ver == 1 )
             delim = (char)0xA2; // This was a stupid idea and it needs to be undone now.
 
-         if( sv == "Type" ) current_slay->set_type( read_line() );
-         else if( sv == "Owner" ) current_slay->set_owner( read_line() );
-         else if( sv == "Color" ) current_slay->set_color( std::stoi( read_line() ) );
-         else if( sv == "Cmessage" ) current_slay->set_cmsg( read_line( delim ) );
-         else if( sv == "Vmessage" ) current_slay->set_vmsg( read_line( delim ) );
-         else if( sv == "Rmessage" ) current_slay->set_rmsg( read_line( delim ) );
+         if( key == "Type" ) current_slay->set_type( read_line() );
+         else if( key == "Owner" ) current_slay->set_owner( read_line() );
+         else if( key == "Color" ) current_slay->set_color( std::stoi( read_line() ) );
+         else if( key == "Cmessage" ) current_slay->set_cmsg( read_line( delim ) );
+         else if( key == "Vmessage" ) current_slay->set_vmsg( read_line( delim ) );
+         else if( key == "Rmessage" ) current_slay->set_rmsg( read_line( delim ) );
          else log_printf( "{}: Bad line: {}", __func__, key );
       }
    }
+   stream.close();
 }
 
 // 0: Original format with tilde delimiter.
@@ -134,7 +136,6 @@ constexpr int SLAY_VERSION = 2;
 void save_slays( )
 {
    std::ofstream stream( std::filesystem::path{SLAY_FILE} );
-
    if( !stream )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, SLAY_FILE, std::strerror(errno) );
@@ -148,22 +149,22 @@ void save_slays( )
       stream << "#SLAY\n";
 
       if( !slay->get_type().empty() )
-         stream << "Type      " << slay->get_type() << "\n";
+         stream << std::format( "Type      {}\n", slay->get_type() );
 
       if( !slay->get_owner().empty() )
-         stream << "Owner     " << slay->get_owner() << "\n";
+         stream << std::format( "Owner     {}\n", slay->get_owner() );
 
       if( slay->get_color() > 0 && slay->get_color() < MAX_COLORS )
-         stream << "Color     " << slay->get_color() << "\n";
+         stream << std::format( "Color     {}\n", slay->get_color() );
 
       if( !slay->get_cmsg().empty() )
-         stream << "Cmessage  " << slay->get_cmsg() << "~\n";
+         stream << std::format( "Cmessage  {}~\n", slay->get_cmsg() );
 
       if( !slay->get_vmsg().empty() )
-         stream << "Vmessage  " << slay->get_vmsg() << "~\n";
+         stream << std::format( "Vmessage  {}~\n", slay->get_vmsg() );
 
       if( !slay->get_rmsg().empty() )
-         stream << "Rmessage  " << slay->get_rmsg() << "~\n";
+         stream << std::format( "Rmessage  {}~\n", slay->get_rmsg() );
 
       stream << "End\n\n";
    }
