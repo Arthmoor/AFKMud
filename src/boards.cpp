@@ -226,10 +226,10 @@ void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstrea
 
 void read_note( note_data * note, int file_ver, std::ifstream & stream )
 {
-   auto read_line = [&]( char delimiter = '\n' ) -> std::string
+   auto read_line = [&]() -> std::string
    {
       std::string line;
-      std::getline( stream, line, delimiter );
+      std::getline( stream, line, '~' );
       strip_spaces( line );
 
       return line;
@@ -239,11 +239,11 @@ void read_note( note_data * note, int file_ver, std::ifstream & stream )
    while( stream >> key )
    {
       if( key == "Sender" )
-         note->sender = read_line('~');
+         note->sender = read_line();
       else if( key == "Subject" )
-         note->subject = read_line('~');
+         note->subject = read_line();
       else if( key == "To" )
-         note->to_list = read_line('~');
+         note->to_list = read_line();
       else if( key == "DateStamp" )
       {
          time_t loaded_time;
@@ -257,7 +257,7 @@ void read_note( note_data * note, int file_ver, std::ifstream & stream )
             stream >> note->flags;
          else
          {
-            std::string flags = read_line('~');
+            std::string flags = read_line();
             flag_string_set( flags, note->flags, note_flags );
          }
       }
@@ -269,7 +269,7 @@ void read_note( note_data * note, int file_ver, std::ifstream & stream )
          note->expire = std::chrono::system_clock::from_time_t( loaded_time );
       }
       else if( key == "Text" )
-         note->text = read_line('~');
+         note->text = read_line();
       else if( key == "Type" )
          stream >> note->type;
       else if( key == "#REPLY" )

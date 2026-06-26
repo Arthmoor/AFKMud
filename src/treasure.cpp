@@ -331,83 +331,55 @@ runeword_data *pick_runeword(  )
 
 void load_runewords( void )
 {
-   std::ifstream stream;
-   runeword_data *rword = nullptr;
-
-   rwordlist.clear(  );
-
    log_string( "Loading runewords..." );
 
-   stream.open( std::filesystem::path( RUNEWORD_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{RUNEWORD_FILE} );
+   if( !stream.is_open( ) )
    {
-      log_string( "No runeword file found." );
-      return;
+      bug( "{}: Cannot open {} for reading: {}", __func__, RUNEWORD_FILE, std::strerror(errno) );
+      return false;
    }
 
-   do
+   rwordlist.clear(  );
+   runeword_data *rword = nullptr;
+
+   auto read_line = [&]() -> std::string
    {
-      std::string key, value;
-      char buf[MIL];
+      std::string line;
+      std::getline( stream, line, '\n' );
+      strip_spaces( line );
 
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
+      return line;
+   };
 
-      strip_lspace( key );
-      strip_whitespace( value );
-
-      if( key.empty(  ) )
-         continue;
-
+   std::string key;
+   while( stream >> key )
+   {
       if( key == "#RWORD" )
          rword = new runeword_data;
       else if( key == "Name" )
-         rword->set_name( value );
+         rword->set_name( read_line() );
       else if( key == "Type" )
-         rword->set_type( std::stoi( value ) );
+      {
+         int value;
+
+         stream >> value;
+         rword->set_type( value );
+      }
       else if( key == "Rune1" )
-         rword->set_rune1( value );
+         rword->set_rune1( read_line() );
       else if( key == "Rune2" )
-         rword->set_rune2( value );
+         rword->set_rune2( read_line() );
       else if( key == "Rune3" )
-         rword->set_rune3( value );
+         rword->set_rune3( read_line() );
       else if( key == "Stat1" )
-      {
-         std::string rstat;
-
-         value = one_argument( value, rstat );
-         rword->stat1[0] = std::stoi( rstat );
-
-         rword->stat1[1] = std::stoi( value );
-      }
+         stream >> rword->stat1[0] >> rword->stat1[1];
       else if( key == "Stat2" )
-      {
-         std::string rstat;
-
-         value = one_argument( value, rstat );
-         rword->stat2[0] = std::stoi( rstat );
-
-         rword->stat2[1] = std::stoi( value );
-      }
+         stream >> rword->stat2[0] >> rword->stat2[1];
       else if( key == "Stat3" )
-      {
-         std::string rstat;
-
-         value = one_argument( value, rstat );
-         rword->stat3[0] = std::stoi( rstat );
-
-         rword->stat3[1] = std::stoi( value );
-      }
+         stream >> rword->stat3[0] >> rword->stat3[1];
       else if( key == "Stat4" )
-      {
-         std::string rstat;
-
-         value = one_argument( value, rstat );
-         rword->stat4[0] = std::stoi( rstat );
-
-         rword->stat4[1] = std::stoi( value );
-      }
+         stream >> rword->stat4[0] >> rword->stat4[1];
       else if( key == "End" )
       {
          bool found = false;
@@ -430,65 +402,49 @@ void load_runewords( void )
       else
          log_printf( "{}: Bad line in runewords file: {} {}", __func__, key, value );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
 void load_runes( void )
 {
-   std::ifstream stream;
-   rune_data *rune = nullptr;
-
-   runelist.clear(  );
-
    log_string( "Loading runes..." );
 
-   stream.open( std::filesystem::path( RUNE_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{RUNE_FILE} );
+   if( !stream.is_open( ) )
    {
-      log_string( "No rune file found." );
-      return;
+      bug( "{}: Cannot open {} for reading: {}", __func__, RUNE_FILE, std::strerror(errno) );
+      return false;
    }
 
-   do
+   runelist.clear();
+
+   auto read_line = [&]() -> std::string
    {
-      std::string key, value;
-      char buf[MIL];
+      std::string line;
+      std::getline( stream, line, delimiter );
+      strip_spaces( line );
 
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
+      return line;
+   };
 
-      strip_lspace( key );
-      strip_whitespace( value );
-
-      if( key.empty(  ) )
-         continue;
-
+   std::string key;
+   while( stream >> key )
+   {
       if( key == "#RUNE" )
          rune = new rune_data;
       else if( key == "Name" )
-         rune->set_name( value );
+         rune->set_name( read_line() );
       else if( key == "Rarity" )
-         rune->set_rarity( std::stoi( value ) );
+      {
+         int value;
+
+         stream >> value;
+         rune->set_rarity( value );
+      }
       else if( key == "Stat1" )
-      {
-         std::string rstat;
-
-         value = one_argument( value, rstat );
-         rune->stat1[0] = std::stoi( rstat );
-
-         rune->stat1[1] = std::stoi( value );
-      }
+         stream >> rune->stat1[0] >> rune->stat1[1];
       else if( key == "Stat2" )
-      {
-         std::string rstat;
-
-         value = one_argument( value, rstat );
-         rune->stat2[0] = std::stoi( rstat );
-
-         rune->stat2[1] = std::stoi( value );
-      }
+         stream >> rune->stat2[0] >> rune->stat2[1];
       else if( key == "End" )
       {
          bool found = false;
@@ -527,32 +483,32 @@ void load_runes( void )
       else
          log_printf( "{}: Bad line in runes file: {} {}", __func__, key, value );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
+
    load_runewords(  );
 }
 
 void save_runes( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( RUNE_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ofstream stream( std::filesystem::path{RUNE_FILE} );
+   if( !stream.is_open() )
    {
-      log_string( "Couldn't write to rune file." );
-      return;
+      bug( "{}: Cannot open {} for writing: {}", __func__, RUNE_FILE, std::strerror(errno) );
+      return false;
    }
 
    for( auto* rune : runelist )
    {
-      stream << "#RUNE" << std::endl;
-      stream << "Name     " << rune->get_name(  ) << std::endl;
-      stream << "Rarity   " << rune->get_rarity(  ) << std::endl;
-      stream << "Stat1    " << rune->stat1[0] << " " << rune->stat1[1] << std::endl;
-      stream << "Stat2    " << rune->stat2[0] << " " << rune->stat2[1] << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << "#RUNE\n";
+      stream << std::format( "Name     {}\n", rune->get_name(  ) );
+      stream << std::format( "Rarity   {}\n", rune->get_rarity(  ) );
+      stream << std::format( "Stat1    {} {}\n", rune->stat1[0], rune->stat1[1] );
+      stream << std::format( "Stat2    {} {}\n", rune->stat2[0], rune->stat2[1] );
+      stream << "End\n\n";
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, RUNE_FILE, std::strerror(errno) );
 }
 
 rune_data *check_rune( std::string_view name )
