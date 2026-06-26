@@ -260,7 +260,7 @@ CMDF( do_setchannel )
 
    if( !str_cmp( arg2, "name" ) )
    {
-      ch->printf( "&YChannel &G%s &Yrenamed to &G%s\r\n", channel->name.c_str(  ), argument.c_str(  ) );
+      ch->print_fmt( "&YChannel &G{} &Yrenamed to &G{}\r\n", channel->name, argument );
       channel->name = argument;
       save_mudchannels(  );
       return;
@@ -268,7 +268,7 @@ CMDF( do_setchannel )
 
    if( !str_cmp( arg2, "color" ) )
    {
-      ch->printf( "&YChannel &G%s &Ycolor changed to &G%s\r\n", channel->name.c_str(  ), argument.c_str(  ) );
+      ch->print_fmt( "&YChannel &G{} &Ycolor changed to &G{}\r\n", channel->name, argument );
       channel->colorname = argument;
       save_mudchannels(  );
       return;
@@ -284,16 +284,16 @@ CMDF( do_setchannel )
          return;
       }
 
-      level = atoi( argument.c_str(  ) );
+      level = std::stoi( argument );
 
       if( level < 1 || level > MAX_LEVEL )
       {
-         ch->printf( "&RInvalid level. Acceptable range is 1 to %d.\r\n", MAX_LEVEL );
+         ch->print_fmt( "&RInvalid level. Acceptable range is 1 to {}.\r\n", MAX_LEVEL );
          return;
       }
 
       channel->level = level;
-      ch->printf( "&YChannel &G%s &Ylevel changed to &G%d\r\n", channel->name.c_str(  ), level );
+      ch->print_fmt( "&YChannel &G{} &Ylevel changed to &G{}\r\n", channel->name, level );
       save_mudchannels(  );
       return;
    }
@@ -309,7 +309,7 @@ CMDF( do_setchannel )
       }
 
       channel->type = type;
-      ch->printf( "&YChannel &G%s &Ytype changed to &G%s\r\n", channel->name.c_str(  ), argument.c_str(  ) );
+      ch->print_fmt( "&YChannel &G{} &Ytype changed to &G{}\r\n", channel->name, argument );
       save_mudchannels(  );
       return;
    }
@@ -330,7 +330,7 @@ CMDF( do_setchannel )
          argument = one_argument( argument, arg3 );
          value = get_chanflag( arg3 );
          if( value < 0 || value >= CHAN_MAXFLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             channel->flags.flip( value );
       }
@@ -343,13 +343,13 @@ CMDF( do_setchannel )
    {
       if( !channel->flags.test( CHAN_KEEPHISTORY ) )
       {
-         ch->printf( "The %s channel does not maintain a history.\r\n", channel->name.c_str(  ) );
+         ch->print_fmt( "The {} channel does not maintain a history.\r\n", channel->name );
          return;
       }
 
       purge_channel_history( channel );
 
-      ch->printf( "The %s channel history has been purged.\r\n", channel->name.c_str(  ) );
+      ch->print_fmt( "The {} channel history has been purged.\r\n", channel->name );
       return;
    }
    do_setchannel( ch, "" );
@@ -382,7 +382,7 @@ CMDF( do_destroychannel )
       return;
    }
    deleteptr( channel );
-   ch->printf( "&YChannel &G%s &Ydestroyed.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "&YChannel &G{} &Ydestroyed.\r\n", argument );
    save_mudchannels(  );
 }
 
@@ -414,7 +414,7 @@ CMDF( do_listen )
       ch->print( "&GFor a list of channels, type &Wchannels\r\n\r\n" );
       ch->print( "&YYou are listening to the following local mud channels:\r\n\r\n" );
       if( !ch->pcdata->chan_listen.empty(  ) )
-         ch->printf( "&W%s\r\n", ch->pcdata->chan_listen.c_str(  ) );
+         ch->print_fmt( "&W{}\r\n", ch->pcdata->chan_listen );
       else
          ch->print( "&WNone\r\n" );
       return;
@@ -454,12 +454,12 @@ CMDF( do_listen )
 
       if( channel && channel->flags.test( CHAN_ALWAYSON ) )
       {
-         ch->printf( "&YYou cannot turn the &W%s&Y channel off.\r\n", channel->name.c_str() );
+         ch->print_fmt( "&YYou cannot turn the &W{}&Y channel off.\r\n", channel->name );
          return;
       }
 
       removename( ch->pcdata->chan_listen, channel->name );
-      ch->printf( "&YYou no longer listen to &W%s\r\n", channel->name.c_str(  ) );
+      ch->print_fmt( "&YYou no longer listen to &W{}\r\n", channel->name );
    }
    else
    {
@@ -475,7 +475,7 @@ CMDF( do_listen )
          return;
       }
       addname( ch->pcdata->chan_listen, channel->name );
-      ch->printf( "&YYou now listen to &W%s\r\n", channel->name.c_str(  ) );
+      ch->print_fmt( "&YYou now listen to &W{}\r\n", channel->name );
    }
 }
 
@@ -600,7 +600,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
 
    if( ch->has_pcflag( PCFLAG_SILENCE ) )
    {
-      ch->printf( "You can't %s.\r\n", channel->name.c_str(  ) );
+      ch->print_fmt( "You can't {}.\r\n", channel->name );
       return;
    }
 
@@ -636,7 +636,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
    {
       if( !channel->flags.test( CHAN_KEEPHISTORY ) )
       {
-         ch->printf( "%s what?\r\n", capitalize( channel->name ).c_str(  ) );
+         ch->print_fmt( "{} what?\r\n", capitalize( channel->name ) );
          return;
       }
 
@@ -961,7 +961,7 @@ bool local_channel_hook( char_data * ch, std::string_view command, std::string &
 
    if( !ch->isnpc(  ) && !hasname( ch->pcdata->chan_listen, channel->name ) && !channel->flags.test( CHAN_ALWAYSON ) )
    {
-      ch->printf( "&RYou are not listening to the &G%s &Rchannel.\r\n", channel->name.c_str(  ) );
+      ch->print_fmt( "&RYou are not listening to the &G{} &Rchannel.\r\n", channel->name );
       return true;
    }
 

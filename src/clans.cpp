@@ -2256,32 +2256,28 @@ CMDF( do_showclan )
       return;
    }
 
-   ch->printf( "\r\n&w%s     : &W%s\t\tBadge: %s\r\n&wFilename : &W%s\r\n&wMotto    : &W%s\r\n",
+   ch->print_fmt( "\r\n&w{}     : &W{}\t\tBadge: {}\r\n&wFilename : &W{}\r\n&wMotto    : &W{}\r\n",
                clan->clan_type == CLAN_GUILD ? "Guild" : "Clan",
-               clan->name.c_str(  ), !clan->badge.empty(  )? clan->badge.c_str(  ) : "(not set)", clan->filename.c_str(  ), clan->motto.c_str(  ) );
-   ch->printf( "&wDesc     : &W%s\r\n&wDeity    : &W%s\r\n", clan->clandesc.c_str(  ), clan->deity.c_str(  ) );
-   ch->printf( "&wLeader   : &W%-19.19s\t&wRank: &W%s\r\n", clan->leader.c_str(  ), clan->leadrank.c_str(  ) );
-   ch->printf( "&wNumber1  : &W%-19.19s\t&wRank: &W%s\r\n", clan->number1.c_str(  ), clan->onerank.c_str(  ) );
-   ch->printf( "&wNumber2  : &W%-19.19s\t&wRank: &W%s\r\n", clan->number2.c_str(  ), clan->tworank.c_str(  ) );
-   ch->printf( "&wBalance  : &W%d\r\n", clan->balance );
-   ch->printf( "&wTithe    : &W%d\r\n", clan->tithe );
-   ch->
-      printf
-      ( "&wPKills   : &w1-9:&W%-3d &w10-14:&W%-3d &w15-19:&W%-3d &w20-29:&W%-3d &w30-39:&W%-3d &w40-49:&W%-3d &w50:&W%-3d\r\n",
+               clan->name, !clan->badge.empty(  )? clan->badge : "(not set)", clan->filename, clan->motto );
+   ch->print_fmt( "&wDesc     : &W{}\r\n&wDeity    : &W{}\r\n", clan->clandesc, clan->deity );
+   ch->print_fmt( "&wLeader   : &W{:<19.19}\t&wRank: &W{}\r\n", clan->leader, clan->leadrank );
+   ch->print_fmt( "&wNumber1  : &W{:<19.19}\t&wRank: &W{}\r\n", clan->number1, clan->onerank );
+   ch->print_fmt( "&wNumber2  : &W{:<19.19}\t&wRank: &W{}\r\n", clan->number2, clan->tworank );
+   ch->print_fmt( "&wBalance  : &W%d\r\n", clan->balance );
+   ch->print_fmt( "&wTithe    : &W%d\r\n", clan->tithe );
+   ch->print_fmt( "&wPKills   : &w1-9:&W{:<5} &w10-14:&W{:<5} &w15-19:&W{:<5} &w20-29:&W{:<5} &w30-39:&W{:<5} &w40-49:&W{:<5} &w50:&W{:<5}\r\n",
         clan->pkills[0], clan->pkills[1], clan->pkills[2], clan->pkills[3], clan->pkills[4], clan->pkills[5], clan->pkills[6] );
-   ch->
-      printf
-      ( "&wPDeaths  : &w1-9:&W%-3d &w10-14:&W%-3d &w15-19:&W%-3d &w20-29:&W%-3d &w30-39:&W%-3d &w40-49:&W%-3d &w50:&W%-3d\r\n",
+   ch->print_fmt( "&wPDeaths  : &w1-9:&W{:<5} &w10-14:&W{:<5} &w15-19:&W{:<5} &w20-29:&W{:<5} &w30-39:&W{:<5} &w40-49:&W{:<5} &w50:&W{:<5}\r\n",
         clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2], clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5], clan->pdeaths[6] );
-   ch->printf( "&wIllegalPK: &W%-6d\r\n", clan->illegal_pk );
-   ch->printf( "&wMKills   : &W%-6d   &wMDeaths: &W%-6d\r\n", clan->mkills, clan->mdeaths );
-   ch->printf( "&wFavor    : &W%-6d   &w\r\n", clan->favour );
-   ch->printf( "&wMembers  : &W%-6d   &wMemLimit  : &W%-6d   &wAlign  : &W%-6d\r\n", clan->members, clan->mem_limit, clan->alignment );
-   ch->printf( "&wBoard    : &W%-5d    &wRecall : &W%-5d    &wStorage: &W%-5d\r\n", clan->board, clan->recall, clan->storeroom );
-   ch->printf( "&wGuard1   : &W%-5d    &wGuard2 : &W%-5d    &wBanker : &W%-5d\r\n", clan->guard1, clan->guard2, clan->bank );
-   ch->printf( "&wInn      : &W%-5d    &wShop   : &W%-5d    &wAuction: &W%-5d\r\n", clan->inn, clan->shopkeeper, clan->auction );
-   ch->printf( "&wRepair   : &W%-5d    &wForge  : &W%-5d    &wIdmob  : &W%-5d\r\n", clan->repair, clan->forge, clan->idmob );
-   ch->printf( "&wObj1( &W%d &w)  Obj2( &W%d &w)  Obj3( &W%d &w)  Obj4( &W%d &w)  Obj5( &W%d &w)\r\n",
+   ch->print_fmt( "&wIllegalPK: &W{:<5}\r\n", clan->illegal_pk );
+   ch->print_fmt( "&wMKills   : &W{:<5}   &wMDeaths: &W{:<5}\r\n", clan->mkills, clan->mdeaths );
+   ch->print_fmt( "&wFavor    : &W{:<5}   &w\r\n", clan->favour );
+   ch->print_fmt( "&wMembers  : &W{:<5}   &wMemLimit  : &W{:<5}   &wAlign  : &W{:<5}\r\n", clan->members, clan->mem_limit, clan->alignment );
+   ch->print_fmt( "&wBoard    : &W{:<5}    &wRecall : &W{:<5}    &wStorage: &W{:<5}\r\n", clan->board, clan->recall, clan->storeroom );
+   ch->print_fmt( "&wGuard1   : &W{:<5}    &wGuard2 : &W{:<5}    &wBanker : &W{:<5}\r\n", clan->guard1, clan->guard2, clan->bank );
+   ch->print_fmt( "&wInn      : &W{:<5}    &wShop   : &W{:<5}    &wAuction: &W{:<5}\r\n", clan->inn, clan->shopkeeper, clan->auction );
+   ch->print_fmt( "&wRepair   : &W{:<5}    &wForge  : &W{:<5}    &wIdmob  : &W{:<5}\r\n", clan->repair, clan->forge, clan->idmob );
+   ch->print_fmt( "&wObj1( &W{} &w)  Obj2( &W{} &w)  Obj3( &W{} &w)  Obj4( &W{} &w)  Obj5( &W{} &w)\r\n",
                clan->clanobj1, clan->clanobj2, clan->clanobj3, clan->clanobj4, clan->clanobj5 );
 }
 
@@ -2354,7 +2350,7 @@ CMDF( do_makeclan )
    save_clan( victim->pcdata->clan );
    write_clan_list(  );
 
-   ch->printf( "Clan %s created with leader %s.\r\n", clan->name.c_str(  ), clan->leader.c_str(  ) );
+   ch->print_fmt( "Clan {} created with leader {}.\r\n", clan->name, clan->leader );
 }
 
 CMDF( do_roster )
@@ -2429,8 +2425,8 @@ CMDF( do_clans )
       {
          if( clan->clan_type == CLAN_GUILD )
             continue;
-         ch->printf( "&w%-13s %-13s %-13s", clan->name.c_str(  ), clan->deity.c_str(  ), clan->leader.c_str(  ) );
-         ch->printf( "&[blood]                %5d      %5d\r\n", clan->pkills[6], ( clan->pkills[2] + clan->pkills[3] + clan->pkills[4] + clan->pkills[5] ) );
+         ch->print_fmt( "&w{:<13} {:<13} {:<13}", clan->name, clan->deity, clan->leader );
+         ch->print_fmt( "&[blood]                {:5}      {:5}\r\n", clan->pkills[6], ( clan->pkills[2] + clan->pkills[3] + clan->pkills[4] + clan->pkills[5] ) );
          ++count;
       }
       if( !count )
@@ -2446,16 +2442,16 @@ CMDF( do_clans )
       ch->print( "&RNo such clan.\r\n" );
       return;
    }
-   ch->printf( "\r\n&R%s, '%s'\r\n\r\n", pclan->name.c_str(  ), pclan->motto.c_str(  ) );
+   ch->print_fmt( "\r\n&R{}, '{}'\r\n\r\n", pclan->name, pclan->motto );
    ch->print( "&wVictories:&w\r\n" );
-   ch->printf( "    &w15-19...  &r%-4d\r\n    &w20-29...  &r%-4d\r\n    &w30-39...  &r%-4d\r\n    &w40-49...  &r%-4d\r\n",
+   ch->print_fmt( "    &w15-19...  &r{:<4}\r\n    &w20-29...  &r{:<4}\r\n    &w30-39...  &r{:<4}\r\n    &w40-49...  &r{:<4}\r\n",
                pclan->pkills[2], pclan->pkills[3], pclan->pkills[4], pclan->pkills[5] );
-   ch->printf( "   &wAvatar...  &r%-4d\r\n", pclan->pkills[6] );
-   ch->printf( "&wClan Leader:  %s\r\nNumber One :  %s\r\nNumber Two :  %s\r\nClan Deity :  %s\r\n",
-               pclan->leader.c_str(  ), pclan->number1.c_str(  ), pclan->number2.c_str(  ), pclan->deity.c_str(  ) );
+   ch->print_fmt( "   &wAvatar...  &r{:<4}\r\n", pclan->pkills[6] );
+   ch->print_fmt( "&wClan Leader:  {}\r\nNumber One :  {}\r\nNumber Two :  {}\r\nClan Deity :  {}\r\n",
+               pclan->leader, pclan->number1, pclan->number2, pclan->deity );
    if( !str_cmp( ch->name, pclan->deity ) || !str_cmp( ch->name, pclan->leader ) || !str_cmp( ch->name, pclan->number1 ) || !str_cmp( ch->name, pclan->number2 ) )
-      ch->printf( "Members    :  %d\r\n", pclan->members );
-   ch->printf( "\r\n&RDescription:  %s\r\n", pclan->clandesc.c_str(  ) );
+      ch->print_fmt( "Members    :  {}\r\n", pclan->members );
+   ch->print_fmt( "\r\n&RDescription:  {}\r\n", pclan->clandesc );
 }
 
 CMDF( do_guilds )
@@ -2471,7 +2467,7 @@ CMDF( do_guilds )
       {
          if( clan->clan_type == CLAN_GUILD )
          {
-            ch->printf( "&G%-16s %-14s %-14s   %-7d       %5d\r\n", clan->name.c_str(  ), clan->deity.c_str(  ), clan->leader.c_str(  ), clan->mkills, clan->mdeaths );
+            ch->print_fmt( "&G%-16s %-14s %-14s   %-7d       %5d\r\n", clan->name, clan->deity, clan->leader, clan->mkills, clan->mdeaths );
             ++count;
          }
       }
@@ -2489,12 +2485,11 @@ CMDF( do_guilds )
       return;
    }
 
-   ch->printf( "\r\n&gGuild of %s\r\n'%s'\r\n\r\n", porder->name.c_str(  ), porder->motto.c_str(  ) );
-   ch->printf( "&GDeity      :  %s\r\nLeader     :  %s\r\nNumber One :  %s\r\nNumber Two :  %s\r\n",
-               porder->deity.c_str(  ), porder->leader.c_str(  ), porder->number1.c_str(  ), porder->number2.c_str(  ) );
+   ch->print_fmt( "\r\n&gGuild of {}\r\n'{}'\r\n\r\n", porder->name, porder->motto );
+   ch->print_fmt( "&GDeity      :  {}\r\nLeader     :  {}\r\nNumber One :  {}\r\nNumber Two :  {}\r\n", porder->deity, porder->leader, porder->number1, porder->number2 );
    if( !str_cmp( ch->name, porder->deity ) || !str_cmp( ch->name, porder->leader ) || !str_cmp( ch->name, porder->number1 ) || !str_cmp( ch->name, porder->number2 ) )
-      ch->printf( "Members    :  %d\r\n", porder->members );
-   ch->printf( "\r\n&gDescription:\r\n%s\r\n", porder->clandesc.c_str(  ) );
+      ch->print_fmt( "Members    :  {}\r\n", porder->members );
+   ch->print_fmt( "\r\n&gDescription:\r\n{}\r\n", porder->clandesc );
 }
 
 CMDF( do_defeats )

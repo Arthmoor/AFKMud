@@ -2491,7 +2491,7 @@ void update_handler( void )
 
       timechar->set_color( AT_PLAIN );
       timechar->print( "Update timing complete.\r\n" );
-      timechar->printf( "Timing took %ld.%06ld seconds.\r\n", seconds, microseconds );
+      timechar->print_fmt( "Timing took {}.{} seconds.\r\n", seconds, microseconds );
       timechar = nullptr;
    }
 }

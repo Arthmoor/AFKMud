@@ -469,7 +469,7 @@ static void SigChld( int signum )
             d->connected = CON_PLAYING;
             char_data *ch = d->original ? d->original : d->character;
             if( ch )
-               ch->printf( "Process exited with status code %d.\r\n", status );
+               ch->print_fmt( "Process exited with status code {}.\r\n", status );
          }
       }
    }
@@ -561,7 +561,7 @@ bool process_forked( descriptor_data * d )
       {
          auto* ch = d->original ? d->original : d->character;
          if( ch )
-            ch->printf( "Process exited with status code %d.\r\n", status );
+            ch->print_fmt( "Process exited with status code {}.\r\n", status );
       }
    }
    return ( d->connected == CON_FORKED ); // Return true if still forked (continue loop)

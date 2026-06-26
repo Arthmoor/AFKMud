@@ -582,7 +582,7 @@ CMDF( do_setmssp )
       }
       newvalue = !str_cmp( argument, "yes" ) ? true : false;
       *ynptr = newvalue;
-      ch->printf( "MSSP value, %s has been changed to: %s\r\n", arg1.c_str(), argument.c_str() );
+      ch->print_fmt( "MSSP value, {} has been changed to: {}\r\n", arg1, argument );
       save_mssp_info(  );
       return;
    }

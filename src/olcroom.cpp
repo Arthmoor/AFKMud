@@ -312,7 +312,7 @@ void redit_disp_extradesc_prompt_menu( descriptor_data * d )
    int counter = 0;
 
    for( auto* edesc : room->extradesc )
-      d->character->printf( "&g%2d&w) %-40.40s\r\n", ++counter, edesc->keyword.c_str(  ) );
+      d->character->print_fmt( "&g{:2}&w) {:<40.40}\r\n", ++counter, edesc->keyword );
 
    d->character->print( "\r\nWhich extra description do you want to edit? " );
 }
@@ -326,7 +326,7 @@ void redit_disp_extradesc_menu( descriptor_data * d )
    if( !room->extradesc.empty(  ) )
    {
       for( auto* edesc : room->extradesc )
-         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str(  ) );
+         d->character->print_fmt( "&g{}&w) Keyword: &O{}\r\n", ++count, edesc->keyword );
 
       d->character->print( "\r\n" );
    }

@@ -290,7 +290,7 @@ CMDF( do_track )
          if( ch->hunting && ch->hunting->who != vict )
             stop_hunting( ch );
          start_hunting( ch, vict );
-         ch->printf( "&RYou sense a trail %s from here...\r\n", dir_name[dir] );
+         ch->print_fmt( "&RYou sense a trail {} from here...\r\n", dir_name[dir] );
          break;
    }
 }

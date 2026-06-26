@@ -415,20 +415,20 @@ CMDF( do_makeenv )
       return;
    }
 
-   chosenradius = atoi( arg.c_str(  ) );
+   chosenradius = std::stoi( arg );
 
    door = get_dirnum( arg2 );
    if( door < 0 || door > MAX_DIR )
       door = DIR_SOMEWHERE;
 
    if( door != DIR_SOMEWHERE && atype != ENV_QUAKE )
-      ch->printf( "You create a %s to the %s!\r\n", etype.c_str(  ), dir_name[door] );
+      ch->print_fmt( "You create a {} to the {}!\r\n", etype, dir_name[door] );
    else
    {
       if( atype == ENV_QUAKE )
          ch->print( "You create an earthquake!\r\n" );
       else
-         ch->printf( "You create a non-moving %s!\r\n", etype.c_str(  ) );
+         ch->print_fmt( "You create a non-moving {}!\r\n", etype );
    }
 
    t = new environment_data;
@@ -455,12 +455,12 @@ CMDF( do_env )
       ++count;
       if( en->type == ENV_QUAKE )
       {
-         ch->printf( "&GA %d by %d, intensity %d, earthquake at coordinates %dX %dY on %s.\r\n", en->radius, en->radius, en->intensity, en->map_x, en->map_y, en->cont->name.c_str( ) );
+         ch->print_fmt( "&GA {} by {}, intensity {}, earthquake at coordinates {}X {}Y on {}.\r\n", en->radius, en->radius, en->intensity, en->map_x, en->map_y, en->cont->name );
       }
       else
       {
-         ch->printf( "&GA %d by %d %s bound %s at coordinates %d,%d on %s.\r\n",
-                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->map_x, en->map_y, en->cont->name.c_str( ) );
+         ch->print_fmt( "&GA {} by {} {} bound {} at coordinates {},{} on {}.\r\n",
+                     en->radius, en->radius, ( en->direction < 10 ) ? dir_name[en->direction] : "nowhere", env_name[en->type], en->map_x, en->map_y, en->cont->name );
       }
    }
 
@@ -469,7 +469,7 @@ CMDF( do_env )
       ch->print( "No environmental effects found.\r\n" );
       return;
    }
-   ch->printf( "&G%d total environmental effects found.\r\n", count );
+   ch->print_fmt( "&G{} total environmental effects found.\r\n", count );
 }
 
 bool survey_environment( char_data * ch )
@@ -543,13 +543,13 @@ bool survey_environment( char_data * ch )
 
       eta = dist * 10;
       if( dir == -1 )
-         ch->printf( "&GAn %s bound &R%s&G within the immediate vicinity.\r\n", dir_name[en->direction], env_name[en->type] );
+         ch->print_fmt( "&GAn {} bound &R{}&G within the immediate vicinity.\r\n", dir_name[en->direction], env_name[en->type] );
       else
-         ch->printf( "&GA &R%s&G %s in the general %sern direction.\r\n", env_name[en->type], env_distances[iMes], dir_name[dir] );
+         ch->print_fmt( "&GA &R{}&G {} in the general {}ern direction.\r\n", env_name[en->type], env_distances[iMes], dir_name[dir] );
       if( eta / 60 > 0 )
-         ch->printf( "&GThis %s is about %d minutes away from you.\r\n", env_name[en->type], ( int )( eta / 60 ) );
+         ch->print_fmt( "&GThis {} is about {} minutes away from you.\r\n", env_name[en->type], ( int )( eta / 60 ) );
       else
-         ch->printf( "&GThis %s should be in the vicinity now.\r\n", env_name[en->type] );
+         ch->print_fmt( "&GThis {} should be in the vicinity now.\r\n", env_name[en->type] );
    }
 
    if( !found )

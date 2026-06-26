@@ -437,7 +437,7 @@ CMDF( do_fly )
       {
          if( lsite && !str_cmp( landing->area, lsite->area ) )
          {
-            ch->printf( "You are already at %s though!\r\n", argument.c_str(  ) );
+            ch->print_fmt( "You are already at {} though!\r\n", argument );
             return;
          }
 
@@ -445,12 +445,12 @@ CMDF( do_fly )
 
          if( ch->gold < cost )
          {
-            ch->printf( "A flight to %s will cost you %d, which you cannot afford right now.\r\n", landing->area.c_str(  ), landing->cost );
+            ch->print_fmt( "A flight to {} will cost you {}, which you cannot afford right now.\r\n", landing->area, landing->cost );
             return;
          }
          ch->gold -= cost;
 
-         ch->printf( "The skyship pilot takes your gold and charts a course to %s.\r\n", landing->area.c_str(  ) );
+         ch->print_fmt( "The skyship pilot takes your gold and charts a course to {}.\r\n", landing->area );
          skyship->dcoordx = landing->map_x;
          skyship->dcoordy = landing->map_y;
          skyship->backtracking = false;
@@ -460,7 +460,7 @@ CMDF( do_fly )
          return;
       }
    }
-   ch->printf( "There is no landing site in the vicinity of %s.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "There is no landing site in the vicinity of {}.\r\n", argument );
    skyship->dcoordx = ch->map_x;
    skyship->dcoordy = ch->map_y;
 }
@@ -542,12 +542,12 @@ CMDF( do_landing_sites )
    {
       if( continent->landing_sites.empty(  ) && continent->nogrid == false )
       {
-         ch->pagerf( "%s: No landing sites defined.\r\n", continent->name.c_str( ) );
+         ch->pager_fmt( "{}: No landing sites defined.\r\n", continent->name );
          continue;
       }
 
       for( auto* landing : continent->landing_sites )
-         ch->pagerf( "%-10s  %-4dX %-4dY   %-15s   %d\r\n", continent->name.c_str(  ), landing->map_x, landing->map_y, landing->area.c_str(  ), landing->cost );
+         ch->pager_fmt( "{:<10}  {:<4}X {:<4}Y   {:<15}   {}\r\n", continent->name, landing->map_x, landing->map_y, landing->area, landing->cost );
    }
 }
 
@@ -613,15 +613,15 @@ CMDF( do_setlanding )
    {
       landing->area = argument;
       ch->continent->save(  );
-      ch->printf( "Area set to %s.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "Area set to {}.\r\n", argument );
       return;
    }
 
    if( !str_cmp( arg, "cost" ) )
    {
-      landing->cost = atoi( argument.c_str(  ) );
+      landing->cost = std::stoi( argument );
       ch->continent->save(  );
-      ch->printf( "Landing site cost set to %d\r\n", landing->cost );
+      ch->print_fmt( "Landing site cost set to {}\r\n", landing->cost );
       return;
    }
    do_setlanding( ch, "" );

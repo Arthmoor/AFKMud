@@ -671,7 +671,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string &
    loc = get_atype( arg2 );
    if( loc < 1 )
    {
-      ch->printf( "Unknown field: %s\r\n", arg2.c_str(  ) );
+      ch->print_fmt( "Unknown field: {}\r\n", arg2 );
       return;
    }
 
@@ -685,7 +685,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string &
          value = get_aflag( arg3 );
 
          if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->printf( "Unknown affect: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown affect: {}\r\n", arg3 );
          else
             found = true;
       }
@@ -700,7 +700,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string &
          value = get_risflag( flag );
 
          if( value < 0 || value >= MAX_RIS_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", flag.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", flag );
          else
          {
             risabit.set( value );
@@ -713,7 +713,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string &
       value = skill_lookup( argument );
 
       if( !IS_VALID_SN( value ) )
-         ch->printf( "Invalid spell: %s", argument.c_str(  ) );
+         ch->print_fmt( "Invalid spell: {}", argument );
       else
          found = true;
    }
@@ -2119,5 +2119,5 @@ CMDF( do_rdelete )
    location->area->fix_exits( ); /* Fix bug with rooms in prototype areas */
    deleteptr( location );
    fix_exits(  ); /* Need to call this to solve a crash */
-   ch->printf( "Room %s has been deleted.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "Room {} has been deleted.\r\n", argument );
 }

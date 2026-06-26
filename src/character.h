@@ -185,7 +185,6 @@ class char_data
    {
       this->print( std::format( fmt, std::forward<Args>(args)...) );
    }
-   void printf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) ); // Legacy C style formatting.
 
    void pager( std::string_view );
 
@@ -194,7 +193,6 @@ class char_data
    {
       this->pager( std::format( fmt, std::forward<Args>(args)...) );
    }
-   void pagerf( const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 
    void print_room( std::string_view );
    void set_color( short );

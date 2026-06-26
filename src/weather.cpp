@@ -3080,14 +3080,14 @@ CMDF( do_setweather )
    // Array overrun corrected here on 12/13/2024 - https://github.com/Arthmoor/SmaugFUSS/issues/5
    if( x < 0 || x >= WEATHER_SIZE_X )
    {
-      ch->printf( "X value must be between 0 and %d.\r\n", WEATHER_SIZE_X - 1 );
+      ch->print_fmt( "X value must be between 0 and {}.\r\n", WEATHER_SIZE_X - 1 );
       return;
    }
 
    // Array overrun corrected here on 12/13/2024 - https://github.com/Arthmoor/SmaugFUSS/issues/5
    if( y < 0 || y >= WEATHER_SIZE_Y )
    {
-      ch->printf( "Y value must be between 0 and %d.\r\n", WEATHER_SIZE_Y - 1 );
+      ch->print_fmt( "Y value must be between 0 and {}.\r\n", WEATHER_SIZE_Y - 1 );
       return;
    }
 
@@ -3104,7 +3104,7 @@ CMDF( do_setweather )
       value = get_climate( arg4.c_str() );
 
       if( value < 0 || value > MAX_CLIMATE )
-         ch->printf( "Unknown flag: %s\r\n", arg4.c_str() );
+         ch->print_fmt( "Unknown flag: {}\r\n", arg4);
       else
       {
          cell->climate = value;
@@ -3124,7 +3124,7 @@ CMDF( do_setweather )
       value = get_hemisphere( arg4.c_str() );
 
       if( value < 0 || value > HEMISPHERE_MAX )
-         ch->printf( "Unknown flag: %s\r\n", arg4.c_str() );
+         ch->print_fmt( "Unknown flag: {}\r\n", arg4 );
       else
       {
          cell->hemisphere = value;
@@ -3167,30 +3167,30 @@ CMDF( do_showweather )
 
    if( x < 0 || x > WEATHER_SIZE_X - 1 )
    {
-      ch->printf( "X value must be between 0 and %d.\r\n", WEATHER_SIZE_X - 1 );
+      ch->print_fmt( "X value must be between 0 and {}.\r\n", WEATHER_SIZE_X - 1 );
       return;
    }	
 
    if( y < 0 || y > WEATHER_SIZE_Y - 1 )
    {
-      ch->printf( "Y value must be between 0 and %d.\r\n", WEATHER_SIZE_Y - 1 );
+      ch->print_fmt( "Y value must be between 0 and {}.\r\n", WEATHER_SIZE_Y - 1 );
       return;
    }
 
    WeatherCell *cell = &weatherMap[x][y];
 
-   ch->printf( "Current Weather State for:\r\n" );
-   ch->printf( "&WCell (&w%d&W, &w%d&W)&D\r\n", x, y );
-   ch->printf( "&WClimate:           &w%s&D\r\n", climate_names[cell->climate] );
-   ch->printf( "&WHemispere:         &w%s&D\r\n", hemisphere_name[cell->hemisphere] );
-   ch->printf( "&WCloud Cover:       &w%d&D\r\n", cell->cloudcover );
-   ch->printf( "&WEnergy:            &w%d&D\r\n", cell->energy );
-   ch->printf( "&WTemperature:       &w%d&D\r\n", cell->temperature );
-   ch->printf( "&WPressure:          &w%d&D\r\n", cell->pressure );
-   ch->printf( "&WHumidity:          &w%d&D\r\n", cell->humidity );
-   ch->printf( "&WPrecipitation:     &w%d&D\r\n", cell->precipitation );
-   ch->printf( "&WWind Speed XAxis:  &w%d&D\r\n", cell->windSpeedX );
-   ch->printf( "&WWind Speed YAxis:  &w%d&D\r\n", cell->windSpeedY );
+   ch->print( "Current Weather State for:\r\n" );
+   ch->print_fmt( "&WCell (&w{}&W, &w{}&W)&D\r\n", x, y );
+   ch->print_fmt( "&WClimate:           &w{}&D\r\n", climate_names[cell->climate] );
+   ch->print_fmt( "&WHemispere:         &w{}&D\r\n", hemisphere_name[cell->hemisphere] );
+   ch->print_fmt( "&WCloud Cover:       &w{}&D\r\n", cell->cloudcover );
+   ch->print_fmt( "&WEnergy:            &w{}&D\r\n", cell->energy );
+   ch->print_fmt( "&WTemperature:       &w{}&D\r\n", cell->temperature );
+   ch->print_fmt( "&WPressure:          &w{}&D\r\n", cell->pressure );
+   ch->print_fmt( "&WHumidity:          &w{}&D\r\n", cell->humidity );
+   ch->print_fmt( "&WPrecipitation:     &w{}&D\r\n", cell->precipitation );
+   ch->print_fmt( "&WWind Speed XAxis:  &w{}&D\r\n", cell->windSpeedX );
+   ch->print_fmt( "&WWind Speed YAxis:  &w{}&D\r\n", cell->windSpeedY );
 }
 
 CMDF( do_weather )
@@ -3215,254 +3215,254 @@ CMDF( do_weather )
       return;
    }
 
-   ch->printf( "&wAs you check the weather around you, you notice:&D\r\n" );
+   ch->print( "&wAs you check the weather around you, you notice:&D\r\n" );
    if( getPrecip( cell ) > 0 )
    {
       if( isTorrentialDownpour( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WThe snow is creating such a blizzard you can barely see!&D\r\n" );
+            ch->print( "&WThe snow is creating such a blizzard you can barely see!&D\r\n" );
          else
-            ch->printf( "&BThe rain is coming down in torrents!&D\r\n" );
+            ch->print( "&BThe rain is coming down in torrents!&D\r\n" );
       }
       else if( isRainingCatsAndDogs( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WThe snow is creating a near solid wall of white!&D\r\n" );
+            ch->print( "&WThe snow is creating a near solid wall of white!&D\r\n" );
          else
-            ch->printf( "&BThe rain is coming down in big heavy drops!&D\r\n" );
+            ch->print( "&BThe rain is coming down in big heavy drops!&D\r\n" );
       }
       else if( isPouring( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WThe snow is coming down hard.&D\r\n" );
+            ch->print( "&WThe snow is coming down hard.&D\r\n" );
          else
-            ch->printf( "&BThe rain is pouring down.&D\r\n" );
+            ch->print( "&BThe rain is pouring down.&D\r\n" );
       }
       else if( isRaingingHeavily( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WThe snow falls heavily.&D\r\n" );
+            ch->print( "&WThe snow falls heavily.&D\r\n" );
          else
-            ch->printf( "&BThe rain falls heavily.&D\r\n" );
+            ch->print( "&BThe rain falls heavily.&D\r\n" );
       }
       else if( isDownpour( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WThe snow is coming down in heavy waves.&D\r\n" );
+            ch->print( "&WThe snow is coming down in heavy waves.&D\r\n" );
          else
-            ch->printf( "&BThe rain is coming down in sheets.&D\r\n" );
+            ch->print( "&BThe rain is coming down in sheets.&D\r\n" );
       }
       else if( isRainingSteadily( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WThe snow appears to be falling pretty steadily.&D\r\n" );
+            ch->print( "&WThe snow appears to be falling pretty steadily.&D\r\n" );
          else
-            ch->printf( "&BThe rain appears to be falling pretty steadily.&D\r\n" );
+            ch->print( "&BThe rain appears to be falling pretty steadily.&D\r\n" );
       }
       else if( isRaining( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WSnowflakes drift down from the heavens.&D\r\n" );
+            ch->print( "&WSnowflakes drift down from the heavens.&D\r\n" );
          else
-            ch->printf( "&BRain falls from the sky.&D\r\n" );
+            ch->print( "&BRain falls from the sky.&D\r\n" );
       }
       else if( isRainingLightly( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WA light snow falls around you.&D\r\n" );
+            ch->print( "&WA light snow falls around you.&D\r\n" );
          else
-            ch->printf( "&BA light rain patters on the ground around you.&D\r\n" );
+            ch->print( "&BA light rain patters on the ground around you.&D\r\n" );
       }
       else if( isDrizzling( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WSnow flurries about you.&D\r\n" );
+            ch->print( "&WSnow flurries about you.&D\r\n" );
          else
-            ch->printf( "&BA light drizzle seems to be falling.&D\r\n" );
+            ch->print( "&BA light drizzle seems to be falling.&D\r\n" );
       }
       else if( isMisting( getPrecip( cell ) ) )
       {
          if( getTemp( cell ) <= 32 )
-            ch->printf( "&WA few scattered snowflakes can be seen.&D\r\n" );
+            ch->print( "&WA few scattered snowflakes can be seen.&D\r\n" );
          else
-            ch->printf( "&BA light mist appears to be falling.&D\r\n" );
+            ch->print( "&BA light mist appears to be falling.&D\r\n" );
       }
    }
    else
-      ch->printf( "&BThere doesn't appear to be any form of precipitation.&D\r\n" );
+      ch->print( "&BThere doesn't appear to be any form of precipitation.&D\r\n" );
 
    if( getCloudCover( cell ) > 0 )
    {
       if( isExtremelyCloudy( getCloudCover( cell ) ) )
-         ch->printf( "&wA blanket of clouds covers the sky.&D\r\n" );
+         ch->print( "&wA blanket of clouds covers the sky.&D\r\n" );
       if( isModeratelyCloudy( getCloudCover( cell ) ) )
-         ch->printf( "&wThere looks to be a good bit of clouds in the sky.&D\r\n" );
+         ch->print( "&wThere looks to be a good bit of clouds in the sky.&D\r\n" );
       if( isPartlyCloudy( getCloudCover( cell ) ) )
-         ch->printf( "&wIt appears to be a partly cloudy sky.&D\r\n" );
+         ch->print( "&wIt appears to be a partly cloudy sky.&D\r\n" );
       if( isCloudy( getCloudCover( cell ) ) )
-         ch->printf( "&wThere are a few scattered clouds in the sky.&D\r\n" );
+         ch->print( "&wThere are a few scattered clouds in the sky.&D\r\n" );
    }
    else
-      ch->printf( "&wThere don't appear to be any clouds in the sky.&D\r\n" );
+      ch->print( "&wThere don't appear to be any clouds in the sky.&D\r\n" );
 
    if( getHumidity( cell ) > 0 )
    {
       if( isExtremelyHumid( getHumidity( cell ) ) )
-         ch->printf( "&cYour skin feels sickly sticky with the extreme humidity.&D\r\n" );
+         ch->print( "&cYour skin feels sickly sticky with the extreme humidity.&D\r\n" );
       else if( isModeratelyHumid( getHumidity( cell ) ) )
-         ch->printf( "&cYou feel slightly sticky because of the moderate humidity.&D\r\n" );
+         ch->print( "&cYou feel slightly sticky because of the moderate humidity.&D\r\n" );
       else if( isMinorlyHumid( getHumidity( cell ) ) )
-         ch->printf( "&cThe stickyness of your skin is barely noticeable in the minor humidity.&D\r\n" );
+         ch->print( "&cThe stickyness of your skin is barely noticeable in the minor humidity.&D\r\n" );
       else if( isHumid( getHumidity( cell ) ) )
-         ch->printf( "&cThe air feels perfect against your skin.&D\r\n" );
+         ch->print( "&cThe air feels perfect against your skin.&D\r\n" );
       else
-         ch->printf( "&cYou can't feel a difference in the humidity.&D\r\n" );
+         ch->print( "&cYou can't feel a difference in the humidity.&D\r\n" );
    }
    else
-      ch->printf( "&cThe air seems as if to suck the moisture from your skin.&D\r\n" );
+      ch->print( "&cThe air seems as if to suck the moisture from your skin.&D\r\n" );
 
    if( getWindX( cell ) != 0 && getWindY( cell ) != 0 )
    {
       if( isCalmWindE( getWindX( cell ) ) && isCalmWindS( getWindY( cell ) ) )
-         ch->printf( "&GA calm wind brushes your skin from the southeast.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the southeast.&D\r\n" );
       else if( isCalmWindE( getWindX( cell ) ) && isCalmWindN( getWindY( cell ) ) ) 
-         ch->printf( "&GA calm wind brushes your skin from the northeast.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the northeast.&D\r\n" );
       else if( isBreezyWindE( getWindX( cell ) ) && isBreezyWindS( getWindY( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the southeast.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the southeast.&D\r\n" );
       else if( isBreezyWindE( getWindX( cell ) ) && isBreezyWindN( getWindY( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the northeast.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the northeast.&D\r\n" );
       else if( isBlusteryWindE( getWindX( cell ) ) && isBlusteryWindS( getWindY( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the southeast.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the southeast.&D\r\n" );
       else if( isBlusteryWindE( getWindX( cell ) ) && isBlusteryWindN( getWindY( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the northeast.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the northeast.&D\r\n" );
       else if( isWindyWindE( getWindX( cell ) ) && isWindyWindS( getWindY( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the southeast.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the southeast.&D\r\n" );
       else if( isWindyWindE( getWindX( cell ) ) && isWindyWindN( getWindY( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the northeast.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the northeast.&D\r\n" );
       else if( isGustyWindE( getWindX( cell ) ) && isGustyWindS( getWindY( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the southeast.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the southeast.&D\r\n" );
       else if( isGustyWindE( getWindX( cell ) ) && isGustyWindN( getWindY( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the northeast.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the northeast.&D\r\n" );
       else if( isGaleForceWindE( getWindX( cell ) ) && isGaleForceWindS( getWindY( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the southeast.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the southeast.&D\r\n" );
       else if( isGaleForceWindE( getWindX( cell ) ) && isGaleForceWindN( getWindY( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the northeast.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the northeast.&D\r\n" );
 
       else if( isCalmWindW( getWindX( cell ) ) && isCalmWindS( getWindY( cell ) ) )
-         ch->printf( "&GA calm wind brushes your skin from the southwest.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the southwest.&D\r\n" );
       else if( isCalmWindW( getWindX( cell ) ) && isCalmWindN( getWindY( cell ) ) ) 
-         ch->printf( "&GA calm wind brushes your skin from the northwest.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the northwest.&D\r\n" );
       else if( isBreezyWindW( getWindX( cell ) ) && isBreezyWindS( getWindY( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the southwest.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the southwest.&D\r\n" );
       else if( isBreezyWindW( getWindX( cell ) ) && isBreezyWindN( getWindY( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the northwest.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the northwest.&D\r\n" );
       else if( isBlusteryWindW( getWindX( cell ) ) && isBlusteryWindS( getWindY( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the southwest.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the southwest.&D\r\n" );
       else if( isBlusteryWindW( getWindX( cell ) ) && isBlusteryWindN( getWindY( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the northwest.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the northwest.&D\r\n" );
       else if( isWindyWindW( getWindX( cell ) ) && isWindyWindS( getWindY( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the southwest.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the southwest.&D\r\n" );
       else if( isWindyWindW( getWindX( cell ) ) && isWindyWindN( getWindY( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the northwest.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the northwest.&D\r\n" );
       else if( isGustyWindW( getWindX( cell ) ) && isGustyWindS( getWindY( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the southwest.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the southwest.&D\r\n" );
       else if( isGustyWindW( getWindX( cell ) ) && isGustyWindN( getWindY( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the northwest.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the northwest.&D\r\n" );
       else if( isGaleForceWindW( getWindX( cell ) ) && isGaleForceWindS( getWindY( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the southwest.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the southwest.&D\r\n" );
       else if( isGaleForceWindW( getWindX( cell ) ) && isGaleForceWindN( getWindY( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the northwest.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the northwest.&D\r\n" );
 
       else
-         ch->printf( "&GThe wind is blowing in such a chaotic manner, You can't tell where it's coming from!&D\r\n" );
+         ch->print( "&GThe wind is blowing in such a chaotic manner, You can't tell where it's coming from!&D\r\n" );
    }
    else if( getWindX( cell ) != 0 && getWindY( cell ) == 0 )
    {
       if( isCalmWindE( getWindY( cell ) ) )
-         ch->printf( "&GA calm wind brushes your skin from the east.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the east.&D\r\n" );
       else if( isBreezyWindE( getWindX( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the east.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the east.&D\r\n" );
       else if( isBlusteryWindE( getWindX( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the east.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the east.&D\r\n" );
       else if( isWindyWindE( getWindX( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the east.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the east.&D\r\n" );
       else if( isGustyWindE( getWindX( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the east.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the east.&D\r\n" );
       else if( isGaleForceWindE( getWindX( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the east.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the east.&D\r\n" );
 
       else if( isCalmWindW( getWindY( cell ) ) )
-         ch->printf( "&GA calm wind brushes your skin from the west.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the west.&D\r\n" );
       else if( isBreezyWindW( getWindY( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the west.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the west.&D\r\n" );
       else if( isBlusteryWindW( getWindY( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the west.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the west.&D\r\n" );
       else if( isWindyWindW( getWindY( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the west.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the west.&D\r\n" );
       else if( isGustyWindW( getWindY( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the west.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the west.&D\r\n" );
       else if( isGaleForceWindW( getWindY( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the west.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the west.&D\r\n" );
    }
    else if( getWindX( cell ) == 0 && getWindY( cell ) != 0 )
    {
       if( isCalmWindS( getWindY( cell ) ) )
-         ch->printf( "&GA calm wind brushes your skin from the south.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the south.&D\r\n" );
       else if( isBreezyWindS( getWindY( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the south.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the south.&D\r\n" );
       else if( isBlusteryWindS( getWindY( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the south.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the south.&D\r\n" );
       else if( isWindyWindS( getWindY( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the south.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the south.&D\r\n" );
       else if( isGustyWindS( getWindY( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the south.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the south.&D\r\n" );
       else if( isGaleForceWindS( getWindY( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the south.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the south.&D\r\n" );
 
       else if( isCalmWindN( getWindY( cell ) ) )
-         ch->printf( "&GA calm wind brushes your skin from the north.&D\r\n" );
+         ch->print( "&GA calm wind brushes your skin from the north.&D\r\n" );
       else if( isBreezyWindN( getWindY( cell ) ) )
-         ch->printf( "&GA steady breeze emanates from the north.&D\r\n" );
+         ch->print( "&GA steady breeze emanates from the north.&D\r\n" );
       else if( isBlusteryWindN( getWindY( cell ) ) )
-         ch->printf( "&GA blustery wind blows from the north.&D\r\n" );
+         ch->print( "&GA blustery wind blows from the north.&D\r\n" );
       else if( isWindyWindN( getWindY( cell ) ) )
-         ch->printf( "&GA strong steady wind howls from the north.&D\r\n" );
+         ch->print( "&GA strong steady wind howls from the north.&D\r\n" );
       else if( isGustyWindN( getWindY( cell ) ) )
-         ch->printf( "&GThe wind seems to be coming in gusts from the north.&D\r\n" );
+         ch->print( "&GThe wind seems to be coming in gusts from the north.&D\r\n" );
       else if( isGaleForceWindN( getWindY( cell ) ) )
-         ch->printf( "&GA gale force wind is tearing through the air from the north.&D\r\n" );
+         ch->print( "&GA gale force wind is tearing through the air from the north.&D\r\n" );
    }
    else
-      ch->printf( "&GThere doesn't seem to be any wind.\r\n" );
+      ch->print( "&GThere doesn't seem to be any wind.\r\n" );
 
    if( getTemp( cell ) > -30 && getTemp( cell ) < 100 )
    {
       if( isSwelteringHeat( getTemp( cell ) ) )
-         ch->printf( "&OThe heat is almost unbearable.&D\r\n" );
+         ch->print( "&OThe heat is almost unbearable.&D\r\n" );
       else if( isVeryHot( getTemp( cell ) ) )
-         ch->printf( "&OIt's very hot...&D\r\n" );
+         ch->print( "&OIt's very hot...&D\r\n" );
       else if( isHot( getTemp( cell ) ) )
-         ch->printf( "&OIt's hot...&D\r\n" );
+         ch->print( "&OIt's hot...&D\r\n" );
       else if( isWarm( getTemp( cell ) ) )
-         ch->printf( "&OIt seems to be a bit warm.&D\r\n" );
+         ch->print( "&OIt seems to be a bit warm.&D\r\n" );
       else if( isTemperate( getTemp( cell ) ) )
-         ch->printf( "&OThe temperature feels just right.&D\r\n" );
+         ch->print( "&OThe temperature feels just right.&D\r\n" );
       else if( isCool( getTemp( cell ) ) )
-         ch->printf( "&CIt seems to be a bit cool.&D\r\n" );
+         ch->print( "&CIt seems to be a bit cool.&D\r\n" );
       else if( isChilly( getTemp( cell ) ) )
-         ch->printf( "&CIt seems a bit chilly.&D\r\n" );
+         ch->print( "&CIt seems a bit chilly.&D\r\n" );
       else if( isCold( getTemp( cell ) ) )
-         ch->printf( "&CIt's cold.&D\r\n" );
+         ch->print( "&CIt's cold.&D\r\n" );
       else if( isFrosty( getTemp( cell ) ) )
-         ch->printf( "&CThere is visible frost around.&D\r\n" );
+         ch->print( "&CThere is visible frost around.&D\r\n" );
       else if( isFreezing( getTemp( cell ) ) )
-         ch->printf( "&CYour breath seems to crystalize before your face.&D\r\n" );
+         ch->print( "&CYour breath seems to crystalize before your face.&D\r\n" );
       else if( isReallyCold( getTemp( cell ) ) )
-         ch->printf( "&CIt's really cold...&D\r\n" );
+         ch->print( "&CIt's really cold...&D\r\n" );
       else if( isVeryCold( getTemp( cell ) ) )
-         ch->printf( "&CYou think you see ice forming on your clothes.&D\r\n" );
+         ch->print( "&CYou think you see ice forming on your clothes.&D\r\n" );
       else if( isExtremelyCold( getTemp( cell ) ) )
-         ch->printf( "&CYou feel ice clinging to your skin. Get inside!&D\r\n" );
+         ch->print( "&CYou feel ice clinging to your skin. Get inside!&D\r\n" );
    }
 }

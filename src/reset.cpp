@@ -769,7 +769,7 @@ CMDF( do_reset )
          min = 1;
       else if( min >= max )
       {
-         ch->printf( "Min of %d must be smaller than Max of %d\r\n", min, max );
+         ch->print_fmt( "Min of {} must be smaller than Max of {}\r\n", min, max );
          return;
       }
 
@@ -777,7 +777,7 @@ CMDF( do_reset )
          max = 6;
       else if( max <= min )
       {
-         ch->printf( "Max of %d must be larger than Min of %d\r\n", max, min );
+         ch->print_fmt( "Max of {} must be larger than Min of {}\r\n", max, min );
          return;
       }
 
@@ -788,7 +788,7 @@ CMDF( do_reset )
 
          if( value < 0 || value > 31 )
          {
-            ch->printf( "Bad trap flag: %s\r\n", arg.c_str(  ) );
+            ch->print_fmt( "Bad trap flag: {}\r\n", arg );
             continue;
          }
          SET_BIT( flags, 1 << value );

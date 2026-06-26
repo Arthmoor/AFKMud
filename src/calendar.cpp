@@ -98,11 +98,11 @@ CMDF( do_timezone )
 
    if( argument.empty(  ) )
    {
-      ch->printf( "%-6s %-30s (%s)\r\n", "Name", "IANA Timezone Name", "Time" );
+      ch->print_fmt( "{:<6} {:<30} ({})\r\n", "Name", "IANA Timezone Name", "Time" );
       ch->print( "-------------------------------------------------------------------------\r\n" );
       for( i = 0; i < static_cast<int>( tzone_table.size() ); ++i )
       {
-         ch->printf( "%-6s %-30s (%s)\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ).c_str() );
+         ch->print_fmt( "{:<6} {:<30} ({})\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ) );
       }
       ch->print( "-------------------------------------------------------------------------\r\n" );
       return;
@@ -117,7 +117,7 @@ CMDF( do_timezone )
    }
 
    ch->pcdata->timezone = i;
-   ch->printf( "Your time zone is now %s %s (%s)\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ).c_str() );
+   ch->print_fmt( "Your time zone is now {} {} ({})\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ) );
 }
 
 /*
@@ -548,7 +548,7 @@ void check_holiday( char_data * ch )
    day = get_holiday( time_info.month, time_info.day );
 
    if( day != nullptr )
-      ch->printf( "&Y%s\r\n", day->get_announce(  ).c_str(  ) );
+      ch->print_fmt( "&Y{}\r\n", day->get_announce(  ) );
 }
 
 holiday_data *get_holiday( short month, short day )
@@ -578,7 +578,7 @@ CMDF( do_holidays )
 
    for( auto* holiday : daylist )
    {
-      ch->pagerf( "&G%-21s &g%-11s %-2d\r\n", holiday->get_name(  ).c_str(  ), month_name[holiday->get_month(  ) - 1], holiday->get_day(  ) );
+      ch->pager_fmt( "&G{:<21} &g{:<11} {:<2}\r\n", holiday->get_name(  ), month_name[holiday->get_month(  ) - 1], holiday->get_day(  ) );
    }
 }
 
@@ -723,7 +723,7 @@ CMDF( do_setholiday )
       value = atoi( argument.c_str(  ) );
       if( argument.empty(  ) || !is_number( argument ) || value > sysdata->dayspermonth || value < 1 )
       {
-         ch->printf( "You must specify a numeric value : %d - %d", 1, sysdata->dayspermonth );
+         ch->print_fmt( "You must specify a numeric value : {} - {}", 1, sysdata->dayspermonth );
          return;
       }
 
@@ -752,7 +752,7 @@ CMDF( do_setholiday )
          count = 1;
          while( month_name[x][0] != '\0' && str_cmp( month_name[x], " " ) && x < sysdata->monthsperyear )
          {
-            ch->printf( "&[red](&[white]%d&[red])&[yellow]%s\r\n", count, month_name[x] );
+            ch->print_fmt( "&[red](&[white]{}&[red])&[yellow]{}\r\n", count, month_name[x] );
             ++x;
             ++count;
          }

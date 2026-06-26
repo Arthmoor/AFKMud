@@ -5282,7 +5282,7 @@ CMDF( do_pick )
       check_for_trap( ch, obj, TRAP_PICK );
       return;
    }
-   ch->printf( "You see no %s here.\r\n", arg.c_str(  ) );
+   ch->print_fmt( "You see no {} here.\r\n", arg );
 }
 
 /*
@@ -6423,7 +6423,7 @@ CMDF( do_style )
 
    if( argument.empty(  ) )
    {
-      ch->printf( "&wAdopt which fighting style?  (current:  %s&w)\r\n",
+      ch->print_fmt( "&wAdopt which fighting style?  (current:  {}&w)\r\n",
                   ch->style == STYLE_BERSERK ? "&Rberserk" :
                   ch->style == STYLE_AGGRESSIVE ? "&Raggressive" : ch->style == STYLE_DEFENSIVE ? "&Ydefensive" : ch->style == STYLE_EVASIVE ? "&Yevasive" : "standard" );
       return;

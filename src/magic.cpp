@@ -2575,7 +2575,7 @@ SPELLF( spell_invis )
          return rNONE;
       }
    }
-   ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
+   ch->print_fmt( "You can't find {}!\r\n", target_name );
    return rSPELL_FAILED;
 }
 
@@ -3795,7 +3795,7 @@ SPELLF( spell_remove_invis )
       {
          if( !ch->can_see( victim, false ) )
          {
-            ch->printf( "You don't see %s!\r\n", target_name.c_str(  ) );
+            ch->print_fmt( "You don't see {}!\r\n", target_name );
             return rSPELL_FAILED;
          }
 
@@ -3847,7 +3847,7 @@ SPELLF( spell_remove_invis )
          successful_casting( skill, ch, victim, nullptr );
          return rNONE;
       }
-      ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
+      ch->print_fmt( "You can't find {}!\r\n", target_name );
       return rSPELL_FAILED;
    }
 }
@@ -3983,7 +3983,7 @@ SPELLF( spell_animate_dead )
 
       if( corpse->level < mob->level )
       {
-         ch->printf( "The spirit of this corpse is not powerful enough to become a %s.\r\n", corpse_name );
+         ch->print_fmt( "The spirit of this corpse is not powerful enough to become a {}.\r\n", corpse_name );
          if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
             log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return rSPELL_FAILED;
@@ -3991,7 +3991,7 @@ SPELLF( spell_animate_dead )
 
       if( ch->level < mob->level )
       {
-         ch->printf( "You are not powerful enough to animate a %s yet.\r\n", corpse_name );
+         ch->print_fmt( "You are not powerful enough to animate a {} yet.\r\n", corpse_name );
          if( !mob->to_room( get_room_index( ROOM_VNUM_POLY ) ) )  /* Send to here to prevent bugs */
             log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
          return rSPELL_FAILED;
@@ -5495,7 +5495,7 @@ SPELLF( spell_slow )
       act( AT_MAGIC, "You have been slowed to a crawl!", victim, nullptr, nullptr, TO_CHAR );
       return rNONE;
    }
-   ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
+   ch->print_fmt( "You can't find {}!\r\n", target_name );
    return rSPELL_FAILED;
 }
 
@@ -5537,7 +5537,7 @@ SPELLF( spell_haste )
          victim->pcdata->age_bonus += 1;
       return rNONE;
    }
-   ch->printf( "You can't find %s!\r\n", target_name.c_str(  ) );
+   ch->print_fmt( "You can't find {}!\r\n", target_name );
    return rSPELL_FAILED;
 }
 

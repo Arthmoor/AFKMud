@@ -404,9 +404,9 @@ CMDF( do_immhost )
          while( dnum < MAX_DOMAIN && !host->domain[dnum].empty(  ) )
             ++dnum;
 
-         ch->pagerf( "&C&G%-10s %-10d %zu\r\n", host->name.c_str(  ), dnum, host->loglist.size(  ) );
+         ch->pager_fmt( "&C&G{:<10} {:<10} {}\r\n", host->name, dnum, host->loglist.size(  ) );
       }
-      ch->pagerf( "&C&R%d immortals are being protected.&g\r\n", x );
+      ch->pager_fmt( "&C&R{} immortals are being protected.&g\r\n", x );
       return;
    }
 
@@ -463,15 +463,15 @@ CMDF( do_immhost )
          return;
       }
 
-      ch->pagerf( "&C&RImmortal:&W %s\r\n", host->name.c_str(  ) );
+      ch->pager_fmt( "&C&RImmortal:&W {}\r\n", host->name );
       ch->pager( "&R[&GNum&R]  [&GLogged Host&R]     [&GDate&R]\r\n" );
 
       for( ilog = host->loglist.begin(  ); ilog != host->loglist.end(  ); ++ilog )
       {
          immortal_host_log *hlog = *ilog;
-         ch->pagerf( "&C&G%-6d %-17s %s\r\n", ++x, hlog->host.c_str(  ), hlog->date.c_str(  ) );
+         ch->pager_fmt( "&C&G{:<6} {:<17} {}\r\n", ++x, hlog->host, hlog->date );
       }
-      ch->pagerf( "&C&R%d logged hacking attempts.&g\r\n", x );
+      ch->pager_fmt( "&C&R{} logged hacking attempts.&g\r\n", x );
       return;
    }
 
@@ -513,9 +513,9 @@ CMDF( do_immhost )
       ch->pager( "&C&R[&GNum&R]  [&GHost&R]\r\n" );
 
       for( x = 0; x < MAX_DOMAIN && !host->domain[x].empty(  ); ++x )
-         ch->pagerf( "&C&G%-5d  %s\r\n", x + 1, host->domain[x].c_str(  ) );
+         ch->pager_fmt( "&C&G{:<5}  {}\r\n", x + 1, host->domain[x] );
 
-      ch->pagerf( "&C&R%d immortal domains.&g\r\n", x );
+      ch->pager_fmt( "&C&R{} immortal domains.&g\r\n", x );
       return;
    }
 
@@ -540,7 +540,7 @@ CMDF( do_immhost )
 
       if( x == MAX_DOMAIN )
       {
-         ch->pagerf( "This immortal host has the maximum allowed, %d domains.\r\n", MAX_DOMAIN );
+         ch->pager_fmt( "This immortal host has the maximum allowed, {} domains.\r\n", MAX_DOMAIN );
          return;
       }
 

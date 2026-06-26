@@ -285,31 +285,6 @@ void char_data::pager( std::string_view txt )
    }
 }
 
-// Legacy C-style printf calls. You may yet live once everything has been handed over to ch->print_fmt...
-void char_data::printf( const char *fmt, ... )
-{
-   char buf[MSL * 2];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 2, fmt, args );
-   va_end( args );
-
-   this->print( buf );
-}
-
-void char_data::pagerf( const char *fmt, ... )
-{
-   char buf[MSL * 2];
-   va_list args;
-
-   va_start( args, fmt );
-   vsnprintf( buf, MSL * 2, fmt, args );
-   va_end( args );
-
-   this->pager( buf );
-}
-
 void char_data::set_color( short AType )
 {
    if( !this->desc )

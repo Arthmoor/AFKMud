@@ -89,7 +89,7 @@ void command_pipe( char_data * ch, const char *argument )
    fp = popen( argument, "r" );
    fgetf( buf, MSL, fp );
    pclose( fp );
-   ch->pagerf( "&R%s\r\n", buf );
+   ch->pager_fmt( "&R{}\r\n", buf );
 }
 
 /* End OLD shell command code */
@@ -344,10 +344,10 @@ CMDF( do_copyclass )
 
    if( !sysdata->TESTINGMODE )
    {
-      ch->printf( "&R{}: file updated to main port.\r\n", argument );
+      ch->print_fmt( "&R{}: file updated to main port.\r\n", argument );
       funcf( ch, do_mudexec, "cp {}{} {}", BUILDCLASSDIR, fname, MAINCLASSDIR );
    }
-   ch->printf( "&G{}: file updated to code port.\r\n", argument );
+   ch->print_fmt( "&G{}: file updated to code port.\r\n", argument );
    funcf( ch, do_mudexec, "cp {}{} {}", BUILDCLASSDIR, fname, CODECLASSDIR );
 }
 
@@ -1131,7 +1131,7 @@ CMDF( do_shelledit )
       add_shellcommand( command );
       ch->print( "Shell command added.\r\n" );
       if( command->get_func(  ) == skill_notfound )
-         ch->printf( "Code %s not found. Set to no code.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "Code {} not found. Set to no code.\r\n", arg2 );
       return;
    }
 
@@ -1148,7 +1148,7 @@ CMDF( do_shelledit )
 
    if( arg2.empty(  ) || !str_cmp( arg2, "show" ) )
    {
-      ch->printf( "Command:   %s\r\nLevel:     %d\r\nPosition:  %s\r\nLog:       %s\r\nFunc Name: %s\r\nFlags:     %s\r\n",
+      ch->print_fmt( "Command:   {}\r\nLevel:     {}\r\nPosition:  {}\r\nLog:       {}\r\nFunc Name: {}\r\nFlags:     {}\r\n",
                   command->get_cname(  ), command->get_level(  ), npc_position[command->get_position(  )], log_flag[command->get_log(  )],
                   command->get_func_cname(  ), bitset_string( command->flags, cmd_flags ) );
       return;
@@ -1206,7 +1206,7 @@ CMDF( do_shelledit )
       flag = get_cmdflag( argument );
       if( flag < 0 || flag >= MAX_CMD_FLAG )
       {
-         ch->printf( "Unknown flag %s.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Unknown flag {}.\r\n", argument );
          return;
       }
       command->flags.flip( flag );

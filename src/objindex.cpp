@@ -901,5 +901,5 @@ CMDF( do_odelete )
    }
 
    deleteptr( obj );
-   ch->printf( "Object %d has been deleted.\r\n", vnum );
+   ch->print_fmt( "Object {} has been deleted.\r\n", vnum );
 }

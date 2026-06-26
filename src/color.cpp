@@ -150,7 +150,7 @@ void show_colorthemes( char_data * ch )
          continue;
 
       ++count;
-      ch->pagerf( "%s%-15.15s", ch->color_str( AT_PLAIN ), filename.c_str() );
+      ch->pager_fmt( "{}{:<15.15}", ch->color_str( AT_PLAIN ), filename );
       if( ++col % 6 == 0 )
          ch->pager( "\r\n" );
    }
@@ -177,7 +177,7 @@ void show_colors( char_data * ch )
    {
       if( ( count % 8 ) == 0 && count != 0 )
          ch->pager( "\r\n" );
-      ch->pagerf( "%s%-10s", ch->color_str( count ), pc_displays[count] );
+      ch->pager_fmt( "{}{:<10}", ch->color_str( count ), pc_displays[count] );
    }
 
    ch->pager( "\r\n\r\n&W******************************[ COLOR TYPES ]******************************\r\n" );
@@ -186,7 +186,7 @@ void show_colors( char_data * ch )
    {
       if( ( count % 8 ) == 0 && count != 33 )
          ch->pager( "\r\n" );
-      ch->pagerf( "%s%-10s%s", ch->color_str( count ), pc_displays[count], ANSI_RESET );
+      ch->pager_fmt( "{}{:<10}{}", ch->color_str( count ), pc_displays[count], ANSI_RESET );
    }
    ch->pager( "\r\n\r\n" );
    ch->pager( "&YAvailable colors are:\r\n" );
@@ -196,7 +196,7 @@ void show_colors( char_data * ch )
       if( ( count % 8 ) == 0 && count != 0 )
          ch->pager( "\r\n" );
 
-      ch->pagerf( "%s%-10s", ch->color_str( AT_PLAIN ), valid_color[count] );
+      ch->pager_fmt( "{}{:<10}", ch->color_str( AT_PLAIN ), valid_color[count] );
    }
    ch->pager( "\r\n\r\n" );
    show_colorthemes( ch );

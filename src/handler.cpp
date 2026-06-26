@@ -353,7 +353,7 @@ obj_data *find_obj( char_data * ch, std::string argument, bool carryonly )
       }
       if( !carryonly && !( container = ch->get_obj_here( arg2 ) ) )
       {
-         ch->printf( "I see no %s here.\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "I see no {} here.\r\n", arg2 );
          return nullptr;
       }
       if( !container->extra_flags.test( ITEM_COVERING ) && IS_SET( container->value[1], CONT_CLOSED ) )

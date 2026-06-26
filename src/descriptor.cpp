@@ -168,9 +168,9 @@ CMDF( do_trdata )
    {
       ch->print( "Type &Ytrdata clear&d to reset this data.\r\n\r\n" );
 
-      ch->printf( "Bytes received     : %ld\r\n", tr_in );
-      ch->printf( "Bytes sent         : %ld\r\n", tr_out );
-      ch->printf( "Bytes saved by MCCP: %ld\r\n", tr_saved );
+      ch->print_fmt( "Bytes received     : {}\r\n", tr_in );
+      ch->print_fmt( "Bytes sent         : {}\r\n", tr_out );
+      ch->print_fmt( "Bytes saved by MCCP: {}\r\n", tr_saved );
    }
    /*
     * Just so we can start it over 
@@ -2084,7 +2084,7 @@ void show_stateflags( char_data * ch )
       ch->print( "\r\n&RReminder, Mr. Imp sir, the game is under lockdown. Nobody else can connect now.\r\n" );
 
    if( sysdata->IMPLOCK && ch->is_imp(  ) )
-      ch->printf( "\r\n&RNOTE: The game is implocked. Only level %d and above gods can log on.\r\n", LEVEL_KL );
+      ch->print_fmt( "\r\n&RNOTE: The game is implocked. Only level {} and above gods can log on.\r\n", LEVEL_KL );
 
    if( sysdata->WIZLOCK )
       ch->print( "\r\n&YNOTE: The game is wizlocked. No mortals can log on.\r\n" );
@@ -3386,9 +3386,9 @@ CMDF( do_cache )
    ch->pager( "IP               | Address\r\n" );
    ch->pager( "------------------------------------------------------------------------------\r\n" );
    for( auto* dns : dnslist )
-      ch->pagerf( "&w%16.16s  &g%s\r\n", dns->ip.c_str(  ), dns->name.c_str(  ) );
+      ch->pager_fmt( "&w{:16.16}  &g{}\r\n", dns->ip, dns->name );
 
-   ch->pagerf( "\r\n&W%zu IPs in the cache.\r\n", dnslist.size(  ) );
+   ch->pager_fmt( "\r\n&W{} IPs in the cache.\r\n", dnslist.size(  ) );
 }
 
 /* Send login messages to characters - big modification to the original */

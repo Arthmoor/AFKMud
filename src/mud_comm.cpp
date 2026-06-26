@@ -1283,7 +1283,7 @@ CMDF( do_mposet )
             value = get_aflag( arg3 );
 
             if( value < 0 || value >= MAX_AFFECTED_BY )
-               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
             found = true;
          }
          else
@@ -1291,7 +1291,7 @@ CMDF( do_mposet )
             value = get_risflag( arg3 );
 
             if( value < 0 || value >= MAX_RIS_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
             found = true;
          }
          if( !found )
@@ -1300,7 +1300,7 @@ CMDF( do_mposet )
       else
       {
          argument = one_argument( argument, arg3 );
-         value = atoi( arg3.c_str(  ) );
+         value = std::stoi( arg3 );
       }
       paf = new affect_data;
       paf->type = -1;
@@ -3436,7 +3436,7 @@ CMDF( do_mpdream )
    }
 
    if( victim->position <= POS_SLEEPING )
-      victim->printf( "%s\r\n", argument.c_str(  ) );
+      victim->print_fmt( "{}\r\n", argument );
 }
 
 CMDF( do_mpdelay )

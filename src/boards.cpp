@@ -3531,7 +3531,7 @@ CMDF( do_project )
          pproject->nlist.remove( plog );
          deleteptr( plog );
          write_projects(  );
-         ch->printf( "Log #%d has been deleted.\r\n", pnum );
+         ch->print_fmt( "Log #{} has been deleted.\r\n", pnum );
          return;
       }
 

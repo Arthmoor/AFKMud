@@ -116,20 +116,20 @@ CMDF( do_shipstat )
       return;
    }
 
-   ch->printf( "Name:  %s\r\n", ship->name.c_str(  ) );
-   ch->printf( "Owner: %s\r\n", ship->owner.c_str(  ) );
-   ch->printf( "Vnum:  %d\r\n", ship->vnum );
+   ch->print_fmt( "Name:  {}\r\n", ship->name );
+   ch->print_fmt( "Owner: {}\r\n", ship->owner );
+   ch->print_fmt( "Vnum:  {}\r\n", ship->vnum );
    if( ship->flags.test( SHIP_ONMAP ) )
    {
-      ch->printf( "On map: %s\r\n", ship->continent->name.c_str( ) );
-      ch->printf( "Coords: %4dX %4dY\r\n", ship->map_x, ship->map_y );
+      ch->print_fmt( "On map: {}\r\n", ship->continent->name );
+      ch->print_fmt( "Coords: {:4}X {:4}Y\r\n", ship->map_x, ship->map_y );
    }
    else
-      ch->printf( "In room: %d\r\n", ship->room );
-   ch->printf( "Hull:  %d/%d\r\n", ship->hull, ship->max_hull );
-   ch->printf( "Fuel:  %d/%d\r\n", ship->fuel, ship->max_fuel );
-   ch->printf( "Type:  %d (%s)\r\n", ship->type, ship_type[ship->type] );
-   ch->printf( "Flags: %s\r\n", bitset_string( ship->flags, ship_flags ) );
+      ch->print_fmt( "In room: {}\r\n", ship->room );
+   ch->print_fmt( "Hull:  {}/{}\r\n", ship->hull, ship->max_hull );
+   ch->print_fmt( "Fuel:  {}/{}\r\n", ship->fuel, ship->max_fuel );
+   ch->print_fmt( "Type:  {} ({})\r\n", ship->type, ship_type[ship->type] );
+   ch->print_fmt( "Flags: {}\r\n", bitset_string( ship->flags, ship_flags ) );
 }
 
 ship_data::ship_data(  )
@@ -434,7 +434,7 @@ CMDF( do_shipset )
          argument = one_argument( argument, arg3 );
          value = get_shipflag( arg3 );
          if( value < 0 || value >= MAX_SHIP_FLAG )
-            ch->printf( "Unknown flag: %s\r\n", arg3.c_str(  ) );
+            ch->print_fmt( "Unknown flag: {}\r\n", arg3 );
          else
             ship->flags.flip( value );
       }
@@ -475,7 +475,7 @@ bool can_move_ship( char_data * ch, int sector )
     */
    if( sector == SECT_OCEAN && ch->on_ship->type <= SHIP_COASTER )
    {
-      ch->printf( "Your %s is not large enough to sail into deep oceans.\r\n", ship_type[ch->on_ship->type] );
+      ch->print_fmt( "Your {} is not large enough to sail into deep oceans.\r\n", ship_type[ch->on_ship->type] );
       return false;
    }
 
@@ -484,7 +484,7 @@ bool can_move_ship( char_data * ch, int sector )
     */
    if( sector != SECT_OCEAN && ch->on_ship->type > SHIP_CARAVEL )
    {
-      ch->printf( "Your %s is too large to sail into anything but oceans.\r\n", ship_type[ch->on_ship->type] );
+      ch->print_fmt( "Your {} is too large to sail into anything but oceans.\r\n", ship_type[ch->on_ship->type] );
       return false;
    }
    return true;

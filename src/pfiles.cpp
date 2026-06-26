@@ -232,7 +232,7 @@ CMDF( do_quoteset )
       {
          quote = *qt;
 
-         ch->pagerf( "&cQuote #%d:\r\n &W%s&D\r\n\r\n", quote->number, quote->quote.c_str(  ) );
+         ch->pager_fmt( "&cQuote #{}:\r\n &W{}&D\r\n\r\n", quote->number, quote->quote );
       }
       return;
    }
@@ -251,7 +251,7 @@ CMDF( do_quoteset )
       quote->quote = argument;
       quotelist.push_back( quote );
       save_quotes(  );
-      ch->printf( "Quote #%d has been added to the list.\r\n", quote->number );
+      ch->print_fmt( "Quote #{} has been added to the list.\r\n", quote->number );
       return;
    }
 
@@ -269,7 +269,7 @@ CMDF( do_quoteset )
    }
    deleteptr( quote );
    save_quotes(  );
-   ch->printf( "Quote #%d has been removed from the list.\r\n", q );
+   ch->print_fmt( "Quote #{} has been removed from the list.\r\n", q );
 }
 
 void quotes( char_data * ch )

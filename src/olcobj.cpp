@@ -304,7 +304,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                      obj->value[0] < 76 ? "Small capacity" :
                      obj->value[0] < 150 ? "Small to medium capacity" :
                      obj->value[0] < 300 ? "Medium capacity" : obj->value[0] < 550 ? "Medium to large capacity" : obj->value[0] < 751 ? "Large capacity" : "Giant capacity" );
-         ch->printf( "%sValue[1] - Flags (%d): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
+         ch->print_fmt( "{}Value[1] - Flags ({}): &c", olc ? "&gF&w) " : "&w", obj->value[1] );
          if( obj->value[1] <= 0 )
             ch->print( " None\r\n" );
          else
@@ -321,7 +321,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             else
                ch->print( "ERROR: Key does not exist!\r\n" );
          }
-         ch->printf( "%sValue[3] - Condition: &c%d\r\n", olc ? "&gH&w) " : "&w", obj->value[3] );
+         ch->print_fmt( "{}Value[3] - Condition: &c{}\r\n", olc ? "&gH&w) " : "&w", obj->value[3] );
          if( obj->timer )
             ch->print_fmt( "Object Timer, Time Left: {}\r\n", obj->timer );
          break;
@@ -713,8 +713,8 @@ void oedit_disp_container_flags_menu( descriptor_data * d )
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_CONT_FLAG; ++i )
-      d->character->printf( "&g%d&w) %s\r\n", i + 1, container_flags[i] );
-   d->character->printf( "Container flags: &c%s&w\r\n", flag_string( obj->value[1], container_flags ) );
+      d->character->print_fmt( "&g{}&w) {}\r\n", i + 1, container_flags[i] );
+   d->character->print_fmt( "Container flags: &c{}&w\r\n", flag_string( obj->value[1], container_flags ) );
 
    d->character->print( "Enter flag, 0 to quit : " );
 }
@@ -726,8 +726,8 @@ void oedit_disp_furniture_flags_menu( descriptor_data * d )
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_FURNFLAG; ++i )
-      d->character->printf( "&g%d&w) %s\r\n", i + 1, furniture_flags[i] );
-   d->character->printf( "Furniture flags: &c%s&w\r\n", flag_string( obj->value[2], furniture_flags ) );
+      d->character->print_fmt( "&g{}&w) {}\r\n", i + 1, furniture_flags[i] );
+   d->character->print_fmt( "Furniture flags: &c{}&w\r\n", flag_string( obj->value[2], furniture_flags ) );
 
    d->character->print( "Enter flag, 0 to quit : " );
 }
@@ -741,8 +741,8 @@ void oedit_disp_lever_flags_menu( descriptor_data * d )
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_TRIGFLAG; ++counter )
-      d->character->printf( "&g%2d&w) %s\r\n", counter + 1, trig_flags[counter] );
-   d->character->printf( "Lever flags: &c%s&w\r\nEnter flag, 0 to quit: ", flag_string( obj->value[0], trig_flags ) );
+      d->character->print_fmt( "&g{}d&w) {}\r\n", counter + 1, trig_flags[counter] );
+   d->character->print_fmt( "Lever flags: &c{}&w\r\nEnter flag, 0 to quit: ", flag_string( obj->value[0], trig_flags ) );
 }
 
 /*
@@ -755,15 +755,15 @@ void oedit_disp_layer_menu( descriptor_data * d )
    d->olc->mode  = OEDIT_LAYERS;
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->print( "Choose which layer, or combination of layers fits best: \r\n\r\n" );
-   d->character->printf( "[&c%s&w] &g1&w) Nothing Layers\r\n", ( obj->pIndexData->layers == 0 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g2&w) Silk Shirt\r\n", IS_SET( obj->pIndexData->layers, 1 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g3&w) Leather Vest\r\n", IS_SET( obj->pIndexData->layers, 2 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g4&w) Light Chainmail\r\n", IS_SET( obj->pIndexData->layers, 4 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g5&w) Leather Jacket\r\n", IS_SET( obj->pIndexData->layers, 8 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g6&w) Light Cloak\r\n", IS_SET( obj->pIndexData->layers, 16 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g7&w) Loose Cloak\r\n", IS_SET( obj->pIndexData->layers, 32 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g8&w) Cape\r\n", IS_SET( obj->pIndexData->layers, 64 ) ? "X" : " " );
-   d->character->printf( "[&c%s&w] &g9&w) Magical Effects\r\n", IS_SET( obj->pIndexData->layers, 128 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g1&w) Nothing Layers\r\n", ( obj->pIndexData->layers == 0 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g2&w) Silk Shirt\r\n", IS_SET( obj->pIndexData->layers, 1 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g3&w) Leather Vest\r\n", IS_SET( obj->pIndexData->layers, 2 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g4&w) Light Chainmail\r\n", IS_SET( obj->pIndexData->layers, 4 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g5&w) Leather Jacket\r\n", IS_SET( obj->pIndexData->layers, 8 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g6&w) Light Cloak\r\n", IS_SET( obj->pIndexData->layers, 16 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g7&w) Loose Cloak\r\n", IS_SET( obj->pIndexData->layers, 32 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g8&w) Cape\r\n", IS_SET( obj->pIndexData->layers, 64 ) ? "X" : " " );
+   d->character->print_fmt( "[&c{}&w] &g9&w) Magical Effects\r\n", IS_SET( obj->pIndexData->layers, 128 ) ? "X" : " " );
    d->character->print( "\r\nLayer or 0 to exit: " );
 }
 
@@ -781,7 +781,7 @@ void oedit_disp_extradesc_menu( descriptor_data * d )
       for( ed = obj->pIndexData->extradesc.begin(  ); ed != obj->pIndexData->extradesc.end(  ); ++ed )
       {
          edesc = *ed;
-         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str(  ) );
+         d->character->print_fmt( "&g{:2}&w) Keyword: &O{}\r\n", ++count, edesc->keyword );
       }
    }
 
@@ -790,7 +790,7 @@ void oedit_disp_extradesc_menu( descriptor_data * d )
       for( ed = obj->extradesc.begin(  ); ed != obj->extradesc.end(  ); ++ed )
       {
          edesc = *ed;
-         d->character->printf( "&g%2d&w) Keyword: &O%s\r\n", ++count, edesc->keyword.c_str(  ) );
+         d->character->print_fmt( "&g{:2}&w) Keyword: &O{}\r\n", ++count, edesc->keyword );
       }
    }
 
@@ -810,8 +810,8 @@ void oedit_disp_extra_choice( descriptor_data * d )
    extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
-   d->character->printf( "&g1&w) Keyword: &O%s\r\n", ed->keyword.c_str(  ) );
-   d->character->printf( "&g2&w) Description: \r\n&O%s&w\r\n", ( !ed->desc.empty(  ) )? ed->desc.c_str(  ) : "(none)" );
+   d->character->print_fmt( "&g1&w) Keyword: &O{}\r\n", ed->keyword );
+   d->character->print_fmt( "&g2&w) Description: \r\n&O{}&w\r\n",!ed->desc.empty() ? ed->desc : "(none)" );
    d->character->print( "&gQ&w) Quit\r\n" );
    d->character->print( "\r\nChange which option? " );
 
@@ -830,7 +830,7 @@ void oedit_disp_prompt_apply_menu( descriptor_data * d )
    {
       affect_data *af = *paf;
 
-      d->character->printf( " &g%2d&w) ", ++counter );
+      d->character->print_fmt( " &g{:2}&w) ", ++counter );
       d->character->showaffect( af );
    }
 
@@ -838,7 +838,7 @@ void oedit_disp_prompt_apply_menu( descriptor_data * d )
    {
       affect_data *af = *paf;
 
-      d->character->printf( " &g%2d&w) ", ++counter );
+      d->character->print_fmt( " &g{:2}&w) ", ++counter );
       d->character->showaffect( af );
    }
    d->character->print( " \r\n &gA&w) Add an affect\r\n" );
@@ -861,7 +861,7 @@ void oedit_liquid_type( descriptor_data * d )
    {
       if( liquid_table[i] )
       {
-         d->character->printf( " &w%2d&g ) &c%-20.20s ", counter, liquid_table[i]->name.c_str(  ) );
+         d->character->print_fmt( " &w{:2}&g ) &c{:<20.20} ", counter, liquid_table[i]->name );
 
          if( ++col % 3 == 0 )
             d->character->print( "\r\n" );
@@ -889,7 +889,7 @@ void oedit_disp_affect_menu( descriptor_data * d )
       if( counter == 0 || counter == APPLY_EXT_AFFECT )
          continue;
 
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, a_types[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, a_types[counter] );
       if( ++col % 3 == 0 )
          d->character->print( "\r\n" );
    }
@@ -907,7 +907,7 @@ void oedit_disp_proj_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < PROJ_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, projectiles[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, projectiles[counter] );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -924,7 +924,7 @@ void oedit_disp_wgen_type_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TWTP_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, weapon_type[counter].name );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, weapon_type[counter].name );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -941,7 +941,7 @@ void oedit_disp_agen_type_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TATP_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, armor_type[counter].name );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, armor_type[counter].name );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -958,7 +958,7 @@ void oedit_disp_gen_material_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TMAT_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, materials[counter].name );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, materials[counter].name );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -975,7 +975,7 @@ void oedit_disp_wgen_qual_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < TQUAL_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, weapon_quality[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, weapon_quality[counter] );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -992,7 +992,7 @@ void oedit_disp_damage_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < DAM_MAX_TYPE; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, attack_table[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, attack_table[counter] );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -1009,7 +1009,7 @@ void oedit_disp_traptype_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter <= TRAP_TYPE_SEX_CHANGE; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, trap_types[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, trap_types[counter] );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -1044,7 +1044,7 @@ void oedit_disp_weapon_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < WEP_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, weapon_skills[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, weapon_skills[counter] );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -1061,7 +1061,7 @@ void oedit_disp_gear_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < GEAR_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, campgear[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, campgear[counter] );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -1078,7 +1078,7 @@ void oedit_disp_ore_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < ORE_MAX; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, ores[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, ores[counter] );
       if( ++col % 2 == 0 )
          d->character->print( "\r\n" );
    }
@@ -1483,7 +1483,7 @@ void oedit_disp_type_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_ITEM_TYPE; ++counter )
    {
-      d->character->printf( "&g%2d&w) %-20.20s ", counter, o_types[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20} ", counter, o_types[counter] );
       if( ++col % 3 == 0 )
          d->character->print( "\r\n" );
    }
@@ -2654,7 +2654,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                      else
                         number = get_risflag( arg1 );
                      if( number < 0 )
-                        d->character->printf( "Invalid flag: %s\r\n", arg1.c_str(  ) );
+                        d->character->print_fmt( "Invalid flag: {}\r\n", arg1 );
                      else
                         TOGGLE_BIT( d->character->tempnum, 1 << number );
                   }
@@ -2684,7 +2684,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                   value = find_spell( nullptr, arg, false );
                   if( value < 0 )
                   {
-                     d->character->printf( "Invalid spell %s, try again: ", arg.c_str(  ) );
+                     d->character->print_fmt( "Invalid spell {}, try again: ", arg );
                      return;
                   }
                }

@@ -424,7 +424,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
    }
 
    if( !victim->isnpc(  ) && victim->pcdata->clan && !victim->pcdata->clan->badge.empty(  ) && ( victim->pcdata->clan->clan_type != CLAN_GUILD ) )
-      ch->printf( "%s ", victim->pcdata->clan->badge.c_str(  ) );
+      ch->print_fmt( "{} ", victim->pcdata->clan->badge );
    else
       ch->set_color( AT_PERSON );
 
@@ -2017,7 +2017,7 @@ CMDF( do_compare )
 
    if( obj1->item_type != obj2->item_type )
    {
-      ch->printf( "Why would you compare a %s to a %s?\r\n", o_types[obj1->item_type], o_types[obj2->item_type] );
+      ch->print_fmt( "Why would you compare a {} to a {}?\r\n", o_types[obj1->item_type], o_types[obj2->item_type] );
       return;
    }
    msg = nullptr;
@@ -2209,7 +2209,7 @@ CMDF( do_wimpy )
       return;
    }
    ch->wimpy = wimpy;
-   ch->printf( "&YWimpy set to %d hit points.\r\n", wimpy );
+   ch->print_fmt( "&YWimpy set to {} hit points.\r\n", wimpy );
 }
 
 // Encryption upgraded to MD5 - Samson 7-10-00
@@ -2289,49 +2289,49 @@ CMDF( do_config )
       ch->print( "&G(use 'config +/-<keyword>' to toggle, see 'help config')&D\r\n" );
       ch->print( "&G--------------------------------------------------------------------------------&D\r\n\r\n" );
       ch->print( "&g&uDisplay:&d   " );
-      ch->printf( "&wPager        &z: %3s\t", PCFYN( ch, PCFLAG_PAGERON ) );
-      ch->printf( "&wGag          &z: %3s\t", PCFYN( ch, PCFLAG_GAG ) );
-      ch->printf( "&wBrief        &z: %3s\r\n", PCFYN( ch, PCFLAG_BRIEF ) );
-      ch->printf( "           &wCompass      &z: %3s\t", PCFYN( ch, PCFLAG_COMPASS ) );
-      ch->printf( "&wBlank        &z: %3s\t", PCFYN( ch, PCFLAG_BLANK ) );
-      ch->printf( "&wAnsi         &z: %3s\r\n", PCFYN( ch, PCFLAG_ANSI ) );
-      ch->printf( "           &wAutomap      &z: %3s\r\n", PCFYN( ch, PCFLAG_AUTOMAP ) );
+      ch->print_fmt( "&wPager        &z: {:<3}\t", PCFYN( ch, PCFLAG_PAGERON ) );
+      ch->print_fmt( "&wGag          &z: {:<3}\t", PCFYN( ch, PCFLAG_GAG ) );
+      ch->print_fmt( "&wBrief        &z: {:<3}\r\n", PCFYN( ch, PCFLAG_BRIEF ) );
+      ch->print_fmt( "           &wCompass      &z: {:<3}\t", PCFYN( ch, PCFLAG_COMPASS ) );
+      ch->print_fmt( "&wBlank        &z: {:<3}\t", PCFYN( ch, PCFLAG_BLANK ) );
+      ch->print_fmt( "&wAnsi         &z: {:<3}\r\n", PCFYN( ch, PCFLAG_ANSI ) );
+      ch->print_fmt( "           &wAutomap      &z: {:<3}\r\n", PCFYN( ch, PCFLAG_AUTOMAP ) );
 
       /*
        * Config option for Smartsac added 1-18-00 - Samson 
        */
       ch->print( "\r\n&g&uAuto:&d      " );
-      ch->printf( "&wAutosac      &z: %3s\t", PCFYN( ch, PCFLAG_AUTOSAC ) );
-      ch->printf( "&wAutogold     &z: %3s\t", PCFYN( ch, PCFLAG_AUTOGOLD ) );
-      ch->printf( "&wAutoloot     &z: %3s\r\n", PCFYN( ch, PCFLAG_AUTOLOOT ) );
-      ch->printf( "           &wAutoexit     &z: %3s\t", PCFYN( ch, PCFLAG_AUTOEXIT ) );
-      ch->printf( "&wSmartsac     &z: %3s\t", PCFYN( ch, PCFLAG_SMARTSAC ) );
-      ch->printf( "&wGuildsplit   &z: %3s\r\n", PCFYN( ch, PCFLAG_GUILDSPLIT ) );
-      ch->printf( "           &wGroupsplit   &z: %3s\t", PCFYN( ch, PCFLAG_GROUPSPLIT ) );
-      ch->printf( "&wAutoassist   &z: %3s\r\n", PCFYN( ch, PCFLAG_AUTOASSIST ) );
+      ch->print_fmt( "&wAutosac      &z: {:<3}\t", PCFYN( ch, PCFLAG_AUTOSAC ) );
+      ch->print_fmt( "&wAutogold     &z: {:<3}\t", PCFYN( ch, PCFLAG_AUTOGOLD ) );
+      ch->print_fmt( "&wAutoloot     &z: {:<3}\r\n", PCFYN( ch, PCFLAG_AUTOLOOT ) );
+      ch->print_fmt( "           &wAutoexit     &z: {:<3}\t", PCFYN( ch, PCFLAG_AUTOEXIT ) );
+      ch->print_fmt( "&wSmartsac     &z: {:<3}\t", PCFYN( ch, PCFLAG_SMARTSAC ) );
+      ch->print_fmt( "&wGuildsplit   &z: {:<3}\r\n", PCFYN( ch, PCFLAG_GUILDSPLIT ) );
+      ch->print_fmt( "           &wGroupsplit   &z: {:<3}\t", PCFYN( ch, PCFLAG_GROUPSPLIT ) );
+      ch->print_fmt( "&wAutoassist   &z: {:<3}\r\n", PCFYN( ch, PCFLAG_AUTOASSIST ) );
 
       /*
        * PCFLAG_NOBEEP config option added by Samson 2-15-98 
        */
       ch->print( "\r\n&g&uSafeties:&d  " );
-      ch->printf( "&wNoRecall     &z: %3s\t", PCFYN( ch, PCFLAG_NORECALL ) );
-      ch->printf( "&wNoSummon     &z: %3s\t", PCFYN( ch, PCFLAG_NOSUMMON ) );
-      ch->printf( "&wNoBeep       &z: %3s\r\n", PCFYN( ch, PCFLAG_NOBEEP ) );
+      ch->print_fmt( "&wNoRecall     &z: {:<3}\t", PCFYN( ch, PCFLAG_NORECALL ) );
+      ch->print_fmt( "&wNoSummon     &z: {:<3}\t", PCFYN( ch, PCFLAG_NOSUMMON ) );
+      ch->print_fmt( "&wNoBeep       &z: {:<3}\r\n", PCFYN( ch, PCFLAG_NOBEEP ) );
 
       if( !ch->has_pcflag( PCFLAG_DEADLY ) )
       {
-         ch->printf( "           &wNoTell       &z: %3s\t", PCFYN( ch, PCFLAG_NOTELL ) );
-         ch->printf( "&wDrag         &z: %3s\r\n", PCFYN( ch, PCFLAG_SHOVEDRAG ) );
+         ch->print_fmt( "           &wNoTell       &z: {:<3}\t", PCFYN( ch, PCFLAG_NOTELL ) );
+         ch->print_fmt( "&wDrag         &z: {:<3}\r\n", PCFYN( ch, PCFLAG_SHOVEDRAG ) );
       }
       else
-         ch->printf( "           &wNoTell       &z: %3s\r\n", PCFYN( ch, PCFLAG_NOTELL ) );
+         ch->print_fmt( "           &wNoTell       &z: {:<3}\r\n", PCFYN( ch, PCFLAG_NOTELL ) );
 
       ch->print( "\r\n&g&uMisc:&d      " );
-      ch->printf( "&wGroupwho     &z: %3s\t", PCFYN( ch, PCFLAG_GROUPWHO ) );
-      ch->printf( "&wNoIntro      &z: %3s\r\n", PCFYN( ch, PCFLAG_NOINTRO ) );
-      ch->printf( "           &wMSP          &z: %3s\t", PCFYN( ch, PCFLAG_MSP ) );
-      ch->printf( "&wCheckboard   &z: %3s\t", PCFYN( ch, PCFLAG_CHECKBOARD ) );
-      ch->printf( "&wNoQuote      &z: %3s\r\n", PCFYN( ch, PCFLAG_NOQUOTE ) );
+      ch->print_fmt( "&wGroupwho     &z: {:<3}\t", PCFYN( ch, PCFLAG_GROUPWHO ) );
+      ch->print_fmt( "&wNoIntro      &z: {:<3}\r\n", PCFYN( ch, PCFLAG_NOINTRO ) );
+      ch->print_fmt( "           &wMSP          &z: {:<3}\t", PCFYN( ch, PCFLAG_MSP ) );
+      ch->print_fmt( "&wCheckboard   &z: {:<3}\t", PCFYN( ch, PCFLAG_CHECKBOARD ) );
+      ch->print_fmt( "&wNoQuote      &z: {:<3}\r\n", PCFYN( ch, PCFLAG_NOQUOTE ) );
 
       /*
        * Config option for Room Flag display added by Samson 12-10-97 
@@ -2343,15 +2343,15 @@ CMDF( do_config )
       if( ch->is_immortal(  ) )
       {
          ch->print( "\r\n&g&uImmortal :&d " );
-         ch->printf( "&wRoomvnum     &z: %3s\t", PCFYN( ch, PCFLAG_ROOMVNUM ) );
-         ch->printf( "&wRoomflags    &z: %3s\t", PCFYN( ch, PCFLAG_AUTOFLAGS ) );
-         ch->printf( "&wSectortypes  &z: %3s\r\n", PCFYN( ch, PCFLAG_SECTORD ) );
-         ch->printf( "           &wFilename     &z: %3s\t", PCFYN( ch, PCFLAG_ANAME ) );
-         ch->printf( "&wPassdoor     &z: %3s\r\n", PCFYN( ch, PCFLAG_PASSDOOR ) );
+         ch->print_fmt( "&wRoomvnum     &z: {:3}\t", PCFYN( ch, PCFLAG_ROOMVNUM ) );
+         ch->print_fmt( "&wRoomflags    &z: {:3}\t", PCFYN( ch, PCFLAG_AUTOFLAGS ) );
+         ch->print_fmt( "&wSectortypes  &z: {:3}\r\n", PCFYN( ch, PCFLAG_SECTORD ) );
+         ch->print_fmt( "           &wFilename     &z: {:3}\t", PCFYN( ch, PCFLAG_ANAME ) );
+         ch->print_fmt( "&wPassdoor     &z: {:3}\r\n", PCFYN( ch, PCFLAG_PASSDOOR ) );
       }
 
       ch->print( "\r\n&g&uSettings:&d  " );
-      ch->printf( "&wPager Length &z(&Y%d&z)    &wWimpy &z(&Y%d&z)&d\r\n", ch->pcdata->pagerlen, ch->wimpy );
+      ch->print_fmt( "&wPager Length &z(&Y{}&z)    &wWimpy &z(&Y{}&z)&d\r\n", ch->pcdata->pagerlen, ch->wimpy );
 
       /*
        * Now only shows sentences section if you have any - Zarius 
@@ -2360,7 +2360,7 @@ CMDF( do_config )
           || ch->has_pcflag( PCFLAG_NO_TELL ) || ch->has_pcflag( PCFLAG_NOTITLE ) || ch->has_pcflag( PCFLAG_LITTERBUG ) )
       {  //added NOTITLE - Zarius
          ch->print( "\r\n\r\n&g&uSentences imposed on you:&d\r\n" );
-         ch->printf( "&R%s%s%s%s%s&D",
+         ch->print_fmt( "&R{}{}{}{}{}&D",
                      ch->has_pcflag( PCFLAG_SILENCE ) ?
                      "For your abuse of channels, you are currently silenced.\r\n" : "",
                      ch->has_pcflag( PCFLAG_NO_EMOTE ) ?
@@ -2433,12 +2433,12 @@ CMDF( do_config )
          if( fSet )
          {
             ch->set_pcflag( bit );
-            ch->printf( "&Y%s &wis now &GON\r\n", capitalize( arg ).c_str(  ) );
+            ch->print_fmt( "&Y{} &wis now &GON\r\n", capitalize( arg ) );
          }
          else
          {
             ch->unset_pcflag( bit );
-            ch->printf( "&Y%s &wis now &ROFF\r\n", capitalize( arg ).c_str(  ) );
+            ch->print_fmt( "&Y{} &wis now &ROFF\r\n", capitalize( arg ) );
          }
          return;
       }
@@ -2489,12 +2489,12 @@ CMDF( do_config )
          if( fSet )
          {
             ch->set_pcflag( bit );
-            ch->printf( "&Y%s &wis now &GON\r\n", capitalize( arg ).c_str(  ) );
+            ch->print_fmt( "&Y{} &wis now &GON\r\n", capitalize( arg ) );
          }
          else
          {
             ch->unset_pcflag( bit );
-            ch->printf( "&Y%s &wis now &ROFF\r\n", capitalize( arg ).c_str(  ) );
+            ch->print_fmt( "&Y{} &wis now &ROFF\r\n", capitalize( arg ) );
          }
          return;
       }
@@ -2571,7 +2571,7 @@ CMDF( do_pager )
       }
       else
       {
-         ch->printf( "Pager is now enabled at %d lines.\r\n", ch->pcdata->pagerlen );
+         ch->print_fmt( "Pager is now enabled at {} lines.\r\n", ch->pcdata->pagerlen );
          do_config( ch, "+pager" );
       }
       return;
@@ -2584,7 +2584,7 @@ CMDF( do_pager )
    ch->pcdata->pagerlen = atoi( argument.c_str(  ) );
    if( ch->pcdata->pagerlen < 5 )
       ch->pcdata->pagerlen = 5;
-   ch->printf( "Page pausing set to %d lines.\r\n", ch->pcdata->pagerlen );
+   ch->print_fmt( "Page pausing set to {} lines.\r\n", ch->pcdata->pagerlen );
 }
 
 void pc_data::save_ignores( FILE * fp )
@@ -2658,7 +2658,7 @@ CMDF( do_ignore )
 
       ch->print( "&[ignore]" );
       for( auto& temp : ch->pcdata->ignore )
-         ch->printf( "\t  - %s\r\n", temp.c_str(  ) );
+         ch->print_fmt( "\t  - {}\r\n", temp );
       return;
    }
 
@@ -2701,7 +2701,7 @@ CMDF( do_ignore )
       {
          if( !ch->reply )
          {
-            ch->printf( "&[ignore]%s is not here.\r\n", argument.c_str(  ) );
+            ch->print_fmt( "&[ignore]{} is not here.\r\n", argument );
             return;
          }
          else
@@ -2721,7 +2721,7 @@ CMDF( do_ignore )
           */
          if( !str_cmp( temp, capitalize( argument ) ) )
          {
-            ch->printf( "&[ignore]You no longer ignore %s.\r\n", temp.c_str(  ) );
+            ch->print_fmt( "&[ignore]You no longer ignore {}.\r\n", temp );
             ch->pcdata->ignore.remove( temp );
             return;
          }
@@ -2734,7 +2734,7 @@ CMDF( do_ignore )
        */
       if( !std::filesystem::exists( fname ) && ( !( victim = ch->get_char_world( argument ) ) || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
       {
-         ch->printf( "&[ignore]No player exists by the name %s.\r\n", argument.c_str(  ) );
+         ch->print_fmt( "&[ignore]No player exists by the name {}.\r\n", argument );
          return;
       }
 
@@ -2760,12 +2760,12 @@ CMDF( do_ignore )
       {
          std::string inew = capitalize( argument );
          ch->pcdata->ignore.push_back( inew );
-         ch->printf( "&[ignore]You now ignore %s.\r\n", inew.c_str(  ) );
+         ch->print_fmt( "&[ignore]You now ignore {}.\r\n", inew );
          return;
       }
       else
       {
-         ch->printf( "&[ignore]You may only ignore %zu players.\r\n", sysdata->maxign );
+         ch->print_fmt( "&[ignore]You may only ignore {} players.\r\n", sysdata->maxign );
          return;
       }
    }

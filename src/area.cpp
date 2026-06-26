@@ -2514,7 +2514,7 @@ CMDF( do_adelete )
    if( argument.empty(  ) || str_cmp( argument, "yes" ) )
    {
       ch->print( "&RThis action must be confirmed before executing. It is not reversible.\r\n" );
-      ch->printf( "&RTo delete this area, type: &Wadelete %s yes&D", arg.c_str(  ) );
+      ch->print_fmt( "&RTo delete this area, type: &Wadelete {} yes&D", arg );
       return;
    }
    if( tarea->flags.test( AFLAG_PROTOTYPE ) )
@@ -3042,8 +3042,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> nothing <percentage>\r\n" );
          return;
       }
-      tarea->tg_nothing = stoi( argument );
-      ch->printf( "Area chance to generate nothing set to %hu%%\r\n", tarea->tg_nothing );
+      tarea->tg_nothing = std::stoi( argument );
+      ch->print_fmt( "Area chance to generate nothing set to {}%\r\n", tarea->tg_nothing );
 
       return;
    }
@@ -3055,8 +3055,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> gold <percentage>\r\n" );
          return;
       }
-      tarea->tg_gold = stoi( argument );
-      ch->printf( "Area chance to generate gold set to %hu%%\r\n", tarea->tg_gold );
+      tarea->tg_gold = std::stoi( argument );
+      ch->print_fmt( "Area chance to generate gold set to {}%\r\n", tarea->tg_gold );
 
       return;
    }
@@ -3068,8 +3068,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> item <percentage>\r\n" );
          return;
       }
-      tarea->tg_item = stoi( argument );
-      ch->printf( "Area chance to generate item set to %hu%%\r\n", tarea->tg_item );
+      tarea->tg_item = std::stoi( argument );
+      ch->print_fmt( "Area chance to generate item set to {}%\r\n", tarea->tg_item );
 
       return;
    }
@@ -3081,8 +3081,8 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> gem <percentage>\r\n" );
          return;
       }
-      tarea->tg_gem = stoi( argument );
-      ch->printf( "Area chance to generate gem set to %hu%%\r\n", tarea->tg_gem );
+      tarea->tg_gem = std::stoi( argument );
+      ch->print_fmt( "Area chance to generate gem set to {}%\r\n", tarea->tg_gem );
 
       return;
    }
@@ -3094,7 +3094,7 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> scroll <percentage>\r\n" );
          return;
       }
-      tarea->tg_scroll = stoi( argument );
+      tarea->tg_scroll = std::stoi( argument );
       ch->print_fmt( "Area chance to generate scroll set to {}%\r\n", tarea->tg_scroll );
 
       return;
@@ -3107,7 +3107,7 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> potion <percentage>\r\n" );
          return;
       }
-      tarea->tg_potion = stoi( argument );
+      tarea->tg_potion = std::stoi( argument );
       ch->print_fmt( "Area chance to generate potion set to {}%\r\n", tarea->tg_potion );
 
       return;
@@ -3120,7 +3120,7 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> wand <percentage>\r\n" );
          return;
       }
-      tarea->tg_wand = stoi( argument );
+      tarea->tg_wand = std::stoi( argument );
       ch->print_fmt( "Area chance to generate wand set to {}%\r\n", tarea->tg_wand );
 
       return;
@@ -3133,7 +3133,7 @@ CMDF( do_aset )
          ch->print( "Usage: aset <filename> armor <percentage>\r\n" );
          return;
       }
-      tarea->tg_armor = stoi( argument );
+      tarea->tg_armor = std::stoi( argument );
       ch->print_fmt( "Area chance to generate armor set to {}%\r\n", tarea->tg_armor );
 
       return;
@@ -3147,7 +3147,7 @@ void show_vnums( char_data * ch, short proto )
 {
    int count = 0;
 
-   ch->pagerf( "&W%-15.15s %-40.40s %5.5s\r\n\r\n", "Filename", "Area Name", "Vnums" );
+   ch->pager_fmt( "&W{:<15.15} {:<40.40} {:5.5}\r\n\r\n", "Filename", "Area Name", "Vnums" );
    for( auto* area : area_vsort )
    {
       if( proto == 0 && !area->flags.test( AFLAG_PROTOTYPE ) )

@@ -1429,15 +1429,15 @@ CMDF( do_survey )
             iMes = 10;
 
          if( dir == -1 )
-            ch->printf( "Right here nearby, %s.\r\n", !landmark->description.empty(  )? landmark->description.c_str(  ) : "BUG! Please report!" );
+            ch->print_fmt( "Right here nearby, {}.\r\n", !landmark->description.empty(  ) ? landmark->description : "BUG! Please report!" );
          else
-            ch->printf( "To the %s, %s, %s.\r\n", dir_name[dir], landmark_distances[iMes],
-                        !landmark->description.empty(  )? landmark->description.c_str(  ) : "<BUG! Inform the Immortals>" );
+            ch->print_fmt( "To the {}, {}, {}.\r\n", dir_name[dir], landmark_distances[iMes],
+                        !landmark->description.empty(  ) ? landmark->description : "<BUG! Inform the Immortals>" );
 
          if( ch->is_immortal(  ) )
          {
-            ch->printf( "Distance to landmark: %lf\r\n", dist );
-            ch->printf( "Landmark coordinates: %dX %dY\r\n", landmark->map_x, landmark->map_y );
+            ch->print_fmt( "Distance to landmark: {}\r\n", dist );
+            ch->print_fmt( "Landmark coordinates: {}X {}Y\r\n", landmark->map_x, landmark->map_y );
          }
       }
    }
@@ -2418,12 +2418,12 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
             ch->map_x = ship->map_x;
             ch->map_y = ship->map_y;
             interpret( ch, "look" );
-            ch->printf( "You board %s.\r\n", ship->name.c_str(  ) );
+            ch->print_fmt( "You board {}.\r\n", ship->name );
             return rSTOP;
          }
          else
          {
-            ch->printf( "The crew abord %s blocks you from boarding!\r\n", ship->name.c_str(  ) );
+            ch->print_fmt( "The crew aboard {} blocks you from boarding!\r\n", ship->name );
             return rSTOP;
          }
       }
@@ -2584,7 +2584,7 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
 
    if( !sect_show[sector].canpass && !ch->is_immortal(  ) )
    {
-      ch->printf( "%s\r\n", impass_message[sector] );
+      ch->print_fmt( "{}\r\n", impass_message[sector] );
       return rSTOP;
    }
 
@@ -3010,13 +3010,13 @@ CMDF( do_coords )
 
    if( !is_valid_x( x ) )
    {
-      ch->printf( "Valid x coordinates are 0 to %d.\r\n", MAX_X - 1 );
+      ch->print_fmt( "Valid x coordinates are 0 to {}.\r\n", MAX_X - 1 );
       return;
    }
 
    if( !is_valid_y( y ) )
    {
-      ch->printf( "Valid y coordinates are 0 to %d.\r\n", MAX_Y - 1 );
+      ch->print_fmt( "Valid y coordinates are 0 to {}.\r\n", MAX_Y - 1 );
       return;
    }
 

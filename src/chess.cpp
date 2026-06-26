@@ -709,7 +709,7 @@ void free_game( game_board_data * board )
    {
       if( char_data * ch = supermob->get_char_world( board->player1 ) ) // Added for bugfix - Findecano 23/11/07
       {
-         ch->printf( "Your chess game has been stopped at %d total moves.\r\n", board->turn );
+         ch->print_fmt( "Your chess game has been stopped at {} total moves.\r\n", board->turn );
          ch->pcdata->game_board = nullptr;
       }
    }
@@ -718,7 +718,7 @@ void free_game( game_board_data * board )
    {
       if( char_data * ch = supermob->get_char_world( board->player2 ) ) // Added for bugfix - Findecano 23/11/07
       {
-         ch->printf( "Your chess game has been stopped at %d total moves.\r\n", board->turn );
+         ch->print_fmt( "Your chess game has been stopped at {} total moves.\r\n", board->turn );
          ch->pcdata->game_board = nullptr;
       }
    }

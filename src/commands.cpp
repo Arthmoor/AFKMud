@@ -1691,7 +1691,7 @@ CMDF( do_commands )
    chTrust = ch->get_trust(  );
 
    if( !argument.empty(  ) && !( sorted || all ) )
-      ch->pagerf( "&[plain]Commands beginning with '%s':\r\n", argument.c_str(  ) );
+      ch->pager_fmt( "&[plain]Commands beginning with '{}':\r\n", argument );
    else if( !argument.empty(  ) && sorted )
       ch->pager( "&[plain]Commands -- Tabbed by Letter\r\n" );
    else
@@ -1700,7 +1700,7 @@ CMDF( do_commands )
    // Doesn't fit well in a sorted view... -- X
    if( !sorted )
    {
-      ch->pagerf( "&[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl &[plain]%-11s Lvl\r\n", "Command", "Command", "Command", "Command", "Command" );
+      ch->pager_fmt( "&[plain]{:<11} Lvl &[plain]{:<11} Lvl &[plain]{:<11} Lvl &[plain]{:<11} Lvl &[plain]{:<11} Lvl\r\n", "Command", "Command", "Command", "Command", "Command" );
       ch->pager( "-------------------------------------------------------------------------------\r\n" );
    }
 
@@ -1731,15 +1731,15 @@ CMDF( do_commands )
                letter = command->name[0];
                if( col % 5 != 0 )
                   ch->pager( "\r\n" );
-               ch->pagerf( "&c[ &[plain]%c &c]\r\n", toupper( letter ) );
+               ch->pager_fmt( "&c[ &[plain]{} &c]\r\n", toupper( letter ) );
                col = 0;
             }
          }
 
          if( command->level == 0 )
-            ch->pagerf( "&[plain]%-11s   - ", command->name.c_str(  ) );
+            ch->pager_fmt( "&[plain]{:<11}   - ", command->name );
          else
-            ch->pagerf( "&[plain]%-11s %3d ", command->name.c_str(  ), command->level );
+            ch->pager_fmt( "&[plain]{:<11} {:3} ", command->name, command->level );
 
          ++count;
          if( ++col % 5 == 0 )
@@ -1751,7 +1751,7 @@ CMDF( do_commands )
       ch->pager( "\r\n" );
 
    if( count )
-      ch->pagerf( "&[plain]  %d commands found.\r\n", count );
+      ch->pager_fmt( "&[plain]  {} commands found.\r\n", count );
    else
       ch->pager( "&[plain]  No commands found.\r\n" );
 }
@@ -1771,7 +1771,7 @@ CMDF( do_wizhelp )
       {
          ch->pager( "\r\n\r\n" );
          col = 1;
-         ch->pagerf( "[LEVEL %-2d]\r\n", curr_lvl );
+         ch->pager_fmt( "[LEVEL {:<2}]\r\n", curr_lvl );
 
          for( char x = 0; x < 126; ++x )
          {
@@ -1784,7 +1784,7 @@ CMDF( do_wizhelp )
 
                if( ( cmd->level == curr_lvl ) && cmd->level <= ch->level )
                {
-                  ch->pagerf( "%-12s", cmd->name.c_str(  ) );
+                  ch->pager_fmt( "{:<12}", cmd->name );
                   if( ++col % 6 == 0 )
                      ch->pager( "\r\n" );
                }
@@ -1809,18 +1809,18 @@ CMDF( do_wizhelp )
 
    if( curr_lvl < LEVEL_IMMORTAL || curr_lvl > MAX_LEVEL )
    {
-      ch->printf( "Valid levels are between %d and %d.\r\n", LEVEL_IMMORTAL, MAX_LEVEL );
+      ch->print_fmt( "Valid levels are between {} and {}.\r\n", LEVEL_IMMORTAL, MAX_LEVEL );
       return;
    }
 
    ch->pager( "\r\n\r\n" );
    col = 1;
-   ch->pagerf( "[LEVEL %-2d]\r\n", curr_lvl );
+   ch->pager_fmt( "[LEVEL {:<2}]\r\n", curr_lvl );
 
    for( char x = 0; x < 126; ++x )
    {
-      const std::vector < cmd_type * >&cmd_list = command_table[x];
-      std::vector < cmd_type * >::const_iterator icmd;
+      const std::vector<cmd_type *>&cmd_list = command_table[x];
+      std::vector<cmd_type *>::const_iterator icmd;
 
       for( icmd = cmd_list.begin(  ); icmd != cmd_list.end(  ); ++icmd )
       {
@@ -1828,7 +1828,7 @@ CMDF( do_wizhelp )
 
          if( cmd->level == curr_lvl )
          {
-            ch->pagerf( "%-12s", cmd->name.c_str(  ) );
+            ch->pager_fmt( "{:<12}", cmd->name );
             if( ++col % 6 == 0 )
                ch->pager( "\r\n" );
          }
@@ -1882,7 +1882,7 @@ CMDF( do_timecmd )
    long long seconds = elapsed.count() / 1000000;
    long long microseconds = elapsed.count() % 1000000;
 
-   ch->printf( "Timing took %lld.%06lld seconds.\r\n", seconds, microseconds );
+   ch->print_fmt( "Timing took {}.{} seconds.\r\n", seconds, microseconds );
 }
 
 /******************************************************
@@ -1914,9 +1914,9 @@ CMDF( do_alias )
          ch->print( "You have no aliases defined!\r\n" );
          return;
       }
-      ch->pagerf( "%-20s What it does\r\n", "Alias" );
+      ch->pager_fmt( "{:<20} What it does\r\n", "Alias" );
       for( al = ch->pcdata->alias_map.begin(  ); al != ch->pcdata->alias_map.end(  ); ++al )
-         ch->pagerf( "%-20s %s\r\n", al->first.c_str(  ), al->second.c_str(  ) );
+         ch->pager_fmt( "{:<20} {}\r\n", al->first, al->second );
       return;
    }
 
@@ -2200,16 +2200,16 @@ CMDF( do_sedit )
 
    if( arg2.empty(  ) || !str_cmp( arg2, "show" ) )
    {
-      ch->printf( "Social   : %s\r\n\r\nCNoArg   : %s\r\n", social->name.c_str(  ), social->char_no_arg.c_str(  ) );
-      ch->printf( "ONoArg   : %s\r\nCFound   : %s\r\nOFound   : %s\r\n",
-                  !social->others_no_arg.empty(  )? social->others_no_arg.c_str(  ) : "(not set)",
-                  !social->char_found.empty(  )? social->char_found.c_str(  ) : "(not set)", !social->others_found.empty(  )? social->others_found.c_str(  ) : "(not set)" );
-      ch->printf( "VFound   : %s\r\nCAuto    : %s\r\nOAuto    : %s\r\n",
-                  !social->vict_found.empty(  )? social->vict_found.c_str(  ) : "(not set)",
-                  !social->char_auto.empty(  )? social->char_auto.c_str(  ) : "(not set)", !social->others_auto.empty(  )? social->others_auto.c_str(  ) : "(not set)" );
-      ch->printf( "ObjSelf  : %s\r\nObjOthers: %s\r\n",
-                  !social->obj_self.empty(  )? social->obj_self.c_str(  ) : "(not set)", !social->obj_others.empty(  )? social->obj_others.c_str(  ) : "(not set)" );
-      ch->printf( "MinPos   : %s\r\n", npc_position[social->minposition] );
+      ch->print_fmt( "Social   : {}\r\n\r\nCNoArg   : {}\r\n", social->name, social->char_no_arg );
+      ch->print_fmt( "ONoArg   : {}\r\nCFound   : {}\r\nOFound   : {}\r\n",
+                  !social->others_no_arg.empty(  ) ? social->others_no_arg : "(not set)",
+                  !social->char_found.empty(  ) ? social->char_found : "(not set)", !social->others_found.empty(  ) ? social->others_found : "(not set)" );
+      ch->print_fmt( "VFound   : {}\r\nCAuto    : {}\r\nOAuto    : {}\r\n",
+                  !social->vict_found.empty(  ) ? social->vict_found : "(not set)",
+                  !social->char_auto.empty(  ) ? social->char_auto : "(not set)", !social->others_auto.empty(  ) ? social->others_auto : "(not set)" );
+      ch->print_fmt( "ObjSelf  : {}\r\nObjOthers: {}\r\n",
+                  !social->obj_self.empty(  ) ? social->obj_self : "(not set)", !social->obj_others.empty(  ) ? social->obj_others : "(not set)" );
+      ch->print_fmt( "MinPos   : %s\r\n", npc_position[social->minposition] );
       return;
    }
 
@@ -2311,7 +2311,7 @@ CMDF( do_sedit )
 
       if( minpos < POS_SLEEPING || minpos >= POS_MAX )
       {
-         ch->printf( "%s is not a valid position.\r\n", arg2.c_str() );
+         ch->print_fmt( "{} is not a valid position.\r\n", arg2 );
          return;
       }
       social->minposition = minpos;
@@ -2332,7 +2332,7 @@ CMDF( do_sedit )
 
       if( ( checksocial = find_social( arg1 ) ) != nullptr )
       {
-         ch->printf( "There is already a social named %s.\r\n", arg1.c_str(  ) );
+         ch->print_fmt( "There is already a social named {}.\r\n", arg1 );
          return;
       }
 
@@ -2365,7 +2365,7 @@ CMDF( do_socials )
       all = true;
 
    if( !argument.empty(  ) && !( sorted || all ) )
-      ch->pagerf( "&[plain]Socials beginning with '%s':\r\n", argument.c_str(  ) );
+      ch->pager_fmt( "&[plain]Socials beginning with '{}':\r\n", argument );
    else if( !argument.empty(  ) && sorted )
       ch->pager( "&[plain]Socials -- Tabbed by Letter\r\n" );
    else
@@ -2384,10 +2384,10 @@ CMDF( do_socials )
          letter = social->name[0];
          if( col % 5 != 0 )
             ch->pager( "\r\n" );
-         ch->pagerf( "&c[ &[plain]%c &c]\r\n", toupper( letter ) );
+         ch->pager_fmt( "&c[ &[plain]{} &c]\r\n", toupper( letter ) );
          col = 0;
       }
-      ch->pagerf( "&[plain]%-15s ", social->name.c_str(  ) );
+      ch->pager_fmt( "&[plain]{:<15} ", social->name );
       ++count;
       if( ++col % 5 == 0 )
          ch->pager( "\r\n" );
@@ -2397,7 +2397,7 @@ CMDF( do_socials )
       ch->pager( "\r\n" );
 
    if( count )
-      ch->pagerf( "&[plain]   %d socials found.\r\n", count );
+      ch->pager_fmt( "&[plain]   {} socials found.\r\n", count );
    else
       ch->pager( "&[plain]   No socials found.\r\n" );
 }

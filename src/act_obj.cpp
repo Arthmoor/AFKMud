@@ -1570,7 +1570,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
                   ch->print( "You cannot wield that.\r\n" );
                   break;
                default:
-                  ch->printf( "You cannot wear that on your %s.\r\n", w_flags[bit] );
+                  ch->print_fmt( "You cannot wear that on your {}.\r\n", w_flags[bit] );
             }
          }
          return;

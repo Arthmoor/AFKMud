@@ -372,7 +372,7 @@ CMDF( do_showqbit )
    if( !str_cmp( argument, "all" ) )
    {
       for( bit = qbits.begin(  ); bit != qbits.end(  ); ++bit )
-         ch->printf( "&RQBIT: &Y%d &G%s\r\n", bit->first, bit->second.c_str(  ) );
+         ch->print_fmt( "&RQBIT: &Y{} &G{}\r\n", bit->first, bit->second );
       return;
    }
 

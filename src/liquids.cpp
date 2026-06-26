@@ -566,17 +566,17 @@ CMDF( do_showliquid )
    if( !argument.empty(  ) && ( ( liq = get_liq( argument ) ) != nullptr ) )
    {
       if( !liq->name.empty(  ) )
-         ch->pagerf( "&GLiquid information for:&g %s\r\n", liq->name.c_str(  ) );
+         ch->pager_fmt( "&GLiquid information for:&g {}\r\n", liq->name );
       if( !liq->shortdesc.empty(  ) )
-         ch->pagerf( "&GLiquid shortdesc:&g\t %s\r\n", liq->shortdesc.c_str(  ) );
+         ch->pager_fmt( "&GLiquid shortdesc:&g\t {}\r\n", liq->shortdesc );
       if( !liq->color.empty(  ) )
-         ch->pagerf( "&GLiquid color:&g\t %s\r\n", liq->color.c_str(  ) );
-      ch->pagerf( "&GLiquid vnum:&g\t %d\r\n", liq->vnum );
-      ch->pagerf( "&GLiquid type:&g\t %s\r\n", liquid_types[liq->type] );
-      ch->pagerf( "&GLiquid Modifiers\r\n" );
+         ch->pager_fmt( "&GLiquid color:&g\t {}\r\n", liq->color );
+      ch->pager_fmt( "&GLiquid vnum:&g\t {}\r\n", liq->vnum );
+      ch->pager_fmt( "&GLiquid type:&g\t {}\r\n", liquid_types[liq->type] );
+      ch->pager( "&GLiquid Modifiers\r\n" );
       for( i = 0; i < MAX_CONDS; ++i )
          if( liquid_table[i] )
-            ch->pagerf( "&G%s:&g\t %d\r\n", mod_types[i], liq->mod[i] );
+            ch->pager_fmt( "&G{}:&g\t {}\r\n", mod_types[i], liq->mod[i] );
       return;
    }
    else if( !argument.empty(  ) && !( liq = get_liq( argument ) ) )
@@ -590,7 +590,7 @@ CMDF( do_showliquid )
    {
       if( !liquid_table[i] )
          continue;
-      ch->pagerf( "  %-7d %s\r\n", liquid_table[i]->vnum, liquid_table[i]->name.c_str(  ) );
+      ch->pager_fmt( "  {:<7} {}\r\n", liquid_table[i]->vnum, liquid_table[i]->name );
    }
    ch->pager( "\r\nUse 'showliquid [vnum]' to view individual liquids.\r\n" );
    ch->pager( "Use 'showmixture' to view the mixturetable.\r\n" );

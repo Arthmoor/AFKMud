@@ -281,7 +281,7 @@ CMDF( do_retire )
 
    if( victim->level < LEVEL_SAVIOR )
    {
-      ch->printf( "The minimum level for retirement is %d.\r\n", LEVEL_SAVIOR );
+      ch->print_fmt( "The minimum level for retirement is {}.\r\n", LEVEL_SAVIOR );
       return;
    }
 
@@ -3076,7 +3076,7 @@ CMDF( do_trust )
 
    if( ( level = atoi( argument.c_str(  ) ) ) < 0 || level > MAX_LEVEL )
    {
-      ch->printf( "Level must be 0 (reset) or 1 to %d.\r\n", MAX_LEVEL );
+      ch->print_fmt( "Level must be 0 (reset) or 1 to {}.\r\n", MAX_LEVEL );
       return;
    }
 
@@ -3718,7 +3718,7 @@ CMDF( do_restoretime )
       auto hours = std::chrono::duration_cast<std::chrono::hours>( elapsed );
       auto minutes = std::chrono::duration_cast<std::chrono::minutes>( elapsed % std::chrono::hours(1) );
 
-      ch->printf("The last restore all was %ld hours and %ld minutes ago.\r\n", hours.count(), minutes.count() );
+      ch->print_fmt("The last restore all was {} hours and {} minutes ago.\r\n", hours.count(), minutes.count() );
    }
 
    if( !ch->pcdata )
@@ -3736,7 +3736,7 @@ CMDF( do_restoretime )
       auto hours = std::chrono::duration_cast<std::chrono::hours>( elapsed );
       auto minutes = std::chrono::duration_cast<std::chrono::minutes>( elapsed % std::chrono::hours(1) );
 
-      ch->printf( "Your last restore all was %ld hours and %ld minutes ago.\r\n", hours.count(), minutes.count() );
+      ch->print_fmt( "Your last restore all was {} hours and {} minutes ago.\r\n", hours.count(), minutes.count() );
    }
 }
 
@@ -4358,13 +4358,13 @@ CMDF( do_invis )
       if( !ch->isnpc(  ) )
       {
          ch->pcdata->wizinvis = level;
-         ch->printf( "Wizinvis level set to %d.\r\n", level );
+         ch->print_fmt( "Wizinvis level set to {}.\r\n", level );
       }
 
       else
       {
          ch->mobinvis = level;
-         ch->printf( "Mobinvis level set to %d.\r\n", level );
+         ch->print_fmt( "Mobinvis level set to {}.\r\n", level );
       }
       return;
    }

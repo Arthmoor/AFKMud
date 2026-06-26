@@ -1674,7 +1674,7 @@ CMDF( do_shopset )
    {
       if( value < 0 || value > sysdata->hoursperday )
       {
-         ch->printf( "Out of range. Valid values are from 0 to %d.\r\n", sysdata->hoursperday );
+         ch->print_fmt( "Out of range. Valid values are from 0 to {}.\r\n", sysdata->hoursperday );
          return;
       }
       shop->open_hour = value;
@@ -1686,7 +1686,7 @@ CMDF( do_shopset )
    {
       if( value < 0 || value > sysdata->hoursperday )
       {
-         ch->printf( "Out of range. Valid values are from 0 to %d.\r\n", sysdata->hoursperday );
+         ch->print_fmt( "Out of range. Valid values are from 0 to {}.\r\n", sysdata->hoursperday );
          return;
       }
       shop->close_hour = value;
@@ -1696,7 +1696,7 @@ CMDF( do_shopset )
 
    if( !str_cmp( arg2, "keeper" ) )
    {
-      int vnum = atoi( argument.c_str(  ) );
+      int vnum = std::stoi( argument );
       if( !( mob2 = get_mob_index( vnum ) ) )
       {
          ch->print( "Mobile not found.\r\n" );
@@ -1969,7 +1969,7 @@ CMDF( do_repairset )
    {
       if( value < 0 || value > sysdata->hoursperday )
       {
-         ch->printf( "Out of range. Valid values are from 0 to %d.\r\n", sysdata->hoursperday );
+         ch->print_fmt( "Out of range. Valid values are from 0 to {}.\r\n", sysdata->hoursperday );
          return;
       }
       repair->open_hour = value;
@@ -1981,7 +1981,7 @@ CMDF( do_repairset )
    {
       if( value < 0 || value > sysdata->hoursperday )
       {
-         ch->printf( "Out of range. Valid values are from 0 to %d.\r\n", sysdata->hoursperday );
+         ch->print_fmt( "Out of range. Valid values are from 0 to {}.\r\n", sysdata->hoursperday );
          return;
       }
       repair->close_hour = value;
@@ -1991,7 +1991,7 @@ CMDF( do_repairset )
 
    if( !str_cmp( arg2, "keeper" ) )
    {
-      int vnum = atoi( argument.c_str(  ) );
+      int vnum = std::stoi( argument );
       if( !( mob2 = get_mob_index( vnum ) ) )
       {
          ch->print( "Mobile not found.\r\n" );
@@ -2234,7 +2234,7 @@ CMDF( do_withdraw )
 
    if( found && str_cmp( ch->name, clan->leader ) && str_cmp( ch->name, clan->number1 ) && str_cmp( ch->name, clan->number2 ) )
    {
-      ch->printf( "Sorry, only the %s officers are allowed to withdraw funds.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
+      ch->print_fmt( "Sorry, only the {} officers are allowed to withdraw funds.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan" );
       return;
    }
 
@@ -2340,10 +2340,10 @@ CMDF( do_balance )
 
    if( found )
    {
-      ch->printf( "&[gold]The %s has %d gold in the vault.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->balance );
+      ch->print_fmt( "&[gold]The {} has {} gold in the vault.\r\n", clan->clan_type == CLAN_GUILD ? "guild" : "clan", clan->balance );
    }
    else
-      ch->printf( "&[gold]You have %d gold in the bank.\r\n", ch->pcdata->balance );
+      ch->print_fmt( "&[gold]You have {} gold in the bank.\r\n", ch->pcdata->balance );
 }
 
 /* End of new bank support */

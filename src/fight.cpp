@@ -1507,7 +1507,7 @@ void group_gain( char_data * ch, char_data * victim )
 
       gch->alignment = align_compute( gch, victim );
       class_monitor( gch );   /* Alignment monitoring added - Samson 4-17-98 */
-      gch->printf( "%sYou receive %d experience points.\r\n", gch->color_str( AT_PLAIN ), xp );
+      gch->print_fmt( "{}You receive {} experience points.\r\n", gch->color_str( AT_PLAIN ), xp );
       gch->gain_exp( xp ); /* group gain */
       align_zap( gch );
    }

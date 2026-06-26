@@ -697,7 +697,7 @@ CMDF( do_setrealm )
 
       if( value < 0 || value >= MAX_REALM )
       {
-         ch->printf( "Unknown realm type: %s\r\n", argument.c_str(  ) );
+         ch->print_fmt( "Unknown realm type: {}\r\n", argument );
          return;
       }
       realm->type = value;
@@ -708,7 +708,7 @@ CMDF( do_setrealm )
 
    if( !str_cmp( arg2, "members" ) )
    {
-      realm->members = umin( 0, atoi( argument.c_str(  ) ) );
+      realm->members = umin( 0, std::stoi( argument ) );
       ch->print( "Done.\r\n" );
       save_realm( realm );
       return;
@@ -734,7 +734,7 @@ CMDF( do_setrealm )
    {
       if( str_cmp( argument, "confirmed" ) )
       {
-         ch->printf( "Are you sure? Type &Ysetrealm \"%s\" delete confirmed&D to delete this realm.\r\n", realm->name.c_str() );
+         ch->print_fmt( "Are you sure? Type &Ysetrealm \"{}\" delete confirmed&D to delete this realm.\r\n", realm->name );
          return;
       }
       delete_realm( ch, realm );
@@ -770,11 +770,11 @@ CMDF( do_showrealm )
       return;
    }
 
-   ch->printf( "\r\n&wRealm    : &W%s\t\t&wBadge: &W%s\t\t&wFilename : &W%s\t\t&wType      : &W%s\r\n",
-      realm->name.c_str(  ), !realm->badge.empty(  ) ? realm->badge.c_str(  ) : "(not set)", realm->filename.c_str(  ), realm_type_names[realm->type] );
-   ch->printf( "&wDesc     : &W%s\r\n", realm->realmdesc.c_str(  ) );
-   ch->printf( "&wLeader   : &W%-19.19s\t&wRank: &W%s\r\n", realm->leader.c_str(  ), realm->leadrank.c_str(  ) );
-   ch->printf( "&wMembers  : &W%-6d    &wBoard    : &W%-6d\r\n", realm->members, realm->board );
+   ch->print_fmt( "\r\n&wRealm    : &W{}\t\t&wBadge: &W{}\t\t&wFilename : &W{}\t\t&wType      : &W{}\r\n",
+      realm->name, !realm->badge.empty(  ) ? realm->badge : "(not set)", realm->filename, realm_type_names[realm->type] );
+   ch->print_fmt( "&wDesc     : &W{}\r\n", realm->realmdesc );
+   ch->print_fmt( "&wLeader   : &W{:<19.19}\t&wRank: &W{}\r\n", realm->leader, realm->leadrank );
+   ch->print_fmt( "&wMembers  : &W{:<6}    &wBoard    : &W{:<6}\r\n", realm->members, realm->board );
 }
 
 CMDF( do_makerealm )

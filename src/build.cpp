@@ -3256,7 +3256,7 @@ CMDF( do_oset )
       value = get_otype( argument );
       if( value < 1 )
       {
-         ch->printf( "Unknown type: %s\r\n", arg3.c_str(  ) );
+         ch->print_fmt( "Unknown type: {}\r\n", arg3 );
          return;
       }
       obj->item_type = ( short )value;
@@ -3444,7 +3444,7 @@ CMDF( do_oset )
       loc = get_atype( arg2 );
       if( loc < 1 )
       {
-         ch->printf( "Unknown field: %s\r\n", arg2.c_str(  ) );
+         ch->print_fmt( "Unknown field: {}\r\n", arg2 );
          return;
       }
       if( loc == APPLY_AFFECT )
@@ -3455,7 +3455,7 @@ CMDF( do_oset )
             value = get_aflag( arg3 );
 
             if( value < 0 || value >= MAX_AFFECTED_BY )
-               ch->printf( "Unknown affect: %s\r\n", arg3.c_str(  ) );
+               ch->print_fmt( "Unknown affect: {}\r\n", arg3 );
             else
                found = true;
          }
@@ -3470,7 +3470,7 @@ CMDF( do_oset )
             value = get_risflag( flag );
 
             if( value < 0 || value >= MAX_RIS_FLAG )
-               ch->printf( "Unknown flag: %s\r\n", flag.c_str(  ) );
+               ch->print_fmt( "Unknown flag: {}\r\n", flag );
             else
             {
                risabit.set( value );
@@ -3485,7 +3485,7 @@ CMDF( do_oset )
          value = skill_lookup( arg3 );
 
          if( !IS_VALID_SN( value ) )
-            ch->printf( "Invalid spell: %s", arg3.c_str(  ) );
+            ch->print_fmt( "Invalid spell: {}", arg3 );
          else
             found = true;
       }
@@ -3783,11 +3783,11 @@ CMDF( do_oset )
 
             if( is_number( argument ) )
             {
-               int bv = atoi( argument.c_str() );
+               int bv = std::stoi( argument );
 
                if( bv < 0 || bv > BV31 )
                {
-                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  ch->print_fmt( "Invalid bitvector value {}. Edit cancelled.\r\n", bv );
                   return;
                }
                tmpval = bv;
@@ -3799,7 +3799,7 @@ CMDF( do_oset )
                   argument = one_argument( argument, arg3 );
                   value = get_trapflag( arg3 );
                   if( value < 0 || value > 31 )
-                     ch->printf( "Invalid trap flag %s\r\n", arg3.c_str(  ) );
+                     ch->print_fmt( "Invalid trap flag {}\r\n", arg3 );
                   else
                      tmpval += ( 1 << value );
                }
@@ -3849,11 +3849,11 @@ CMDF( do_oset )
 
             if( is_number( argument ) )
             {
-               int bv = atoi( argument.c_str() );
+               int bv = std::stoi( argument );
 
                if( bv < 0 || bv > BV31 )
                {
-                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  ch->print_fmt( "Invalid bitvector value {}. Edit cancelled.\r\n", bv );
                   return;
                }
                tmpval = bv;
@@ -3865,7 +3865,7 @@ CMDF( do_oset )
                   argument = one_argument( argument, arg3 );
                   value = get_furnitureflag( arg3 );
                   if( value < 0 || value > 31 )
-                     ch->printf( "Invalid furniture flag %s\r\n", arg3.c_str(  ) );
+                     ch->print_fmt( "Invalid furniture flag {}\r\n", arg3 );
                   else
                      tmpval += ( 1 << value );
                }
@@ -4013,11 +4013,11 @@ CMDF( do_oset )
 
             if( is_number( argument ) )
             {
-               int bv = atoi( argument.c_str() );
+               int bv = std::stoi( argument );
 
                if( bv < 0 || bv > BV31 )
                {
-                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  ch->print_fmt( "Invalid bitvector value {}. Edit cancelled.\r\n", bv );
                   return;
                }
                tmpval = bv;
@@ -4029,7 +4029,7 @@ CMDF( do_oset )
                   argument = one_argument( argument, arg3 );
                   value = get_containerflag( arg3 );
                   if( value < 0 || value > 31 )
-                     ch->printf( "Invalid container flag %s\r\n", arg3.c_str(  ) );
+                     ch->print_fmt( "Invalid container flag {}\r\n", arg3 );
                   else
                      tmpval += ( 1 << value );
                }
@@ -4054,11 +4054,11 @@ CMDF( do_oset )
 
             if( is_number( argument ) )
             {
-               int bv = atoi( argument.c_str() );
+               int bv = std::stoi( argument );
 
                if( bv < 0 || bv > BV31 )
                {
-                  ch->printf( "Invalid bitvector value %d. Edit cancelled.\r\n", bv );
+                  ch->print_fmt( "Invalid bitvector value {}. Edit cancelled.\r\n", bv );
                   return;
                }
                tmpval = bv;
@@ -4070,7 +4070,7 @@ CMDF( do_oset )
                   argument = one_argument( argument, arg3 );
                   value = get_trigflag( arg3 );
                   if( value < 0 || value > 31 )
-                     ch->printf( "Invalid trigger flag %s\r\n", arg3.c_str(  ) );
+                     ch->print_fmt( "Invalid trigger flag {}\r\n", arg3 );
                   else
                      tmpval += ( 1 << value );
                }
@@ -5256,11 +5256,11 @@ CMDF( do_rgrid )
 
    maxnum = x * y * z;
 
-   ch->printf( "Attempting to create a block of %d rooms, %d x %d x %d.\r\n", maxnum, x, y, z );
+   ch->print_fmt( "Attempting to create a block of {} rooms, {} x {} x {}.\r\n", maxnum, x, y, z );
 
    if( maxnum > MAX_RGRID_ROOMS )
    {
-      ch->printf( "The maximum number of rooms this mud can create at once is %d.\r\n", MAX_RGRID_ROOMS );
+      ch->print_fmt( "The maximum number of rooms this mud can create at once is {}.\r\n", MAX_RGRID_ROOMS );
       ch->print( "Please try to create a smaller block of rooms.\r\n" );
       return;
    }

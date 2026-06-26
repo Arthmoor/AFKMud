@@ -144,7 +144,7 @@ CMDF( do_wizinfo )
          if( str_cmp( wi->realm, argument ) )
             continue;
 
-      ch->pagerf( "&R%-12s &g%-33s &P%s&D\r\n", wi->name.c_str(  ), wi->email.c_str(  ), wi->realm.c_str(  ) );
+      ch->pager_fmt( "&R{:<12} &g{:<33} &P{}&D\r\n", wi->name, wi->email, wi->realm );
    }
 }
 
@@ -356,7 +356,7 @@ CMDF( do_email )
    if( argument.empty(  ) )
    {
       if( !ch->pcdata->email.empty(  ) )
-         ch->printf( "Your email address is: %s\r\n", ch->pcdata->email.c_str(  ) );
+         ch->print_fmt( "Your email address is: {}\r\n", ch->pcdata->email );
       else
          ch->print( "You have no email address set yet.\r\n" );
       return;

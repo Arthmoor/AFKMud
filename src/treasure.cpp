@@ -718,7 +718,7 @@ CMDF( do_setrune )
 
          if( val2 < 0 || val2 >= MAX_AFFECTED_BY )
          {
-            ch->printf( "%s is an invalid affect.\r\n", argument.c_str(  ) );
+            ch->print_fmt( "{} is an invalid affect.\r\n", argument );
             return;
          }
          rune->stat1[0] = value;
@@ -936,20 +936,20 @@ CMDF( do_runewords )
    }
 
    ch->pager( "Currently created runewords:\r\n\r\n" );
-   ch->pagerf( "%-13.13s %-6.6s %-12.12s %-6.6s %-12.12s %-6.6s %-12.12s %-6.6s %-12.12s %-6.6s\r\n",
+   ch->pager_fmt( "{:<13.13} {:<6.6} {:<12.12} {:<6.6} {:<12.12} {:<6.6} {:<12.12} {:<6.6} {:<12.12} {:<6.6}\r\n",
                "Word", "Type", "Stat1", "Mod1", "Stat2", "Mod2", "Stat3", "Mod3", "Stat4", "Mod4" );
 
    if( argument.empty(  ) )
    {
       for( auto* rword : rwordlist )
       {
-         ch->pagerf( "%-17.17s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
-                     rword->get_name(  ).c_str(), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
+         ch->pager_fmt( "{:<17.17} {:<6.6} {:<12.12} {:<6} {:<12.12} {:<6} {:<12.12} {:<6} {:<12.12} {:<6}\r\n",
+                     rword->get_name(  ), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
                      a_types[rword->stat1[0]], rword->stat1[1], a_types[rword->stat2[0]], rword->stat2[1],
                      a_types[rword->stat3[0]], rword->stat3[1], a_types[rword->stat4[0]], rword->stat4[1] );
          ++total;
       }
-      ch->pagerf( "%d total runewords displayed.\r\n", total );
+      ch->pager_fmt( "{} total runewords displayed.\r\n", total );
    }
    else
    {
@@ -957,14 +957,14 @@ CMDF( do_runewords )
       {
          if( !str_prefix( argument, rword->get_name(  ) ) )
          {
-            ch->pagerf( "%-10.10s %-6.6s %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d %-12.12s %-6d\r\n",
-                        rword->get_name(  ).c_str(), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
+            ch->pager_fmt( "{:<10.10} {:<6.6} {:<12.12} {:<6} {:<12.12} {:<6} {:<12.12} {:<6} {:<12.12} {:<6}\r\n",
+                        rword->get_name(  ), rword->get_type(  ) == 0 ? "Armor" : "Weapon",
                         a_types[rword->stat1[0]], rword->stat1[1], a_types[rword->stat2[0]], rword->stat2[1],
                         a_types[rword->stat3[0]], rword->stat3[1], a_types[rword->stat4[0]], rword->stat4[1] );
             ++total;
          }
       }
-      ch->pagerf( "%d total runewords displayed.\r\n", total );
+      ch->pager_fmt( "{} total runewords displayed.\r\n", total );
    }
 }
 

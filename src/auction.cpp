@@ -138,7 +138,7 @@ void sale_count( char_data * ch )
 
    if( salecount > 0 )
    {
-      ch->printf( "&[auction]While you were gone, auctioneers sold %d items for you.\r\n", salecount );
+      ch->print_fmt( "&[auction]While you were gone, auctioneers sold {} items for you.\r\n", salecount );
       ch->print( "Use the 'saleslist' command to see which auctioneer sold what.\r\n" );
    }
 }
@@ -153,9 +153,8 @@ CMDF( do_saleslist )
 
       if( !str_cmp( seller, ch->name ) || ch->is_imp(  ) )
       {
-         ch->printf( "&[auction]%s sold %s for %s while %s were away.\r\n",
-                     sale->get_aucmob(  ).c_str(  ), sale->get_item(  ).c_str(  ),
-                     ( !str_cmp( seller, ch->name ) ? "you" : seller.c_str(  ) ), ( !str_cmp( seller, ch->name ) ? "you" : "they" ) );
+         ch->print_fmt( "&[auction]{} sold {} for {} while {} were away.\r\n", sale->get_aucmob(  ), sale->get_item(  ),
+                     ( !str_cmp( seller, ch->name ) ? "you" : seller ), ( !str_cmp( seller, ch->name ) ? "you" : "they" ) );
          ++salecount;
       }
    }

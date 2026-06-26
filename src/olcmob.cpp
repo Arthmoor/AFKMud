@@ -251,7 +251,7 @@ void medit_disp_spec( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < SPEC_MAX; ++counter )
    {
-      ch->printf( "&g%2d&w) %-30.30s ", counter, specmenu[counter].c_str(  ) );
+      ch->print_fmt( "&g{:2}&w) {:<30.30} ", counter, specmenu[counter] );
       if( ++col % 2 == 0 )
          ch->print( "\r\n" );
    }
@@ -268,7 +268,7 @@ void medit_disp_ris( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
 
    for( int counter = 0; counter <= MAX_RIS_FLAG; ++counter )
-      d->character->printf( "&g%2d&w) %-20.20s\r\n", counter + 1, ris_flags[counter] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20}\r\n", counter + 1, ris_flags[counter] );
 
    if( d->connected == CON_OEDIT )
    {
@@ -278,7 +278,7 @@ void medit_disp_ris( descriptor_data * d )
             break;
 
          case OEDIT_AFFECT_MODIFIER:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", flag_string( d->character->tempnum, ris_flags ) );
+            d->character->print_fmt( "\r\nCurrent flags: &c{}&w\r\n", flag_string( d->character->tempnum, ris_flags ) );
             break;
       }
    }
@@ -289,18 +289,18 @@ void medit_disp_ris( descriptor_data * d )
          default:
             break;
          case MEDIT_RESISTANT:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_resists(  ), ris_flags ) );
+            d->character->print_fmt( "\r\nCurrent flags: &c{}&w\r\n", bitset_string( victim->get_resists(  ), ris_flags ) );
             break;
          case MEDIT_IMMUNE:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_immunes(  ), ris_flags ) );
+            d->character->print_fmt( "\r\nCurrent flags: &c{}&w\r\n", bitset_string( victim->get_immunes(  ), ris_flags ) );
             break;
          case MEDIT_SUSCEPTIBLE:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_susceps(  ), ris_flags ) );
+            d->character->print_fmt( "\r\nCurrent flags: &c{}&w\r\n", bitset_string( victim->get_susceps(  ), ris_flags ) );
             break;
             // FIX: Editing Absorb flags did not show current flags 
             // Zarius 5/19/2003 
          case MEDIT_ABSORB:
-            d->character->printf( "\r\nCurrent flags: &c%s&w\r\n", bitset_string( victim->get_absorbs(  ), ris_flags ) );
+            d->character->print_fmt( "\r\nCurrent flags: &c{}&w\r\n", bitset_string( victim->get_absorbs(  ), ris_flags ) );
             break;
       }
    }
@@ -316,9 +316,9 @@ void medit_disp_attack_menu( descriptor_data * d )
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_ATTACK_TYPE; ++i )
-      d->character->printf( "&g%2d&w) %-20.20s\r\n", i + 1, attack_flags[i] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20}\r\n", i + 1, attack_flags[i] );
 
-   d->character->printf( "Current flags: &c%s&w\r\nEnter attack flag (0 to exit): ", bitset_string( victim->get_attacks(  ), attack_flags ) );
+   d->character->print_fmt( "Current flags: &c{}&w\r\nEnter attack flag (0 to exit): ", bitset_string( victim->get_attacks(  ), attack_flags ) );
 }
 
 /*
@@ -330,9 +330,9 @@ void medit_disp_defense_menu( descriptor_data * d )
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_DEFENSE_TYPE; ++i )
-      d->character->printf( "&g%2d&w) %-20.20s\r\n", i + 1, defense_flags[i] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20}\r\n", i + 1, defense_flags[i] );
 
-   d->character->printf( "Current flags: &c%s&w\r\nEnter defense flag (0 to exit): ", bitset_string( victim->get_defenses(  ), defense_flags ) );
+   d->character->print_fmt( "Current flags: &c{}&w\r\nEnter defense flag (0 to exit): ", bitset_string( victim->get_defenses(  ), defense_flags ) );
 }
 
 /*-------------------------------------------------------------------*/
@@ -346,11 +346,11 @@ void medit_disp_mob_flags( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_ACT_FLAG; ++i )
    {
-      d->character->printf( "&g%2d&w) %-20.20s  ", i + 1, act_flags[i] );
+      d->character->print_fmt( "&g{:2}&w) {:<20.20}  ", i + 1, act_flags[i] );
       if( !( ++columns % 2 ) )
          d->character->print( "\r\n" );
    }
-   d->character->printf( "\r\nCurrent flags : &c%s&w\r\nEnter mob flags (0 to quit) : ", bitset_string( victim->get_actflags(  ), act_flags ) );
+   d->character->print_fmt( "\r\nCurrent flags : &c{}&w\r\nEnter mob flags (0 to quit) : ", bitset_string( victim->get_actflags(  ), act_flags ) );
 }
 
 /*-------------------------------------------------------------------*/

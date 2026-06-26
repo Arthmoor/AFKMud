@@ -324,7 +324,7 @@ CMDF( do_help )
       if( get_skill_help( ch, argument ) )
          return;
 
-      ch->pagerf( "&wNo help on '%s' found.&D\r\n", argument.c_str(  ) );
+      ch->pager_fmt( "&wNo help on '{}' found.&D\r\n", argument );
       ch->pager( "&BSuggested Help Files:&D\r\n" );
       lastmatch = " ";
 
@@ -353,7 +353,7 @@ CMDF( do_help )
 
             if( ( matched > 1 && matched > ( checked / 2 ) ) || ( matched > 0 && checked < 2 ) )
             {
-               ch->pagerf( "&G %-20s &D", oneword.c_str(  ) );
+               ch->pager_fmt( "&G {:<20} &D", oneword );
                if( ++found % 4 == 0 )
                {
                   found = 0;
@@ -393,18 +393,18 @@ CMDF( do_help )
       ch->set_pcflag( PCFLAG_HELPSTART );
 
    if( ch->is_immortal(  ) )
-      ch->pagerf( "Help level: %d\r\n", pHelp->level );
+      ch->pager_fmt( "Help level: {}\r\n", pHelp->level );
 
    /*
     * Strip leading '.' to allow initial blanks.
     */
    if( pHelp->text[0] == '.' )
-      ch->pagerf( "%s\r\n", pHelp->text.substr( 1, pHelp->text.length(  ) ).c_str() );
+      ch->pager_fmt( "{}\r\n", pHelp->text.substr( 1, pHelp->text.length(  ) ) );
    else
-      ch->pagerf( "%s\r\n", pHelp->text.c_str() );
+      ch->pager_fmt( "{}\r\n", pHelp->text );
 
    if( !pHelp->related.empty() )
-      ch->pagerf( "\r\nSee Also: %s\r\n", pHelp->related.c_str() );
+      ch->pager_fmt( "\r\nSee Also: {}\r\n", pHelp->related );
 }
 
 /*
@@ -498,7 +498,7 @@ CMDF( do_hset )
    {
       ch->print( "Syntax: hset <field> [value] [help page]\r\r\n\n" );
       ch->print( "Field being one of:\r\n" );
-      ch->printf( "  level keyword related webinvis remove save%s\r\n", ch->is_imp(  ) ? " reload" : "" );
+      ch->print_fmt( "  level keyword related webinvis remove save{}\r\n", ch->is_imp(  ) ? " reload" : "" );
       return;
    }
 

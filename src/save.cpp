@@ -1520,7 +1520,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                      ch->pcdata->prevhost = fread_word( fp );
                   else
                      fread_string( ch->pcdata->prevhost, fp );
-                  ch->printf( "Last connected from: %s\r\n", ch->pcdata->prevhost.c_str() );
+                  ch->print_fmt( "Last connected from: {}\r\n", ch->pcdata->prevhost );
                }
                else
                   fread_to_eol( fp );

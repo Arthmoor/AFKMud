@@ -623,7 +623,7 @@ CMDF( do_hotboot )
    {
       if( str_cmp( argument, "debug" ) )
       {
-         ch->printf( "'%s' is not a valid option.\r\n", argument.c_str( ) );
+         ch->print_fmt( "'{}' is not a valid option.\r\n", argument );
          ch->print( "Acceptable Syntax:\r\n\r\n" );
          ch->print( "Hotboot\r\n" );
          ch->print( "Hotboot debug\r\n" );
@@ -641,12 +641,12 @@ CMDF( do_hotboot )
       {
          if( victim->fighting && victim->level >= 1 && victim->level <= MAX_LEVEL )
          {
-            ch->printf( "Cannot hotboot at this time. There are still combats in progress.\r\n" );
+            ch->print( "Cannot hotboot at this time. There are still combats in progress.\r\n" );
             return;
          }
          if( victim->inflight )
          {
-            ch->printf( "Cannot hotboot at this time. There are skyship flights in progress.\r\n" );
+            ch->print( "Cannot hotboot at this time. There are skyship flights in progress.\r\n" );
             return;
          }
       }

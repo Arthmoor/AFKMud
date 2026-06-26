@@ -620,10 +620,10 @@ CMDF( do_tell )
          return;
       }
 
-      ch->printf( "&cThe last %d things you were told:\r\n", MAX_TELLHISTORY );
+      ch->print_fmt( "&cThe last {} things you were told:\r\n", MAX_TELLHISTORY );
 
       for( size_t x = 0; x < ch->pcdata->tell_history.size(); ++x )
-         ch->printf( "%s\r\n", ch->pcdata->tell_history[x].c_str() );
+         ch->print_fmt( "{}\r\n", ch->pcdata->tell_history[x] );
       return;
    }
 
@@ -1155,23 +1155,23 @@ CMDF( do_speak )
    lang = get_langnum( argument );
    if( lang < 0 || lang >= LANG_UNKNOWN )
    {
-      ch->printf( "&[say]%s is not a known tongue on this world.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "&[say]{} is not a known tongue on this world.\r\n", argument );
       return;
    }
 
    if( lang == LANG_CLAN && ( ch->isnpc(  ) || !ch->pcdata->clan ) )
    {
-      ch->printf( "&[say]The %s tongue is only available to guilds and clans.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "&[say]The {} tongue is only available to guilds and clans.\r\n", argument );
       return;
    }
 
    if( !ch->is_immortal(  ) && !ch->has_lang( lang ) )
    {
-      ch->printf( "&[say]But you have not learned the %s tongue!\r\n", argument.c_str(  ) );
+      ch->print_fmt( "&[say]But you have not learned the {} tongue!\r\n", argument );
       return;
    }
    ch->speaking = lang;
-   ch->printf( "&[say]You are now speaking the %s tongue.\r\n", argument.c_str(  ) );
+   ch->print_fmt( "&[say]You are now speaking the {} tongue.\r\n", argument );
 }
 
 CMDF( do_languages )
@@ -1212,7 +1212,7 @@ CMDF( do_languages )
 
       if( race_table[ch->race]->language.test( lang ) || lang == LANG_COMMON || ch->pcdata->learned[sn] >= 99 )
       {
-         ch->printf( "You are already fluent in %s\r\n", lang_names[lang] );
+         ch->print_fmt( "You are already fluent in {}\r\n", lang_names[lang] );
          return;
       }
 
@@ -1255,15 +1255,15 @@ CMDF( do_languages )
       ch->pcdata->learned[sn] = umin( ch->pcdata->learned[sn], 99 );
       ch->set_lang( lang );
       if( ch->pcdata->learned[sn] == prct )
-         ch->printf( "You begin lessons in %s.\r\n", lang_names[lang] );
+         ch->print_fmt( "You begin lessons in {}.\r\n", lang_names[lang] );
       else if( ch->pcdata->learned[sn] < 60 )
-         ch->printf( "You continue lessons in %s.\r\n", lang_names[lang] );
+         ch->print_fmt( "You continue lessons in {}.\r\n", lang_names[lang] );
       else if( ch->pcdata->learned[sn] < 60 + prct )
-         ch->printf( "You feel you can start communicating in %s.\r\n", lang_names[lang] );
+         ch->print_fmt( "You feel you can start communicating in %s.\r\n", lang_names[lang] );
       else if( ch->pcdata->learned[sn] < 99 )
-         ch->printf( "You become more fluent in %s.\r\n", lang_names[lang] );
+         ch->print_fmt( "You become more fluent in {}.\r\n", lang_names[lang] );
       else
-         ch->printf( "You now speak perfect %s.\r\n", lang_names[lang] );
+         ch->print_fmt( "You now speak perfect {}.\r\n", lang_names[lang] );
       return;
    }
 
@@ -1275,7 +1275,7 @@ CMDF( do_languages )
             ch->set_color( AT_SAY );
          else
             ch->set_color( AT_PLAIN );
-         ch->printf( "%s\r\n", lang_names[lang] );
+         ch->print_fmt( "{}\r\n", lang_names[lang] );
       }
    }
    ch->print( "\r\n" );

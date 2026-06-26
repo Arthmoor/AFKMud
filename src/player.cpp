@@ -424,7 +424,7 @@ CMDF( do_visits )
       ch->pager( "-------------------------------------\r\n" );
       for( auto& zn : ch->pcdata->zone )
       {
-         ch->pagerf( "%s\r\n", zn.c_str(  ) );
+         ch->pager_fmt( "{}\r\n", zn );
          ++visits;
       }
       ch->pager_fmt( "&YTotal areas visited: {}\r\n", visits );
@@ -453,7 +453,7 @@ CMDF( do_visits )
 
    for( auto& zn : victim->pcdata->zone )
    {
-      ch->pagerf( "%s\r\n", zn.c_str(  ) );
+      ch->pager_fmt( "{}\r\n", zn );
       ++visits;
    }
    ch->pager_fmt( "&YTotal areas visited: {}\r\n", visits );
@@ -1785,23 +1785,23 @@ CMDF( do_attrib )
    std::string s4 = ch->color_str( AT_SCORE4 );
    std::string s5 = ch->color_str( AT_SCORE5 );
 
-   ch->printf( "%sYou are %s%d %syears old.\r\n", s2.c_str(), s3.c_str(), ch->get_age(  ), s2.c_str() );
+   ch->print_fmt( "{}You are {}{} {}years old.\r\n", s2, s3, ch->get_age(  ), s2 );
 
-   ch->printf( "%sYou are %s%d%s inches tall, and weigh %s%d%s lbs.\r\n", s2.c_str(), s3.c_str(), ch->height, s2.c_str(), s3.c_str(), ch->weight, s2.c_str() );
+   ch->print_fmt( "{}You are {}{}{} inches tall, and weigh {}{}{} lbs.\r\n", s2, s3, ch->height, s2, s3, ch->weight, s2 );
 
    if( time_info.day == ch->pcdata->day && time_info.month == ch->pcdata->month )
-      ch->printf( "%sToday is your birthday!\r\n", s2.c_str() );
+      ch->print_fmt( "{}Today is your birthday!\r\n", s2 );
    else
-      ch->printf( "%sYour birthday is: %sDay of %s, %d%s day in the Month of %s, in the year %d.\r\n",
-                  s2.c_str(), s1.c_str(), day_name[ch->pcdata->day % sysdata->daysperweek], day, suf.c_str(), month_name[ch->pcdata->month], ch->pcdata->year );
+      ch->print_fmt( "{}Your birthday is: {}Day of {}, {}{} day in the Month of {}, in the year {}.\r\n",
+                  s2, s1, day_name[ch->pcdata->day % sysdata->daysperweek], day, suf, month_name[ch->pcdata->month], ch->pcdata->year );
 
    std::string time_played = std::format( "{}", ch->time_played( ) );
-   ch->printf( "%sYou have played for %s%s %shours.\r\n", s2.c_str(), s3.c_str(), time_played.c_str(), s1.c_str() );
+   ch->print_fmt( "{}You have played for {}{} {}hours.\r\n", s2, s3, time_played, s1 );
 
    if( ch->pcdata->deity )
-      ch->printf( "%sYou have devoted to %s%s.\r\n", s2.c_str(), s3.c_str(), ch->pcdata->deity->name.c_str(  ) );
+      ch->print_fmt( "{}You have devoted to {}{}.\r\n", s2, s3, ch->pcdata->deity->name );
 
-   ch->printf( "\r\n%sLanguages: ", s2.c_str() );
+   ch->print_fmt( "\r\n{}Languages: ", s2 );
 
    for( iLang = 0; iLang < LANG_UNKNOWN; ++iLang )
    {
@@ -1809,31 +1809,31 @@ CMDF( do_attrib )
       {
          if( iLang == ch->speaking )
             ch->print( s3 );
-         ch->printf( " %s%s", lang_names[iLang], s1.c_str() );
+         ch->print_fmt( " {}{}", lang_names[iLang], s1 );
       }
    }
    ch->print( "\r\n\r\n" );
 
-   ch->printf( "%sLogin: %s%s\r\n", s2.c_str(), s3.c_str(), c_time( ch->pcdata->logon, ch->pcdata->timezone ).c_str() );
+   ch->print_fmt( "{}Login: {}{}\r\n", s2, s3, c_time( ch->pcdata->logon, ch->pcdata->timezone ) );
 
    std::string save_time = std::format( "{}", ch->pcdata->save_time );
-   ch->printf( "%sSaved: %s%s\r\n", s2.c_str(), s3.c_str(), !save_time.empty() ? c_time( ch->pcdata->save_time, ch->pcdata->timezone ).c_str() : "no save this session" );
-   ch->printf( "%sTime : %s%s\r", s2.c_str(), s3.c_str(), c_time( current_time, ch->pcdata->timezone ).c_str() );
+   ch->print_fmt( "{}Saved: {}{}\r\n", s2, s3, !save_time.empty() ? c_time( ch->pcdata->save_time, ch->pcdata->timezone ) : "no save this session" );
+   ch->print_fmt( "{}Time : {}{}\r", s2, s3, c_time( current_time, ch->pcdata->timezone ) );
 
-   ch->printf( "\r\n%sMKills : %s%d\r\n", s2.c_str(), s3.c_str(), ch->pcdata->mkills );
-   ch->printf( "%sMDeaths: %s%d\r\n\r\n", s2.c_str(), s3.c_str(), ch->pcdata->mdeaths );
+   ch->print_fmt( "\r\n{}MKills : {}{}\r\n", s2, s3, ch->pcdata->mkills );
+   ch->print_fmt( "{}MDeaths: {}{}\r\n\r\n", s2, s3, ch->pcdata->mdeaths );
 
    if( ch->pcdata->clan && ch->pcdata->clan->clan_type == CLAN_GUILD )
    {
-      ch->printf( "%sGuild         : %s%s\r\n", s2.c_str(), s3.c_str(), ch->pcdata->clan->name.c_str(  ) );
-      ch->printf( "%sGuild MDeaths : %s%-6d      %sGuild MKills: %s%d\r\n\r\n", s2.c_str(), s3.c_str(), ch->pcdata->clan->mdeaths, s2.c_str(), s3.c_str(), ch->pcdata->clan->mkills );
+      ch->print_fmt( "{}Guild         : {}{}\r\n", s2, s3, ch->pcdata->clan->name );
+      ch->print_fmt( "{}Guild MDeaths : {}{:<6}      {}Guild MKills: {}{}\r\n\r\n", s2, s3, ch->pcdata->clan->mdeaths, s2, s3, ch->pcdata->clan->mkills );
    }
 
    if( ch->CAN_PKILL(  ) )
    {
-      ch->printf( "%sPKills        : %s%-6d      %sClan        : %s%s\r\n", s2.c_str(), s3.c_str(), ch->pcdata->pkills, s2.c_str(), s3.c_str(), ch->pcdata->clan ? ch->pcdata->clan->name.c_str(  ) : "None" );
-      ch->printf( "%sIllegal PKills: %s%-6d      %sClan PKills : %s%d\r\n", s2.c_str(), s3.c_str(), ch->pcdata->illegal_pk, s2.c_str(), s3.c_str(), ( ch->pcdata->clan ? ch->pcdata->clan->pkills[0] : -1 ) );
-      ch->printf( "%sPDeaths       : %s%-6d      %sClan PDeaths: %s%d\r\n", s2.c_str(), s3.c_str(), ch->pcdata->pdeaths, s2.c_str(), s3.c_str(), ( ch->pcdata->clan ? ch->pcdata->clan->pdeaths[0] : -1 ) );
+      ch->print_fmt( "{}PKills        : {}{:<6}      {}Clan        : {}{}\r\n", s2, s3, ch->pcdata->pkills, s2, s3, ch->pcdata->clan ? ch->pcdata->clan->name : "None" );
+      ch->print_fmt( "{}Illegal PKills: {}{:<6}      {}Clan PKills : {}{}\r\n", s2, s3, ch->pcdata->illegal_pk, s2, s3, ( ch->pcdata->clan ? ch->pcdata->clan->pkills[0] : -1 ) );
+      ch->print_fmt( "{}PDeaths       : {}{:<6}      {}Clan PDeaths: {}{}\r\n", s2, s3, ch->pcdata->pdeaths, s2, s3, ( ch->pcdata->clan ? ch->pcdata->clan->pdeaths[0] : -1 ) );
    }
 }
 

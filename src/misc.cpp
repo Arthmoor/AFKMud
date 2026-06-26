@@ -467,7 +467,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
    switch ( obj->item_type )
    {
       default:
-         ch->printf( "You can't %s that!\r\n", pull ? "pull" : "push" );
+         ch->print_fmt( "You can't {} that!\r\n", pull ? "pull" : "push" );
          return;
 
       case ITEM_SWITCH:
@@ -475,7 +475,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       case ITEM_PULLCHAIN:
          if( ( !pull && isup ) || ( pull && !isup ) )
          {
-            ch->printf( "It is already %s.\r\n", isup ? "up" : "down" );
+            ch->print_fmt( "It is already {}.\r\n", isup ? "up" : "down" );
             return;
          }
          break;
@@ -483,7 +483,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
       case ITEM_BUTTON:
          if( ( !pull && isup ) || ( pull && !isup ) )
          {
-            ch->printf( "It is already %s.\r\n", isup ? "in" : "out" );
+            ch->print_fmt( "It is already {}.\r\n", isup ? "in" : "out" );
             return;
          }
          break;
@@ -914,7 +914,7 @@ CMDF( do_pull )
 
    if( !( obj = ch->get_obj_here( argument ) ) )
    {
-      ch->printf( "I see no %s here.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "I see no {} here.\r\n", argument );
       return;
    }
    pullorpush( ch, obj, true );
@@ -935,7 +935,7 @@ CMDF( do_push )
 
    if( !( obj = ch->get_obj_here( argument ) ) )
    {
-      ch->printf( "I see no %s here.\r\n", argument.c_str(  ) );
+      ch->print_fmt( "I see no {} here.\r\n", argument );
       return;
    }
    pullorpush( ch, obj, false );
