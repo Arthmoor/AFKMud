@@ -2319,7 +2319,7 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
    {
       std::string line;
       std::getline( stream, line, delimiter );
-      strip_spaces( line );
+      strip_whitespace( line );
 
       return line;
    };
