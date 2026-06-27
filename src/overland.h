@@ -32,7 +32,7 @@
 constexpr int MAX_X = 1000;
 constexpr int MAX_Y = 1000;
 
-inline constexpr std::string_view CONT_LIST = "../maps/continent.lst";
+inline constexpr std::string_view CONT_LIST = "../maps/continent.lst"; // Continent list file.
 
 class mapexit_data
 {

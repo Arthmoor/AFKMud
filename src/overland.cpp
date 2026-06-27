@@ -157,7 +157,7 @@ void continent_data::load_png_file( void )
 
    std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, this->mapfile );
 
-   if( !( jpgin = fopen( file_name.c_str(), "r" ) ) )
+   if( !( jpgin = fopen( file_name.c_str(), "rb" ) ) )
    {
       bug( "{} -> {}:{}: Missing graphical map file '{}' for continent '{}'!", __func__, __FILE__, __LINE__, this->mapfile, this->name );
       if( fBootDb )
@@ -225,7 +225,7 @@ void continent_data::save_png_file( )
 
    std::filesystem::path graphicname = std::format( "{}{}", MAP_DIR, this->mapfile );
 
-   if( ( PngOut = fopen( graphicname.c_str(), "w" ) ) == nullptr )
+   if( ( PngOut = fopen( graphicname.c_str(), "wb" ) ) == nullptr )
    {
       bug( "{} -> {}:{}: Unable to open {} for writing.", __func__, __FILE__, __LINE__, graphicname.string() );
       return;
@@ -249,174 +249,136 @@ void continent_data::save_png_file( )
 
 void write_continent_list( void )
 {
-   FILE *fpout;
-
-   fpout = fopen( CONT_LIST.data(), "w" );
-   if( !fpout )
+   std::ofstream stream( std::filesystem::path{CONT_LIST} );
+   if( !stream.is_open(  ) )
    {
-      bug( "{} -> {}:{}: cannot open continent.lst for writing!", __func__, __FILE__, __LINE__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, CONT_LIST, std::strerror(errno) );
       return;
    }
 
    for( auto* continent : continent_list )
-      fprintf( fpout, "%s\n", continent->filename.c_str( ) );
+      stream << std::format( "{}\n", continent->filename );
 
-   fprintf( fpout, "%s", "$\n" );
-   FCLOSE( fpout );
+   stream << "$\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, CONT_LIST, std::strerror(errno) );
+}
+
+void continent_data::fread_landing_site( std::ifstream & stream )
+{
+   landing_data *landing_site = new landing_data;
+
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "Coordinates" )
+         stream >> landing_site->map_x >> landing_site->map_y;
+      else if( key == "Area" )
+         landing_site->area = fread_line( stream, '\n' );
+      else if( key == "Cost" )
+         stream >> landing_site->cost;
+      else if( key == "End" )
+      {
+         this->landing_sites.push_back( landing_site );
+         return;
+      }
+      else
+         bug( "{}: {} - Bad line reading landing sites: {}", __func__, this->name, key );
+   }
+
+   bug( "{}: Filestream reached premature EOF reading landing sites for continent {} - FATAL ERROR: Aborting file read.", __func__, this->name );
+   shutdown_mud( "Corrupt continent file." );
+   std::exit( EXIT_FAILURE );
 }
 
 void continent_data::fread_landmark( std::ifstream & stream )
 {
    landmark_data *landmark = new landmark_data;
 
-   do
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_whitespace( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "Coordinates" )
-      {
-         std::string coord;
-
-         value = one_argument( value, coord );
-         landmark->map_x = atoi( coord.c_str(  ) );
-
-         value = one_argument( value, coord );
-         landmark->map_y = atoi( coord.c_str(  ) );
-
-         landmark->distance = atoi( value.c_str(  ) );
-      }
+         stream >> landmark->map_x >> landmark->map_y >> landmark->distance;
       else if( key == "Description" )
-         landmark->description = value;
+         landmark->description = fread_line( stream, '\n' );
       else if( key == "Isdesc" )
-         landmark->Isdesc = atoi( value.c_str(  ) );
+         stream >> landmark->Isdesc;
       else if( key == "End" )
       {
          this->landmarks.push_back( landmark );
          return;
       }
       else
-         log_printf( "{}: {} - Bad line reading landmarks: {} {}", __func__, this->name, key, value );
+         bug( "{}: {} - Bad line reading landmarks: {}", __func__, this->name, key );
    }
-   while( !stream.eof(  ) );
 
    bug( "{} -> {}:{}: Filestream reached premature EOF reading landmarks for continent {} - FATAL ERROR: Aborting file read.", __func__,  __FILE__, __LINE__, this->name );
    shutdown_mud( "Corrupt continent file." );
+   std::exit( EXIT_FAILURE );
 }
 
 void continent_data::fread_mapexit( std::ifstream & stream )
 {
-   mapexit_data *mexit;
+   mapexit_data *mexit = new mapexit_data;
 
-   mexit = new mapexit_data;
-
-   do
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_whitespace( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "ToMap" )
-         mexit->tomap = value;
+         stream >> mexit->tomap;
       else if( key == "Here" )
-      {
-         std::string coord;
-
-         value = one_argument( value, coord );
-         mexit->herex = atoi( coord.c_str(  ) );
-
-         mexit->herey = atoi( value.c_str(  ) );
-      }
+         stream >> mexit->herex >> mexit->herey;
       else if( key == "There" )
-      {
-         std::string coord;
-
-         value = one_argument( value, coord );
-         mexit->therex = atoi( coord.c_str(  ) );
-
-         mexit->therey = atoi( value.c_str(  ) );
-      }
+         stream >> mexit->therex >> mexit->therey;
       else if( key == "Vnum" )
-         mexit->vnum = atoi( value.c_str(  ) );
+         stream >> mexit->vnum;
       else if( key == "Prevsector" )
-         mexit->prevsector = atoi( value.c_str(  ) );
+         stream >> mexit->prevsector;
       else if( key == "End" )
       {
          this->exits.push_back( mexit );
          return;
       }
       else
-         log_printf( "{}: {} - Bad line reading map exits: {} {}", __func__, this->name, key, value );
+         bug( "{}: {} - Bad line reading map exits: {}", __func__, this->name, key );
    }
-   while( !stream.eof(  ) );
 
    bug( "{} -> {}:{}: Filestream reached premature EOF reading map exits for continent {} - FATAL ERROR: Aborting file read.", __func__, __FILE__, __LINE__, this->name );
    shutdown_mud( "Corrupt continent file." );
+   std::exit( EXIT_FAILURE );
 }
 
 void load_continent( std::string_view continent_file )
 {
-   std::ifstream stream;
-   continent_data *continent = nullptr;
-   int file_version = 0;
-
-   std::filesystem::path file_name = std::format( "{}{}", MAP_DIR, continent_file );
-   stream.open( file_name );
-
-   if( !stream.is_open(  ) )
+   std::filesystem::path filename = std::format( "{}{}", MAP_DIR, continent_file );
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot open {} for reading: {}", __func__, file_name.string(), std::strerror(errno) );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   do
+   int file_ver = 0;
+   continent_data *continent = nullptr;
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_whitespace( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#CONTINENT" )
          continent = new continent_data;
       else if( key == "Version" )
-         file_version = std::stoi( value );
+         stream >> file_ver;
       else if( key == "Name" )
-         continent->name = value;
+         continent->name = fread_line( stream, '\n' );
       else if( key == "Mapfile" )
-         continent->mapfile = value;
+         continent->mapfile = fread_line( stream, '\n' );
       else if( key == "Areafile" )
-         continent->areafile = value;
+         continent->areafile = fread_line( stream, '\n' );
       else if( key == "NoGrid" )
-         continent->nogrid = std::stoi( value );
+         stream >> continent->nogrid;
       else if( key == "Vnum" )
-         continent->vnum = std::stoi( value );
+         stream >> continent->vnum;
       else if( key == "#ENTRANCE" )
          continent->fread_mapexit( stream );
       else if( key == "#LANDMARK" )
@@ -427,7 +389,7 @@ void load_continent( std::string_view continent_file )
       {
          continent->filename = continent_file;
 
-         if( file_version == 0 )
+         if( file_ver == 0 )
             ; // Shut the hell up GCC!
 
          // Only loads a png file if the continent should have one. Otherwise the game is only tracking it as a plane instead of an overland map.
@@ -437,21 +399,17 @@ void load_continent( std::string_view continent_file )
          continent_list.push_back( continent );
       }
       else
-         log_printf( "{}: Bad line in continent file: {} {}", __func__, key, value );
+         log_printf( "{}: Bad line in continent file: {}", __func__, key );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
 void load_continents( const int AREA_FILE_ALARM )
 {
-   FILE *fpList;
-
-   std::filesystem::path list_file = std::format( "{}{}", MAP_DIR, CONT_LIST );
-
-   if( !( fpList = fopen( list_file.c_str(), "r" ) ) )
+   std::ifstream stream( std::filesystem::path{CONT_LIST} );
+   if( !stream.is_open(  ) )
    {
-      bug( "{}: Cannot open continent list file.", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, CONT_LIST, std::strerror(errno) );
       shutdown_mud( "Boot_db: Unable to open continent list." );
       std::exit( EXIT_FAILURE );
    }
@@ -460,23 +418,17 @@ void load_continents( const int AREA_FILE_ALARM )
 
    for( ;; )
    {
-      if( feof( fpList ) )
-      {
-         bug( "{} -> {}:{}: EOF encountered reading area list - no $ found at end of file.", __func__, __FILE__, __LINE__ );
-         break;
-      }
+      std::string filename = fread_line( stream, '\n' );
 
-      std::string continent_file = fread_word( fpList );
-
-      if( !continent_file.empty() && continent_file[0] == '$' )
+      if( filename.empty() || filename[0] == '$' )
          break;
 
       set_alarm( AREA_FILE_ALARM );
       alarm_section = "boot_db: read continent files";
-      load_continent( continent_file );
+      load_continent( filename );
       set_alarm( 0 );
    }
-   FCLOSE( fpList );
+   stream.close();
 }
 
 // This is called in db.cpp during startup after the area files have been loaded.
@@ -517,72 +469,69 @@ constexpr int CONTINENT_FILE_VERSION = 1;
 
 void continent_data::save( )
 {
-   std::ofstream stream;
-
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving continent data for {}...", this->filename );
 
-   std::filesystem::path buf = std::format( "{}{}.bak", MAP_DIR, this->filename );
-   std::filesystem::rename( this->filename, buf );
-
    std::filesystem::path fname = std::format( "{}{}", MAP_DIR, this->filename );
-   stream.open( fname );
+   std::ofstream stream( std::filesystem::path{fname} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, fname.string(), std::strerror(errno) );
       return;
    }
 
-   stream << "#CONTINENT" << std::endl;
-   stream << "Version   " << CONTINENT_FILE_VERSION << std::endl;
-   stream << "Name      " << this->name << std::endl;
+   stream << "#CONTINENT\n";
+   stream << std::format( "Version   {}\n", CONTINENT_FILE_VERSION );
+   stream << std::format( "Name      {}\n", this->name );
 
    if( this->nogrid == true )
-      stream << "NoGrid    " << this->nogrid << std::endl;
+      stream << std::format( "NoGrid    {}\n", this->nogrid );
    else
    {
-      stream << "Vnum      " << this->vnum << std::endl;
-      stream << "Mapfile   " << this->mapfile << std::endl;
+      stream << std::format( "Vnum      {}\n", this->vnum );
+      stream << std::format( "Mapfile   {}\n", this->mapfile );
    }
 
-   stream << "Areafile  " << this->areafile << std::endl << std::endl;
+   stream << std::format( "Areafile  {}\n\n", this->areafile );
 
    if( this->nogrid == false )
    {
       for( auto* mexit : this->exits )
       {
-         stream << "#ENTRANCE" << std::endl;
-         stream << "ToMap      " << mexit->tomap << std::endl;
-         stream << "Vnum       " << mexit->vnum << std::endl;
-         stream << "Here       " << mexit->herex << " " << mexit->herey << std::endl;
-         stream << "There      " << mexit->therex << " " << mexit->therey << std::endl;
-         stream << "Prevsector " << mexit->prevsector << std::endl;
-         stream << "End" << std::endl << std::endl;
+         stream << "#ENTRANCE\n";
+         stream << std::format( "ToMap      {}\n", mexit->tomap );
+         stream << std::format( "Vnum       {}\n", mexit->vnum );
+         stream << std::format( "Here       {} {}\n", mexit->herex, mexit->herey );
+         stream << std::format( "There      {} {}\n", mexit->therex, mexit->therey );
+         stream << std::format( "Prevsector {}\n", mexit->prevsector );
+         stream << "End\n\n";
       }
 
       for( auto* landmark : this->landmarks )
       {
-         stream << "#LANDMARK" << std::endl;
-         stream << "Coordinates " << landmark->map_x << " " << landmark->map_y << " " << landmark->distance << std::endl;
-         stream << "Description " << landmark->description << std::endl;
-         stream << "Isdesc      " << landmark->Isdesc << std::endl;
-         stream << "End" << std::endl << std::endl;
+         stream << "#LANDMARK\n";
+         stream << std::format( "Coordinates {} {} {}\n", landmark->map_x, landmark->map_y, landmark->distance );
+         stream << std::format( "Description {}\n", landmark->description );
+         stream << std::format( "Isdesc      {}\n", landmark->Isdesc );
+         stream << "End\n\n";
       }
 
       for( auto* landing : this->landing_sites )
       {
-         stream << "#LANDING_SITE" << std::endl;
-         stream << "Coordinates " << landing->map_x << " " << landing->map_y << std::endl;
-         stream << "Area        " << landing->area << std::endl;
-         stream << "Cost        " << landing->cost << std::endl;
-         stream << "End" << std::endl << std::endl;
+         stream << "#LANDING_SITE\n";
+         stream << std::format( "Coordinates {} {}\n", landing->map_x, landing->map_y );
+         stream << std::format( "Area        {}\n", landing->area );
+         stream << std::format( "Cost        {}\n", landing->cost );
+         stream << "End\n\n";
       }      
    }
 
-   stream << "#END" << std::endl;
+   stream << "#END\n";
    stream.close();
    if( stream.fail() )
+   {
       bug( "{}: Error occurred after closing {}: ", __func__, fname.string(), std::strerror(errno) );
-
+      return;
+   }
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Data for {} saved.", this->filename );
 }
 
@@ -1595,7 +1544,7 @@ CMDF( do_setmark )
          return;
       }
 
-      value = atoi( argument.c_str(  ) );
+      value = std::stoi( argument );
 
       if( value < 1 )
       {

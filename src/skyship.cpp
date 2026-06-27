@@ -27,63 +27,12 @@
  *        Original Dragonflight Module written by Ymris of Terahoun         *
  ****************************************************************************/
 
-#include <fstream>
 #include "mud.h"
 #include "event.h"
 #include "mobindex.h"
 #include "overland.h"
 
-void continent_data::fread_landing_site( std::ifstream & stream )
-{
-   landing_data *landing_site = new landing_data;
-
-   do
-   {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
-      if( key == "Coordinates" )
-      {
-         std::string coord;
-
-         value = one_argument( value, coord );
-         landing_site->map_x = atoi( coord.c_str(  ) );
-
-         landing_site->map_y = atoi( value.c_str(  ) );
-      }
-      else if( key == "Area" )
-         landing_site->area = value;
-      else if( key == "Cost" )
-         landing_site->cost = atoi( value.c_str(  ) );
-      else if( key == "End" )
-      {
-         this->landing_sites.push_back( landing_site );
-         return;
-      }
-      else
-         log_printf( "{}: {} - Bad line reading landing sites: {} {}", __func__, this->name, key, value );
-   }
-   while( !stream.eof(  ) );
-
-   bug( "{}: Filestream reached premature EOF reading landing sites for continent {} - FATAL ERROR: Aborting file read.", __func__, this->name );
-   shutdown_mud( "Corrupt continent file." );
-   std::exit( EXIT_FAILURE );
-}
-
-/*
- * Remove a skyship when it is no longer needed
- */
+// Remove a skyship when it is no longer needed.
 void purge_skyship( char_data * ch, char_data * skyship )
 {
    ch->print_room( "The skyship pilot ascends and takes to the wind.\r\n" );
@@ -104,9 +53,8 @@ void purge_skyship( char_data * ch, char_data * skyship )
    cancel_event( ev_skyship, ch );
 }
 
-/*
- * Skyship landing function
- */
+
+// Skyship landing function.
 void land_skyship( char_data * ch, char_data * skyship, bool arrived )
 {
    if( !ch->isnpc(  ) && arrived )
@@ -134,9 +82,8 @@ void land_skyship( char_data * ch, char_data * skyship, bool arrived )
       skyship->print_room( "&CA skyship descends from above and lands on the platform.\r\n" );
 }
 
-/*
- * Skyship flight function
- */
+
+// Skyship flight function
 void fly_skyship( char_data * ch, char_data * skyship )
 {
    char_data *pair;

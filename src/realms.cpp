@@ -183,10 +183,8 @@ void delete_realm( char_data * ch, realm_data * realm )
 
 void write_realm_list( void )
 {
-   std::ofstream stream;
-
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, REALM_LIST );
-   stream.open( filename );
+   std::ofstream stream( std::filesystem::path{filename} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
