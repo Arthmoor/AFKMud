@@ -255,7 +255,7 @@ void web_who(  )
 
 void web_arealist(  )
 {
-   std::filesystem::path filename = std::format( "{}", AREALIST_FILE );
+   std::filesystem::path filename = std::format( "{}", WEBAREALIST_FILE );
    std::ofstream stream( filename );
    if( !stream.is_open() )
    {
