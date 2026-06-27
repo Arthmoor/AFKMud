@@ -504,7 +504,6 @@ inline constexpr std::string_view EXE_FILE         = "../src/afkmud";     // The
 
 inline constexpr std::string_view ANSITITLE_FILE   = "../system/mudtitle.ans";  // The ANSI screen shown to users logging in.
 inline constexpr std::string_view AREA_LIST        = "area.lst";                // List of areas.
-inline constexpr std::string_view AREALIST_FILE    = "../web/AREALIST";         // HTML areas listing.
 inline constexpr std::string_view BOOTLOG_FILE     = "../system/boot.txt";      // Boot up error file.
 inline constexpr std::string_view CLASS_LIST       = "class.lst";               // List of classes.
 inline constexpr std::string_view COMMAND_FILE     = "../system/commands.dat";  // Commands

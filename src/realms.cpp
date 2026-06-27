@@ -335,9 +335,7 @@ bool load_realm_file( std::string_view realmfile )
    std::string key;
    while( stream >> key )
    {
-      if( key[0] == '*' )
-         fread_to_eol( stream );
-      else if( key == "#REALM" )
+      if( key == "#REALM" )
          fread_realm( stream, realm );
       else if( key == "#ROSTER" )
       {

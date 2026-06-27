@@ -193,7 +193,7 @@ CMDF( do_mudexec )
 
       fprintf( stderr, "Shell process: %s failed!\n", argument.c_str(  ) );
       perror( "mudexec" );
-      exit( 0 );
+      std::exit( EXIT_SUCCESS );
    }
    else if( pid < 2 )
    {

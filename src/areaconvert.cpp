@@ -1426,7 +1426,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             {
                bug( "{}: vnum {} has bad door number {}.", __func__, vnum, door );
                if( fBootDb )
-                  exit( 1 );
+                  std::exit( EXIT_FAILURE );
             }
             else
             {

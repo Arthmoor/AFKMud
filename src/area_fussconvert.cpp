@@ -632,7 +632,7 @@ void fread_fuss_object( FILE * fp, area_data * tarea )
                      log_printf( "{} occupies vnums   : {:<6} - {:<6}", ( !area->filename.empty() ? area->filename : "(invalid)" ), area->low_vnum, area->hi_vnum );
                      log_printf( "{} wants to use vnum: {:<6}", tarea->filename, vnum );
                      log_string( "This is a fatal error. Program terminated." );
-                     exit( 1 );
+                     std::exit( EXIT_FAILURE );
                   }
                }
 

@@ -1385,7 +1385,7 @@ void fread_afk_room( FILE * fp, area_data * tarea )
       {
          log_printf( "{}: EOF encountered reading file!", __func__ );
          if( fBootDb )
-            exit( 1 );
+            std::exit( EXIT_FAILURE );
 
          word = "#ENDROOM";
       }
@@ -1742,7 +1742,7 @@ void load_area_file( const std::string & filename, bool isproto )
 
       bug( "{}: Invalid header at start of area file: {}", __func__, word );
       if( fBootDb )
-         exit( 1 );
+         std::exit( EXIT_FAILURE );
       else
       {
          FCLOSE( fpArea );
