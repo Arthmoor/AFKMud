@@ -552,15 +552,6 @@ if( !str_cmp( word, (literal) ) )      \
    break;                              \
 }
 
-// This reads a string value into a C++ string variable using line-feed as a delimiter - Samson 10-3-04
-#define STDSLINE( literal, field )     \
-if( !str_cmp( word, (literal) ) )      \
-{                                      \
-   (field).clear();                    \
-   fread_line( (field), fp );          \
-   break;                              \
-}
-
 /*
  * Old-style Bit manipulation macros
  *
