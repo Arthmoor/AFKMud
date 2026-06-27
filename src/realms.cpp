@@ -203,71 +203,12 @@ void write_realm_list( void )
       bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
-void fwrite_realm_memberlist( FILE * fp, realm_data * realm )
-{
-   for( auto* member : realm->memberlist )
-   {
-      auto joined = std::chrono::system_clock::to_time_t( member->joined );
-
-      fprintf( fp, "%s", "#ROSTER\n" );
-      fprintf( fp, "Name      %s~\n", member->name.c_str(  ) );
-      fprintf( fp, "Joined    %ld\n", joined );
-      fprintf( fp, "%s", "End\n\n" );
-   }
-}
-
-void fread_realm_memberlist( realm_data * realm, FILE * fp )
-{
-   realm_roster_data *roster;
-
-   roster = new realm_roster_data;
-
-   for( ;; )
-   {
-      std::string word = feof( fp ) ? "End" : fread_word( fp );
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               realm->memberlist.push_back( roster );
-               return;
-            }
-            break;
-
-         case 'J':
-            if( !str_cmp( word, "Joined" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               roster->joined = std::chrono::system_clock::from_time_t( loaded_time );
-            }
-            break;
-
-         case 'N':
-            STDSKEY( "Name", roster->name );
-            break;
-      }
-   }
-}
-
 /*
- * Save a realm's data to its data file
+ * Save a realm's data to its data file.
  */
 constexpr int REALM_VERSION = 1;
 void save_realm( realm_data * realm )
 {
-   FILE *fp;
-
    if( !realm )
    {
       bug( "{}: null realm pointer!", __func__ );
@@ -281,109 +222,90 @@ void save_realm( realm_data * realm )
    }
 
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realm->filename );
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
+      return;
+   }
 
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   stream << "#REALM\n";
+   stream << std::format( "Version      {}\n", REALM_VERSION );
+   stream << std::format( "Name         {}~\n", realm->name );
+   stream << std::format( "Filename     {}~\n", realm->filename );
+   stream << std::format( "Description  {}~\n", realm->realmdesc );
+   stream << std::format( "Leader       {}~\n", realm->leader );
+   stream << std::format( "Leadrank     {}~\n", realm->leadrank );
+   stream << std::format( "Badge        {}~\n", realm->badge );
+   stream << std::format( "Type         {}~\n", realm_type_names[realm->type] );
+   stream << std::format( "Members      {}\n", realm->members );
+   stream << std::format( "Board        {}\n", realm->board );
+   stream << "End\n\n";
+
+   for( auto* member : realm->memberlist )
    {
-      bug( "{}: Cannot open {} for writing.", __func__, filename.string() );
-      perror( filename.c_str() );
+      auto joined = std::chrono::system_clock::to_time_t( member->joined );
+
+      stream << "#ROSTER\n";
+      stream << std::format( "Name      {}~\n", member->name );
+      stream << std::format( "Joined    {}\n", joined );
+      stream << "End\n\n";
    }
-   else
-   {
-      fprintf( fp, "%s", "#REALM\n" );
-      fprintf( fp, "Version      %d\n", REALM_VERSION );
-      fprintf( fp, "Name         %s~\n", realm->name.c_str(  ) );
-      fprintf( fp, "Filename     %s~\n", realm->filename.c_str(  ) );
-      fprintf( fp, "Description  %s~\n", realm->realmdesc.c_str(  ) );
-      fprintf( fp, "Leader       %s~\n", realm->leader.c_str(  ) );
-      fprintf( fp, "Leadrank     %s~\n", realm->leadrank.c_str(  ) );
-      fprintf( fp, "Badge        %s~\n", realm->badge.c_str(  ) );
-      fprintf( fp, "Type         %s~\n", realm_type_names[realm->type] );
-      fprintf( fp, "Members      %d\n", realm->members );
-      fprintf( fp, "Board        %d\n", realm->board );
-      fprintf( fp, "%s", "End\n\n" );
-      fwrite_realm_memberlist( fp, realm );
-      fprintf( fp, "%s", "#END\n" );
-   }
-   FCLOSE( fp );
+
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 /*
  * Read in actual realm data.
  */
-void fread_realm( realm_data * realm, FILE * fp )
+void fread_realm( std::ifstream & stream, realm_data * realm )
 {
    int file_ver = 0;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = feof( fp ) ? "End" : fread_word( fp );
-
-      switch ( to_upper( word[0] ) )
+      if( key[0] == '*' )
+         fread_to_eol( stream );
+      else if( key == "Version" )
+         stream >> file_ver;
+      else if( key == "Name" )
+         realm->name = fread_line( stream );
+      else if( key == "Filename" )
+         realm->filename = fread_line( stream );
+      else if( key == "Description" )
+         realm->realmdesc = fread_line( stream );
+      else if( key == "Leader" )
+         realm->leader = fread_line( stream );
+      else if( key == "Leadrank" )
+         realm->leadrank = fread_line( stream );
+      else if( key == "Badge" )
+         realm->badge = fread_line( stream );
+      else if( key == "Type" )
       {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         std::string temp = fread_line( stream );
+         int value = get_realm_type_name( temp );
 
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'B':
-            STDSKEY( "Badge", realm->badge );
-            KEY( "Board", realm->board, fread_number( fp ) );
-            break;
-
-         case 'D':
-            STDSKEY( "Description", realm->realmdesc );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( file_ver == 0 )
-                  ; // Do Nothing. This is just to shut the compiler up about file_ver not yet being used.
-
-               return;
-            }
-            break;
-
-         case 'F':
-            STDSKEY( "Filename", realm->filename );
-            break;
-
-         case 'L':
-            STDSKEY( "Leader", realm->leader );
-            STDSKEY( "Leadrank", realm->leadrank );
-            break;
-
-         case 'M':
-            KEY( "Members", realm->members, fread_short( fp ) );
-            break;
-
-         case 'N':
-            STDSKEY( "Name", realm->name );
-            break;
-
-         case 'T':
-            if( !str_cmp( word, "Type" ) )
-            {
-               const char *temp = fread_flagstring( fp );
-               int value = get_realm_type_name( temp );
-
-               if( value < 0 || value > MAX_REALM )
-               {
-                  bug( "{}: Invalid realm type: {}. Setting to None.", __func__, temp );
-                  value = 0;
-               }
-               realm->type = value;
-            }
-            break;
-
-         case 'V':
-            KEY( "Version", file_ver, fread_number( fp ) );
-            break;
+         if( value < 0 || value > MAX_REALM )
+         {
+            bug( "{}: Invalid realm type: {}. Setting to None.", __func__, temp );
+            value = 0;
+         }
+         realm->type = value;
       }
+      else if( key == "Members" )
+         stream >> realm->members;
+      else if( key == "Board" )
+         stream >> realm->board;
+      else if( key == "End" )
+      {
+         return;
+      }
+      else
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
    }
 }
 
@@ -399,56 +321,58 @@ void clean_realm( realm_data * realm )
  */
 bool load_realm_file( std::string_view realmfile )
 {
-   realm_data *realm;
-   FILE *fp;
-
-   realm = new realm_data;
-
-   clean_realm( realm );  /* Default settings so we don't get weird ass stuff */
-
-   bool found = false;
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realmfile );
-
-   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      found = true;
-      for( ;; )
-      {
-         char letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "{}: # not found.", __func__ );
-            break;
-         }
-
-         std::string word = fread_word( fp );
-         if( !str_cmp( word, "REALM" ) )
-            fread_realm( realm, fp );
-         else if( !str_cmp( word, "ROSTER" ) )
-            fread_realm_memberlist( realm, fp );
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            bug( "{}: bad section: {}.", __func__, word );
-            break;
-         }
-      }
-      FCLOSE( fp );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
+      return false;
    }
 
-   if( found )
-      realmlist.push_back( realm );
-   else
-      deleteptr( realm );
+   realm_data *realm = new realm_data;
+   clean_realm( realm );  /* Default settings so we don't get weird ass stuff */
 
-   return found;
+   std::string key;
+   while( stream >> key )
+   {
+      if( key[0] == '*' )
+         fread_to_eol( stream );
+      else if( key == "#REALM" )
+         fread_realm( stream, realm );
+      else if( key == "#ROSTER" )
+      {
+         realm_roster_data *roster = new realm_roster_data;
+
+         while( stream >> key )
+         {
+            if( key == "Name" )
+               roster->name = fread_line( stream );
+            else if( key == "Joined" )
+            {
+               time_t loaded_time;
+               stream >> loaded_time;
+
+               roster->joined = std::chrono::system_clock::from_time_t( loaded_time );
+            }
+            else if( key == "End" )
+            {
+               realm->memberlist.push_back( roster );
+               break;
+            }
+         }
+      }
+      else if( key == "#END" )
+      {
+         realmlist.push_back( realm );
+         break;
+      }
+      else
+      {
+          bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+      }
+   }
+   stream.close();
+   return true;
 }
 
 void verify_realms( void )
@@ -502,7 +426,7 @@ void load_realms( void )
 {
    realmlist.clear(  );
 
-   log_string( "Loading realms..." );
+   log_string( "Loading Realms..." );
 
    std::filesystem::path realmlistfile = std::format( "{}{}", REALM_DIR, REALM_LIST );
    std::ifstream stream( std::filesystem::path{realmlistfile} );
@@ -514,10 +438,7 @@ void load_realms( void )
 
    for( ;; )
    {
-      std::string filename;
-      std::getline( stream, filename, '\n' );
-
-      strip_whitespace( filename );
+      std::string filename = fread_line( stream, '\n' );
 
       if( filename[0] == '$' )
          break;
@@ -530,7 +451,7 @@ void load_realms( void )
    stream.close();
 
    verify_realms(  ); /* Check against pfiles to see if realms should still exist */
-   log_string( "Done realms." );
+   log_string( "Done: Realms." );
 }
 
 CMDF( do_setrealm )
