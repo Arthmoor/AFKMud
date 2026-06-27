@@ -43,6 +43,9 @@
 
 #pragma once
 
+// File that stores Weather Information
+inline constexpr std::string_view WEATHER_FILE = "weathermap.dat";
+
 /*
  * This might not have all the bells and whistles I'd intended, and it might be 
  * missing some of the things people wanted. But I did the best I could, and it's
@@ -102,9 +105,6 @@ class WeatherCell
    int windSpeedX = 0;    //  < 0 = west, > 0 = east
    int windSpeedY = 0;    //  < 0 = north, > 0 = south
 };
-
-// File that stores Weather Information 
-inline constexpr std::string_view WEATHER_FILE = "weathermap.dat";
 
 //So it can be utilized from other parts of the code
 extern WeatherCell weatherMap[WEATHER_SIZE_X][WEATHER_SIZE_Y];

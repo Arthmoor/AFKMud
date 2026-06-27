@@ -2283,7 +2283,7 @@ void save_weathermap( void )
       return;
    }
 
-   stream << "#VERSION " << WEATHER_VERSION << "\n\n";
+   stream << std::format( "#VERSION \n\n", WEATHER_VERSION );
 
    for( y = 0; y < WEATHER_SIZE_Y; y++ )
    {
@@ -2313,29 +2313,20 @@ void save_weathermap( void )
 void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
 {
    WeatherCell *cell = &weatherMap[x][y];
-   std::string word;
+   std::string key;
 
-   auto read_line = [&]( char delimiter = '\n' ) -> std::string
+   while( stream >> key )
    {
-      std::string line;
-      std::getline( stream, line, delimiter );
-      strip_whitespace( line );
-
-      return line;
-   };
-
-   while( stream >> word )
-   {
-      if( word == "End" )
+      if( key == "End" )
          return;
 
-      if( word == "Climate" )
+      if( key == "Climate" )
       {
          if( file_ver == 0 )
-            cell->climate = std::stoi( read_line() );
+            cell->climate = std::stoi( fread_line( stream, '\n' ) );
          else
          {
-            std::string climate_str = read_line( '~' );
+            std::string climate_str = fread_line( stream );
             int value = get_climate( climate_str );
 
             if( value < 0 || value >= MAX_CLIMATE )
@@ -2344,13 +2335,13 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
                cell->climate = value;
          }
       }
-      else if( word == "Hemisphere" )
+      else if( key == "Hemisphere" )
       {
          if( file_ver == 0 )
-            cell->hemisphere = std::stoi( read_line() );
+            cell->hemisphere = std::stoi( fread_line( stream, '\n' ) );
          else
          {
-            std::string hemi_str = read_line( '~' );
+            std::string hemi_str = fread_line( stream );
             int value = get_hemisphere( hemi_str );
 
             if( value < 0 || value >= HEMISPHERE_MAX )
@@ -2359,7 +2350,7 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
                cell->hemisphere = value;
          }
       }
-      else if( word == "State" )
+      else if( key == "State" )
       {
          stream >> cell->cloudcover
          >> cell->energy
@@ -2372,9 +2363,8 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
       }
       else
       {
-         bug( "{}: no match for {}", __func__, word );
-         std::string dummy;
-         std::getline( stream, dummy );
+         bug( "{}: no match for {}", __func__, key );
+         fread_to_eol( stream );
       }
    }
 }
@@ -2385,7 +2375,6 @@ bool load_weathermap( void )
    int file_ver = 0;
 
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, WEATHER_FILE );
-
    std::ifstream stream(filename);
    if( !stream.is_open() )
    {
@@ -2393,47 +2382,34 @@ bool load_weathermap( void )
       return false;
    }
 
-   char letter;
-   while( stream >> std::ws && stream.get( letter ) )
+   std::string key;
+   stream >> key;
+
+   if( key == "#VERSION" )
+      stream >> file_ver;
+   else
    {
-      if( letter == '*' )
-      {
-         std::string dummy;
-         std::getline( stream, dummy );
-         continue;
-      }
+      bug( "{}: Invalid file format for {}. No VERSION present.", __func__, filename.string() );
+      stream.close();
+      return false;
+   }
 
-      if( letter != '#' )
-      {
-         bug( "{}: # not found ({})", __func__, letter );
-         return false;
-      }
-
-      std::string word;
-      stream >> word;
-
-      if( word == "VERSION" )
-      {
-         stream >> file_ver;
-         continue;
-      }
-
-      if( word == "CELL" )
+   while( stream >> key )
+   {
+      if( key == "#CELL" )
       {
          stream >> x >> y;
          fread_cell( stream, x, y, file_ver );
-         continue;
       }
-      else if( word == "END" )
+      else if( key == "#END" )
          break;
       else
       {
-         bug( "{}: no match for {}", __func__, word );
-         std::string dummy;
-         std::getline( stream, dummy );
-         continue;
+         bug( "{}: no match for {}", __func__, key );
+         fread_to_eol( stream );
       }
    }
+   stream.close();
    return true;
 }
 
