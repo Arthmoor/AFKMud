@@ -184,137 +184,81 @@ const char *season_name[] = {
    "spring", "summer", "fall", "winter"
 };
 
-/* Reads the actual time file from disk - Samson 1-21-99 */
-void fread_timedata( FILE * fp )
-{
-   for( ;; )
-   {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'B':
-            if( !str_cmp( word, "Boardtime" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               board_expire_time_t = std::chrono::system_clock::from_time_t( loaded_time );
-            }
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-
-         case 'M':
-            KEY( "Mhour", time_info.hour, fread_long( fp ) );
-            KEY( "Mday", time_info.day, fread_long( fp ) );
-            KEY( "Mmonth", time_info.month, fread_long( fp ) );
-            KEY( "Myear", time_info.year, fread_long( fp ) );
-            break;
-
-         case 'P':
-            if( !str_cmp( word, "Purgetime") )
-            {
-               time_t loaded_time = fread_long( fp );
-               new_pfile_time_t = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-            break;
-      }
-   }
-}
-
 /* Load time information from saved file - Samson 1-21-99 */
 bool load_timedata( void )
 {
-   FILE *fp;
-
    bool found = false;
-   std::filesystem::path filename = std::format( "{}time.dat", SYSTEM_DIR );
 
-   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
+   std::ifstream stream( std::filesystem::path{TIME_FILE} );
+   if( !stream.is_open() )
    {
-      found = true;
-
-      for( ;; )
-      {
-         char letter = '\0';
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            log_printf( "{}: # not found.", __func__ );
-            break;
-         }
-
-         std::string word = fread_word( fp );
-         if( !str_cmp( word, "TIME" ) )
-         {
-            fread_timedata( fp );
-            break;
-         }
-         else if( !str_cmp( word, "END" ) )
-            break;
-         else
-         {
-            log_printf( "{}: bad section - {}.", __func__, word );
-            break;
-         }
-      }
-      FCLOSE( fp );
+      bug( "{}: Cannot open {} for reading: {}", __func__, TIME_FILE, std::strerror(errno) );
+      return found;
    }
+
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "#TIME" )
+         ; // Do nothing, the #TIME marker has nothing to process.
+      else if( key == "Mhour" )
+         stream >> time_info.hour;
+      else if( key == "Mday" )
+         stream >> time_info.day;
+      else if( key == "Mmonth" )
+         stream >> time_info.month;
+      else if( key == "Myear" )
+         stream >>  time_info.year;
+      else if( key == "Purgetime" )
+      {
+         time_t loaded_time;
+         stream >> loaded_time;
+
+         new_pfile_time_t = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Boardtime" )
+      {
+         time_t loaded_time;
+         stream >> loaded_time;
+
+         board_expire_time_t = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "End" || key == "#END" )
+      {
+         found = true;
+         break;
+      }
+      else
+         bug( "{}: Bad section - {} in timedata.", __func__, key );
+   }
+   stream.close();
    return found;
 }
 
 /* Saves the current game world time to disk - Samson 1-21-99 */
 void save_timedata( void )
 {
-   FILE *fp;
-
-   std::filesystem::path filename = std::format( "{}time.dat", SYSTEM_DIR );
-
-   if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
+   std::ofstream stream( std::filesystem::path{TIME_FILE} );
+   if( !stream.is_open() )
    {
-      log_printf( "{}: Unable to open time.dat for writing!", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, TIME_FILE, std::strerror(errno) );
+      return;
    }
-   else
-   {
-      auto purgetime = std::chrono::system_clock::to_time_t( new_pfile_time_t );
-      auto boardtime = std::chrono::system_clock::to_time_t( board_expire_time_t );
 
-      fprintf( fp, "%s", "#TIME\n" );
-      fprintf( fp, "Mhour	%d\n", time_info.hour );
-      fprintf( fp, "Mday	%d\n", time_info.day );
-      fprintf( fp, "Mmonth	%d\n", time_info.month );
-      fprintf( fp, "Myear	%d\n", time_info.year );
-      fprintf( fp, "Purgetime %ld\n", purgetime );
-      fprintf( fp, "Boardtime %ld\n", boardtime );
-      fprintf( fp, "%s", "End\n\n" );
-      fprintf( fp, "%s", "#END\n" );
-   }
-   FCLOSE( fp );
+   auto purgetime = std::chrono::system_clock::to_time_t( new_pfile_time_t );
+   auto boardtime = std::chrono::system_clock::to_time_t( board_expire_time_t );
+
+   stream << "#TIME\n";
+   stream << std::format( "Mhour    {}\n", time_info.hour );
+   stream << std::format( "Mday     {}\n", time_info.day );
+   stream << std::format( "Mmonth   {}\n", time_info.month );
+   stream << std::format( "Myear    {}\n", time_info.year );
+   stream << std::format( "Purgetime {}\n", purgetime );
+   stream << std::format( "Boardtime {}\n", boardtime );
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, TIME_FILE, std::strerror(errno) );
 }
 
 CMDF( do_time )
@@ -585,75 +529,68 @@ CMDF( do_holidays )
 /* Load the holiday file */
 void load_holidays( void )
 {
-   holiday_data *day = nullptr;
-   std::ifstream stream;
-
-   daylist.clear(  );
-
-   stream.open( std::filesystem::path( HOLIDAY_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{HOLIDAY_FILE} );
+   if( !stream.is_open() )
    {
-      log_string( "No holiday file found." );
+      bug( "{}: Cannot open {} for reading: {}", __func__, HOLIDAY_FILE, std::strerror(errno) );
       return;
    }
 
-   do
+   daylist.clear(  );
+   holiday_data *day = nullptr;
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#HOLIDAY" )
          day = new holiday_data;
       else if( key == "Name" )
-         day->set_name( value );
+         day->set_name( fread_line( stream ) );
       else if( key == "Announce" )
-         day->set_announce( value );
+         day->set_announce( fread_line( stream ) );
       else if( key == "Month" )
-         day->set_month( atoi( value.c_str(  ) ) );
+      {
+         int value;
+         stream >> value;
+
+         day->set_month( value );
+      }
       else if( key == "Day" )
-         day->set_day( atoi( value.c_str(  ) ) );
+      {
+         int value;
+         stream >> value;
+
+         day->set_day( value );
+      }
       else if( key == "End" )
          daylist.push_back( day );
       else
-         log_printf( "{}: Bad line in holiday file: {} {}", __func__, key, value );
+         bug( "{}: Bad line in holiday file: {}", __func__, key );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
 /* Save the holidays to disk - Samson 5-6-99 */
 void save_holidays( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( HOLIDAY_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ofstream stream( std::filesystem::path{HOLIDAY_FILE} );
+   if( !stream.is_open() )
    {
-      log_printf( "{}: Cannot write to holiday file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, HOLIDAY_FILE, std::strerror(errno) );
       return;
    }
 
    for( auto* day : daylist )
    {
-      stream << "#HOLIDAY" << std::endl;
-      stream << "Name     " << day->get_name(  ) << std::endl;
-      stream << "Announce " << day->get_announce(  ) << std::endl;
-      stream << "Month    " << day->get_month(  ) << std::endl;
-      stream << "Day      " << day->get_day(  ) << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << "#HOLIDAY\n";
+      stream << std::format( "Name     {}~\n", day->get_name(  ) );
+      stream << std::format( "Announce {}~\n", day->get_announce(  ) );
+      stream << std::format( "Month    {}\n",  day->get_month(  ) );
+      stream << std::format( "Day      {}\n",  day->get_day(  ) );
+      stream << "End\n\n";
    }
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, HOLIDAY_FILE, std::strerror(errno) );
 }
 
 /* Holiday OLC command - (c)Andrew Wilkie May-20-2005 */

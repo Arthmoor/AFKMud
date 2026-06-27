@@ -28,13 +28,15 @@
 
 #pragma once
 
+inline constexpr std::string_view TIME_FILE    = "../system/time.dat";
+inline constexpr std::string_view HOLIDAY_FILE = "../system/holidays.dat";
+
 /* Well, ok, so it didn't turn out the way I wanted, but that's life - Samson */
 /* Ever write a comment like the one above this one and completely forget what it means? */
 /* Portions of this data courtesy of Yrth mud */
 
 /* PaB: Seasons */
-/* Notes: Each season will be arbitrarily set at 1/4 of the year.
- */
+// Notes: Each season will be arbitrarily set at 1/4 of the year.
 enum seasons
 {
    SEASON_SPRING, SEASON_SUMMER, SEASON_FALL, SEASON_WINTER, SEASON_MAX
@@ -44,9 +46,6 @@ enum seasons
 constexpr int WINTER_HUNGER = 1;
 constexpr int SUMMER_THIRST = 1;
 constexpr int SUMMER_THIRST_DESERT = 2;
-
-/* Holiday chart */
-inline constexpr std::string_view HOLIDAY_FILE = "../system/holidays.dat";
 
 extern const char *day_name[];
 extern const char *month_name[];
