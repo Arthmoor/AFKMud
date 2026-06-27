@@ -70,9 +70,9 @@ class mud_channel
     ~mud_channel(  );
 
    std::bitset<CHAN_MAXFLAG> flags;    // Flags for this channel.
+   std::list<chan_history *> history;  // List of recent messages on the channel.
    std::string name;                   // The channel's name.
    std::string colorname;              // Custom color tag the channel uses.
-   std::list<chan_history *> history;  // List of recent messages on the channel.
    int level = LEVEL_IMMORTAL;         // Minimum level allowed to use the channel.
    int type = CHAN_GLOBAL;             // The type of channel.
 };

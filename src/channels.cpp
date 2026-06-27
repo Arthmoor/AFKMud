@@ -103,62 +103,60 @@ int get_chanflag( std::string_view flag )
 /* Load the channel file */
 void load_mudchannels( void )
 {
-   mud_channel *channel = nullptr;
-   int filever = 0;
-   std::ifstream stream;
+   std::ifstream stream( std::filesystem::path{CHANNEL_FILE} );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, CHANNEL_FILE, std::strerror(errno) );
+      return;
+   }
 
    log_string( "Loading channels..." );
 
    chanlist.clear(  );
 
-   stream.open( std::filesystem::path( CHANNEL_FILE ) );
-   if( !stream.is_open(  ) )
+   int file_ver = 0;
+   std::string key;
+   stream >> key;
+
+   if( key == "#VERSION" )
+      stream >> file_ver;
+   else
    {
-      log_string( "No channel file found." );
+      bug( "{}: Invalid file format - #VERSION not present: {}", __func__, CHANNEL_FILE );
       return;
    }
 
-   do
+   mud_channel *channel = nullptr;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_tilde( value );
-      strip_lspace( value );
-
-      if( key.empty(  ) )
-         continue;
-
-      if( key == "#VERSION" )
-         filever = atoi( value.c_str(  ) );
-      else if( key == "#CHANNEL" )
+      if( key == "#CHANNEL" )
          channel = new mud_channel;
       else if( key == "ChanName" )
-         channel->name = value;
+         channel->name = fread_line( stream, '\n' );
       else if( key == "ChanColorname" )
-         channel->colorname = value;
+         channel->colorname = fread_line( stream, '\n' );
       else if( key == "ChanLevel" )
-         channel->level = atoi( value.c_str(  ) );
+         stream >> channel->level;
       else if( key == "ChanType" )
-         channel->type = atoi( value.c_str(  ) );
+         stream >> channel->type;
       else if( key == "ChanFlags" )
       {
-         if( filever < 1 )
-            channel->flags = atoi( value.c_str(  ) );
+         if( file_ver < 1 )
+            stream >> channel->flags;
          else
-            flag_string_set( value, channel->flags, chan_flags );
+         {
+            std::string flags = fread_line( stream, '\n' );
+
+            flag_string_set( flags, channel->flags, chan_flags );
+         }
       }
       else if( key == "End" )
          chanlist.push_back( channel );
+      else if( key == "#END" )
+         break;
       else
-         log_printf( "{}: Bad line in channel file: {} {}", __func__, key, value );
+         log_printf( "{}: Bad line in channel file: {}", __func__, key );
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
@@ -167,32 +165,33 @@ constexpr int CHANNEL_VERSION = 1;
 
 void save_mudchannels( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( CHANNEL_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ofstream stream( std::filesystem::path{CHANNEL_FILE} );
+   if( !stream.is_open() )
    {
-      log_printf( "{}: Cannot write to channel file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, CHANNEL_FILE, std::strerror(errno) );
       return;
    }
 
-   stream << "#VERSION " << CHANNEL_VERSION << std::endl;
+   stream << std::format( "#VERSION {}\n", CHANNEL_VERSION );
 
    for( auto* channel : chanlist )
    {
       if( !channel->name.empty(  ) )
       {
-         stream << "#CHANNEL" << std::endl;
-         stream << "ChanName      " << channel->name << std::endl;
-         stream << "ChanColorname " << channel->colorname << std::endl;
-         stream << "ChanLevel     " << channel->level << std::endl;
-         stream << "ChanType      " << channel->type << std::endl;
+         stream << "#CHANNEL\n";
+         stream << std::format( "ChanName      {}\n", channel->name );
+         stream << std::format( "ChanColorname {}\n", channel->colorname );
+         stream << std::format( "ChanLevel     {}\n", channel->level );
+         stream << std::format( "ChanType      {}\n", channel->type );
          if( channel->flags.any(  ) )
-            stream << "ChanFlags     " << bitset_string( channel->flags, chan_flags ) << std::endl;
-         stream << "End" << std::endl << std::endl;
+            stream << std::format( "ChanFlags     {}\n", bitset_string( channel->flags, chan_flags ) );
+         stream << "End\n\n";
       }
    }
+   stream << "#END\n";
    stream.close(  );
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, CHANNEL_FILE, std::strerror(errno) );
 }
 
 mud_channel *find_channel( std::string_view name )
