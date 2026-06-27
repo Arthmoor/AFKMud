@@ -94,7 +94,7 @@ void save_bits( void )
       }
 
       for( bit = start_bit.begin(  ); bit != start_bit.end(  ); ++bit )
-         stream << bit->first << " " << bit->second << std::endl;
+         stream << std::format( "{} {}\n", bit->first, bit->second );
       stream.close(  );
       if( stream.fail() )
          bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
@@ -107,138 +107,102 @@ void load_oldbits( void )
    std::filesystem::path buf;
    int mode = 0, number = -1;
    std::string desc;
-   FILE *fp;
 
    abits.clear(  );
    qbits.clear(  );
 
-   buf = std::format( "{}abit.lst", SYSTEM_DIR );
-   if( !( fp = fopen( buf.c_str(), "r" ) ) )
+   std::filesystem::path filename = std::format( "{}abit.lst", SYSTEM_DIR );
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      perror( buf.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "#END" )
       {
-         log_printf( "{}: EOF encountered reading old bits file!", __func__ );
-         word = "End";
-      }
+         stream.close();
 
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case '#':
-            if( !str_cmp( word, "#END" ) )
+         if( mode == 0 )
+         {
+            mode = 1; // We have two files to read, I reused the same code to read both.
+            filename = std::format( "{}qbit.lst", SYSTEM_DIR );
+            stream.open( std::filesystem::path{filename} );
+            if( !stream.is_open() )
             {
-               FCLOSE( fp );
-               std::filesystem::remove( buf );
-               if( mode == 0 )
-               {
-                  mode = 1;   /* We have two files to read, I reused the same code to read both */
-                  buf = std::format( "{}qbit.lst", SYSTEM_DIR );
-                  if( !( fp = fopen( buf.c_str(), "r" ) ) )
-                  {
-                     perror( buf.c_str() );
-                     return;
-                  }
-               }
-               else
-                  return;
-            }
-            else
-            {
-               log_printf( "{}: Bad section: {}", __func__, word );
+               bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
                return;
             }
+         }
+      }
 
-         case 'D':
-            STDSKEY( "Desc", desc );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( mode == 0 )
-                  abits[number] = desc;
-               else
-                  qbits[number] = desc;
-            }
-            break;
-
-         case 'N':
-            KEY( "Number", number, fread_number( fp ) );
-            break;
+      if( key == "Desc" )
+         desc = fread_line( stream );
+      else if( key == "End" )
+      {
+         if( mode == 0 )
+            abits[number] = desc;
+         else
+            qbits[number] = desc;
+      }
+      else if( key == "Number" )
+         stream >> number;
+      else
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
       }
    }
 }
 
 void load_abits( void )
 {
-   std::ifstream stream;
-
    log_string( "...abits" );
-   std::filesystem::path filename = std::format( "{}abits.lst", SYSTEM_DIR );
-   stream.open( filename );
 
+   std::filesystem::path filename = std::format( "{}abits.lst", SYSTEM_DIR );
+   std::ifstream stream( std::filesystem::path{filename} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   do
+   while( !stream.eof() )
    {
       int number;
       std::string desc;
-      char line[MSL];
 
       stream >> number;
-      stream.getline( line, MSL );
-      desc = line;
+      desc = fread_line( stream, '\n' );
       abits[number] = desc;
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
 void load_qbits( void )
 {
-   std::ifstream stream;
-
    log_string( "...qbits" );
+
    std::filesystem::path filename = std::format( "{}qbits.lst", SYSTEM_DIR );
-   stream.open( filename );
+   std::ifstream stream( std::filesystem::path{filename} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   do
+   while( !stream.eof() )
    {
       int number;
       std::string desc;
-      char line[MSL];
 
       stream >> number;
-      stream.getline( line, MSL );
-      desc = line;
+      desc = fread_line( stream, '\n' );
       qbits[number] = desc;
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
