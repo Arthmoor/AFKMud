@@ -2733,7 +2733,7 @@ CMDF( do_advance )
       return;
    }
 
-   if( ( level = atoi( argument.c_str(  ) ) ) < 1 || level > LEVEL_AVATAR )
+   if( ( level = std::stoi( argument ) ) < 1 || level > LEVEL_AVATAR )
    {
       ch->print_fmt( "Level range is 1 to {}.\r\n", LEVEL_AVATAR );
       return;
@@ -2785,11 +2785,11 @@ CMDF( do_advance )
          victim->level = tmp;
 
          ch->print_fmt( "Demoting {} from level {} to level {}!\r\n", victim->name, victim->level, level );
-         victim->print( "Cursed and forsaken!  The gods have lowered your level...\r\n" );
+         victim->print( "Cursed and forsaken! The gods have lowered your level...\r\n" );
       }
       else
       {
-         ch->print_fmt( "{} is already level {}.  Re-advancing...\r\n", victim->name, level );
+         ch->print_fmt( "{} is already level {}. Re-advancing...\r\n", victim->name, level );
          victim->print( "Deja vu! Your mind reels as you re-live your past levels!\r\n" );
       }
       victim->level = 1;

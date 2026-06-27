@@ -939,71 +939,78 @@ shell_cmd *find_shellcommand( std::string_view command )
 
 void load_shellcommands( void )
 {
-   shell_cmd *scmd = nullptr;
-   std::ifstream stream;
-   int version = 0;
-
-   shellcmdlist.clear(  );
-
-   stream.open( std::filesystem::path( SHELL_COMMAND_FILE ) );
+   std::ifstream stream( std::filesystem::path{SHELL_COMMAND_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, SHELL_COMMAND_FILE, std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
 
-   do
+   int version = 0;
+   shellcmdlist.clear(  );
+   shell_cmd *scmd = nullptr;
+   std::string key;
+
+   stream >> key;
+   if( key == "#VERSION" )
+      stream >> version;
+   else
    {
-      std::string key, value;
-      char buf[MIL];
+      bug( "{}: Invalid file format for {}. No VERSION present.", __func__, SHELL_COMMAND_FILE );
+      stream.close();
+      std::exit( EXIT_FAILURE );
+   }
 
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
+   while( stream >> key )
+   {
       if( key == "#COMMAND" )
          scmd = new shell_cmd;
-      else if( key == "#VERSION" )
-         version = atoi( value.c_str(  ) );
       else if( key == "Name" )
-         scmd->set_name( value );
+         scmd->set_name( fread_line( stream ) );
       else if( key == "Code" )
       {
-         scmd->set_func( skill_function( value ) );
-         scmd->set_func_name( value );
+         std::string code = fread_line( stream, '\n' );
+
+         scmd->set_func( skill_function( code ) );
+         scmd->set_func_name( code );
       }
       else if( key == "Position" )
-         scmd->set_position( value );
+         scmd->set_position( fread_line( stream) );
       else if( key == "Level" )
-         scmd->set_level( atoi( value.c_str(  ) ) );
+      {
+         int level;
+         stream >> level;
+
+         scmd->set_level( level );
+      }
       else if( key == "Log" )
-         scmd->set_log( value );
+      {
+         std::string log = fread_line( stream );
+
+         scmd->set_log( log );
+      }
       else if( key == "Flags" )
       {
          if( version < 3 )
-            scmd->flags = atoi( value.c_str(  ) );
+            stream >> scmd->flags;
          else
-            flag_string_set( value, scmd->flags, cmd_flags );
+         {
+            std::string flags = fread_line( stream );
+            flag_string_set( flags, scmd->flags, cmd_flags );
+         }
       }
       else if( key == "End" )
       {
          if( scmd->get_name(  ).empty(  ) )
          {
-            bug( "{}: Command name not found", __func__ );
+            bug( "{}: Command name not found.", __func__ );
             deleteptr( scmd );
             continue;
          }
 
          if( scmd->get_func_name(  ).empty(  ) )
          {
-            bug( "{}: Command name not found", __func__ );
+            bug( "{}: Command name not found.", __func__ );
             deleteptr( scmd );
             continue;
          }
@@ -1018,9 +1025,11 @@ void load_shellcommands( void )
       else if( key == "#END" )
          return;
       else
-         bug( "{}: Bad line in shell commands file: {} {}", __func__, key, value );
+      {
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
+      }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
@@ -1030,16 +1039,14 @@ constexpr int SHELL_CMD_VERSION = 3;
 /* Updated to 3 for command flags - Samson 7-9-00 */
 void save_shellcommands( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( SHELL_COMMAND_FILE ) );
+   std::ofstream stream( std::filesystem::path{SHELL_COMMAND_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, SHELL_COMMAND_FILE, std::strerror(errno) );
       return;
    }
 
-   stream << "#VERSION " << SHELL_CMD_VERSION << std::endl;
+   stream << std::format( "#VERSION {}\n", SHELL_CMD_VERSION );
 
    for( auto* command : shellcmdlist )
    {
@@ -1048,16 +1055,16 @@ void save_shellcommands( void )
          bug( "{}: blank command in list.", __func__ );
          continue;
       }
-      stream << "#COMMAND" << std::endl;
-      stream << "Name        " << command->get_name(  ) << std::endl;
+      stream << "#COMMAND\n";
+      stream << std::format( "Name        {}~\n", command->get_name() );
       // Modded to use new field - Trax
-      stream << "Code        " << command->get_func_name(  ) << std::endl;
-      stream << "Position    " << npc_position[command->get_position(  )] << std::endl;
-      stream << "Level       " << command->get_level(  ) << std::endl;
-      stream << "Log         " << log_flag[command->get_log(  )] << std::endl;
+      stream << std::format( "Code        {}\n", command->get_func_name() );
+      stream << std::format( "Position    {}~\n", npc_position[command->get_position()] );
+      stream << std::format( "Level       {}\n", command->get_level() );
+      stream << std::format( "Log         {}~\n", log_flag[command->get_log()] );
       if( command->flags.any(  ) )
-         stream << "Flags       " << bitset_string( command->flags, cmd_flags ) << std::endl;
-      stream << "End" << std::endl << std::endl;
+         stream << std::format( "Flags       {}~\n", bitset_string( command->flags, cmd_flags ) );
+      stream << "End\n\n";
    }
    stream.close(  );
    if( stream.fail() )

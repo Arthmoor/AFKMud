@@ -217,7 +217,7 @@ void recv_text_handler( std::string & str )
 
    if( !isnpc )
    {
-      ch->name = capitalize( chname ) );
+      ch->name = capitalize( chname );
       ch->pcdata = new pc_data;
       ch->pcdata->wizinvis = ilevel;
       if( isinvis )
@@ -226,7 +226,7 @@ void recv_text_handler( std::string & str )
    else
    {
       ch->set_actflag( ACT_IS_NPC );
-      ch->short_descr = capitalize( chname ) );
+      ch->short_descr = capitalize( chname );
       ch->mobinvis = ilevel;
    }
    ch->level = clevel;
