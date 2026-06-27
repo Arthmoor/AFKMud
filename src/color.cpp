@@ -63,6 +63,7 @@
  */
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "descriptor.h"
 
@@ -206,43 +207,35 @@ void reset_colors( char_data * ch )
 {
    if( !ch->isnpc(  ) )
    {
-      std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, "default" );
-
+      std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, "AFK" );
       if( std::filesystem::exists( filename ) )
       {
-         FILE *fp;
          int max_colors = 0;
 
-         if( !( fp = fopen( filename.c_str(), "r" ) ) )
+         std::ifstream stream( std::filesystem::path{filename} );
+         if( !stream.is_open() )
          {
             memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
             return;
          }
 
-         while( !feof( fp ) )
+         std::string key;
+         while( stream >> key )
          {
-            std::string word = fread_word( fp );
-
-            if( !str_cmp( word, "MaxColors" ) )
-            {
-               max_colors = fread_number( fp );
-               continue;
-            }
-
-            if( !str_cmp( word, "Colors" ) )
+            if( key == "MaxColors" )
+               stream >> max_colors;
+            else if( key == "Colors" )
             {
                for( int x = 0; x < max_colors; ++x )
-                  ch->pcdata->colors[x] = fread_number( fp );
-               continue;
+                  stream >> ch->pcdata->colors[x];
             }
-
-            if( !str_cmp( word, "End" ) )
+            else if( key == "End" )
             {
-               FCLOSE( fp );
+               stream.close();
                return;
             }
          }
-         FCLOSE( fp );
+         stream.close();
          return;
       }
       else
@@ -277,8 +270,6 @@ CMDF( do_color )
 
    if( !str_cmp( arg, "savetheme" ) && ch->is_imp(  ) )
    {
-      FILE *fp;
-
       if( argument.empty(  ) )
       {
          ch->print( "You must specify a name for this theme to save it.\n\r" );
@@ -292,26 +283,34 @@ CMDF( do_color )
       }
 
       std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, argument );
-      if( !( fp = fopen( filename.c_str(), "w" ) ) )
+      std::ofstream stream( std::filesystem::path{filename} );
+      if( !stream.is_open() )
       {
-         ch->print_fmt( "Unable to write to color file {}\n\r", filename.string() );
+         bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
+         ch->print_fmt( "The system is unable to open the {} file to write.", argument );
          return;
       }
-      fprintf( fp, "%s", "#COLORTHEME\n" );
-      fprintf( fp, "Name         %s~\n", argument.c_str(  ) );
-      fprintf( fp, "MaxColors    %d\n", MAX_COLORS );
-      fprintf( fp, "%s", "Colors      " );
+
+      stream << "#COLORTHEME\n";
+      stream << std::format( "Name         {}~\n", argument );
+      stream << std::format( "MaxColors    {}\n", MAX_COLORS );
+      stream << "Colors      ";
       for( int x = 0; x < MAX_COLORS; ++x )
-         fprintf( fp, " %d", ch->pcdata->colors[x] );
-      fprintf( fp, "%s", "\nEnd\n" );
-      FCLOSE( fp );
+         stream << std::format( " {}", ch->pcdata->colors[x] );
+      stream << "\nEnd\n";
+      stream.close();
+      if( stream.fail() )
+      {
+         bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
+         ch->print_fmt( "The system was unable to write to the {} file.", argument );
+         return;
+      }
       ch->print_fmt( "Color theme {} saved.\r\n", argument );
       return;
    }
 
    if( !str_cmp( arg, "theme" ) )
    {
-      FILE *fp;
       int max_colors = 0;
 
       if( argument.empty(  ) )
@@ -327,37 +326,32 @@ CMDF( do_color )
       }
 
       std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, argument );
-      if( !( fp = fopen( filename.c_str(), "r" ) ) )
+      std::ifstream stream( std::filesystem::path{filename} );
+      if( !stream.is_open() )
       {
          ch->print_fmt( "There is no theme called {}.\r\n", argument );
          return;
       }
 
-      while( !feof( fp ) )
+      std::string key;
+      while( stream >> key )
       {
-         std::string word = fread_word( fp );
-         if( !str_cmp( word, "MaxColors" ) )
-         {
-            max_colors = fread_number( fp );
-            continue;
-         }
-
-         if( !str_cmp( word, "Colors" ) )
+         if( key == "MaxColors" )
+            stream >> max_colors;
+         else if( key == "Colors" )
          {
             for( int x = 0; x < max_colors; ++x )
-               ch->pcdata->colors[x] = fread_number( fp );
-            continue;
+               stream >> ch->pcdata->colors[x];
          }
-
-         if( !str_cmp( word, "End" ) )
+         else if( key == "End" )
          {
-            FCLOSE( fp );
+            stream.close();
             ch->print_fmt( "Color theme has been changed to {}.\r\n", argument );
             ch->save(  );
             return;
          }
       }
-      FCLOSE( fp );
+      stream.close();
       ch->print_fmt( "An error occurred while trying to set color theme {}.\r\n", argument );
       return;
    }
@@ -398,14 +392,14 @@ CMDF( do_color )
       ch->desc->buffer_printf( "{}Blinking White\r\n", BLINK_WHITE );
       ch->desc->write_to_buffer( ANSI_RESET );
 
-      ch->desc->buffer_printf( "{}{}Black Background\r\n", ANSI_WHITE, BACK_BLACK );
-      ch->desc->buffer_printf( "{}{}Dark Red Background\r\n", ANSI_BLACK, BACK_DRED );
-      ch->desc->buffer_printf( "{}{}Dark Green Background\r\n", ANSI_BLACK, BACK_DGREEN );
-      ch->desc->buffer_printf( "{}{}Orange/Brown Background\r\n", ANSI_BLACK, BACK_ORANGE );
-      ch->desc->buffer_printf( "{}{}Dark Blue Background\r\n", ANSI_BLACK, BACK_DBLUE );
-      ch->desc->buffer_printf( "{}{}Purple Background\r\n", ANSI_BLACK, BACK_PURPLE );
-      ch->desc->buffer_printf( "{}{}Cyan Background\r\n", ANSI_BLACK, BACK_CYAN );
-      ch->desc->buffer_printf( "{}{}Grey Background\r\n", ANSI_BLACK, BACK_GREY );
+      ch->desc->buffer_printf( "{}{}Black Background{}\r\n", ANSI_WHITE, BACK_BLACK, ANSI_RESET );
+      ch->desc->buffer_printf( "{}{}Dark Red Background{}\r\n", ANSI_BLACK, BACK_DRED, ANSI_RESET  );
+      ch->desc->buffer_printf( "{}{}Dark Green Background{}\r\n", ANSI_BLACK, BACK_DGREEN, ANSI_RESET );
+      ch->desc->buffer_printf( "{}{}Orange/Brown Background{}\r\n", ANSI_BLACK, BACK_ORANGE, ANSI_RESET );
+      ch->desc->buffer_printf( "{}{}Dark Blue Background{}\r\n", ANSI_BLACK, BACK_DBLUE, ANSI_RESET );
+      ch->desc->buffer_printf( "{}{}Purple Background{}\r\n", ANSI_BLACK, BACK_PURPLE, ANSI_RESET );
+      ch->desc->buffer_printf( "{}{}Cyan Background{}\r\n", ANSI_BLACK, BACK_CYAN, ANSI_RESET );
+      ch->desc->buffer_printf( "{}{}Grey Background{}\r\n", ANSI_BLACK, BACK_GREY, ANSI_RESET );
       ch->desc->buffer_printf( "{}{}Italics{}\r\n", ANSI_GREY, ANSI_ITALIC, ANSI_RESET );
       ch->desc->buffer_printf( "{}Strikeout{}\r\n", ANSI_STRIKEOUT, ANSI_RESET );
       ch->desc->buffer_printf( "{}Underline\r\n", ANSI_UNDERLINE );
