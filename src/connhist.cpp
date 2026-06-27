@@ -90,35 +90,21 @@ int check_conn_entry( conn_data * conn )
 /* Loads the conn.hist file into memory */
 void load_connhistory( void )
 {
-   std::ifstream stream;
-   conn_data *conn = nullptr;
-   size_t conncount = 0;
-
-   connlist.clear(  );
-
-   stream.open( std::filesystem::path( CH_FILE ) );
+   std::ifstream stream( std::filesystem::path{CH_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, CH_FILE, std::strerror(errno) );
       return;
    }
 
-   auto read_line = [&]() -> std::string
-   {
-      std::string line;
-      std::getline( stream, line );
-      strip_spaces( line );
-
-      return line;
-   };
-
+   connlist.clear(  );
+   size_t conncount = 0;
+   conn_data *conn = nullptr;
    std::string key;
    while( stream >> key )
    {
       if( key == "#CONN" )
-      {
          conn = new conn_data;
-      }
       else if( key == "End" )
       {
          if( conncount < MAX_CONNHISTORY )
@@ -133,14 +119,17 @@ void load_connhistory( void )
             return;
          }
       }
-      else if( key == "User" )   { conn->user = read_line(); }
-      else if( key == "When" )   { conn->when = read_line(); }
-      else if( key == "Host" )   { conn->host = read_line(); }
+      else if( key == "User" )   { conn->user = fread_line( stream, '\n' ); }
+      else if( key == "When" )   { conn->when = fread_line( stream, '\n' ); }
+      else if( key == "Host" )   { conn->host = fread_line( stream, '\n' ); }
       else if( key == "Level" )  { stream >> conn->level; }
       else if( key == "Type" )   { stream >> conn->type; }
       else if( key == "Invis" )  { stream >> conn->invis_lvl; }
       else
+      {
          bug( "{}: Bad key in connection history file: {}", __func__, key );
+         fread_to_eol( stream );
+      }
    }
    stream.close(  );
 }
@@ -148,12 +137,10 @@ void load_connhistory( void )
 /* Saves the conn.hist file */
 void save_connhistory( void )
 {
-   std::ofstream stream;
-
    if( connlist.empty(  ) )
       return;
 
-   stream.open( std::filesystem::path( CH_FILE ) );
+   std::ofstream stream( std::filesystem::path{CH_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, CH_FILE, std::strerror(errno) );

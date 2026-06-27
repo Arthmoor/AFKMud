@@ -462,7 +462,7 @@ std::string fread_line( std::ifstream & stream, char delimiter )
    std::string line;
 
    if( std::getline( stream, line, delimiter ) )
-      strip_whitespace( line );
+      strip_whitespace( line ); // Once you have the line, it's best to strip it of any potential whitespace characters to eliminate the possibility of a bloat loop later on when the value is written back to disk.
 
    return line;
 }
@@ -745,25 +745,16 @@ bool load_systemdata( void )
    if( !stream.is_open() )
       return false;
 
-   auto read_line = [&]( char delimiter = '\n' ) -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, delimiter );
-      strip_spaces( line );
-
-      return line;
-   };
-
    static const std::unordered_map<std::string, std::function<void()>> loaders = {
       { "Version",        [&](){ stream >> file_ver; } },
-      { "Mudname",        [&](){ sysdata->mud_name = read_line('~'); } },
-      { "Password",       [&](){ sysdata->password = read_line('~'); } },
-      { "Dbserver",       [&](){ sysdata->dbserver = read_line('~'); } },
-      { "Dbname",         [&](){ sysdata->dbname = read_line('~'); } },
-      { "Dbuser",         [&](){ sysdata->dbuser = read_line('~'); } },
-      { "Dbpass",         [&](){ sysdata->dbpass = read_line('~'); } },
+      { "Mudname",        [&](){ sysdata->mud_name = fread_line( stream ); } },
+      { "Password",       [&](){ sysdata->password = fread_line( stream ); } },
+      { "Dbserver",       [&](){ sysdata->dbserver = fread_line( stream ); } },
+      { "Dbname",         [&](){ sysdata->dbname = fread_line( stream ); } },
+      { "Dbuser",         [&](){ sysdata->dbuser = fread_line( stream ); } },
+      { "Dbpass",         [&](){ sysdata->dbpass = fread_line( stream ); } },
       { "Highplayers",    [&](){ stream >> sysdata->alltimemax; } },
-      { "Highplayertime", [&](){ sysdata->time_of_max = read_line('~'); } },
+      { "Highplayertime", [&](){ sysdata->time_of_max = fread_line( stream ); } },
       { "CheckImmHost",   [&](){ stream >> sysdata->check_imm_host; } },
       { "Nameresolving",  [&](){ stream >> sysdata->NO_NAME_RESOLVING; } },
       { "Waitforauth",    [&](){ stream >> sysdata->WAIT_FOR_AUTH; } },
@@ -793,14 +784,14 @@ bool load_systemdata( void )
       { "Wizlock",        [&](){ stream >> sysdata->WIZLOCK; } },
       { "Implock",        [&](){ stream >> sysdata->IMPLOCK; } },
       { "Lockdown",       [&](){ stream >> sysdata->LOCKDOWN; } },
-      { "Admin_Email",    [&](){ sysdata->admin_email = read_line('~'); } },
+      { "Admin_Email",    [&](){ sysdata->admin_email = fread_line( stream ); } },
       { "Newbie_purge",   [&](){ stream >> sysdata->newbie_purge; } },
       { "Regular_purge",  [&](){ stream >> sysdata->regular_purge; } },
       { "Autopurge",      [&](){ stream >> sysdata->CLEANPFILES; } },
       { "Testmode",       [&](){ stream >> sysdata->TESTINGMODE; } },
       { "Mapsize",        [&](){ stream >> sysdata->mapsize; } },
-      { "Telnet",         [&](){ sysdata->telnet = read_line('~'); } },
-      { "HTTP",           [&](){ sysdata->http = read_line('~'); } },
+      { "Telnet",         [&](){ sysdata->telnet = fread_line( stream ); } },
+      { "HTTP",           [&](){ sysdata->http = fread_line( stream ); } },
       { "Maxvnum",        [&](){ stream >> sysdata->maxvnum; } },
       { "Minguild",       [&](){ stream >> sysdata->minguildlevel; } },
       { "Maxcond",        [&](){ stream >> sysdata->maxcondval; } },
@@ -854,7 +845,7 @@ bool load_systemdata( void )
             stream >> sysdata->save_flags;
          else
          {
-            std::string flags = read_line( '~' );
+            std::string flags = fread_line( stream );
 
             flag_string_set( flags, sysdata->save_flags, save_flag );
          }

@@ -407,7 +407,7 @@ void load_runes( void )
       if( key == "#RUNE" )
          rune = new rune_data;
       else if( key == "Name" )
-         rune->set_name( fread_line( stream ) );
+         rune->set_name( fread_line( stream, '\n' ) );
       else if( key == "Rarity" )
       {
          int value;

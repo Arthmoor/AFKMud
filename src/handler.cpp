@@ -207,7 +207,7 @@ bool ms_find_obj( char_data * ch )
 {
    int ms = ch->mental_state;
    int drunk = ch->isnpc(  )? 0 : ch->pcdata->condition[COND_DRUNK];
-   const char *t;
+   std::string t;
 
    /*
     * we're going to be nice and let nothing weird happen unless
@@ -241,7 +241,7 @@ bool ms_find_obj( char_data * ch )
             t = "You would if it would stay still!\r\n";
             break;
          case 7:
-            t = "Whoa!  It's covered in blood!  Ack!  Ick!\r\n";
+            t = "Whoa! It's covered in blood! Ack! Ick!\r\n";
             break;
          case 8:
             t = "Wow... trails!\r\n";
@@ -268,7 +268,7 @@ bool ms_find_obj( char_data * ch )
             t = "Your mother smacks your hand... 'NO!'\r\n";
             break;
          case 16:
-            t = "Your hand grasps the worst pile of revoltingness that you could ever imagine!\r\n";
+            t = "Your hand grasps the worst pile of revulsion that you could ever imagine!\r\n";
             break;
          case 17:
             t = "You stop reaching for it as it screams out at you in pain!\r\n";
@@ -305,7 +305,7 @@ bool ms_find_obj( char_data * ch )
             t = "You go to reach for it, but pick your nose instead.\r\n";
             break;
          case 6:
-            t = "Which one?!?  I see two... no three...\r\n";
+            t = "Which one?!? I see two... no three...\r\n";
             break;
       }
    }
@@ -374,7 +374,7 @@ obj_data *find_obj( char_data * ch, std::string argument, bool carryonly )
 ch_ret spring_trap( char_data * ch, obj_data * obj )
 {
    int dam, typ, lev;
-   const char *txt;
+   std::string txt;
    ch_ret retcode;
 
    typ = obj->value[1];

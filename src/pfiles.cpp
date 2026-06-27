@@ -507,7 +507,7 @@ void delete_pfile( const std::filesystem::path & path, std::string_view name, st
    }
 }
 
-void fread_pfile( std::ifstream & is, time_t tdiff, const std::filesystem::path & filepath, bool count )
+void fread_pfile( std::ifstream & stream, time_t tdiff, const std::filesystem::path & filepath, bool count )
 {
    std::string name, clan, realm, deity;
    short level = 0;
@@ -515,49 +515,29 @@ void fread_pfile( std::ifstream & is, time_t tdiff, const std::filesystem::path 
 
    pact.reset();
 
-   std::string word;
-   char delim = '~';
-
-   auto read_line = [&]( char delimiter = '\n' ) -> std::string
+   std::string key;
+   while( stream >> key && key != "End" )
    {
-      std::string line;
-      std::getline( is, line, delimiter );
-      strip_spaces( line );
-
-      return line;
-   };
-
-   while( is >> word && word != "End" )
-   {
-      if( word == "*" )
+      if( key == "Clan" )
+         clan = fread_line( stream );
+      else if( key == "Deity" )
+         deity = fread_line( stream );
+      else if( key == "ImmRealm" )
+         realm = fread_line( stream );
+      else if( key == "Name" )
+         name = fread_line( stream );
+      else if( key == "PCFlags" )
       {
-         is.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
-         continue;
-      }
-
-      if( word == "Clan" )
-         clan = read_line( delim );
-      else if( word == "Deity" )
-         deity = read_line( delim );
-      else if( word == "ImmRealm" )
-         realm = read_line( delim );
-      else if( word == "Name" )
-         name = read_line( delim );
-      else if( word == "PCFlags" )
-      {
-         std::string flags = read_line( delim );
+         std::string flags = fread_line( stream );
          flag_string_set( flags, pact, pc_flags );
       }
-      else if( word == "Status" )
+      else if( key == "Status" )
       {
-         is >> level;
-         is.ignore( 256, '\n' );
-      }
-      else if( word == "Version" )
-      {
-         is >> word;
+         stream >> level;
+         stream.ignore( 256, '\n' );
       }
    }
+   stream.close();
 
    if( !count && !pact.test( PCFLAG_EXEMPT ) )
    {
@@ -571,11 +551,11 @@ void fread_pfile( std::ifstream & is, time_t tdiff, const std::filesystem::path 
    if( pact.test( PCFLAG_EXEMPT ) || level >= LEVEL_IMMORTAL )
       ++pexempt;
 
-   if( auto* guild = get_clan( clan.c_str() ) )
+   if( auto* guild = get_clan( clan ) )
       ++guild->members;
-   if( auto* rl = get_realm( realm.c_str() ) )
+   if( auto* rl = get_realm( realm ) )
       ++rl->members;
-   if( auto* god = get_deity( deity.c_str() ) )
+   if( auto* god = get_deity( deity ) )
       ++god->worshippers;
 }
 
@@ -583,9 +563,7 @@ void read_pfile( const std::filesystem::path & dirname, const std::string & file
 {
    // Prevent directory traversal
    if( filename.find_first_of( "/\\." ) != std::string::npos )
-   {
       return;
-   }
 
    std::filesystem::path full_path = dirname / filename;
 
@@ -596,17 +574,15 @@ void read_pfile( const std::filesystem::path & dirname, const std::string & file
    auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>( ftime - std::filesystem::file_time_type::clock::now() + current_time );
    time_t tdiff = ( std::chrono::system_clock::to_time_t( current_time ) - std::chrono::system_clock::to_time_t( sctp ) ) / 86400;
 
-   std::ifstream is( full_path );
-   if( !is.is_open() )
+   std::ifstream stream( full_path );
+   if( !stream.is_open() )
       return;
 
    std::string line;
-   while( is >> line )
+   while( stream >> line )
    {
       if( line == "#PLAYER" )
-      {
-         fread_pfile( is, tdiff, full_path, count );
-      }
+         fread_pfile( stream, tdiff, full_path, count );
    }
 }
 

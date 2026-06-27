@@ -180,24 +180,15 @@ void free_boards( void )
 
 void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstream & stream )
 {
-   auto read_line = [&]() -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, '~' );
-      strip_whitespace( line ); // Once you have the line, it's best to strip it of any potential whitespace characters to eliminate the possibility of a bloat loop later on when the value is written back to disk.
-
-      return line;
-   };
-
    std::string key;
    while( stream >> key )
    {
       if( key == "Reply-Sender" )
-         note->sender = read_line();
+         note->sender = fread_line( stream );
       else if( key == "Reply-To" )
-         note->to_list = read_line();
+         note->to_list = fread_line( stream );
       else if( key == "Reply-Subject" )
-         note->subject = read_line();
+         note->subject = fread_line( stream );
       else if( key == "Reply-DateStamp" )
       {
          time_t loaded_time;
@@ -211,12 +202,12 @@ void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstrea
             stream >> note->flags;
          else
          {
-            std::string flags = read_line();
+            std::string flags = fread_line( stream );
             flag_string_set( flags, note->flags, note_flags );
          }
       }
       else if( key == "Reply-Text" )
-         note->text = read_line();
+         note->text = fread_line( stream );
       else if( key == "#REPLY-END" )
          return;
       else
@@ -226,24 +217,15 @@ void read_reply( note_data * note, note_data * reply, int file_ver, std::ifstrea
 
 void read_note( note_data * note, int file_ver, std::ifstream & stream )
 {
-   auto read_line = [&]() -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, '~' );
-      strip_spaces( line );
-
-      return line;
-   };
-
    std::string key;
    while( stream >> key )
    {
       if( key == "Sender" )
-         note->sender = read_line();
+         note->sender = fread_line( stream );
       else if( key == "Subject" )
-         note->subject = read_line();
+         note->subject = fread_line( stream );
       else if( key == "To" )
-         note->to_list = read_line();
+         note->to_list = fread_line( stream );
       else if( key == "DateStamp" )
       {
          time_t loaded_time;
@@ -257,7 +239,7 @@ void read_note( note_data * note, int file_ver, std::ifstream & stream )
             stream >> note->flags;
          else
          {
-            std::string flags = read_line();
+            std::string flags = fread_line( stream );
             flag_string_set( flags, note->flags, note_flags );
          }
       }
@@ -269,7 +251,7 @@ void read_note( note_data * note, int file_ver, std::ifstream & stream )
          note->expire = std::chrono::system_clock::from_time_t( loaded_time );
       }
       else if( key == "Text" )
-         note->text = read_line();
+         note->text = fread_line( stream );
       else if( key == "Type" )
          stream >> note->type;
       else if( key == "#REPLY" )
@@ -300,9 +282,9 @@ bool read_board_list( void )
    board_files.clear();
 
    std::string line;
-   while( std::getline( stream, line, '~' ) )
+   while( !stream.eof() )
    {
-      strip_whitespace( line );
+      line = fread_line( stream );
 
       if( line.empty() )
          continue;
@@ -323,7 +305,6 @@ void load_boards( void )
 
    bdlist.clear(  ); // Probably not necessary but we're going to play it safe.
 
-   int file_ver = 0;
    for( size_t x = 0; x < board_files.size(); ++x )
    {
       std::ifstream stream;
@@ -335,26 +316,22 @@ void load_boards( void )
          continue;
       }
 
-      auto read_line = [&]() -> std::string
-      {
-         std::string line;
-         std::getline( stream, line, '~' );
-         strip_whitespace( line );
-
-         return line;
-      };
-
       log_string( board_file.string() );
       std::string key;
       board_data *board = nullptr;
+
+      int file_ver = 0;
+      stream >> key;
+      if( key == "#VERSION" )
+         stream >> file_ver;
+      else
+      {
+         bug( "{}: Invalid format for board {} - No version header.", __func__, board_file.string() );
+         continue;
+      }
+
       while( stream >> key )
       {
-         if( key == "#VERSION" )
-         {
-            stream >> file_ver;
-            continue;
-         }
-
          if( key == "#BOARD" )
          {
             board = new board_data;
@@ -381,11 +358,11 @@ void load_boards( void )
 
          if( key == "Name" )
          {
-            board->name = read_line();
+            board->name = fread_line( stream );
             board->filename = board->name + ".board";
          }
          else if( key == "Desc" )
-            board->desc = read_line();
+            board->desc = fread_line( stream );
          else if( key == "ObjVnum" )
             stream >> board->objvnum;
          else if( key == "Expire" )
@@ -401,18 +378,18 @@ void load_boards( void )
                stream >> board->flags;
             else
             {
-               std::string flags = read_line();
+               std::string flags = fread_line( stream );
                flag_string_set( flags, board->flags, board_flags );
             }
          }
          else if( key == "Readers" )
-            board->readers = read_line();
+            board->readers = fread_line( stream );
          else if( key == "Posters" )
-            board->posters = read_line();
+            board->posters = fread_line( stream );
          else if( key == "Moderators" )
-            board->moderators = read_line();
+            board->moderators = fread_line( stream );
          else if( key == "Group" )
-            board->group = read_line();
+            board->group = fread_line( stream );
          else if( key == "ReadLevel" )
             stream >> board->read_level;
          else if( key == "PostLevel" )
@@ -2995,15 +2972,6 @@ void write_projects( void )
 
 project_data *read_project( std::ifstream & stream )
 {
-   auto read_line = [&]( char delimiter = '~' ) -> std::string
-   {
-      std::string line;
-      std::getline( stream, line, delimiter );
-      strip_spaces( line );
-
-      return line;
-   };
-
    project_data *project = new project_data;
 
    int file_ver = 0;
@@ -3017,13 +2985,13 @@ project_data *read_project( std::ifstream & stream )
       else if( key == "#END" ) // Once the main board data is loaded, now we concentrate on reading the actual board files.
          return project;
       else if( key == "Name" )
-         project->name = read_line();
+         project->name = fread_line( stream );
       else if( key == "Owner" )
-         project->owner = read_line();
+         project->owner = fread_line( stream );
       else if( key == "Coder" )
-         project->coder = read_line();
+         project->coder = fread_line( stream );
       else if( key == "Status" )
-         project->status = read_line();
+         project->status = fread_line( stream );
       else if( key == "Date_stamp" )
       {
          time_t loaded_time;
@@ -3033,9 +3001,9 @@ project_data *read_project( std::ifstream & stream )
       }
 
       else if( key == "Realm" )
-         project->realm_name = read_line();
+         project->realm_name = fread_line( stream );
       else if( key == "Description" )
-         project->description = read_line();
+         project->description = fread_line( stream );
       else if( key == "#LOG" )
       {
          note = new note_data;

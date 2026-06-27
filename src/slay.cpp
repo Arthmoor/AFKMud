@@ -164,17 +164,18 @@ void save_slays( )
       bug( "{}: Error occurred after closing {}: ", __func__, SLAY_FILE, std::strerror(errno) );
 }
 
-/** Function: do_slay
-  * Descr   : Slays (kills) a player, optionally sending one of several
-  *           predefined "slay option" messages to those involved.
-  * Returns : (void)
-  * Syntax  : slay (who) [option]
-  * Written : v1.0 12/97
-  * Author  : Gary McNickle <gary@dharvest.com>
-  * Ported to Smaug 1.02a by: Samson
-  * Updated to work with Smaug 1.4 by Samson 8-3-98
-  * v2.0 added support for online editing
-  */
+/*
+ * Function: do_slay
+ * Descr   : Slays (kills) a player, optionally sending one of several
+ *           predefined "slay option" messages to those involved.
+ * Returns : (void)
+ * Syntax  : slay (who) [option]
+ * Written : v1.0 12/97
+ * Author  : Gary McNickle <gary@dharvest.com>
+ * Ported to Smaug 1.02a by: Samson
+ * Updated to work with Smaug 1.4 by Samson 8-3-98
+ * v2.0 added support for online editing
+ */
 CMDF( do_slay )
 {
    char_data *victim;
