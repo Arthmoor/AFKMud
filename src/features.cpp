@@ -26,7 +26,8 @@
  *               Extended Mud Features Module: MCCP V2, MSP                 *
  ****************************************************************************/
 
-/* Mud Sound Protocol Functions
+/*
+ * Mud Sound Protocol Functions
  * Original author unknown.
  * Smaug port by Chris Coulter (aka Gabriel Androctus)
  */

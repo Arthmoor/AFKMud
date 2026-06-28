@@ -30,11 +30,9 @@
 #include <fstream>
 #include "mud.h"
 #include "clans.h"
-#include "descriptor.h"
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "objindex.h"
-#include "raceclass.h"
 #include "roomindex.h"
 #include "shops.h"
 #include "smaugaffect.h"
@@ -1419,7 +1417,7 @@ CMDF( do_outcast )
    if( victim->desc )
       act( AT_MAGIC, "$n outcasts you from $t", ch, clan->name.c_str(  ), victim, TO_VICT );
    else
-      add_loginmsg( victim->name, 6, "" );
+      add_login_message( victim->name, 6, "" );
 
    echo_all_printf( ECHOTAR_PK, "&[guildtalk]{} has been outcast from {}!", victim->name, clan->name );
    remove_roster( clan, victim->name );

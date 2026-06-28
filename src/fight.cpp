@@ -3044,7 +3044,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       if( !npcvict )
       {
          if( !victim->desc )
-            add_loginmsg( victim->name, 17, ( ch->isnpc() ? ch->short_descr : ch->name ) );
+            add_login_message( victim->name, 17, ( ch->isnpc() ? ch->short_descr : ch->name ) );
 
          log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} ({}) killed by {} at {}",
                           victim->name, victim->level, ( ch->isnpc(  ) ? ch->short_descr : ch->name ), victim->in_room->vnum );

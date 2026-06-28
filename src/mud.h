@@ -892,7 +892,7 @@ void make_wizlist( );
 
 // descriptor.cpp
 void show_file( char_data *, std::string_view );
-void add_loginmsg( std::string_view, short, std::string_view );
+void add_login_message( std::string_view, short, std::string_view );
 
 // fight.cpp
 ch_ret multi_hit( char_data *, char_data *, int );

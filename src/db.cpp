@@ -176,7 +176,7 @@ void load_races(  );
 void load_herb_table(  );
 void load_tongues(  );
 void load_helps(  );
-void load_loginmsg(  );
+void load_login_messages(  );
 void init_chess(  );
 void load_continents( const int );
 void validate_overland_data(  );
@@ -1421,7 +1421,7 @@ void boot_db( bool fCopyOver )
    load_quotes(  );
 
    log_string( "Loading login messages..." );
-   load_loginmsg( );
+   load_login_messages( );
 
    /*
     * Morphs MUST be loaded after Class and race tables are set up --Shaddai 

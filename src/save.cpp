@@ -1706,7 +1706,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( !ch->pcdata->deity_name.empty(  ) && !( ch->pcdata->deity = get_deity( ch->pcdata->deity_name ) ) )
                {
                   buf = std::format( "&R\r\nYour deity, {}, has met its demise!\r\n", ch->pcdata->deity_name );
-                  add_loginmsg( ch->name, 18, buf );
+                  add_login_message( ch->name, 18, buf );
                   ch->pcdata->deity_name.clear(  );
                }
 
@@ -1716,7 +1716,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( !ch->pcdata->clan_name.empty(  ) && !( ch->pcdata->clan = get_clan( ch->pcdata->clan_name ) ) )
                {
                   buf = std::format( "&R\r\nWarning: The organization {} no longer exists, and therefore you no longer belong to that organization.\r\n", ch->pcdata->clan_name );
-                  add_loginmsg( ch->name, 18, buf );
+                  add_login_message( ch->name, 18, buf );
                   ch->pcdata->clan_name.clear(  );
                }
 
@@ -1726,7 +1726,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                if( !ch->pcdata->realm_name.empty(  ) && !( ch->pcdata->realm = get_realm( ch->pcdata->realm_name ) ) )
                {
                   buf = std::format( "&Y\r\nWarning: The realm {} no longer exists, and therefore you no longer belong to a realm.\r\n", ch->pcdata->realm_name );
-                  add_loginmsg( ch->name, 18, buf );
+                  add_login_message( ch->name, 18, buf );
                   ch->pcdata->realm_name.clear(  );
                }
 

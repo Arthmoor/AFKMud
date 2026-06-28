@@ -1131,7 +1131,7 @@ CMDF( do_setdeity )
          {
             std::string buf = std::format( "&R\r\nYour deity, {}, has met its demise!\r\n", vch->pcdata->deity_name );
             if( !vch->desc )
-               add_loginmsg( vch->name, 18, buf );
+               add_login_message( vch->name, 18, buf );
             else
                vch->print( buf );
 

@@ -3771,7 +3771,7 @@ CMDF( do_freeze )
          do_return( victim->switched, "" );
       victim->set_pcflag( PCFLAG_FREEZE );
       if( !victim->desc )
-         add_loginmsg( victim->name, 15, "" );
+         add_login_message( victim->name, 15, "" );
       else
          victim->print( "&CA godly force turns your body to ice!\r\n" );
       ch->print_fmt( "&CYou have frozen {}.\r\n", victim->name );
@@ -3877,7 +3877,7 @@ CMDF( do_nobio )
    {
       victim->set_pcflag( PCFLAG_NOBIO );
       if( !victim->desc )
-         add_loginmsg( victim->name, 9, "" );
+         add_login_message( victim->name, 9, "" );
       else
          victim->print( "You can't set a bio!\r\n" );
       ch->print_fmt( "NOBIO applied to {}.\r\n", victim->name );
@@ -3910,7 +3910,7 @@ CMDF( do_nodesc )
    {
       victim->set_pcflag( PCFLAG_NODESC );
       if( !victim->desc )
-         add_loginmsg( victim->name, 11, "" );
+         add_login_message( victim->name, 11, "" );
       else
          victim->print( "You can't set a description!\r\n" );
       ch->print_fmt( "NODESC applied to {}.\r\n", victim->name );
@@ -3943,7 +3943,7 @@ CMDF( do_noemote )
    {
       victim->set_pcflag( PCFLAG_NO_EMOTE );
       if ( !victim->desc )
-         add_loginmsg( victim->name, 16, "" );
+         add_login_message( victim->name, 16, "" );
       else
          victim->print( "You can't emote!\r\n" );
       ch->print_fmt( "NOEMOTE applied to {}.\r\n", victim->name );
@@ -3976,7 +3976,7 @@ CMDF( do_notell )
    {
       victim->set_pcflag( PCFLAG_NO_TELL );
       if( !victim->desc )
-         add_loginmsg( victim->name, 14, "" );
+         add_login_message( victim->name, 14, "" );
       else
          victim->print( "You can't send tells!\r\n" );
       ch->print_fmt( "NOTELL applied to {}.\r\n", victim->name );
@@ -4012,7 +4012,7 @@ CMDF( do_notitle )
       buf = std::format( "the {}", title_table[victim->Class][victim->level][victim->sex] );
       victim->set_title( buf );
       if( !victim->desc )
-         add_loginmsg( victim->name, 8, "" );
+         add_login_message( victim->name, 8, "" );
       else
          victim->print( "You can't set your own title!\r\n" );
       ch->print_fmt( "NOTITLE set on {}.\r\n", victim->name );
@@ -4046,7 +4046,7 @@ CMDF( do_nourl )
       victim->set_pcflag( PCFLAG_NO_URL );
       victim->pcdata->homepage.clear();
       if( !victim->desc )
-         add_loginmsg( victim->name, 12, "" );
+         add_login_message( victim->name, 12, "" );
       else
          victim->print( "You can't set a homepage!\r\n" );
       ch->print_fmt( "NOURL applied to {}.\r\n", victim->name );
@@ -4110,7 +4110,7 @@ CMDF( do_nobeep )
    {
       victim->set_pcflag( PCFLAG_NO_BEEP );
       if( !victim->desc )
-         add_loginmsg( victim->name, 13, "" );
+         add_login_message( victim->name, 13, "" );
       else
          victim->print( "You can't send beeps anymore!\r\n" );
       ch->print_fmt( "NOBEEP applied to {}.\r\n", victim->name );
@@ -4143,7 +4143,7 @@ CMDF( do_silence )
    {
       victim->set_pcflag( PCFLAG_SILENCE );
       if( !victim->desc )
-         add_loginmsg( victim->name, 7, "" );
+         add_login_message( victim->name, 7, "" );
       else
          victim->print( "You can't use channels!\r\n" );
       ch->print_fmt( "You SILENCE {}.\r\n", victim->name );
@@ -5311,7 +5311,7 @@ CMDF( do_hell )
    act( AT_MAGIC, "$n appears in a could of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    interpret( victim, "look" );
    if( !victim->desc )
-      add_loginmsg( victim->name, 10, "" );
+      add_login_message( victim->name, 10, "" );
    else
       victim->print_fmt( "The immortals are not pleased with your actions.\r\n"
                    "You shall remain in hell for {} {}{}.\r\n", htime, ( h_d ? "hour" : "day" ), ( htime == 1 ? "" : "s" ) );

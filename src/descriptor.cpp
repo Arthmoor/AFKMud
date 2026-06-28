@@ -103,9 +103,9 @@ std::string check_hash_update( std::string_view, std::string_view ); // SHA-512 
 std::vector<std::string> string_explode( std::string_view, char );
 
 /* Terminal detection stuff start */
-constexpr unsigned char IS            = '\x00';
-constexpr unsigned char TERMINAL_TYPE = '\x18';
-constexpr unsigned char SEND          = '\x01';
+constexpr unsigned char IS            = 0x00;
+constexpr unsigned char TERMINAL_TYPE = 0x18;
+constexpr unsigned char SEND          = 0x01;
 
 const std::array<unsigned char, 4> term_call_back_str = { IAC, SB, TERMINAL_TYPE, IS };
 const std::array<unsigned char, 7> req_termtype_str = { IAC, SB, TERMINAL_TYPE, SEND, IAC, SE, '\0' };
@@ -290,152 +290,106 @@ lmsg_data::lmsg_data(  )
 {
 }
 
-void fread_loginmsg( FILE * fp )
+void fread_login_message( std::ifstream & stream )
 {
-   lmsg_data *lmsg = nullptr;
+   lmsg_data *lmsg = new lmsg_data;
 
-   lmsg = new lmsg_data;
-
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = feof( fp ) ? "End" : fread_word( fp );
-
-      switch ( to_upper( word[0] ) )
+      if( key == "Name" )
+         lmsg->name = fread_line( stream );
+      else if( key == "Text" )
+         lmsg->text = fread_line( stream );
+      else if( key == "Type" )
+         stream >> lmsg->type;
+      else if( key == "End" )
       {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
+         if( lmsg->name.empty() )
+         {
+            bug( "{}: Login message with no name.", __func__ );
+            deleteptr( lmsg );
+            return;
+         }
+         else
+         {
+            if( !exists_player( lmsg->name ) )
             {
-               if( lmsg->name.empty() )
-               {
-                  bug( "{}: Login message with no name.", __func__ );
-                  deleteptr( lmsg );
-                  return;
-               }
-               else
-               {
-                  if( !exists_player( lmsg->name ) )
-                  {
-                     bug( "{}: Login message expired - {} no longer exists.", __func__, lmsg->name );
-
-                     deleteptr( lmsg );
-                     return;
-                  }
-               }
-
-               login_messages.push_back( lmsg );
+               bug( "{}: Login message expired - {} no longer exists.", __func__, lmsg->name );
+               deleteptr( lmsg );
                return;
             }
-            break;
-
-         case 'N':
-            STDSKEY( "Name", lmsg->name );
-            break;
-
-         case 'T':
-            KEY( "Type", lmsg->type, fread_short( fp ) );
-            STDSKEY( "Text", lmsg->text );
-            break;
+         }
+         login_messages.push_back( lmsg );
+         return;
       }
    }
 }
 
 /* load_loginmsg, check_loginmsg, fread_loginmsg, etc.. all support the do_message */
 /* command - hugely modified from the original housing module by Edmond June 02     */
-void load_loginmsg(  )
+void load_login_messages(  )
 {
-   FILE *fp;
-
-   login_messages.clear();
-
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename.c_str(), "r" ) ) == nullptr )
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot open login message file.", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   for( ;; )
+   login_messages.clear();
+
+   std::string key;
+   while( stream >> key )
    {
-      char letter;
-
-      letter = fread_letter( fp );
-
-      if( letter == '*' )
-      {
-         fread_to_eol( fp );
-         continue;
-      }
-
-      if( letter != '#' )
-      {
-         bug( "{}: # not found. ", __func__ );
-         break;
-      }
-
-      std::string word = fread_word( fp );
-
-      if( !str_cmp( word, "LOGINMSG" ) )
-      {
-         fread_loginmsg( fp );
-         continue;
-      }
-      else if( !str_cmp( word, "END" ) )
+      if( key == "#LOGINMSG" )
+         fread_login_message( stream );
+      else if( key == "#END" )
          break;
       else
       {
-         bug( "{}: bad section: {}", __func__, word );
-         continue;
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
       }
    }
-
-   FCLOSE( fp );
+   stream.close();
 }
 
-void save_loginmsg(  )
+void save_login_messages(  )
 {
-   FILE *fp;
-
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
-   if( ( fp = fopen( filename.c_str(), "w" ) ) == nullptr )
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot open login message file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
    for( auto* lmsg : login_messages )
    {
-      fprintf( fp, "%s", "#LOGINMSG\n" );
-      fprintf( fp, "Name  %s~\n", lmsg->name.c_str() );
+      stream << "#LOGINMSG\n";
+      stream << std::format( "Name  {}~\n", lmsg->name );
       if( !lmsg->text.empty() )
-         fprintf( fp, "Text  %s~\n", lmsg->text.c_str() );
-      fprintf( fp, "Type  %d\n", lmsg->type );
-      fprintf( fp, "%s", "End\n" );
+         stream << std::format( "Text  {}~\n", lmsg->text );
+      stream << std::format( "Type  {}\n", lmsg->type );
+      stream << "End\n\n";
    }
-
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
-void add_loginmsg( std::string_view name, short type, std::string_view argument )
+void add_login_message( std::string_view name, short type, std::string_view argument )
 {
-   lmsg_data *lmsg;
-
    if( type < 0 || name.empty() )
    {
       bug( "{}: bad name or type.", __func__ );
       return;
    }
 
-   lmsg = new lmsg_data;
+   lmsg_data *lmsg = new lmsg_data;
 
    lmsg->type = type;
    lmsg->name = name;
@@ -443,10 +397,10 @@ void add_loginmsg( std::string_view name, short type, std::string_view argument 
       lmsg->text = argument;
 
    login_messages.push_back( lmsg );
-   save_loginmsg(  );
+   save_login_messages(  );
 }
 
-void check_loginmsg( char_data * ch )
+void check_login_messages( char_data * ch )
 {
    if( !ch || ch->isnpc() )
       return;
@@ -514,7 +468,7 @@ void check_loginmsg( char_data * ch )
          login_messages.remove( lmsg );
          deleteptr( lmsg );
 
-         save_loginmsg(  );
+         save_login_messages(  );
       }
    }
 }
@@ -2181,7 +2135,7 @@ short descriptor_data::check_reconnect( std::string_view name, bool fConn )
             connected = CON_PLAYING;
             check_auth_state( ch ); /* Link dead support -- Rantic */
             show_status( ch );
-            check_loginmsg( ch );
+            check_login_messages( ch );
          }
          return 1;
       }
@@ -2236,7 +2190,7 @@ short descriptor_data::check_playing( std::string_view name, bool kick )
          connected = cstate;
          check_auth_state( ch ); /* Link dead support -- Rantic */
          show_status( ch );
-         check_loginmsg( ch );
+         check_login_messages( ch );
 
          return true;
       }
@@ -2360,7 +2314,7 @@ void char_to_game( char_data * ch )
       ch->desc->connected = CON_RAISE_STAT;
    }
 
-   check_loginmsg( ch );
+   check_login_messages( ch );
 
    ch->save(  );  /* Just making sure their status is saved at least once after login, in case of crashes */
    ++num_logins;
@@ -3462,7 +3416,7 @@ CMDF( do_message )
          return;
       }
 
-      add_loginmsg( name, type, argument );
+      add_login_message( name, type, argument );
       ch->print_fmt( "You have sent {} the following message:\r\n", capitalize( name ) );
 
       if( type == 0 )
