@@ -35,7 +35,7 @@
 #include "pfiles.h"
 #include "realms.h"
 
-int num_quotes;   /* for quotes */
+int num_quotes = 0;   /* for quotes */
 
 void prune_sales(  );
 void remove_from_auth( std::string_view );
@@ -56,14 +56,13 @@ struct quote_data
    ~quote_data(  );
 
    std::string quote;
-   int number;
+   int number = 0;
 };
 
 std::list<quote_data *> quotelist;
 
 quote_data::quote_data(  )
 {
-   number = 0;
 }
 
 quote_data::~quote_data(  )
@@ -94,20 +93,19 @@ quote_data *get_quote( int q )
 
 void save_quotes( void )
 {
-   std::ofstream stream;
-   int q = 0;
-
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, QUOTE_FILE );
-   stream.open( filename );
-   if( !stream.is_open(  ) )
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
+   int q = 0;
+
    for( auto* quote : quotelist )
    {
-      stream << "Quote: " << quote->quote << '~' << std::endl;
+      stream << std::format( "Quote: {}~\n\n", quote->quote );
       quote->number = ++q;
    }
    stream.close(  );
@@ -129,55 +127,35 @@ void save_quotes( void )
   */
 void load_quotes( void )
 {
-   quote_data *quote;
-   std::ifstream stream;
-
-   quotelist.clear(  );
-   num_quotes = 0;
-
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, QUOTE_FILE );
-   stream.open( filename );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   do
+   quote_data *quote = nullptr;
+   quotelist.clear(  );
+   num_quotes = 0;
+
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-
-      strip_lspace( key );
-      strip_lspace( value );
-
-      if( key == "#QUOTE" )
+      if( key == "Quote:" )
       {
-         stream >> key;
-         stream.getline( buf, MIL, '~' );
-         value = buf;
-
          quote = new quote_data;
 
-         quote->quote = value;
+         quote->quote = fread_line( stream );
          quote->number = ++num_quotes;
          quotelist.push_back( quote );
       }
-      else if( key == "Quote:" )
+      else
       {
-         stream.getline( buf, MIL, '\xa2' );
-         value = buf;
-
-         quote = new quote_data;
-
-         quote->quote = value;
-         quote->number = ++num_quotes;
-         quotelist.push_back( quote );
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
       }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
@@ -215,7 +193,7 @@ CMDF( do_quoteset )
       ch->print( "Usage: quoteset add <quote>\r\n" );
       ch->print( "Usage: quoteset remove <quote#>\r\n" );
       ch->print( "Usage: quoteset list\r\n" );
-      ch->print( "\r\nTo add a line break, insert a tilde (~) to signify it.\r\n" );
+      ch->print( "\r\nTo add a line break in a quoted line, insert a tilde (~) to signify it. It will be replaced with a standard line break when saved.\r\n" );
       return;
    }
 
@@ -261,7 +239,7 @@ CMDF( do_quoteset )
       return;
    }
 
-   q = atoi( argument.c_str(  ) );
+   q = std::stoi( argument );
    if( !( quote = get_quote( q ) ) )
    {
       ch->print( "No quote by that number exists!\r\n" );

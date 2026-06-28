@@ -1672,12 +1672,6 @@ CMDF( do_setclan )
       return;
    }
 
-   if( !str_cmp( arg2, "save" ) )
-   {
-      ch->print( "Done.\r\n" );
-      save_clan( clan );
-      return;
-   }
    if( !str_cmp( arg2, "deity" ) )
    {
       clan->deity = argument;
