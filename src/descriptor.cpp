@@ -53,9 +53,9 @@ struct dns_data
    dns_data(  );
    ~dns_data(  );
 
-   std::string ip;
-   std::string name;
-   std::chrono::system_clock::time_point time;
+   std::string ip;                              // The IP address of the client.
+   std::string name;                            // The resolved DNS address of the client.
+   std::chrono::system_clock::time_point time;  // ...
 };
 
 int newdesc;
@@ -1236,9 +1236,7 @@ void free_dns_list( void )
 
 void save_dns( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( DNS_FILE ) );
+   std::ofstream stream( std::filesystem::path{DNS_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, DNS_FILE, std::strerror(errno) );
@@ -1247,10 +1245,12 @@ void save_dns( void )
 
    for( auto* ip : dnslist )
    {
+      auto ip_time = std::chrono::system_clock::to_time_t( ip->time );
+
       stream << "#CACHE\n";
-      stream << "IP   " << ip->ip << "\n";
-      stream << "Name " << ip->name << "\n";
-      stream << "Time " << ip->time << "\n";
+      stream << std::format( "IP   {}\n", ip->ip );
+      stream << std::format( "Name {}\n", ip->name );
+      stream << std::format( "Time {}\n", ip_time );
       stream << "End\n\n";
    }
    stream.close(  );
@@ -1301,39 +1301,30 @@ std::string in_dns_cache( std::string_view ip )
 
 void load_dns( void )
 {
-   dns_data *cache = nullptr;
-   std::ifstream stream;
+   std::ifstream stream( std::filesystem::path{DNS_FILE} );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, DNS_FILE, std::strerror(errno) );
+      return;
+   }
 
+   dns_data *cache = nullptr;
    dnslist.clear(  );
 
-   stream.open( std::filesystem::path( DNS_FILE ) );
-   if( stream.is_open(  ) )
+   std::string key;
+   while( stream >> key )
    {
-      do
-      {
-         std::string key, value;
-         char buf[MIL];
-
-         stream >> key;
-         stream.getline( buf, MIL );
-         value = buf;
-
-         strip_lspace( key );
-         strip_lspace( value );
-         strip_tilde( value );
-
-         if( key.empty(  ) )
-            continue;
-
-         if( key == "#CACHE" )
-            cache = new dns_data;
-         else if( key == "IP" )
-            cache->ip = value;
-         else if( key == "Name" )
-            cache->name = value;
+      if( key == "#CACHE" )
+         cache = new dns_data;
+      else if( key == "IP" )
+         cache->ip = fread_line( stream, '\n' );
+      else if( key == "Name" )
+         cache->name = fread_line( stream, '\n' );
          else if( key == "Time" )
          {
-            time_t loaded_time = std::stol( value );
+            time_t loaded_time;
+            stream >> loaded_time;
+
             cache->time = std::chrono::system_clock::from_time_t( loaded_time );
          }
          else if( key == "End" )
@@ -1346,11 +1337,12 @@ void load_dns( void )
             dnslist.push_back( cache );
          }
          else
-            log_printf( "{}: Bad line in DNS cache file: {} {}", __func__, key, value );
-      }
-      while( !stream.eof(  ) );
-      stream.close(  );
+         {
+            bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, DNS_FILE );
+            fread_to_eol( stream );
+         }
    }
+   stream.close(  );
    prune_dns(  ); /* Clean out entries beyond 14 days */
 }
 
