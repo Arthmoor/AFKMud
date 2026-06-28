@@ -912,16 +912,14 @@ constexpr int CMDVERSION = 3;
 /* Updated to 3 for command flags - Samson 7-9-00 */
 void save_commands( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( COMMAND_FILE ) );
+   std::ofstream stream( std::filesystem::path{COMMAND_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, COMMAND_FILE, std::strerror(errno) );
       return;
    }
 
-   stream << "#VERSION " << CMDVERSION << std::endl;
+   stream << std::format( "#VERSION {}\n", CMDVERSION );
 
    for( char x = 0; x < 126; ++x )
    {
@@ -937,21 +935,22 @@ void save_commands( void )
             bug( "{}: blank command in command table", __func__ );
             continue;
          }
-         stream << "#COMMAND" << std::endl;
-         stream << "Name        " << command->name << std::endl;
+         stream << "#COMMAND\n";
+         stream << std::format( "Name        {}\n", command->name );
          /*
           * Modded to use new field - Trax 
           */
          if( !command->fun_name.empty(  ) )
-            stream << "Code        " << command->fun_name << std::endl;
-         stream << "Position    " << npc_position[command->position] << std::endl;
-         stream << "Level       " << command->level << std::endl;
-         stream << "Log         " << log_flag[command->log] << std::endl;
+            stream << std::format( "Code        {}\n", command->fun_name );
+         stream << std::format( "Position    {}\n", npc_position[command->position] );
+         stream << std::format( "Level       {}\n", command->level );
+         stream << std::format( "Log         {}\n", log_flag[command->log] );
          if( command->flags.any(  ) )
-            stream << "Flags       " << bitset_string( command->flags, cmd_flags ) << std::endl;
-         stream << "End" << std::endl << std::endl;
+            stream << std::format( "Flags       {}\n", bitset_string( command->flags, cmd_flags ) );
+         stream << "End\n\n";
       }
    }
+   stream << "#END\n";
    stream.close(  );
    if( stream.fail() )
       bug( "{}: Error occurred after closing {}: ", __func__, COMMAND_FILE, std::strerror(errno) );
@@ -959,52 +958,38 @@ void save_commands( void )
 
 void load_commands( void )
 {
-   std::ifstream stream;
-   cmd_type *cmd = nullptr;
-   int version = 0;
-
-   command_table.clear(  );
-   command_table.resize( 126 );
-
-   stream.open( std::filesystem::path( COMMAND_FILE ) );
+   std::ifstream stream( std::filesystem::path{COMMAND_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, COMMAND_FILE, std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
 
-   do
+   cmd_type *cmd = nullptr;
+   int version = 0;
+
+   command_table.clear(  );
+   command_table.resize( 126 );
+
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#VERSION" )
-         version = std::stoi( value );
+         stream >> version;
       else if( key == "#COMMAND" )
          cmd = new cmd_type;
       else if( key == "Name" )
-         cmd->name = value;
+         cmd->name = fread_line( stream, '\n' );
       else if( key == "Code" )
       {
-         cmd->fun_name = value;
-         cmd->do_fun = skill_function( value );
+         cmd->fun_name = fread_line( stream, '\n' );
+         cmd->do_fun = skill_function( cmd->fun_name );
          if( cmd->do_fun == skill_notfound )
             cmd->do_fun = nullptr;
       }
       else if( key == "Position" )
       {
-         int pos = get_npc_position( value );
+         int pos = get_npc_position( fread_line( stream, '\n' ) );
          if( pos < 0 || pos >= POS_MAX )
          {
             bug( "{}: Command {} has invalid position! Defaulting to standing.", __func__, cmd->name );
@@ -1013,14 +998,19 @@ void load_commands( void )
          cmd->position = pos;
       }
       else if( key == "Level" )
-         cmd->level = urange( 0, std::stoi( value ), MAX_LEVEL );
+      {
+         int level;
+         stream >> level;
+
+         cmd->level = urange( 0, level, MAX_LEVEL );
+      }
       else if( key == "Log" )
       {
          if( version < 2 )
-            cmd->log = std::stoi( value );
+            stream >> cmd->log;
          else
          {
-            int lognum = get_logflag( value );
+            int lognum = get_logflag( fread_line( stream, '\n' ) );
 
             if( lognum < 0 || lognum > LOG_ALL )
             {
@@ -1031,13 +1021,20 @@ void load_commands( void )
          }
       }
       else if( key == "Flags" )
-         flag_string_set( value, cmd->flags, cmd_flags );
+      {
+         std::string flags = fread_line( stream, '\n' );
+         flag_string_set( flags, cmd->flags, cmd_flags );
+      }
       else if( key == "End" )
          add_command( cmd );
+      else if( key == "#END" )
+         break;
       else
-         log_printf( "{}: Bad line in command file: {} {}", __func__, key, value );
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, COMMAND_FILE );
+         fread_to_eol( stream );
+      }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
@@ -2023,9 +2020,7 @@ void add_social( social_type * social )
  */
 void save_socials( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( SOCIAL_FILE ) );
+   std::ofstream stream( std::filesystem::path{SOCIAL_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, SOCIAL_FILE, std::strerror(errno) );
@@ -2043,31 +2038,32 @@ void save_socials( void )
          continue;
       }
 
-      stream << "#SOCIAL" << std::endl;
-      stream << "Name        " << social->name << std::endl;
+      stream << "#SOCIAL\n";
+      stream << std::format( "Name        {}\n", social->name );
       if( !social->char_no_arg.empty(  ) )
-         stream << "CharNoArg   " << social->char_no_arg << std::endl;
+         stream << std::format( "CharNoArg   {}\n", social->char_no_arg );
       else
          bug( "{}: Empty char_no_arg in social_table for {}", __func__, social->name );
       if( !social->others_no_arg.empty(  ) )
-         stream << "OthersNoArg " << social->others_no_arg << std::endl;
+         stream << std::format( "OthersNoArg {}\n", social->others_no_arg );
       if( !social->char_found.empty(  ) )
-         stream << "CharFound   " << social->char_found << std::endl;
+         stream << std::format( "CharFound   {}\n", social->char_found );
       if( !social->others_found.empty(  ) )
-         stream << "OthersFound " << social->others_found << std::endl;
+         stream << std::format( "OthersFound {}\n", social->others_found );
       if( !social->vict_found.empty(  ) )
-         stream << "VictFound   " << social->vict_found << std::endl;
+         stream << std::format( "VictFound   {}\n", social->vict_found );
       if( !social->char_auto.empty(  ) )
-         stream << "CharAuto    " << social->char_auto << std::endl;
+         stream << std::format( "CharAuto    {}\n", social->char_auto );
       if( !social->others_auto.empty(  ) )
-         stream << "OthersAuto  " << social->others_auto << std::endl;
+         stream << std::format( "OthersAuto  {}\n", social->others_auto );
       if( !social->obj_self.empty(  ) )
-         stream << "ObjSelf     " << social->obj_self << std::endl;
+         stream << std::format( "ObjSelf     {}\n", social->obj_self );
       if( !social->obj_others.empty(  ) )
-         stream << "ObjOthers   " << social->obj_others << std::endl;
-      stream << "MinPosition " << npc_position[social->minposition] << std::endl;
-      stream << "End" << std::endl << std::endl;
+         stream << std::format( "ObjOthers   {}\n", social->obj_others );
+      stream << std::format( "MinPosition {}\n", npc_position[social->minposition] );
+      stream << "End\n\n";
    }
+   stream << "#END\n";
    stream.close(  );
    if( stream.fail() )
       bug( "{}: Error occurred after closing {}: ", __func__, SOCIAL_FILE, std::strerror(errno) );
@@ -2075,59 +2071,44 @@ void save_socials( void )
 
 void load_socials( void )
 {
-   std::ifstream stream;
-   social_type *social = nullptr;
-
-   social_table.clear(  );
-
-   stream.open( std::filesystem::path( SOCIAL_FILE ) );
+   std::ifstream stream( std::filesystem::path{SOCIAL_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, SOCIAL_FILE, std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
 
-   do
+   social_type *social = nullptr;
+   social_table.clear(  );
+
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_tilde( value );
-      strip_lspace( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#SOCIAL" )
          social = new social_type;
       else if( key == "Name" )
-         social->name = value;
+         social->name = fread_line( stream, '\n' );
       else if( key == "CharNoArg" )
-         social->char_no_arg = value;
+         social->char_no_arg = fread_line( stream, '\n' );
       else if( key == "OthersNoArg" )
-         social->others_no_arg = value;
+         social->others_no_arg = fread_line( stream, '\n' );
       else if( key == "CharFound" )
-         social->char_found = value;
+         social->char_found = fread_line( stream, '\n' );
       else if( key == "OthersFound" )
-         social->others_found = value;
+         social->others_found = fread_line( stream, '\n' );
       else if( key == "VictFound" )
-         social->vict_found = value;
+         social->vict_found = fread_line( stream, '\n' );
       else if( key == "CharAuto" )
-         social->char_auto = value;
+         social->char_auto = fread_line( stream, '\n' );
       else if( key == "OthersAuto" )
-         social->others_auto = value;
+         social->others_auto = fread_line( stream, '\n' );
       else if( key == "ObjSelf" )
-         social->obj_self = value;
+         social->obj_self = fread_line( stream, '\n' );
       else if( key == "ObjOthers" )
-         social->obj_others = value;
+         social->obj_others = fread_line( stream, '\n' );
       else if( key == "MinPosition" )
       {
-         int minpos = get_npc_position( value );
+         int minpos = get_npc_position( fread_line( stream, '\n' ) );
 
          if( minpos < POS_SLEEPING || minpos >= POS_MAX )
             minpos = POS_RESTING;
@@ -2136,10 +2117,14 @@ void load_socials( void )
       }
       else if( key == "End" )
          social_table[social->name] = social;
+      else if( key == "#END" )
+         break;
       else
-         log_printf( "Bad line in socials file: {} {}", key, value );
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, SOCIAL_FILE );
+         fread_to_eol( stream );
+      }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
