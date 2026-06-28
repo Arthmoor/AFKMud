@@ -65,8 +65,6 @@
 
 #pragma once
 
-#include <string>
-
 class SHA512
 {
 protected:
