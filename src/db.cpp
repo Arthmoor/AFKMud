@@ -1801,11 +1801,7 @@ void process_bug( std::string_view text )
  */
 void log_string_plus( short log_type, short level, std::string_view str )
 {
-   auto seconds_only = std::chrono::floor<std::chrono::seconds>( current_time );
-   auto local_time = std::chrono::zoned_time{ std::chrono::current_zone(), seconds_only };
-
-   std::string timestamp = std::format( "{0:%F %T}", local_time );
-   std::cerr << std::format( "{} :: {}\n", timestamp, str );
+   std::cerr << std::format( "{} :: {}\n", c_time( current_time, "" ), str );
 
    std::string_view newstr = str;
    if( newstr.starts_with( "Log " ) )
