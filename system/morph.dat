@@ -256,7 +256,7 @@ ShortDesc       The sea hag~
 Skills          curse colour spray~
 UnmorphOther    The smell of seaweed fades as $n regains $s normal form.~
 UnmorphSelf     The taste of sea salt ebbs as you regain your normal form.~
-Affected        berserk aqua_breath recurringspell contagious bladebarrier silence UNUSED UNUSED UNUSED UNUSED growth tree_travel UNUSED UNUSED UNUSED passdoor quiv UNUSED haste slow elvensong bladesong reverie tenacity deathsong possess notrack enlighten treetalk spamguard bash~
+Affected        aqua_breath~
 Class           Mage~
 Resistant       fire~
 Suscept         NONE~
@@ -316,7 +316,7 @@ holes of helmeted head.~
 Hit             50~
 Hitroll         -2~
 Keywords        iron golem~
-Longdesc        An iron golem towers over you, a cold blue glow in its eyes. ~
+Longdesc        An iron golem towers over you, a cold blue glow in its eyes.~
 MorphOther      $n's skin solidifies into cold iron as $e becomes an iron golem!~
 MorphSelf       Your skin hardens as you morph into an iron golem.~
 NoSkills        trance meditate~
@@ -495,7 +495,7 @@ MorphSelf       Your features turn more elfin until you find yourself taking the
 ShortDesc       The malenti assassin~
 UnmorphOther    There is a twinkle of light and the malenti before you reverts back into $n!~
 UnmorphSelf     In a twinkle of light, your features revert back to what it once was.~
-Affected        faerie_fire curse paralysis sneak berserk aqua_breath recurringspell contagious bladebarrier silence UNUSED UNUSED UNUSED UNUSED growth tree_travel UNUSED UNUSED UNUSED passdoor quiv UNUSED haste slow elvensong bladesong reverie tenacity deathsong possess notrack enlighten treetalk spamguard bash~
+Affected        aqua_breath~
 Class           Mage~
 Resistant       drain sleep~
 Timer           24
@@ -867,8 +867,8 @@ MorphSelf       Your form dissolves into the misty form of black death!~
 NoSkills        trance meditate~
 ShortDesc       The black death~
 Skills          poison~
-UnmorphOther    The black death mist reforms and solidifies, giving $n back $s form! ~
-UnmorphSelf     The black mist reforms and solidifies, giving you back your form! ~
+UnmorphOther    The black death mist reforms and solidifies, giving $n back $s form!~
+UnmorphSelf     The black mist reforms and solidifies, giving you back your form!~
 Affected        faerie_fire charm shockshield~
 Class           Necromancer~
 Resistant       fire poison~
@@ -975,7 +975,7 @@ ShortDesc       A green turtle~
 Skills          bite~
 UnmorphOther    The green turtle slowly shifts and grows back into $n!~
 UnmorphSelf     You feel the spirit of the turtle fade as you regain your normal form.~
-Affected        berserk aqua_breath recurringspell contagious bladebarrier silence UNUSED UNUSED UNUSED UNUSED growth tree_travel UNUSED UNUSED UNUSED passdoor quiv UNUSED haste slow elvensong bladesong reverie tenacity deathsong possess notrack enlighten treetalk spamguard bash~
+Affected        aqua_breath~
 Class           Druid~
 Resistant       fire~
 Timer           24
@@ -1139,7 +1139,7 @@ ShortDesc       A giant crocodile~
 Skills          claw bite~
 UnmorphOther    A sickening tear is heard as $n changes back into $s own form.~
 UnmorphSelf     A sickening tear is heard as you change back into you own form.~
-Affected        detect_magic faerie_fire berserk aqua_breath recurringspell contagious bladebarrier silence UNUSED UNUSED UNUSED UNUSED growth tree_travel UNUSED UNUSED UNUSED passdoor quiv UNUSED haste slow elvensong bladesong reverie tenacity deathsong possess notrack enlighten treetalk spamguard bash~
+Affected        aqua_breath~
 Class           Druid~
 Resistant       fire~
 Timer           24
@@ -1284,7 +1284,7 @@ MorphSelf       Your body shimmers and transmutes into a water elemental!~
 ShortDesc       A water elemental~
 UnmorphOther    The water elemental begins to gain a more solid form and soon reverts back into $n!~
 UnmorphSelf     You feel your water form begin to solidify, soon you revert back to normal.~
-Affected        berserk aqua_breath recurringspell contagious bladebarrier silence UNUSED UNUSED UNUSED UNUSED growth tree_travel UNUSED UNUSED UNUSED passdoor quiv UNUSED haste slow elvensong bladesong reverie tenacity deathsong possess notrack enlighten treetalk spamguard bash~
+Affected        aqua_breath~
 Class           Druid~
 Suscept         NONE~
 Immune          fire acid~

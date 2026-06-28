@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "deity.h"
 #include "objindex.h"
@@ -222,141 +223,138 @@ const std::string MORPHPERS( char_data * ch, char_data * looker, bool from )
 // 1: Flags written as text.
 constexpr int MORPHFILEVER = 1;
 
-/* 
+/*
  * Write one morph structure to a file. It doesn't print the variable to file
  * if it hasn't been set why waste disk-space :)  --Shaddai
  */
-void fwrite_morph( FILE * fp, morph_data * morph )
+void fwrite_morph( std::ofstream & stream, morph_data * morph )
 {
-   if( !morph )
-      return;
-
-   fprintf( fp, "Morph           %s\n", morph->name.c_str() );
+   stream << std::format( "Morph           {}\n", morph->name );
    if( morph->obj[0] != 0 || morph->obj[1] != 0 || morph->obj[2] != 0 )
-      fprintf( fp, "Objs            %d %d %d\n", morph->obj[0], morph->obj[1], morph->obj[2] );
+      stream << std::format( "Objs            {} {} {}\n", morph->obj[0], morph->obj[1], morph->obj[2] );
    if( morph->objuse[0] != 0 || morph->objuse[1] != 0 || morph->objuse[2] != 0 )
-      fprintf( fp, "Objuse          %d %d %d\n", morph->objuse[0], morph->objuse[1], morph->objuse[2] );
+      stream << std::format( "Objuse          {} {} {}\n", morph->objuse[0], morph->objuse[1], morph->objuse[2] );
    if( morph->vnum != 0 )
-      fprintf( fp, "Vnum            %d\n", morph->vnum );
+      stream << std::format( "Vnum            {}\n", morph->vnum );
    if( !morph->damroll.empty() )
-      fprintf( fp, "Damroll         %s~\n", morph->damroll.c_str() );
+      stream << std::format( "Damroll         {}~\n", morph->damroll );
    if( morph->defpos != POS_STANDING )
-      fprintf( fp, "Defpos          %d\n", morph->defpos );
+      stream << std::format( "Defpos          {}\n", morph->defpos );
    if( !morph->description.empty() )
-      fprintf( fp, "Description     %s~\n", strip_cr( morph->description ).c_str() );
+      stream << std::format( "Description     {}~\n", morph->description );
    if( !morph->help.empty() )
-      fprintf( fp, "Help            %s~\n", strip_cr( morph->help ).c_str() );
+      stream << std::format( "Help            {}~\n", morph->help );
    if( !morph->hit.empty() )
-      fprintf( fp, "Hit             %s~\n", morph->hit.c_str() );
+      stream << std::format( "Hit             {}~\n", morph->hit );
    if( !morph->hitroll.empty() )
-      fprintf( fp, "Hitroll         %s~\n", morph->hitroll.c_str() );
+      stream << std::format( "Hitroll         {}~\n", morph->hitroll );
    if( !morph->key_words.empty() )
-      fprintf( fp, "Keywords        %s~\n", morph->key_words.c_str() );
+      stream << std::format( "Keywords        {}~\n", morph->key_words );
    if( !morph->long_desc.empty() )
-      fprintf( fp, "Longdesc        %s~\n", strip_cr( morph->long_desc ).c_str() );
+      stream << std::format( "Longdesc        {}~\n", morph->long_desc );
    if( !morph->mana.empty() )
-      fprintf( fp, "Mana            %s~\n", morph->mana.c_str() );
+      stream << std::format( "Mana            {}~\n", morph->mana );
    if( !morph->morph_other.empty() )
-      fprintf( fp, "MorphOther      %s~\n", morph->morph_other.c_str() );
+      stream << std::format( "MorphOther      {}~\n", morph->morph_other );
    if( !morph->morph_self.empty() )
-      fprintf( fp, "MorphSelf       %s~\n", morph->morph_self.c_str() );
+      stream << std::format( "MorphSelf       {}~\n", morph->morph_self );
    if( !morph->move.empty() )
-      fprintf( fp, "Move            %s~\n", morph->move.c_str() );
+      stream << std::format( "Move            {}~\n", morph->move );
    if( !morph->no_skills.empty() )
-      fprintf( fp, "NoSkills        %s~\n", morph->no_skills.c_str() );
+      stream << std::format( "NoSkills        {}~\n", morph->no_skills );
    if( !morph->short_desc.empty() )
-      fprintf( fp, "ShortDesc       %s~\n", morph->short_desc.c_str() );
+      stream << std::format( "ShortDesc       {}~\n", morph->short_desc );
    if( !morph->skills.empty() )
-      fprintf( fp, "Skills          %s~\n", morph->skills.c_str() );
+      stream << std::format( "Skills          {}~\n", morph->skills );
    if( !morph->unmorph_other.empty() )
-      fprintf( fp, "UnmorphOther    %s~\n", morph->unmorph_other.c_str() );
+      stream << std::format( "UnmorphOther    {}~\n", morph->unmorph_other );
    if( !morph->unmorph_self.empty() )
-      fprintf( fp, "UnmorphSelf     %s~\n", morph->unmorph_self.c_str() );
+      stream << std::format( "UnmorphSelf     {}~\n", morph->unmorph_self );
    if( morph->affected_by.any(  ) )
-      fprintf( fp, "Affected        %s~\n", bitset_string( morph->affected_by, aff_flags ) );
+      stream << std::format( "Affected        {}~\n", bitset_string( morph->affected_by, aff_flags ) );
    if( morph->no_affected_by.any(  ) )
-      fprintf( fp, "NoAffected      %s~\n", bitset_string( morph->no_affected_by, aff_flags ) );
+      stream << std::format( "NoAffected      {}~\n", bitset_string( morph->no_affected_by, aff_flags ) );
    if( morph->Class.any(  ) )
-      fprintf( fp, "Class           %s~\n", bitset_string( morph->Class, npc_class ) );
+      stream << std::format( "Class           {}~\n", bitset_string( morph->Class, npc_class ) );
    if( morph->race.any(  ) )
-      fprintf( fp, "Race            %s~\n", bitset_string( morph->race, npc_race ) );
+      stream << std::format( "Race            {}~\n", bitset_string( morph->race, npc_race ) );
    if( morph->resistant.any(  ) )
-      fprintf( fp, "Resistant       %s~\n", bitset_string( morph->resistant, ris_flags ) );
+      stream << std::format( "Resistant       {}~\n", bitset_string( morph->resistant, ris_flags ) );
    if( morph->suscept.any(  ) )
-      fprintf( fp, "Suscept         %s~\n", bitset_string( morph->suscept, ris_flags ) );
+      stream << std::format( "Suscept         {}~\n", bitset_string( morph->suscept, ris_flags ) );
    if( morph->immune.any(  ) )
-      fprintf( fp, "Immune          %s~\n", bitset_string( morph->immune, ris_flags ) );
+      stream << std::format( "Immune          {}~\n", bitset_string( morph->immune, ris_flags ) );
    if( morph->absorb.any(  ) )
-      fprintf( fp, "Absorb          %s~\n", bitset_string( morph->absorb, ris_flags ) );
+      stream << std::format( "Absorb          {}~\n", bitset_string( morph->absorb, ris_flags ) );
    if( morph->no_immune.any(  ) )
-      fprintf( fp, "NoImmune        %s~\n", bitset_string( morph->no_immune, ris_flags ) );
+      stream << std::format( "NoImmune        {}~\n", bitset_string( morph->no_immune, ris_flags ) );
    if( morph->no_resistant.any(  ) )
-      fprintf( fp, "NoResistant     %s~\n", bitset_string( morph->no_resistant, ris_flags ) );
+      stream << std::format( "NoResistant     {}~\n", bitset_string( morph->no_resistant, ris_flags ) );
    if( morph->no_suscept.any(  ) )
-      fprintf( fp, "NoSuscept       %s~\n", bitset_string( morph->no_suscept, ris_flags ) );
-   if( morph->timer != 0 )
-      fprintf( fp, "Timer           %d\n", morph->timer );
+      stream << std::format( "NoSuscept       {}~\n", bitset_string( morph->no_suscept, ris_flags ) );
+   if( morph->timer > 0 )
+      stream << std::format( "Timer           {}\n", morph->timer );
    if( morph->used != 0 )
-      fprintf( fp, "Used            %d\n", morph->used );
+      stream << std::format( "Used            {}\n", morph->used );
    if( morph->sex != -1 )
-      fprintf( fp, "Sex             %d\n", morph->sex );
+      stream << std::format( "Sex             {}\n", morph->sex );
    if( morph->pkill != 0 )
-      fprintf( fp, "Pkill           %d\n", morph->pkill );
+      stream << std::format( "Pkill           {}\n", morph->pkill );
    if( morph->timefrom != -1 )
-      fprintf( fp, "TimeFrom        %d\n", morph->timefrom );
+      stream << std::format( "TimeFrom        {}\n", morph->timefrom );
    if( morph->timeto != -1 )
-      fprintf( fp, "TimeTo          %d\n", morph->timeto );
+      stream << std::format( "TimeTo          {}\n", morph->timeto );
    if( morph->dayfrom != -1 )
-      fprintf( fp, "DayFrom         %d\n", morph->dayfrom );
+      stream << std::format( "DayFrom         {}\n", morph->dayfrom );
    if( morph->dayto != -1 )
-      fprintf( fp, "DayTo           %d\n", morph->dayto );
+      stream << std::format( "DayTo           {}\n", morph->dayto );
    if( morph->manaused != 0 )
-      fprintf( fp, "ManaUsed        %d\n", morph->manaused );
+      stream << std::format( "ManaUsed        {}\n", morph->manaused );
    if( morph->moveused != 0 )
-      fprintf( fp, "MoveUsed        %d\n", morph->moveused );
+      stream << std::format( "MoveUsed        {}\n", morph->moveused );
    if( morph->hpused != 0 )
-      fprintf( fp, "HpUsed          %d\n", morph->hpused );
+      stream << std::format( "HpUsed          {}\n", morph->hpused );
    if( morph->favourused != 0 )
-      fprintf( fp, "FavourUsed      %d\n", morph->favourused );
+      stream << std::format( "FavourUsed      {}\n", morph->favourused );
    if( morph->ac != 0 )
-      fprintf( fp, "Armor           %d\n", morph->ac );
+      stream << std::format( "Armor           {}\n", morph->ac );
    if( morph->cha != 0 )
-      fprintf( fp, "Charisma        %d\n", morph->cha );
+      stream << std::format( "Charisma        {}\n", morph->cha );
    if( morph->con != 0 )
-      fprintf( fp, "Constitution    %d\n", morph->con );
+      stream << std::format( "Constitution    {}\n", morph->con );
    if( morph->dex != 0 )
-      fprintf( fp, "Dexterity       %d\n", morph->dex );
+      stream << std::format( "Dexterity       {}\n", morph->dex );
    if( morph->dodge != 0 )
-      fprintf( fp, "Dodge           %d\n", morph->dodge );
+      stream << std::format( "Dodge           {}\n", morph->dodge );
    if( morph->inte != 0 )
-      fprintf( fp, "Intelligence    %d\n", morph->inte );
+      stream << std::format( "Intelligence    {}\n", morph->inte );
    if( morph->lck != 0 )
-      fprintf( fp, "Luck            %d\n", morph->lck );
+      stream << std::format( "Luck            {}\n", morph->lck );
    if( morph->level != 0 )
-      fprintf( fp, "Level           %d\n", morph->level );
+      stream << std::format( "Level           {}\n", morph->level );
    if( morph->parry != 0 )
-      fprintf( fp, "Parry           %d\n", morph->parry );
+      stream << std::format( "Parry           {}\n", morph->parry );
    if( morph->saving_breath != 0 )
-      fprintf( fp, "SaveBreath      %d\n", morph->saving_breath );
+      stream << std::format( "SaveBreath      {}\n", morph->saving_breath );
    if( morph->saving_para_petri != 0 )
-      fprintf( fp, "SavePara        %d\n", morph->saving_para_petri );
+      stream << std::format( "SavePara        {}\n", morph->saving_para_petri );
    if( morph->saving_poison_death != 0 )
-      fprintf( fp, "SavePoison      %d\n", morph->saving_poison_death );
+      stream << std::format( "SavePoison      {}\n", morph->saving_poison_death );
    if( morph->saving_spell_staff != 0 )
-      fprintf( fp, "SaveSpell       %d\n", morph->saving_spell_staff );
+      stream << std::format( "SaveSpell       {}\n", morph->saving_spell_staff );
    if( morph->saving_wand != 0 )
-      fprintf( fp, "SaveWand        %d\n", morph->saving_wand );
+      stream << std::format( "SaveWand        {}\n", morph->saving_wand );
    if( morph->str != 0 )
-      fprintf( fp, "Strength        %d\n", morph->str );
+      stream << std::format( "Strength        {}\n", morph->str );
    if( morph->tumble != 0 )
-      fprintf( fp, "Tumble          %d\n", morph->tumble );
+      stream << std::format( "Tumble          {}\n", morph->tumble );
    if( morph->wis != 0 )
-      fprintf( fp, "Wisdom          %d\n", morph->wis );
+      stream << std::format( "Wisdom          {}\n", morph->wis );
    if( morph->no_cast )
-      fprintf( fp, "NoCast          %d\n", morph->no_cast );
+      stream << std::format( "NoCast          {}\n", morph->no_cast );
    if( morph->cast_allowed )
-      fprintf( fp, "CastAllowed     %d\n", morph->cast_allowed );
-   fprintf( fp, "%s", "End\n\n" );
+      stream << std::format( "CastAllowed     {}\n", morph->cast_allowed );
+   stream << "End\n\n";
 }
 
 /*
@@ -365,22 +363,603 @@ void fwrite_morph( FILE * fp, morph_data * morph )
  */
 void save_morphs( void )
 {
-   FILE *fp;
-
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open(  ) )
    {
-      bug( "{}: Cannot open morph data file.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   fprintf( fp, "#VERSION        %d\n", MORPHFILEVER );
+   stream << std::format( "#VERSION        {}\n", MORPHFILEVER );
 
    for( auto* morph : morphlist )
-      fwrite_morph( fp, morph );
+      fwrite_morph( stream, morph );
 
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
+}
+
+/*
+ * Read in one morph structure
+ */
+void fread_morph( std::ifstream & stream, int file_ver )
+{
+   std::string arg, temp;
+   int i;
+
+   std::string key = fread_word( stream );
+   if( key.empty() || key == "End" )
+   {
+      bug( "{}: EOF encountered reading morph file!", __func__ );
+      return;
+   }
+
+   morph_data *morph = new morph_data;
+   morph->name = key;
+
+   while( stream >> key )
+   {
+      switch( to_upper( key[0] ) )
+      {
+         default:
+            bug( "{}: Bad section '{}' in morph file - skipping to next morph.", __func__, key );
+            if( morph )
+               deleteptr( morph );
+         return;
+
+         case 'E':
+            if( key == "End" )
+            {
+               morphlist.push_back( morph );
+               return;
+            }
+            break;
+
+         case 'A':
+            if( key == "Absorb" )
+            {
+               if( file_ver < 1 )
+                  stream >> morph->absorb;
+               else
+               {
+                  temp = fread_line( stream );
+                  flag_string_set( temp, morph->absorb, ris_flags );
+               }
+               break;
+            }
+
+            if( key == "Armor" )
+            {
+               stream >> morph->ac;
+               break;
+            }
+
+            if( key == "Affected" )
+            {
+               if( file_ver < 1 )
+                  stream >> morph->affected_by;
+               else
+               {
+                  temp = fread_line( stream );
+                  flag_string_set( temp, morph->affected_by, aff_flags );
+               }
+               break;
+            }
+            break;
+
+         case 'C':
+            if( key == "Charisma" )
+            {
+               stream >> morph->cha;
+               break;
+            }
+
+            if( key == "Class" )
+            {
+               arg = fread_line( stream );
+               while( !arg.empty() )
+               {
+                  arg = one_argument( arg, temp );
+                  for( i = 0; i < MAX_PC_CLASS; ++i )
+                     if( !str_cmp( temp, class_table[i]->who_name ) )
+                     {
+                        morph->Class.set( i );
+                        break;
+                     }
+               }
+               break;
+            }
+
+            if( key == "Constitution" )
+            {
+               stream >> morph->con;
+               break;
+            }
+
+            if( key == "CastAllowed" )
+            {
+               stream >> morph->cast_allowed;
+               break;
+            }
+            break;
+
+         case 'D':
+            if( key == "Damroll" )
+            {
+               morph->damroll = fread_line( stream );
+               break;
+            }
+
+            if( key == "DayFrom" )
+            {
+               stream >> morph->dayfrom;
+               break;
+            }
+
+            if( key == "DayTo" )
+            {
+               stream >> morph->dayto;
+               break;
+            }
+
+            if( key == "Defpos" )
+            {
+               stream >> morph->defpos;
+               break;
+            }
+
+            if( key == "Description" )
+            {
+               morph->description = fread_line( stream );
+               break;
+            }
+
+            if( key == "Dexterity" )
+            {
+               stream >> morph->dex;
+               break;
+            }
+
+            if( key == "Dodge" )
+            {
+               stream >> morph->dodge;
+               break;
+            }
+            break;
+
+         case 'F':
+            if( key == "FavourUsed" )
+            {
+               stream >> morph->favourused;
+            }
+            break;
+
+         case 'H':
+            if( key == "Help" )
+            {
+               morph->help = fread_line( stream );
+               break;
+            }
+
+            if( key == "Hit" )
+            {
+               morph->hit = fread_line( stream );
+               break;
+            }
+
+            if( key == "Hitroll" )
+            {
+               morph->hitroll = fread_line( stream );
+               break;
+            }
+
+            if( key == "HpUsed" )
+            {
+               stream >> morph->hpused;
+               break;
+            }
+            break;
+
+         case 'I':
+            if( key == "Intelligence" )
+            {
+               stream >> morph->inte;
+               break;
+            }
+
+            if( key == "Immune" )
+            {
+               if( file_ver < 1 )
+                  stream >> morph->immune;
+               else
+               {
+                  temp = fread_line( stream );
+                  flag_string_set( temp, morph->immune, ris_flags );
+               }
+               break;
+            }
+            break;
+
+         case 'K':
+            if( key == "Keywords" )
+            {
+               morph->key_words = fread_line( stream );
+               break;
+            }
+            break;
+
+         case 'L':
+            if( key == "Level" )
+            {
+               stream >> morph->level;
+               break;
+            }
+
+            if( key == "Longdesc" )
+            {
+               morph->long_desc = fread_line( stream );
+               break;
+            }
+
+            if( key == "Luck" )
+            {
+               stream >> morph->lck;
+               break;
+            }
+            break;
+
+         case 'M':
+            if( key == "Mana" )
+            {
+               morph->mana = fread_line( stream );
+               break;
+            }
+
+            if( key == "ManaUsed" )
+            {
+               stream >> morph->manaused;
+               break;
+            }
+
+            if( key == "MorphOther" )
+            {
+               morph->morph_other = fread_line( stream );
+               break;
+            }
+
+            if( key == "MorphSelf" )
+            {
+               morph->morph_self = fread_line( stream );
+               break;
+            }
+
+            if( key == "Move" ) /* EEK! This was set wrong! Caught by Matteo 2303 */
+            {
+               morph->move = fread_line( stream );
+               break;
+            }
+
+            if( key == "MoveUsed" )
+            {
+               stream >> morph->moveused;
+               break;
+            }
+            break;
+
+         case 'N':
+            if( key == "NoSkills" )
+            {
+               morph->no_skills = fread_line( stream );
+               break;
+            }
+
+            if( key == "NoAffected" )
+            {
+               if( file_ver < 1 )
+                  stream >> morph->no_affected_by;
+               else
+               {
+                  temp = fread_line( stream );
+                  flag_string_set( temp, morph->no_affected_by, aff_flags );
+               }
+               break;
+            }
+
+            if( key == "NoResistant" )
+            {
+               if( file_ver < 1 )
+                  stream >> morph->no_resistant;
+               else
+               {
+                  temp = fread_line( stream );
+                  flag_string_set( temp, morph->no_resistant, ris_flags );
+               }
+               break;
+            }
+
+            if( key == "NoSuscept" )
+            {
+               if( file_ver < 1 )
+                  stream >> morph->no_suscept;
+               else
+               {
+                  temp = fread_line( stream );
+                  flag_string_set( temp, morph->no_suscept, ris_flags );
+               }
+               break;
+            }
+
+            if( key == "NoImmune" )
+            {
+               if( file_ver < 1 )
+                  stream >> morph->no_immune;
+               else
+               {
+                  temp = fread_line( stream );
+                  flag_string_set( temp, morph->no_immune, ris_flags );
+               }
+               break;
+            }
+
+            if( key == "NoCast" )
+            {
+               stream >> morph->no_cast;
+               break;
+            }
+            break;
+
+            case 'O':
+               if( key == "Objs" )
+               {
+                  stream >> morph->obj[0] >> morph->obj[1] >> morph->obj[2];
+                  break;
+               }
+
+               if( key == "Objuse" )
+               {
+                  stream >> morph->objuse[0] >> morph->objuse[1] >> morph->objuse[2];
+                  break;
+               }
+               break;
+
+            case 'P':
+               if( key == "Parry" )
+               {
+                  stream >> morph->parry;
+                  break;
+               }
+
+               if( key == "Pkill" )
+               {
+                  stream >> morph->pkill;
+                  break;
+               }
+               break;
+
+            case 'R':
+               if( key == "Race" )
+               {
+                  arg = fread_line( stream );
+                  while( !arg.empty() )
+                  {
+                     arg = one_argument( arg, temp );
+                     for( i = 0; i < MAX_PC_RACE; ++i )
+                        if( !str_cmp( temp, race_table[i]->race_name ) )
+                        {
+                           morph->race.set( i );
+                           break;
+                        }
+                  }
+                  break;
+               }
+
+               if( key == "Resistant" )
+               {
+                  if( file_ver < 1 )
+                     stream >> morph->resistant;
+                  else
+                  {
+                     temp = fread_line( stream );
+                     flag_string_set( temp, morph->resistant, ris_flags );
+                  }
+                  break;
+               }
+               break;
+
+            case 'S':
+               if( key == "SaveBreath" )
+               {
+                  stream >> morph->saving_breath;
+                  break;
+               }
+
+               if( key == "SavePara" )
+               {
+                  stream >> morph->saving_para_petri;
+                  break;
+               }
+
+               if( key == "SavePoison" )
+               {
+                  stream >> morph->saving_poison_death;
+                  break;
+               }
+
+               if( key == "SaveSpell" )
+               {
+                  stream >> morph->saving_spell_staff;
+                  break;
+               }
+
+               if( key == "SaveWand" )
+               {
+                  stream >> morph->saving_wand;
+                  break;
+               }
+
+               if( key == "Sex" )
+               {
+                  stream >> morph->sex;
+                  break;
+               }
+
+               if( key == "ShortDesc" )
+               {
+                  morph->short_desc = fread_line( stream );
+                  break;
+               }
+
+               if( key == "Skills" )
+               {
+                  morph->skills = fread_line( stream );
+                  break;
+               }
+
+               if( key == "Strength" )
+               {
+                  stream >> morph->str;
+                  break;
+               }
+
+               if( key == "Suscept" )
+               {
+                  if( file_ver < 1 )
+                     stream >> morph->suscept;
+                  else
+                  {
+                     temp = fread_line( stream );
+                     flag_string_set( temp, morph->suscept, ris_flags );
+                  }
+                  break;
+               }
+               break;
+
+               case 'T':
+                  if( key == "Timer" )
+                  {
+                     stream >> morph->timer;
+                     break;
+                  }
+
+                  if( key == "TimeFrom" )
+                  {
+                     stream >> morph->timefrom;
+                     break;
+                  }
+
+                  if( key == "TimeTo" )
+                  {
+                     stream >> morph->timeto;
+                     break;
+                  }
+
+                  if( key == "Tumble" )
+                  {
+                     stream >> morph->tumble;
+                     break;
+                  }
+                  break;
+
+               case 'U':
+                  if( key == "UnmorphOther" )
+                  {
+                     morph->unmorph_other = fread_line( stream );
+                     break;
+                  }
+
+                  if( key == "UnmorphSelf" )
+                  {
+                     morph->unmorph_self = fread_line( stream );
+                     break;
+                  }
+
+                  if( key == "Used" )
+                  {
+                     stream >> morph->used;
+                     break;
+                  }
+                  break;
+
+               case 'V':
+                  if( key == "Vnum" )
+                  {
+                     stream >> morph->vnum;
+                     break;
+                  }
+                  break;
+
+               case 'W':
+                  if( key == "Wisdom" )
+                  {
+                     stream >> morph->wis;
+                     break;
+                  }
+                  break;
+      }
+   }
+}
+
+void setup_morph_vnum( void )
+{
+   int vnum = morph_vnum;
+
+   for( auto* morph : morphlist )
+   {
+      if( morph->vnum > vnum )
+         vnum = morph->vnum;
+   }
+   if( vnum < 1000 )
+      vnum = 1000;
+   else
+      ++vnum;
+
+   for( auto* imorph : morphlist )
+   {
+      if( imorph->vnum == 0 )
+      {
+         imorph->vnum = vnum++;
+      }
+   }
+   morph_vnum = vnum;
+}
+
+/*
+ *  This function loads in the morph data.  Note that this function MUST be
+ *  used AFTER the race and Class tables have been read in and setup.
+ *  --Shaddai
+ */
+void load_morphs( void )
+{
+   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open(  ) )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
+      std::exit( EXIT_FAILURE );
+   }
+
+   int file_ver = 0;
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "#VERSION" )
+         stream >> file_ver;
+      else if( key == "#END" )
+         break;
+      else if( key == "Morph" )
+         fread_morph( stream, file_ver );
+      else
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
+      }
+   }
+   stream.close();
+   setup_morph_vnum(  );
+   log_string( "Done: Morphs." );
 }
 
 /*
@@ -1363,12 +1942,11 @@ void send_morph_message( char_data * ch, morph_data * morph, bool is_morph )
  */
 char_morph *make_char_morph( morph_data * morph )
 {
-   char_morph *ch_morph;
-
    if( morph == nullptr )
       return nullptr;
 
-   ch_morph = new char_morph;
+   char_morph *ch_morph = new char_morph;
+
    ch_morph->morph = morph;
    ch_morph->ac = morph->ac;
    ch_morph->str = morph->str;
@@ -1383,11 +1961,6 @@ char_morph *make_char_morph( morph_data * morph )
    ch_morph->saving_spell_staff = morph->saving_spell_staff;
    ch_morph->saving_wand = morph->saving_wand;
    ch_morph->timer = morph->timer;
-   ch_morph->hitroll = 0;
-   ch_morph->damroll = 0;
-   ch_morph->hit = 0;
-   ch_morph->mana = 0;
-   ch_morph->move = 0;
    ch_morph->affected_by = morph->affected_by;
    ch_morph->immune = morph->immune;
    ch_morph->absorb = morph->absorb;
@@ -1398,6 +1971,7 @@ char_morph *make_char_morph( morph_data * morph )
    ch_morph->no_resistant = morph->no_resistant;
    ch_morph->no_suscept = morph->no_suscept;
    ch_morph->cast_allowed = morph->cast_allowed;
+
    return ch_morph;
 }
 
@@ -1641,383 +2215,6 @@ CMDF( do_revert )
       return;
    }
    do_unmorph_char( ch );
-}
-
-void setup_morph_vnum( void )
-{
-   int vnum = morph_vnum;
-
-   for( auto* morph : morphlist )
-   {
-      if( morph->vnum > vnum )
-         vnum = morph->vnum;
-   }
-   if( vnum < 1000 )
-      vnum = 1000;
-   else
-      ++vnum;
-
-   for( auto* imorph : morphlist )
-   {
-      if( imorph->vnum == 0 )
-      {
-         imorph->vnum = vnum++;
-      }
-   }
-   morph_vnum = vnum;
-}
-
-/*
- * Read in one morph structure
- */
-morph_data *fread_morph( FILE * fp, int file_ver )
-{
-   morph_data *morph;
-   std::string arg, temp;
-   int i;
-
-   std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-   if( word[0] == '\0' )
-   {
-      bug( "{}: EOF encountered reading file!", __func__ );
-      word = "End";
-   }
-
-   if( !str_cmp( word, "End" ) )
-      return nullptr;
-
-   morph = new morph_data;
-
-   morph->name = word;
-
-   for( ;; )
-   {
-      word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            /*
-             * Bailing out on this morph as something may be messed up 
-             * * this is going to have lots of bugs from the load_morphs this
-             * * way, but it is better than possibly having the memory messed
-             * * up! --Shaddai
-             */
-            deleteptr( morph );
-            return nullptr;
-            break;
-
-         case 'A':
-            if( !str_cmp( word, "Absorb" ) )
-            {
-               if( file_ver < 1 )
-                  morph->absorb = fread_number( fp );
-               else
-                  flag_set( fp, morph->absorb, ris_flags );
-               break;
-            }
-            KEY( "Armor", morph->ac, fread_number( fp ) );
-            if( !str_cmp( word, "Affected" ) )
-            {
-               if( file_ver < 1 )
-                  morph->affected_by = fread_number( fp );
-               else
-                  flag_set( fp, morph->affected_by, aff_flags );
-               break;
-            }
-            break;
-
-         case 'C':
-            KEY( "Charisma", morph->cha, fread_number( fp ) );
-            if( !str_cmp( word, "Class" ) )
-            {
-               arg = fread_flagstring( fp );
-               while( !arg.empty() )
-               {
-                  arg = one_argument( arg, temp );
-                  for( i = 0; i < MAX_PC_CLASS; ++i )
-                     if( !str_cmp( temp, class_table[i]->who_name ) )
-                     {
-                        morph->Class.set( i );
-                        break;
-                     }
-               }
-               break;
-            }
-            KEY( "Constitution", morph->con, fread_number( fp ) );
-            if( !str_cmp( word, "CastAllowed" ) )
-            {
-               morph->cast_allowed = fread_number( fp );
-               break;
-            }
-            break;
-
-         case 'D':
-            STDSKEY( "Damroll", morph->damroll );
-            KEY( "DayFrom", morph->dayfrom, fread_number( fp ) );
-            KEY( "DayTo", morph->dayto, fread_number( fp ) );
-            KEY( "Defpos", morph->defpos, fread_number( fp ) );
-            STDSKEY( "Description", morph->description );
-            KEY( "Dexterity", morph->dex, fread_number( fp ) );
-            KEY( "Dodge", morph->dodge, fread_number( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return morph;
-            break;
-
-         case 'F':
-            KEY( "FavourUsed", morph->favourused, fread_number( fp ) );
-            break;
-
-         case 'H':
-            STDSKEY( "Help", morph->help );
-            STDSKEY( "Hit", morph->hit );
-            STDSKEY( "Hitroll", morph->hitroll );
-            KEY( "HpUsed", morph->hpused, fread_number( fp ) );
-            break;
-
-         case 'I':
-            KEY( "Intelligence", morph->inte, fread_number( fp ) );
-            if( !str_cmp( word, "Immune" ) )
-            {
-               if( file_ver < 1 )
-                  morph->immune = fread_number( fp );
-               else
-                  flag_set( fp, morph->immune, ris_flags );
-               break;
-            }
-            break;
-
-         case 'K':
-            STDSKEY( "Keywords", morph->key_words );
-            break;
-
-         case 'L':
-            KEY( "Level", morph->level, fread_number( fp ) );
-            STDSKEY( "Longdesc", morph->long_desc );
-            KEY( "Luck", morph->lck, fread_number( fp ) );
-            break;
-
-         case 'M':
-            STDSKEY( "Mana", morph->mana );
-            KEY( "ManaUsed", morph->manaused, fread_number( fp ) );
-            STDSKEY( "MorphOther", morph->morph_other );
-            STDSKEY( "MorphSelf", morph->morph_self );
-            STDSKEY( "Move", morph->move );  /* EEK! This was set wrong! Caught by Matteo 2303 */
-            KEY( "MoveUsed", morph->moveused, fread_number( fp ) );
-            break;
-
-         case 'N':
-            STDSKEY( "NoSkills", morph->no_skills );
-            if( !str_cmp( word, "NoAffected" ) )
-            {
-               if( file_ver < 1 )
-                  morph->no_affected_by = fread_number( fp );
-               else
-                  flag_set( fp, morph->no_affected_by, aff_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "NoResistant" ) )
-            {
-               if( file_ver < 1 )
-                  morph->no_resistant = fread_number( fp );
-               else
-                  flag_set( fp, morph->no_resistant, ris_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "NoSuscept" ) )
-            {
-               if( file_ver < 1 )
-                  morph->no_suscept = fread_number( fp );
-               else
-                  flag_set( fp, morph->no_suscept, ris_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "NoImmune" ) )
-            {
-               if( file_ver < 1 )
-                  morph->no_immune = fread_number( fp );
-               else
-                  flag_set( fp, morph->no_immune, ris_flags );
-               break;
-            }
-            KEY( "NoCast", morph->no_cast, fread_number( fp ) );
-            break;
-
-         case 'O':
-            if( !str_cmp( word, "Objs" ) )
-            {
-               morph->obj[0] = fread_number( fp );
-               morph->obj[1] = fread_number( fp );
-               morph->obj[2] = fread_number( fp );
-               break;
-            }
-            if( !str_cmp( word, "Objuse" ) )
-            {
-               morph->objuse[0] = fread_number( fp );
-               morph->objuse[1] = fread_number( fp );
-               morph->objuse[2] = fread_number( fp );
-            }
-            break;
-
-         case 'P':
-            KEY( "Parry", morph->parry, fread_number( fp ) );
-            KEY( "Pkill", morph->pkill, fread_number( fp ) );
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Race" ) )
-            {
-               arg = fread_flagstring( fp );
-               arg = one_argument( arg, temp );
-               while( temp[0] != '\0' )
-               {
-                  for( i = 0; i < MAX_PC_RACE; ++i )
-                     if( !str_cmp( temp, race_table[i]->race_name ) )
-                     {
-                        morph->race.set( i );
-                        break;
-                     }
-                  arg = one_argument( arg, temp );
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Resistant" ) )
-            {
-               if( file_ver < 1 )
-                  morph->resistant = fread_number( fp );
-               else
-                  flag_set( fp, morph->resistant, ris_flags );
-               break;
-            }
-            break;
-
-         case 'S':
-            KEY( "SaveBreath", morph->saving_breath, fread_number( fp ) );
-            KEY( "SavePara", morph->saving_para_petri, fread_number( fp ) );
-            KEY( "SavePoison", morph->saving_poison_death, fread_number( fp ) );
-            KEY( "SaveSpell", morph->saving_spell_staff, fread_number( fp ) );
-            KEY( "SaveWand", morph->saving_wand, fread_number( fp ) );
-            KEY( "Sex", morph->sex, fread_number( fp ) );
-            STDSKEY( "ShortDesc", morph->short_desc );
-            STDSKEY( "Skills", morph->skills );
-            KEY( "Strength", morph->str, fread_number( fp ) );
-
-            if( !str_cmp( word, "Suscept" ) )
-            {
-               if( file_ver < 1 )
-                  morph->suscept = fread_number( fp );
-               else
-                  flag_set( fp, morph->suscept, ris_flags );
-               break;
-            }
-            break;
-
-         case 'T':
-            KEY( "Timer", morph->timer, fread_number( fp ) );
-            KEY( "TimeFrom", morph->timefrom, fread_number( fp ) );
-            KEY( "TimeTo", morph->timeto, fread_number( fp ) );
-            KEY( "Tumble", morph->tumble, fread_number( fp ) );
-            break;
-
-         case 'U':
-            STDSKEY( "UnmorphOther", morph->unmorph_other );
-            STDSKEY( "UnmorphSelf", morph->unmorph_self );
-            KEY( "Used", morph->used, fread_number( fp ) );
-            break;
-
-         case 'V':
-            if( !str_cmp( word, "Version" ) )
-            {
-               fread_number( fp ); // This field is obsolete.
-               break;
-            }
-            KEY( "Vnum", morph->vnum, fread_number( fp ) );
-            break;
-
-         case 'W':
-            KEY( "Wisdom", morph->wis, fread_number( fp ) );
-            break;
-      }
-   }
-}
-
-/*
- *  This function loads in the morph data.  Note that this function MUST be
- *  used AFTER the race and Class tables have been read in and setup.
- *  --Shaddai
- */
-void load_morphs( void )
-{
-   FILE *fp = nullptr;
-   bool my_continue = true;
-   int file_ver = 0;
-
-   std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
-   if( !( fp = fopen( filename.c_str(), "r" ) ) )
-   {
-      bug( "{}: Cannot open morph data file.", __func__ );
-      return;
-   }
-
-   while( my_continue )
-   {
-      morph_data *morph = nullptr;
-      std::string word = ( feof( fp ) ? "#END" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "#END";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '#':
-            if( !str_cmp( word, "#VERSION" ) )
-            {
-               file_ver = fread_number( fp );
-               break;
-            }
-
-            if( !str_cmp( word, "#END" ) )
-            {
-               FCLOSE( fp );
-               my_continue = false;
-               break;
-            }
-            break;
-
-         case 'M':
-            if( !str_cmp( word, "Morph" ) )
-               morph = fread_morph( fp, file_ver );
-            break;
-      }
-      if( morph )
-         morphlist.push_back( morph );
-   }
-   setup_morph_vnum(  );
-   log_string( "Done." );
 }
 
 /*

@@ -418,8 +418,6 @@ void verify_realms( void )
  */
 void load_realms( void )
 {
-   realmlist.clear(  );
-
    log_string( "Loading Realms..." );
 
    std::filesystem::path realmlistfile = std::format( "{}{}", REALM_DIR, REALM_LIST );
@@ -429,6 +427,8 @@ void load_realms( void )
       bug( "{}: Cannot open {} for reading: {}", __func__, realmlistfile.string(), std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
+
+   realmlist.clear(  );
 
    for( ;; )
    {
