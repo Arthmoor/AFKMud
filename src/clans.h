@@ -28,7 +28,6 @@
 
 #pragma once
 
-inline constexpr std::string_view CLAN_DIR = "../clans/";  // Clan data dir.
 inline constexpr std::string_view CLAN_LIST = "clan.lst";  // List of clans.
 
 enum clan_types
@@ -121,7 +120,6 @@ void save_clan( clan_data * );
 void save_clan_storeroom( char_data *, clan_data * );
 void delete_clan( char_data *, clan_data * );
 void verify_clans(  );
-void free_clans(  );
 clan_data *get_clan( std::string_view );
 bool IS_CLANNED( char_data * );
 bool IS_GUILDED( char_data * );

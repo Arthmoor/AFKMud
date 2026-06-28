@@ -28,7 +28,6 @@
 
 #pragma once
 
-inline constexpr std::string_view REALM_DIR = "../realms/";  // Realm data dir
 inline constexpr std::string_view REALM_LIST = "realm.lst";  // List of realms
 
 enum realm_types
@@ -81,7 +80,6 @@ void remove_realm_roster( realm_data *, std::string_view );
 void save_realm( realm_data * );
 void delete_realm( char_data *, realm_data * );
 void verify_realms(  );
-void free_realms( );
 realm_data *get_realm( std::string_view );
 bool IS_REALM_LEADER( char_data * );
 bool IS_ADMIN_REALM( char_data * );

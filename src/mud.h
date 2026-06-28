@@ -487,6 +487,7 @@ inline constexpr std::string_view AUC_DIR          = "../aucvaults/";     // Whe
 inline constexpr std::string_view BACKUP_DIR       = "../backups";        // Backup folder for pfiles when the pfile pruning is active.
 inline constexpr std::string_view BOARD_DIR        = "../boards/";        // Board directory.
 inline constexpr std::string_view BUILD_DIR        = "../building/";      // Online building save dir
+inline constexpr std::string_view CLAN_DIR         = "../clans/";         // Clan data dir.
 inline constexpr std::string_view CLASS_DIR        = "../classes/";       // Classes
 inline constexpr std::string_view COLOR_DIR        = "../color/";         // Custom color theme files.
 inline constexpr std::string_view CORPSE_DIR       = "../corpses/";       // Player corpses
@@ -498,6 +499,7 @@ inline constexpr std::string_view MOTD_DIR         = "../motd/";          // Whe
 inline constexpr std::string_view PLAYER_DIR       = "../player/";        // Player files
 inline constexpr std::string_view PROG_DIR         = "../mudprogs/";      // External MUDProg files
 inline constexpr std::string_view RACE_DIR         = "../races/";         // Races
+inline constexpr std::string_view REALM_DIR        = "../realms/";        // Realm data dir
 inline constexpr std::string_view SYSTEM_DIR       = "../system/";        // Main system files
 
 inline constexpr std::string_view EXE_FILE         = "../src/afkmud";     // The binary file for the game. Used when executing a hotboot.

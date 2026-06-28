@@ -34,13 +34,11 @@
 #include <thread>
 #include "mud.h"
 #include "descriptor.h"
-#include "clans.h"
 #include "connhist.h"
 #include "mud_prog.h"
 #include "objindex.h"
 #include "pfiles.h"
 #include "raceclass.h"
-#include "realms.h"
 #include "roomindex.h"
 #include "shops.h"
 #include "web.h"
@@ -122,6 +120,8 @@ void clear_wizinfo(  );
 void free_tongues(  );
 void free_skills(  );
 void free_all_events(  );
+void free_clans(  );
+void free_realms( );
 #ifdef MULTIPORT
 void free_shellcommands(  );
 #endif

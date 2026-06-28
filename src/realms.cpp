@@ -303,8 +303,13 @@ void fread_realm( std::ifstream & stream, realm_data * realm )
          return;
       }
       else
+      {
          bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
+      }
    }
+   bug( "{}: Fell through to bottom. Corrupted realm file.", __func__ );
+   std::exit( EXIT_FAILURE ); // Exiting because allowing a corrupted file to be processed could permanently damage the realm.
 }
 
 void clean_realm( realm_data * realm )
@@ -365,6 +370,7 @@ bool load_realm_file( std::string_view realmfile )
       else
       {
           bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+          fread_to_eol( stream );
       }
    }
    stream.close();

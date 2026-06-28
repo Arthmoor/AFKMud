@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "clans.h"
 #include "descriptor.h"
@@ -425,110 +426,38 @@ void delete_clan( char_data * ch, clan_data * clan )
 
 void write_clan_list( void )
 {
-   FILE *fpout;
-
    std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
-   fpout = fopen( filename.c_str(), "w" );
-   if( !fpout )
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open(  ) )
    {
-      bug( "{}: FATAL: cannot open clan.lst for writing!", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
    for( auto* clan : clanlist )
-      fprintf( fpout, "%s\n", clan->filename.c_str(  ) );
+      stream << std::format( "{}\n", clan->filename );
 
-   fprintf( fpout, "%s", "$\n" );
-   FCLOSE( fpout );
+   stream << "$\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
-void fwrite_memberlist( FILE * fp, clan_data * clan )
+void fwrite_memberlist( std::ofstream & stream, clan_data * clan )
 {
    for( auto* member : clan->memberlist )
    {
       auto joined = std::chrono::system_clock::to_time_t( member->joined );
 
-      fprintf( fp, "%s", "#ROSTER\n" );
-      fprintf( fp, "Name      %s~\n", member->name.c_str(  ) );
-      fprintf( fp, "Joined    %ld\n", joined );
-      fprintf( fp, "Class     %s~\n", npc_class[member->Class] );
-      fprintf( fp, "Level     %d\n", member->level );
-      fprintf( fp, "Kills     %d\n", member->kills );
-      fprintf( fp, "Deaths    %d\n", member->deaths );
-      fprintf( fp, "%s", "End\n\n" );
+      stream << "#ROSTER\n";
+      stream << std::format( "Name      {}~\n", member->name );
+      stream << std::format( "Joined    {}\n", joined );
+      stream << std::format( "Class     {}~\n", npc_class[member->Class] );
+      stream << std::format( "Level     {}\n", member->level );
+      stream << std::format( "Kills     {}\n", member->kills );
+      stream << std::format( "Deaths    {}\n", member->deaths );
+      stream << "End\n\n";
    }
-}
-
-void fread_memberlist( clan_data * clan, FILE * fp )
-{
-   roster_data *roster = new roster_data;
-
-   for( ;; )
-   {
-      std::string word = feof( fp ) ? "End" : fread_word( fp );
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            if( !str_cmp( word, "Class" ) )
-            {
-               int Class = get_npc_class( fread_flagstring( fp ) );
-
-               if( Class < 0 || Class >= MAX_NPC_CLASS )
-               {
-                  bug( "{}: Invalid class in clan roster", __func__ );
-                  Class = get_npc_class( "warrior" );
-               }
-               roster->Class = Class;
-               break;
-            }
-            break;
-
-         case 'D':
-            KEY( "Deaths", roster->deaths, fread_number( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               clan->memberlist.push_back( roster );
-               return;
-            }
-            break;
-
-         case 'J':
-            if( !str_cmp( word, "Joined" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-               roster->joined = std::chrono::system_clock::from_time_t( loaded_time );
-            }
-            break;
-
-         case 'K':
-            KEY( "Kills", roster->kills, fread_number( fp ) );
-            break;
-
-         case 'L':
-            KEY( "Level", roster->level, fread_number( fp ) );
-            break;
-
-         case 'N':
-            STDSKEY( "Name", roster->name );
-            break;
-      }
-   }
-
-   bug( "{}: Fell through to bottom!", __func__ );
-   deleteptr( roster );
 }
 
 /*
@@ -537,8 +466,6 @@ void fread_memberlist( clan_data * clan, FILE * fp )
 constexpr int CLAN_VERSION = 1;
 void save_clan( clan_data * clan )
 {
-   FILE *fp;
-
    if( !clan )
    {
       bug( "{}: null clan pointer!", __func__ );
@@ -552,66 +479,113 @@ void save_clan( clan_data * clan )
    }
 
    std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, clan->filename );
-
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot open clan file {} for writing.", __func__, filename.string() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   fprintf( fp, "%s", "#CLAN\n" );
-   fprintf( fp, "Version      %d\n", CLAN_VERSION );
-   fprintf( fp, "Name         %s~\n", clan->name.c_str(  ) );
-   fprintf( fp, "Filename     %s~\n", clan->filename.c_str(  ) );
-   fprintf( fp, "Motto        %s~\n", clan->motto.c_str(  ) );
-   fprintf( fp, "Description  %s~\n", clan->clandesc.c_str(  ) );
-   fprintf( fp, "Deity        %s~\n", clan->deity.c_str(  ) );
-   fprintf( fp, "Leader       %s~\n", clan->leader.c_str(  ) );
-   fprintf( fp, "NumberOne    %s~\n", clan->number1.c_str(  ) );
-   fprintf( fp, "NumberTwo    %s~\n", clan->number2.c_str(  ) );
-   fprintf( fp, "Badge        %s~\n", clan->badge.c_str(  ) );
-   fprintf( fp, "Leadrank     %s~\n", clan->leadrank.c_str(  ) );
-   fprintf( fp, "Onerank      %s~\n", clan->onerank.c_str(  ) );
-   fprintf( fp, "Tworank      %s~\n", clan->tworank.c_str(  ) );
-   fprintf( fp, "PKills       %d %d %d %d %d %d %d %d %d %d\n",
-            clan->pkills[0], clan->pkills[1], clan->pkills[2],
+   stream << "#CLAN\n";
+   stream << std::format( "Version      {}\n", CLAN_VERSION );
+   stream << std::format( "Name         {}~\n", clan->name );
+   stream << std::format( "Filename     {}~\n", clan->filename );
+   stream << std::format( "Motto        {}~\n", clan->motto );
+   stream << std::format( "Description  {}~\n", clan->clandesc );
+   stream << std::format( "Deity        {}~\n", clan->deity );
+   stream << std::format( "Leader       {}~\n", clan->leader );
+   stream << std::format( "NumberOne    {}~\n", clan->number1 );
+   stream << std::format( "NumberTwo    {}~\n", clan->number2 );
+   stream << std::format( "Leadrank     {}~\n", clan->leadrank );
+   stream << std::format( "Onerank      {}~\n", clan->onerank );
+   stream << std::format( "Tworank      {}~\n", clan->tworank );
+   stream << std::format( "Badge        {}~\n", clan->badge );
+   stream << std::format( "PKills       {} {} {} {} {} {} {} {} {} {}\n", clan->pkills[0], clan->pkills[1], clan->pkills[2],
             clan->pkills[3], clan->pkills[4], clan->pkills[5], clan->pkills[6], clan->pkills[7], clan->pkills[8], clan->pkills[9] );
-   fprintf( fp, "PDeaths      %d %d %d %d %d %d %d %d %d %d\n",
-            clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2],
+   stream << std::format( "PDeaths      {} {} {} {} {} {} {} {} {} {}\n", clan->pdeaths[0], clan->pdeaths[1], clan->pdeaths[2],
             clan->pdeaths[3], clan->pdeaths[4], clan->pdeaths[5], clan->pdeaths[6], clan->pdeaths[7], clan->pdeaths[8], clan->pdeaths[9] );
-   fprintf( fp, "MKills       %d\n", clan->mkills );
-   fprintf( fp, "MDeaths      %d\n", clan->mdeaths );
-   fprintf( fp, "IllegalPK    %d\n", clan->illegal_pk );
-   fprintf( fp, "Type         %d\n", clan->clan_type );
-   fprintf( fp, "Class        %d\n", clan->Class );
-   fprintf( fp, "Favour       %d\n", clan->favour );
-   fprintf( fp, "Members      %d\n", clan->members );
-   fprintf( fp, "MemLimit     %d\n", clan->mem_limit );
-   fprintf( fp, "Alignment    %d\n", clan->alignment );
-   fprintf( fp, "Board        %d\n", clan->board );
-   fprintf( fp, "ClanObjOne   %d\n", clan->clanobj1 );
-   fprintf( fp, "ClanObjTwo   %d\n", clan->clanobj2 );
-   fprintf( fp, "ClanObjThree %d\n", clan->clanobj3 );
-   fprintf( fp, "ClanObjFour  %d\n", clan->clanobj4 );
-   fprintf( fp, "ClanObjFive  %d\n", clan->clanobj5 );
-   fprintf( fp, "Recall       %d\n", clan->recall );
-   fprintf( fp, "Storeroom    %d\n", clan->storeroom );
-   fprintf( fp, "GuardOne     %d\n", clan->guard1 );
-   fprintf( fp, "GuardTwo     %d\n", clan->guard2 );
-   fprintf( fp, "Tithe	   %d\n", clan->tithe );
-   fprintf( fp, "Balance	   %d\n", clan->balance );
-   fprintf( fp, "Idmob	   %d\n", clan->idmob );
-   fprintf( fp, "Inn		   %d\n", clan->inn );
-   fprintf( fp, "Shopkeeper   %d\n", clan->shopkeeper );
-   fprintf( fp, "Auction	   %d\n", clan->auction );
-   fprintf( fp, "Bank	   %d\n", clan->bank );
-   fprintf( fp, "Repair	   %d\n", clan->repair );
-   fprintf( fp, "Forge	   %d\n", clan->forge );
-   fprintf( fp, "%s", "End\n\n" );
-   fwrite_memberlist( fp, clan );
-   fprintf( fp, "%s", "#END\n" );
+   stream << std::format( "MKills       {}\n", clan->mkills );
+   stream << std::format( "MDeaths      {}\n", clan->mdeaths );
+   stream << std::format( "IllegalPK    {}\n", clan->illegal_pk );
+   stream << std::format( "Type         {}\n", clan->clan_type );
+   stream << std::format( "Class        {}\n", clan->Class );
+   stream << std::format( "Favour       {}\n", clan->favour );
+   stream << std::format( "Members      {}\n", clan->members );
+   stream << std::format( "MemLimit     {}\n", clan->mem_limit );
+   stream << std::format( "Alignment    {}\n", clan->alignment );
+   stream << std::format( "Board        {}\n", clan->board );
+   stream << std::format( "ClanObjOne   {}\n", clan->clanobj1 );
+   stream << std::format( "ClanObjTwo   {}\n", clan->clanobj2 );
+   stream << std::format( "ClanObjThree {}\n", clan->clanobj3 );
+   stream << std::format( "ClanObjFour  {}\n", clan->clanobj4 );
+   stream << std::format( "ClanObjFive  {}\n", clan->clanobj5 );
+   stream << std::format( "Recall       {}\n", clan->recall );
+   stream << std::format( "Storeroom    {}\n", clan->storeroom );
+   stream << std::format( "GuardOne     {}\n", clan->guard1 );
+   stream << std::format( "GuardTwo     {}\n", clan->guard2 );
+   stream << std::format( "Tithe        {}\n", clan->tithe );
+   stream << std::format( "Idmob        {}\n", clan->idmob );
+   stream << std::format( "Inn          {}\n", clan->inn );
+   stream << std::format( "Shopkeeper   {}\n", clan->shopkeeper );
+   stream << std::format( "Auction      {}\n", clan->auction );
+   stream << std::format( "Bank         {}\n", clan->bank );
+   stream << std::format( "Balance      {}\n", clan->balance );
+   stream << std::format( "Repair       {}\n", clan->repair );
+   stream << std::format( "Forge        {}\n", clan->forge );
+   stream << "End\n\n";
+   fwrite_memberlist( stream, clan );
+   stream << "#END\n";
 
-   FCLOSE( fp );
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
+}
+
+void fread_memberlist( std::ifstream & stream, clan_data * clan )
+{
+   roster_data *roster = new roster_data;
+
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "Name" )
+         roster->name = fread_line( stream );
+      else if( key == "Joined" )
+      {
+         time_t loaded_time;
+         stream >> loaded_time;
+         roster->joined = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Class" )
+      {
+         int Class = get_npc_class( fread_line( stream ) );
+
+         if( Class < 0 || Class >= MAX_NPC_CLASS )
+         {
+            bug( "{}: Invalid class in clan roster", __func__ );
+            Class = get_npc_class( "warrior" );
+         }
+         roster->Class = Class;
+      }
+      else if( key == "Level" )
+         stream >> roster->level;
+      else if( key == "Kills" )
+         stream >> roster->kills;
+      else if( key == "Deaths" )
+         stream >> roster->deaths;
+      else if( key == "End" )
+      {
+         clan->memberlist.push_back( roster );
+         return;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
+      }
+   }
+   bug( "{}: Fell through to bottom. Corrupted clan file.", __func__ );
+   deleteptr( roster );
 }
 
 /*
@@ -628,177 +602,122 @@ void save_clan( clan_data * clan )
  * Added a hardcoded limit memlimit to the amount of members a clan can 
  * have set using setclan.  --Shaddai
  */
-void fread_clan( clan_data * clan, FILE * fp )
+void fread_clan( std::ifstream & stream, clan_data * clan )
 {
    int file_ver = 0;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = feof( fp ) ? "End" : fread_word( fp );
-
-      switch ( to_upper( word[0] ) )
+      if( key == "Version" )
+         stream >> file_ver;
+      else if( key == "Name" )
+         clan->name = fread_line( stream );
+      else if( key == "Filename" )
+         clan->filename = fread_line( stream );
+      else if( key == "Motto" )
+         clan->motto = fread_line( stream );
+      else if( key == "Description" )
+         clan->clandesc = fread_line( stream );
+      else if( key == "Deity" )
+         clan->deity = fread_line( stream );
+      else if( key == "Leader" )
+         clan->leader = fread_line( stream );
+      else if( key == "NumberOne" )
+         clan->number1 = fread_line( stream );
+      else if( key =="NumberTwo" )
+         clan->number2 = fread_line( stream );
+      else if( key == "Leadrank" )
+         clan->leadrank = fread_line( stream );
+      else if( key == "Onerank" )
+         clan->onerank = fread_line( stream );
+      else if( key == "Tworank" )
+         clan->tworank = fread_line( stream );
+      else if( key == "Badge" )
+         clan->badge = fread_line( stream );
+      else if( key == "PKills" )
+         stream >> clan->pkills[0] >> clan->pkills[1] >> clan->pkills[2] >> clan->pkills[3] >> clan->pkills[4] >> clan->pkills[5] >> clan->pkills[6] >> clan->pkills[7] >> clan->pkills[8] >> clan->pkills[9];
+      else if( key == "PDeaths" )
+         stream >> clan->pdeaths[0] >> clan->pdeaths[1] >> clan->pdeaths[2] >> clan->pdeaths[3] >> clan->pdeaths[4] >> clan->pdeaths[5] >> clan->pdeaths[6] >> clan->pdeaths[7] >> clan->pdeaths[8] >> clan->pdeaths[9];
+      else if( key == "MKills" )
+         stream >> clan->mkills;
+      else if( key == "MDeaths" )
+         stream >> clan->mdeaths;
+      else if( key == "IllegalPK" )
+         stream >> clan->illegal_pk;
+      else if( key == "Type" )
       {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         short type;
+         stream >> type;
 
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'A':
-            KEY( "Alignment", clan->alignment, fread_short( fp ) );
-            KEY( "Auction", clan->auction, fread_number( fp ) );
-            break;
-
-         case 'B':
-            STDSKEY( "Badge", clan->badge );
-            KEY( "Board", clan->board, fread_number( fp ) );
-            KEY( "Balance", clan->balance, fread_number( fp ) );
-            KEY( "Bank", clan->bank, fread_number( fp ) );
-            break;
-
-         case 'C':
-            KEY( "ClanObjOne", clan->clanobj1, fread_number( fp ) );
-            KEY( "ClanObjTwo", clan->clanobj2, fread_number( fp ) );
-            KEY( "ClanObjThree", clan->clanobj3, fread_number( fp ) );
-            KEY( "ClanObjFour", clan->clanobj4, fread_number( fp ) );
-            KEY( "ClanObjFive", clan->clanobj5, fread_number( fp ) );
-            KEY( "Class", clan->Class, fread_short( fp ) );
-            break;
-
-         case 'D':
-            STDSKEY( "Deity", clan->deity );
-            STDSKEY( "Description", clan->clandesc );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
-
-         case 'F':
-            KEY( "Favour", clan->favour, fread_short( fp ) );
-            STDSKEY( "Filename", clan->filename );
-            KEY( "Forge", clan->forge, fread_number( fp ) );
-            break;
-
-         case 'G':
-            KEY( "GuardOne", clan->guard1, fread_number( fp ) );
-            KEY( "GuardTwo", clan->guard2, fread_number( fp ) );
-            break;
-
-         case 'I':
-            KEY( "Idmob", clan->idmob, fread_number( fp ) );
-            KEY( "IllegalPK", clan->illegal_pk, fread_number( fp ) );
-            KEY( "Inn", clan->inn, fread_number( fp ) );
-            break;
-
-         case 'L':
-            STDSKEY( "Leader", clan->leader );
-            STDSKEY( "Leadrank", clan->leadrank );
-            break;
-
-         case 'M':
-            KEY( "MDeaths", clan->mdeaths, fread_number( fp ) );
-            KEY( "Members", clan->members, fread_short( fp ) );
-            KEY( "MemLimit", clan->mem_limit, fread_short( fp ) );
-            KEY( "MKills", clan->mkills, fread_number( fp ) );
-            STDSKEY( "Motto", clan->motto );
-            break;
-
-         case 'N':
-            STDSKEY( "Name", clan->name );
-            STDSKEY( "NumberOne", clan->number1 );
-            STDSKEY( "NumberTwo", clan->number2 );
-            break;
-
-         case 'O':
-            STDSKEY( "Onerank", clan->onerank );
-            break;
-
-         case 'P':
-            if( !str_cmp( word, "PDeaths" ) )
-            {
-               const char *ln;
-               int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10;
-
-               ln = fread_line( fp );
-               x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x10 = 0;
-
-               sscanf( ln, "%d %d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9, &x10 );
-               clan->pdeaths[0] = x1;
-               clan->pdeaths[1] = x2;
-               clan->pdeaths[2] = x3;
-               clan->pdeaths[3] = x4;
-               clan->pdeaths[4] = x5;
-               clan->pdeaths[5] = x6;
-               clan->pdeaths[6] = x7;
-               clan->pdeaths[7] = x8;
-               clan->pdeaths[8] = x9;
-               clan->pdeaths[9] = x10;
-               break;
-            }
-
-            if( !str_cmp( word, "PKills" ) )
-            {
-               const char *ln;
-               int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10;
-
-               ln = fread_line( fp );
-               x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x10 = 0;
-
-               sscanf( ln, "%d %d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9, &x10 );
-               clan->pkills[0] = x1;
-               clan->pkills[1] = x2;
-               clan->pkills[2] = x3;
-               clan->pkills[3] = x4;
-               clan->pkills[4] = x5;
-               clan->pkills[5] = x6;
-               clan->pkills[6] = x7;
-               clan->pkills[7] = x8;
-               clan->pkills[8] = x9;
-               clan->pkills[9] = x10;
-               break;
-            }
-            break;
-
-         case 'R':
-            KEY( "Recall", clan->recall, fread_number( fp ) );
-            KEY( "Repair", clan->repair, fread_number( fp ) );
-            break;
-
-         case 'S':
-            KEY( "Storeroom", clan->storeroom, fread_number( fp ) );
-            KEY( "Shopkeeper", clan->shopkeeper, fread_number( fp ) );
-            break;
-
-         case 'T':
-            KEY( "Tithe", clan->tithe, fread_short( fp ) );
-            STDSKEY( "Tworank", clan->tworank );
-            if( !str_cmp( word, "Type" ) )
-            {
-               short type = fread_short( fp );
-
-               if( file_ver < 1 )
-               {
-                  if( type > CLAN_GUILD )
-                     clan->clan_type = CLAN_GUILD;
-                  else
-                     clan->clan_type = CLAN_CLAN;
-               }
-               else
-                  clan->clan_type = type;
-               break;
-            }
-            break;
-
-         case 'V':
-            KEY( "Version", file_ver, fread_number( fp ) );
-            break;
+         if( file_ver < 1 )
+         {
+            if( type > CLAN_GUILD )
+               clan->clan_type = CLAN_GUILD;
+            else
+               clan->clan_type = CLAN_CLAN;
+         }
+         else
+            clan->clan_type = type;
+      }
+      else if( key == "Class" )
+         stream >> clan->Class;
+      else if( key == "Favour" )
+         stream >> clan->favour;
+      else if( key == "Members" )
+         stream >> clan->members;
+      else if( key == "MemLimit" )
+         stream >> clan->mem_limit;
+      else if( key == "Alignment" )
+         stream >> clan->alignment;
+      else if( key == "Board" )
+         stream >> clan->board;
+      else if( key == "ClanObjOne" )
+         stream >> clan->clanobj1;
+      else if( key == "ClanObjTwo" )
+         stream >> clan->clanobj2;
+      else if( key == "ClanObjThree" )
+         stream >> clan->clanobj3;
+      else if( key == "ClanObjFour" )
+         stream >> clan->clanobj4;
+      else if( key == "ClanObjFive" )
+         stream >> clan->clanobj5;
+      else if( key == "Recall" )
+         stream >> clan->recall;
+      else if( key == "Storeroom" )
+         stream >> clan->storeroom;
+      else if( key == "GuardOne" )
+         stream >> clan->guard1;
+      else if( key == "GuardTwo" )
+         stream >> clan->guard2;
+      else if( key == "Tithe" )
+         stream >> clan->tithe;
+      else if( key == "Bank" )
+         stream >> clan->bank;
+      else if( key == "Balance" )
+         stream >> clan->balance;
+      else if( key == "Idmob" )
+         stream >> clan->idmob;
+      else if( key == "Inn" )
+         stream >> clan->inn;
+      else if( key == "Shopkeeper" )
+         stream >> clan->shopkeeper;
+      else if( key == "Auction" )
+         stream >> clan->auction;
+      else if( key == "Repair" )
+         stream >> clan->repair;
+      else if( key == "Forge" )
+         stream >> clan->forge;
+      else if( key == "End" )
+         return;
+      else
+      {
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
+   bug( "{}: Fell through to bottom. Corrupted clan file.", __func__ );
+   std::exit( EXIT_FAILURE ); // Exiting because allowing a corrupted file to be processed could permanently damage the clan.
 }
 
 /* Sets up a bunch of default values for new clans or during loadup so we don't get weird stuff - Samson 7-16-00 */
@@ -856,17 +775,62 @@ void clean_clan( clan_data * clan )
  */
 bool load_clan_file( std::string_view clanfile )
 {
-   FILE *fp;
+   std::filesystem::path filename = clanfile;
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
+      return false;
+   }
 
    clan_data *clan = new clan_data;
    clean_clan( clan );  /* Default settings so we don't get weird ass stuff */
 
    bool found = false;
-   std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, clanfile );
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "#CLAN" )
+         fread_clan( stream, clan );
+      else if( key == "#ROSTER" )
+         fread_memberlist( stream, clan );
+      else if( key == "#END" )
+      {
+         found = true;
+         break;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
+      }
+   }
+   stream.close();
 
+   if( !found )
+   {
+      bug( "{}: Incomplete clan data for {}. Dropping.", __func__, ( clan && !clan->name.empty() ? clan->name : "Unknown"  ) );
+      deleteptr( clan );
+      return false;
+   }
+
+   room_index *storeroom;
+
+   clanlist.push_back( clan );
+
+   if( clan->storeroom == 0 || ( storeroom = get_room_index( clan->storeroom ) ) == nullptr )
+   {
+      log_string( "Storeroom not found." );
+      return true;
+   }
+
+   FILE *fp;
+   filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
    if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
    {
-      found = true;
+      log_string( "Loading clan storage room." );
+      rset_supermob( storeroom );
+
       for( ;; )
       {
          char letter;
@@ -880,96 +844,41 @@ bool load_clan_file( std::string_view clanfile )
 
          if( letter != '#' )
          {
-            bug( "{}: # not found.", __func__ );
+            bug( "{}: # not found. {}", __func__, clan->name );
             break;
          }
 
          std::string word = fread_word( fp );
-         if( !str_cmp( word, "CLAN" ) )
-            fread_clan( clan, fp );
-         else if( !str_cmp( word, "ROSTER" ) )
-            fread_memberlist( clan, fp );
-         else if( !str_cmp( word, "END" ) )
+         if( !str_cmp( word, "OBJECT" ) ) /* Objects  */
+         {
+            supermob->tempnum = -9999;
+            fread_obj( supermob, fp, OS_CARRY );
+         }
+         else if( !str_cmp( word, "END" ) )  /* Done     */
             break;
          else
          {
-            log_printf( "{}: bad section: {}.", __func__, word );
+            log_printf( "{}: {} bad section.", __func__, clan->name );
             break;
          }
       }
       FCLOSE( fp );
-   }
 
-   if( found )
-   {
-      room_index *storeroom;
-
-      clanlist.push_back( clan );
-
-      if( clan->storeroom == 0 || ( storeroom = get_room_index( clan->storeroom ) ) == nullptr )
+      for( auto it = supermob->carrying.begin(); it != supermob->carrying.end(); )
       {
-         log_string( "Storeroom not found" );
-         return found;
+         obj_data *tobj = *it;
+         ++it;
+
+         tobj->from_char(  );
+         if( tobj->ego >= sysdata->minego )
+            tobj->extract(  );
+         else
+            tobj->to_room( storeroom, supermob );
       }
-      filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
-      if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
-      {
-         log_string( "Loading clan storage room" );
-         rset_supermob( storeroom );
-
-         for( ;; )
-         {
-            char letter;
-
-            letter = fread_letter( fp );
-            if( letter == '*' )
-            {
-               fread_to_eol( fp );
-               continue;
-            }
-
-            if( letter != '#' )
-            {
-               bug( "{}: # not found. {}", __func__, clan->name );
-               break;
-            }
-
-            std::string word = fread_word( fp );
-            if( !str_cmp( word, "OBJECT" ) ) /* Objects  */
-            {
-               supermob->tempnum = -9999;
-               fread_obj( supermob, fp, OS_CARRY );
-            }
-            else if( !str_cmp( word, "END" ) )  /* Done     */
-               break;
-            else
-            {
-               log_printf( "{}: {} bad section.", __func__, clan->name );
-               break;
-            }
-         }
-         FCLOSE( fp );
-
-         for( auto it = supermob->carrying.begin(); it != supermob->carrying.end(); )
-         {
-            obj_data *tobj = *it;
-            ++it;
-
-            tobj->from_char(  );
-            if( tobj->ego >= sysdata->minego )
-               tobj->extract(  );
-            else
-               tobj->to_room( storeroom, supermob );
-         }
-         release_supermob(  );
-      }
-      else
-         log_string( "Cannot open clan vault" );
+      release_supermob(  );
    }
-   else
-      deleteptr( clan );
-
-   return found;
+   log_string( "Cannot open clan vault." );
+   return true;
 }
 
 void verify_clans( void )
@@ -1123,24 +1032,21 @@ void verify_clans( void )
  */
 void load_clans( void )
 {
-   FILE *fpList;
-   std::string filename;
-
-   clanlist.clear(  );
-
    log_string( "Loading clans..." );
 
    std::filesystem::path clanlistfile = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
-
-   if( !( fpList = fopen( clanlistfile.c_str(), "r" ) ) )
+   std::ifstream stream( std::filesystem::path{clanlistfile} );
+   if( !stream.is_open(  ) )
    {
-      bug( "{}: Cannot open clan list file.", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, clanlistfile.string(), std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
 
+   clanlist.clear(  );
+
    for( ;; )
    {
-      filename = feof( fpList ) ? "$" : fread_word( fpList );
+      std::string filename = fread_line( stream, '\n' );
 
       if( filename[0] == '$' )
          break;
@@ -1150,9 +1056,10 @@ void load_clans( void )
       if( !load_clan_file( filename ) )
          bug( "{}: Cannot load clan file: {}", __func__, filename );
    }
-   FCLOSE( fpList );
+   stream.close();
+
    verify_clans(  ); /* Check against pfiles to see if clans should still exist */
-   log_string( "Done loading clans." );
+   log_string( "Done: Clans." );
 }
 
 void check_clan_info( char_data * ch )
@@ -1765,6 +1672,12 @@ CMDF( do_setclan )
       return;
    }
 
+   if( !str_cmp( arg2, "save" ) )
+   {
+      ch->print( "Done.\r\n" );
+      save_clan( clan );
+      return;
+   }
    if( !str_cmp( arg2, "deity" ) )
    {
       clan->deity = argument;
@@ -2467,7 +2380,7 @@ CMDF( do_guilds )
       {
          if( clan->clan_type == CLAN_GUILD )
          {
-            ch->print_fmt( "&G%-16s %-14s %-14s   %-7d       %5d\r\n", clan->name, clan->deity, clan->leader, clan->mkills, clan->mdeaths );
+            ch->print_fmt( "&G{:<16} {:<14} {:<14}   {:<7}       {:5}\r\n", clan->name, clan->deity, clan->leader, clan->mkills, clan->mdeaths );
             ++count;
          }
       }
