@@ -281,7 +281,7 @@ CMDF( do_finger )
       ch->print_fmt( "&wHomepage: &G{}\r\n", !victim->pcdata->homepage.empty(  )? show_tilde( victim->pcdata->homepage ) : "Not specified" );
       ch->print_fmt( "&wEmail   : &G{}\r\n", !victim->pcdata->email.empty(  )? victim->pcdata->email : "Not specified" );
       if( !loaded )
-         ch->print_fmt( "&wLast on : &G{}\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone ) );
+         ch->print_fmt( "&wLast on : &G{}\r\n", c_time( victim->pcdata->logon, ch->pcdata->timezone_name ) );
       else
          ch->print_fmt( "&wLast on : &G{}\r\n", time_str );
       if( ch->is_immortal(  ) )

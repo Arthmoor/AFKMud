@@ -5264,7 +5264,7 @@ CMDF( do_hell )
 
    if( victim->pcdata->release_date != std::chrono::system_clock::time_point{} )
    {
-      ch->print_fmt( "They are already in hell until {:24.24}, by {}.\r\n", c_time( victim->pcdata->release_date, ch->pcdata->timezone ), victim->pcdata->helled_by );
+      ch->print_fmt( "They are already in hell until {:24.24}, by {}.\r\n", c_time( victim->pcdata->release_date, ch->pcdata->timezone_name ), victim->pcdata->helled_by );
       return;
    }
 
@@ -5303,7 +5303,7 @@ CMDF( do_hell )
       tms += std::chrono::days( htime );
    victim->pcdata->release_date = tms;
    victim->pcdata->helled_by = ch->name;
-   ch->print_fmt( "{} will be released from hell at {:24.24}.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone ) );
+   ch->print_fmt( "{} will be released from hell at {:24.24}.\r\n", victim->name, c_time( victim->pcdata->release_date, ch->pcdata->timezone_name ) );
    act( AT_MAGIC, "$n disappears in a cloud of hellish light.", victim, nullptr, ch, TO_NOTVICT );
    victim->from_room(  );
    if( !victim->to_room( get_room_index( ROOM_VNUM_HELL ) ) )

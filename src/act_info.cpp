@@ -1126,7 +1126,7 @@ void print_infoflags( char_data * ch )
    if( ch->is_immortal(  ) && ch->has_pcflag( PCFLAG_SECTORD ) )
    {
       if( tarea->continent )
-         ch->print_fmt( "&[stype][Sector Type: {}] [Continent or Plane: %s]\r\n", sect_types[ch->in_room->sector_type], tarea->continent->name );
+         ch->print_fmt( "&[stype][Sector Type: {}] [Continent or Plane: {}]\r\n", sect_types[ch->in_room->sector_type], tarea->continent->name );
       else
          ch->print_fmt( "&[stype][Sector Type: {}] [Continent or Plane: <NOT SET>]\r\n", sect_types[ch->in_room->sector_type] );
    }
@@ -2521,8 +2521,8 @@ CMDF( do_world )
    ch->print_fmt( "Current source revision: {} {}\r\n", CODENAME, CODEVERSION );
    ch->print( "The MUD first came online on: Thu Sep 4 1997\r\n" );
    ch->print_fmt( "The MUD last rebooted on: {}\r\n", str_boot_time );
-   ch->print_fmt( "The system time is      : {}\r\n", c_time( current_time, -1 ) );
-   ch->print_fmt( "Your local time is      : {}\r\n", c_time( current_time, ch->pcdata->timezone ) );
+   ch->print_fmt( "The system time is      : {}\r\n", c_time( current_time, "" ) );
+   ch->print_fmt( "Your local time is      : {}\r\n", c_time( current_time, ch->pcdata->timezone_name ) );
    ch->print_fmt( "\r\nTotal number of zones in the world: {}\r\n", top_area );
    ch->print_fmt( "Total number of rooms in the world: {}\r\n", top_room );
    ch->print_fmt( "\r\nNumber of distinct mobs in the world: {}\r\n", top_mob_index );

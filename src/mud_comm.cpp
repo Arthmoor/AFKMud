@@ -3122,7 +3122,7 @@ CMDF( do_mp_log )
       progbug( "Mp_log:  non-existent entry.", ch );
       return;
    }
-   append_to_file( MOBLOG_FILE, "&p{}: &P{}:  &p{}", mini_c_time( current_time, -1 ), ch->short_descr, argument );
+   append_to_file( MOBLOG_FILE, "&p{}: &P{}:  &p{}", mini_c_time( current_time, "" ), ch->short_descr, argument );
 }
 
 /*

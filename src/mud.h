@@ -854,8 +854,8 @@ int get_dir( std::string_view );
 char *flag_string( int, const char *flagarray[] );
 
 // calendar.cpp
-const std::string c_time( std::chrono::system_clock::time_point, int );
-const std::string mini_c_time( std::chrono::system_clock::time_point, int );
+const std::string c_time( std::chrono::system_clock::time_point, const std::string & );
+const std::string mini_c_time( std::chrono::system_clock::time_point, const std::string & );
 
 // commands.cpp
 int check_command_level( std::string_view, int );

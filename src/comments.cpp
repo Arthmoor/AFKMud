@@ -171,7 +171,7 @@ CMDF( do_comment )
       {
          ++vnum;
          ch->print_fmt( "{:2}) {:<10} [{}] {}\r\n", vnum, !note->sender.empty() ? note->sender : "--Error--",
-                     mini_c_time( note->date_stamp, -1 ), !note->subject.empty() ? note->subject : "--Error--" );
+                     mini_c_time( note->date_stamp, ch->pcdata->timezone_name ), !note->subject.empty() ? note->subject : "--Error--" );
          /*
           * Brittany added date to comment list and whois with above change 
           */

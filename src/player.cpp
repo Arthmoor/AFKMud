@@ -1814,11 +1814,11 @@ CMDF( do_attrib )
    }
    ch->print( "\r\n\r\n" );
 
-   ch->print_fmt( "{}Login: {}{}\r\n", s2, s3, c_time( ch->pcdata->logon, ch->pcdata->timezone ) );
+   ch->print_fmt( "{}Login: {}{}\r\n", s2, s3, c_time( ch->pcdata->logon, ch->pcdata->timezone_name ) );
 
    std::string save_time = std::format( "{}", ch->pcdata->save_time );
-   ch->print_fmt( "{}Saved: {}{}\r\n", s2, s3, !save_time.empty() ? c_time( ch->pcdata->save_time, ch->pcdata->timezone ) : "no save this session" );
-   ch->print_fmt( "{}Time : {}{}\r", s2, s3, c_time( current_time, ch->pcdata->timezone ) );
+   ch->print_fmt( "{}Saved: {}{}\r\n", s2, s3, !save_time.empty() ? c_time( ch->pcdata->save_time, ch->pcdata->timezone_name ) : "no save this session" );
+   ch->print_fmt( "{}Time : {}{}\r", s2, s3, c_time( current_time, ch->pcdata->timezone_name ) );
 
    ch->print_fmt( "\r\n{}MKills : {}{}\r\n", s2, s3, ch->pcdata->mkills );
    ch->print_fmt( "{}MDeaths: {}{}\r\n\r\n", s2, s3, ch->pcdata->mdeaths );

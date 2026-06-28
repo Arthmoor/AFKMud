@@ -2720,9 +2720,9 @@ CMDF( do_astat )
                tarea->name, tarea->filename, tarea->flags.test( AFLAG_PROTOTYPE ) ? "yes" : "no", tarea->author );
    if( !tarea->credits.empty() )
       ch->print_fmt( "&wAdditional Credits: : &W{}\r\n", tarea->credits );
-   ch->print_fmt( "&wCreated on   : &W{}\r\n", c_time( tarea->creation_date, -1 ) );
-   ch->print_fmt( "&wInstalled on : &W{}\r\n", c_time( tarea->install_date, -1 ) );
-   ch->print_fmt( "&wLast reset on: &W{}\r\n", c_time( tarea->last_resettime, -1 ) );
+   ch->print_fmt( "&wCreated on   : &W{}\r\n", c_time( tarea->creation_date, ch->pcdata->timezone_name ) );
+   ch->print_fmt( "&wInstalled on : &W{}\r\n", c_time( tarea->install_date, ch->pcdata->timezone_name ) );
+   ch->print_fmt( "&wLast reset on: &W{}\r\n", c_time( tarea->last_resettime, ch->pcdata->timezone_name ) );
    ch->print_fmt( "&wVersion: &W{:<3} &wAge: &W{:<3}  &wCurrent number of players: &W{:<3}\r\n", tarea->version, tarea->age, tarea->nplayer );
    ch->print_fmt( "&wlow_vnum: &W{:5}    &whi_vnum: &W{:5}\r\n", tarea->low_vnum, tarea->hi_vnum );
    ch->print_fmt( "&wSoft range: &W{} - {}    &wHard range: &W{} - {}\r\n", tarea->low_soft_range, tarea->hi_soft_range, tarea->low_hard_range, tarea->hi_hard_range );
@@ -2738,7 +2738,7 @@ CMDF( do_astat )
       ch->print( "&wContinent or Plane: &W<NOT SET>\r\n" );
 
    ch->print_fmt( "&wCoordinates: &W{} {}\r\n", tarea->map_x, tarea->map_y );
-   ch->print_fmt( "&wWeather: X Coord: &W%-3d  &w Y Coord: &W%-3d\r\n", tarea->weatherx, tarea->weathery );
+   ch->print_fmt( "&wWeather: X Coord: &W{:<3}  &w Y Coord: &W{:<3}\r\n", tarea->weatherx, tarea->weathery );
 
    ch->print_fmt( "&wResetmsg: &W{}\r\n", !tarea->resetmsg.empty() ? tarea->resetmsg : "(default)" ); /* Rennard */
    ch->print_fmt( "&wReset frequency: &W{} &wminutes.\r\n", tarea->reset_frequency ? tarea->reset_frequency : 15 );

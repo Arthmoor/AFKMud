@@ -58,7 +58,7 @@ inline constexpr std::array<tzone_type, 25> tzone_table = {{
    {"Brazil/Argentina",     "America/Sao_Paulo"},
    {"Mid-Atlantic",         "Atlantic/South_Georgia"},
    {"Cape Verde",           "Atlantic/Cape_Verde"},
-   {"Greenwich Mean Time",  "Etc/GMT"},
+   {"Greenwich Mean Time",  "Etc/UTC"},
    {"Berlin, Rome",         "Europe/Berlin"},
    {"Israel, Cairo",        "Africa/Cairo"},
    {"Moscow, Kuwait",       "Europe/Moscow"},
@@ -72,6 +72,28 @@ inline constexpr std::array<tzone_type, 25> tzone_table = {{
    {"Magadan, Solomon Is.", "Asia/Magadan"},
    {"Fiji, Auckland",       "Pacific/Auckland"}
 }};
+
+std::string convert_old_timezone( int t_zone )
+{
+   // Invalid timezones convert to server local time.
+   if( t_zone < 0 || t_zone > 24 )
+      return std::string( std::chrono::current_zone()->name() );
+
+   // Otherwise the player had a valid one on them, return that.
+   return std::string( tzone_table[t_zone].iana_id );
+}
+
+const std::chrono::time_zone* get_tz( const std::string & iana_name )
+{
+   try
+   {
+      return std::chrono::locate_zone( iana_name );
+   }
+   catch( const std::runtime_error & )
+   {
+      return std::chrono::current_zone(); // Timezone was invalid, fall back to server local time.
+   }
+}
 
 int tzone_lookup( const std::string & arg )
 {
@@ -91,33 +113,52 @@ int tzone_lookup( const std::string & arg )
 
 CMDF( do_timezone )
 {
-   int i;
-
-   if( ch->isnpc(  ) )
+   if( ch->isnpc() )
       return;
 
-   if( argument.empty(  ) )
+   const auto& db = std::chrono::get_tzdb();
+
+   // Show the user's current time if no argument is provided.
+   if( argument.empty() )
    {
-      ch->print_fmt( "{:<6} {:<30} ({})\r\n", "Name", "IANA Timezone Name", "Time" );
-      ch->print( "-------------------------------------------------------------------------\r\n" );
-      for( i = 0; i < static_cast<int>( tzone_table.size() ); ++i )
+      ch->print( "Syntax: timezone <list>     - Shows a list of all available timezones.\r\n" );
+      ch->print( "Syntax: timezone <timezone> - Set your timezone using the IANA name in the list.\r\n\r\n" );
+
+      ch->print_fmt( "Your timezone name: {}\r\n", ch->pcdata->timezone_name );
+      ch->print_fmt( "Your current time : {}\r\n", c_time( current_time, ch->pcdata->timezone_name ) );
+      return;
+   }
+
+   // List all available zones.
+   if( !str_cmp( argument, "list" ) )
+   {
+      ch->pager_fmt("{:<30} {}\r\n", "IANA Timezone Name", "Current Time");
+      ch->pager("----------------------------------------------------------\r\n");
+
+      for( const auto& zone : db.zones )
       {
-         ch->print_fmt( "{:<6} {:<30} ({})\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ) );
+         // Using zoned_time to format the time automatically for that zone.
+         std::chrono::zoned_time zt{zone.name(), current_time};
+         ch->pager_fmt( "{:<30} {:%a %b %d, %Y %I:%M:%S %p %Z}\r\n", zone.name(), zt );
       }
-      ch->print( "-------------------------------------------------------------------------\r\n" );
       return;
    }
 
-   i = tzone_lookup( argument );
+   // Lookup a specific zone to set.
+   const std::chrono::time_zone* zone = get_tz( argument );
 
-   if( i == -1 )
+   if( !zone )
    {
-      ch->print( "That time zone does not exists. Make sure to use the exact name.\r\n" );
+      ch->print( "That time zone does not exist. Please use a valid IANA name (e.g., 'America/New_York').\r\n" );
       return;
    }
 
-   ch->pcdata->timezone = i;
-   ch->print_fmt( "Your time zone is now {} {} ({})\r\n", tzone_table[i].display_label.data(), tzone_table[i].iana_id.data(), c_time( current_time, i ) );
+   // Update player data.
+   ch->pcdata->timezone_name = zone->name();
+
+   ch->print_fmt( "Your time zone is now set to {}.\r\n", zone->name() );
+   ch->print_fmt( "Current time: {:%a %b %d, %Y %I:%M:%S %p %Z}\r\n", std::chrono::zoned_time{zone, current_time} );
+   ch->save();
 }
 
 /*
@@ -125,7 +166,65 @@ CMDF( do_timezone )
  * Merged with the Timezone snippet by Ryan Jennings (Markanth) r-jenn@shaw.ca
  */
 // Returns a localized time string based on an index from tzone_table.
-const std::string c_time( std::chrono::system_clock::time_point curtime, int tz )
+const std::string c_time( std::chrono::system_clock::time_point curtime, const std::string & iana_id )
+{
+   const std::chrono::time_zone* zone = nullptr;
+
+   if( !iana_id.empty() )
+   {
+      try
+      {
+         // Find the timezone in the database.
+         zone = std::chrono::locate_zone( iana_id );
+      }
+      catch( const std::runtime_error & )
+      {
+         // Fallback to server timezone if the zone is invalid.
+         zone = std::chrono::current_zone();
+      }
+   }
+   else // Empty string means use the server timezone.
+      zone = std::chrono::current_zone();
+
+   // Convert to the target time zone.
+//   std::chrono::zoned_time zt{zone, curtime};
+   std::chrono::zoned_time zt{zone, std::chrono::floor<std::chrono::seconds>(curtime)};
+
+   // Format: Sun Jan 01, 2026 12:00:00 PM UTC
+   // %I is 12-hour clock, %p is AM/PM, %Z is zone name.
+   return std::format( "{:%a %b %d, %Y %I:%M:%S %p %Z}", zt );
+}
+
+const std::string mini_c_time( std::chrono::system_clock::time_point curtime, const std::string & iana_id )
+{
+   const std::chrono::time_zone* zone = nullptr;
+
+   if( !iana_id.empty() )
+   {
+      try
+      {
+         // Find the timezone in the database.
+         zone = std::chrono::locate_zone( iana_id );
+      }
+      catch( const std::runtime_error & )
+      {
+         // Fallback to server timezone if the zone is invalid.
+         zone = std::chrono::current_zone();
+      }
+   }
+   else
+      zone = std::chrono::current_zone();
+
+   // Convert to the target time zone.
+//   std::chrono::zoned_time zt{zone, curtime};
+   std::chrono::zoned_time zt{zone, std::chrono::floor<std::chrono::seconds>(curtime)};
+
+   // Format: Sun Jan 01, 2026 12:00:00 PM UTC
+   // %I is 12-hour clock, %p is AM/PM, %Z is zone name.
+   return std::format( "{:%a %b %d, %Y %I:%M%p %Z}", zt );
+}
+
+const std::string old_c_time( std::chrono::system_clock::time_point curtime, int tz )
 {
    // Select the time zone string.
    auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
@@ -147,7 +246,7 @@ const std::string c_time( std::chrono::system_clock::time_point curtime, int tz 
 }
 
 // Returns a compact localized time string.
-const std::string mini_c_time( std::chrono::system_clock::time_point curtime, int tz )
+const std::string old_mini_c_time( std::chrono::system_clock::time_point curtime, int tz )
 {
    // Select the time zone string.
    auto zone_id = ( tz >= 0 && tz < static_cast<int>( tzone_table.size() ) ) ? tzone_table[tz].iana_id : "GMT";
@@ -273,7 +372,7 @@ CMDF( do_time )
 
       std::chrono::system_clock::time_point str_time = std::chrono::system_clock::from_time_t( intime );
 
-      ch->print_fmt( "&w{} = &g{}\r\n", intime, mini_c_time( str_time, ch->pcdata->timezone ) );
+      ch->print_fmt( "&w{} = &g{}\r\n", intime, c_time( str_time, ch->pcdata->timezone_name ) );
       return;
    }
 
@@ -296,13 +395,13 @@ CMDF( do_time )
                "The system time      : {}\r\n",
                ( time_info.hour % sysdata->hournoon == 0 ) ? sysdata->hournoon : time_info.hour % sysdata->hournoon,
                time_info.hour >= sysdata->hournoon ? "pm" : "am", day_name[( time_info.day ) % sysdata->daysperweek], day,
-               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time, c_time( current_time, -1 ) );
+               suf, month_name[time_info.month], season_name[time_info.season], time_info.year, str_boot_time, c_time( current_time, "" ) );
 
-   ch->print_fmt( "Your local time      : {}\r\n\r\n", c_time( current_time, ch->pcdata->timezone ).c_str() );
+   ch->print_fmt( "Your local time      : {}\r\n\r\n", c_time( current_time, ch->pcdata->timezone_name ) );
    holiday = get_holiday( time_info.month, day - 1 );
 
    if( holiday != nullptr )
-      ch->print_fmt( "It's a holiday today: {}\r\n", holiday->get_name(  ).c_str(  ) );
+      ch->print_fmt( "It's a holiday today: {}\r\n", holiday->get_name(  ) );
 
    if( !ch->isnpc(  ) )
    {
@@ -312,14 +411,14 @@ CMDF( do_time )
 
    if( ch->is_immortal(  ) && sysdata->CLEANPFILES == true )
    {
-      std::string buf = std::format( "Next Pfile cleanup: {:%Y-%m-%d %H:%M:%S}\r\n", new_pfile_time_t );
+      std::string buf = std::format( "Next Pfile cleanup: {}\r\n", c_time( new_pfile_time_t, ch->pcdata->timezone_name ) );
 
       ch->print( buf );
    }
 
    if( ch->is_immortal(  ) )
    {
-      std::string buf = std::format( "Next rare items cleanup: {:%Y-%m-%d %H:%M:%S}\r\n", new_pfile_time_t );
+      std::string buf = std::format( "Next rare items cleanup: {}\r\n", c_time( new_pfile_time_t, ch->pcdata->timezone_name ) );
 
       ch->print( buf );
    }

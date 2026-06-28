@@ -815,7 +815,7 @@ CMDF( do_realmroster )
       ch->print( "---------------------------------------\r\n" );
       for( auto* member : realm->memberlist )
       {
-         ch->print_fmt( "{:<15.15}  {}\r\n", member->name, c_time( member->joined, ch->pcdata->timezone ) );
+         ch->print_fmt( "{:<15.15}  {}\r\n", member->name, c_time( member->joined, ch->pcdata->timezone_name ) );
          ++total;
       }
       ch->print_fmt( "\r\nThere are {} member{} in {}\r\n", total, total == 1 ? "" : "s", realm->name );

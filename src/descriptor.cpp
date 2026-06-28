@@ -1625,7 +1625,7 @@ void new_descriptor( int new_desc )
       sysdata->maxplayers = num_descriptors;
    if( sysdata->maxplayers > sysdata->alltimemax )
    {
-      sysdata->time_of_max = c_time( current_time, -1 );
+      sysdata->time_of_max = c_time( current_time, "" );
       sysdata->alltimemax = sysdata->maxplayers;
       log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "Broke all-time maximum player record: {}", sysdata->alltimemax );
       save_sysdata(  );

@@ -1017,7 +1017,7 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
       ch->print_fmt( " &[board]To:     &[board2]{:<15}", pnote->to_list );
    ch->print( "&D\r\n" );
    if( pnote->date_stamp != std::chrono::system_clock::time_point{} )
-      ch->print_fmt( "&[board]Date:    &[board2]{}&D\r\n", c_time( pnote->date_stamp, ch->pcdata->timezone ) );
+      ch->print_fmt( "&[board]Date:    &[board2]{}&D\r\n", c_time( pnote->date_stamp, ch->pcdata->timezone_name ) );
 
    if( board && can_remove( ch, board ) )
    {
@@ -1040,7 +1040,7 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
       for( auto* reply : pnote->rlist )
       {
          ch->print( "\r\n&[board]------------------------------------------------------------------------------&D\r\n" );
-         ch->print_fmt( "&[board3][&[board]Reply #&[board2]{}&[board3]] [&[board2]{}&[board3]]&D\r\n", count, c_time( reply->date_stamp, ch->pcdata->timezone ) );
+         ch->print_fmt( "&[board3][&[board]Reply #&[board2]{}&[board3]] [&[board2]{}&[board3]]&D\r\n", count, c_time( reply->date_stamp, ch->pcdata->timezone_name ) );
          ch->print_fmt( "&[board]From:    &[board2]{:<15}", !reply->sender.empty() ? reply->sender : "--Error--" );
          if( !reply->to_list.empty() )
             ch->print_fmt( "   &[board]To:     &[board2]{:<15}", reply->to_list );
@@ -2072,13 +2072,13 @@ CMDF( do_note_list )
       if( IS_BOARD_FLAG( board, BOARD_PRIVATE ) )
       {
          ch->print_fmt( "{}{:2}{}) {} {}[{}{:<15}{}] {}{:<11} {}&D\r\n", s2, count, s3, unread, s3, s2,
-                     mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3, s2,
+                     mini_c_time( note->date_stamp, ch->pcdata->timezone_name ), s3, s2,
                      !note->sender.empty() ? note->sender : "--Error--", !note->subject.empty() ? print_lngstr( note->subject, 37 ) : "" );
       }
       else
       {
          ch->print_fmt( "{}{:2}{}) {} {}[ {}{:3}{} ] [{}{:<15}{}] {}{:<11} {:<20}&D\r\n", s2, count, s3, unread, s3, s2,
-                     note->reply_count, s3, s2, mini_c_time( note->date_stamp, ch->pcdata->timezone ), s3, s2,
+                     note->reply_count, s3, s2, mini_c_time( note->date_stamp, ch->pcdata->timezone_name ), s3, s2,
                      !note->sender.empty() ? note->sender : "--Error--", !note->subject.empty() ? print_lngstr( note->subject, 45 ) : "" );
       }
    }
@@ -2462,7 +2462,7 @@ CMDF( do_board_stat )
    ch->print_fmt( "{}Readers:    {}{:<30}{} Read Level:   {}{}&D\r\n", s1, s2, !board->readers.empty() ? board->readers : "none set", s1, s2, board->read_level );
    ch->print_fmt( "{}Posters:    {}{:<30}{} Post Level:   {}{}&D\r\n", s1, s2, !board->posters.empty() ? board->posters : "none set", s1, s2, board->post_level );
    ch->print_fmt( "{}Moderators: {}{:<30}{} Remove Level: {}{}&D\r\n", s1, s2, !board->moderators.empty() ? board->moderators : "none set", s1, s2, board->remove_level );
-   ch->print_fmt( "{}Group:      {}{:<30}{} Expiration:   {}{}&D\r\n", s1, s2, !board->group.empty() ? board->group : "none set", s1, s2, mini_c_time( board->expire, ch->pcdata->timezone ) );
+   ch->print_fmt( "{}Group:      {}{:<30}{} Expiration:   {}{}&D\r\n", s1, s2, !board->group.empty() ? board->group : "none set", s1, s2, mini_c_time( board->expire, ch->pcdata->timezone_name ) );
    ch->print_fmt( "{}Flags: {}[{}{}{}]&D\r\n", s1, s3, s2, board->flags.any(  )? bitset_string( board->flags, board_flags ) : "none set", s3 );
    ch->print_fmt( "{}Description: {}{:<30}&D\r\n", s1, s2, !board->desc.empty() ? board->desc : "none set" );
 }
@@ -3140,14 +3140,14 @@ CMDF( do_project )
          {
             ch->pager_fmt( "{:2}{} | {:<11} | {:<26} | {:<15} | {:<12}\r\n",
                         pcount, proj->realm_name, !proj->owner.empty() ? proj->owner : "(None)",
-                        print_lngstr( proj->name, 26 ), mini_c_time( proj->date_stamp, ch->pcdata->timezone ), !proj->status.empty() ? proj->status : "(None)" );
+                        print_lngstr( proj->name, 26 ), mini_c_time( proj->date_stamp, ch->pcdata->timezone_name ), !proj->status.empty() ? proj->status : "(None)" );
          }
          else if( !proj->taken )
          {
             if( !projects_available )
                projects_available = true;
             ch->pager_fmt( "{:2}{} | {:<30} | {}\r\n", pcount, proj->realm_name,
-                        !proj->name.empty() ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone ) );
+                        !proj->name.empty() ? proj->name : "(None)", mini_c_time( proj->date_stamp, ch->pcdata->timezone_name ) );
          }
       }
       if( pcount == 0 )

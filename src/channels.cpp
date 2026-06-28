@@ -534,7 +534,7 @@ void show_channel_history( char_data * ch, mud_channel * channel )
          default:
             name = "Someone";
       }
-      std::string formatted_message = std::vformat( entry->format, std::make_format_args( mini_c_time( entry->timestamp, ch->pcdata->timezone ), name ) );
+      std::string formatted_message = std::vformat( entry->format, std::make_format_args( mini_c_time( entry->timestamp, ch->pcdata->timezone_name ), name ) );
       ch->print( formatted_message );
    }
 }

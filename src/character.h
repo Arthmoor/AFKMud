@@ -120,6 +120,7 @@ class pc_data
    std::string afkbuf;                                   // afk reason buffer - Samson 8-31-98
    std::string motd_buf;                                 // A temp buffer for editing MOTDs - 12-31-00
    std::string map_buffer;                               // Buffer used to store a map being written in the mapout.cpp module. Saves to disk if not empty.
+   std::string timezone_name;                            // The user's real world timezone name, based on IANA standard zone names.
    void *spare_ptr = nullptr;                            // Um... sure. It appears to be used as a swapping point in tandem with the dest_buf pointer when dealing with things in the editor.
    void *dest_buf = nullptr;                             // This one is to assign to different things. [What it is is a hackish way to pass pointers through the editor system]
    int pkills = 0;                                       // Number of pkills on behalf of clan.
@@ -135,7 +136,7 @@ class pc_data
    int exgold = 0;                                       // Extragold affect - Samson
    int one = 0;                                          // Last room they rented in on primary continent - Samson 12-20-00
    int spam = 0;                                         // How many times have they triggered the spamguard? - 3-18-01
-   int timezone = -1;                                    // The user's current real world timezone.
+   int timezone = -1;                                    // The user's current real world timezone. [Obsolete - kept only for pfile updates]
    int version = 0;                                      // Temporary variable to track pfile password conversion.
    short learned[MAX_SKILL]{0};                          // Skill levels they have achieved for all the skills/spells in the game.
    short wizinvis = 0;                                   // wizinvis level

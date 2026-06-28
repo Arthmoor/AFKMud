@@ -1008,7 +1008,7 @@ int main( int argc, char **argv )
 {
    // Init time.
    current_time = std::chrono::system_clock::now(); // This is used throughout the codebase to represent the current time. Saves on a whole lot of calls to std::chrono this way. Updated in pulse_sync().
-   str_boot_time = c_time( current_time, -1 );      // Records when the mud was last rebooted.
+   str_boot_time = c_time( current_time, "" );      // Records when the mud was last rebooted.
    new_pfile_time_t = current_time + std::chrono::hours( 24 ); // For the pfile cleanup. Starts 24 hours after bootup.
    mud_start_time = current_time;
 

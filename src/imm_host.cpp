@@ -348,7 +348,7 @@ bool check_immortal_domain( char_data * ch, std::string_view lhost )
 
    immortal_host_log *nlog = new immortal_host_log;
    nlog->host = lhost;
-   nlog->date = c_time( current_time, -1 );
+   nlog->date = c_time( current_time, "" );
    host->loglist.push_back( nlog );
 
    save_imm_host(  );

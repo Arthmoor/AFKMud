@@ -230,7 +230,7 @@ void update_sayhistory( char_data * ch, char_data * vch, std::string_view msg )
    if( vch->isnpc() )
       return;
 
-   message = std::format( "&R[{}] {}{} said '{}'", mini_c_time( current_time, vch->pcdata->timezone ),
+   message = std::format( "&R[{}] {}{} said '{}'", mini_c_time( current_time, vch->pcdata->timezone_name ),
          ( vch == ch ? ch->color_str( AT_SAY ) : vch->color_str( AT_SAY ) ), vch == ch ? "You" : PERS( ch, vch, false ), msg );
 
    vch->pcdata->say_history.push_back( message );
@@ -554,14 +554,14 @@ void update_tellhistory( char_data * vch, char_data * ch, std::string_view msg, 
    if( self )
    {
       message = std::format( "&R[{}] {}You told {} '{}'",
-         ch->isnpc() ? ( mini_c_time( current_time, -1 ) ) : ( mini_c_time( current_time, ch->pcdata->timezone ) ),
+         ch->isnpc() ? ( mini_c_time( current_time, "" ) ) : ( mini_c_time( current_time, ch->pcdata->timezone_name ) ),
          ch->color_str( AT_TELL ), PERS( vch, ch, false ), msg );
       tch = ch;
    }
    else
    {
       message = std::format( "&R[{}] {}{} told you '{}'",
-         vch->isnpc() ? ( mini_c_time( current_time, -1 ) ) : ( mini_c_time( current_time, vch->pcdata->timezone ) ),
+         vch->isnpc() ? ( mini_c_time( current_time, "" ) ) : ( mini_c_time( current_time, vch->pcdata->timezone_name ) ),
          vch->color_str( AT_TELL ), PERS( ch, vch, false ), msg );
       tch = vch;
    }

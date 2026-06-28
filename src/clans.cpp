@@ -2292,7 +2292,7 @@ CMDF( do_roster )
       for( auto* member : clan->memberlist )
       {
          ch->print_fmt( "{:<15.15}  {:<15.15} {:<6} {:<6} {:6} {}\r\n",
-                     member->name, capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths, c_time( member->joined, ch->pcdata->timezone ) );
+                     member->name, capitalize( npc_class[member->Class] ), member->level, member->kills, member->deaths, c_time( member->joined, ch->pcdata->timezone_name ) );
          ++total;
       }
       ch->print_fmt( "\r\nThere are {} member{} in {}\r\n", total, total == 1 ? "" : "s", clan->name );

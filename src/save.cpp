@@ -61,11 +61,12 @@ void assign_area( char_data * );
 affect_data *fread_afk_affect( FILE * );
 bool is_valid_wear_loc( char_data *, int );
 void restore_map_buffer( char_data * );
+std::string convert_old_timezone( int );
 
 /*
  * Increment with every major format change.
  */
-constexpr int SAVEVERSION = 24;
+constexpr int SAVEVERSION = 25;
 // Updated to version 4 after addition of alias code. - Samson 3-23-98
 // Updated to version 5 after installation of color code. - Samson
 // Updated to version 6 for rare item tracking support. - Samson
@@ -87,6 +88,7 @@ constexpr int SAVEVERSION = 24;
 // Updated to 22 for sha256 password conversion.
 // Updated to 23 - Site data in the save requires the tilde now which pfiles won't have yet.
 // Updated to 24 - Map coordinates now only store the X and Y. Which map the player is on is determined by the room they're in.
+// Updated to 25 to change timezone handling. -- Samson 6/28/2026.
 
 /*
  * Array to keep track of equipment temporarily. - Thoric
@@ -217,6 +219,8 @@ void fwrite_char( char_data * ch, FILE * fp )
       fprintf( fp, "Bio          %s~\n", strip_cr( ch->pcdata->bio ).c_str() );
    if( !ch->chardesc.empty() )
       fprintf( fp, "Description  %s~\n", strip_cr( ch->chardesc ).c_str() );
+   if( !ch->pcdata->timezone_name.empty() )
+      fprintf( fp, "Timezone     %s~\n", ch->pcdata->timezone_name.c_str() );
    if( !ch->pcdata->map_buffer.empty() )
       fprintf( fp, "OLCMapBuffer %s~\n", ch->pcdata->map_buffer.c_str() );
    fprintf( fp, "Sex          %s~\n", npc_sex[ch->sex] );
@@ -253,7 +257,7 @@ void fwrite_char( char_data * ch, FILE * fp )
    }
    fprintf( fp, "Status       %d %d %d %d %d %d %d\n", ch->level, ch->gold, ch->exp, ch->height, ch->weight, ch->spellfail, ch->mental_state );
    fprintf( fp, "Status2      %d %d %d %d %d %d %d %d\n", ch->style, ch->pcdata->practice, ch->alignment, ch->pcdata->favor, ch->hitroll, ch->damroll, ch->armor, ch->wimpy );
-   fprintf( fp, "Configs      %d %d %d\n", ch->pcdata->pagerlen, ch->pcdata->timezone, ch->wait );
+   fprintf( fp, "Configs      %d %d\n", ch->pcdata->pagerlen, ch->wait );
 
    /*
     * MOTD times - Samson 12-31-00 
@@ -1129,11 +1133,11 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             // Oh God, why did you ever put the player's occupied room vnum into this mess?
             if( !str_cmp( word, "Configs" ) )
             {
-               line = fread_line( fp );
-               x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = 0;
-
                if( file_ver < 24 )
                {
+                  line = fread_line( fp );
+                  x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = 0;
+
                   sscanf( line, "%d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8 );
                   ch->pcdata->pagerlen = x1;
                   ch->pcdata->timezone = x5;
@@ -1163,14 +1167,21 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                      ch->in_room = get_room_index( ROOM_VNUM_TEMPLE );
                   else
                      ch->in_room = temp;
+
+                  ch->pcdata->timezone_name = convert_old_timezone( ch->pcdata->timezone );
+               }
+               else if( file_ver == 24 )
+               {
+                  ch->pcdata->pagerlen = fread_number( fp );
+                  ch->pcdata->timezone = fread_number( fp );
+                  ch->wait = fread_number( fp );
+
+                  ch->pcdata->timezone_name = convert_old_timezone( ch->pcdata->timezone );
                }
                else
                {
-                  // 2, 3, 4, and 7 from the above were also never set to anything so the dummy values are no longer written anymore.
-                  sscanf( line, "%d %d %d", &x1, &x2, &x3 );
-                  ch->pcdata->pagerlen = x1;
-                  ch->pcdata->timezone = x2;
-                  ch->wait = x3;
+                  ch->pcdata->pagerlen = fread_number( fp );
+                  ch->wait = fread_number( fp );
                }
                break;
             }
@@ -1701,7 +1712,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
                   ch->pcdata->month = sysdata->monthsperyear - 1; /* Catches the bad month values */
 
                if( ch->pcdata->day > sysdata->dayspermonth - 1 )
-                  ch->pcdata->day = sysdata->dayspermonth - 1; /* Cathes the bad day values */
+                  ch->pcdata->day = sysdata->dayspermonth - 1; /* Catches the bad day values */
 
                if( !ch->pcdata->deity_name.empty(  ) && !( ch->pcdata->deity = get_deity( ch->pcdata->deity_name ) ) )
                {
@@ -1741,6 +1752,7 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
             break;
 
          case 'T':
+            STDSKEY( "Timezone", ch->pcdata->timezone_name );
             if( !str_cmp( word, "Tongue" ) )
             {
                int value = fread_number( fp );
