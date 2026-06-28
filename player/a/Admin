@@ -1,12 +1,13 @@
 #PLAYER
-Version      24
+Version      25
 Name         Admin~
-Password     8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918~
+Password     $sha512$210000$kKuizk8W2mmg3QEG$2e4e35f776746ba8dc4357e32f8853846815251681724a2b0469ce69369991b49ea18f82299ad3abd86aff39b5ab425cb987796b628e64f85b6f2321e65a6a32~
 Site         local-host~
+Timezone     America/Chicago~
 Sex          Male~
 Race         Iguanadon~
 Class        Cleric~
-Title         the Administrator~
+Title        the Administrator~
 Rank         Administrator~
 Prompt       &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&c%X&wexp&z]&D ~
 FPrompt      &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&R%c&z] ~
@@ -15,10 +16,10 @@ Channels     chat Bugs Log auction quest music shout wartalk yell newbiechat thi
 Speaks       common elvish dwarven pixie ogre orcish trollese rodent insectoid mammal reptile dragon spiritual magical goblin god ancient halfling clan gith minotaur centaur gnomish sahuagin~
 Status       115 1909394 320993749 68 124 101 -10
 Status2      2 451 -1000 0 0 0 2 0
-Configs      29 -1 0
+Configs      29 0
 Motd         0 1080528906
-Age          1 21 10 770 1120749921
-HpManaMove   30000 30000 30836 30836 30000 30000
+Age          1 21 10 770 0
+HpManaMove   30000 30000 30000 30000 30000 30000
 Regens       0 0 0
 Position     standing~
 Room         11406
@@ -491,7 +492,7 @@ Zone         The Radiant Tower~
 End
 
 #OBJECT
-Version      24
+Version      25
 Ovnum        2894
 Ego          0
 WearLoc      16
