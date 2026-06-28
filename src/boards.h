@@ -76,7 +76,7 @@ class note_data
    std::string to_list;                               // Intended recipients of the note.
    std::string text;                                  // The full text of the note.
    short reply_count = 0;                             // Keep a count of our replies.
-   short type;                                        // Is this note for a board, project, or something else?
+   short type = NOTE_BOARD;                           // Is this note for a board, project, or something else?
 };
 
 class board_data

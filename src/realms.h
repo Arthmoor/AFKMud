@@ -70,7 +70,7 @@ class realm_data
    std::string leadrank;  // Leader's rank.
    int board = 0;         // Vnum of Realm board.
    short type = 0;        // See realm type defines.
-   short members = 0;     // Number of members.
+   short members = 1;     // Number of members.
 };
 
 extern std::list<realm_data *> realmlist;

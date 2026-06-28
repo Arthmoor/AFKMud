@@ -312,13 +312,6 @@ void fread_realm( std::ifstream & stream, realm_data * realm )
    std::exit( EXIT_FAILURE ); // Exiting because allowing a corrupted file to be processed could permanently damage the realm.
 }
 
-void clean_realm( realm_data * realm )
-{
-   realm->memberlist.clear(  );
-   realm->members = 1;
-   realm->type = REALM_NONE;
-}
-
 /*
  * Load a realm file
  */
@@ -333,7 +326,6 @@ bool load_realm_file( std::string_view realmfile )
    }
 
    realm_data *realm = new realm_data;
-   clean_realm( realm );  /* Default settings so we don't get weird ass stuff */
 
    std::string key;
    while( stream >> key )
@@ -754,7 +746,6 @@ CMDF( do_makerealm )
    std::string filename = std::format( "{}{}", REALM_DIR, arg );
 
    realm = new realm_data;
-   clean_realm( realm );
 
    realm->name = arg2;
    realm->filename = filename;

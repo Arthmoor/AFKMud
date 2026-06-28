@@ -718,56 +718,6 @@ void fread_clan( std::ifstream & stream, clan_data * clan )
    std::exit( EXIT_FAILURE ); // Exiting because allowing a corrupted file to be processed could permanently damage the clan.
 }
 
-/* Sets up a bunch of default values for new clans or during loadup so we don't get weird stuff - Samson 7-16-00 */
-void clean_clan( clan_data * clan )
-{
-   clan->memberlist.clear(  );
-   clan->getleader = false;
-   clan->getone = false;
-   clan->gettwo = false;
-   clan->members = 1;
-   clan->mem_limit = 15;
-   clan->mkills = 0;
-   clan->mdeaths = 0;
-   clan->illegal_pk = 0;
-   clan->clan_type = CLAN_GUILD;
-   clan->favour = 0;
-   clan->alignment = 0;
-   clan->recall = 0;
-   clan->storeroom = 0;
-   clan->guard1 = 0;
-   clan->guard2 = 0;
-   clan->tithe = 0;
-   clan->balance = 0;
-   clan->inn = 0;
-   clan->idmob = 0;
-   clan->shopkeeper = 0;
-   clan->auction = 0;
-   clan->bank = 0;
-   clan->repair = 0;
-   clan->forge = 0;
-   clan->pkills[0] = 0;
-   clan->pkills[1] = 0;
-   clan->pkills[2] = 0;
-   clan->pkills[3] = 0;
-   clan->pkills[4] = 0;
-   clan->pkills[5] = 0;
-   clan->pkills[6] = 0;
-   clan->pkills[7] = 0;
-   clan->pkills[8] = 0;
-   clan->pkills[9] = 0;
-   clan->pdeaths[0] = 0;
-   clan->pdeaths[1] = 0;
-   clan->pdeaths[2] = 0;
-   clan->pdeaths[3] = 0;
-   clan->pdeaths[4] = 0;
-   clan->pdeaths[5] = 0;
-   clan->pdeaths[6] = 0;
-   clan->pdeaths[7] = 0;
-   clan->pdeaths[8] = 0;
-   clan->pdeaths[9] = 0;
-}
-
 /*
  * Load a clan file
  */
@@ -782,7 +732,6 @@ bool load_clan_file( std::string_view clanfile )
    }
 
    clan_data *clan = new clan_data;
-   clean_clan( clan );  /* Default settings so we don't get weird ass stuff */
 
    bool found = false;
    std::string key;
@@ -2230,7 +2179,6 @@ CMDF( do_makeclan )
    filename = std::format( "{}{}", CLAN_DIR, arg );
 
    clan = new clan_data;
-   clean_clan( clan );  /* Setup default values - Samson 7-16-00 */
 
    clan->name = argument;
    clan->filename = filename.string(); /* Bug fix - Samson 5-31-99 */
