@@ -278,9 +278,7 @@ void clean_auth_list( void )
 
 void save_auth_list( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( AUTH_FILE ) );
+   std::ofstream stream( std::filesystem::path{AUTH_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, AUTH_FILE, std::strerror(errno) );
@@ -321,58 +319,43 @@ void clear_auth_list( void )
 
 void load_auth_list( void )
 {
-   std::ifstream stream;
-   auth_data *auth = nullptr;
-
-   authlist.clear(  );
-
-   stream.open( std::filesystem::path( AUTH_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{AUTH_FILE} );
+   if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, AUTH_FILE, std::strerror(errno) );
       return;
    }
 
-   do
+   authlist.clear(  );
+
+   auth_data *auth = nullptr;
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#AUTH" )
          auth = new auth_data;
       else if( key == "Name" )
-         auth->name = value;
+         auth->name = fread_line( stream, '\n' );
       else if( key == "State" )
       {
-         auth->state = atoi( value.c_str(  ) );
+         stream >> auth->state;
 
          if( auth->state == AUTH_ONLINE || auth->state == AUTH_LINK_DEAD )
-            /*
-             * Crash proofing. Can't be online when  booting up. Would suck for do_auth 
-             */
+            // Crash proofing. Can't be online when  booting up. Would suck for do_auth
             auth->state = AUTH_OFFLINE;
       }
       else if( key == "AuthedBy" )
-         auth->authed_by = value;
+         auth->authed_by = fread_line( stream, '\n' );
       else if( key == "Change" )
-         auth->change_by = value;
+         auth->change_by = fread_line( stream, '\n' );
       else if( key == "End" )
          authlist.push_back( auth );
       else
-         log_printf( "{}: Bad line in auth.dat file: {} {}", __func__, key, value );
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, AUTH_FILE );
+         fread_to_eol( stream );
+      }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 
    clear_auth_list(  );
@@ -909,12 +892,12 @@ void load_reserved_names( )
 {
    reserved_names.clear();
 
-   std::ifstream file( std::filesystem::path{RESERVED_LIST} );
-   if( !file.is_open() )
+   std::ifstream stream( std::filesystem::path{RESERVED_LIST} );
+   if( !stream.is_open() )
       return;
 
    std::string line;
-   while( std::getline( file, line ) )
+   while( std::getline( stream, line ) )
    {
       if( !line.empty() )
       {
@@ -926,13 +909,13 @@ void load_reserved_names( )
 
 void save_reserved_names( )
 {
-   std::ofstream file( std::filesystem::path{RESERVED_LIST}, std::ios::trunc );
-   if( !file.is_open() )
+   std::ofstream stream( std::filesystem::path{RESERVED_LIST}, std::ios::trunc );
+   if( !stream.is_open() )
       return;
 
    for( const auto& name : reserved_names )
    {
-      file << name << "\n";
+      stream << name << "\n";
    }
 }
 
