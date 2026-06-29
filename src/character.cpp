@@ -5197,9 +5197,9 @@ CMDF( do_levelup )
       ch->print( "&YYou can now be affected by hunger and thirst.\r\nIt is advisable for you to purchase food and water soon.\r\n" );
 
    if( number_range( 1, 2 ) == 1 )
-      ch->sound( "level.mid", 100, false );
+      ch->sound( "level.mp3", 100, false );
    else
-      ch->sound( "level2.mid", 100, false );
+      ch->sound( "level2.mp3", 100, false );
    if( ch->level % 20 == 0 )
    {
       ch->desc->show_stats( ch );
