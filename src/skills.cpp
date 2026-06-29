@@ -1916,19 +1916,15 @@ bool get_skill_help( char_data * ch, std::string_view argument )
       ch->print( "Duration     : Instant\r\n" );
    else
    {
-      bool found = false;
-
       for( auto* af : skill->affects )
       {
          // Make sure duration isn't null, and is not 0
          if( !af->duration.empty() )
          {
-            if( !found )
-            {
-               ch->print( "Duration     :\r\n" );
-               found = true;
-            }
-            ch->print_fmt( "   Affect    : '{}' for '{}' rounds.\r\n", aff_flags[af->bit], af->duration );
+            if( af->bit == -1 )
+               ch->print_fmt( "Duration     : {}\r\n", af->duration );
+            else
+               ch->print_fmt( "   Affect    : '{}' for '{}' rounds.\r\n", aff_flags[af->bit], af->duration );
          }
       }
    }
@@ -3251,7 +3247,10 @@ CMDF( do_sset )
          if( !argument.empty(  ) )
          {
             if( ( tmpbit = get_aflag( argument ) ) == -1 )
+            {
                ch->print_fmt( "Unknown bitvector: {}.  See AFFECTED_BY\r\n", argument );
+               return;
+            }
             else
                bit = tmpbit;
          }
