@@ -211,15 +211,12 @@ CMDF( do_mudexec )
 /* This function verifies filenames during copy operations - Samson 4-7-98 */
 bool copy_file( char_data * ch, std::string_view filename )
 {
-   FILE *fp;
-
    std::filesystem::path fname = filename;
-   if( !( fp = fopen( fname.c_str(), "r" ) ) )
+   if( !std::filesystem::exists( fname ) )
    {
-      ch->print_fmt( "&RThe file {} does not exist, or cannot be opened. Check your spelling.\r\n", fname.c_str() );
+      ch->print_fmt( "&RThe file {} does not exist, or cannot be opened. Check your spelling.\r\n", filename );
       return false;
    }
-   FCLOSE( fp );
    return true;
 }
 
@@ -1021,7 +1018,7 @@ void load_shellcommands( void )
             scmd->flags.set( CMD_GHOST );
       }
       else if( key == "#END" )
-         return;
+         break;
       else
       {
          bug( "{}: Bad section '{}' - skipping.", __func__, key );
