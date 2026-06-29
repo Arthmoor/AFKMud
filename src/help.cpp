@@ -110,32 +110,28 @@ constexpr int HELP_VERSION = 1;
 
 void save_helps( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( HELP_FILE ) );
-
+   std::ofstream stream( std::filesystem::path{HELP_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, HELP_FILE, std::strerror(errno) );
       return;
    }
 
-   stream << "#VERSION " << HELP_VERSION << std::endl;
-   for( auto* hlp : helplist )
+   stream << std::format( "#VERSION {}\n", HELP_VERSION );
+   for( auto* help : helplist )
    {
-      stream << "#HELP" << std::endl;
-      stream << "Level    " << hlp->level << std::endl;
-      stream << "WebInvis " << hlp->webinvis << std::endl;
-      stream << "Keywords " << hlp->keyword << std::endl;
+      stream << "#HELP\n";
+      stream << std::format( "Level    {}\n", help->level );
+      stream << std::format( "WebInvis {}\n", help->webinvis );
+      stream << std::format( "Keywords {}\n", help->keyword );
 
-      // Stop whitespace pollution of the Related field. - Samson 6-5-2026.
-      strip_spaces( hlp->related );
-      if( !hlp->related.empty() )
-         stream << "Related  " << hlp->related << std::endl;
+      if( !help->related.empty() )
+         stream << std::format( "Related  {}\n", help->related );
 
-      stream << "Text     " << hlp->text << '~' << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << std::format( "Text     {}~\n", help->text );
+      stream << "End\n\n";
    }
+   stream << "#END\n";
    stream.close(  );
    if( stream.fail() )
       bug( "{}: Error occurred after closing {}: ", __func__, HELP_FILE, std::strerror(errno) );
@@ -143,117 +139,68 @@ void save_helps( void )
 
 void load_helps( void )
 {
-   help_data *help = nullptr;
-   std::ifstream stream;
-
-   helplist.clear(  );
-   top_help = 0;
-   int file_ver = 0;
-
-   stream.open( std::filesystem::path( HELP_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{HELP_FILE} );
+   if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, HELP_FILE, std::strerror(errno) );
       return;
    }
 
-   do
+   help_data *help = nullptr;
+   helplist.clear(  );
+   top_help = 0;
+   int file_ver = 0;
+
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MSL];
-
-      stream >> key;
-      strip_lspace( key );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#VERSION" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_whitespace( value );
-         file_ver = atoi( value.c_str() );
-      }
+         stream >> file_ver;
       else if( key == "#HELP" )
+      {
          help = new help_data;
-
-      else if( key == "Keywords" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_whitespace( value );
-         std::transform( value.begin(), value.end(), value.begin(), (int(*)(int)) std::toupper );
-         help->keyword = value;
       }
-
-      else if( key == "Related" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_whitespace( value );
-
-         // Needed to correct data bloat in the helps.dat file caused by whitespace pollution. - Samson 6-5-2026
-         if( value.find_first_not_of( " \t\r\n" ) == std::string::npos )
-            value = "";
-         else
-            std::transform( value.begin(), value.end(), value.begin(), (int(*)(int)) std::toupper );
-
-         help->related = value;
-      }
-
       else if( key == "Level" )
       {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         help->level = atoi( value.c_str(  ) );
+         stream >> help->level;
       }
-
       else if( key == "WebInvis" )
       {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         help->webinvis = atoi( value.c_str(  ) );
+         stream >> help->webinvis;
       }
-
+      else if( key == "Keywords" )
+      {
+         std::string temp = fread_line( stream, '\n' );
+         strupper( temp );
+         help->keyword = temp;
+      }
+      else if( key == "Related" )
+      {
+         std::string temp = fread_line( stream, '\n' );
+         strupper( temp );
+         help->related = temp;
+      }
       else if( key == "Text" )
       {
-         std::string text_buffer;
-         char c;
          char delimiter = ( file_ver == 0 ) ? (char)0xA2 : '~';
 
-         while( stream.get(c) )
-         {
-            if( c == delimiter )
-               break;
-            text_buffer += c;
-         }
+         std::string temp = fread_line( stream, delimiter );
 
-         stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
-
-         strip_lspace( text_buffer );
-         help->text = text_buffer;
+         help->text = temp;
       }
-
       else if( key == "End" )
       {
          helplist.push_back( help );
          ++top_help;
       }
-
+      else if( key == "#END" )
+         break;
       else
       {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-         log_printf( "Bad line in help file: {} {}", key, value );
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, HELP_FILE );
+         fread_to_eol( stream );
       }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 

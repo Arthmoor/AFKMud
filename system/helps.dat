@@ -1640,8 +1640,7 @@ With this skill, the character is able to morph his lungs for a short
 period of time to adapt to breathing underwater. However, note that
 once the skill's effects wear off, you will be drowned if you are not
 swift enough re-adapting your lungs, by either using this skill or
-finding another way to breathe underwater.
-~
+finding another way to breathe underwater.~
 End
 
 #HELP
@@ -1669,8 +1668,7 @@ In the thick of battle, a Warrior or Monk can cause adrenaline to flow
 within himself, resulting in an increased strength, dexterity and
 constituion. However, this effect will only last for a short duration.
 For the duration of the spell, the Warrior or Monk will suffer a penalty
-to intelligence and wisdom as he is unable to think clearly.
-~
+to intelligence and wisdom as he is unable to think clearly.~
 End
 
 #HELP
@@ -1928,8 +1926,7 @@ Level        : 23 Mage, 28 Necromancer, 2 Cleric, 6 Druid, 3 Warrior,
                9 Bard
 
 By focusing your attention to the care of a stunned character, this
-skill allows you to revive the character back to conciousness.
-~
+skill allows you to revive the character back to conciousness.~
 End
 
 #HELP
@@ -1985,8 +1982,7 @@ sophisticated aliases are needed, a mud client package would probably
 serve the purpose better.
  
 To remove an alias, type 'unalias' followed by the shortcut you
-wish to remove.
-~
+wish to remove.~
 End
 
 #HELP
@@ -2067,8 +2063,7 @@ Level        : 75 Rogue, 75 Monk
 
 The experienced Rogue and Monk are able to make use of their knowledge of the
 anatomy to aim their attacks at the weak points of their opponents, thus
-effectively improving their hitroll and damroll for a limited duration.
-~
+effectively improving their hitroll and damroll for a limited duration.~
 End
 
 #HELP
@@ -2082,8 +2077,7 @@ Minimum Cost : 20 Mana
  
 Casting this spell hightens the senses of the spell recipient to 
 those of an animal, being able to see things that would otherwise
-be hidden to them.
-~
+be hidden to them.~
 End
 
 #HELP
@@ -2122,8 +2116,7 @@ Text     Usage: ansi <on/off>
 This command will toggle your ANSI color on or off. ANSI will work only
 if your terminal program supports it. You can customize your colors in any
 way you see fit. Type 'color' for further details on customizing your
-display.
-~
+display.~
 End
 
 #HELP
@@ -2136,8 +2129,7 @@ Level        : 83 Mage, 86 Necro, 75 Antipaladin
 Minimum Cost : 65 Mana
 
 This spell makes the recipient more resistant to all types (including
-beneficial types) of magic for its duration.
-~
+beneficial types) of magic for its duration.~
 End
 
 #HELP
@@ -2159,8 +2151,7 @@ almost all forms of weapons and armor due to their fighter classed nature.
 They must also remain evilly aligned at all times or they will lose their 
 powers and abilities, becoming pure Warriors. The prime attributes of
 Anti-Paladins are strength, intelligence and constitution. Only Humans 
-can become Anti-Paladins.
-~
+can become Anti-Paladins.~
 End
 
 #HELP
@@ -2275,8 +2266,7 @@ Usage: appraise all
 Appraise, when at a blacksmithy or other repairing shop, will inform
 you of the condition of your equipment in question, and whether or not
 it is in need of repair. If it does require work, it will also tell you
-how much the repairs will cost.
-~
+how much the repairs will cost.~
 End
 
 #HELP
@@ -2291,8 +2281,7 @@ Minimum Cost : 20 Mana
 This spell gives the recipient the ability to breathe whilst underwater,
 a very handy skill to have when adventuring on and under the seas,
 lakes, and rivers around the Realms. Note that this spell can be renewed
-before it expires, ensuring that you are never caught short of breath.
-~
+before it expires, ensuring that you are never caught short of breath.~
 End
 
 #HELP
@@ -2432,8 +2421,7 @@ level X can wipe out the entire area! Use common sense, ask people about
 the areas, find experienced players to group with. Don't get cocky, and
 you'll live longer. Be social, and you'll live longer. Ask questions,
 and you will live longer. If you do find however that any of the numbers
-are wildly inaccurate, feel free to post a message.
-~
+are wildly inaccurate, feel free to post a message.~
 End
 
 #HELP
@@ -2558,8 +2546,7 @@ suspicious may not be assassinated.
 A piercing weapon must be used to assassinate successfully. The victim
 being unaware of your presence also plays a big role in the success
 factor of your attempt. Assassinated victims are not automatically looted
-or sacrificed.
-~
+or sacrificed.~
 End
 
 #HELP
@@ -2641,8 +2628,7 @@ Level        : 60 Cleric
 Minimum Cost : 65 Mana
 
 By means of this spell, the caster transports themself and any members of
-their group, if present in the same room, to the astral plane.
-~
+their group, if present in the same room, to the astral plane.~
 End
 
 #HELP
@@ -2850,8 +2836,7 @@ have a chance of backfiring if the character using them is much lower in
 level than the spell level on the item.
  
 For example, a level 15 character trying to invoke a wand with level 50
-fireball may injure themselves when the spell backfires.
-~
+fireball may injure themselves when the spell backfires.~
 End
 
 #HELP
@@ -2957,8 +2942,7 @@ Duration     : (user's level)*4 rounds
 Level        : 21 Warrior
  
 This skill will let warriors bandage their wounds and apply first aid to
-themselves or any other character, causing their wounds to heal faster.
-~
+themselves or any other character, causing their wounds to heal faster.~
 End
 
 #HELP
@@ -2980,8 +2964,7 @@ To WITHDRAW, simply go to the bank and withdraw what you need.
 To see how much you have, type BALANCE, it will show you how much you
 have on hand, and how much is in the bank.
  
-Code for banks courtesy of Minas Ravenblood of The Apocalypse Theatre.
-~
+Code for banks courtesy of Minas Ravenblood of The Apocalypse Theatre.~
 End
 
 #HELP
@@ -3000,8 +2983,7 @@ the singing of a song or the telling of a lost tale. Truly no other
 class can entertain a king's court or a busy inn with such unparalleled 
 skill. The Bard relies on wisdom, charisma and dexterity as his prime
 stats. Only Humans, High-Elves, Wild-Elves, Half-Elves and Halflings can 
-enter the Bardic class.
-~
+enter the Bardic class.~
 End
 
 #HELP
@@ -3060,8 +3042,7 @@ Level        : 60 Warrior
 
 An experienced warrior is able to channel his energy into a controlled battle
 rage which increases his chance to hit in combat as well as the damage he
-does to his opponent.
-~
+does to his opponent.~
 End
 
 #HELP
@@ -3110,8 +3091,7 @@ Minimum Cost : 30 Mana
 
 The suave Rogue is able to try to beguile a victim using his glib tongue and
 simple hypnotic tricks. If successful, the victim will willingly follow the
-Rogue's instructions.
-~
+Rogue's instructions.~
 End
 
 #HELP
@@ -3124,8 +3104,7 @@ Level        : 37 Cleric
 Minimum Cost : 25 Mana 
  
 The spell BENEDICTION lays upon the members of the caster's group
-a strong, but short-lived protection from evil.
-~
+a strong, but short-lived protection from evil.~
 End
 
 #HELP
@@ -3140,8 +3119,7 @@ Minimum Cost : 35 Mana
 The Paladin may infuse itself with a general protection from evil with
 this ancient cantrip.  It will also improve the armor and chance to hit
 of the Paladin. As with most of the major Paladin spells, it requires the
-utilization of the Paladin symbol.
-~
+utilization of the Paladin symbol.~
 End
 
 #HELP
@@ -3338,8 +3316,7 @@ Level        : 50 High Elf
 In times of great need, High Elves are known to invoke the ancient spirits of 
 their ancestors which would inspire them to turn into uncanny fighters. They
 move so smoothly in the battlegrounds that they become almost impossible to
-hit and strike their foes with no mercy. This song can only be used once a day.
-~
+hit and strike their foes with no mercy. This song can only be used once a day.~
 End
 
 #HELP
@@ -3382,8 +3359,7 @@ Level        : 3 Cleric, 12 Druid, 9 Paladin
 Minimum Cost : 10 Mana
 
 This spell improves the to-hit roll and saving throw versus spell of the
-target character by 1+(caster's level)/20 each.
-~
+target character by 1+(caster's level)/20 each.~
 End
 
 #HELP
@@ -3426,8 +3402,7 @@ Damage       : (character's level)
 
 Blitz is a skill which can only be used once a fight has started, and
 can only be used against your primary opponent. If it successfully
-lands, it inflicts damage on your opponent.
-~
+lands, it inflicts damage on your opponent.~
 End
 
 #HELP
@@ -3473,8 +3448,7 @@ most mortals. Now, the new Great South Road pierces through the
 heart of the &rBl&Roodmi&rre&z swamp, allowing adventurers to explore
 its murky depths. Be forewarned though, many have been lost to the
 denizens of the &rBl&Roodmi&rre&z, their deaths horribly painful and
-torturous.
-~
+torturous.~
 End
 
 #HELP
@@ -3501,8 +3475,7 @@ Minimum cost : 20 mana
 
 The Monk is able to move so rapidly in combat that his very form seems
 to blur at the edges. This effectively increases his armor class and
-makes him harder to hit.
-~
+makes him harder to hit.~
 End
 
 #HELP
@@ -3693,8 +3666,7 @@ KL of Palainth: Rathian
 KL of Alatia: Cam
 
 Contact them online if possible, or mudmail them. Email addresses are
-available upon request.
-~
+available upon request.~
 End
 
 #HELP
@@ -3766,8 +3738,7 @@ just the objects with that name.
 
 SELL sells an object to a shop keeper.
 
-VALUE asks the shop keeper how much he, she, or it will buy the item for.
-~
+VALUE asks the shop keeper how much he, she, or it will buy the item for.~
 End
 
 #HELP
@@ -3819,8 +3790,7 @@ Text     &gMap of Bywater
 &CG&g. Bywater Plaza                  &CW&g. Up to rent
    Entry from Astral Plane        &BX&g. Bard Guildmaster
    Portal to Abecedarium          &CY&g. Sheriff Post, up to watchtower
-&BH&g. Paladin Guildmaster            &CZ&g. Sheriff Training Yard
-~
+&BH&g. Paladin Guildmaster            &CZ&g. Sheriff Training Yard~
 End
 
 #HELP
@@ -3847,8 +3817,7 @@ This powerful bard spell attempts to blast a carefully-crafted set of off-key
 notes directly into the target's brain through his ears, causing serious
 damage. This spell will most likely diminish the target's love for music
 in the future. You are required to have a musical instrument to cast this
-spell.
-~
+spell.~
 End
 
 #HELP
@@ -3878,8 +3847,7 @@ Text     Time in AFKMud follows the Graecian calendar, which is as follows:
     1 hour of mud time passes for every 280 seconds of real time, which is
     roughly equal to 4.6 minutes. There is no variation in time passage.
     At current rates, this means 1 mud year will pass for every 1 month
-    of real time.
-~
+    of real time.~
 End
 
 #HELP
@@ -3912,8 +3880,7 @@ Save         : vs. spells to negate
 Minimum Cost : 15 Mana
 
 Calm makes an aggressive monster non-aggressive. This generally does no
-good if the monster is already attacking.
-~
+good if the monster is already attacking.~
 End
 
 #HELP
@@ -3980,8 +3947,7 @@ Minimum cost : 40 Mana
  
 Being an apprentice of destruction, a character which possesses this spell
 can give off a nauseous stench which causes its opponant to be distracted
-by the foulness, thereby lowering their regular capability to deal damage.
-~
+by the foulness, thereby lowering their regular capability to deal damage.~
 End
 
 #HELP
@@ -4007,8 +3973,7 @@ The effect of the spell is reduced or eliminated if the victim makes the
 saving throw successfully.
 
 To see the help for each spell, simply replace cast with help ;) Remember
-to include ' around multiple-word spells for better accuracy.
-~
+to include ' around multiple-word spells for better accuracy.~
 End
 
 #HELP
@@ -4117,8 +4082,7 @@ opposing groups of magi wanted the same area of land. Not much is known of the
 horrific battle that ensued other than this spell was cast by both sides,
 many times, destroying everything in sight. All of the mages thought to have
 known the secret to casting this spell were dead, neither side winning this
-slaughter. How, you wonder, could this spell appear here?
-~
+slaughter. How, you wonder, could this spell appear here?~
 End
 
 #HELP
@@ -4130,8 +4094,7 @@ Text     Duration : Instant
 This spell is only found in a weapon that has been blessed by a certain god.
 The name of this god has remained unknown for all of known history, and many
 have spent their entire life trying to figure it out. Only one person has ever
-come across the means to get this powerful spell, and that man will not tell.
-~
+come across the means to get this powerful spell, and that man will not tell.~
 End
 
 #HELP
@@ -4162,8 +4125,7 @@ with long flowing hair. Their upper torsos appear in all ways to be
 Human-like while their lower bodies resemble that of horses. They have 
 four powerful legs and they can use both their hind legs and fore legs 
 to deliver crushing kicks to their opponents. When encountering a 
-Centaur, never ever ask to ride on them as this is a grave insult.
-~
+Centaur, never ever ask to ride on them as this is a grave insult.~
 End
 
 #HELP
@@ -4177,8 +4139,7 @@ and charm. It primarily affects:
  
  - prices charged to a character by shopkeepers
  
-No class receives charisma as a prime attribute.
-~
+No class receives charisma as a prime attribute.~
 End
 
 #HELP
@@ -4195,8 +4156,7 @@ Minimum Cost : 60 Mana
 This powerful spell creates a crackling burst of lightning that strikes
 an initial target before leaping to the next nearest target. The lightning
 will continue jumping and striking all targets until the spell's power wears
-off. Each jump will decrease the electrical damage dealt until it fizzles out.
-~
+off. Each jump will decrease the electrical damage dealt until it fizzles out.~
 End
 
 #HELP
@@ -4225,8 +4185,7 @@ warned! Know the lands before you attempt the challenges.
 When you have completed the last mob, look for further instructions in the
 exit chamber for claiming your prize.
 
-Good luck!
-~
+Good luck!~
 End
 
 #HELP
@@ -4238,16 +4197,16 @@ Text     Usage        : cast 'change form' <mobname>
 Duration     : Between 12-24 mud hours or until you revert or die
 Level        : 15 Druid
 Minimum Cost : 20 Mana
- 
+
 With this spell the druid is able to change his shape into the form of
 a monster. Changes in form give the caster all the abilities of the new
 form, such as flight or breath weapons and also all its weaknesses.
- 
+
 Take note: Changing your form uses varying amounts of favor.
- 
+
 To return to your character, type the command:  REVERT
 You must revert to your own form before changing form again.
- 
+
 The list for Druid forms:
   Creature    Level (Comments)
 ------------------------------
@@ -4266,19 +4225,17 @@ The list for Druid forms:
 "fire"        75    (Fire Elemental)    *can cast*
 "water"       80    (Water Elemental)   *can cast*
 "earth"       85    (Earth Elemental)   *can cast*
-"nature"      100   (Nature Elemental)  *can cast*
-~
+"nature"      100   (Nature Elemental)  *can cast*~
 End
 
 #HELP
 Level    0
-WebInvis 101
+WebInvis 1
 Keywords CHANGE SEX
 Text     Syntax: cast 'change sex' <victim>
 
 This spell changes the sex of the victim (temporarily).
-Immortal command only.
-~
+Immortal command only.~
 End
 
 #HELP
@@ -4304,8 +4261,7 @@ Level       : 85 AntiPaladin
 Minimum cost: 90 mana
  
 Enhances your armor with chaotic energy, making you more resistant to
-fire and drain spells.  It also lowers your ac by (caster's level)/2.
-~
+fire and drain spells.  It also lowers your ac by (caster's level)/2.~
 End
 
 #HELP
@@ -4318,8 +4274,7 @@ Level        : 67 Cleric, 39 Druid
 Save         : vs. spells to negate
 Minimum Cost : 60 Mana
 
-Charged beacon renders the victim susceptible to electricity attacks.
-~
+Charged beacon renders the victim susceptible to electricity attacks.~
 End
 
 #HELP
@@ -4440,8 +4395,7 @@ Level        : 40 Rogue
 A skill unique to rogues, and which can only be used while in combat.
 It inflicts damage comparable to backstab, and requires the rogue to
 be wielding a piercing weapon. To successfully circle you must be the
-first to attack in the battle, or be grouped with whoever was. 
-~
+first to attack in the battle, or be grouped with whoever was.~
 End
 
 #HELP
@@ -4489,8 +4443,7 @@ i) Antipaladin
 j) Bard
 k) Necromancer
  
-To get more information on each class, type 'help <class name>'.
-~
+To get more information on each class, type 'help <class name>'.~
 End
 
 #HELP
@@ -4504,8 +4457,7 @@ possess some combat spells and skills, and the ability to use many
 powerful crushing weapons, but combat is far from the focus of this 
 class. The Cleric is a fountain of wisdom and healing that many players 
 rely on when adventuring. The main attribute of a Cleric is wisdom. All 
-races can endeavor to become Clerics.  
-~
+races can endeavor to become Clerics.~
 End
 
 #HELP
@@ -4587,8 +4539,7 @@ Keywords CLIMB
 Text     Usage        : climb <direction>
 Level        : 9 Rogue, 12 Ranger, 12 Monk, 12 Bard 
  
-This skill enables you to climb into and out of rooms that require it.
-~
+This skill enables you to climb into and out of rooms that require it.~
 End
 
 #HELP
@@ -4636,8 +4587,7 @@ Expect to provide some kind of sample of your ability, even if it's not
 mud related code. Familiarity with the game history, as well as Smaug or 
 Dalemud code is a major plus.
 
-Contact Whir for a coding position. Email address is available upon request.
-~
+Contact Whir for a coding position. Email address is available upon request.~
 End
 
 #HELP
@@ -4663,8 +4613,7 @@ Syntax: color _all_ [color] (Sets all color types to [color])
 
 This command allows you to change the default colors for various things. Typing the command
 without an argument gives you a list of what you can change, along with the colors you can
-change it to.
-~
+change it to.~
 End
 
 #HELP
@@ -4811,8 +4760,7 @@ armor, it will report the one with the better armor class.
 COMPARE with one argument compares an object in your inventory to the object
 you are currently wearing or wielding of the same type.
 
-COMPARE doesn't consider any special modifiers of the objects.
-~
+COMPARE doesn't consider any special modifiers of the objects.~
 End
 
 #HELP
@@ -4852,8 +4800,7 @@ Level    2
 WebInvis 0
 Keywords COMPRESS
 Text     This is a toggle that turns on or off the compression protocol if it's supported by your
-mud client.
-~
+mud client.~
 End
 
 #HELP
@@ -4873,8 +4820,7 @@ stamina.  Among other things, it affects:
  - improvement or worsening of a character's mental state, thus
    affecting general endurance
  
-No class receives constitution as a prime attribute.
-~
+No class receives constitution as a prime attribute.~
 End
 
 #HELP
@@ -4890,8 +4836,7 @@ Minimum Cost : 55 mana
  
 When this spell is cast, a cone of immense cold radiates from the palms
 of the caster. It causes immense freezing pain on anything caught in its
-path and who are not grouped with the caster.
-~
+path and who are not grouped with the caster.~
 End
 
 #HELP
@@ -4939,8 +4884,7 @@ Text     Syntax : connect <obj1> <obj2>
 
 This connects 2 objects of the type ITEM_PIECE to each other to form a 3rd.
 The pieces must fit each other, however, and not all pieces will make a
-combination.
-~
+combination.~
 End
 
 #HELP
@@ -4950,8 +4894,7 @@ Keywords CONSIDER
 Text     Syntax: consider <character>
 
 CONSIDER tells you what your chances are of killing a character.
-Of course, it's only a rough estimate.
-~
+Of course, it's only a rough estimate.~
 End
 
 #HELP
@@ -5057,8 +5000,7 @@ Level        : 1 Mage, 9 Necromancer, 8 Cleric, 10 Druid, 20 Ranger,
 Minimum Cost : 10 Mana
 
 This spell creates a permanent ball of light which can be held as a
-light source.
-~
+light source.~
 End
 
 #HELP
@@ -5087,8 +5029,7 @@ Level        : 1 All classes
 
 Cooking requires certain food types and a fire. Cooking one's food will
 keep it preserved longer, and remove many poisons. However, overcooking
-may destroy the item.
-~
+may destroy the item.~
 End
 
 #HELP
@@ -5339,8 +5280,7 @@ This spell can effectively counter any spell that is targeted at one's self
 be it harmful or helpful. However, casting the counterspell must be precisely
 done just before the spell one wants countered is cast (within one or two
 seconds). This spell can also counter the effects of any area spells that
-might hit you but it will not protect anyone else in your group.
-~
+might hit you but it will not protect anyone else in your group.~
 End
 
 #HELP
@@ -5388,8 +5328,7 @@ when held, it imparts a small amount of AC, this is not its true purpose. The
 holy mistletoe is a very important symbol to a druid, it survives in
 unkind conditions and lives in harmony with everything around it. Over
 the years it has become the holy symbol of the Druids, even becoming
-a required ingredient in some of the more powerful spells.
-~
+a required ingredient in some of the more powerful spells.~
 End
 
 #HELP
@@ -5403,8 +5342,7 @@ Minimum cost : 20 Mana
  
 Being the guardians of good, the Paladin class can cast this spell
 which creates a holy symbol of their god to aid them in their battle
-against evil.
-~
+against evil.~
 End
 
 #HELP
@@ -5417,8 +5355,7 @@ Level        : 31 Druid, 35 Ranger,
 Minimum Cost : 20 Mana
 
 This spell brings forth a magical spring from the ground, which has the
-same properties as a fountain.
-~
+same properties as a fountain.~
 End
 
 #HELP
@@ -5431,8 +5368,7 @@ Level        : 11 Cleric
 Minimum Cost : 20 Mana
 
 This spell creates a holy symbol which is required as a component in
-powerful clerical spells.
-~
+powerful clerical spells.~
 End
 
 #HELP
@@ -5482,8 +5418,7 @@ Text     /----------------------------------------------------------------------
 | Tom Madsen, Katja Nyboe, Michael Seifert ( Seifert@Dikumud.com )        |
 | and Sebastian Hammer.                                                   |
 |                                                                         |
-\-------------------------------------------------------------------------/
-~
+\-------------------------------------------------------------------------/~
 End
 
 #HELP
@@ -5503,8 +5438,7 @@ and it incapacitates the caster for a brief period after the casting. This
 spell requires the use of a holy mistletoe.
 
 NOTE: This spell is very dangerous and can KILL the caster if s/he is NOT
-careful!
-~
+careful!~
 End
 
 #HELP
@@ -5518,8 +5452,7 @@ Save          : vs para_petri to negate all effects
 
 A monk uses his crushing blow to inflict great damage on his enemies as
 well as to stun his opponents momentarily. However, after using this great
-attack, he gets tired for a while and won't be able to use his deadly skills.
-~
+attack, he gets tired for a while and won't be able to use his deadly skills.~
 End
 
 #HELP
@@ -5533,8 +5466,7 @@ Save         : vs. spells for half damage
 Minimum cost : 60 Mana
  
 A strong spell that makes small pieces of crystal whirl towards the victim,
-lacerating him beyond recognition.
-~
+lacerating him beyond recognition.~
 End
 
 #HELP
@@ -5653,8 +5585,7 @@ Level        : 6 Cleric, 10 Antipaladin
 Minimum Cost : 20 Mana
 
 This spell reduces the character's to-hit roll by 2. It also renders 
-the character unclean in the eyes of God and unable to RECALL.
-~
+the character unclean in the eyes of God and unable to RECALL.~
 End
 
 #HELP
@@ -5678,8 +5609,7 @@ in the verb used in the damage message. Damage messages vary depending
 on weapon type, or what is inflicting the damage.
  
 The message shown will reflect the actual damage you are inflicting on
-(or receiving from) your opponent, and not a specific fixed amount.
-~
+(or receiving from) your opponent, and not a specific fixed amount.~
 End
 
 #HELP
@@ -5715,8 +5645,7 @@ Level    0
 WebInvis 0
 Keywords DAMROLL
 Text     Represents the amount of damage you inflict upon an opponent.
-The higher the number, the better.
-~
+The higher the number, the better.~
 End
 
 #HELP
@@ -5745,8 +5674,7 @@ Minimum cost : 20 mana
 Components   : Meat Slice
 Through a short ritual the negative plane can be tapped allowing a 
 Necromancer to replenish both his life force and personal mana. 
-The dark ritual gains you 20 hit points and 40 mana points.
-~
+The dark ritual gains you 20 hit points and 40 mana points.~
 End
 
 #HELP
@@ -5766,8 +5694,7 @@ the same manner as a deadly who harms a non-deadly.
 
 If you wish to become a deadly character, type: deadly yes
 And remember, ONCE DEADLY ALWAYS DEADLY. You may NOT reverse this
-decision!
-~
+decision!~
 End
 
 #HELP
@@ -5798,8 +5725,7 @@ If you have chosen a deity and have gained enough favor, you may be able
 to supplicate to your god for your corpse. Also see 'help supplicate',
 'help deities', 'help favor' for more information on deities.
 
-( Note: Future plans will alter this scheme - keep this in mind )
-~
+( Note: Future plans will alter this scheme - keep this in mind )~
 End
 
 #HELP
@@ -5815,8 +5741,7 @@ Minimum Cost : 120 mana
  
 The caster may create a powerful dark aura to drain away the life force of 
 all who are present in the room. This spell will affect all who are not 
-grouped with the caster. A skull of death is needed when casting this spell.
-~
+grouped with the caster. A skull of death is needed when casting this spell.~
 End
 
 #HELP
@@ -5830,8 +5755,7 @@ Minimum cost : 35 Mana
  
 With this deadly spell, the Necromancer is able to summon the dark
 forces of the underworld to surround the victim, forming a deathly
-aura round it, thus draining all lifeforce from the victim.
-~
+aura round it, thus draining all lifeforce from the victim.~
 End
 
 #HELP
@@ -5848,8 +5772,7 @@ Components   : Skull of death
 This powerful spell causes instant death in all but the strongest 
 opponents. The Necromancer drains all of the life force out
 of his victim usually causing instant death. The life force is 
-drained from everyone in the room but the caster.
-~
+drained from everyone in the room but the caster.~
 End
 
 #HELP
@@ -5879,8 +5802,7 @@ corpse or transfer a corpse to another area. This is not a true DT.
  
 It is often advisable to look before one leaps and heed room descriptions.
 DT's do not warrant a reimbursement as they are a part of the game. Gold, 
-and favor are not affected by a death trap.
-~
+and favor are not affected by a death trap.~
 End
 
 #HELP
@@ -6060,8 +5982,7 @@ There will be no reimbursements for deleted characters.
 The same applies to immortal characters, if you delete, you will not be
 reinstated as an immortal if you return. Any and all area files in progress
 will also be lost, so if you want your area file, ask for it BEFORE you
-delete yourself.
-~
+delete yourself.~
 End
 
 #HELP
@@ -6073,8 +5994,7 @@ Duration     : (caster's level)*2
 Level        : 55 Mage, 68 Antipaladin
 Minimum Cost : 70 Mana
 
-This spell makes you less susceptible to slashing attacks.
-~
+This spell makes you less susceptible to slashing attacks.~
 End
 
 #HELP
@@ -6088,8 +6008,7 @@ Effect       : Hitroll -(your level/20)
 Minimum cost : 25 mana
 
 A successful hit with this skill will cause your target's hitroll to decrease,
-making it easier to dodge his blows.
-~
+making it easier to dodge his blows.~
 End
 
 #HELP
@@ -6122,8 +6041,7 @@ Saves        : vs. spell to negate
 
 An expert in taunting the rogues have developed the art of angering 
 their foes into rash actions. By continual taunting an opponent he
-may become enraged and lose -1 dex, -2 damroll, and -2 hitroll.
-~
+may become enraged and lose -1 dex, -2 damroll, and -2 hitroll.~
 End
 
 #HELP
@@ -6142,8 +6060,7 @@ An Immortal can request you change your description or bio if it contains
 inappropriate material. Do not use profanity, racial slurs, sexual comments,
 other players names (without their permission), or off-color remarks. Refusal
 to change your bio, description, or title on Immortal request is grounds for
-loss of character privileges.
-~
+loss of character privileges.~
 End
 
 #HELP
@@ -6156,8 +6073,7 @@ Duration     : Instant
 Minimum cost : 25 Mana
  
 Strike sadness in who you're fighting making him or her abandon the
-battle.
-~
+battle.~
 End
 
 #HELP
@@ -6303,8 +6219,7 @@ Level        : 17 Rogue, 28 Ranger
 
 This skill allows one to disarm a trapped object.
 
-Use it with care.
-~
+Use it with care.~
 End
 
 #HELP
@@ -6321,8 +6236,7 @@ of time. Devote is available to level 10 characters and higher.
  
 Note: You must 'devote none' first before devoting to a new deity.
 
-To see specific information about a deity, type 'deities [deityname]'
-~
+To see specific information about a deity, type 'deities [deityname]'~
 End
 
 #HELP
@@ -6350,8 +6264,7 @@ will allow you to quaff without dropping many potions during the heat of
 battle, while a poor dexterity will cause you to accidentally drop many
 of the valuable vials.
  
-Dexterity is the prime attribute of rogues.
-~
+Dexterity is the prime attribute of rogues.~
 End
 
 #HELP
@@ -6495,8 +6408,7 @@ Keywords DISLODGE
 Text     Usage : dislodge <projectile>
 
 This lets you pull a lodged projectile out of your body. It does do some damage,
-but it's much better than leaving it stuck in you ;)
-~
+but it's much better than leaving it stuck in you ;)~
 End
 
 #HELP
@@ -6506,8 +6418,7 @@ Keywords DISMISS
 Text     Syntax: dismiss <target>
 
 The dismiss command will force your charmed mobile to follow itself and
-will negate the charm effect.
-~
+will negate the charm effect.~
 End
 
 #HELP
@@ -6584,8 +6495,7 @@ Minimum cost : 65 Mana
 This is a powerful spell of a high level Paladin. When cast, it enables
 the caster to be possessed by a divine spirit which causes the caster to
 enter a temporary state of fury. This, in turn, increases the damage he
-can inflict as well as his chances of hitting an opponent.
-~
+can inflict as well as his chances of hitting an opponent.~
 End
 
 #HELP
@@ -6598,8 +6508,7 @@ Level        : 75 Cleric
 Minimum Cost : 200 Mana
 
 This spell heals the target of 250 hitpoints of damage and requires the
-use of the Cleric symbol.
-~
+use of the Cleric symbol.~
 End
 
 #HELP
@@ -6610,8 +6519,7 @@ Text     Syntax: operates automatically
 
 Dodge is a skill which assists in the evasion of incoming attacks. If
 you are successful, your opponent's attack misses and you take will
-take no damage. Dodge is an automatic skill and requires no weapon.
-~
+take no damage. Dodge is an automatic skill and requires no weapon.~
 End
 
 #HELP
@@ -6643,8 +6551,7 @@ etc.
 Success means that the door is unlocked and opened and the attempter is
 placed in the room on the other side of the door, while failure causes
 the attempter to be stunned for a short time, and take a fair amount of
-damage in the process.
-~
+damage in the process.~
 End
 
 #HELP
@@ -6679,8 +6586,7 @@ Text     Desolation of the Dragon II Mud: dotd@dotd.com
 
 Portions of AFKMud have been adapted from the publicly
 available release of the DOTD source code. We'd like to thank Garil and
-his crew for making their code available to the public.
-~
+his crew for making their code available to the public.~
 End
 
 #HELP
@@ -6701,8 +6607,7 @@ deadly character at any time. Peacefuls can use 'config +/- drag' to
 prevent others from dragging them if they wish.
  
 You cannot drag a character into a death trap, or if either you or they
-are under attack.
-~
+are under attack.~
 End
 
 #HELP
@@ -6716,8 +6621,7 @@ Damage       : (character's level)d5 up to a max of 170
 By focusing his energies and using all of the skill learned in the past,
 a monk is able to contain the power of a dragon in his palm just long
 enough to strike his enemy. Use of this skill also makes the victim more
-susceptible to energy attack for a short time.
-~
+susceptible to energy attack for a short time.~
 End
 
 #HELP
@@ -6729,8 +6633,7 @@ Duration     : (caster's level)*4
 Level        : 38 Mage, 35 Bard
 Minimum Cost : 20 Mana
 
-This spell increases your ability to reason for its duration.
-~
+This spell increases your ability to reason for its duration.~
 End
 
 #HELP
@@ -6742,8 +6645,7 @@ Duration     : (caster's level)*2
 Level        : 62 Mage, 65 Antipaladin, 75 Bard
 Minimum Cost : 70 Mana
 
-This spell makes you less susceptible to piercing weapons.
-~
+This spell makes you less susceptible to piercing weapons.~
 End
 
 #HELP
@@ -6768,8 +6670,7 @@ Duration     : Instant
 Level        : 44 Mage, 20 Bard
 Minimum Cost : 20 Mana
 
-This spell enables you to cast a dream or message on a sleeping player.
-~
+This spell enables you to cast a dream or message on a sleeping player.~
 End
 
 #HELP
@@ -6802,8 +6703,7 @@ Examples:
  - drop 1000 coins
  - get all.ball backpack
  - get 5 sword
- - put 15 potion backpack
-~
+ - put 15 potion backpack~
 End
 
 #HELP
@@ -6835,8 +6735,7 @@ As beautiful as their Elven kin, the Drow have uniformly jet-black skin.
 They are lithe, slim and graceful in build. A majority of them have 
 snow-white hair and ruby-red eyes, although some rare colors have been 
 known to exist among the Drow. All Drow eyes tend to grow redder when they
-are angry or upset.
-~
+are angry or upset.~
 End
 
 #HELP
@@ -6874,8 +6773,7 @@ Druids are truly a gifted class. All those of the Druidic order must be
 careful to remain neutrally aligned at all times or they will permanently 
 lose all their Druid powers and become Clerics. The Druid relies on wisdom 
 and charisma as his prime stats. Only Humans, Centaur, High-Elves, 
-Wild-Elves and Pixies can become Druids. 
-~
+Wild-Elves and Pixies can become Druids.~
 End
 
 #HELP
@@ -6889,8 +6787,7 @@ This skill is something that allows you to wield two weapons at once.
 Generally this means a smaller/lighter weapon in the holding hand. If you
 are not very good at this skill, you will frequently fumble your weapons
 in combat. Your secondary weapon is not used via the wield command, you
-must HOLD it. Some weapons cannot be held.
-~
+must HOLD it. Some weapons cannot be held.~
 End
 
 #HELP
@@ -6920,8 +6817,7 @@ endeavour to become expert Rogues or Clerics.
 Duergar average from four foot five inches and five feet tall, with pale 
 white complexions and thick, hairy torsos and limbs. Their eyes come in a 
 range of colors, most usually red or purple. Unlike the Dwarves however, 
-the Duergar do not put much emphasis on growing beards.
-~
+the Duergar do not put much emphasis on growing beards.~
 End
 
 #HELP
@@ -6957,8 +6853,7 @@ able to be Rogues, the Dwarves make the best Warriors and Clerics.
 
 Dwarves average from four foot five inches and five feet tall, with dusky 
 complexions and thick, hairy torsos and limbs. Both men and women take 
-pride in their facial hair.
-~
+pride in their facial hair.~
 End
 
 #HELP
@@ -6987,8 +6882,7 @@ Minimum Cost : 45 Mana
 Upon uttering this spell, the cleric causes the very ground to heave and
 shake violently. The force of the shaking ground does damage to all people
 not in the caster's group. Certain creatures are very susceptible to
-earthquakes. You'll have to find them on your own.
-~
+earthquakes. You'll have to find them on your own.~
 End
 
 #HELP
@@ -7045,8 +6939,7 @@ mental state (if done while not starving/dehydrating).
  
 Being hurt badly in battle ("That really did HURT", and "You wish that your
 wounds would stop BLEEDING so much!") as well as poisoning will also have a
-rapid negative affect on your mental state.
-~
+rapid negative affect on your mental state.~
 End
 
 #HELP
@@ -7098,8 +6991,7 @@ Omit the space when using the commands in your notes):
 /p              Display some information about the current editing session.
 /f              Formats the text in the buffer. You must set yourself
 		      on line 1 of the buffer before doing this.
-/s              Save buffer, and exit the editor.
-~
+/s              Save buffer, and exit the editor.~
 End
 
 #HELP
@@ -7111,8 +7003,7 @@ Level        : 45 Rogue
 Damage       : Level + (Level/2) up to a max of 60
  
 By bending your elbow to a sharp angle, you are able to do a quick move
-in which you cause pain and damage to your opponent's ribs.
-~
+in which you cause pain and damage to your opponent's ribs.~
 End
 
 #HELP
@@ -7125,8 +7016,7 @@ Level        : 92 Mage
 Minimum Cost : 100 Mana
 
 This powerful spell increases your resistance to both magical and nonmagical
-attacks.
-~
+attacks.~
 End
 
 #HELP
@@ -7140,8 +7030,7 @@ Minimum cost: 120 mana
 
 A high level Druid spell that creates an elemental shield around
 the selected target, making them immune to fire, cold, and electricity.
-This spell requires the use of a holy mistletoe.
-~
+This spell requires the use of a holy mistletoe.~
 End
 
 #HELP
@@ -7169,8 +7058,7 @@ Duration     : (caster's level)*4
 Level        : 15 Bard
 Minimum Cost : 15 Mana
 
-This spell makes you more charismatic for its duration.
-~
+This spell makes you more charismatic for its duration.~
 End
 
 #HELP
@@ -7182,8 +7070,7 @@ Level        : 25 high-elf
  
 Due to their spiritual tuning, High Elves learned to chant a song which
 will soothe their physical wounds and gather some mana from the cosmos.
-However, this special ability is only granted once a day.
-~
+However, this special ability is only granted once a day.~
 End
 
 #HELP
@@ -7231,8 +7118,7 @@ This command allows you to empty a container of its contents.
 Use 'empty <container>' to dump the contents to the ground.
  
 Use 'empty <container> <container>' will empty the contents of the
-first container into the second container.
-~
+first container into the second container.~
 End
 
 #HELP
@@ -7304,8 +7190,7 @@ Level        : 23 Warrior, 19 Monk
 With this skill, a Warrior or Monk can push himself to his physical limit
 and exert himself for a longer period of time. This translates into a faster
 gain in movement points as well as an increased constitution for a limited
-duration.
-~
+duration.~
 End
 
 #HELP
@@ -7316,8 +7201,7 @@ Text     Usage        : operates automatically
 Level        : 25 Warrior, 12 Monk
 
 This skill increases the damage you inflict when attacking. Use of the
-skill is automatic once you have practiced it.
-~
+skill is automatic once you have practiced it.~
 End
 
 #HELP
@@ -7348,8 +7232,7 @@ Level        : 85 Monk
 A high level Monk after years of training body and mind is able to achieve
 enlightenment for a short duration. By doing so, the current hit points of
 the Monk is doubled as he gains a new lease of life. This skill can only be
-used once a day.
-~
+used once a day.~
 End
 
 #HELP
@@ -7362,8 +7245,7 @@ Duration     : Instant
 Minimum cost : 30 Mana
  
 A sure way to infuriate a victim to the breakpoint, making them attack anyone
-and anything they see.
-~
+and anything they see.~
 End
 
 #HELP
@@ -7392,8 +7274,7 @@ Minimum cost : 20 Mana
  
 This is a spell which enables the rangers and druids to call upon the
 power of nature which they protect to tie and hold down its opponents,
-making them more susceptible to attacks.
-~
+making them more susceptible to attacks.~
 End
 
 #HELP
@@ -7409,8 +7290,7 @@ exit.
  
 The most common use of this is with portals cast by mages. To use the
 portal, simply type 'enter' on either side of it and you will pass
-through to the other side.
-~
+through to the other side.~
 End
 
 #HELP
@@ -7448,8 +7328,7 @@ the town blacksmith. (NOTE: Not all equipment is repairable). You may also
 notice that while fighting a creature which attacks you with acid breath or
 another acid attack, your equipment gets "etched and pitted". When this
 occurs, the AC on that item is damaged by one permanently. You cannot
-repair the damage done by "pitting and etching".
-~
+repair the damage done by "pitting and etching".~
 End
 
 #HELP
@@ -7460,8 +7339,7 @@ Text     Syntax: equipment
 Syntax: inventory
 
 EQUIPMENT lists your equipment (armor, weapons, and held items).
-INVENTORY lists your inventory.
-~
+INVENTORY lists your inventory.~
 End
 
 #HELP
@@ -7490,8 +7368,7 @@ Save         : none
 Minimum Cost : 60 Mana
 
 This spell increases the damage done to the victim by energy attacks for
-the duration of the spell.
-~
+the duration of the spell.~
 End
 
 #HELP
@@ -7505,8 +7382,7 @@ Save         : none
 Minimum Cost : 60 Mana
 
 This spell decreases the amount of damage taken from energy attacks for
-the duration of the spell.
-~
+the duration of the spell.~
 End
 
 #HELP
@@ -7538,8 +7414,7 @@ Syntax: examine <corpse>
 
 LOOK looks at something and sees what you can see.
 
-EXAMINE is short for 'LOOK container' followed by 'LOOK IN container'.
-~
+EXAMINE is short for 'LOOK container' followed by 'LOOK IN container'.~
 End
 
 #HELP
@@ -7630,8 +7505,7 @@ Text     Syntax: exits
 
 Tells you the visible exits of the room you are in. Not all exits are visible.
 You can use the 'bump' technique to find hidden exits. (Try to walk in a
-certain direction and see what you bump into).
-~
+certain direction and see what you bump into).~
 End
 
 #HELP
@@ -7688,8 +7562,7 @@ Your last 50 kills are recorded.  Each time you kill a creature that has
 been one of your last 50 kills you will receive less and less exp for it.
 The creature will also learn from its experience with you over time; if
 its intelligence is higher than your own it will begin to gain an
-advantage over you in combat.
-~
+advantage over you in combat.~
 End
 
 #HELP
@@ -7781,8 +7654,7 @@ Level        : 51 Cleric, 27 Necromancer, 30 Antipaladin
 Minimum Cost : 60 Mana
 
 Fatigue renders the victim susceptible to the sleep spell for the
-duration of the spell.
-~
+duration of the spell.~
 End
 
 #HELP
@@ -7810,8 +7682,7 @@ Level        : 71 Cleric, 39 Necromancer, 42 Antipaladin
 Minimum Cost : 60 Mana
 
 Feebleness renders your victim susceptible to draining attacks for
-the duration of the spell.
-~
+the duration of the spell.~
 End
 
 #HELP
@@ -7824,8 +7695,7 @@ Level        : 25 Monk
 Feign death allows a monk to pretend that they are dead. The things
 that are attacking the monk will stop fighting (the monk). It is best
 to leave the room as soon as possible; the mob might see that you're
-still breathing.
-~
+still breathing.~
 End
 
 #HELP
@@ -7838,8 +7708,7 @@ This spell can only be bound to blade of the sabre type, and only a certain drag
 will do. This dragon is so rare that only one man is even thought to know where she
 can be found. The dragon, once bound, will attempt to escape from the sabre every
 time it's swung, attacking anyone in her way. Sadly she doesn't realize that she
-is bound by her soul and can only find peace once the sabre is completely destroyed.
-~
+is bound by her soul and can only find peace once the sabre is completely destroyed.~
 End
 
 #HELP
@@ -7855,8 +7724,7 @@ FILL can be used with drink containers, regular containers or pipes.
  - to fill a container such as a backpack with items from the ground,
    type 'fill <container>'
  - to fill a pipe you must have both the pipe and the herb in your
-   inventory, then type 'fill <pipe> <herb>'
-~
+   inventory, then type 'fill <pipe> <herb>'~
 End
 
 #HELP
@@ -7883,8 +7751,7 @@ Level        : 24 Cleric, 41 Bard
 Minimum Cost : 20 Mana
 
 This spell makes one magically aware of dangerous traps for a period of
-time.
-~
+time.~
 End
 
 #HELP
@@ -7916,8 +7783,7 @@ Components   : Skull of Death
 One of the most powerful spells in the Necromancers arsenal it is also
 the most dangerous. While it does more damage then any other spell it 
 requires that the Necromancer sacrifice his own life force thus 
-reducing his hit points and mana to a mere 1/10 of his total.
-~
+reducing his hit points and mana to a mere 1/10 of his total.~
 End
 
 #HELP
@@ -7962,8 +7828,7 @@ Minimum Cost : 12 Mana
 This spells allows the Druid to create four very powerful seeds that are
 used as ammunition for slings. Since these seeds are both magical and imbued
 with a elemental fire, they do a considerable amount of damage to the target
-that they hit.
-~
+that they hit.~
 End
 
 #HELP
@@ -8043,8 +7908,7 @@ Level        : 26 Druid, 40 Ranger
 Minimum Cost : 30 Mana
  
 This spell calls into being a 2d8+2 blade of flame which disappears when
-you rent.
-~
+you rent.~
 End
 
 #HELP
@@ -8059,8 +7923,7 @@ Save         : vs. spells for half damage.
 Minimum Cost : 45 Mana
  
 This spell summons a column of fire down upon the target and is one of
-the more powerful and few clerical damage spells.
-~
+the more powerful and few clerical damage spells.~
 End
 
 #HELP
@@ -8079,8 +7942,7 @@ If you lose your link during a fight, then your character will keep
 fighting, and will attempt to RECALL from time to time. Your chances
 of making the recall are reduced, and you will lose much more experience.
 
-In order to RESCUE successfully, you must practice the appropriate skill.
-~
+In order to RESCUE successfully, you must practice the appropriate skill.~
 End
 
 #HELP
@@ -8174,8 +8036,7 @@ Damage        : ld3 up to a max of 90
 Flying kick utilizes the monks physical training more than any of their earlier
 attacks. Overcoming gravity they launch themselves into the air and fly towards
 their target. Once a monk has mastered this skill it can be deadly, as their
-accuracy and power turns their feet into powerful weapons.
-~
+accuracy and power turns their feet into powerful weapons.~
 End
 
 #HELP
@@ -8187,8 +8048,7 @@ Level       : 58 Monk
  
 A character in possession of this skill may use it to briefly focus
 his energies towards restoring a small burst of hit points, mana and
-movement.
-~
+movement.~
 End
 
 #HELP
@@ -8301,8 +8161,7 @@ Longsword - 1
 
 For armour forged by a smith, there is a cost of &Ritem cost + 30%.&z
  
-*Blackmite ore can only be worked by Dwarven players and Dwarven shopsmiths.
-~
+*Blackmite ore can only be worked by Dwarven players and Dwarven shopsmiths.~
 End
 
 #HELP
@@ -8335,8 +8194,7 @@ Level        : 62 Cleric
 Minimum Cost : 40 Mana
  
 This group spell restores 3d8+(l/2) hitpoints to all the members of the
-caster's group including himself.
-~
+caster's group including himself.~
 End
 
 #HELP
@@ -8349,8 +8207,7 @@ Level        : 55 Monk
 
 A high level Monk after years of training body and mind is able to close
 his mind to external influences, thus making him immune to the effects of
-charm and sleep.
-~
+charm and sleep.~
 End
 
 #HELP
@@ -8437,8 +8294,7 @@ fighting spell-casters.  It also has a chance of strangling them to
 death.
  
 Although you may practice this skill and improve in it without it, for it 
-to actually silence your victim, you need a garrotte wire.
-~
+to actually silence your victim, you need a garrotte wire.~
 End
 
 #HELP
@@ -8450,8 +8306,7 @@ Duration     : Unknown
 Level        : 80 Mage
 Minimum Cost : 70 Mana
 
-This spell summons a servitor daemon from the extraplanar dimension.
-~
+This spell summons a servitor daemon from the extraplanar dimension.~
 End
 
 #HELP
@@ -8482,8 +8337,7 @@ Minimum Cost : 60 mana
  
 This spell allows the caster to summon all the undead energies of a ghoul
 into his hand, and transfer all that into the victim's body, possibly even
-paralysing him.
-~
+paralysing him.~
 End
 
 #HELP
@@ -8527,8 +8381,7 @@ eliminating the description. Glance <victim> shows only the health
 condition, eliminating their description and equipment from your
 screen.
  
-Glance may be abbreviated as 'gl'.
-~
+Glance may be abbreviated as 'gl'.~
 End
 
 #HELP
@@ -8566,8 +8419,7 @@ Bard - I bring song to Magic, I bring laughter to the children.
 Necromancer - I control the world of the dead.
 Monk - Seek me in the lands of the insectoids.
  
-   May your quest for the last Master succeed!
-~
+   May your quest for the last Master succeed!~
 End
 
 #HELP
@@ -8611,8 +8463,7 @@ WebInvis 0
 Keywords GOLD
 Text     Syntax: gold
  
-Displays the current total amount of gold you are carrying.
-~
+Displays the current total amount of gold you are carrying.~
 End
 
 #HELP
@@ -8624,8 +8475,7 @@ Level           : 10 Druid, 25 Ranger
 Minimum cost    : 15 mana
  
 This spell enables the character to create berry.  Upon eating the berry, 
-the berry cures 2d8+(caster's level)/3 hitpoints of damage.
-~
+the berry cures 2d8+(caster's level)/3 hitpoints of damage.~
 End
 
 #HELP
@@ -8696,8 +8546,7 @@ Text     Level 11 Warrior, 15 Ranger, 15 Antipaladin, 15 Paladin
 This skill is automatic, once practiced. The skill causes you to grip
 your weapon tightly as someone tries to disarm you, making it far more
 difficult to successfully disarm you. This skill will only increase as
-you are engaged in fights where someone is attempting to disarm you.
-~
+you are engaged in fights where someone is attempting to disarm you.~
 End
 
 #HELP
@@ -8710,8 +8559,7 @@ Level        : 67 Cleric, 37 Druid, 62 Bard, 76 Paladin
 Minimum Cost : 60 Mana
 
 Grounding renders the victim resistant to electrical attacks for the
-duration of the spell.
-~
+duration of the spell.~
 End
 
 #HELP
@@ -8738,8 +8586,7 @@ Duration     : (caster's level)*4 rounds
 Level        : 44 Mage
 Minimum Cost : 65 Mana
  
-This spell casts float on all the characters in the caster's group.
-~
+This spell casts float on all the characters in the caster's group.~
 End
 
 #HELP
@@ -8751,8 +8598,7 @@ Duration     : (caster's level)*4 rounds
 Level        : 59 Mage
 Minimum Cost : 65 Mana
  
-This spell casts fly on all the characters in the caster's group.
-~
+This spell casts fly on all the characters in the caster's group.~
 End
 
 #HELP
@@ -8777,8 +8623,7 @@ group and stop following you.
 'Group all' groups all eligible players following you in the room.
  
 'Group disband' allows the leader to disband his group (members will stop
-following and are ungrouped).
-~
+following and are ungrouped).~
 End
 
 #HELP
@@ -8792,8 +8637,7 @@ Minimum Cost : 28 Mana
  
 When this spell is cast, all the members in the caster's group is refreshed
 from the rigours of travelling. This spell increases the movement of all
-in the group by (caster's level)*2.
-~
+in the group by (caster's level)*2.~
 End
 
 #HELP
@@ -8805,8 +8649,7 @@ Duration     : (caster's level)*5
 Level        : 27 Mage, 27 Bard
 Minimum cost : 30 Mana
  
-This spell casts shield on all the characters in the caster's group.
-~
+This spell casts shield on all the characters in the caster's group.~
 End
 
 #HELP
@@ -8820,8 +8663,7 @@ Minimum Cost : 45 Mana
  
 By casting this spell, the caster bestows on all in his group the ability
 to breath water as though it was air. This allows the group to travel to
-underwater locales.
-~
+underwater locales.~
 End
 
 #HELP
@@ -8860,8 +8702,7 @@ TELL sends a message to one awake player anywhere in the world.
  
 REPLY sends a message to the last player who sent you a TELL. REPLY will work
 even if you can't see the player, and without revealing their identity.  This
-is handy for talking to invisible or switched immortal players.
-~
+is handy for talking to invisible or switched immortal players.~
 End
 
 #HELP
@@ -8878,8 +8719,7 @@ advised that you take the time to read this section first if you are new
 to our Realms.  
  
 Please enclose in text or subject that you would like a copy of the guide.
-If you have problems understanding matters in the guide type:  &BHELP NC
-~
+If you have problems understanding matters in the guide type:  &BHELP NC~
 End
 
 #HELP
@@ -9120,8 +8960,7 @@ of severe harassment.
  
 However, if you are a deadly player, you are automatically vulnerable
 to certain actions which may be considered harassment to a peaceful
-player.
-~
+player.~
 End
 
 #HELP
@@ -9151,8 +8990,7 @@ Minimum cost: 90 mana
 An ancient spell that creates a magical aura of song which lends some
 protection to its caster from the effects of paralysis and energy based
 attacks. It is also believed to provide a slight improvement to armor class
-and overall saving throws.
-~
+and overall saving throws.~
 End
 
 #HELP
@@ -9168,8 +9006,7 @@ Minimum Cost : 50 Mana
 This spell causes the target to temporarily take on the speed of Quicklings.
 All attacks are doubled in combat. This spell does not come without a price
 though, for each time it is cast, the target will age 1 year.
-The spell can be cast on either the caster, or another player or mob.
-~
+The spell can be cast on either the caster, or another player or mob.~
 End
 
 #HELP
@@ -9183,8 +9020,7 @@ and scholars alike to go and chronicle their life experiences and also to
 learn about the world around them. The abbey is also popular with
 many adventurers as it is a priceless storehouse of information and
 maps. It would be good to visit the abbey if ever you are in the forests
-south of Bywater.
-~
+south of Bywater.~
 End
 
 #HELP
@@ -9197,8 +9033,7 @@ Damage       : ld5 up to a max of 150
  
 By using your head, you are able to inflict a terrible blow to your
 opponent's abdomen, causing massive damage. The battle-trained Warrior,
-however, is the only one able to execute the move with amazing ease.
-~
+however, is the only one able to execute the move with amazing ease.~
 End
 
 #HELP
@@ -9287,8 +9122,7 @@ Text     You must really need Help!
 
 To find help topics available to you, type hlist. This will give you
 a very long list of help files. If you'd like a shortened list, type
-'hlist a' for help files that begin with the letter a. 
-~
+'hlist a' for help files that begin with the letter a.~
 End
 
 #HELP
@@ -9381,8 +9215,7 @@ WebInvis 0
 Keywords HISTORY
 Text     Usage : history
 
-Typing this will allow you to read the history of the game world.
-~
+Typing this will allow you to read the history of the game world.~
 End
 
 #HELP
@@ -9397,8 +9230,7 @@ opponents in the room. For nondeadly characters, the 'opponents' means
 mobs, for deadlies it means all the deadly players in the room.
  
 Be aware that area attacks are aggressive to all mobs in the room,
-including pets, mounts and charmed creatures.
-~
+including pets, mounts and charmed creatures.~
 End
 
 #HELP
@@ -9406,8 +9238,7 @@ Level    0
 WebInvis 0
 Keywords HITROLL HR
 Text     Represents your chances of hitting your opponent. The higher
-the number, the better.
-~
+the number, the better.~
 End
 
 #HELP
@@ -9427,8 +9258,7 @@ Note - You may only view help files that are coded for viewing by your
  
 Note - The list of help files is quite extensive, and the command does
        not as yet have a way to filter/shorten the list. Screen capture
-       is, at present, your only recourse.
-~
+       is, at present, your only recourse.~
 End
 
 #HELP
@@ -9452,8 +9282,7 @@ Duration     : 20 rounds
 Level        : 29 Cleric
 Minimum Cost : 35 mana
  
-Hold Person allows a Cleric to paralize his victom for 20 rounds
-~
+Hold Person allows a Cleric to paralize his victom for 20 rounds~
 End
 
 #HELP
@@ -9480,8 +9309,7 @@ WEAR ALL will attempt to HOLD/WEAR/WIELD each suitable item in inventory.
  
 REMOVE will take an object from your equipment and place it into inventory.
  
-REMOVE ALL will remove all your equipment and place it into inventory.
-~
+REMOVE ALL will remove all your equipment and place it into inventory.~
 End
 
 #HELP
@@ -9491,8 +9319,7 @@ Keywords HOLIDAYS
 Text     Usage : holidays
 
 Using this command will give you a list of all the holidays that are currently
-celebrated, along with the month and the day.
-~
+celebrated, along with the month and the day.~
 End
 
 #HELP
@@ -9505,8 +9332,7 @@ Level        : 95 Cleric
 Minimum Cost : 250 Mana
 
 This spell casts sanctuary and protection from evil on every member of
-the cleric's group. It requires the use of the Cleric symbol.
-~
+the cleric's group. It requires the use of the Cleric symbol.~
 End
 
 #HELP
@@ -9518,8 +9344,7 @@ Duration     : (caster's level)*4
 Level        : 26 Paladin
 Affect       : Increases caster's strength by 1+level/20
  
-Increases the caster's strength for the duration of the spell.
-~
+Increases the caster's strength for the duration of the spell.~
 End
 
 #HELP
@@ -9535,8 +9360,7 @@ Save         : negates
 Components   : Symbol of Faith
  
 This spell allows you to utter a word which damages and possibly stuns all
-in the room.
-~
+in the room.~
 End
 
 #HELP
@@ -9616,8 +9440,7 @@ Keywords HP
 Text     This is an abbreviation for hit points. All classes begin with a base
 10 hp at creation modified by race and class. The hp gain per level is
 between 6 and 19 hp, depending on class, race and CON. Equipment can
-also add to your total hp.
-~
+also add to your total hp.~
 End
 
 #HELP
@@ -9707,8 +9530,7 @@ Syntax: idea <message>
 Syntax: typo <message>
 
 These commands will take your message and record it into a file as feedback
-to the mud implementors.
-~
+to the mud implementors.~
 End
 
 #HELP
@@ -9741,8 +9563,7 @@ mob, including its approximate level, race, class and affects on it.
 If you encounter someone who can identify objects such as Laranthil of
 Bywater or Caraberyl of Palainth, simply go to them with the object in your
 inventory and type 'ident <object name>'. There will naturally be a small
-charge for this service.
-~
+charge for this service.~
 End
 
 #HELP
@@ -9876,8 +9697,7 @@ Typing 'ignore <character>' will add or remove that character from your list
 of ignores. Only valid character names can be added, it will check to see
 if that person has a pfile.
  
-Typing 'ignore none' will clear your ignore list.
-~
+Typing 'ignore none' will clear your ignore list.~
 End
 
 #HELP
@@ -9922,8 +9742,7 @@ Duration     : Instant
 Level        : 18 Antipaladin
 Minimum Cost : 20 Mana
 
-Ill Fortune reduces the victim's luck by three.
-~
+Ill Fortune reduces the victim's luck by three.~
 End
 
 #HELP
@@ -10037,8 +9856,7 @@ Duration     : permanent
 Level        : 65 Monk
 
 A high level Monk after years of training body and mind is able to be
-immune to the effects of poison.
-~
+immune to the effects of poison.~
 End
 
 #HELP
@@ -10076,8 +9894,7 @@ Level        : 80 Monk
 Minimum cost : 60 mana
 
 A high level Monk after years of training body and mind is able to resist
-the effects of the elements, namely fire, cold and acid.
-~
+the effects of the elements, namely fire, cold and acid.~
 End
 
 #HELP
@@ -10085,8 +9902,7 @@ Level    0
 WebInvis 0
 Keywords IMPLEMENTORS
 Text     The most powerful beings in existence. Their function is mostly
-administrative. Don't whine too much in their presence.
-~
+administrative. Don't whine too much in their presence.~
 End
 
 #HELP
@@ -10141,8 +9957,7 @@ Text     Syntax: induct  <player>
 Induct and outcast are clan/guild commands. The leader and number 1 of the
 clan/guild receive the induct commands, while the deity, leader, number 1
 and number 2 all receive outcast. Induct will bring a new player into the
-clan/guild, while outcast will remove them.
-~
+clan/guild, while outcast will remove them.~
 End
 
 #HELP
@@ -10172,8 +9987,7 @@ ANSI    - Information about the custom color code installed, and how to set
 
 This is only a brief list of commands that will help you do things with your
 character. More detailed information on each command can be found in the
-HELP files.
-~
+HELP files.~
 End
 
 #HELP
@@ -10204,8 +10018,7 @@ Level        : 63 Cleric, 33 Druid, 62 Ranger, 73 Paladin
 Minimum Cost : 60 Mana
 
 This spell makes you more resistant to all forms of coldness for the
-duration of the spell.
-~
+duration of the spell.~
 End
 
 #HELP
@@ -10251,8 +10064,7 @@ Level        : 7 Bard
  
 Sing a song filled with hope and inspiration, causing you and your followers
 to be more inspired in a fight. Improves the hitrolls of all affected by
-1+(level of caster)/50.
-~
+1+(level of caster)/50.~
 End
 
 #HELP
@@ -10326,8 +10138,7 @@ Intelligence is an important factor in learning between combatants.  If
 a character fights a creature several times, the more intelligent of the
 two opponents will gain an advantage over time...
  
-Intelligence is the prime attribute of the mage.
-~
+Intelligence is the prime attribute of the mage.~
 End
 
 #HELP
@@ -10389,8 +10200,7 @@ This command allows you to invoke a recall rune to transport yourself
 to the location it was marked with. One charge will be drained from the
 rune upon doing so. All classes are able to use these runes. You cannot
 invoke a rune in a room or area which is marked as non-recall.
-Runes only hold 5 charges, so use them wisely.
-~
+Runes only hold 5 charges, so use them wisely.~
 End
 
 #HELP
@@ -10405,8 +10215,7 @@ Minimum cost : 60 mana
 A high level Monk after years of training body and mind is able to harden
 his body till it becomes as hard as iron. This effectively makes the Monk
 resistant to all forms of non-magical attacks be it the slashing of a sword,
-the sting of a dagger or a pummel of a fist.
-~
+the sting of a dagger or a pummel of a fist.~
 End
 
 #HELP
@@ -10419,8 +10228,7 @@ Minimum Cost : 25 Mana
 
 Rogues and Bards have the ability to identify an object using this skill, based
 on the accumulated lore he has gained from the taverns and alleyways they often
-frequent.
-~
+frequent.~
 End
 
 #HELP
@@ -10468,8 +10276,7 @@ Level       : 46 Warrior, 58 Paladin
 Damage      : ld3 up to a max of 95
  
 A Warrior can use this skill in combat to chop at his or her opponent with
-the edge of the hand.
-~
+the edge of the hand.~
 End
 
 #HELP
@@ -10497,8 +10304,7 @@ Level        : 90 Monk
 A high level Monk after years of training body and mind is able to focus
 his life energies into forming a protective aura around himself which
 makes him resistant to all forms of magical as well as non-magical attacks
-for a limited duration.
-~
+for a limited duration.~
 End
 
 #HELP
@@ -10541,8 +10347,7 @@ Text     Don't do it.
 Kill stealing occurs when a player attacks a mob that is already being
 fought. This is both annoying and illegal. If someone should do this to
 you please inform them of the rules. If they continue, seek an immortal
-but do not take the law into your own hands.
-~
+but do not take the law into your own hands.~
 End
 
 #HELP
@@ -10555,8 +10360,7 @@ Level        : 21 Mage, 25 Antipaladin, 27 Bard
 Minimum Cost : 20 Mana
 
 This spell increases the strength of the target character for the duration
-of the spell.
-~
+of the spell.~
 End
 
 #HELP
@@ -10567,8 +10371,7 @@ Text     Usage        : knee <victim>
 Level        : 25 Rogue
 Damage       : (level) up to a max of 40
  
-Use your knee to smash your opponent painfully in the stomach.
-~
+Use your knee to smash your opponent painfully in the stomach.~
 End
 
 #HELP
@@ -10610,8 +10413,7 @@ Graecia - 50,000 gold
 Maldoth - 50,000 gold
 Palainth - 50,000 gold
 Greyhaven - 50,000 gold
-Sindhae - 100,000 gold
-~
+Sindhae - 100,000 gold~
 End
 
 #HELP
@@ -10651,8 +10453,7 @@ this factor remains, and will always remain shrouded in uncertainty...
  
 Also as in life, however, it can be said with surety that its influence on a
 character is pervasive.  Though it affects some aspects of life here in a
-very direct manner, it can affect nearly every aspect to at least a degree.
-~
+very direct manner, it can affect nearly every aspect to at least a degree.~
 End
 
 #HELP
@@ -10680,8 +10481,7 @@ Effect       : Dexterity -2 for (casters level)*4 rounds
 Minimum Cost : 35 mana
 
 This spell reduces the victims dex, making him easier to hit and easier
-to dodge.
-~
+to dodge.~
 End
 
 #HELP
@@ -10695,8 +10495,7 @@ Minimum cost : 20 Mana
  
 This spell allows a monk to make use of peaceful meditation to raise
 himself into the air. In this way, moving across water and high ground
-costs less movement points.
-~
+costs less movement points.~
 End
 
 #HELP
@@ -10711,8 +10510,7 @@ Minimum cost : 150 Mana
 Being experienced with the dealing of death, the Necromancer is able to
 cast a destructive curse which lowers the victim's hit points and
 damroll. It also affects the victim's save vs spells greatly, making him
-more susceptible to attacks.
-~
+more susceptible to attacks.~
 End
 
 #HELP
@@ -10725,8 +10523,7 @@ Level        : 42 Necromancer
 Minimum Cost : 20 mana
  
 The Necromancer may cast this spell to increase his hitpoints by converting his
-mana reserves into life force.
-~
+mana reserves into life force.~
 End
 
 #HELP
@@ -10749,8 +10546,7 @@ Keywords LIGHT
 Text     Syntax: light <pipe>
  
 This lights the herb in your pipe. Once lit, the herb will continue to
-burn until it burns itself out, is smoked out, or you tamp your pipe.
-~
+burn until it burns itself out, is smoked out, or you tamp your pipe.~
 End
 
 #HELP
@@ -10776,8 +10572,7 @@ Keywords LIMBO
 Text     The limitless void known as Limbo is a strange plane fabricated by
 the Gods to hold mortals who have been rendered unconscious or have
 been mortally wounded. It is a well known fact that only Gods may travel
-here of their own volition.
-~
+here of their own volition.~
 End
 
 #HELP
@@ -10820,8 +10615,7 @@ Text     Usage        : liquidate <object>
 Level        : 50 Rogue
 
 A Rogue is able to convert an object into gold using this skill by selling
-it on the black market.
-~
+it on the black market.~
 End
 
 #HELP
@@ -11019,8 +10813,7 @@ only if you have the appropriate lore skill. To use it, type 'consider X'.
 If X is a race that you know lore about, you can get some info on your target.
 As your ability with the skill improves, your estimates will improve. 
 Characters who have lore are also better at backstabbing creatures they know
-something about.
-~
+something about.~
 End
 
 #HELP
@@ -11033,8 +10826,7 @@ deadly character.
  
 Note that a weapon will only be loyal to a deadly character, and it will be
 loyal when disarmed by another deadly. Non-deadly characters will gain no
-advantage with a loyal weapon.
-~
+advantage with a loyal weapon.~
 End
 
 #HELP
@@ -11057,8 +10849,7 @@ Damage       : ld4 + (l/2) up to a max of 135
  
 Raising up your weapon, it is possible to leap towards your opponent, hitting
 him and causing large amounts of damage, sometimes even killling him.
-As always, the battle-ready Warrior delivers the blow with the most ease.
-~
+As always, the battle-ready Warrior delivers the blow with the most ease.~
 End
 
 #HELP
@@ -11084,8 +10875,7 @@ the Clerics. With a Mage's vast repertoire of useful spells you will
 become a much sought after commodity.... for your spells can mean victory 
 or defeat for other players. The prime attribute for Mages is 
 intelligence and only Humans, High-Elves, Wild-Elves, Pixies, Half-Elves, 
-Gnomes, Drow and Gith can become Mages. 
-~
+Gnomes, Drow and Gith can become Mages.~
 End
 
 #HELP
@@ -11119,8 +10909,7 @@ control the nature of space and time in the immediate locale of his victim.
 In this sorcery, the Mage forms a wedge of magnetic energy within the body
 of the victim. As the spell progresses, the victim's organs are violently
 rend and internal tissues are torn. The resulting pain and damage are
-formidable, indeed.
-~
+formidable, indeed.~
 End
 
 #HELP
@@ -11133,8 +10922,7 @@ Level        : 87 Cleric
 Minimum cost : 150 Mana
 
 The spell MAJOR INVOCATION lays upon the members of the caster's group
-a strong, but short-lived sanctuary spell.
-~
+a strong, but short-lived sanctuary spell.~
 End
 
 #HELP
@@ -11146,8 +10934,7 @@ Duration     : (caster's level)*6
 Level        : 72 Ranger, 70 Druid
 Minimum Cost : 35 Mana
  
-Vastly superior to minor track, and lasts for a limited period of time.
-~
+Vastly superior to minor track, and lasts for a limited period of time.~
 End
 
 #HELP
@@ -11297,8 +11084,7 @@ WebInvis 0
 Keywords MANA
 Text     Mana is the living inner power used by the spellcasting classes to cast
 their spells. Warriors also have mana, but do not cast spells. Certain
-skills may also require the use of mana.
-~
+skills may also require the use of mana.~
 End
 
 #HELP
@@ -11312,8 +11098,7 @@ Minimum Cost : 40 Mana
  
 By focusing on the powers of necromancy, the Necromancer is able to drain
 away mana from the victim and restore his own mana with a percentage of
-that drained.
-~
+that drained.~
 End
 
 #HELP
@@ -11326,8 +11111,7 @@ Level        : 42 Necromancer
 Minimum Cost : 20 mana
  
 The Necromancer may utilize this spell in order to convert his life force
-into mana for his other purposes.
-~
+into mana for his other purposes.~
 End
 
 #HELP
@@ -11480,8 +11264,7 @@ This command allows you to mark a magical rune with the location you
 are currently standing in. Once this is done, you can then invoke the
 rune to recall to this location later. All classes are able to use
 these runes. You cannot mark a rune if your are in a room or area which
-is marked as non-recall. Runes only hold 5 charges, so use them wisely.
-~
+is marked as non-recall. Runes only hold 5 charges, so use them wisely.~
 End
 
 #HELP
@@ -11494,8 +11277,7 @@ Level        : 53 Bard, 53 Mage, Necromancer 53
 Minimum cost : 50 mana
 
 An improved version of the spell 'Invisible' this spell causes everyone 
-in the room to be rendered invisible to normal vision.
-~
+in the room to be rendered invisible to normal vision.~
 End
 
 #HELP
@@ -11507,8 +11289,7 @@ Duration     : permanent
 Level        : 60 Monk
 
 A high level Monk after years of training body and mind is able to move
-freely even the effects of hold or paralysis.
-~
+freely even the effects of hold or paralysis.~
 End
 
 #HELP
@@ -11543,8 +11324,7 @@ Keywords ME
 Text     &YI'm sorry, there is no help for you. You are completely and hoplessly lost.&D
 &YIf there was ever a leader of lost people, you'd be it. I hope you feel good&D
 &Yabout yourself now. If you kill yourself quickly, maybe the world can redeem&D
-&Yitself.&D
-~
+&Yitself.&D~
 End
 
 #HELP
@@ -11555,8 +11335,7 @@ Text     Usage        : meditate
 Level        : 24 Mage, 24 Necromancer, 27 Cleric, 27 Druid, 30 Monk, 30 Bard
 
 A character in possession of this skill may use it to briefly focus its
-energies toward restoring a small burst of mana.
-~
+energies toward restoring a small burst of mana.~
 End
 
 #HELP
@@ -11656,8 +11435,7 @@ Merc would like to thank ...
   ... the players and imps of Mud Dome, Final Mud, Mud Lite, Vego Mud, Rivers
       of Mud, Ruhr Mud, and Mystic Realms for bug reports, ideas, new code,
       and hours of enjoyment.
-                                Share and enjoy.
-~
+                                Share and enjoy.~
 End
 
 #HELP
@@ -11686,8 +11464,7 @@ Damage        : ld8 up to a max of 600
 Save          : vs. spell for half damage
 Minimum cost  : 95 Mana
  
-With this spell, the mage summons a mighty swarm of meteors upon his enemy.
-~
+With this spell, the mage summons a mighty swarm of meteors upon his enemy.~
 End
 
 #HELP
@@ -11732,8 +11509,7 @@ Level        : 33 Cleric
 Minimum cost : 55 Mana
 
 This spell improves the to-hit roll and saving throw versus spell of all
-members of the caster's group by (caster's level)/20 each.
-~
+members of the caster's group by (caster's level)/20 each.~
 End
 
 #HELP
@@ -11745,8 +11521,7 @@ Duration     : (caster's level)*5
 Level        : 49 Ranger, 46 Druid, 70 Bard
 Minimum Cost : 20 Mana
  
-Improves your tracking for a limited period of time.
-~
+Improves your tracking for a limited period of time.~
 End
 
 #HELP
@@ -11858,8 +11633,7 @@ Keywords MIX
 Text     Syntax: mix <item1> <item2>
 
 Mixes the contens of item1 with the contents of item2. Both items must be able
-to be mixed with each other.
-~
+to be mixed with each other.~
 End
 
 #HELP
@@ -11883,8 +11657,7 @@ Text     The MOBprograms have been contributed by N'Atas-ha.
          Haus hacked together room && obj programs 'cause
           he got sick of failing to add lever bitvectors,
                and cause he thought Carnage was a
-                  Trancendentally Cool Mud.
-~
+                  Trancendentally Cool Mud.~
 End
 
 #HELP
@@ -12026,8 +11799,7 @@ Text     Usage : motd
 This will show you the current Message Of The Day. The MOTD contains any news
 or updates the immortals wish you to see. You will only see the MOTD on login if there
 has been something new added, after that you must use the MOTD command to view
-it.
-~
+it.~
 End
 
 #HELP
@@ -12057,8 +11829,7 @@ on a mob cuts down on movement points that are used whenever you move.
 New water sectors allow a person mounted to traverse them without damage
 from drowning.  If you are in an area where your movement points begin
 to drop suddenly and/or you begin to lose hps <hitpoints> quickly, you
-should try to mount immediately.
-~
+should try to mount immediately.~
 End
 
 #HELP
@@ -12075,8 +11846,7 @@ To open a door, you type OPEN <direction or door name>.
  
 At times, you may run out of movement points or require healing.  To allow
 for faster recovery, you may SIT, REST, or SLEEP.  When are finished with
-your recovery, and wish to continue adventuring, type WAKE or STAND.
-~
+your recovery, and wish to continue adventuring, type WAKE or STAND.~
 End
 
 #HELP
@@ -12713,8 +12483,7 @@ Keywords M_ADVHERO_
 Text     You suddenly feel a strange surge of power flow through your veins!
  
 You have mastered yourself as far as mortally possible, and now
-see immortality within your grasp...
-~
+see immortality within your grasp...~
 End
 
 #HELP
@@ -12766,8 +12535,7 @@ and is NOT subject to debate or discussion. If your name is denied,
 simply follow the guidelines and try a new one.
 
 NOTE: Once a name has been deemed unacceptable, it will not be possible
-for anyone else to try and log on with it in the future.
-~
+for anyone else to try and log on with it in the future.~
 End
 
 #HELP
@@ -12783,8 +12551,7 @@ their opponents, and to kill with a single word. They are well known for
 assorted maledictions involving controlled bursts of negative energy. The 
 most important attribute for Necromancers is a high intelligence as they 
 need it for their spellcasting. Only the Humans, Drow, Half-Elves and 
-Gith can follow the ways of the Necromancer. 
-~
+Gith can follow the ways of the Necromancer.~
 End
 
 #HELP
@@ -12809,8 +12576,7 @@ Text     Usage        : neutralize poison
 Level        : 40 Monk
 Minimum cost : 15 Mana
  
-A way to neutralize the dangerous poison in your body before it kills you.
-~
+A way to neutralize the dangerous poison in your body before it kills you.~
 End
 
 #HELP
@@ -12844,8 +12610,7 @@ MAP         - A map of the City of Bywater.
 To use these files, type HELP topic. Type 'help' for general commands.
  
 &R(&YNote: &WYou are NOT restricted to Warrior class, you are allowed to
-personally choose your own class within the mud itself&R)&z
-~
+personally choose your own class within the mud itself&R)&z~
 End
 
 #HELP
@@ -12888,8 +12653,7 @@ pulling sensation as strange and colorful mists swirl around you...
  
 "Once you have chosen a deity and gained sufficient favor, you may be able
  to supplicate to your deity for your corpse.  Type '&Whelp death&C' for more
- information.  This message will appear only on your first two deaths..."
-~
+ information.  This message will appear only on your first two deaths..."~
 End
 
 #HELP
@@ -12925,8 +12689,7 @@ Syntax: west or w
 Syntax: up or u
 Syntax: down or d
 
-Use these commands to walk in a particular direction.
-~
+Use these commands to walk in a particular direction.~
 End
 
 #HELP
@@ -12938,8 +12701,7 @@ Syntax: northwest or nw
 Syntax: southeast or se
 Syntax: southwest or sw
  
-Use these commands to walk in a particular direction.
-~
+Use these commands to walk in a particular direction.~
 End
 
 #HELP
@@ -13535,8 +13297,7 @@ The &R@&z symbol is you, and the &W#&z symbols are exits off of the map, either
 to other maps, or to regular zones such as Bywater. It is possible to
 encounter random monsters roaming the map.
 
-The map is best viewed with ANSI color turned on.
-~
+The map is best viewed with ANSI color turned on.~
 End
 
 #HELP
@@ -13584,7 +13345,7 @@ to the side of goodness and hence must retain a good alignment throughout
 their lives. Should they fail their calling and deviate from good, they 
 will be stripped of their powers and forced to live the rest of their 
 lives as pure Warriors. The prime attributes of a Paladin are charisma, 
-strength and wisdom. Only Humans can become Paladins. ~
+strength and wisdom. Only Humans can become Paladins.~
 End
 
 #HELP
@@ -13613,8 +13374,7 @@ Text     Syntax: operates automatically
  
 Parry is a skill which assists in warding off incoming attacks. If you
 successfully parry attack, you take no damage from it. Parry is an
-automatic skill, but you must be wielding a weapon to use it.
-~
+automatic skill, but you must be wielding a weapon to use it.~
 End
 
 #HELP
@@ -13842,8 +13602,7 @@ Level        : 15 Rogue
 
 This skill shows you a character's inventory when you look at a character.
 Use of the skill is automatic when you 'look' at a character after you
-have practiced the skill.
-~
+have practiced the skill.~
 End
 
 #HELP
@@ -13890,8 +13649,7 @@ Keywords PICK
 Text     Usage        : pick <doorname>
 Level        : 10 Rogue
 
-This skill enables you to pick open locked doors.
-~
+This skill enables you to pick open locked doors.~
 End
 
 #HELP
@@ -13917,8 +13675,7 @@ WebInvis 0
 Keywords PIT ETCH PITTING ETCHING
 Text     Pitting and etching occurs when acid hits your armor, due to spells or
 breath. It permanently reduces the armor class of the item and reduces
-the value of the armor.
-~
+the value of the armor.~
 End
 
 #HELP
@@ -13956,8 +13713,7 @@ This spell allows the caster to merge with nearby foliage, and flow through
 it to emerge near the target.
  
 Obviously this spell requires a good deal of natural foliage in both the
-caster's and the target's location.
-~
+caster's and the target's location.~
 End
 
 #HELP
@@ -14009,8 +13765,7 @@ lessening effect on the lifetime of the weapon poisoned.
 To poison a weapon you must have the weapon itself, the poisoning powder
 and a full waterskin in your inventory. Your intelligence and wisdom
 must both also be relatively high, else you will be unable to complete
-the poisoning process until they are raised to a sufficient level.
-~
+the poisoning process until they are raised to a sufficient level.~
 End
 
 #HELP
@@ -14104,8 +13859,7 @@ Mininum cost    : 100 mana
  
 This spell enables a character to create a portal to a certain mob or
 character.
-Some rooms like NO MAGIC rooms can't have portals.
-~
+Some rooms like NO MAGIC rooms can't have portals.~
 End
 
 #HELP
@@ -14157,8 +13911,7 @@ You will need to pass through an interview phase with the head of PR
 before being accepted. 
   
 Contact Cyberfox for a Quest/PR position. Email address is available
-upon request.
-~
+upon request.~
 End
 
 #HELP
@@ -14195,8 +13948,7 @@ Minimum cost: 50 mana
 This spell instills a fury within your very soul, causing you to go
 berserk, raising your strength, hit roll, and damage roll.  Use caution,
 however, when entering fights, as being berserk will prevent you from
-fleeing a losing battle. This spell requires the use of a holy mistletoe.
-~
+fleeing a losing battle. This spell requires the use of a holy mistletoe.~
 End
 
 #HELP
@@ -14206,8 +13958,7 @@ Keywords PRIVACY
 Text     Usage : privacy
 
 This will toggle your privacy status. If you enable it, other mortals will not
-be able to use the &WFINGER&D command on you.
-~
+be able to use the &WFINGER&D command on you.~
 End
 
 #HELP
@@ -14226,8 +13977,7 @@ Text     &RClass:   &OBronze     &wSilver     &YGold         &WPlatinum&z
 &CPaladin&z  Helm       Greaves    Surcoat      Cloak
 &CAntipal&z  Shield     Helm       Armplates    Breastplate
 &CBard&z     Lute       Vest       Cape         Bracelet
-&CNecro&z    Staff      Ring       Amulet       Robe
-~
+&CNecro&z    Staff      Ring       Amulet       Robe~
 End
 
 #HELP
@@ -14394,8 +14144,7 @@ Prompt <%h|%m|%v>>> =   <43|23|120>>>
 Prompt %h %m %v     =   43 23 120
  
 Please see HELP PCOLORS for a list of the color tokens. If you are immortal,
-there are separate prompt options for your use. See HELP IMMPROMPT.
-~
+there are separate prompt options for your use. See HELP IMMPROMPT.~
 End
 
 #HELP
@@ -14433,8 +14182,7 @@ Syntax: push <trigger>
 
 Levers, switches, pullchains and buttons can do all sorts of interesting
 things... open or unlock doors, change exits around, teleport you to another
-location, cast a spell, summon a monster... you name it!
-~
+location, cast a spell, summon a monster... you name it!~
 End
 
 #HELP
@@ -14466,8 +14214,7 @@ Damage       : (character's level)*2
  
 You are able to raise your fists and repeatedly execute blows at your
 opponent's lower abdomen with a quick flurry. As always, the Warrior is
-able to execute the blows with the most ease.
-~
+able to execute the blows with the most ease.~
 End
 
 #HELP
@@ -14480,8 +14227,7 @@ Damage       : (level) up to a max of 45
  
 Using your fist, you are able to inflict slight damage on an opponent,
 sometimes even killing him. However, due to the stealthy nature of the
-Ranger and the Rogue, their punches are not as easily executed.
-~
+Ranger and the Rogue, their punches are not as easily executed.~
 End
 
 #HELP
@@ -14531,8 +14277,7 @@ fiendish, unknowable geometries.
  
 Obviously, such an attack has astonishing effects on any physical
 creature, as well as any entity which has an extension into the
-physical world.
-~
+physical world.~
 End
 
 #HELP
@@ -14574,8 +14319,7 @@ Minimum cost: 15 mana
 This spell speeds you up and pumps adrenaline into your system at
 extremely high levels.  It raises your dexterity and modifies your
 armor by -10.  Once you finally slow down, your dex and ac will return
-to normal. This spell is caster-only.
-~
+to normal. This spell is caster-only.~
 End
 
 #HELP
@@ -14619,8 +14363,7 @@ Minimum cost : 100 mana
 Quivering palm is a fabled monk attack. It can only be done 1 time per
 day, and only on an opponent of the same level or lower, with less than
 2 * the monk's hitpoints. The target must also be humanoid. If the attack
-is successful, the target dies instantly.
-~
+is successful, the target dies instantly.~
 End
 
 #HELP
@@ -14664,8 +14407,7 @@ Wild Elf      |  2  |  2  | -1  | -3  |  1  |  0  |  0  |
 Iguanadon     |  2  |  1  | -3  | -2  |  1  | -2  |  0  |
 ---------------------------------------------------------
 Insectoid     |  0  |  1  |  1  | -1  |  0  | -2  | -1  |
----------------------------------------------------------
-~
+---------------------------------------------------------~
 End
 
 #HELP
@@ -14798,8 +14540,7 @@ Level          : 52 Paladin
 Minimum cost   : 30 mana
  
 With this skill a paladin gives higher moral and hope to his group,
-raising their hit points.
-~
+raising their hit points.~
 End
 
 #HELP
@@ -14890,8 +14631,7 @@ Save         : vs. spells to negate
 Minimum Cost : 65 Mana
 
 This spell makes the victim more susceptible to stabbing attacks for the
-duration of the spell.
-~
+duration of the spell.~
 End
 
 #HELP
@@ -14983,8 +14723,7 @@ This spell is used to recharge wands and staves after use. The Mage
 or Cleric performing the recharge should always insure the item is
 not fully charged, as overcharging is considered dangerous. Also,
 there is always a small chance of destroying the staff, or in even 
-rarer instances multiplying the charges available.
-~
+rarer instances multiplying the charges available.~
 End
 
 #HELP
@@ -14997,8 +14736,7 @@ Level        : 26 Warrior, 24 Rogue, 21 Monk
 
 By means of this skill, the Warrior, Rogue and Monk can focus their bodily
 energies such that they speed up the process of healing. As a result, they
-regain hit points at a faster rate than normal when recuperating.
-~
+regain hit points at a faster rate than normal when recuperating.~
 End
 
 #HELP
@@ -15085,8 +14823,7 @@ Level        : 34 Mage, 18 Necromancer, 7 Cleric, 21 Druid, 43 Ranger,
 Minimum cost : 12 Mana
 
 Increases the victim's movement by (caster's level)*2. Cannot be cast if the
-caster is fighting, and cannot exceed target's max movement.
-~
+caster is fighting, and cannot exceed target's max movement.~
 End
 
 #HELP
@@ -15119,8 +14856,7 @@ The target must be grouped with the caster for this spell to take effect. There
 is also a chance that the target may die, age 10 years or lose a level when the
 attempt to rejuvenate fails. The caster may also die from the effort required
 in casting this spell. Therefore use caution when casting this spell. The spell
-requires the use of the cleric symbol of faith.
-~
+requires the use of the cleric symbol of faith.~
 End
 
 #HELP
@@ -15149,8 +14885,7 @@ Minimum cost : 15 Mana
 
 Will remove curses on carried objects of the caster or cursed objects
 equipped by the target. You can tell if an object is cursed. If you
-can't drop it, that's usually a bad sign.
-~
+can't drop it, that's usually a bad sign.~
 End
 
 #HELP
@@ -15163,8 +14898,7 @@ Level        : 41 Mage, 41 Necromancer, 45 Antipaladin, 41 Bard
 Minimum cost : 15 Mana
 
 This spell will make an invisible object in the character's inventory
-visible.
-~
+visible.~
 End
 
 #HELP
@@ -15189,8 +14923,7 @@ Duration     : instant
 Level        : Cleric 34
 Minimum cost : 25 mana
  
-Removes the effect of being silenced from the target.
-~
+Removes the effect of being silenced from the target.~
 End
 
 #HELP
@@ -15202,8 +14935,7 @@ Duration     : Instant
 Level        : 60 Bard
 Minimum cost : 35 Mana
 
-This spell will magically disarm a trap on an object.
-~
+This spell will magically disarm a trap on an object.~
 End
 
 #HELP
@@ -15435,8 +15167,7 @@ Level        : 54 Necromancer, 71 Cleric, 80 Paladin
 Minimum cost : 60 Mana
 
 Resilience renders the victim resistant to draining attacks for the duration
-of the spell.
-~
+of the spell.~
 End
 
 #HELP
@@ -15465,8 +15196,7 @@ points at a much faster rate. However, you are more vulnerable to attack,
 and if you SLEEP you won't hear many things happen.
  
 Use STAND or WAKE to come back to a standing position. You can also WAKE
-other sleeping characters.
-~
+other sleeping characters.~
 End
 
 #HELP
@@ -15479,8 +15209,7 @@ Level        : 82 Cleric
 Minimum cost : 100 Mana
 
 This spell casts heal upon every member in a Cleric's group, and requires
-the Cleric symbol.
-~
+the Cleric symbol.~
 End
 
 #HELP
@@ -15496,8 +15225,7 @@ killers and any who happen to be in the arena.
  
 A note on RESTORE ALL: This is a gift from the gods, and it is never 
 planned in advance or done on request. The best way to ensure that a
-restore all will NOT be done is to ask for one.
-~
+restore all will NOT be done is to ask for one.~
 End
 
 #HELP
@@ -15510,8 +15238,7 @@ Level        : 83 Cleric
 Minimum Cost : 50 Mana
  
 This spell restores the mana of the character whom the spell is cast on.
-The higher the level of the caster, the more mana will be restored.
-~
+The higher the level of the caster, the more mana will be restored.~
 End
 
 #HELP
@@ -15725,8 +15452,7 @@ Duration     : (user's level)*5 rounds
 Level        : 28 Rogue
 
 By using this skill, a Rogue calls upon his lucky stars to increase his
-luck by 1d6. This is a personal skill and cannot be used on others.
-~
+luck by 1d6. This is a personal skill and cannot be used on others.~
 End
 
 #HELP
@@ -15851,8 +15577,7 @@ Text     Usage        : roundhouse <victim>
 Level        : 27 Warrior, 33 Ranger, 24 Anti-Paladin, 33 Paladin
 Damage       : ld2 up to a max of 70
  
-A strong punching attack for all fighters to use while fighting.
-~
+A strong punching attack for all fighters to use while fighting.~
 End
 
 #HELP
@@ -15964,8 +15689,7 @@ Level        : 14 Monk
 
 Safe fall is a monk skill that allows a monk to fall from any height,
 and fail to die. They will be stunned, and badly wounded, but they will not
-die (if they make the roll).
-~
+die (if they make the roll).~
 End
 
 #HELP
@@ -15977,8 +15701,7 @@ Duration     : (caster's level)*4
 Level        : 39 Cleric, 30 Bard
 Minimum cost : 20 Mana
 
-This spell increases your wisdom for its duration.
-~
+This spell increases your wisdom for its duration.~
 End
 
 #HELP
@@ -16028,8 +15751,7 @@ Keywords SALVE APPLY
 Text     Syntax: apply <itemname>
 
 In your travels you may come across various ointments and salves.
-Use 'apply <itemname>' to rub some of the salve onto your skin.
-~
+Use 'apply <itemname>' to rub some of the salve onto your skin.~
 End
 
 #HELP
@@ -16042,8 +15764,7 @@ Level        : 47 Cleric, 80 Druid, 85 Paladin
 Minimum cost : 50 Mana
 
 The Sanctuary spell reduces the damage taken by the character from any attack
-by one half.
-~
+by one half.~
 End
 
 #HELP
@@ -16061,8 +15782,7 @@ updated -- save frequently.
 Type SAVE immediately after recovering your corpse, gaining experience or
 a level in battle, getting new items, making purchases or repairs, etc.
  
-Some objects (such as keys) may not be saved.
-~
+Some objects (such as keys) may not be saved.~
 End
 
 #HELP
@@ -16104,8 +15824,7 @@ Keywords SCAN
 Text     Syntax: scan <direction>
  
 This command enables you to scan for one or more rooms in the direction
-specified.
-~
+specified.~
 End
 
 #HELP
@@ -16132,8 +15851,7 @@ Save            : vs. spell for half damage
 Minimum cost    : 90 mana
  
 This spell calls upon a scorching surge of  flames to burst forth under the
-victim's feet which causes a great deal of damage to the victim.
-~
+victim's feet which causes a great deal of damage to the victim.~
 End
 
 #HELP
@@ -16182,8 +15900,7 @@ scrolls or wands via the brew, scribe and bind skills.
 It takes significantly more mana to brew a spell to a potion, scribe a
 a spell to a scroll or bind a spell to a wand than to simply cast it.
  
-Note that a fire is required to brew potions.
-~
+Note that a fire is required to brew potions.~
 End
 
 #HELP
@@ -16197,8 +15914,7 @@ Minimum cost : 20 Mana
 
 This spell will allow the character to scry (look) in to nearby rooms.
 After casting the spell, the character needs only to "look" in the
-desired direction.
-~
+desired direction.~
 End
 
 #HELP
@@ -16370,8 +16086,7 @@ Text     Usage        : search
 Level        : 1 All levels
 
 Sometimes not all there is to find is in clear view. Some things may be
-concealed or hidden, and will require some searching to find.
-~
+concealed or hidden, and will require some searching to find.~
 End
 
 #HELP
@@ -16503,8 +16218,7 @@ Level        : 22 Rogue, 23 Monk
 
 By concentrating hard, a Rogue or Monk can increase temporarily his sense of
 balance. This aids when climbing and also improves the dexterity of the
-character.
-~
+character.~
 End
 
 #HELP
@@ -16945,8 +16659,7 @@ Duration    : (caster's level)*2 + 20
 Level       : 87 Mage, 73 Bard, 80 Necromancer
  
 Wraps a cloak of darkness around you, raising your resistance to
-non-magical weapons.
-~
+non-magical weapons.~
 End
 
 #HELP
@@ -17012,8 +16725,7 @@ Level       : 78 Mage
 Minimum cost: 65 mana
  
 This spell casts a shield of energy around you.  Any enemy that hits
-you will receive a jolt of electricity in return.
-~
+you will receive a jolt of electricity in return.~
 End
 
 #HELP
@@ -17099,8 +16811,7 @@ will be unable to be shoved or dragged out of that room until they
 either leave of their own choice or they shove/drag another player. 
  
 You cannot shove a character into a death trap, and cannot shove
-someone outside the 5-level pkill range.
-~
+someone outside the 5-level pkill range.~
 End
 
 #HELP
@@ -17308,8 +17019,7 @@ Level        : 16 Rogue
 
 By using this skill, a Rogue is able to decrease his chance of being hit as
 he moves rapidly from side to side as he engages in battle, thus confusing
-his opponent.
-~
+his opponent.~
 End
 
 #HELP
@@ -17324,8 +17034,7 @@ Minimum Cost : 25 Mana
  
 This spell, if it works, shuts the victim up. It prevents speech (sign
 language is still usable) and spell casting. Very nasty thing to do to a spell
-caster.
-~
+caster.~
 End
 
 #HELP
@@ -17348,8 +17057,7 @@ Level        : 18 Rogue
  
 A Rogue's training includes the sharpening of the senses. Through such a
 training, a Rogue is able to sense the presence of hidden creatures as well
-as anticipate incoming attacks, thus improving their Armor Class.
-~
+as anticipate incoming attacks, thus improving their Armor Class.~
 End
 
 #HELP
@@ -17373,8 +17081,7 @@ WebInvis 0
 Keywords SKILLS
 Text     Type 'practice' to get a list of skills currently available to you and
 to see to what extent you have them practiced. Type 'slist' to view a
-list of all skills available at each level to your class.
-~
+list of all skills available at each level to your class.~
 End
 
 #HELP
@@ -17388,8 +17095,7 @@ Minimum cost : 30 mana
 Through use of this spell a Necromancer can conjure a powerful glowing 
 skull. When held the skull adds a great benefit to the Caster. Many of 
 the most powerful spell available to the Necromancer require this item
-to tap the proper forces.
-~
+to tap the proper forces.~
 End
 
 #HELP
@@ -17480,8 +17186,7 @@ Level        : 1 All levels
  
 An easy way to get raw meat when needed. Requires a sharp weapon to be
 wielded in hand. However, a fire is needed to cook the meat or it will
-be poisonous.
-~
+be poisonous.~
 End
 
 #HELP
@@ -17505,8 +17210,7 @@ Duration     : (caster's level)*5
 Level        : 31 Bard
 Mimimum Cost : 20 Mana
 
-This spell makes you more dexterous for its duration.
-~
+This spell makes you more dexterous for its duration.~
 End
 
 #HELP
@@ -17528,9 +17232,7 @@ Example:  slist 2 2
     SPELL && SKILL LIST
     ------------------
     Level 2
-      skill :                mount   Current:  75 Max: 85 
- 
-~
+      skill :                mount   Current:  75 Max: 85~
 End
 
 #HELP
@@ -17560,8 +17262,7 @@ Minimum Cost : 50 Mana
  
 This spell causes the target to suddenly feel weighed down by gravity. This
 results in the target's movements slowing down and all attacks are halved in
-combat for the duration of the caster's level.
-~
+combat for the duration of the caster's level.~
 End
 
 #HELP
@@ -17625,8 +17326,7 @@ Keywords SMOKE
 Text     Syntax: smoke <pipe name>
 
 You may 'smoke' a pipe after first filling it with a smokable herb or
-tobacco.
-~
+tobacco.~
 End
 
 #HELP
@@ -17670,8 +17370,7 @@ The magic of Sonic Resonance allows the casting Bard to realign
 the component particles of his foe in such a way that they are
 susceptible to a certain mystical tone. By the completion of the
 spell, this tone is conjured, causing the particles to vibrate 
-violently causing intense pain and tissue damage.
-~
+violently causing intense pain and tissue damage.~
 End
 
 #HELP
@@ -17684,8 +17383,7 @@ Level         : Bard 33
 Minimum Cost  : 30 Mana
 Components    : Instrument
  
-Restores charisma+2d8+(level)/3 hitpoints to the target.
-~
+Restores charisma+2d8+(level)/3 hitpoints to the target.~
 End
 
 #HELP
@@ -17703,8 +17401,7 @@ By use of the spell, the caster is able to create a scream that obliterates
 the very essences of all those in the room with him or her. It is said that
 this dangerous and evil spell was created by the same dark magics that creates
 Banshees. Be prepared to lose a piece of your very soul should you be hit by
-this spell.
-~
+this spell.~
 End
 
 #HELP
@@ -17749,8 +17446,7 @@ same message at the same time is considered spam ( not to mention it's
 a viloation of the multiplay rules ). Making charmed mobs or pets to 
 cause screen scroll through movement or orders is considered spam. 
 ANYTHING that causes excessive or irritating screen scroll can be
-considered spam.
-~
+considered spam.~
 End
 
 #HELP
@@ -17823,8 +17519,7 @@ Save         : vs. spells for half damage
 Mimimum Cost : 110 Mana
 
 This spell calls up a pulsating beam of white light to shoot from the caster's
-hand, inflicting tremendous damage on the victim.
-~
+hand, inflicting tremendous damage on the victim.~
 End
 
 #HELP
@@ -17886,8 +17581,7 @@ WebInvis 0
 Keywords SPELLS
 Text     Type 'practice' to get a list of spells currently available to you and
 to see to what extent you have them practiced.  Type 'slist' to view a
-list of all spells available at each level to your class.
-~
+list of all spells available at each level to your class.~
 End
 
 #HELP
@@ -17913,8 +17607,7 @@ Level        : 54 Monk
 Damage       : ld4 up to a max of 120
 
 With this skill, the Monk lifts one foot, spins to gain momentum,
-and delivers a powerful kick to the opponent.
-~
+and delivers a powerful kick to the opponent.~
 End
 
 #HELP
@@ -17930,8 +17623,7 @@ Mimimum Cost : 95 Mana
 
 A powerful, spinning blast of coloured gas conjured by a Mage, it attacks
 every enemy target in the area. The spell is hostile to all creatures in
-the room, and will cause them to engage the caster in combat.
-~
+the room, and will cause them to engage the caster in combat.~
 End
 
 #HELP
@@ -17946,8 +17638,7 @@ Save         : none
 Minimum cost : 15 Mana
  
 With this spell, the Cleric invokes a hammer of pure force to strike at
-the target.
-~
+the target.~
 End
 
 #HELP
@@ -17963,8 +17654,7 @@ Mimimum Cost : 120 Mana
 
 Spiritual Wrath sends a blast of blinding light at all targets in the
 room. It requires the Cleric symbol and the damage it does depends upon the
-caster's wisdom.
-~
+caster's wisdom.~
 End
 
 #HELP
@@ -17977,8 +17667,7 @@ SPLIT splits some gold between you and all the members of your group who
 are in the same room as you. It's customary to SPLIT the gold after a kill.
 
 Note that if you are grouped, you will automatically split the gold after
-a kill with every member of your group.
-~
+a kill with every member of your group.~
 End
 
 #HELP
@@ -17989,8 +17678,7 @@ Text     Usage        : operates automatically
 Level        : 22 monk
 
 Allows a monk to attack from a sitting position (i.e. after you have
-been bashed). You attack and stand up, all in the same motion.
-~
+been bashed). You attack and stand up, all in the same motion.~
 End
 
 #HELP
@@ -18003,8 +17691,7 @@ Level           : 27 Rogue
  
 This skill allows the character to look into adjacent rooms.
 After being affected by the skill,the character need only to 
-look in a direction.
-~
+look in a direction.~
 End
 
 #HELP
@@ -18095,8 +17782,7 @@ Steal attempts to steal coins, or an object, from a mob or another player.
 
 There are penalties for using Steal on other players.
 
-In order to steal successfully, you must practice the skill.
-~
+In order to steal successfully, you must practice the skill.~
 End
 
 #HELP
@@ -18129,8 +17815,7 @@ Minimum cost    : 40 mana
  
 This spells summons a cloud of deadly toxic poison gas over the area.
 As the stinking cloud takes form, anything not grouped with the caster 
-will be damaged.
-~
+will be damaged.~
 End
 
 #HELP
@@ -18144,8 +17829,7 @@ Minimum Cost : 25 Mana
 
 This spell protects the caster by decreasing (improving) the caster's armor
 class. The caster's skin takes on a stone-like hardness improving the armor
-class by 40.
-~
+class by 40.~
 End
 
 #HELP
@@ -18167,8 +17851,7 @@ Strength also affects (among other things):
  - chances of success for bash, stun, bashdoor, shove and drag, and the
    ability to dual-wield heavier weapons
  
-Strength is the prime attribute of warriors, rangers and paladins. 
-~
+Strength is the prime attribute of warriors, rangers and paladins.~
 End
 
 #HELP
@@ -18196,8 +17879,7 @@ Level        : 35 Warrior, 33 Anti-Paladin, 45 Paladin
 Damage       : ld2 + (l/2) up to a max of 85
  
 With a dash, you are able to hit your opponent in a fluid motion, causing
-medium damage to be inflicted on him.
-~
+medium damage to be inflicted on him.~
 End
 
 #HELP
@@ -18217,8 +17899,7 @@ Text     Usage        : stun <victim>
 Level        : 22 Warrior, 25 Monk
 
 Stun is a skill which can only be used once a fight has started. It will 
-stun your opponent if successful.
-~
+stun your opponent if successful.~
 End
 
 #HELP
@@ -18315,8 +17996,7 @@ Text     .           &B
 
 &CAlso see help on: RENT, SAVE, QUIT, PRACTICE, HELP
 To use the help menu, just type "help <topic>".
-If you are new to the Lands, type HELP NEW to see a special help series.
-~
+If you are new to the Lands, type HELP NEW to see a special help series.~
 End
 
 #HELP
@@ -18334,8 +18014,7 @@ they might resist your attempts. You will also be stunned after a successful
 summoning. You cannot summon from or to NO SUMMON rooms, nor can you summon from
 or to NO MAGIC rooms. You cannot summon to TUNNEL rooms, nor to PEACEFUL rooms,
 nor from PEACEFUL rooms. You cannot summon someone who is fighting, as it is
-impossible to get a precise fix of their location.
-~
+impossible to get a precise fix of their location.~
 End
 
 #HELP
@@ -18406,8 +18085,7 @@ To the southeast, in the near vicinity, whisps of smoke rise up from a small cab
 
 The above example is what you would see when surveying from the
 intersection of the two trails near the hermit's cabin in the
-Haon Dor Forest.
-~
+Haon Dor Forest.~
 End
 
 #HELP
@@ -18447,8 +18125,7 @@ Damage       : ld3 + (l/2)up to a max of 105
  
 With a prolonged flick of your arm, you are able to hit your opponent
 square in the chest, flinging him across the room, causing medium amounts of
-damage.
-~
+damage.~
 End
 
 #HELP
@@ -18486,8 +18163,7 @@ Save         : vs. spells to negate
 Minimum Cost : 65 Mana
 
 This spell makes the victim more susceptible to slashing attacks for the
-duration of the spell.
-~
+duration of the spell.~
 End
 
 #HELP
@@ -18509,8 +18185,7 @@ WebInvis 0
 Keywords TAMP
 Text     Syntax: tamp <pipe name>
  
-This empties your pipe so that you may fill it with fresh herbs.
-~
+This empties your pipe so that you may fill it with fresh herbs.~
 End
 
 #HELP
@@ -18534,8 +18209,7 @@ stronger the monster (the higher the level) more than likely the
 better the armor will be as well.
 
 The following would tan a dragon corpse into a shield.
-Example : tan dragon shield
-~
+Example : tan dragon shield~
 End
 
 #HELP
@@ -18548,8 +18222,7 @@ ignore                Spell affect relies on the casting argument
 offensive             Spell will initiate combat
 defensive             Can be cast on anyone safely
 self                  Spell only affects the caster
-objinv                Cast on an object in the caster's inventory 
-~
+objinv                Cast on an object in the caster's inventory~
 End
 
 #HELP
@@ -18563,8 +18236,7 @@ Minimum Cost : 35 Mana
 
 Teleport will instantly transfer you to another location in the world.
 This location is random, and thus there will always be a risk of landing
-in a fatal location. This spell may only be cast on yourself.
-~
+in a fatal location. This spell may only be cast on yourself.~
 End
 
 #HELP
@@ -18594,8 +18266,7 @@ The well-traveled Paladin will normally learn the techniques necessary
 to mend the wounds of himself or others. This is the greatest mending
 ability in the Paladin's repertoire, though due to its nature it can
 not be used while in combat. It will restore hitpoints equal to twice
-the level of the Paladin and requires the use of the Paladin symbol.
-~
+the level of the Paladin and requires the use of the Paladin symbol.~
 End
 
 #HELP
@@ -18625,8 +18296,7 @@ duration, weather, and area resetting.
 Of these timers, the hp/mana/move regeneration timer is popularly called the
 "tick". Ticks in AFKMud can vary between 50 and 90 seconds of real time.
 This is done to lessen the effectiveness of "robotic" tick timers like
-those found in Zmud.
-~
+those found in Zmud.~
 End
 
 #HELP
@@ -18668,8 +18338,7 @@ game supplies a title when your character is created and each time you
 advance a level.  
  
 *  Must be level ten or higher to use title
-** Titles are subject to the same guidelines for use of language as channels
-~
+** Titles are subject to the same guidelines for use of language as channels~
 End
 
 #HELP
@@ -18698,8 +18367,7 @@ Text     The different PC languages include common, elvish, dwarven, pixie, ogre
 orcish, trollese, goblin, halfling and gith.
  
 NPC languages include rodent, insectoid, mammal, reptile, dragon, 
-spiritual, magical, god, and ancient.
-~
+spiritual, magical, god, and ancient.~
 End
 
 #HELP
@@ -18717,8 +18385,7 @@ Text     Additional topics you may want to look over:
 *NEWS
 *HISTORY (Type 'history' to view)
  
-To view a topic type: HELP <topic>
-~
+To view a topic type: HELP <topic>~
 End
 
 #HELP
@@ -18764,8 +18431,7 @@ Tracking a mob allows you to 'sniff' their trail out, based on clues
 in your surroundings. In MUD terms, you'll be told which direction to go
 to get to that person. If you become an experienced tracker, you don't
 even have to be close to your target to begin tracking it, but until then,
-you must at least enter the same zone as your prey.
-~
+you must at least enter the same zone as your prey.~
 End
 
 #HELP
@@ -18815,8 +18481,7 @@ Duration     : Instant
 Level        : 84 Mage, 86 Cleric, 85 Bard
 Minimum Cost : 55 Mana
 
-Transport sends an object in the caster's inventory to the target.
-~
+Transport sends an object in the caster's inventory to the target.~
 End
 
 #HELP
@@ -18897,8 +18562,7 @@ Minimum Cost : 40 Mana
 When casting this spell, you are actually asking permission to a tree
 to first merge with her and then be taken to another tree sister. It is 
 required to know the name of the tree you want to reach else the tree will
-refuse to let you merge with her.
-~
+refuse to let you merge with her.~
 End
 
 #HELP
@@ -18913,8 +18577,7 @@ By reaching level 30, the druids gain recognition from the plants
 as true devoters of nature. By that, they receive the ability to
 talk with plants. Depending on the tree you can acquire information,
 help, anything the tree wishes to. Be aware you can't force the tree
-to do something it doesn't want to.
-~
+to do something it doesn't want to.~
 End
 
 #HELP
@@ -19049,8 +18712,7 @@ Duration     : (caster's level)*4
 Level        : 43 Mage, 46 Antipaladin
 Minimum Cost : 20 Mana
 
-This spell increases your stamina during its duration.
-~
+This spell increases your stamina during its duration.~
 End
 
 #HELP
@@ -19114,8 +18776,7 @@ Level        : 20 Rogue
 
 Tumble is a high-level Rogue skill for the evasion of incoming attacks.
 The skill functions autonomically, and its effectiveness is greater for
-more dexterous Rogues.
-~
+more dexterous Rogues.~
 End
 
 #HELP
@@ -19152,8 +18813,7 @@ Save         : vs. spells to negate
 Minimum Cost : 70 Mana
 
 This spell renders the victim susceptible to both magic and nonmagic attacks
-for the its duration.
-~
+for the its duration.~
 End
 
 #HELP
@@ -19171,8 +18831,7 @@ meant to be used in aiding players with negative hitpoints.
 Uplift is not to be used as your common mode of healing. Repeatedly asking
 for uplifts on public channels is spammy and annoying for other players.  
 Keep in mind that the clerics that are uplifting you are doing so out of 
-kindness. Do _not_ abuse it or consider it a right.
-~
+kindness. Do _not_ abuse it or consider it a right.~
 End
 
 #HELP
@@ -19185,8 +18844,7 @@ Damage       : Level + (Level/2) up to a max of 55
  
 By clenching your fist and launching it upwards from below your opponent's
 chin, causing significant amounts of damage to be inflicted on your
-opponent.
-~
+opponent.~
 End
 
 #HELP
@@ -19255,8 +18913,7 @@ Level        : 45 Necromancer, 53 Cleric, 36 Druid, 67 Paladin
 Minimum Cost : 60 Mana
 
 This spell increases your perseverance when you are on the verge of
-losing consciousness.
-~
+losing consciousness.~
 End
 
 #HELP
@@ -19272,8 +18929,7 @@ Minimum Cost : 60 mana
 
 With this spell, the Necromancer may call upon the unholy energies of a 
 vampire and drain the life force out of his victim. The caster will 
-receive a percentage of the life force drained from his prey.
-~
+receive a percentage of the life force drained from his prey.~
 End
 
 #HELP
@@ -19322,8 +18978,7 @@ Level        : 56 Rogue
 Damage       : ld2 up to a max of 80.
  
 By tensing up your muscles, you are able to charge up to your opponent with
-an all out attack, inflicting large amounts of damage.
-~
+an all out attack, inflicting large amounts of damage.~
 End
 
 #HELP
@@ -19336,8 +18991,7 @@ Level       : 56 Necromancer, 58 Druid
 Minimum cost: 70 mana
  
 This spell casts a shield of venom around the selected target.  Any
-enemies attacking you will receive damage should they manage to hit you.
-~
+enemies attacking you will receive damage should they manage to hit you.~
 End
 
 #HELP
@@ -19373,8 +19027,7 @@ not who.
 
 Example:
 
-> cast 'vent' unclesam I've got 921,923 coins, don't even consider killing me.
-~
+> cast 'vent' unclesam I've got 921,923 coins, don't even consider killing me.~
 End
 
 #HELP
@@ -19398,8 +19051,7 @@ Keywords VICTORIES
 Text     Syntax: victories
 
 This command lists the victories for clan members who are engaged in PK.
-If you are not a member of a PK clan, then you will receive no output.
-~
+If you are not a member of a PK clan, then you will receive no output.~
 End
 
 #HELP
@@ -19423,8 +19075,7 @@ Keywords VISIBLE VIS
 Text     Usage : visible
 Usage : vis
 
-This will cancel any invisibility spell that you currently have.
-~
+This will cancel any invisibility spell that you currently have.~
 End
 
 #HELP
@@ -19435,8 +19086,7 @@ Text     Syntax: visits
 
 This command allows you to see all the areas that you character has visited
 in his or her lifetime. The aim of which is to let you know which areas you
-can portal into.
-~
+can portal into.~
 End
 
 #HELP
@@ -19537,8 +19187,7 @@ Level        : 10 Mage, 11 Necromancer, 27 Antipaladin, 16 Bard
 Minimum Cost : 20 Mana
 
 This spell reduces the strength of the victim by 1*(caster's level)/25 for
-the duration of the spell.
-~
+the duration of the spell.~
 End
 
 #HELP
@@ -19663,8 +19312,7 @@ Level           : 26 Mage, 31 Bard
 Save            : vs. spells to negate
  
 This spell covers the victim with a blanket of magical web which increases 
-the armor class and also gives the character a better chance to hit the victim.
-~
+the armor class and also gives the character a better chance to hit the victim.~
 End
 
 #HELP
@@ -19709,8 +19357,7 @@ WHERE without an argument tells you the location of visible players in the same
 area as you are.
 
 WHERE with an argument tells you the location of one character with that name
-within your area, including monsters.
-~
+within your area, including monsters.~
 End
 
 #HELP
@@ -19733,8 +19380,7 @@ Keywords WHISPER
 Text     Syntax: whisper <name> msg
  
 To whisper to another, you must be in the same room as the recipient
-of the whisper.
-~
+of the whisper.~
 End
 
 #HELP
@@ -19810,8 +19456,7 @@ Level        : 67 Mage, 63 Cleric, 40 Druid
 Minimum Cost : 60 Mana
 
 This spell makes the victim more susceptible to all forms of coldness for
-its duration.
-~
+its duration.~
 End
 
 #HELP
@@ -19831,8 +19476,7 @@ to incorporate learning.  Among other things, it affects:
  
  - the ability to remove a trap or poison a weapon
  
-Wisdom is the prime attribute of druids and clerics.
-~
+Wisdom is the prime attribute of druids and clerics.~
 End
 
 #HELP
@@ -19849,8 +19493,7 @@ Saves        : vs spell for half damage
 Minimum cost : 45
 
 A powerful spell that can reduce an opponents strength by sapping
-the life force directly from their body.
-~
+the life force directly from their body.~
 End
 
 #HELP
@@ -19861,8 +19504,7 @@ Text     Usage           : withering touch <victim>
 Level           : 18 Monk
  
 When a monk is successful in performing this skill, they are able to reduce the
-victim's strength by -(monk's level)/10 for (monk's level) rounds with a touch
-~
+victim's strength by -(monk's level)/10 for (monk's level) rounds with a touch~
 End
 
 #HELP
@@ -19910,8 +19552,7 @@ WebInvis 0
 Keywords WIZLIST
 Text     Syntax: wizlist
 
-Displays a list of the powerful beings who govern this realm!
-~
+Displays a list of the powerful beings who govern this realm!~
 End
 
 #HELP
@@ -19994,8 +19635,7 @@ Minimum Cost : 150 mana
 The caster will find his hitpoints and mana reduced by a percentage after 
 he casts the spell, but he will also be able to fly and pass through 
 doorways for the duration of the spell. He will also be rendered immune 
-against drain and non-magical weapons for the duration of the spell.
-~
+against drain and non-magical weapons for the duration of the spell.~
 End
 
 #HELP
@@ -20038,7 +19678,7 @@ You feel yourself leaving your body... rising up into the air, you feel
 more free than you have ever felt before...
 
 However, before your deity comes to collect your soul, you feel a strange
-pulling sensation as strange and colorful mists swirl around you...
-~
+pulling sensation as strange and colorful mists swirl around you...~
 End
 
+#END
