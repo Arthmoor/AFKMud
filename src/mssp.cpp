@@ -165,9 +165,7 @@ void save_mssp_info( void )
  */
 void load_mssp_data( void )
 {
-   std::ifstream stream;
-
-   stream.open( std::filesystem::path( MSSP_FILE ) );
+   std::ifstream stream( std::filesystem::path{MSSP_FILE} );
    if( !stream.is_open(  ) )
    {
       log_string( "No MSSP data file found. Generating default data." );
@@ -176,262 +174,77 @@ void load_mssp_data( void )
       return;
    }
 
-   do
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MSL];
-
-      stream >> key;
-      strip_lspace( key );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#MSSP_INFO" )
          mssp_info = new msspinfo;
       else if( key == "Ansi" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->ansi = std::stoi( value );
-      }
+         stream >> mssp_info->ansi;
       else if( key == "Contact" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->contact = value;
-      }
+         mssp_info->contact = fread_line( stream , '\n' );
       else if( key == "CrawlDelay" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->crawldelay = std::stoi( value );
-      }
+         stream >> mssp_info->crawldelay;
       else if( key == "Created" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->created = std::stoi( value );
-      }
+         stream >> mssp_info->created;
       else if( key == "Family" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->family = value;
-      }
+         mssp_info->family = fread_line( stream , '\n' );
       else if( key == "Genre" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->genre = value;
-      }
+         mssp_info->genre = fread_line( stream , '\n' );
       else if( key == "GamePlay" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->gamePlay = value;
-      }
+         mssp_info->gamePlay = fread_line( stream , '\n' );
       else if( key == "GameSystem" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->gameSystem = value;
-      }
+         mssp_info->gameSystem = fread_line( stream , '\n' );
       else if( key == "Intermud" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->intermud = value;
-      }
+         mssp_info->intermud = fread_line( stream , '\n' );
       else if( key == "Hostname" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->hostname = value;
-      }
+         mssp_info->hostname = fread_line( stream , '\n' );
       else if( key == "HiringBuilders" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->hiringBuilders = std::stoi( value );
-      }
+         stream >> mssp_info->hiringBuilders;
       else if( key == "HiringCoders" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->hiringCoders = std::stoi( value );
-      }
+         stream >> mssp_info->hiringCoders;
       else if( key == "Icon" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->icon = value;
-      }
+         mssp_info->icon = fread_line( stream , '\n' );
       else if( key == "Language" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->language = value;
-      }
+         mssp_info->language = fread_line( stream , '\n' );
       else if( key == "Location" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->location = value;
-      }
+         mssp_info->location = fread_line( stream , '\n' );
       else if( key == "IP" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->ip = value;
-      }
+         mssp_info->ip = fread_line( stream , '\n' );
       else if( key == "IPv6" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->ip = value;
-      }
+         mssp_info->ip = fread_line( stream , '\n' );
       else if( key == "MCCP" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->mccp = std::stoi( value );
-      }
+         stream >> mssp_info->mccp;
       else if( key == "MCP" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->mcp = std::stoi( value );
-      }
+         stream >> mssp_info->mcp;
       else if( key == "MinAge" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->minAge = std::stoi( value );
-      }
+         stream >> mssp_info->minAge;
       else if( key == "MSP" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->msp = std::stoi( value );
-      }
+         stream >> mssp_info->msp;
       else if( key == "MXP" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->mxp = std::stoi( value );
-      }
+         stream >> mssp_info->mxp;
       else if( key == "Pay2Play" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->pay2play = std::stoi( value );
-      }
+         stream >> mssp_info->pay2play;
       else if( key == "Pay4Perks" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->pay4perks = std::stoi( value );
-      }
+         stream >> mssp_info->pay4perks;
       else if( key == "SSL" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->ssl = std::stoi( value );
-      }
+         stream >> mssp_info->ssl;
       else if( key == "Status" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->status = value;
-      }
+         mssp_info->status = fread_line( stream , '\n' );
       else if( key == "SubGenre" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->subgenre = value;
-      }
+         mssp_info->subgenre = fread_line( stream , '\n' );
       else if( key == "Vt100" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->vt100 = std::stoi( value );
-      }
+         stream >> mssp_info->vt100;
       else if( key == "Xterm256" )
-      {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-
-         mssp_info->xterm256 = std::stoi( value );
-      }
+         stream >> mssp_info->xterm256;
       else if( key == "End" )
          break;
       else
       {
-         stream.getline( buf, MSL );
-         value = buf;
-         strip_lspace( value );
-         log_printf( "Bad line in MSSP data file: {} {}", key, value );
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, MSSP_FILE );
+         fread_to_eol( stream );
       }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 }
 
