@@ -30,14 +30,13 @@
 #include <fstream>
 #include "mud.h"
 #include "calendar.h"
-#include "pfiles.h"
+// #include "pfiles.h"
 #include "roomindex.h"
 
 std::list<holiday_data *> daylist;
 
-constexpr int MAX_TZONE = 25;
-
 extern std::chrono::system_clock::time_point board_expire_time_t;
+extern std::chrono::system_clock::time_point new_pfile_time_t;
 
 struct tzone_type
 {

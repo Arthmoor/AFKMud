@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                        Tracking/hunting module                           *
+ *                        Tracking/Hunting Module                           *
  ****************************************************************************/
 
 #include "mud.h"

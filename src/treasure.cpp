@@ -23,14 +23,13 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                       Rune/Gem socketing module                          *
+ *                       Rune/Gem Socketing Module                          *
  *                 Inspired by the system used in Diablo 2                  *
  *             Also contains the random treasure creation code              *
  ****************************************************************************/
 
 #include <filesystem>
 #include <fstream>
-#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"

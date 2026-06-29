@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                           IP Banning module                              *
+ *                           IP Banning Module                              *
  ****************************************************************************/
 
 /*
@@ -509,7 +509,7 @@ CMDF( do_ban )
             ch->print( "&wYou must specify a numerical duration, or the word \"permanent\".\r\n" );
             return;
          }
-         duration = std::chrono::days( atol( argument.c_str() ) );
+         duration = std::chrono::days( std::stol( argument ) );
       }
 
       if( ( ban = get_ban( arg1 ) ) )
@@ -569,7 +569,7 @@ CMDF( do_ban )
             ch->print( "&wYou must specify a numerical duration, or the word \"permanent\".\r\n" );
             return;
          }
-         duration = std::chrono::days( atol( argument.c_str() ) );
+         duration = std::chrono::days( std::stol( argument ) );
       }
 
       if( ( ban = get_ban( arg1 ) ) )

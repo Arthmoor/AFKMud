@@ -23,14 +23,13 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *            Commands for personal player settings/statictics              *
+ *            Commands for personal player settings/statistics              *
  ****************************************************************************
- *                           Pet handling module                            *
+ *                           Pet Handling Module                            *
  *                      Created by Samson of Alsherok                       *
  ****************************************************************************/
 
 #include <filesystem>
-#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -47,6 +46,7 @@
 
 std::string default_fprompt( char_data * );
 std::string default_prompt( char_data * );
+bool check_parse_name( std::string, bool );
 
 extern int num_logins;
 extern const std::array<unsigned char, 4> echo_off_str;
@@ -2276,4 +2276,184 @@ CMDF( do_journal )
    }
 
    do_journal( ch, "" );
+}
+
+/*
+ * The ignore command allows players to ignore up to MAX_IGN
+ * other players. Players may ignore other characters whether
+ * they are online or not. This is to prevent people from
+ * spamming someone and then logging off quickly to evade
+ * being ignored.
+ * Syntax:
+ *	ignore		-	lists players currently ignored
+ *	ignore none	-	sets it so no players are ignored
+ *	ignore <player>	-	start ignoring player if not already
+ *				ignored otherwise stop ignoring player
+ *	ignore reply	-	start ignoring last player to send a
+ *				tell to ch, to deal with invis spammers
+ * Last Modified: June 26, 1997
+ * - Fireblade
+ */
+CMDF( do_ignore )
+{
+   char_data *victim;
+
+   if( ch->isnpc(  ) )
+      return;
+
+   /*
+    * If no arguments, then list players currently ignored
+    */
+   if( argument.empty(  ) )
+   {
+      ch->print( "\r\n&[divider]----------------------------------------\r\n" );
+      ch->print( "&GYou are currently ignoring:\r\n" );
+      ch->print( "&[divider]----------------------------------------\r\n" );
+
+      if( ch->pcdata->ignore.empty(  ) )
+      {
+         ch->print( "&[ignore]\t    no one\r\n" );
+         return;
+      }
+
+      ch->print( "&[ignore]" );
+      for( auto& temp : ch->pcdata->ignore )
+         ch->print_fmt( "\t  - {}\r\n", temp );
+      return;
+   }
+
+   /*
+    * Clear players ignored if given arg "none"
+    */
+   else if( !str_cmp( argument, "none" ) )
+   {
+      for( auto it = ch->pcdata->ignore.begin(  ); it != ch->pcdata->ignore.end(  ); )
+      {
+         std::string ig = *it;
+         ++it;
+
+         ch->pcdata->ignore.remove( ig );
+      }
+      ch->print( "&[ignore]You now ignore no one.\r\n" );
+      return;
+   }
+
+   /*
+    * Prevent someone from ignoring themself...
+    */
+   else if( !str_cmp( argument, "self" ) || !str_cmp( ch->name, argument ) )
+   {
+      ch->print( "&[ignore]Cannot ignore yourself.\r\n" );
+      return;
+   }
+
+   else
+   {
+      std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( argument.front() ) ), capitalize( argument ) );
+      std::filesystem::path fname2 = std::format( "{}/{}", GOD_DIR, capitalize( argument ) );
+
+      victim = nullptr;
+
+      /*
+       * get the name of the char who last sent tell to ch
+       */
+      if( !str_cmp( argument, "reply" ) )
+      {
+         if( !ch->reply )
+         {
+            ch->print_fmt( "&[ignore]{} is not here.\r\n", argument );
+            return;
+         }
+         else
+            argument = ch->reply->name;
+      }
+
+      /*
+       * Loop through the linked list of ignored players, keep track of how many are being ignored
+       */
+      size_t i = 0;
+      for( auto& temp : ch->pcdata->ignore )
+      {
+         ++i;
+
+         /*
+          * If the argument matches a name in list remove it.
+          */
+         if( !str_cmp( temp, capitalize( argument ) ) )
+         {
+            ch->print_fmt( "&[ignore]You no longer ignore {}.\r\n", temp );
+            ch->pcdata->ignore.remove( temp );
+            return;
+         }
+      }
+
+      /*
+       * if there wasn't a match check to see if the name is valid.
+       * * This if-statement may seem like overkill but it is intended to prevent people from doing the
+       * * spam and log thing while still allowing ya to ignore new chars without pfiles yet...
+       */
+      if( !std::filesystem::exists( fname ) && ( !( victim = ch->get_char_world( argument ) ) || victim->isnpc(  ) || str_cmp( capitalize( argument ), victim->name ) != 0 ) )
+      {
+         ch->print_fmt( "&[ignore]No player exists by the name {}.\r\n", argument );
+         return;
+      }
+
+      if( !check_parse_name( argument, false ) )
+      {
+         ch->print( "That's not a valid name to ignore!\r\n" );
+         return;
+      }
+
+      if( std::filesystem::exists( fname2 ) )
+      {
+         ch->print( "&[ignore]You cannot ignore an immortal.\r\n" );
+         return;
+      }
+
+      if( victim )
+         argument = victim->name;
+
+      /*
+       * If its valid and the list size limit has not been reached create a node and at it to the list
+       */
+      if( i < sysdata->maxign )
+      {
+         std::string inew = capitalize( argument );
+         ch->pcdata->ignore.push_back( inew );
+         ch->print_fmt( "&[ignore]You now ignore {}.\r\n", inew );
+         return;
+      }
+      else
+      {
+         ch->print_fmt( "&[ignore]You may only ignore {} players.\r\n", sysdata->maxign );
+         return;
+      }
+   }
+}
+
+/*
+ * This function simply checks to see if ch is ignoring ign_ch.
+ * Last Modified: October 10, 1997
+ * - Fireblade
+ */
+bool is_ignoring( char_data * ch, char_data * ign_ch )
+{
+   if( !ch )   /* Paranoid bug check, you never know. */
+   {
+      bug( "{}: nullptr CH!", __func__ );
+      return false;
+   }
+
+   if( !ign_ch )  /* Bail out, webwho can access this and ign_ch will be nullptr */
+      return false;
+
+   if( ch->isnpc(  ) || ign_ch->isnpc(  ) )
+      return false;
+
+   for( auto& ign : ch->pcdata->ignore )
+   {
+      if( !str_cmp( ign, ign_ch->name ) )
+         return true;
+   }
+   return false;
 }

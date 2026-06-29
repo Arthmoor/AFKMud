@@ -32,8 +32,9 @@
 #include "clans.h"
 #include "deity.h"
 #include "objindex.h"
-#include "pfiles.h"
 #include "realms.h"
+
+inline constexpr std::string_view QUOTE_FILE = "quotes.dat";
 
 int num_quotes = 0;   /* for quotes */
 

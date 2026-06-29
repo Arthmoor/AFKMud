@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                             Player ships                                 *
+ *                             Player Ships                                 *
  *                   Brought over from Lands of Altanos                     *
  ***************************************************************************/
 

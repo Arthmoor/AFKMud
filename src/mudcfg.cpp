@@ -33,8 +33,6 @@
 #include "area.h"
 #include "clans.h"
 #include "deity.h"
-#include "mobindex.h"
-#include "objindex.h"
 #include "overland.h"
 #include "roomindex.h"
 

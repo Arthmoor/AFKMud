@@ -35,7 +35,6 @@
 #include <fstream>
 #include "mud.h"
 #include "ban.h"
-#include "channels.h"
 #include "commands.h"
 #include "connhist.h"
 #include "descriptor.h"
@@ -47,6 +46,9 @@
 #include "shell.h"
 #endif
 #include "auction.h"
+
+class mud_channel;
+mud_channel *find_channel( std::string_view );
 
 struct dns_data
 {

@@ -28,7 +28,6 @@
  ****************************************************************************/
 
 #include "mud.h"
-#include "area.h"
 #include "bits.h"
 #include "deity.h"
 #include "descriptor.h"
@@ -59,7 +58,6 @@ void stop_hunting( char_data * );
 void stop_fearing( char_data * );
 void add_to_auth( char_data * );
 void advance_level( char_data * );
-int race_bodyparts( char_data * );
 
 bool can_use_mprog( char_data * ch )
 {
@@ -121,9 +119,9 @@ CMDF( do_mpmset )
       maxattr = 18;
    }
 
-   value = is_number( arg3 ) ? atoi( arg3.c_str(  ) ) : -1;
+   value = is_number( arg3 ) ? std::stoi( arg3 ) : -1;
    if( atoi( arg3.c_str(  ) ) < -1 && value == -1 )
-      value = atoi( arg3.c_str(  ) );
+      value = std::stoi( arg3 );
 
    if( !str_cmp( arg2, "str" ) )
    {
@@ -2501,7 +2499,7 @@ CMDF( do_mpmorph )
    if( !is_number( argument ) )
       morph = get_morph( argument );
    else
-      morph = get_morph_vnum( atoi( argument.c_str(  ) ) );
+      morph = get_morph_vnum( std::stoi( argument ) );
    if( !morph )
    {
       progbugf( ch, "Mpmorph - unknown morph {}", argument );

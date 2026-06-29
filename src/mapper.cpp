@@ -60,9 +60,7 @@
 
    1. Add a way of displaying up and down directions effectively
  */
-#include <algorithm>
 #include "mud.h"
-#include "descriptor.h"
 #include "mapper.h"
 #include "overland.h"   // For sect_show
 #include "roomindex.h"

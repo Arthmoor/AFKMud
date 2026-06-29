@@ -26,8 +26,8 @@
  *                     Stock Zone Reader and Converter                      *
  ****************************************************************************/
 
-/* Converts stock Smaug version 0 thru 3 areas into AFKMud format - Samson 12-21-01 */
-/* Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03 */
+// Converts stock Smaug version 0 thru 3 areas into AFKMud format - Samson 12-21-01
+// Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03
 
 #include <filesystem>
 #include "mud.h"

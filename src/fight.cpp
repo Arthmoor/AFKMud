@@ -3057,7 +3057,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             {
                std::filesystem::path filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
 
-               append_to_file( filename.c_str(), "&P({:2}) {:<12} &wvs &P({:2}) {} &P{} ... &w{}",
+               append_to_file( filename.string(), "&P({:2}) {:<12} &wvs &P({:2}) {} &P{} ... &w{}",
                                ch->level, ch->name, victim->level, !victim->CAN_PKILL(  ) ? "&W<Peaceful>" :
                                victim->pcdata->clan ? victim->pcdata->clan->badge : "&P(&WUnclanned&P)", victim->name, ch->in_room->area->name );
             }

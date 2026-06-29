@@ -38,9 +38,9 @@ constexpr int MAXDEPTH = 2;
 /* Structure for the map itself */
 struct map_type
 {
-   char tegn;  // Character to print at this map coord
-   int vnum;   // Room this coord represents
-   int depth;  // Recursive depth this coord was found at
-   int sector; // Sector type of the map space
-   bool can_see;
+   char tegn = 0;  // Character to print at this map coord.
+   int vnum = 0;   // Room this coord represents.
+   int depth = 0;  // Recursive depth this coord was found at.
+   int sector = 0; // Sector type of the map space.
+   bool can_see = false;
 };

@@ -23,10 +23,9 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                             Hotboot module                               *
+ *                             Hotboot Module                               *
  ****************************************************************************/
 
-#include <dlfcn.h>   /* Required for libdl - Trax */
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -50,7 +49,6 @@ void quotes( char_data * );
 void set_alarm( long );
 bool write_to_descriptor_old( int, std::string_view );
 void update_room_reset( char_data *, bool );
-void music_to_char( std::string_view, int, char_data *, bool );
 void reset_sound( char_data * );
 void reset_music( char_data * );
 void save_timedata(  );
@@ -58,6 +56,8 @@ void save_weathermap(  );
 void check_auth_state( char_data * );
 affect_data *fread_afk_affect( FILE * );
 void fwrite_afk_affect( FILE *, affect_data * );
+void close_libdl( );
+void reopen_libdl( );
 #if defined(SQL)
  void close_db(  );
  void init_mysql(  );
@@ -756,7 +756,7 @@ CMDF( do_hotboot )
 #if defined(SQL)
    close_db(  );
 #endif
-   dlclose( sysdata->dlHandle );
+   close_libdl( );
    execl( EXE_FILE.data(), "afkmud", buf.c_str(), "hotboot", buf2.c_str(), buf3.c_str(), ( char * )nullptr );
 
    /*
@@ -764,7 +764,7 @@ CMDF( do_hotboot )
     */
    perror( "do_copyover: execl" );
 
-   sysdata->dlHandle = dlopen( nullptr, RTLD_LAZY );
+   reopen_libdl( );
    if( !sysdata->dlHandle )
    {
       bug( "{}: FATAL ERROR: Unable to reopen system executable handle!", __func__ );

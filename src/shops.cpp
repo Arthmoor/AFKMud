@@ -51,7 +51,6 @@ telnet://northwind.kilnar.com:5555/    +
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
-#include "descriptor.h"
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "objindex.h"

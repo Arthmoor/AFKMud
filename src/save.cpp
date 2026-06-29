@@ -23,18 +23,16 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                   Character saving and loading module                    *
+ *                   Character Saving and Loading Module                    *
  ****************************************************************************/
 
 #include <filesystem>
 #include "mud.h"
 #include "bits.h"
 #include "boards.h"
-#include "channels.h"
 #include "clans.h"
 #include "deity.h"
 #include "descriptor.h"
-#include "finger.h"
 #include "mobindex.h"
 #include "objindex.h"
 #include "overland.h"
@@ -62,6 +60,9 @@ affect_data *fread_afk_affect( FILE * );
 bool is_valid_wear_loc( char_data *, int );
 void restore_map_buffer( char_data * );
 std::string convert_old_timezone( int );
+
+class mud_channel;
+mud_channel *find_channel( std::string_view );
 
 /*
  * Increment with every major format change.
@@ -191,6 +192,12 @@ void char_data::re_equip(  )
          }
       }
    }
+}
+
+void pc_data::save_ignores( FILE * fp )
+{
+   for( const auto& name : ignore )
+      fprintf( fp, "Ignored      %s~\n", name.c_str(  ) );
 }
 
 /*
@@ -854,6 +861,31 @@ short find_old_age( char_data * ch )
    ch->pcdata->year = time_info.year - age;  /* Assign birth year based on calculations above */
 
    return age;
+}
+
+void pc_data::load_ignores( FILE * fp )
+{
+   /*
+    * Get the name
+    */
+   const char* temp = fread_flagstring( fp );
+
+   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( temp[0] ) ), capitalize( temp ) );
+
+   /*
+    * If there isn't a pfile for the name then don't add it to the list
+    */
+   if( std::filesystem::exists( fname ) )
+      return;
+
+   std::string ig = temp;
+   /*
+    * Add the name unless the limit has been reached
+    */
+   if( ignore.size(  ) >= sysdata->maxign )
+      bug( "{}: too many ignored names", __func__ );
+   else
+      ignore.push_back( ig );
 }
 
 /*

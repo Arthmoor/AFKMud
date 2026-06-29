@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                   "Special procedure" module for Mobs                    *
+ *                   "Special Procedure" Module for Mobs                    *
  ****************************************************************************/
 
 /******************************************************
@@ -38,7 +38,6 @@
  */
 #include <filesystem>
 #include "mud.h"
-#include "area.h"
 #include "fight.h"
 #include "mspecial.h"
 #include "objindex.h"

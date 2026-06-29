@@ -31,7 +31,6 @@
 #include "mud.h"
 #include "deity.h"
 #include "objindex.h"
-#include "olc.h"
 #include "polymorph.h"
 #include "raceclass.h"
 

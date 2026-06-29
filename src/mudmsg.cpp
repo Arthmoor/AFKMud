@@ -34,13 +34,11 @@
 
 #include <sys/ipc.h>
 #include <sys/msg.h>
-#include <cerrno>
 #include "mud.h"
 #include "channels.h"
 #include "roomindex.h"
 
 void send_tochannel( char_data *, mud_channel *, std::string & );
-void free_zonedata( char_data * );
 
 /*
  * License:

@@ -33,7 +33,6 @@
 #endif
 
 #include <dlfcn.h> // For libdl - Trax
-#include <cstdarg>
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -44,7 +43,6 @@
 #include "mud.h"
 #include "area.h"
 #include "event.h"
-#include "roomindex.h"
 
 #if defined(SQL)
  #include "sql.h"
@@ -186,9 +184,20 @@ void load_name_generator( );
 void load_reserved_names( );
 bool load_weathermap( );
 void InitializeWeatherMap( );
+void fix_exits( );
 
 affect_data::affect_data(  )
 {
+}
+
+void close_libdl( void )
+{
+   dlclose( sysdata->dlHandle );
+}
+
+void reopen_libdl( void )
+{
+   sysdata->dlHandle = dlopen( nullptr, RTLD_LAZY );
 }
 
 void shutdown_mud( std::string_view reason )
@@ -866,62 +875,6 @@ bool load_systemdata( void )
    update_calendar(  );
 
    return true;
-}
-
-/*
- * Translate all room exits from virtual to real.
- * Has to be done after all rooms are read in.
- * Check for bad reverse exits.
- */
-void fix_exits( void )
-{
-   std::map<int, room_index *>::iterator iroom;
-   std::list<exit_data *>::iterator iexit;
-   room_index *pRoomIndex;
-
-   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
-   {
-      pRoomIndex = iroom->second;
-
-      for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); )
-      {
-         exit_data *pexit = *iexit;
-         ++iexit;
-
-         pexit->rvnum = pRoomIndex->vnum;
-         if( pexit->vnum <= 0 || !( pexit->to_room = get_room_index( pexit->vnum ) ) )
-         {
-            if( fBootDb )
-               boot_log( "{}: room {}, exit {} leads to bad vnum ({})", __func__, pRoomIndex->vnum, dir_name[pexit->vdir], pexit->vnum );
-
-            bug( "{}: Deleting {} exit in room {}", __func__, dir_name[pexit->vdir], pRoomIndex->vnum );
-            pRoomIndex->extract_exit( pexit );
-         }
-      }
-   }
-
-   /*
-    * Set all the rexit pointers - Thoric 
-    */
-   for( iroom = room_index_table.begin(); iroom != room_index_table.end(); ++iroom )
-   {
-      pRoomIndex = iroom->second;
-
-      for( iexit = pRoomIndex->exits.begin(  ); iexit != pRoomIndex->exits.end(  ); ++iexit )
-      {
-         exit_data *pexit = *iexit;
-
-         if( pexit->to_room && !pexit->rexit )
-         {
-            exit_data *rv_exit = pexit->to_room->get_exit_to( rev_dir[pexit->vdir], pRoomIndex->vnum );
-            if( rv_exit )
-            {
-               pexit->rexit = rv_exit;
-               rv_exit->rexit = pexit;
-            }
-         }
-      }
-   }
 }
 
 /*

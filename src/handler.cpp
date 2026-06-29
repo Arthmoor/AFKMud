@@ -23,17 +23,10 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                   Main structure manipulation module                     *
+ *                   Main Structure Manipulation Module                     *
  ****************************************************************************/
 
 #include "mud.h"
-#include "descriptor.h"
-#include "deity.h"
-#include "fight.h"
-#include "mobindex.h"
-#include "mud_prog.h"
-#include "objindex.h"
-#include "polymorph.h"
 #include "roomindex.h"
 #include "smaugaffect.h"
 

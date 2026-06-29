@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                       Object manipulation module                         *
+ *                       Object Manipulation Module                         *
  ****************************************************************************/
 
 #include "mud.h"

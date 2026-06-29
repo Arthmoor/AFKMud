@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                          Regular update module                           *
+ *                          Regular Update Module                           *
  ****************************************************************************/
 
 #include "mud.h"
@@ -33,7 +33,6 @@
 #include "descriptor.h"
 #include "mobindex.h"
 #include "mud_prog.h"
-#include "new_auth.h"
 #include "objindex.h"
 #include "overland.h"
 #include "polymorph.h"

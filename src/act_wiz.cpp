@@ -23,12 +23,10 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                        Wizard/god command module                         *
+ *                        Wizard/God Command Module                         *
  ****************************************************************************/
 
 #include <filesystem>
-#include <sstream>
-#include <system_error>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -36,13 +34,10 @@
 #include "deity.h"
 #include "descriptor.h"
 #include "event.h"
-#include "finger.h"
-#include "liquids.h"
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "objindex.h"
 #include "overland.h"
-#include "pfiles.h"
 #include "raceclass.h"
 #include "roomindex.h"
 #include "smaugaffect.h"
@@ -1004,7 +999,7 @@ CMDF( do_ostat )
    if( obj->year == 0 )
       ch->print( "|Scheduled donation date: &G(NONE)&w\r\n" );
    else
-      ch->print_fmt( "|Scheduled donation date: &G %d%s day in the Month of %s, in the year %d.&w", day, suf, month_name[obj->month], obj->year );
+      ch->print_fmt( "|Scheduled donation date: &G {}{} day in the Month of {}, in the year {}.&w", day, suf, month_name[obj->month], obj->year );
 
    ch->print_fmt( "|Index Values : &G{:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2} {:2}&w\r\n",
                obj->pIndexData->value[0], obj->pIndexData->value[1], obj->pIndexData->value[2], obj->pIndexData->value[3],

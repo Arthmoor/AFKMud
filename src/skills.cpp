@@ -23,10 +23,9 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                         Player skills module                             *
+ *                         Player Skills Module                             *
  ****************************************************************************/
 
-#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include "mud.h"

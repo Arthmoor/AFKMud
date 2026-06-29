@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                      Player communication module                         *
+ *                      Player Communication Module                         *
  ****************************************************************************/
 
 #include "mud.h"

@@ -55,5 +55,3 @@ class auth_data
    std::string change_by; // Name of immortal requesting name change
    short state = 0;       // Current state of authed
 };
-
-bool NOT_AUTHED( char_data * );

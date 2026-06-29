@@ -31,7 +31,6 @@
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
-#include "descriptor.h"
 #include "mobindex.h"
 #include "mud_prog.h"
 #include "objindex.h"
@@ -39,7 +38,6 @@
 #include "roomindex.h"
 #include "shops.h"
 #include "smaugaffect.h"
-#include "weather.h"
 
 int top_area;
 
@@ -2663,20 +2661,20 @@ CMDF( do_installarea )
       /*
        * Fix up author if online 
        */
-      for( auto* d : dlist )
+      for( auto* author : pclist )
       {
-         if( d->character && d->character->pcdata && d->character->pcdata->area == tarea )
+         if( author->pcdata->area == tarea )
          {
             /*
              * remove area from author 
              */
-            d->character->pcdata->area = nullptr;
+            author->pcdata->area = nullptr;
             /*
              * clear out author vnums  
              */
-            d->character->pcdata->low_vnum = 0;
-            d->character->pcdata->hi_vnum = 0;
-            d->character->save(  );
+            author->pcdata->low_vnum = 0;
+            author->pcdata->hi_vnum = 0;
+            author->save(  );
          }
       }
       ++top_area;

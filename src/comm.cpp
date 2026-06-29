@@ -26,7 +26,6 @@
  *                      Network Communication Module                        *
  ****************************************************************************/
 
-#include <dlfcn.h>
 #include <netdb.h>
 #include <sys/wait.h>
 #include <filesystem>
@@ -37,7 +36,6 @@
 #include "connhist.h"
 #include "mud_prog.h"
 #include "objindex.h"
-#include "pfiles.h"
 #include "raceclass.h"
 #include "roomindex.h"
 #include "shops.h"
@@ -61,6 +59,7 @@ bool DONTSAVE = false;                                   // Flag to decide wheth
 bool bootlock = false;                                   // Lock flag to prevent people from logging on while a reboot or shutdown count is running.
 bool DONT_UPPER = false;                                 // Weird flag that prevents capitalization in act_string() and in several places in mud_comm.cpp().
 
+extern std::chrono::system_clock::time_point new_pfile_time_t;
 extern int newdesc;
 #ifdef MULTIPORT
 extern bool compilelock;
@@ -137,6 +136,7 @@ void free_wizlist_data( );
 void free_wizlist_web_data( );
 void clear_auction( );
 void free_weapon_table( );
+void close_libdl( );
 #if defined(SQL)
  void close_db(  );
 #endif
@@ -974,7 +974,7 @@ void cleanup_memory( void )
 
    // Last but not least, close the libdl and dispose of sysdata - Samson
    fprintf( stdout, "%s", "System data.\n" );
-   dlclose( sysdata->dlHandle );
+   close_libdl( );
    deleteptr( sysdata );
    fprintf( stdout, "%s", "Memory cleanup complete, exiting.\n" );
 }

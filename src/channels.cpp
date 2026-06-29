@@ -33,7 +33,6 @@
 #include "channels.h"
 #include "commands.h"
 #include "descriptor.h"
-#include "objindex.h"
 #include "roomindex.h"
 
 std::string translate( int, std::string_view, std::string_view );

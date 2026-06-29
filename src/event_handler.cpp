@@ -28,7 +28,6 @@
 
 #include "mud.h"
 #include "area.h"
-#include "descriptor.h"
 #include "event.h"
 #include "mud_prog.h"
 #include "roomindex.h"
@@ -447,12 +446,8 @@ void ev_area_reset( void *data )
 
    if( !area->resetmsg.empty() )
    {
-      for( auto* d : dlist )
+      for( auto* ch : pclist )
       {
-         char_data *ch = d->original ? d->original : d->character;
-
-         if( !ch )
-            continue;
          if( ch->IS_AWAKE(  ) && ch->in_room && ch->in_room->area == area )
             act( AT_RESET, "$t", ch, area->resetmsg.c_str(), nullptr, TO_CHAR );
       }

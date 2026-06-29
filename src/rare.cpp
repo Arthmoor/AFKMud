@@ -27,7 +27,6 @@
  ****************************************************************************/
 
 #include <filesystem>
-#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "auction.h"

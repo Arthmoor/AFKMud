@@ -31,7 +31,6 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
-#include <unordered_map>
 #include "mud.h"
 #include "area.h"
 #include "mobindex.h"

@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                      MySQL Database management module                    *
+ *                      MySQL Database Management Module                    *
  ****************************************************************************/
 
 #include <stdexcept>

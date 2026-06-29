@@ -29,7 +29,6 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
-#include <sstream>
 #include <unordered_map>
 #include "mud.h"
 #include "area.h"

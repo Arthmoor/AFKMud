@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                        Player movement module                            *
+ *                        Player Movement Module                            *
  ****************************************************************************/
 
 #include "mud.h"

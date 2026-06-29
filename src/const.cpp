@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                           Mud constants module                           *
+ *                           Mud Constants Module                           *
  ****************************************************************************/
 
 #include "mud.h"

@@ -449,7 +449,7 @@ void check_auth_state( char_data * ch )
 }
 
 /* 
- * Check if the name prefix uniquely identifies a char descriptor
+ * Check if the name prefix uniquely identifies a char descriptor.
  */
 char_data *get_waiting_desc( char_data * ch, std::string_view name )
 {
@@ -457,16 +457,16 @@ char_data *get_waiting_desc( char_data * ch, std::string_view name )
    static size_t number_of_hits;
 
    number_of_hits = 0;
-   for( auto* d : dlist )
+   for( auto* vch : pclist )
    {
-      if( d->character && ( !str_prefix( name, d->character->name ) ) && IS_WAITING_FOR_AUTH( d->character ) )
+      if( !str_prefix( name, vch->name ) && IS_WAITING_FOR_AUTH( vch ) )
       {
          if( ++number_of_hits > 1 )
          {
             ch->print_fmt( "{} does not uniquely identify a char.\r\n", name );
             return nullptr;
          }
-         ret_char = d->character;   /* return current char on exit */
+         ret_char = vch;   /* return current char on exit */
       }
    }
    if( number_of_hits == 1 )

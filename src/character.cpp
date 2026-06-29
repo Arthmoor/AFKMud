@@ -35,7 +35,6 @@
 #include "fight.h"
 #include "mobindex.h"
 #include "mud_prog.h"
-#include "new_auth.h"
 #include "objindex.h"
 #include "raceclass.h"
 #include "roomindex.h"
@@ -55,6 +54,7 @@ room_index *check_room( char_data *, room_index * );
 void update_room_reset( char_data *, bool );
 void add_morph_effects( char_data * );
 void do_unmorph( char_data * );
+bool NOT_AUTHED( char_data * );
 
 extern std::list<rel_data *> relationlist;
 

@@ -848,11 +848,9 @@ void note_remove( board_data * board, note_data * pnote )
    }
 
    // Memory safety check in case a note being replied to by someone is being removed.
-   for( auto* d : dlist )
+   for( auto* ch : pclist )
    {
-      char_data *ch = d->original ? d->original : d->character;
-
-      if( ch && ch->pcdata && ch->pcdata->pnote )
+      if( ch->pcdata->pnote )
       {
          // If a player is replying to the note we are removing, disconnect the link
          if( ch->pcdata->pnote->parent == pnote )

@@ -26,7 +26,6 @@
  *                   Online Building and Editing Module                     *
  ****************************************************************************/
 
-#include <sstream>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
