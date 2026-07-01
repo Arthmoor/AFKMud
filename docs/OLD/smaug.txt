@@ -1,0 +1,207 @@
+ ****************************************************************************
+ * [S]imulated [M]edieval [A]dventure multi[U]ser [G]ame      |   \\._.//   *
+ * -----------------------------------------------------------|   (0...0)   *
+ * SMAUG 1.8 (C) 1994, 1995, 1996, 1997, 1998 by Derek Snider |    ).:.(    *
+ * -----------------------------------------------------------|    {o o}    *
+ * SMAUG code team: Thoric, Altrag, Blodkai, Narn, Haus,      |   / ' ' \   *
+ * Scryn, Rennard, Swordbearer, Gorog, Grishnakh, Nivek,      |~'~.VxvxV.~'~*
+ * Tricops and Fireblade                                      |             *
+ * ------------------------------------------------------------------------ *
+
+
+SMAUG is a heavily modified derivative of the Merc2.1 distribution.
+
+SMAUG 1.8 is close to six times the size of Merc2.1, and has major changes
+to the inner workings of the code, hence making porting of code from other
+Diku-derivatives non-trivial to the non-coder.
+
+This document discusses some of these changes.
+
+
+Some of the most noteable structural changes are:
+
+
+- Double Linked Lists
+
+Most of the previously single linked lists have been changed to double
+linked lists.  For a minor memory usage increase, a large performance
+increase is gained, as well as more flexability.
+
+In original Merc code, to extract an object from the game, the code had to
+traverse the entire list of objects in memory until it located the object
+that was being extracted.  With a double-linked list, all that needs be done
+is point the next object to the previous object, and the previous object to
+the next object.  This can generate significant CPU savings when a player
+with many objects quits the game.  There are also helpful macros (LINK,
+UNLINK and INSERT) for easy dealing with double-linked lists.
+
+
+
+- Room exits are now a double-linked list
+
+In Merc and the original DikuMud, the exits in a room were an array of six
+pointers to exit_data structures.  The position in the array coresponded to
+the direction in which the exit led (n, e, s, w, u, d). In SMAUG, we use a
+double-linked list, and have added extra fields to the exit_data structure,
+one of which being a 'virtual direction' which is a number that coresponds
+to the original classic DikuMud exit numbers.  With this new exit setup, we
+have the capability of having more than one exit in the same direction.  We
+have also added some more directions (ne, nw, se, sw and an exit 'somewhere'
+which doesn't lead in any particular direction, and cannot be accessed via a
+directional command).  SMAUG exits also support many more flags, and the
+ability to set up an exit that can be triggerred by simply typing a keyword,
+or exits where you use commands like "climb", "enter" or "leave".
+
+
+
+- String hashing has been completely rewritten
+
+Simple string hashing was added to Merc, but seems to us a weird kludge of
+confusing and restrictive code.  During the process of finding the bugs in
+Merc, we removed string hashing completely, along with all the cumbersome
+memory management techniques.  These routines made debugging memory leaks
+nearly impossible, and many bugs were discovered after removing this code.
+
+After nearly a year after removing all the string hashing and memory
+management, we created a string hashing system that is both restriction
+free, and also allows releasing memory of strings that are no longer used.
+(Note: the proper string handling functions must be used, and not intermixed
+with non-hashing functions).
+
+
+
+- Identical objects are grouped together
+
+To save both memory and the processing during saving and loading player
+files, identical objects are stored as one object (with a count field) when
+placed in the same location (on the floor, in a container, in a character's
+inventory).  For this to work smoothly, extra steps need to be taken when
+dealing with objects.  If an object is to be modified in any way shape or
+form (including being extracted), it must first be separated from the group
+by a call to 'separate_obj(obj)'.
+
+The grouping is already handled by obj_to_char(), obj_to_obj() and
+obj_to_room().  (Note: when dealing with "all" of an object, there is
+obviously no need to separate the objects -- ie: 'drop all', 'get all.potion').
+
+
+
+- The note system has been replaced with boards
+
+Due to the non-realism of Merc notes, and the fact that there was only one
+list of notes encouraged us to create a better system.  The syntax is
+entirely the same, but you must be in a room containing a bulletin board to
+post, view or read notes.  There can be any number of different boards, each
+with its own list of notes, as well as settings to how many notes it can
+hold, and the levels for reading, posting and removing notes.
+
+To retain the capability of private notes, a room containing a board can be
+flagged as a post office, where all the notes (mail) are private.
+
+Notes (comments) can also be posted onto players by immortals.
+
+
+
+- The skill table and magic system have been revamped
+
+The magic.c file was becoming a vastly huge mess of repetition. The code for
+many spells was nearly identical other than a few minor differences, (ie:
+the name of the spell, the damage done, the duration, the dice roll, etc). 
+In light of this, we created a generic spell -- spell_smaug -- that could
+handle all the common spells, and added several more fields to the skill_type
+structure.  We tried to make it as flexable and powerful as possible to be
+able to replace at least 80 to 90% of the current spells, and only use hard
+code for very unique spells.  Even new unique spells could be designed to
+use the new skill_type fields so that they could be used by more than one
+spell.  (See smaugspells.txt)
+
+
+
+- The experience system has been completely revamped
+
+Players now get experience based on damage done to a mob, as well as during
+the use and learning of new spells and skills.  Also, a lot more experience
+is required to gain levels, and this goes up with each level. Experience
+requirements are also different for each class, and experience given for
+mobs is determined by a complex formula involving the mobile's stats,
+including spell affects, rather than by level alone.
+
+---------------------------------------------------------------------------
+
+As well as these major structural changes, which can generally make porting
+over code from other Diku derivatives a non-trivial task, many code changes
+and additions have been done without disrupting the inner workings too much.
+
+Most of these changes involve giving more control over the mud to high-level
+gods, making the code more flexible and optimizing its performance.
+
+Here are some of the most significant code additions and changes:
+
+
+- Online building
+
+This code has had over two and a half years of real time usage, testing and
+development on one of the largest MUDs on the Internet.  Basically it's been
+tested through conditions of 20 to 30 builders building along with well over
+300 players playing.
+
+It has come a long way, and basically supports online editing and creating
+of most everying on the mud: rooms, objects, mobiles, resets, mudprograms,
+shops, repairshops, boards, clans, councils, guilds, orders, spells, etc.
+
+
+
+- Skills have been removed from the command list (other than "bs" for
+backstab).  Skills are now searched for in the skill table.
+This also allows the ability to use the SMAUG spell code with skills.
+
+
+
+- Command table has been removed
+
+The old command table array is now just a memory... replaced with a hash
+table of 126 linked lists.  The commands and their settings are read from a
+file upon bootup, and can be modified and saved online.
+
+
+
+- Social table has been removed
+
+The social table is now a hash table of 27 linked lists.  Online social
+editting commands are also in place.
+
+
+
+- New item types
+
+A lot of new items have been added, along with special code handling which
+allows for many interesting twists and features to areas.
+
+Some of these are: traps, levers, switches, pullchains, pipes and portals.
+
+
+
+- Player controlling code
+
+With a large mud comes many problem players.  Much has been learned through
+experience, and many wizcommands have been added just to deal with players,
+as well as room flags, and player flags.  A player can be put into a room
+with flags that restrict them, log what they say to a file.  Rooms can be
+flagged so that you cannot "get all" or also so you cannot "drop all".
+Players can be litterbug flagged so that they cannot "drop all".
+
+You can ban sites, restrict new players from a site, and the bans save and
+load.  You can also loadup a player who is not online to do what you please
+with them, and then force them to quit.
+
+
+
+- Global Setting Control
+
+Sometimes it's hard to determine how best to tweak certain values and
+settings, and often you'd like to give the ability to make adjustments of
+how things work to non-coders.  We've added the "cset" command to allow
+high-level gods to make adjustments to some global settings that we thought
+were important to control.  (Of course you can add more of your own).  These
+include modifiers to some skills, modifiers to damage, restrictions and
+levels of some features and internals of commands.

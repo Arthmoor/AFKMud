@@ -1,0 +1,80 @@
+AFKMud: Alsherok Game Code Release - Version 1.8: December 2006
+---------------------------------------------------------------
+
+Credits
+-------
+
+The following snippets have been added to this code
+over the years. If We've managed to miss somethig you know we used, tell
+us. We've lost track of alot of things over time and we don't want to
+leave anyone out.
+
+All authors credited here have given their authorization for their
+work to be distributed as part of AFKMud. Consent must be obtained from
+individual authors to use these additions in any other codebase.
+
+Stuff we modified
+-----------------
+
+Custom Ansi, originally written by Matthew Bafford.
+
+Compass display, originally written for the Altanos codebase.
+
+Rent code, originally written by Garil of DOTDII.
+
+Delete command, originally written by Swiv.
+
+Stat roller, original author unknown. Ported from Rom.
+
+Banking code, originally written by Minas Ravenblood.
+
+Donate command, original author unknown. Ported from Rom.
+
+Beep command, originally written by Altrag of RoD.
+
+Name authorization, originally written by Rantic.
+
+Weapon Profficiency Patch, originally written by Grimm.
+
+Enhanced Archery, originally written by Feudal Realms.
+
+Pfile cleanup, originally adapted from the grux.c code in Smaug.
+
+Area Exit listing, originally written by Shogar.
+
+Run command, originally written by Garil of DOTDII.
+
+Viewskills command, original author unknown. Ported from ROT.
+
+Hotboot ( Copyover ), originally written by Erwin Andreasen. Ported from Rom.
+
+DNS Resolver, originally written by Trax of Forever's End.
+
+Stuff others wrote
+------------------
+
+Junk command, written by Stu.
+
+Alias code, written by Garil of DOTDII.
+
+Player interface code, written by Garil of DOTDII.
+
+Liquid System code, written by Noplex of Crimson Blade.
+
+Item Connect code, written by Zarius.
+
+Edit Buffer Format Command, written by Shogar.
+
+Wizhelp replacement, written by Sadiq.
+
+Area Renumbering, written by Cronel.
+
+Newpass command, written by John Strange.
+
+Undertaker module ( modified ), written by Cyrus and Robcon.
+
+Furniture code, written by Xerves of Rafermand.
+
+Random quote display, ported from Gary McNickle's Rom code.
+
+Memory cleanup code, written by Druid.
