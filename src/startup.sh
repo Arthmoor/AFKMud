@@ -18,15 +18,15 @@ while true; do
     done
     LOGFILE="../log/$INDEX.log"
 
-    # Record starting time
-    date > "$LOGFILE"
-    date > boot.txt
-
     # Check if already running using ss (or netstat if preferred)
     if ss -tuln | grep -q ":$PORT "; then
         echo "Port $PORT is already in use."
         exit 0
     fi
+
+    # Record starting time
+    echo "$(date) :: AFKMud startup initiated..." > "$LOGFILE"
+    echo "$(date) :: AFKMud startup initiated..." > boot.txt
 
     # Run AFKMud
     ../src/afkmud "$PORT" >> "$LOGFILE" 2>&1
