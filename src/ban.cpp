@@ -126,55 +126,44 @@ void free_bans( void )
 
 void load_banlist( void )
 {
-   ban_data *ban = nullptr;
-   std::ifstream stream;
-
-   banlist.clear(  );
-
-   stream.open( std::filesystem::path( BAN_LIST ) );
+   std::ifstream stream( std::filesystem::path{BAN_LIST} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open banlist for reading: {}", __func__, std::strerror(errno) );
       return;
    }
 
-   do
+   ban_data *ban = nullptr;
+   banlist.clear(  );
+
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MSL];
-
-      stream >> key;
-      strip_lspace( key );
-
-      if( key.empty(  ) )
-         continue;
-
-      stream.getline( buf, MSL );
-      value = buf;
-
-      strip_lspace( value );
-
       if( key == "#BAN" )
          ban = new ban_data;
       else if( key == "Name" )
-         ban->name = value;
+         ban->name = fread_line( stream, '\n' );
       else if( key == "IP" )
-         ban->ipaddress = value;
+         ban->ipaddress = fread_line( stream, '\n' );
       else if( key == "Expires" )
       {
-         time_t exp_time = atol( value.c_str() );
+         time_t exp_time;
+         stream >> exp_time;
+
          ban->expires = std::chrono::system_clock::from_time_t( exp_time );
       }
       else if( key == "Type" )
-        ban->type = std::stoi( value );
+        stream >> ban->type;
       else if( key == "End" )
       {
          banlist.push_back( ban );
       }
       else
-         bug( "{}: Invalid key: {}", __func__, key );
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, BAN_LIST );
+         fread_to_eol( stream );
+      }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
 
    add_event( 3600, ev_ban_check, nullptr );
@@ -195,12 +184,12 @@ void save_banlist( void )
    {
       auto exp_time = std::chrono::system_clock::to_time_t( ban->expires );
 
-      stream << "#BAN" << std::endl;
-      stream << "Name       " << ban->name << std::endl;
-      stream << "IP         " << ban->ipaddress << std::endl;
-      stream << "Expires    " << exp_time << std::endl;
-      stream << "Type       " << ban->type << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << "#BAN\n";
+      stream << std::format( "Name       {}\n", ban->name );
+      stream << std::format( "IP         {}\n", ban->ipaddress );
+      stream << std::format( "Expires    {}\n", exp_time );
+      stream << std::format( "Type       {}\n", ban->type );
+      stream << "End\n\n";
    }
    stream.close(  );
    if( stream.fail() )
