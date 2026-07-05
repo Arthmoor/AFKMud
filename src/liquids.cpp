@@ -81,6 +81,7 @@
  */
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "liquids.h"
 #include "mud_prog.h"
@@ -102,7 +103,6 @@ const char *mod_types[MAX_CONDS] = {
 /* locals */
 int top_liquid;
 int liq_count;
-int file_version;
 
 /* liquid i/o functions */
 liquid_data::liquid_data(  )
@@ -135,104 +135,66 @@ mixture_data::~mixture_data(  )
 /* save the liquids to the liquidtable.dat file in the system directory -Nopey */
 void save_liquids( void )
 {
-   FILE *fp = nullptr;
-   liquid_data *liq = nullptr;
-   std::filesystem::path filename;
-   int i;
-
-   filename = std::format( "{}liquids.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::filesystem::path filename = std::format( "{}liquids.dat", SYSTEM_DIR );
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: cannot open {} for writing", __func__, filename.string() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   fprintf( fp, "%s", "#VERSION 3\n" );
-   for( i = 0; i <= top_liquid; ++i )
+   stream << "#VERSION 3\n";
+   for( int i = 0; i <= top_liquid; ++i )
    {
       if( !liquid_table[i] )
          continue;
 
-      liq = liquid_table[i];
+      liquid_data *liq = liquid_table[i];
 
-      fprintf( fp, "%s", "#LIQUID\n" );
-      fprintf( fp, "Name      %s~\n", liq->name.c_str(  ) );
-      fprintf( fp, "Shortdesc %s~\n", liq->shortdesc.c_str(  ) );
-      fprintf( fp, "Color     %s~\n", liq->color.c_str(  ) );
-      fprintf( fp, "Type      %d\n", liq->type );
-      fprintf( fp, "Vnum      %d\n", liq->vnum );
-      fprintf( fp, "Mod       %d %d %d\n", liq->mod[COND_DRUNK], liq->mod[COND_FULL], liq->mod[COND_THIRST] );
-      fprintf( fp, "%s", "End\n\n" );
+      stream << "#LIQUID\n";
+      stream << std::format( "Name      {}~\n", liq->name );
+      stream << std::format( "Shortdesc {}~\n", liq->shortdesc );
+      stream << std::format( "Color     {}~\n", liq->color );
+      stream << std::format( "Type      {}\n", liq->type );
+      stream << std::format( "Vnum      {}\n", liq->vnum );
+      stream << std::format( "Mod       {} {} {}\n", liq->mod[COND_DRUNK], liq->mod[COND_FULL], liq->mod[COND_THIRST] );
+      stream << "End\n\n";
    }
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 /* read the liquids from a file descriptor and then distribute them accordingly to the struct -Nopey */
-liquid_data *fread_liquid( FILE * fp )
+void fread_liquid( liquid_data *liq, std::ifstream & stream, int file_ver )
 {
-   liquid_data *liq = new liquid_data;
-
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Name" )
+         liq->name = fread_line( stream );
+      else if( key == "Shortdesc" )
+         liq->shortdesc = fread_line( stream );
+      else if( key == "Color" )
+         liq->color = fread_line( stream );
+      else if( key == "Type" )
+         stream >> liq->type;
+      else if( key == "Vnum" )
+         stream >> liq->vnum;
+      else if( key == "Mod" )
       {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
+         stream >> liq->mod[COND_DRUNK] >> liq->mod[COND_FULL] >> liq->mod[COND_THIRST];
+
+         if( file_ver < 3 )
+            std::string temp = fread_line( stream, '\n' );
       }
-
-      switch ( to_upper( word[0] ) )
+      else if( key == "End" )
+         return;
+      else
       {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'C':
-            STDSKEY( "Color", liq->color );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               if( liq->vnum <= -1 )
-                  return nullptr;
-               return liq;
-            }
-            break;
-
-         case 'N':
-            STDSKEY( "Name", liq->name );
-            break;
-
-         case 'M':
-            if( !str_cmp( word, "Mod" ) )
-            {
-               liq->mod[COND_DRUNK] = fread_number( fp );
-               liq->mod[COND_FULL] = fread_number( fp );
-               liq->mod[COND_THIRST] = fread_number( fp );
-               if( file_version < 3 )
-                  fread_number( fp );
-            }
-            break;
-
-         case 'S':
-            STDSKEY( "Shortdesc", liq->shortdesc );
-            break;
-
-         case 'T':
-            KEY( "Type", liq->type, fread_number( fp ) );
-            break;
-
-         case 'V':
-            KEY( "Vnum", liq->vnum, fread_number( fp ) );
-            break;
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
 }
@@ -240,52 +202,41 @@ liquid_data *fread_liquid( FILE * fp )
 /* load the liquids from the liquidtable.dat file in the system directory -Nopey */
 void load_liquids( void )
 {
-   FILE *fp = nullptr;
-   std::filesystem::path filename;
-   int x;
-
-   file_version = 0;
-   filename = std::format( "{}liquids.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename.c_str(), "r" ) ) )
+   std::filesystem::path filename = std::format( "{}liquids.dat", SYSTEM_DIR );
+   std::ifstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: cannot open {} for reading", __func__, filename.string() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
    top_liquid = -1;
    liq_count = 0;
+   int file_ver = 0;
 
-   for( x = 0; x < MAX_LIQUIDS; ++x )
+   for( int x = 0; x < MAX_LIQUIDS; ++x )
       liquid_table[x] = nullptr;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      char letter = fread_letter( fp );
-
-      if( letter == '*' )
+      if( key == "#VERSION" )
+         stream >> file_ver;
+      else if( key == "#LIQUID" )
       {
-         fread_to_eol( fp );
-         continue;
-      }
+         liquid_data *liq = new liquid_data;
+         fread_liquid( liq, stream, file_ver );
 
-      if( letter != '#' )
-      {
-         bug( "{}: # not found ({})", __func__, letter );
-         return;
-      }
-
-      std::string word = fread_word( fp );
-      if( !str_cmp( word, "VERSION" ) )
-      {
-         file_version = fread_number( fp );
-         continue;
-      }
-      else if( !str_cmp( word, "LIQUID" ) )
-      {
-         liquid_data *liq = fread_liquid( fp );
-
-         if( !liq )
-            bug( "{}: returned nullptr liquid", __func__ );
+         if( liq->vnum <= -1 )
+         {
+            bug( "{}: Bad entry in liquid table: {}", __func__, !liq->name.empty() ? liq->name : "Unknown???" );
+            std::exit( EXIT_FAILURE );
+         }
+         else if( get_liq_vnum( liq->vnum ) != nullptr )
+         {
+            bug( "{}: Liquid with duplicate vnum: {} {}", __func__, liq->vnum, liq->name );
+            std::exit( EXIT_FAILURE );
+         }
          else
          {
             liquid_table[liq->vnum] = liq;
@@ -293,17 +244,16 @@ void load_liquids( void )
                top_liquid = liq->vnum;
             ++liq_count;
          }
-         continue;
       }
-      else if( !str_cmp( word, "END" ) )
+      else if( key == "#END" )
          break;
       else
       {
-         bug( "{}: no match for {}", __func__, word );
-         continue;
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
       }
    }
-   FCLOSE( fp );
+   stream.close();
 }
 
 // 1: ???
@@ -314,89 +264,46 @@ constexpr int MIX_VERSION = 3;
 /* save the mixtures to the mixture table -Nopey */
 void save_mixtures( void )
 {
-   FILE *fp = nullptr;
-
    std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: cannot open {} for writing", __func__, filename.string() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   fprintf( fp, "#VERSION %d\n", MIX_VERSION );
+   stream << std::format( "#VERSION {}\n", MIX_VERSION );
    for( auto* mix : mixlist )
    {
-      fprintf( fp, "%s", "#MIXTURE\n" );
-      fprintf( fp, "Name   %s~\n", mix->name.c_str(  ) );
-      fprintf( fp, "Data   %d %d %d\n", mix->data[0], mix->data[1], mix->data[2] );
-      fprintf( fp, "Object %d\n", mix->object );
-      fprintf( fp, "%s", "End\n" );
+      stream << "#MIXTURE\n";
+      stream << std::format( "Name   {}~\n", mix->name );
+      stream << std::format( "Data   {} {} {}\n", mix->data[0], mix->data[1], mix->data[2] );
+      stream << std::format( "Object {}\n", mix->object );
+      stream << "End\n\n";
    }
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   stream << "#END\n";
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 /* read the mixtures into the structure -Nopey */
-mixture_data *fread_mixture( FILE * fp )
+void fread_mixture( mixture_data *mix, std::ifstream & stream )
 {
-   mixture_data *mix = new mixture_data;
-
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Name" )
+         mix->name = fread_line( stream );
+      else if( key == "Data" )
+         stream >> mix->data[0] >> mix->data[1] >> mix->data[2];
+      else if( key == "Object" )
+         stream >> mix->object;
+      else if( key == "End" )
+         return;
+      else
       {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'D':
-            if( !str_cmp( word, "Data" ) )
-            {
-               mix->data[0] = fread_number( fp );
-               mix->data[1] = fread_number( fp );
-               mix->data[2] = fread_number( fp );
-            }
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               return mix;
-            }
-            break;
-
-         case 'I':
-            KEY( "Into", mix->data[2], fread_number( fp ) );
-            break;
-
-         case 'N':
-            STDSKEY( "Name", mix->name );
-            break;
-
-         case 'O':
-            KEY( "Object", mix->object, fread_number( fp ) );
-            break;
-
-         case 'W':
-            if( !str_cmp( word, "With" ) )
-            {
-               mix->data[0] = fread_number( fp );
-               mix->data[1] = fread_number( fp );
-            }
-            break;
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
 }
@@ -404,59 +311,38 @@ mixture_data *fread_mixture( FILE * fp )
 /* load the mixtures from the mixture table - Nopey */
 void load_mixtures( void )
 {
-   FILE *fp = nullptr;
-
-   mixlist.clear(  );
-   file_version = 0;
-
    std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename.c_str(), "r" ) ) )
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      bug( "{}: cannot open {} for reading", __func__, filename.string() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   for( ;; )
+   mixlist.clear(  );
+   int file_ver = 0;
+
+   std::string key;
+   while( stream >> key )
    {
-      char letter = fread_letter( fp );
-
-      if( letter == '*' )
+      if( key == "#VERSION" )
+         stream >> file_ver;
+      else if( key == "#MIXTURE" )
       {
-         fread_to_eol( fp );
-         break;
-      }
+         mixture_data *mix = new mixture_data;
 
-      if( letter != '#' )
-      {
-         bug( "{}: # not found ({})", __func__, letter );
-         return;
+         fread_mixture( mix, stream );
+         mixlist.push_back( mix );
       }
-
-      std::string word = fread_word( fp );
-      if( !str_cmp( word, "VERSION" ) )
-      {
-         file_version = fread_number( fp );
-         continue;
-      }
-      else if( !str_cmp( word, "MIXTURE" ) )
-      {
-         mixture_data *mix = nullptr;
-
-         mix = fread_mixture( fp );
-         if( !mix )
-            bug( "{}: mixture returned nullptr", __func__ );
-         else
-            mixlist.push_back( mix );
-      }
-      else if( !str_cmp( word, "END" ) )
+      else if( key == "#END" )
          break;
       else
       {
-         bug( "{}: no match for {}", __func__, word );
-         break;
+          bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+          fread_to_eol( stream );
       }
    }
-   FCLOSE( fp );
+   stream.close();
 }
 
 /* figure out a vnum for the next liquid  -Nopey */
