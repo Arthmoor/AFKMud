@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <netdb.h>
+#include <netinet/tcp.h>
 #include <sys/wait.h>
 #include <filesystem>
 #include <fstream>
@@ -75,6 +76,7 @@ void run_events( std::chrono::system_clock::time_point );
  */
 void boot_db( bool );
 void accept_new( int );
+void poll_update( int );
 void check_auth_state( char_data * );
 
 #ifdef MULTIPORT
@@ -265,29 +267,6 @@ void open_mud_log()
    FCLOSE( error_log );
 }
 
-// Called in init_socket
-struct SocketGuard
-{
-   int fd = -1;
-
-   SocketGuard( int f ) : fd( f ) {}
-   ~SocketGuard()
-   {
-      if( fd != -1 )
-         close( fd );
-   }
-
-   // Release ownership so it doesn't close when returning
-   int release()
-   {
-      int temp = fd;
-
-      fd = -1;
-
-      return temp;
-   }
-};
-
 /*
  * This function supports connections for both IPv6 and IPv4.
  * On a server which only has one type of address, it will still bind to both.
@@ -297,6 +276,7 @@ int init_socket( const int mudport )
 {
    std::string port_str = std::to_string( mudport );
    struct addrinfo hints{}, *res;
+   int sockfd = -1;
 
    hints.ai_family = AF_INET6;       // IPv6
    hints.ai_socktype = SOCK_STREAM;  // TCP
@@ -307,34 +287,43 @@ int init_socket( const int mudport )
       throw std::runtime_error( gai_strerror( err ) );
    }
 
-   SocketGuard guard( socket( res->ai_family, res->ai_socktype, res->ai_protocol ) );
-   if( guard.fd < 0 )
+   sockfd = socket( res->ai_family, res->ai_socktype | SOCK_NONBLOCK | SOCK_CLOEXEC, res->ai_protocol );
+   if( sockfd < 0 )
+   {
+      freeaddrinfo( res );
       throw std::system_error( errno, std::generic_category(), "socket" );
+   }
 
    int opt = 1;
 
    // Set V6ONLY to 0 to allow dual-stack (IPv4 and IPv6)
    int v6only = 0;
-   setsockopt( guard.fd, IPPROTO_IPV6, IPV6_V6ONLY, &v6only, sizeof( v6only ) );
-   setsockopt( guard.fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt) );
+   setsockopt( sockfd, IPPROTO_IPV6, IPV6_V6ONLY, &v6only, sizeof( v6only ) );
 
-   if( bind( guard.fd, res->ai_addr, res->ai_addrlen ) < 0 )
+   setsockopt( sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt) );
+   setsockopt( sockfd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt) );
+   setsockopt( sockfd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt) );
+
+   if( bind( sockfd, res->ai_addr, res->ai_addrlen ) < 0 )
    {
+      close( sockfd );
       freeaddrinfo( res );
       throw std::system_error( errno, std::generic_category(), "bind" );
    }
 
    freeaddrinfo( res );
 
-   if( listen( guard.fd, 50 ) < 0 )
+   if( listen( sockfd, 50 ) < 0 )
    {
+      close( sockfd );
       throw std::system_error( errno, std::generic_category(), "listen" );
    }
 
-   return guard.release();
+   return sockfd;
 }
 
-/* This functions purpose is to open up all of the various things the mud needs to have
+/*
+ * This function's purpose is to open up all of the various things the mud needs to have
  * up before the game_loop is entered. If something needs to be added to the mud
  * startup procedures it should be placed in here.
  */
@@ -753,6 +742,8 @@ void game_loop( void )
    // Main loop 
    while( !mud_down )
    {
+      poll_update( control );
+
       accept_new( control );
 
       // Primitive, yet effective infinite loop catcher. At least that's the idea.

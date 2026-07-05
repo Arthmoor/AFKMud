@@ -559,7 +559,7 @@ bool descriptor_data::write( std::string_view text )
    if( mccpsaved > length )
       mccpsaved = length;
 
-   // Lambda to encapsulate the repetitive non-blocking send logic
+   // Lambda to encapsulate the repetitive non-blocking send logic.
    auto send_chunk = [this]( const char* data, size_t len ) -> int
    {
       int nWrite = send( this->descriptor, data, static_cast<int>(len), 0 );
@@ -1497,60 +1497,33 @@ void descriptor_data::resolve_dns( const std::string & ip )
    }
 }
 
-bool check_bad_desc( int desc )
-{
-   if( control_has_exception )
-   {
-      log_string( "Bad FD caught and disposed." );
-      return true;
-   }
-   return false;
-}
-
 void new_descriptor( int new_desc )
 {
-   descriptor_data *dnew;
    struct sockaddr_in6 sock;
-   int desc;
    char host_buf[NI_MAXHOST];
-   int r;
    socklen_t size;
 
    size = sizeof( sock );
-   if( check_bad_desc( new_desc ) )
-   {
-      set_alarm( 0 );
-      return;
-   }
    set_alarm( 20 );
    alarm_section = "new_descriptor: accept";
-   if( ( desc = accept( new_desc, ( struct sockaddr * )&sock, &size ) ) < 0 )
+
+   int desc = accept4( new_desc, ( struct sockaddr * )&sock, &size, SOCK_NONBLOCK | SOCK_CLOEXEC );
+
+   if( desc < 0 )
    {
-      perror( "New_descriptor: accept" );
-      set_alarm( 0 );
-      return;
-   }
-   if( check_bad_desc( new_desc ) )
-   {
-      set_alarm( 0 );
+      // EAGAIN/EWOULDBLOCK is normal if something else snatched the connection.
+      if( errno != EAGAIN && errno != EWOULDBLOCK )
+      {
+         perror("new_descriptor: accept4");
+      }
+      set_alarm(0);
       return;
    }
 
    set_alarm( 20 );
    alarm_section = "new_descriptor: after accept";
 
-   r = fcntl( desc, F_GETFL, 0 );
-   if( r < 0 || fcntl( desc, F_SETFL, O_NONBLOCK | O_NDELAY | r ) < 0 )
-   {
-      perror( "New_descriptor: fcntl: O_NONBLOCK" );
-      close( desc );
-      return;
-   }
-
-   if( check_bad_desc( new_desc ) )
-      return;
-
-   dnew = new descriptor_data;
+   descriptor_data *dnew = new descriptor_data;
    dnew->init(  );
 
    if( getnameinfo( ( struct sockaddr * )&sock, size, host_buf, sizeof( host_buf ), NULL, 0, NI_NUMERICHOST ) == 0 )
@@ -1560,19 +1533,17 @@ void new_descriptor( int new_desc )
        * ::ffff:192.168.1.1. We can strip the prefix if desired,
        * but getnameinfo provides the clean format by default.
        */
-      char *final_ip = host_buf;
+      std::string ip = host_buf;
 
       // Optional: Strip "::ffff:" prefix if you strictly want IPv4 notation.
-      if( strncmp( host_buf, "::ffff:", 7 ) == 0 )
-      {
-         final_ip = host_buf + 7;
-      }
-
-      dnew->ipaddress = final_ip;
+      if( ip.compare( 0, 7, "::ffff:" ) == 0 )
+         dnew->ipaddress = ip.substr(7);
+      else
+         dnew->ipaddress = ip;
    }
    else
    {
-      dnew->ipaddress = "unknown";
+      dnew->ipaddress = "Unknown";
    }
 
    if( desc == 0 )
@@ -1635,9 +1606,8 @@ void new_descriptor( int new_desc )
    set_alarm( 0 );
 }
 
-void accept_new( int ctrl )
+void poll_update( int ctrl )
 {
-   newdesc = 0;
    control_has_input = false;
    control_has_exception = false;
 
@@ -1662,10 +1632,10 @@ void accept_new( int ctrl )
          poll_fds.push_back( { d->ifd, POLLIN, 0 } );
    }
 
-   // 2. Non-blocking poll call
+   // Non-blocking poll call.
    if( poll( poll_fds.data(), poll_fds.size(), 0 ) < 0 )
    {
-      perror( "accept_new: poll" );
+      perror( "poll_update: poll" );
       std::exit( EXIT_FAILURE );
    }
 
@@ -1693,17 +1663,18 @@ void accept_new( int ctrl )
          d->dns_has_input = ( dns_pfd.revents & POLLIN );
       }
    }
+}
 
-   // Handle incoming connections.
+void accept_new( int ctrl )
+{
    if( control_has_exception )
    {
       bug( "{}: Exception raised on controlling descriptor {}", __func__, ctrl );
+      return;
    }
-   else if( control_has_input )
-   {
-      newdesc = ctrl;
-      new_descriptor( newdesc );
-   }
+
+   if( control_has_input )
+      new_descriptor( ctrl );
 }
 
 void descriptor_data::prompt(  )
