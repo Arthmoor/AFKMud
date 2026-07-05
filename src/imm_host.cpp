@@ -41,6 +41,8 @@ Advanced Immortal Host
 By Noplex with help from Senir and Samson
 */
 
+#include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "descriptor.h"
 #include "imm_host.h"
@@ -85,203 +87,134 @@ void free_immhosts()
    }
 }
 
-immortal_host_log *fread_imm_host_log( FILE * fp )
+immortal_host_log *fread_imm_host_log( std::ifstream & stream )
 {
    immortal_host_log *hlog = new immortal_host_log;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "LEnd" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Log_Host" )
+         hlog->host = fread_line( stream );
+      else if( key == "Log_Date" )
+         hlog->date = fread_line( stream );
+      else if( key =="Lend" )
       {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "LEnd";
-      }
+         if( !hlog->date.empty(  ) && !hlog->host.empty(  ) )
+            return hlog;
 
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'L':
-            if( !str_cmp( word, "LEnd" ) )
-            {
-               if( !hlog->date.empty(  ) && !hlog->host.empty(  ) )
-                  return hlog;
-
-               deleteptr( hlog );
-               return nullptr;
-            }
-            STDSKEY( "Log_Date", hlog->date );
-            STDSKEY( "Log_Host", hlog->host );
-            break;
+         deleteptr( hlog );
+         return nullptr;
       }
    }
+   bug( "{}: Fell through to bottom. Corrupted file.", __func__ );
+   std::exit( EXIT_FAILURE );
 }
 
-immortal_host *fread_imm_host( FILE * fp )
+void fread_imm_host( immortal_host * host, std::ifstream & stream )
 {
-   immortal_host *host = new immortal_host;
-   immortal_host_log *nlog = nullptr;
    short dnum = 0;
-
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "ZEnd" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Name" )
+         host->name = fread_line( stream );
+      else if( key =="Domain_Host" )
       {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "ZEnd";
+         if( dnum >= MAX_DOMAIN )
+            bug( "{}: more saved domains than MAX_DOMAIN", __func__ );
+         else
+         {
+            dnum++;
+            host->domain[dnum] = fread_line( stream );
+         }
+      }
+      else if( key == "#LOG" )
+      {
+         immortal_host_log *nlog;
+
+         if( !( nlog = fread_imm_host_log( stream ) ) )
+            bug( "{}: incomplete log returned", __func__ );
+         else
+            host->loglist.push_back( nlog );
+      }
+      else if( key == "ZEnd" )
+      {
+         if( host->name.empty(  ) || host->domain[0].empty(  ) )
+         {
+            bug( "{}: Bad entry in host data.", __func__ );
+            deleteptr( host );
+            return;
+         }
+         hostlist.push_back( host );
+         return;
       }
 
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'D':
-            if( !str_cmp( word, "Domain_host" ) )
-            {
-               if( dnum >= MAX_DOMAIN )
-                  bug( "{}: more saved domains than MAX_DOMAIN", __func__ );
-               else
-               {
-                  dnum++;
-                  fread_string( host->domain[dnum], fp );
-               }
-               break;
-            }
-            break;
-
-         case 'L':
-            if( !str_cmp( word, "LOG" ) )
-            {
-               if( !( nlog = fread_imm_host_log( fp ) ) )
-                  bug( "{}: incomplete log returned", __func__ );
-               else
-                  host->loglist.push_back( nlog );
-
-               break;
-            }
-            break;
-
-         case 'N':
-            STDSKEY( "Name", host->name );
-            break;
-
-         case 'Z':
-            if( !str_cmp( word, "ZEnd" ) )
-            {
-               if( host->name.empty(  ) || host->domain[0].empty(  ) )
-               {
-                  deleteptr( host );
-                  return nullptr;
-               }
-               return host;
-            }
-            break;
-      }
    }
 }
 
 void load_imm_host( void )
 {
-   FILE *fp;
-
-   hostlist.clear(  );
-
-   if( !( fp = fopen( IMM_HOST_FILE.data(), "r" ) ) )
+   std::ifstream stream( std::filesystem::path{IMM_HOST_FILE} );
+   if( !stream.is_open() )
    {
-      bug( "{}: could not open immhost file for reading.", __func__ );
+      bug( "{}: Cannot open {} for reading: {}", __func__, IMM_HOST_FILE, std::strerror(errno) );
       return;
    }
 
-   for( ;; )
+   hostlist.clear(  );
+
+   immortal_host *host = nullptr;
+
+   std::string key;
+   while( stream >> key )
    {
-      char letter = fread_letter( fp );
-
-      if( letter == '*' )
+      if( key ==  "#IMMORTAL" )
       {
-         fread_to_eol( fp );
-         continue;
+         host = new immortal_host;
+
+         fread_imm_host( host, stream );
       }
-
-      if( letter != '#' )
-      {
-         bug( "{}: # not found", __func__ );
-         break;
-      }
-
-      std::string word = fread_word( fp );
-
-      if( !str_cmp( word, "IMMORTAL" ) )
-      {
-         immortal_host *host = nullptr;
-
-         if( !( host = fread_imm_host( fp ) ) )
-         {
-            bug( "{}: incomplete immhost", __func__ );
-            continue;
-         }
-         hostlist.push_back( host );
-         continue;
-      }
-      else if( !str_cmp( word, "END" ) )
+      else if( key == "#END" )
          break;
       else
       {
-         bug( "{}: unknown section %s", __func__, word );
-         continue;
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, IMM_HOST_FILE );
+         fread_to_eol( stream );
       }
    }
-   FCLOSE( fp );
+   stream.close();
 }
 
 void save_imm_host( void )
 {
-   FILE *fp;
-
-   if( !( fp = fopen( IMM_HOST_FILE.data(), "w" ) ) )
+   std::ofstream stream( std::filesystem::path{IMM_HOST_FILE} );
+   if( !stream.is_open() )
    {
-      bug( "{}: could not open immhost file for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, IMM_HOST_FILE, std::strerror(errno) );
       return;
    }
 
    for( auto* host : hostlist )
    {
-      short dnum = 0;
+      stream << "#IMMORTAL\n";
+      stream << std::format( "Name        {}~\n", host->name );
 
-      fprintf( fp, "%s", "\n#IMMORTAL\n" );
-      fprintf( fp, "Name        %s~\n", host->name.c_str(  ) );
-
-      for( dnum = 0; dnum < MAX_DOMAIN && !host->domain[dnum].empty(  ); ++dnum )
-         fprintf( fp, "Domain_Host %s~\n", host->domain[dnum].c_str(  ) );
+      for( short dnum = 0; dnum < MAX_DOMAIN && !host->domain[dnum].empty(); ++dnum )
+         stream << std::format( "Domain_Host {}~\n", host->domain[dnum] );
 
       for( auto* nlog : host->loglist )
       {
-         fprintf( fp, "%s", "LOG\n" );
-         fprintf( fp, "Log_Host    %s~\n", nlog->host.c_str(  ) );
-         fprintf( fp, "Log_Date    %s~\n", nlog->date.c_str(  ) );
-         fprintf( fp, "%s", "LEnd\n" );
+         stream << "#LOG\n";
+         stream << std::format( "Log_Host    {}~\n", nlog->host );
+         stream << std::format( "Log_Date    {}~\n", nlog->date );
+         stream << "LEnd\n";
       }
-      fprintf( fp, "%s", "ZEnd\n" );
+      stream << "ZEnd\n\n";
    }
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   stream << "#END\n";
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, IMM_HOST_FILE, std::strerror(errno) );
 }
 
 bool check_immortal_domain( char_data * ch, std::string_view lhost )
