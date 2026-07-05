@@ -16,7 +16,7 @@ individual authors to use these additions in any other codebase.
 Stuff we modified
 -----------------
 
-Custom Ansi, originally written by Matthew Bafford.
+Custom Ansi, originally written by Matthew Bafford & Christopher Wigginton.
 
 Compass display, originally written for the Altanos codebase.
 
@@ -34,7 +34,7 @@ Beep command, originally written by Altrag of RoD.
 
 Name authorization, originally written by Rantic.
 
-Weapon Profficiency Patch, originally written by Grimm.
+Weapon Proficiency Patch, originally written by Grimm.
 
 Enhanced Archery, originally written by Feudal Realms.
 
@@ -56,8 +56,6 @@ Stuff others wrote
 Junk command, written by Stu.
 
 Alias code, written by Garil of DOTDII.
-
-Player interface code, written by Garil of DOTDII.
 
 Liquid System code, written by Noplex of Crimson Blade.
 
