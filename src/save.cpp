@@ -28,6 +28,7 @@
 
 #include <filesystem>
 #include "mud.h"
+#include "area.h"
 #include "bits.h"
 #include "boards.h"
 #include "clans.h"
@@ -192,12 +193,6 @@ void char_data::re_equip(  )
          }
       }
    }
-}
-
-void pc_data::save_ignores( FILE * fp )
-{
-   for( const auto& name : ignore )
-      fprintf( fp, "Ignored      %s~\n", name.c_str(  ) );
 }
 
 /*
@@ -453,8 +448,14 @@ void fwrite_char( char_data * ch, FILE * fp )
       }
    }
 
-   ch->pcdata->save_zonedata( fp );
-   ch->pcdata->save_ignores( fp );
+   /*
+    * Save the list of zones PC has visited - Samson 7-11-00
+    */
+   for( auto& zn : ch->pcdata->zone )
+      fprintf( fp, "Zone         %s~\n", zn.c_str(  ) );
+
+   for( const auto& name : ch->pcdata->ignore )
+      fprintf( fp, "Ignored      %s~\n", name.c_str(  ) );
 
    if( !ch->pcdata->qbits.empty(  ) )
    {
@@ -861,31 +862,6 @@ short find_old_age( char_data * ch )
    ch->pcdata->year = time_info.year - age;  /* Assign birth year based on calculations above */
 
    return age;
-}
-
-void pc_data::load_ignores( FILE * fp )
-{
-   /*
-    * Get the name
-    */
-   const char* temp = fread_flagstring( fp );
-
-   std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( temp[0] ) ), capitalize( temp ) );
-
-   /*
-    * If there isn't a pfile for the name then don't add it to the list
-    */
-   if( std::filesystem::exists( fname ) )
-      return;
-
-   std::string ig = temp;
-   /*
-    * Add the name unless the limit has been reached
-    */
-   if( ignore.size(  ) >= sysdata->maxign )
-      bug( "{}: too many ignored names", __func__ );
-   else
-      ignore.push_back( ig );
 }
 
 /*
@@ -1302,7 +1278,25 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
 
             if( !str_cmp( word, "Ignored" ) )
             {
-               ch->pcdata->load_ignores( fp );
+               /*
+                * Get the name
+                */
+               std::string temp = fread_line( fp );
+               std::filesystem::path fname = std::format( "{}{}/{}", PLAYER_DIR, static_cast<char>( std::tolower( temp[0] ) ), capitalize( temp ) );
+
+               /*
+                * If there isn't a pfile for the name then don't add it to the list
+                */
+               if( std::filesystem::exists( fname ) )
+                  break;
+
+               /*
+                * Add the name unless the limit has been reached
+                */
+               if( ch->pcdata->ignore.size(  ) >= sysdata->maxign )
+                  bug( "{}: too many ignored names", __func__ );
+               else
+                  ch->pcdata->ignore.push_back( temp );
                break;
             }
             break;
@@ -1823,8 +1817,24 @@ void fread_char( char_data * ch, FILE * fp, bool preload, bool copyover )
          case 'Z':
             if( !str_cmp( word, "Zone" ) )
             {
-               ch->pcdata->load_zonedata( fp );
+               bool found = false;
+               std::string zonename = fread_line( fp );
+
+               for( auto* tarea : arealist )
+               {
+                  if( !str_cmp( tarea->name, zonename ) )
+                  {
+                     found = true;
+                     break;
+                  }
+               }
                break;
+
+               if( found )
+               {
+                  auto it = std::lower_bound( ch->pcdata->zone.begin(), ch->pcdata->zone.end(), zonename );
+                  ch->pcdata->zone.insert( it, zonename );
+               }
             }
             break;
       }

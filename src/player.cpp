@@ -327,40 +327,6 @@ const std::string condtxt( int current, int base )
    return text;
 }
 
-void pc_data::save_zonedata( FILE * fp )
-{
-   /*
-    * Save the list of zones PC has visited - Samson 7-11-00 
-    */
-   for( auto& zn : zone )
-   {
-      fprintf( fp, "Zone         %s~\n", zn.c_str(  ) );
-   }
-}
-
-void pc_data::load_zonedata( FILE * fp )
-{
-   std::string zonename;
-   bool found = false;
-
-   fread_string( zonename, fp );
-
-   for( auto* tarea : arealist )
-   {
-      if( !str_cmp( tarea->name, zonename ) )
-      {
-         found = true;
-         break;
-      }
-   }
-
-   if( !found )
-      return;
-
-   auto it = std::lower_bound( zone.begin(), zone.end(), zonename );
-   zone.insert( it, zonename );
-}
-
 /* Functions for use with area visiting code - Samson 7-11-00  */
 bool char_data::has_visited( area_data * area )
 {
