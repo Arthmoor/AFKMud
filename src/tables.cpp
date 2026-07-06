@@ -28,6 +28,7 @@
 
 #include <dlfcn.h> // For libdl - Trax
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "language.h"
 
@@ -158,22 +159,18 @@ void free_tongues( void )
 /*
  * Tongues / Languages loading/saving functions - Altrag
  */
-void fread_cnv( FILE * fp, lang_data * lng, bool pre )
+void fread_cnv( std::ifstream & stream, lang_data * lng, bool pre )
 {
-   lcnv_data *cnv;
-   char letter;
-
    for( ;; )
    {
-      letter = fread_letter( fp );
+      char letter = fread_letter( stream );
       if( letter == '~' || letter == EOF )
          break;
-      ungetc( letter, fp );
 
-      cnv = new lcnv_data;
-      cnv->old = fread_word( fp );
-      cnv->lnew = fread_word( fp );
-      fread_to_eol( fp );
+      lcnv_data *cnv = new lcnv_data;
+      cnv->old = fread_word( stream );
+      cnv->lnew = fread_word( stream );
+      fread_to_eol( stream );
       if( pre )
          lng->prelist.push_back( cnv );
       else
@@ -183,23 +180,23 @@ void fread_cnv( FILE * fp, lang_data * lng, bool pre )
 
 void load_tongues(  )
 {
-   FILE *fp;
    lang_data *lng;
 
-   std::filesystem::path filename = TONGUE_FILE;
-   if( !( fp = fopen( filename.c_str(), "r" ) ) )
+   std::ifstream stream( std::filesystem::path{TONGUE_FILE} );
+   if( !stream.is_open() )
    {
-      perror( "Load_tongues" );
+      bug( "{}: Cannot open {} for reading: {}", __func__, TONGUE_FILE, std::strerror(errno) );
       return;
    }
+
    for( ;; )
    {
-      char letter = fread_letter( fp );
-      if( letter == EOF )
+      char letter = fread_letter( stream );
+      if( letter == EOF || letter == '\0' )
          break;
       else if( letter == '*' )
       {
-         fread_to_eol( fp );
+         fread_to_eol( stream );
          continue;
       }
       else if( letter != '#' )
@@ -207,17 +204,17 @@ void load_tongues(  )
          bug( "{}: Letter '{}' not #.", __func__, letter );
          std::exit( EXIT_FAILURE );
       }
-      std::string word = fread_word( fp );
+      std::string word = fread_word( stream );
       if( !str_cmp( word, "end" ) )
          break;
-      fread_to_eol( fp );
+      fread_to_eol( stream );
       lng = new lang_data;
       lng->name = word;
-      fread_cnv( fp, lng, true );
-      fread_string( lng->alphabet, fp );
-      fread_cnv( fp, lng, false );
-      fread_to_eol( fp );
+      fread_cnv( stream, lng, true );
+      lng->alphabet = fread_line( stream );
+      fread_cnv( stream, lng, false );
+      fread_to_eol( stream );
       langlist.push_back( lng );
    }
-   FCLOSE( fp );
+   stream.close();
 }

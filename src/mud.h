@@ -874,6 +874,7 @@ bool is_valid_filename( char_data *, std::string_view, std::string_view );
 void shutdown_mud( std::string_view );
 bool exists_file( std::string_view );
 char fread_letter( FILE * );
+char fread_letter( std::ifstream & );
 const char *fread_flagstring( FILE * );
 void fread_to_eol( FILE * );
 const char *fread_line( FILE * );

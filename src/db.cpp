@@ -318,6 +318,29 @@ char fread_letter( FILE* fp )
    return '\0';
 }
 
+char fread_letter( std::ifstream & stream )
+{
+   char c;
+
+   while( stream.get(c) )
+   {
+      if( !std::isspace( static_cast<unsigned char>( c ) ) )
+      {
+         return c;
+      }
+   }
+
+   bug( "{}: EOF encountered on read.", __func__ );
+
+   if( fBootDb )
+   {
+      shutdown_mud( "Corrupt file somewhere." );
+      std::exit( EXIT_FAILURE );
+   }
+
+   return '\0';
+}
+
 static std::string internal_fread_flagstring( FILE* fp )
 {
    int c;
