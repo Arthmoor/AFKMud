@@ -69,7 +69,7 @@ std::list<shop_data *> shoplist;
 std::list<repair_data *> repairlist;
 
 void fwrite_mobile( char_data *, FILE *, bool );
-char_data *fread_mobile( FILE *, bool );
+char_data *fread_mobile( FILE *, bool, bool );
 
 void mprog_sell_trigger( char_data *, char_data *, obj_data * );
 
@@ -133,7 +133,7 @@ void load_shopkeepers( void )
 
             std::string word = fread_word( fp );
             if( !str_cmp( word, "SHOP" ) )
-               mob = fread_mobile( fp, true );
+               mob = fread_mobile( fp, true, false );
             else if( !str_cmp( word, "OBJECT" ) )
             {
                mob->tempnum = -9999;

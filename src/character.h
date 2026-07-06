@@ -626,6 +626,7 @@ class char_data
    bool has_skyship = false;                       // Identifies if the character is bound to a skyship.
    bool inflight= false;                           // Skyship is in flight.
    bool backtracking = false;                      // Unsafe landing flag. The skyship pilot will find another landing site. Usually the one they came from.
+   bool hotboot = false;                           // Used only to force hotboot to save keys etc that normally get stripped - Samson 6-22-01
 };
 
 extern std::list<char_data *> charlist;

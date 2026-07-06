@@ -57,6 +57,7 @@ std::string default_fprompt( char_data * );
 std::string default_prompt( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 void assign_area( char_data * );
+void fwrite_afk_affect( FILE *, affect_data * );
 affect_data *fread_afk_affect( FILE * );
 bool is_valid_wear_loc( char_data *, int );
 void restore_map_buffer( char_data * );
@@ -695,10 +696,32 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
    fprintf( fp, "Version %d\n", SAVEVERSION );
    fprintf( fp, "Level   %d\n", mob->level );
    fprintf( fp, "Gold	 %d\n", mob->gold );
+
+   if( mob->hotboot )
+   {
+      fprintf( fp, "Resetvnum %d\n", mob->resetvnum );
+      fprintf( fp, "Resetnum  %d\n", mob->resetnum );
+   }
+
    if( mob->in_room )
-      fprintf( fp, "Room      %d\n", mob->in_room->vnum );
+   {
+      if( mob->hotboot && mob->has_actflag( ACT_SENTINEL ) )
+      {
+         /*
+          * Sentinel mobs get stamped with a "home room" when they are created
+          * by create_mobile(), so we need to save them in their home room regardless
+          * of where they are right now, so they will go to their home room when they
+          * enter the game from a reboot or copyover -- Scion
+          */
+         fprintf( fp, "Room	%d\n", mob->home_vnum );
+      }
+      else
+         fprintf( fp, "Room	%d\n", mob->in_room->vnum );
+   }
    else
-      fprintf( fp, "Room      %d\n", ROOM_VNUM_ALTAR );
+      fprintf( fp, "Room	%d\n", ROOM_VNUM_LIMBO );
+   if( mob->hotboot && mob->continent )
+      fprintf( fp, "Continent    %s\n", mob->continent->name.c_str( ) );
    fprintf( fp, "Coordinates  %d %d\n", mob->map_x, mob->map_y );
    if( !mob->name.empty() && !mob->pIndexData->player_name.empty() && str_cmp( mob->name, mob->pIndexData->player_name ) )
       fprintf( fp, "Name     %s~\n", mob->name.c_str() );
@@ -708,9 +731,13 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
       fprintf( fp, "Long	%s~\n", mob->long_descr.c_str() );
    if( !mob->chardesc.empty() && !mob->pIndexData->chardesc.empty() && str_cmp( mob->chardesc, mob->pIndexData->chardesc ) )
       fprintf( fp, "Description %s~\n", mob->chardesc.c_str() );
+   fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
    fprintf( fp, "Position        %d\n", mob->position );
-   if( mob->has_actflag( ACT_MOUNTED ) )
-      mob->unset_actflag( ACT_MOUNTED );
+   if( !mob->hotboot )
+   {
+      if( mob->has_actflag( ACT_MOUNTED ) )
+         mob->unset_actflag( ACT_MOUNTED );
+   }
    if( mob->has_actflags(  ) )
       fprintf( fp, "ActFlags     %s~\n", bitset_string( mob->get_actflags(  ), act_flags ) );
    if( mob->has_aflags(  ) )
@@ -726,13 +753,15 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
       if( af->type >= 0 && af->type < TYPE_PERSONAL )
          fprintf( fp, "AffectData   '%s' %3d %3d %3d %d\n", skill->name.c_str(), af->duration, af->modifier, af->location, af->bit );
       else
-         fprintf( fp, "Affect       %3d %3d %3d %3d %d\n", af->type, af->duration, af->modifier, af->location, af->bit );
+         fwrite_afk_affect( fp, af );
    }
 
-   fprintf( fp, "HpManaMove   %d %d %d %d %d %d\n", mob->hit, mob->max_hit, mob->mana, mob->max_mana, mob->move, mob->max_move );
-   fprintf( fp, "Exp          %d\n", mob->exp );
+   if( mob->hotboot )
+      fprintf( fp, "\n" );
+   else
+      fprintf( fp, "Exp          %d\n", mob->exp );
 
-   if( !mob->carrying.empty(  ) )
+   if( !mob->hotboot && !mob->carrying.empty(  ) )
    {
       for( auto it = mob->carrying.begin(  ); it != mob->carrying.end(  ); )
       {
@@ -748,8 +777,9 @@ void fwrite_mobile( char_data * mob, FILE * fp, bool shopmob )
       fprintf( fp, "%s", "EndVendor\n\n" );
 
    mob->de_equip(  );
+
    if( !mob->carrying.empty(  ) )
-      fwrite_obj( mob, mob->carrying, nullptr, fp, 0, ( shopmob ? false : mob->master->pcdata->hotboot ) );
+      fwrite_obj( mob, mob->carrying, nullptr, fp, 0, ( shopmob ? false : mob->hotboot ) );
    mob->re_equip(  );
 
    if( !shopmob )
@@ -827,7 +857,10 @@ void char_data::save(  )
       if( sysdata->save_pets && !pets.empty(  ) )
       {
          for( auto* pet : pets )
+         {
+            pet->hotboot = pet->master->pcdata->hotboot;
             fwrite_mobile( pet, fp, false );
+         }
       }
       fwrite_variables( this, fp );
       pcdata->fwrite_comments( fp );
@@ -2281,7 +2314,7 @@ void fread_obj( char_data * ch, FILE * fp, short os_type )
  * This will read one mobile structure pointer to by fp --Shaddai
  *   Edited by Tarl 5 May 2002 to allow pets to load equipment.
  */
-char_data *fread_mobile( FILE * fp, bool shopmob )
+char_data *fread_mobile( FILE * fp, bool shopmob, bool hotboot )
 {
    char_data *mob = nullptr;
    std::string word;
@@ -2404,6 +2437,17 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
             break;
 
          case 'C':
+            if( !str_cmp( word, "Continent" ) )
+            {
+               std::string temp;
+
+               fread_string( temp, fp );
+               continent_data *continent = find_continent_by_name( temp );
+
+               if( continent )
+                  mob->continent = continent;
+               break;
+            }
             if( !str_cmp( word, "Coordinates" ) )
             {
                mob->map_x = fread_short( fp );
@@ -2427,16 +2471,21 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
                pRoomIndex = get_room_index( inroom );
                if( !pRoomIndex )
                   pRoomIndex = get_room_index( ROOM_VNUM_LIMBO );
+               mob->tempnum = -9998;   /* Yet another hackish fix! */
                if( !mob->to_room( pRoomIndex ) )
                   log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
 
                for( int i = 0; i < MAX_WEAR; ++i )
+               {
                   for( int x = 0; x < MAX_LAYERS; ++x )
+                  {
                      if( mob_save_equipment[i][x] )
                      {
                         mob->equip( mob_save_equipment[i][x], i );
                         mob_save_equipment[i][x] = nullptr;
                      }
+                  }
+               }
                return mob;
             }
 
@@ -2479,6 +2528,8 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
 
          case 'R':
             KEY( "Room", inroom, fread_number( fp ) );
+            KEY( "Resetvnum", mob->resetvnum, fread_number( fp ) );
+            KEY( "Resetnum", mob->resetnum, fread_number( fp ) );
             break;
 
          case 'S':
@@ -2491,6 +2542,7 @@ char_data *fread_mobile( FILE * fp, bool shopmob )
       }
       if( !str_cmp( word, "#OBJECT" ) )
       {  /* Objects      */
+         mob->tempnum = -9999;   /* Hackish, yes. Works though doesn't it? */
          fread_obj( mob, fp, OS_CARRY );
       }
    }
@@ -2604,7 +2656,7 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
          else if( !str_cmp( word, "MOBILE" ) )
          {
             char_data *mob = nullptr;
-            mob = fread_mobile( fp, false );
+            mob = fread_mobile( fp, false, false );
             if( mob )
             {
                bind_follower( mob, ch, -1, -2 );
