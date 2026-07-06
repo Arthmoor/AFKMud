@@ -29,6 +29,7 @@
 /* Put together by Rennard for Realms of Despair.  Brap on... */
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "deity.h"
 #include "mobindex.h"
@@ -83,21 +84,21 @@ bool IS_DEVOTED( char_data *ch )
 
 void write_deity_list( void )
 {
-   FILE *fpout;
-
    std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
-   fpout = fopen( filename.c_str(), "w" );
-   if( !fpout )
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open(  ) )
    {
-      bug( "{}: FATAL: cannot open deity.lst for writing!", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
    for( auto* deity : deitylist )
-      fprintf( fpout, "%s\n", deity->filename.c_str(  ) );
+      stream << std::format( "{}\n", deity->filename );
 
-   fprintf( fpout, "%s", "$\n" );
-   FCLOSE( fpout );
+   stream << "$\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 /* Save a deity's data to its data file */
@@ -107,9 +108,6 @@ constexpr int DEITY_VERSION = 3;
 /* Raised to 3 by Samson to accommodate RISA flag changes - 7-12-04 */
 void save_deity( deity_data * deity )
 {
-   FILE *fp;
-   std::filesystem::path filename;
-
    if( !deity )
    {
       bug( "{}: null deity pointer!", __func__ );
@@ -122,73 +120,75 @@ void save_deity( deity_data * deity )
       return;
    }
 
-   filename = std::format( "{}{}", DEITY_DIR, deity->filename );
-
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deity->filename );
+   std::ofstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot write to deity file {}.", __func__, filename.string() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   fprintf( fp, "#VERSION %d\n", DEITY_VERSION );  /* Adjani, 1-31-04 */
-   fprintf( fp, "%s", "#DEITY\n" );
-   fprintf( fp, "Filename        %s~\n", deity->filename.c_str(  ) );
-   fprintf( fp, "Name            %s~\n", deity->name.c_str(  ) );
-   fprintf( fp, "Description     %s~\n", strip_cr( deity->deitydesc ).c_str(  ) );
-   fprintf( fp, "Alignment       %d\n", deity->alignment );
-   fprintf( fp, "Worshippers     %d\n", deity->worshippers );
-   fprintf( fp, "Flee            %d\n", deity->flee );
-   fprintf( fp, "Flee_npcraces   %d %d %d\n", deity->flee_npcrace[0], deity->flee_npcrace[1], deity->flee_npcrace[2] );
-   fprintf( fp, "Flee_npcfoes    %d %d %d\n", deity->flee_npcfoe[0], deity->flee_npcfoe[1], deity->flee_npcfoe[2] );
-   fprintf( fp, "Kill            %d\n", deity->kill );
-   fprintf( fp, "Kill_magic      %d\n", deity->kill_magic );
-   fprintf( fp, "Kill_npcraces   %d %d %d\n", deity->kill_npcrace[0], deity->kill_npcrace[1], deity->kill_npcrace[2] );
-   fprintf( fp, "Kill_npcfoes    %d %d %d\n", deity->kill_npcfoe[0], deity->kill_npcfoe[1], deity->kill_npcfoe[2] );
-   fprintf( fp, "Sac             %d\n", deity->sac );
-   fprintf( fp, "Bury_corpse     %d\n", deity->bury_corpse );
-   fprintf( fp, "Aid_spell       %d\n", deity->aid_spell );
-   fprintf( fp, "Aid             %d\n", deity->aid );
-   fprintf( fp, "Steal           %d\n", deity->steal );
-   fprintf( fp, "Backstab        %d\n", deity->backstab );
-   fprintf( fp, "Die             %d\n", deity->die );
-   fprintf( fp, "Die_npcraces    %d %d %d\n", deity->die_npcrace[0], deity->die_npcrace[1], deity->die_npcrace[2] );
-   fprintf( fp, "Die_npcfoes     %d %d %d\n", deity->die_npcfoe[0], deity->die_npcfoe[1], deity->die_npcfoe[2] );
-   fprintf( fp, "Spell_aid       %d\n", deity->spell_aid );
-   fprintf( fp, "Dig_corpse      %d\n", deity->dig_corpse );
-   fprintf( fp, "Scorpse         %d\n", deity->scorpse );
-   fprintf( fp, "Savatar         %d\n", deity->savatar );
-   fprintf( fp, "Smount          %d\n", deity->smount ); /* Added by Tarl 24 Feb 02 */
-   fprintf( fp, "Sminion         %d\n", deity->sminion );   /* Added by Tarl 24 Feb 02 */
-   fprintf( fp, "Sdeityobj       %d\n", deity->sdeityobj );
-   fprintf( fp, "Sdeityobj2      %d\n", deity->sdeityobj2 );   /* Added by Tarl 02 Mar 02 */
-   fprintf( fp, "Srecall         %d\n", deity->srecall );
-   fprintf( fp, "Sex             %s~\n", deity->sex < 0 ? "none" : npc_sex[deity->sex] ); /* Adjani, 2-18-04 */
-   fprintf( fp, "Elements        %s %s %s\n", ris_flags[deity->element[0]], ris_flags[deity->element[1]], ris_flags[deity->element[2]] );
-   fprintf( fp, "Affects         %s %s %s\n", aff_flags[deity->affected[0]], aff_flags[deity->affected[1]], aff_flags[deity->affected[2]] );
-   fprintf( fp, "Suscepts        %s %s %s\n", ris_flags[deity->suscept[0]], ris_flags[deity->suscept[1]], ris_flags[deity->suscept[2]] );
-   fprintf( fp, "Classes         %s~\n", deity->class_allowed.none(  )? "all" : bitset_string( deity->class_allowed, npc_class ) );
-   fprintf( fp, "Races           %s~\n", deity->race_allowed.none(  )? "all" : bitset_string( deity->race_allowed, npc_race ) );
-   fprintf( fp, "Npcrace         %s~\n", deity->npcrace[0] == -1 ? "none" : npc_race[deity->npcrace[0]] );  /* Adjani, 2-18-04 */
-   fprintf( fp, "Npcrace2        %s~\n", deity->npcrace[1] == -1 ? "none" : npc_race[deity->npcrace[1]] );
-   fprintf( fp, "Npcrace3        %s~\n", deity->npcrace[2] == -1 ? "none" : npc_race[deity->npcrace[2]] );
-   fprintf( fp, "Npcfoe          %s~\n", deity->npcfoe[0] == -1 ? "none" : npc_race[deity->npcfoe[0]] ); /* Adjani, 2-18-04 */
-   fprintf( fp, "Npcfoe2         %s~\n", deity->npcfoe[1] == -1 ? "none" : npc_race[deity->npcfoe[1]] );
-   fprintf( fp, "Npcfoe3         %s~\n", deity->npcfoe[2] == -1 ? "none" : npc_race[deity->npcfoe[2]] );
-   fprintf( fp, "Susceptnums     %d %d %d\n", deity->susceptnum[0], deity->susceptnum[1], deity->susceptnum[2] );
-   fprintf( fp, "Elementnums     %d %d %d\n", deity->elementnum[0], deity->elementnum[1], deity->elementnum[2] );
-   fprintf( fp, "Affectednums    %d %d %d\n", deity->affectednum[0], deity->affectednum[1], deity->affectednum[2] );
-   fprintf( fp, "Spells          %d %d %d\n", deity->spell[0], deity->spell[1], deity->spell[2] ); /* Added by Tarl 24 Mar 02 */
-   fprintf( fp, "Sspells         %d %d %d\n", deity->sspell[0], deity->sspell[1], deity->sspell[2] ); /* Added by Tarl 24 Mar 02 */
-   fprintf( fp, "Objstat         %d\n", deity->objstat );
-   fprintf( fp, "Recallroom      %d\n", deity->recallroom );   /* Samson */
-   fprintf( fp, "Avatar          %d\n", deity->avatar ); /* Restored by Samson */
-   fprintf( fp, "Mount           %d\n", deity->mount );  /* Added by Tarl 24 Feb 02 */
-   fprintf( fp, "Minion          %d\n", deity->minion ); /* Added by Tarl 24 Feb 02 */
-   fprintf( fp, "Deityobj        %d\n", deity->deityobj );  /* Restored by Samson */
-   fprintf( fp, "Deityobj2       %d\n", deity->deityobj2 ); /* Added by Tarl 02 Mar 02 */
-   fprintf( fp, "%s", "End\n\n" );
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   stream << std::format( "#VERSION {}\n", DEITY_VERSION );  /* Adjani, 1-31-04 */
+   stream << "#DEITY\n";
+   stream << std::format( "Filename        {}~\n", deity->filename );
+   stream << std::format( "Name            {}~\n", deity->name );
+   stream << std::format( "Description     {}~\n", strip_cr( deity->deitydesc ) );
+   stream << std::format( "Alignment       {}\n", deity->alignment );
+   stream << std::format( "Worshippers     {}\n", deity->worshippers );
+   stream << std::format( "Flee            {}\n", deity->flee );
+   stream << std::format( "Flee_npcraces   {} {} {}\n", deity->flee_npcrace[0], deity->flee_npcrace[1], deity->flee_npcrace[2] );
+   stream << std::format( "Flee_npcfoes    {} {} {}\n", deity->flee_npcfoe[0], deity->flee_npcfoe[1], deity->flee_npcfoe[2] );
+   stream << std::format( "Kill            {}\n", deity->kill );
+   stream << std::format( "Kill_magic      {}\n", deity->kill_magic );
+   stream << std::format( "Kill_npcraces   {} {} {}\n", deity->kill_npcrace[0], deity->kill_npcrace[1], deity->kill_npcrace[2] );
+   stream << std::format( "Kill_npcfoes    {} {} {}\n", deity->kill_npcfoe[0], deity->kill_npcfoe[1], deity->kill_npcfoe[2] );
+   stream << std::format( "Sac             {}\n", deity->sac );
+   stream << std::format( "Bury_corpse     {}\n", deity->bury_corpse );
+   stream << std::format( "Aid_spell       {}\n", deity->aid_spell );
+   stream << std::format( "Aid             {}\n", deity->aid );
+   stream << std::format( "Steal           {}\n", deity->steal );
+   stream << std::format( "Backstab        {}\n", deity->backstab );
+   stream << std::format( "Die             {}\n", deity->die );
+   stream << std::format( "Die_npcraces    {} {} {}\n", deity->die_npcrace[0], deity->die_npcrace[1], deity->die_npcrace[2] );
+   stream << std::format( "Die_npcfoes     {} {} {}\n", deity->die_npcfoe[0], deity->die_npcfoe[1], deity->die_npcfoe[2] );
+   stream << std::format( "Spell_aid       {}\n", deity->spell_aid );
+   stream << std::format( "Dig_corpse      {}\n", deity->dig_corpse );
+   stream << std::format( "Scorpse         {}\n", deity->scorpse );
+   stream << std::format( "Savatar         {}\n", deity->savatar );
+   stream << std::format( "Smount          {}\n", deity->smount ); /* Added by Tarl 24 Feb 02 */
+   stream << std::format( "Sminion         {}\n", deity->sminion );   /* Added by Tarl 24 Feb 02 */
+   stream << std::format( "Sdeityobj       {}\n", deity->sdeityobj );
+   stream << std::format( "Sdeityobj2      {}\n", deity->sdeityobj2 );   /* Added by Tarl 02 Mar 02 */
+   stream << std::format( "Srecall         {}\n", deity->srecall );
+   stream << std::format( "Sex             {}~\n", deity->sex < 0 ? "none" : npc_sex[deity->sex] ); /* Adjani, 2-18-04 */
+   stream << std::format( "Elements        {} {} {}\n", ris_flags[deity->element[0]], ris_flags[deity->element[1]], ris_flags[deity->element[2]] );
+   stream << std::format( "Affects         {} {} {}\n", aff_flags[deity->affected[0]], aff_flags[deity->affected[1]], aff_flags[deity->affected[2]] );
+   stream << std::format( "Suscepts        {} {} {}\n", ris_flags[deity->suscept[0]], ris_flags[deity->suscept[1]], ris_flags[deity->suscept[2]] );
+   stream << std::format( "Classes         {}~\n", deity->class_allowed.none(  )? "all" : bitset_string( deity->class_allowed, npc_class ) );
+   stream << std::format( "Races           {}~\n", deity->race_allowed.none(  )? "all" : bitset_string( deity->race_allowed, npc_race ) );
+   stream << std::format( "Npcrace         {}~\n", deity->npcrace[0] == -1 ? "none" : npc_race[deity->npcrace[0]] );  /* Adjani, 2-18-04 */
+   stream << std::format( "Npcrace2        {}~\n", deity->npcrace[1] == -1 ? "none" : npc_race[deity->npcrace[1]] );
+   stream << std::format( "Npcrace3        {}~\n", deity->npcrace[2] == -1 ? "none" : npc_race[deity->npcrace[2]] );
+   stream << std::format( "Npcfoe          {}~\n", deity->npcfoe[0] == -1 ? "none" : npc_race[deity->npcfoe[0]] ); /* Adjani, 2-18-04 */
+   stream << std::format( "Npcfoe2         {}~\n", deity->npcfoe[1] == -1 ? "none" : npc_race[deity->npcfoe[1]] );
+   stream << std::format( "Npcfoe3         {}~\n", deity->npcfoe[2] == -1 ? "none" : npc_race[deity->npcfoe[2]] );
+   stream << std::format( "Susceptnums     {} {} {}\n", deity->susceptnum[0], deity->susceptnum[1], deity->susceptnum[2] );
+   stream << std::format( "Elementnums     {} {} {}\n", deity->elementnum[0], deity->elementnum[1], deity->elementnum[2] );
+   stream << std::format( "Affectednums    {} {} {}\n", deity->affectednum[0], deity->affectednum[1], deity->affectednum[2] );
+   stream << std::format( "Spells          {} {} {}\n", deity->spell[0], deity->spell[1], deity->spell[2] ); /* Added by Tarl 24 Mar 02 */
+   stream << std::format( "Sspells         {} {} {}\n", deity->sspell[0], deity->sspell[1], deity->sspell[2] ); /* Added by Tarl 24 Mar 02 */
+   stream << std::format( "Objstat         {}\n", deity->objstat );
+   stream << std::format( "Recallroom      {}\n", deity->recallroom );   /* Samson */
+   stream << std::format( "Avatar          {}\n", deity->avatar ); /* Restored by Samson */
+   stream << std::format( "Mount           {}\n", deity->mount );  /* Added by Tarl 24 Feb 02 */
+   stream << std::format( "Minion          {}\n", deity->minion ); /* Added by Tarl 24 Feb 02 */
+   stream << std::format( "Deityobj        {}\n", deity->deityobj );  /* Restored by Samson */
+   stream << std::format( "Deityobj2       {}\n", deity->deityobj2 ); /* Added by Tarl 02 Mar 02 */
+   stream << "End\n\n";
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 CMDF( do_savedeities )
@@ -198,761 +198,332 @@ CMDF( do_savedeities )
 }
 
 /* Adjani, versions, with help from the ever-patient Xorith. 1-31-04 */
-void fread_deity( deity_data * deity, FILE * fp, int filever )
+void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
 {
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Filename" )
+         deity->filename = fread_line( stream );
+      else if( key == "Name" )
+         deity->name = fread_line( stream );
+      else if( key == "Description" )
+         deity->deitydesc = fread_line( stream );
+      else if( key == "Alignment" )
+         stream >> deity->alignment;
+      else if( key == "Worshippers" )
+         stream >> deity->worshippers;
+      else if( key == "Flee" )
+         stream >> deity->flee;
+      else if( key == "Flee_npcraces" )
+         stream >> deity->flee_npcrace[0] >> deity->flee_npcrace[1] >> deity->flee_npcrace[2];
+      else if( key == "Flee_npcfoes" )
+         stream >> deity->flee_npcfoe[0] >> deity->flee_npcfoe[1] >> deity->flee_npcfoe[2];
+      else if( key == "Kill" )
+         stream >> deity->kill;
+      else if( key == "Kill_magic" )
+         stream >> deity->kill_magic;
+      else if( key == "Kill_npcraces" )
+         stream >> deity->kill_npcrace[0] >> deity->kill_npcrace[1] >> deity->kill_npcrace[2];
+      else if( key == "Kill_npcfoes" )
+         stream >> deity->kill_npcfoe[0] >> deity->kill_npcfoe[1] >> deity->kill_npcfoe[2];
+      else if( key == "Sac" )
+         stream >> deity->sac;
+      else if( key == "Bury_corpse" )
+         stream >> deity->bury_corpse;
+      else if( key == "Aid_spell" )
+         stream >> deity->aid_spell;
+      else if( key == "Aid" )
+         stream >> deity->aid;
+      else if( key == "Steal" )
+         stream >> deity->steal;
+      else if( key == "Backstab" )
+         stream >> deity->backstab;
+      else if( key == "Die" )
+         stream >> deity->die;
+      else if( key == "Die_npcraces" )
+         stream >> deity->die_npcrace[0] >> deity->die_npcrace[1] >> deity->die_npcrace[2];
+      else if( key == "Die_npcfoes" )
+         stream >> deity->die_npcfoe[0] >> deity->die_npcfoe[1] >> deity->die_npcfoe[2];
+      else if( key == "Spell_aid" )
+         stream >> deity->spell_aid;
+      else if( key == "Dig_corpse" )
+         stream >> deity->dig_corpse;
+      else if( key == "Scorpse" )
+         stream >> deity->scorpse;
+      else if( key == "Savatar" )
+         stream >> deity->savatar;
+      else if( key == "Smount" )
+         stream >> deity->smount;
+      else if( key == "Sminion" )
+         stream >> deity->sminion;
+      else if( key == "Sdeityobj" )
+         stream >> deity->sdeityobj;
+      else if( key == "Sdeityobj2" )
+         stream >> deity->sdeityobj2;
+      else if( key == "Srecall" )
+         stream >> deity->srecall;
+      else if( key == "Sex" )
       {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
+         int sex;
+
+         if( file_ver == 0 )
+            stream >> sex;
+         else
+         {
+            sex = get_npc_sex( fread_line( stream ) );
+            if( sex < -1 || sex >= SEX_MAX )
+            {
+               bug( "{}: Deity {} has invalid {}! Defaulting to neuter.", __func__, deity->name, key );
+               sex = SEX_NEUTRAL;
+            }
+            deity->sex = sex;
+         }
       }
-
-      switch ( to_upper( word[0] ) )
+      else if( key == "Elements" )
       {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         std::string temp = fread_word( stream );
+         std::string temp2 = fread_word( stream );
+         std::string temp3 = fread_word( stream );
+         int value;
 
-         case '*':
-            fread_to_eol( fp );
-            break;
+         value = get_risflag( temp );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp );
+         else
+            deity->element[0] = value;
 
-         case 'A':
-            if( !str_cmp( word, "Affects" ) )
+         value = get_risflag( temp2 );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp2 );
+         else
+            deity->element[1] = value;
+
+         value = get_risflag( temp3 );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp3 );
+         else
+            deity->element[2] = value;
+      }
+      else if( key == "Affects" )
+      {
+         std::string temp = fread_word( stream );
+         std::string temp2 = fread_word( stream );
+         std::string temp3 = fread_word( stream );
+         int value;
+
+         value = get_risflag( temp );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp );
+         else
+            deity->affected[0] = value;
+
+         value = get_risflag( temp2 );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp2 );
+         else
+            deity->affected[1] = value;
+
+         value = get_risflag( temp3 );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp3 );
+         else
+            deity->affected[2] = value;
+      }
+      else if( key == "Suscepts" )
+      {
+         std::string temp = fread_word( stream );
+         std::string temp2 = fread_word( stream );
+         std::string temp3 = fread_word( stream );
+         int value;
+
+         value = get_risflag( temp );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp );
+         else
+            deity->suscept[0] = value;
+
+         value = get_risflag( temp2 );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp2 );
+         else
+            deity->suscept[1] = value;
+
+         value = get_risflag( temp3 );
+         if( value < 0 || value >= MAX_RIS_FLAG )
+            bug( "{}: Invalid RISA flag for {}: {}", __func__, key, temp3 );
+         else
+            deity->suscept[2] = value;
+      }
+      else if( key == "Classes" )
+      {
+         std::string Class, flag;
+         int value;
+
+         Class = fread_line( stream );
+
+         if( !str_cmp( Class, "all" ) )
+            deity->class_allowed.reset(  );
+         else
+         {
+            while( !Class.empty() )
             {
-               const char *ln;
-               char temp[3][MSL];
-               int value;
-
-               ln = fread_line( fp );
-               temp[0][0] = '\0';
-               temp[1][0] = '\0';
-               temp[2][0] = '\0';
-               sscanf( ln, "%s %s %s", temp[0], temp[1], temp[2] );
-
-               value = get_risflag( temp[0] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[0] );
+               Class = one_argument( Class, flag );
+               value = get_pc_class( flag );
+               if( value < 0 || value > MAX_CLASS )
+                  bug( "Unknown PC Class: {}", flag );
                else
-                  deity->affected[0] = value;
+                  deity->class_allowed.set( value );
+            }
+         }
+      }
+      else if( key == "Races" )
+      {
+         /*
+          * Cleaned up way to handle deity races - Samson 5-17-04
+          */
+         std::string race, flag;
+         int value;
 
-               value = get_risflag( temp[1] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[1] );
+         race = fread_line( stream );
+
+         if( !str_cmp( race, "all" ) )
+            deity->race_allowed.reset(  );
+         else
+         {
+            while( !race.empty() )
+            {
+               race = one_argument( race, flag );
+               value = get_pc_race( flag );
+               if( value < 0 || value > MAX_PC_RACE )
+                  bug( "Unknown PC Race: {}", flag );
                else
-                  deity->affected[1] = value;
-
-               value = get_risflag( temp[2] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[2] );
-               else
-                  deity->affected[2] = value;
-               break;
+                  deity->race_allowed.set( value );
             }
-
-            /*
-             * Formatted the code to read a little easier. 
-             */
-            if( !str_cmp( word, "affected" ) )  /* affected, affected2, affected3 - Adjani 1-31-04 */
-            {
-               if( filever == 0 )
-                  deity->affected[0] = fread_number( fp );
-               else
-               {
-                  const char *flag = fread_flagstring( fp );
-                  int value;
-
-                  if( !flag || flag[0] == '\0' )
-                     break;
-
-                  value = get_aflag( flag );
-                  if( value < 0 || value >= MAX_AFFECTED_BY )
-                     bug( "{}: Unknown affectflag for {}: {}", __func__, word, flag );
-                  else
-                     deity->affected[0] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "affected2" ) )
-            {
-               if( filever == 0 )
-                  deity->affected[1] = fread_number( fp );
-               else
-               {
-                  const char *flag = fread_flagstring( fp );
-                  int value;
-
-                  if( !flag || flag[0] == '\0' )
-                     break;
-
-                  value = get_aflag( flag );
-                  if( value < 0 || value >= MAX_AFFECTED_BY )
-                     bug( "{}: Unknown affectflag for {}: {}", __func__, word, flag );
-                  else
-                     deity->affected[1] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "affected3" ) )
-            {
-               if( filever == 0 )
-                  deity->affected[2] = fread_number( fp );
-               else
-               {
-                  const char *flag = fread_flagstring( fp );
-                  int value;
-
-                  if( !flag || flag[0] == '\0' )
-                     break;
-
-                  value = get_aflag( flag );
-                  if( value < 0 || value >= MAX_AFFECTED_BY )
-                     bug( "{}: Unknown affectflag for {}: {}", __func__, word, flag );
-                  else
-                     deity->affected[2] = value;
-               }
-               break;
-            }
-            if( !str_cmp( word, "Affectednums" ) )
-            {
-               deity->affectednum[0] = fread_number( fp );
-               deity->affectednum[1] = fread_number( fp );  /* Added by Tarl 24 Feb 02 */
-               deity->affectednum[2] = fread_number( fp );  /* Added by Tarl 24 Feb 02 */
-               break;
-            }
-            KEY( "Affectednum", deity->affectednum[0], fread_number( fp ) );
-            KEY( "Affectednum2", deity->affectednum[1], fread_number( fp ) ); /* Added by Tarl 24 Feb 02 */
-            KEY( "Affectednum3", deity->affectednum[2], fread_number( fp ) ); /* Added by Tarl 24 Feb 02 */
-            KEY( "Aid", deity->aid, fread_number( fp ) );
-            KEY( "Aid_spell", deity->aid_spell, fread_number( fp ) );
-            KEY( "Alignment", deity->alignment, fread_number( fp ) );
-            KEY( "Avatar", deity->avatar, fread_number( fp ) );   /* Restored by Samson */
-            break;
-
-         case 'B':
-            KEY( "Backstab", deity->backstab, fread_number( fp ) );
-            KEY( "Bury_corpse", deity->bury_corpse, fread_number( fp ) );
-            break;
-
-         case 'C':
-            /*
-             * Cleaned up way to handle deity classes - Samson 5-17-04 
-             */
-            if( !str_cmp( word, "Classes" ) )
-            {
-               std::string Class, flag;
-               int value;
-
-               Class = fread_flagstring( fp );
-
-               if( !str_cmp( Class, "all" ) )
-                  deity->class_allowed.reset(  );
-               else
-               {
-                  while( !Class.empty() )
-                  {
-                     Class = one_argument( Class, flag );
-                     value = get_pc_class( flag );
-                     if( value < 0 || value > MAX_CLASS )
-                        bug( "Unknown PC Class: {}", flag );
-                     else
-                        deity->class_allowed.set( value );
-                  }
-               }
-               break;
-            }
-            break;
-
-         case 'D':
-            KEY( "Deityobj", deity->deityobj, fread_number( fp ) );  /* Restored by Samson */
-            KEY( "Deityobj2", deity->deityobj2, fread_number( fp ) );   /* Added by Tarl 02 Mar 02 */
-            STDSKEY( "Description", deity->deitydesc );
-            KEY( "Die", deity->die, fread_number( fp ) );
-            if( !str_cmp( word, "Die_npcraces" ) )
-            {
-               deity->die_npcrace[0] = fread_number( fp );
-               deity->die_npcrace[1] = fread_number( fp );
-               deity->die_npcrace[2] = fread_number( fp );
-               break;
-            }
-            if( !str_cmp( word, "Die_npcfoes" ) )
-            {
-               deity->die_npcfoe[0] = fread_number( fp );
-               deity->die_npcfoe[1] = fread_number( fp );
-               deity->die_npcfoe[2] = fread_number( fp );
-               break;
-            }
-            KEY( "Die_npcrace", deity->die_npcrace[0], fread_number( fp ) );
-            KEY( "Die_npcrace2", deity->die_npcrace[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
-            KEY( "Die_npcrace3", deity->die_npcrace[2], fread_number( fp ) );
-            KEY( "Die_npcfoe", deity->die_npcfoe[0], fread_number( fp ) );
-            KEY( "Die_npcfoe2", deity->die_npcfoe[1], fread_number( fp ) );   /* Adjani, 1-24-04 */
-            KEY( "Die_npcfoe3", deity->die_npcfoe[2], fread_number( fp ) );
-            KEY( "Dig_corpse", deity->dig_corpse, fread_number( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) ) /* Adjani 1-31-04 */
-            {
-               if( filever == 0 )
-               {
-                  deity->die_npcrace[1] = 0;
-                  deity->die_npcrace[2] = 0;
-                  deity->die_npcfoe[1] = 0;
-                  deity->die_npcfoe[2] = 0;
-                  deity->flee_npcrace[1] = 0;
-                  deity->flee_npcrace[2] = 0;
-                  deity->flee_npcfoe[1] = 0;
-                  deity->flee_npcfoe[2] = 0;
-                  deity->kill_npcrace[1] = 0;
-                  deity->kill_npcrace[2] = 0;
-                  deity->kill_npcfoe[1] = 0;
-                  deity->kill_npcfoe[2] = 0;
-                  deity->npcrace[1] = 0;
-                  deity->npcrace[2] = 0;
-                  deity->npcfoe[1] = 0;
-                  deity->npcfoe[2] = 0;
-               }
-               log_printf( "Deity: {} loaded", deity->name );
-               return;
-            }
-
-            if( !str_cmp( word, "Elements" ) )
-            {
-               const char *ln;
-               char temp[3][MSL];
-               int value;
-
-               ln = fread_line( fp );
-               temp[0][0] = '\0';
-               temp[1][0] = '\0';
-               temp[2][0] = '\0';
-               sscanf( ln, "%s %s %s", temp[0], temp[1], temp[2] );
-
-               value = get_risflag( temp[0] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[0] );
-               else
-                  deity->element[0] = value;
-
-               value = get_risflag( temp[1] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[1] );
-               else
-                  deity->element[1] = value;
-
-               value = get_risflag( temp[2] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[2] );
-               else
-                  deity->element[2] = value;
-               break;
-            }
-
-            if( !str_cmp( word, "Element" ) )
-            {
-               const char *elem = nullptr;
-               int value;
-
-               if( filever < 3 )
-               {
-                  value = fread_number( fp );
-
-                  if( value > 0 )
-                  {
-                     elem = flag_string( value, ris_flags );
-
-                     value = get_risflag( elem );
-                     if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                     else
-                        deity->element[0] = value;
-                  }
-               }
-               else
-               {
-                  elem = fread_flagstring( fp );
-                  value = get_risflag( elem );
-                  if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                  else
-                     deity->element[0] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Element2" ) )  /* Added by Tarl 24 Feb 02 */
-            {
-               const char *elem = nullptr;
-               int value;
-
-               if( filever < 3 )
-               {
-                  value = fread_number( fp );
-
-                  if( value > 0 )
-                  {
-                     elem = flag_string( value, ris_flags );
-
-                     value = get_risflag( elem );
-                     if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                     else
-                        deity->element[1] = value;
-                  }
-               }
-               else
-               {
-                  elem = fread_flagstring( fp );
-                  value = get_risflag( elem );
-                  if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                  else
-                     deity->element[1] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Element3" ) )  /* Added by Tarl 24 Feb 02 */
-            {
-               const char *elem = nullptr;
-               int value;
-
-               if( filever < 3 )
-               {
-                  value = fread_number( fp );
-
-                  if( value > 0 )
-                  {
-                     elem = flag_string( value, ris_flags );
-
-                     value = get_risflag( elem );
-                     if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                     else
-                        deity->element[2] = value;
-                  }
-               }
-               else
-               {
-                  elem = fread_flagstring( fp );
-                  value = get_risflag( elem );
-                  if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                  else
-                     deity->element[2] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Elementnums" ) )
-            {
-               deity->elementnum[0] = fread_number( fp );
-               deity->elementnum[1] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
-               deity->elementnum[2] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
-               break;
-            }
-            KEY( "Elementnum", deity->elementnum[0], fread_number( fp ) );
-            KEY( "Elementnum2", deity->elementnum[1], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
-            KEY( "Elementnum3", deity->elementnum[2], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
-            break;
-
-         case 'F':
-            STDSKEY( "Filename", deity->filename );
-            KEY( "Flee", deity->flee, fread_number( fp ) );
-            if( !str_cmp( word, "Flee_npcraces" ) )
-            {
-               deity->flee_npcrace[0] = fread_number( fp );
-               deity->flee_npcrace[1] = fread_number( fp );
-               deity->flee_npcrace[2] = fread_number( fp );
-               break;
-            }
-            if( !str_cmp( word, "Flee_npcfoes" ) )
-            {
-               deity->flee_npcfoe[0] = fread_number( fp );
-               deity->flee_npcfoe[1] = fread_number( fp );
-               deity->flee_npcfoe[2] = fread_number( fp );
-               break;
-            }
-            KEY( "Flee_npcrace", deity->flee_npcrace[0], fread_number( fp ) );
-            KEY( "Flee_npcrace2", deity->flee_npcrace[1], fread_number( fp ) );  /* Adjani, 1-24-04 */
-            KEY( "Flee_npcrace3", deity->flee_npcrace[2], fread_number( fp ) );
-            KEY( "Flee_npcfoe", deity->flee_npcfoe[0], fread_number( fp ) );
-            KEY( "Flee_npcfoe2", deity->flee_npcfoe[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
-            KEY( "Flee_npcfoe3", deity->flee_npcfoe[2], fread_number( fp ) );
-            break;
-
-         case 'K':
-            KEY( "Kill", deity->kill, fread_number( fp ) );
-            if( !str_cmp( word, "Kill_npcraces" ) )
-            {
-               deity->kill_npcrace[0] = fread_number( fp );
-               deity->kill_npcrace[1] = fread_number( fp );
-               deity->kill_npcrace[2] = fread_number( fp );
-               break;
-            }
-            if( !str_cmp( word, "Kill_npcfoes" ) )
-            {
-               deity->kill_npcfoe[0] = fread_number( fp );
-               deity->kill_npcfoe[1] = fread_number( fp );
-               deity->kill_npcfoe[2] = fread_number( fp );
-               break;
-            }
-            KEY( "Kill_npcrace", deity->kill_npcrace[0], fread_number( fp ) );
-            KEY( "Kill_npcrace2", deity->kill_npcrace[1], fread_number( fp ) );  /* Adjani, 1-24-04 */
-            KEY( "Kill_npcrace3", deity->kill_npcrace[2], fread_number( fp ) );
-            KEY( "Kill_npcfoe", deity->kill_npcfoe[0], fread_number( fp ) );
-            KEY( "Kill_npcfoe2", deity->kill_npcfoe[1], fread_number( fp ) ); /* Adjani, 1-24-04 */
-            KEY( "Kill_npcfoe3", deity->kill_npcfoe[2], fread_number( fp ) );
-            KEY( "Kill_magic", deity->kill_magic, fread_number( fp ) );
-            break;
-
-         case 'M':
-            KEY( "Minion", deity->minion, fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
-            KEY( "Mount", deity->mount, fread_number( fp ) );  /* Added by Tarl 24 Feb 02 */
-            break;
-
-         case 'N':
-            STDSKEY( "Name", deity->name );
-            if( !str_cmp( word, "npcfoe" ) ) /* npcfoe, npcfoe2, npcfoe3, npcrace, npcrace2, npcrace3 - Adjani 1-31-04 */
-            {
-               int npcfoe;
-
-               if( filever == 0 )
-                  npcfoe = fread_number( fp );
-               else
-                  npcfoe = get_npc_race( fread_flagstring( fp ) );
-
-               if( npcfoe < -1 || npcfoe >= MAX_NPC_RACE )
-               {
-                  bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, word );
-                  npcfoe = RACE_HUMAN;
-               }
-               deity->npcfoe[0] = npcfoe;
-               break;
-            }
-
-            if( !str_cmp( word, "npcfoe2" ) )
-            {
-               int npcfoe2;
-
-               if( filever == 0 )
-                  npcfoe2 = fread_number( fp );
-               else
-                  npcfoe2 = get_npc_race( fread_flagstring( fp ) );
-               if( npcfoe2 < -1 || npcfoe2 >= MAX_NPC_RACE )
-               {
-                  bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, word );
-                  npcfoe2 = RACE_HUMAN;
-               }
-               deity->npcfoe[1] = npcfoe2;
-               break;
-            }
-
-            if( !str_cmp( word, "npcfoe3" ) )
-            {
-               int npcfoe3;
-
-               if( filever == 0 )
-                  npcfoe3 = fread_number( fp );
-               else
-                  npcfoe3 = get_npc_race( fread_flagstring( fp ) );
-               if( npcfoe3 < -1 || npcfoe3 >= MAX_NPC_RACE )
-               {
-                  bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, word );
-                  npcfoe3 = RACE_HUMAN;
-               }
-               deity->npcfoe[2] = npcfoe3;
-               break;
-            }
-
-            if( !str_cmp( word, "npcrace" ) )
-            {
-               int npcrace;
-
-               if( filever == 0 )
-                  npcrace = fread_number( fp );
-               else
-                  npcrace = get_npc_race( fread_flagstring( fp ) );
-
-               if( npcrace < -1 || npcrace >= MAX_NPC_RACE )
-               {
-                  bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, word );
-                  npcrace = RACE_HUMAN;
-               }
-               deity->npcrace[0] = npcrace;
-               break;
-            }
-
-            if( !str_cmp( word, "npcrace2" ) )
-            {
-               int npcrace2;
-
-               if( filever == 0 )
-                  npcrace2 = fread_number( fp );
-               else
-                  npcrace2 = get_npc_race( fread_flagstring( fp ) );
-               if( npcrace2 < -1 || npcrace2 >= MAX_NPC_RACE )
-               {
-                  bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, word );
-                  npcrace2 = RACE_HUMAN;
-               }
-               deity->npcrace[1] = npcrace2;
-               break;
-            }
-
-            if( !str_cmp( word, "npcrace3" ) )
-            {
-               int npcrace3;
-
-               if( filever == 0 )
-                  npcrace3 = fread_number( fp );
-               else
-                  npcrace3 = get_npc_race( fread_flagstring( fp ) );
-               if( npcrace3 < -1 || npcrace3 >= MAX_NPC_RACE )
-               {
-                  bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, word );
-                  npcrace3 = RACE_HUMAN;
-               }
-               deity->npcrace[2] = npcrace3;
-               break;
-            }
-            break;
-
-         case 'O':
-            KEY( "Objstat", deity->objstat, fread_number( fp ) );
-            break;
-
-         case 'R':
-            /*
-             * Cleaned up way to handle deity races - Samson 5-17-04 
-             */
-            if( !str_cmp( word, "Races" ) )
-            {
-               std::string race, flag;
-               int value;
-
-               race = fread_flagstring( fp );
-
-               if( !str_cmp( race, "all" ) )
-                  deity->race_allowed.reset(  );
-               else
-               {
-                  while( !race.empty() )
-                  {
-                     race = one_argument( race, flag );
-                     value = get_pc_race( flag );
-                     if( value < 0 || value > MAX_PC_RACE )
-                        bug( "Unknown PC Race: {}", flag );
-                     else
-                        deity->race_allowed.set( value );
-                  }
-               }
-               break;
-            }
-            KEY( "Recallroom", deity->recallroom, fread_number( fp ) );
-            break;
-
-         case 'S':
-            KEY( "Sac", deity->sac, fread_number( fp ) );
-            KEY( "Savatar", deity->savatar, fread_number( fp ) );
-            KEY( "Scorpse", deity->scorpse, fread_number( fp ) );
-            KEY( "Sdeityobj", deity->sdeityobj, fread_number( fp ) );
-            KEY( "Sdeityobj2", deity->sdeityobj2, fread_number( fp ) ); /* Added by Tarl 02 Mar 02 */
-            KEY( "Smount", deity->smount, fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
-            KEY( "Sminion", deity->sminion, fread_number( fp ) ); /* Added by Tarl 24 Feb 02 */
-            KEY( "Srecall", deity->srecall, fread_number( fp ) );
-            if( !str_cmp( word, "Sex" ) ) /* Adjani, 2-18-04 */
-            {
-               int sex;
-
-               if( filever == 0 )
-                  sex = fread_number( fp );
-               else
-               {
-                  sex = get_npc_sex( fread_flagstring( fp ) );
-                  if( sex < -1 || sex >= SEX_MAX )
-                  {
-                     bug( "{}: Deity {} has invalid {}! Defaulting to neuter.", __func__, deity->name, word );
-                     sex = SEX_NEUTRAL;
-                  }
-                  deity->sex = sex;
-               }
-               break;
-            }
-            KEY( "Spell_aid", deity->spell_aid, fread_number( fp ) );
-            if( !str_cmp( word, "Spells" ) )
-            {
-               deity->spell[0] = fread_number( fp );  /* Added by Tarl 24 Mar 02 */
-               deity->spell[1] = fread_number( fp );  /* Added by Tarl 24 Mar 02 */
-               deity->spell[2] = fread_number( fp );  /* Added by Tarl 24 Mar 02 */
-               break;
-            }
-
-            if( !str_cmp( word, "Sspells" ) )
-            {
-               deity->sspell[0] = fread_number( fp ); /* Added by Tarl 24 Mar 02 */
-               deity->sspell[1] = fread_number( fp ); /* Added by Tarl 24 Mar 02 */
-               deity->sspell[2] = fread_number( fp ); /* Added by Tarl 24 Mar 02 */
-               break;
-            }
-
-            KEY( "Spell1", deity->spell[0], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
-            KEY( "Spell2", deity->spell[1], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
-            KEY( "Spell3", deity->spell[2], fread_number( fp ) ); /* Added by Tarl 24 Mar 02 */
-            KEY( "Sspell1", deity->sspell[0], fread_number( fp ) );  /* Added by Tarl 24 Mar 02 */
-            KEY( "Sspell2", deity->sspell[1], fread_number( fp ) );  /* Added by Tarl 24 Mar 02 */
-            KEY( "Sspell3", deity->sspell[2], fread_number( fp ) );  /* Added by Tarl 24 Mar 02 */
-            KEY( "Steal", deity->steal, fread_number( fp ) );
-            if( !str_cmp( word, "Suscepts" ) )
-            {
-               const char *ln;
-               char temp[3][MSL];
-               int value;
-
-               ln = fread_line( fp );
-               temp[0][0] = '\0';
-               temp[1][0] = '\0';
-               temp[2][0] = '\0';
-               sscanf( ln, "%s %s %s", temp[0], temp[1], temp[2] );
-
-               value = get_risflag( temp[0] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[0] );
-               else
-                  deity->suscept[0] = value;
-
-               value = get_risflag( temp[1] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[1] );
-               else
-                  deity->suscept[1] = value;
-
-               value = get_risflag( temp[2] );
-               if( value < 0 || value >= MAX_RIS_FLAG )
-                  bug( "{}: Invalid RISA flag for {}: {}", __func__, word, temp[2] );
-               else
-                  deity->suscept[2] = value;
-               break;
-            }
-
-            if( !str_cmp( word, "Suscept" ) )
-            {
-               const char *elem = nullptr;
-               int value;
-
-               if( filever < 3 )
-               {
-                  value = fread_number( fp );
-
-                  if( value > 0 )
-                  {
-                     elem = flag_string( value, ris_flags );
-
-                     value = get_risflag( elem );
-                     if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                     else
-                        deity->suscept[0] = value;
-                  }
-               }
-               else
-               {
-                  elem = fread_flagstring( fp );
-                  value = get_risflag( elem );
-                  if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                  else
-                     deity->suscept[0] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Suscept2" ) )  /* Added by Tarl 24 Feb 02 */
-            {
-               const char *elem = nullptr;
-               int value;
-
-               if( filever < 3 )
-               {
-                  value = fread_number( fp );
-
-                  if( value > 0 )
-                  {
-                     elem = flag_string( value, ris_flags );
-
-                     value = get_risflag( elem );
-                     if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                     else
-                        deity->suscept[1] = value;
-                  }
-               }
-               else
-               {
-                  elem = fread_flagstring( fp );
-                  value = get_risflag( elem );
-                  if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                  else
-                     deity->suscept[1] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Suscept3" ) )  /* Added by Tarl 24 Feb 02 */
-            {
-               const char *elem = nullptr;
-               int value;
-
-               if( filever < 3 )
-               {
-                  value = fread_number( fp );
-
-                  if( value > 0 )
-                  {
-                     elem = flag_string( value, ris_flags );
-
-                     value = get_risflag( elem );
-                     if( value < 0 || value >= MAX_RIS_FLAG )
-                        bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                     else
-                        deity->suscept[2] = value;
-                  }
-               }
-               else
-               {
-                  elem = fread_flagstring( fp );
-                  value = get_risflag( elem );
-                  if( value < 0 || value >= MAX_RIS_FLAG )
-                     bug( "{}: Invalid RISA flag for {}: {}", __func__, word, elem );
-                  else
-                     deity->suscept[2] = value;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Susceptnums" ) )
-            {
-               deity->susceptnum[0] = fread_number( fp );
-               deity->susceptnum[1] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
-               deity->susceptnum[2] = fread_number( fp );   /* Added by Tarl 24 Feb 02 */
-               break;
-            }
-            KEY( "Susceptnum", deity->susceptnum[0], fread_number( fp ) );
-            KEY( "Susceptnum2", deity->susceptnum[1], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
-            KEY( "Susceptnum3", deity->susceptnum[2], fread_number( fp ) );   /* Added by Tarl 24 Feb 02 */
-            break;
-
-         case 'W':
-            KEY( "Worshippers", deity->worshippers, fread_number( fp ) );
-            break;
+         }
+      }
+      else if( key == "Npcrace" )
+      {
+         int npcrace;
+
+         if( file_ver == 0 )
+            stream >> npcrace;
+         else
+            npcrace = get_npc_race( fread_line( stream ) );
+
+         if( npcrace < -1 || npcrace >= MAX_NPC_RACE )
+         {
+            bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, key );
+            npcrace = RACE_HUMAN;
+         }
+         deity->npcrace[0] = npcrace;
+      }
+      else if( key == "Npcrace2" )
+      {
+         int npcrace2;
+
+         if( file_ver == 0 )
+            stream >> npcrace2;
+         else
+            npcrace2 = get_npc_race( fread_line( stream ) );
+         if( npcrace2 < -1 || npcrace2 >= MAX_NPC_RACE )
+         {
+            bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, key );
+            npcrace2 = RACE_HUMAN;
+         }
+         deity->npcrace[1] = npcrace2;
+      }
+      else if( key == "Npcrace3" )
+      {
+         int npcrace3;
+
+         if( file_ver == 0 )
+            stream >> npcrace3;
+         else
+            npcrace3 = get_npc_race( fread_line( stream ) );
+         if( npcrace3 < -1 || npcrace3 >= MAX_NPC_RACE )
+         {
+            bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, key );
+            npcrace3 = RACE_HUMAN;
+         }
+         deity->npcrace[2] = npcrace3;
+      }
+      else if( key == "Npcfoe" )
+      {
+         int npcfoe;
+
+         if( file_ver == 0 )
+            stream >> npcfoe;
+         else
+            npcfoe = get_npc_race( fread_line( stream ) );
+
+         if( npcfoe < -1 || npcfoe >= MAX_NPC_RACE )
+         {
+            bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, key );
+            npcfoe = RACE_HUMAN;
+         }
+         deity->npcfoe[0] = npcfoe;
+      }
+      else if( key == "Npcfoe2" )
+      {
+         int npcfoe2;
+
+         if( file_ver == 0 )
+            stream >> npcfoe2;
+         else
+            npcfoe2 = get_npc_race( fread_line( stream ) );
+         if( npcfoe2 < -1 || npcfoe2 >= MAX_NPC_RACE )
+         {
+            bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, key );
+            npcfoe2 = RACE_HUMAN;
+         }
+         deity->npcfoe[1] = npcfoe2;
+      }
+      else if( key == "Npcfoe3" )
+      {
+         int npcfoe3;
+
+         if( file_ver == 0 )
+            stream >> npcfoe3;
+         else
+            npcfoe3 = get_npc_race( fread_line( stream ) );
+         if( npcfoe3 < -1 || npcfoe3 >= MAX_NPC_RACE )
+         {
+            bug( "{}: Deity {} has invalid {}! Defaulting to human.", __func__, deity->name, key );
+            npcfoe3 = RACE_HUMAN;
+         }
+         deity->npcfoe[2] = npcfoe3;
+      }
+      else if( key == "Susceptnums" )
+         stream >> deity->susceptnum[0] >> deity->susceptnum[1] >>  deity->susceptnum[2];
+      else if( key =="Elementnums" )
+         stream >> deity->elementnum[0] >> deity->elementnum[1] >> deity->elementnum[2];
+      else if( key == "Affectednums" )
+         stream >> deity->affectednum[0] >> deity->affectednum[1] >> deity->affectednum[2];
+      else if( key == "Spells" ) // Added by Tarl 24 Mar 02
+         stream >> deity->spell[0] >> deity->spell[1] >> deity->spell[2];
+      else if( key == "Sspells" ) // Added by Tarl 24 Mar 02
+         stream >> deity->sspell[0] >> deity->sspell[1] >> deity->sspell[2];
+      else if( key == "Objstat" )
+         stream >> deity->objstat;
+      else if( key == "Recallroom" ) // Samson
+         stream >> deity->recallroom;
+      else if( key == "Avatar" ) // Restored by Samson
+         stream >> deity->avatar;
+      else if( key == "Mount" ) // Added by Tarl 24 Feb 02
+         stream >> deity->mount;
+      else if( key == "Minion" ) // Added by Tarl 24 Feb 02
+         stream >> deity->minion;
+      else if( key == "Deityobj" ) // Restored by Samson
+         stream >> deity->deityobj;
+      else if( key == "Deityobj2" ) // Added by Tarl 02 Mar 02
+         stream >> deity->deityobj2;
+      else if( key == "End" )
+         return;
+      else
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, !deity->filename.empty() ? deity->filename : "" );
+         fread_to_eol( stream );
       }
    }
 }
@@ -960,97 +531,65 @@ void fread_deity( deity_data * deity, FILE * fp, int filever )
 /* Load a deity file */
 bool load_deity_file( std::string_view deityfile )
 {
-   deity_data *deity;
-   FILE *fp;
-   int filever = 0;
-
-   bool found = false;
    std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deityfile );
-
-   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
+   std::ifstream stream( std::filesystem::path{filename} );
+   if( !stream.is_open() )
    {
-      for( ;; )
-      {
-         char letter;
-         std::string word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "{}: # not found.", __func__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "VERSION" ) )   /* Adjani, 1-31-04 */
-         {
-            filever = fread_number( fp );
-            letter = fread_letter( fp );
-            if( letter != '#' )
-            {
-               bug( "{}: # not found after reading file version %d.", __func__, filever );
-               break;
-            }
-            word = fread_word( fp );
-         }
-         if( !str_cmp( word, "DEITY" ) )
-         {
-            deity = new deity_data;
-            fread_deity( deity, fp, filever );  /* Filever added for file versions. Whee! Adjani, 1-31-04 */
-            deitylist.push_back( deity );
-            found = true;
-            break;
-         }
-         else
-         {
-            bug( "{}: bad section: {}.", __func__, word );
-            break;
-         }
-      }
-      FCLOSE( fp );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
+      return false;
    }
-   return found;
+
+   int file_ver = 0;
+   deity_data *deity = nullptr;
+   std::string key;
+   while( stream >> key )
+   {
+      if( key == "#VERSION" ) // Adjani, 1-31-04
+         stream >> file_ver;
+      else if( key == "#DEITY" )
+      {
+         deity = new deity_data;
+         fread_deity( deity, stream, file_ver ); // File_ver added for file versions. Whee! Adjani, 1-31-04
+         deitylist.push_back( deity );
+         stream.close();
+         return true;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
+      }
+   }
+   return false;
 }
 
 /* Load in all the deity files */
 void load_deity( void )
 {
-   FILE *fpList;
-
-   deitylist.clear(  );
-
    log_string( "Loading deities..." );
 
    std::filesystem::path deitylistfile = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
-   if( !( fpList = fopen( deitylistfile.c_str(), "r" ) ) )
+   std::ifstream stream( std::filesystem::path{deitylistfile} );
+   if( !stream.is_open(  ) )
    {
-      log_string( "Cannot open deity list file." );
+      bug( "{}: Cannot open {} for reading: {}", __func__, deitylistfile.string(), std::strerror(errno) );
       std::exit( EXIT_FAILURE );
    }
 
+   deitylist.clear(  );
+
    for( ;; )
    {
-      std::string filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
-
-      if( filename.empty() )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         break;
-      }
+      std::string filename = fread_line( stream, '\n' );
 
       if( filename[0] == '$' )
          break;
+
       if( !load_deity_file( filename ) )
-         bug( "{}: Cannot load deity file: {}", __func__, filename );
+         bug( "{}: Cannot load deity file: {} - {}", __func__, filename, std::strerror(errno) );
    }
-   FCLOSE( fpList );
-   log_string( "Done deities" );
+   stream.close();
+   log_string( "Done: Deities." );
 }
 
 CMDF( do_setdeity )
