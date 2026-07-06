@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "auction.h"
@@ -688,183 +689,99 @@ void adjust_pfile( const std::string & name )
 /* Rare item counting function taken from the Tartarus codebase, a
  * ROM 2.4b derivative by Ceran. Modified for Smaug compatibility by Samson
  */
-int scan_pfiles( const std::string & dirname, const std::string & filename, bool updating )
+int scan_pfiles( std::string_view dirname, std::string_view filename, bool updating )
 {
-   FILE *fpChar;
-   int adjust = 0;
-
    std::filesystem::path fname = std::format( "{}/{}", dirname, filename );
-
-   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
+   std::ifstream stream( fname );
+   if( !stream.is_open() )
    {
-      perror( fname.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, fname.string(), std::strerror(errno) );
       return 0;
    }
 
-   for( ;; )
+   int adjust = 0;
+
+   std::string key;
+   while( stream >> key )
    {
-      int vnum = 0, counter = 1;
-      obj_index *pObjIndex = nullptr;
-
-      char letter = fread_letter( fpChar );
-
-      if( ( letter != '#' ) && ( !feof( fpChar ) ) )
-         continue;
-
-      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      // log_string( word );
-
-      if( !str_cmp( word, "End" ) )
+      if( key == "End" )
          break;
-
-      if( !str_cmp( word, "OBJECT" ) )
+      else if( key == "#OBJECT" )
       {
-         word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-         if( word[0] == '\0' )
+         while( stream >> key )
          {
-            bug( "{}: EOF encountered reading file!", __func__ );
-            word = "End";
-         }
+            int vnum = 0, counter = 1;
+            obj_index *pObjIndex = nullptr;
 
-         if( !str_cmp( word, "End" ) )
-            break;
-
-         if( !str_cmp( word, "Nest" ) )
-         {
-            fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Count" ) )
-         {
-            counter = fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Name" ) )
-         {
-            fread_flagstring( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "ShortDescr" ) )
-         {
-            fread_flagstring( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Description" ) )
-         {
-            fread_flagstring( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "ActionDesc" ) )
-         {
-            fread_flagstring( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Ovnum" ) )
-         {
-            vnum = fread_number( fpChar );
-            if( ( pObjIndex = get_obj_index( vnum ) ) == nullptr )
+            if( key == "End" )
+               break;
+            else if( key == "Count" )
+               stream >> counter;
+            else if( key == "Ovnum" )
             {
-               bug( "{}: {} has bad obj vnum.", __func__, filename );
-               adjust = 1; /* So it can clean out the bad object - Samson 4-16-00 */
-            }
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
+               stream >> vnum;
 
-         if( !str_cmp( word, "Ego" ) && pObjIndex )
-         {
-            int ego = fread_number( fpChar );
-            if( ego >= sysdata->minego )
-            {
-               if( !updating )
+               if( ( pObjIndex = get_obj_index( vnum ) ) == nullptr )
                {
-                  pObjIndex->count += counter;
-                  log_printf( "{}: Counted {} of Vnum {}", filename, counter, vnum );
+                  bug( "{}: {} has bad obj vnum.", __func__, fname.string() );
+                  adjust = 1; /* So it can clean out the bad object - Samson 4-16-00 */
                }
-               else
-                  adjust = 1;
             }
+            else if( key == "Ego" && pObjIndex )
+            {
+               int ego;
+               stream >> ego;
+
+               if( ego >= sysdata->minego )
+               {
+                  if( !updating )
+                  {
+                     pObjIndex->count += counter;
+                     log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
+                  }
+                  else
+                     adjust = 1;
+               }
+            }
+            else
+               fread_to_eol( stream );
          }
       }
+      else
+         fread_to_eol( stream );
    }
-   FCLOSE( fpChar );
+   stream.close();
    return adjust;
 }
 
 void corpse_scan( std::string_view filename )
 {
-   FILE *fpChar;
-
    std::filesystem::path fname = std::format( "{}/{}", CORPSE_DIR, filename );
-
-   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
+   std::ifstream stream( fname );
+   if( !stream.is_open() )
    {
-      log_printf( "Cannot open corpse file: {}", fname.string() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, fname.string(), std::strerror(errno) );
       return;
    }
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      int vnum, counter = 1;
-      obj_index *pObjIndex;
+      int vnum = 0, counter = 1;
+      obj_index *pObjIndex = nullptr;
 
-      char letter = fread_letter( fpChar );
-
-      if( ( letter != '#' ) && ( !feof( fpChar ) ) )
-         continue;
-
-      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      if( !str_cmp( word, "End" ) )
+      if( key == "End" )
          break;
-
-      if( !str_cmp( word, "OBJECT" ) )
+      else if( key == "#OBJECT" )
       {
-         word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-         if( word[0] == '\0' )
-         {
-            bug( "{}: EOF encountered reading file!", __func__ );
-            word = "End";
-         }
-
-         if( !str_cmp( word, "End" ) )
+         if( key == "End" )
             break;
-
-         if( !str_cmp( word, "Nest" ) )
+         else if( key == "Count" )
+            stream >> counter;
+         else if( key == "Ovnum" )
          {
-            fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
+            stream >> vnum;
 
-         if( !str_cmp( word, "Count" ) )
-         {
-            counter = fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Ovnum" ) )
-         {
-            vnum = fread_number( fpChar );
             if( ( get_obj_index( vnum ) ) == nullptr )
                bug( "{}: {}'s corpse has bad obj vnum.", __func__, fname.string() );
             else
@@ -880,168 +797,114 @@ void corpse_scan( std::string_view filename )
                }
             }
          }
+         else
+            fread_to_eol( stream );
       }
+      else
+         fread_to_eol( stream );
    }
-   FCLOSE( fpChar );
+   stream.close();
 }
 
 void mobfile_scan( void )
 {
-   FILE *fpChar;
-
    std::filesystem::path fname = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
-
-   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
+   std::ifstream stream( fname );
+   if( !stream.is_open() )
       return;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      int vnum, counter = 1;
-      obj_index *pObjIndex;
-
-      char letter = fread_letter( fpChar );
-
-      if( ( letter != '#' ) && ( !feof( fpChar ) ) )
-         continue;
-
-      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      if( !str_cmp( word, "End" ) )
+      if( key == "End" )
          break;
-
-      if( !str_cmp( word, "OBJECT" ) )
+      else if( key == "#OBJECT" )
       {
-         word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
+         int vnum = 0, counter = 1;
+         obj_index *pObjIndex = nullptr;
 
-         if( word[0] == '\0' )
+         while( stream >> key )
          {
-            bug( "{}: EOF encountered reading file!", __func__ );
-            word = "End";
-         }
-
-         if( !str_cmp( word, "End" ) )
-            break;
-
-         if( !str_cmp( word, "Nest" ) )
-         {
-            fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Count" ) )
-         {
-            counter = fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Ovnum" ) )
-         {
-            vnum = fread_number( fpChar );
-            if( ( get_obj_index( vnum ) ) == nullptr )
-               bug( "{}: bad obj vnum {}.", __func__, vnum );
-            else
+            if( key == "End" )
+               break;
+            else if( key == "Count" )
+               stream >> counter;
+            else if( key == "Ovnum" )
             {
-               int ego = 0;
-               pObjIndex = get_obj_index( vnum );
-               if( pObjIndex->ego == -2 )
-                  ego = pObjIndex->set_ego(  );
-               if( ego >= sysdata->minego )
+               stream >> vnum;
+
+               if( ( get_obj_index( vnum ) ) == nullptr )
+                  bug( "{}: bad obj vnum {}.", __func__, vnum );
+               else
                {
-                  pObjIndex->count += counter;
-                  log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
+                  int ego = 0;
+                  pObjIndex = get_obj_index( vnum );
+                  if( pObjIndex->ego == -2 )
+                     ego = pObjIndex->set_ego(  );
+                  if( ego >= sysdata->minego )
+                  {
+                     pObjIndex->count += counter;
+                     log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
+                  }
                }
             }
          }
       }
+      else
+         fread_to_eol( stream );
    }
-   FCLOSE( fpChar );
+   stream.close();
 }
 
 void objfile_scan( std::string_view filename )
 {
-   FILE *fpChar;
-
    std::filesystem::path fname = std::format( "{}{}", HOTBOOT_DIR, filename );
-
-   if( !( fpChar = fopen( fname.c_str(), "r" ) ) )
-   {
-      log_printf( "Cannot open object file: {}", fname.string() );
+   std::ifstream stream( fname );
+   if( !stream.is_open() )
       return;
-   }
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      int vnum, counter = 1;
-      obj_index *pObjIndex;
-
-      char letter = fread_letter( fpChar );
-
-      if( ( letter != '#' ) && ( !feof( fpChar ) ) )
-         continue;
-
-      std::string word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
-      }
-
-      if( !str_cmp( word, "End" ) )
+      if( key == "End" )
          break;
-
-      if( !str_cmp( word, "OBJECT" ) )
+      else if( key == "#OBJECT" )
       {
-         word = ( feof( fpChar ) ? "End" : fread_word( fpChar ) );
+         int vnum = 0, counter = 1;
+         obj_index *pObjIndex;
 
-         if( word[0] == '\0' )
+         while( stream >> key )
          {
-            bug( "{}: EOF encountered reading file!", __func__ );
-            word = "End";
-         }
-
-         if( !str_cmp( word, "End" ) )
-            break;
-
-         if( !str_cmp( word, "Nest" ) )
-         {
-            fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Count" ) )
-         {
-            counter = fread_number( fpChar );
-            word = feof( fpChar ) ? "End" : fread_word( fpChar );
-         }
-
-         if( !str_cmp( word, "Ovnum" ) )
-         {
-            vnum = fread_number( fpChar );
-            if( ( get_obj_index( vnum ) ) == nullptr )
-               bug( "{}: bad obj vnum {}.", __func__, vnum );
-            else
+            if( key == "End" )
+               break;
+            else if( key == "Count" )
+               stream >> counter;
+            else if( key == "Ovnum" )
             {
-               int ego = 0;
-               pObjIndex = get_obj_index( vnum );
-               if( pObjIndex->ego == -2 )
-                  ego = pObjIndex->set_ego(  );
-               if( ego >= sysdata->minego )
+               stream >> vnum;
+
+               if( ( get_obj_index( vnum ) ) == nullptr )
+                  bug( "{}: bad obj vnum {}.", __func__, vnum );
+               else
                {
-                  pObjIndex->count += counter;
-                  log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
+                  int ego = 0;
+                  pObjIndex = get_obj_index( vnum );
+                  if( pObjIndex->ego == -2 )
+                     ego = pObjIndex->set_ego(  );
+                  if( ego >= sysdata->minego )
+                  {
+                     pObjIndex->count += counter;
+                     log_printf( "{}: Counted {} of Vnum {}", fname.string(), counter, vnum );
+                  }
                }
             }
+            else fread_to_eol( stream );
          }
       }
+      else
+         fread_to_eol( stream );
    }
-   FCLOSE( fpChar );
+   stream.close();
 }
 
 void load_equipment_totals( bool fCopyOver )
@@ -1064,7 +927,7 @@ void load_equipment_totals( bool fCopyOver )
             if( filename.empty() || filename[0] == '.' )
                continue;
 
-            scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+            scan_pfiles( dirname.string(), filename, false );
          }
       }
    }
@@ -1119,11 +982,11 @@ void rare_update( void )
             if( filename.empty() || filename[0] == '.' )
                continue;
 
-            int adjust = scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+            int adjust = scan_pfiles( dirname.string(), filename, false );
             if( adjust == 1 )
-               adjust_pfile( filename.c_str() );
+               adjust_pfile( filename );
 
-            scan_pfiles( dirname.string().c_str(), filename.c_str(), false );
+            scan_pfiles( dirname.string(), filename, false );
          }
       }
    }
