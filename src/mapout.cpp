@@ -578,7 +578,7 @@ CMDF( do_mapout )
          return;
       }
       ch->pcdata->map_buffer.clear();
-      ch->print( "Map cleared.\r\n" );
+      ch->print( "Map buffer cleared.\r\n" );
       return;
    }
 
@@ -631,8 +631,8 @@ CMDF( do_mapout )
          return;
       }
 
+      ch->print( "Rooms generated.\r\n" );
       do_mapout( ch, "clear" );
-      ch->print( "Ok.\r\n" );
       return;
    }
    ch->print( "mapout write:  Create a map in edit buffer.\r\n" );

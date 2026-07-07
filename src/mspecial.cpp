@@ -37,6 +37,7 @@
  * If you don't know what that means, ask Samson to take care of it.
  */
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "fight.h"
 #include "mspecial.h"
@@ -63,40 +64,31 @@ void free_specfuns( void )
    speclist.clear(  );
 }
 
-/* Simple load function - no OLC support for now.
+/*
+ * Simple load function - no OLC support for now.
  * This is probably something you DON'T want builders playing with.
  */
 void load_specfuns( void )
 {
-   FILE *fp;
-   std::string sfun;
+   std::filesystem::path filename = std::format( "{}specfuns.dat", SYSTEM_DIR );
+   std::ifstream stream( filename );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
+      std::exit( EXIT_FAILURE );
+   }
 
    speclist.clear(  );
 
-   std::filesystem::path filename = std::format( "{}specfuns.dat", SYSTEM_DIR );
-   if( !( fp = fopen( filename.c_str(), "r" ) ) )
+   for( ;; )
    {
-      bug( "{}: FATAL - cannot load specfuns.dat, exiting.", __func__ );
-      std::exit( EXIT_FAILURE );
+      std::string sfun = fread_line( stream );
+
+      if( sfun[0] == '$' )
+         break;
+      speclist.push_back( sfun );
    }
-   else
-   {
-      for( ;; )
-      {
-         if( feof( fp ) )
-         {
-            bug( "{}: Premature end of file!", __func__ );
-            FCLOSE( fp );
-            return;
-         }
-         sfun.clear(  );
-         fread_string( sfun, fp );
-         if( sfun == "$" )
-            break;
-         speclist.push_back( sfun );
-      }
-      FCLOSE( fp );
-   }
+   stream.close();
 }
 
 /* Simple validation function to be sure a function can be used on mobs */
