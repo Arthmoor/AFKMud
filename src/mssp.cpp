@@ -94,7 +94,6 @@ msspinfo::msspinfo()
 void save_mssp_info( void )
 {
    std::ofstream stream( std::filesystem::path{MSSP_FILE} );
-
    if( !stream.is_open( ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, MSSP_FILE, std::strerror(errno) );

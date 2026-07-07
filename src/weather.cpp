@@ -2375,7 +2375,7 @@ bool load_weathermap( void )
    int file_ver = 0;
 
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, WEATHER_FILE );
-   std::ifstream stream(filename);
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );

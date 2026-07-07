@@ -307,9 +307,8 @@ void load_boards( void )
 
    for( size_t x = 0; x < board_files.size(); ++x )
    {
-      std::ifstream stream;
       std::filesystem::path board_file = std::format( "{}{}", BOARD_DIR, board_files[x] );
-      stream.open( board_file );
+      std::ifstream stream( board_file );
       if( !stream.is_open() )
       {
          bug( "{}: Cannot open {} for reading: {}", __func__, board_file.string(), std::strerror(errno) );

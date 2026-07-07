@@ -212,7 +212,7 @@ void reset_colors( char_data * ch )
       {
          int max_colors = 0;
 
-         std::ifstream stream( std::filesystem::path{filename} );
+         std::ifstream stream( filename );
          if( !stream.is_open() )
          {
             memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
@@ -283,7 +283,7 @@ CMDF( do_color )
       }
 
       std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, argument );
-      std::ofstream stream( std::filesystem::path{filename} );
+      std::ofstream stream( filename );
       if( !stream.is_open() )
       {
          bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -326,7 +326,7 @@ CMDF( do_color )
       }
 
       std::filesystem::path filename = std::format( "{}{}", COLOR_DIR, argument );
-      std::ifstream stream( std::filesystem::path{filename} );
+      std::ifstream stream( filename );
       if( !stream.is_open() )
       {
          ch->print_fmt( "There is no theme called {}.\r\n", argument );

@@ -425,7 +425,7 @@ void delete_clan( char_data * ch, clan_data * clan )
 void write_clan_list( void )
 {
    std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -477,7 +477,7 @@ void save_clan( clan_data * clan )
    }
 
    std::filesystem::path filename = std::format( "{}{}", CLAN_DIR, clan->filename );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -724,7 +724,7 @@ void fread_clan( std::ifstream & stream, clan_data * clan )
 bool load_clan_file( std::string_view clanfile )
 {
    std::filesystem::path filename = clanfile;
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
@@ -982,7 +982,7 @@ void load_clans( void )
    log_string( "Loading clans..." );
 
    std::filesystem::path clanlistfile = std::format( "{}{}", CLAN_DIR, CLAN_LIST );
-   std::ifstream stream( std::filesystem::path{clanlistfile} );
+   std::ifstream stream( clanlistfile );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, clanlistfile.string(), std::strerror(errno) );

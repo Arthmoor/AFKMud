@@ -171,9 +171,7 @@ void load_banlist( void )
 
 void save_banlist( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( BAN_LIST ) );
+   std::ofstream stream( std::filesystem::path{BAN_LIST} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open banlist for writing: {}", __func__, std::strerror(errno) );

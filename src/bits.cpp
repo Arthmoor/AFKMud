@@ -112,7 +112,7 @@ void load_oldbits( void )
    qbits.clear(  );
 
    std::filesystem::path filename = std::format( "{}abit.lst", SYSTEM_DIR );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
@@ -163,7 +163,7 @@ void load_abits( void )
    log_string( "...abits" );
 
    std::filesystem::path filename = std::format( "{}abits.lst", SYSTEM_DIR );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
@@ -187,7 +187,7 @@ void load_qbits( void )
    log_string( "...qbits" );
 
    std::filesystem::path filename = std::format( "{}qbits.lst", SYSTEM_DIR );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );

@@ -183,7 +183,7 @@ void delete_realm( char_data * ch, realm_data * realm )
 void write_realm_list( void )
 {
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, REALM_LIST );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -219,7 +219,7 @@ void save_realm( realm_data * realm )
    }
 
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realm->filename );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -317,7 +317,7 @@ void fread_realm( std::ifstream & stream, realm_data * realm )
 bool load_realm_file( std::string_view realmfile )
 {
    std::filesystem::path filename = std::format( "{}{}", REALM_DIR, realmfile );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
@@ -420,7 +420,7 @@ void load_realms( void )
    log_string( "Loading Realms..." );
 
    std::filesystem::path realmlistfile = std::format( "{}{}", REALM_DIR, REALM_LIST );
-   std::ifstream stream( std::filesystem::path{realmlistfile} );
+   std::ifstream stream( realmlistfile );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, realmlistfile.string(), std::strerror(errno) );

@@ -363,7 +363,7 @@ void fwrite_morph( std::ofstream & stream, morph_data * morph )
 void save_morphs( void )
 {
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -933,7 +933,7 @@ void setup_morph_vnum( void )
 void load_morphs( void )
 {
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MORPH_FILE );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );

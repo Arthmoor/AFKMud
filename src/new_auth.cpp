@@ -81,13 +81,13 @@ bool is_valid_line( std::string & line )
 
 void load_name_generator( void )
 {
-   std::ifstream infile{std::filesystem::path(NAMEGEN_FILE)};
-   if( infile )
+   std::ifstream stream( std::filesystem::path{NAMEGEN_FILE} );
+   if( stream )
    {
       std::string line;
       std::vector<std::string>* current_list = nullptr;
 
-      while( std::getline( infile, line ) )
+      while( std::getline( stream, line ) )
       {
          if( line == "[start]" )
             current_list = &main_namegen.start;

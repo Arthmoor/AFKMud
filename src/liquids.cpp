@@ -312,7 +312,7 @@ void fread_mixture( mixture_data *mix, std::ifstream & stream )
 void load_mixtures( void )
 {
    std::filesystem::path filename = std::format( "{}mixtures.dat", SYSTEM_DIR );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );

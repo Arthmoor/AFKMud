@@ -85,7 +85,7 @@ bool IS_DEVOTED( char_data *ch )
 void write_deity_list( void )
 {
    std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -121,7 +121,7 @@ void save_deity( deity_data * deity )
    }
 
    std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deity->filename );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
@@ -532,7 +532,7 @@ void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
 bool load_deity_file( std::string_view deityfile )
 {
    std::filesystem::path filename = std::format( "{}{}", DEITY_DIR, deityfile );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
@@ -569,7 +569,7 @@ void load_deity( void )
    log_string( "Loading deities..." );
 
    std::filesystem::path deitylistfile = std::format( "{}{}", DEITY_DIR, DEITY_LIST );
-   std::ifstream stream( std::filesystem::path{deitylistfile} );
+   std::ifstream stream( deitylistfile );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, deitylistfile.string(), std::strerror(errno) );

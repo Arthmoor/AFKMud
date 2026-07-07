@@ -352,7 +352,7 @@ void continent_data::fread_mapexit( std::ifstream & stream )
 void load_continent( std::string_view continent_file )
 {
    std::filesystem::path filename = std::format( "{}{}", MAP_DIR, continent_file );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
@@ -471,7 +471,7 @@ void continent_data::save( )
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving continent data for {}...", this->filename );
 
    std::filesystem::path fname = std::format( "{}{}", MAP_DIR, this->filename );
-   std::ofstream stream( std::filesystem::path{fname} );
+   std::ofstream stream( fname );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, fname.string(), std::strerror(errno) );

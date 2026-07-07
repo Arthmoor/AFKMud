@@ -333,7 +333,7 @@ void fread_login_message( std::ifstream & stream )
 void load_login_messages(  )
 {
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
-   std::ifstream stream( std::filesystem::path{filename} );
+   std::ifstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
@@ -361,7 +361,7 @@ void load_login_messages(  )
 void save_login_messages(  )
 {
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, LOGIN_MSG );
-   std::ofstream stream( std::filesystem::path{filename} );
+   std::ofstream stream( filename );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
