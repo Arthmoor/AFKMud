@@ -232,11 +232,6 @@ void load_liquids( void )
             bug( "{}: Bad entry in liquid table: {}", __func__, !liq->name.empty() ? liq->name : "Unknown???" );
             std::exit( EXIT_FAILURE );
          }
-         else if( get_liq_vnum( liq->vnum ) != nullptr )
-         {
-            bug( "{}: Liquid with duplicate vnum: {} {}", __func__, liq->vnum, liq->name );
-            std::exit( EXIT_FAILURE );
-         }
          else
          {
             liquid_table[liq->vnum] = liq;
@@ -279,6 +274,11 @@ void save_mixtures( void )
       stream << std::format( "Name   {}~\n", mix->name );
       stream << std::format( "Data   {} {} {}\n", mix->data[0], mix->data[1], mix->data[2] );
       stream << std::format( "Object {}\n", mix->object );
+      if( !mix->object )
+      {
+         stream << std::format( "Into   {}\n", mix->data[2] );
+         stream << std::format( "With   {} {}\n", mix->data[0], mix->data[1] );
+      }
       stream << "End\n\n";
    }
    stream << "#END\n";
@@ -298,6 +298,10 @@ void fread_mixture( mixture_data *mix, std::ifstream & stream )
          stream >> mix->data[0] >> mix->data[1] >> mix->data[2];
       else if( key == "Object" )
          stream >> mix->object;
+      else if( key == "Into" )
+         stream >> mix->data[2];
+      else if( key == "With" )
+         stream >> mix->data[0] >> mix->data[1];
       else if( key == "End" )
          return;
       else
@@ -679,7 +683,7 @@ void displaymixture( char_data * ch, mixture_data * mix )
 
    ch->pager_fmt( "&gRecipe for Mixture &G{}&g:\r\n", mix->name );
    ch->pager( "---------------------------------\r\n" );
-   if( !mix->object )   //this is an object
+   if( !mix->object )
    {
       liquid_data *ingred1 = get_liq_vnum( mix->data[0] );
       liquid_data *ingred2 = get_liq_vnum( mix->data[1] );
@@ -695,7 +699,7 @@ void displaymixture( char_data * ch, mixture_data * mix )
       else
          ch->pager_fmt( "&wAnd part &G{}&w ({})&D\r\n", ingred2->name, mix->data[1] );
    }
-   else
+   else // This is an object.
    {
       obj_index *obj = get_obj_index( mix->data[0] );
       if( !obj )
@@ -743,13 +747,13 @@ CMDF( do_showmixture )
       return;
    }
 
-   ch->pager( "&G[&gType&G] &G[&gName&G]\r\n" );
+   ch->pager( "&G[&gType&G]     &G[&gName&G]\r\n" );
    ch->pager( "-----------------------\r\n" );
    for( imx = mixlist.begin(  ); imx != mixlist.end(  ); ++imx )
    {
       mixture_data *mx = *imx;
 
-      ch->pager_fmt( "  {:<12} {}\r\n", mx->object ? "&[objects]Object&D" : "&BLiquids&D", mx->name );
+      ch->pager_fmt( "{:<14} {}\r\n", mx->object ? "&[objects]Object&D" : "&BLiquids&D", mx->name );
    }
    ch->pager( "\r\n&gUse 'showmixture [name]' to view individual mixtures.\r\n" );
    ch->pager( "&gUse 'showliquid' to view the liquidtable.\r\n&D" );
