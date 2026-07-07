@@ -1206,7 +1206,7 @@ void append_to_file( std::string_view file, std::format_string<Args...> fmt, Arg
    if( FILE* fp = fopen( file.data(), "a" ) )
    {
       fprintf( fp, "%s", str.c_str() );
-      FCLOSE(fp);
+      FCLOSE( fp );
    }
 }
 

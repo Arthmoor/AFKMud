@@ -188,12 +188,10 @@ void prune_sales( void )
 
 void load_sales( void )
 {
+   // Having no sales file on a new MUD is normal, so this does not log the error if it's missing.
    std::ifstream stream( std::filesystem::path{SALES_FILE} );
    if( !stream.is_open() )
-   {
-      bug( "{}: Cannot open {} for reading: {}", __func__, SALES_FILE, std::strerror(errno) );
       return;
-   }
 
    salelist.clear(  );
    sale_data *sale = nullptr;

@@ -160,15 +160,13 @@ void load_oldbits( void )
 
 void load_abits( void )
 {
-   log_string( "...abits" );
-
+   // Having no abits file on a new MUD is normal, so this does not log the error if it's missing.
    std::filesystem::path filename = std::format( "{}abits.lst", SYSTEM_DIR );
    std::ifstream stream( filename );
    if( !stream.is_open(  ) )
-   {
-      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
-   }
+
+   log_string( "...abits" );
 
    while( !stream.eof() )
    {
@@ -184,15 +182,13 @@ void load_abits( void )
 
 void load_qbits( void )
 {
-   log_string( "...qbits" );
-
+   // Having no qbits file on a new MUD is normal, so this does not log the error if it's missing.
    std::filesystem::path filename = std::format( "{}qbits.lst", SYSTEM_DIR );
    std::ifstream stream( filename );
    if( !stream.is_open(  ) )
-   {
-      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return;
-   }
+
+   log_string( "...qbits" );
 
    while( !stream.eof() )
    {

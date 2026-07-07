@@ -271,13 +271,10 @@ void board_check_expire( board_data * );
 
 bool read_board_list( void )
 {
+   // Having no board list file on a new MUD is normal, so this does not log the error if it's missing.
    std::ifstream stream( std::filesystem::path{BOARD_LIST_FILE} );
-
    if( !stream.is_open( ) )
-   {
-      bug( "{}: Cannot open {} for reading: {}", __func__, BOARD_LIST_FILE, std::strerror(errno) );
       return false;
-   }
 
    board_files.clear();
 
@@ -297,11 +294,9 @@ bool read_board_list( void )
 
 void load_boards( void )
 {
+   // Having no board list file on a new MUD is normal, so this does not log the error if it's missing.
    if( !read_board_list() )
-   {
-      log_printf( "{}: Aborting board reading due to previous error.", __func__ );
       return;
-   }
 
    bdlist.clear(  ); // Probably not necessary but we're going to play it safe.
 
