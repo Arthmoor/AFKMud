@@ -46,9 +46,7 @@ std::list<sale_data *> salelist;
 
 void save_sales( void )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( SALES_FILE ) );
+   std::ofstream stream( std::filesystem::path{SALES_FILE} );
    if( !stream.is_open(  ) )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, SALES_FILE, std::strerror(errno) );
@@ -57,14 +55,14 @@ void save_sales( void )
 
    for( auto* sale : salelist )
    {
-      stream << "#SALE" << std::endl;
-      stream << "Aucmob    " << sale->get_aucmob(  ) << std::endl;
-      stream << "Seller    " << sale->get_seller(  ) << std::endl;
-      stream << "Buyer     " << sale->get_buyer(  ) << std::endl;
-      stream << "Item      " << sale->get_item(  ) << std::endl;
-      stream << "Bid       " << sale->get_bid(  ) << std::endl;
-      stream << "Collected " << sale->get_collected(  ) << std::endl;
-      stream << "End" << std::endl << std::endl;
+      stream << "#SALE\n";
+      stream << std::format( "Aucmob    {}\n", sale->get_aucmob() );
+      stream << std::format( "Seller    {}\n", sale->get_seller() );
+      stream << std::format( "Buyer     {}\n", sale->get_buyer() );
+      stream << std::format( "Item      {}\n", sale->get_item() );
+      stream << std::format( "Bid       {}\n", sale->get_bid() );
+      stream << std::format( "Collected {}\n", sale->get_collected() );
+      stream << "End\n\n";
    }
    stream.close(  );
    if( stream.fail() )
@@ -190,54 +188,51 @@ void prune_sales( void )
 
 void load_sales( void )
 {
-   sale_data *sale = nullptr;
-   std::ifstream stream;
-
-   salelist.clear(  );
-
-   stream.open( std::filesystem::path( SALES_FILE ) );
-   if( !stream.is_open(  ) )
+   std::ifstream stream( std::filesystem::path{SALES_FILE} );
+   if( !stream.is_open() )
    {
-      log_string( "No sales file found." );
+      bug( "{}: Cannot open {} for reading: {}", __func__, SALES_FILE, std::strerror(errno) );
       return;
    }
 
-   do
+   salelist.clear(  );
+   sale_data *sale = nullptr;
+
+   std::string key;
+   while( stream >> key )
    {
-      std::string key, value;
-      char buf[MIL];
-
-      stream >> key;
-      stream.getline( buf, MIL );
-      value = buf;
-
-      strip_lspace( key );
-      strip_lspace( value );
-      strip_tilde( value );
-
-      if( key.empty(  ) )
-         continue;
-
       if( key == "#SALE" )
          sale = new sale_data;
       else if( key == "Aucmob" )
-         sale->set_aucmob( value );
+         sale->set_aucmob( fread_line( stream, '\n' ) );
       else if( key == "Seller" )
-         sale->set_seller( value );
+         sale->set_seller( fread_line( stream, '\n' ) );
       else if( key == "Buyer" )
-         sale->set_buyer( value );
+         sale->set_buyer( fread_line( stream, '\n' ) );
       else if( key == "Item" )
-         sale->set_item( value );
+         sale->set_item( fread_line( stream, '\n' ) );
       else if( key == "Bid" )
-         sale->set_bid( std::stoi( value ) );
+      {
+         int bid;
+         stream >> bid;
+
+         sale->set_bid( bid );
+      }
       else if( key == "Collected" )
-         sale->set_collected( std::stoi( value ) );
+      {
+         bool collected;
+         stream >> collected;
+
+         sale->set_collected( collected );
+      }
       else if( key == "End" )
          salelist.push_back( sale );
       else
-         log_printf( "{}: Bad line in sales file: {} {}", __func__, key, value );
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, SALES_FILE );
+         fread_to_eol( stream );
+      }
    }
-   while( !stream.eof(  ) );
    stream.close(  );
    prune_sales(  );
 }
