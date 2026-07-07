@@ -385,6 +385,52 @@ static std::string internal_fread_flagstring( FILE* fp )
    return result;
 }
 
+static std::string internal_fread_flagstring( std::ifstream & stream )
+{
+   char c;
+
+   // Skip leading whitespace
+   while( stream.get( c ) && std::isspace( static_cast<unsigned char>( c ) ) );
+
+   if( stream.eof() )
+   {
+      bug( "{}: EOF encountered on read.", __func__ );
+      if( fBootDb )
+      {
+         shutdown_mud( "Corrupt file somewhere." );
+         std::exit( EXIT_FAILURE );
+      }
+      return "";
+   }
+
+   if( c == '~' )
+      return "";
+
+   std::string result;
+   result.reserve( 256 );
+   result.push_back( c );
+
+   // Read until '~' or EOF
+   while( stream.get( c ) )
+   {
+      if( c == '~' )
+         return result;
+
+      if( c == '\n' )
+      {
+         result.push_back( '\n' );
+         result.push_back( '\r' );
+      }
+      else if( c != '\r' )
+      {
+         result.push_back( c );
+      }
+   }
+
+   bug( "{}: EOF encountered before ~", __func__ );
+   return result;
+}
+
 /*
  * Read a string of text based flags from file fp. Ending in ~
  */
@@ -401,6 +447,11 @@ const char* fread_flagstring( FILE* fp )
 void fread_string( std::string & newstring, FILE* fp )
 {
    newstring = internal_fread_flagstring( fp );
+}
+
+void fread_string( std::string & newstring, std::ifstream & stream )
+{
+   newstring = internal_fread_flagstring( stream );
 }
 
 /*

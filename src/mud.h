@@ -880,6 +880,7 @@ void fread_to_eol( FILE * );
 const char *fread_line( FILE * );
 std::string fread_word( FILE * );
 void fread_string( std::string &, FILE * );
+void fread_string( std::string &, std::ifstream & );
 void fread_line( std::string &, FILE * );
 int number_percent( void );
 int number_fuzzy( int );

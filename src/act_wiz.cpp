@@ -27,6 +27,7 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "calendar.h"
@@ -6197,190 +6198,164 @@ void free_all_classes( void )
 
 bool load_class_file( std::string_view fname )
 {
-   std::filesystem::path buf;
-   class_type *Class;
-   int cl = -1, tlev = 0, file_ver = 0;
-   FILE *fp;
-
-   buf = std::format( "{}{}", CLASS_DIR, fname );
-   if( !( fp = fopen( buf.c_str(), "r" ) ) )
+   std::filesystem::path filename = std::format( "{}{}", CLASS_DIR, fname );
+   std::ifstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: unable to open {} for reading!", __func__, buf.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return false;
    }
 
-   Class = new class_type;
+   class_type *Class = new class_type;
+   int cl = -1, tlev = 0, file_ver = 0;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Version" )
+         stream >> file_ver;
+      else if( key == "Name" )
+         Class->who_name = fread_line( stream );
+      else if( key == "Class" )
+         stream >> cl;
+      else if( key == "Attrprime" )
+         stream >> Class->attr_prime;
+      else if( key == "Weapon" )
+         stream >> Class->weapon;
+      else if( key == "Armor" ) // Samson 1-3-99
+         stream >> Class->armor;
+      else if( key == "Legwear" ) // Samson 1-3-99
+         stream >> Class->legwear;
+      else if( key == "Headwear" ) // Samson 1-3-99
+         stream >> Class->headwear;
+      else if( key == "Armwear" ) // Samson 1-3-99
+         stream >> Class->armwear;
+      else if( key == "Footwear" ) // Samson 1-3-99
+         stream >> Class->footwear;
+      else if( key == "Shield" ) // Samson 1-3-99
+         stream >> Class->shield;
+      else if( key == "Held" ) // Samson 1-3-99
+         stream >> Class->held;
+      else if( key == "Skilladept" )
+         stream >> Class->skill_adept;
+      else if( key == "Thac0" )
+         stream >> Class->base_thac0;
+      else if( key == "Thac0gain" )
+         stream >> Class->thac0_gain;
+      else if( key == "Hpmin" )
+         stream >> Class->hp_min;
+      else if( key == "Hpmax" )
+         stream >> Class->hp_max;
+      else if( key == "Mana" )
+         stream >> Class->fMana;
+      else if( key == "Affected" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
+         if( file_ver < 1 )
+         {
+            stream >> Class->affected;
+
+            if( Class->affected.any(  ) )
+               Class->affected <<= 1;
+         }
+         else
+         {
+            std::string temp = fread_line( stream );
+
+            flag_string_set( temp, Class->affected, aff_flags );
+         }
       }
-
-      switch ( to_upper( word[0] ) )
+      else if( key == "Resist" )
       {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         if( file_ver < 1 )
+            stream >> Class->resist;
+         else
+         {
+            std::string temp = fread_line( stream );
 
-         case '*':
-            fread_to_eol( fp );
-            break;
+            flag_string_set( temp, Class->resist, ris_flags );
+         }
+      }
+      else if( key == "Suscept" )
+      {
+         if( file_ver < 1 )
+            stream >> Class->suscept;
+         else
+         {
+            std::string temp = fread_line( stream );
 
-         case 'A':
-            if( !str_cmp( word, "Affected" ) )
+            flag_string_set( temp, Class->suscept, ris_flags );
+         }
+      }
+      else if( key == "Skill" )
+      {
+         int sn, lev, adp;
+
+         std::string word = fread_word( stream );
+         stream >> lev;
+         stream >> adp;
+         sn = skill_lookup( word );
+
+         if( cl < 0 || cl >= MAX_CLASS )
+            bug( "{}: Skill {} -- Class bad/not found ({})", __func__, word, cl );
+         else if( !IS_VALID_SN( sn ) )
+            bug( "{}: Skill {} unknown. Class: {}", __func__, word, cl );
+         else
+         {
+            skill_table[sn]->skill_level[cl] = lev;
+            skill_table[sn]->skill_adept[cl] = adp;
+         }
+      }
+      else if( key == "Title" )
+      {
+         if( cl < 0 || cl >= MAX_CLASS )
+         {
+            bug( "{}: Title -- Class bad/not found ({})", __func__, cl );
+            std::string temp = fread_line( stream );
+            temp = fread_line( stream );
+         }
+         else if( tlev < MAX_LEVEL + 1 )
+         {
+            if( file_ver < 2 )
             {
-               if( file_ver < 1 )
-               {
-                  Class->affected = fread_number( fp );
-                  if( Class->affected.any(  ) )
-                     Class->affected <<= 1;
-               }
-               else
-                  flag_set( fp, Class->affected, aff_flags );
-               break;
+               fread_string( title_table[cl][tlev][SEX_MALE], stream );
+               fread_string( title_table[cl][tlev][SEX_FEMALE], stream );
+
+               title_table[cl][tlev][SEX_NEUTRAL] = title_table[cl][tlev][SEX_MALE];
+               title_table[cl][tlev][SEX_HERMAPHRODYTE] = title_table[cl][tlev][SEX_FEMALE];
             }
-            KEY( "Armor", Class->armor, fread_number( fp ) );
-            KEY( "Armwear", Class->armwear, fread_number( fp ) ); /* Samson */
-            KEY( "AttrPrime", Class->attr_prime, fread_number( fp ) );
-            break;
-
-         case 'C':
-            KEY( "Class", cl, fread_number( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "End" ) )
+            else
             {
-               FCLOSE( fp );
-               if( cl < 0 || cl >= MAX_CLASS )
-               {
-                  bug( "{}: Class ({}) bad/not found ({})", __func__, !Class->who_name.empty() ? Class->who_name : "name not found", cl );
-                  deleteptr( Class );
-                  return false;
-               }
-               class_table[cl] = Class;
-               return true;
+               fread_string( title_table[cl][tlev][SEX_NEUTRAL], stream );
+               fread_string( title_table[cl][tlev][SEX_MALE], stream );
+               fread_string( title_table[cl][tlev][SEX_FEMALE], stream );
+               fread_string( title_table[cl][tlev][SEX_HERMAPHRODYTE], stream );
             }
-            break;
 
-         case 'F':
-            KEY( "Footwear", Class->footwear, fread_number( fp ) );  /* Samson 1-3-99 */
-            break;
-
-         case 'H':
-            KEY( "Headwear", Class->headwear, fread_number( fp ) );  /* Samson 1-3-99 */
-            KEY( "Held", Class->held, fread_number( fp ) ); /* Samson 1-3-99 */
-            KEY( "HpMax", Class->hp_max, fread_number( fp ) );
-            KEY( "HpMin", Class->hp_min, fread_number( fp ) );
-            break;
-
-         case 'L':
-            KEY( "Legwear", Class->legwear, fread_number( fp ) ); /* Samson 1-3-99 */
-            break;
-
-         case 'M':
-            KEY( "Mana", Class->fMana, fread_number( fp ) );
-            break;
-
-         case 'N':
-            STDSKEY( "Name", Class->who_name );
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Resist" ) )
-            {
-               if( file_ver < 1 )
-                  Class->resist = fread_number( fp );
-               else
-                  flag_set( fp, Class->resist, ris_flags );
-               break;
-            }
-            break;
-
-         case 'S':
-            KEY( "Shield", Class->shield, fread_number( fp ) );
-            if( !str_cmp( word, "Skill" ) )
-            {
-               int sn, lev, adp;
-
-               word = fread_word( fp );
-               lev = fread_number( fp );
-               adp = fread_number( fp );
-               sn = skill_lookup( word );
-               if( cl < 0 || cl >= MAX_CLASS )
-                  bug( "{}: Skill {} -- Class bad/not found ({})", __func__, word, cl );
-               else if( !IS_VALID_SN( sn ) )
-                  bug( "{}: Skill {} unknown. Class: {}", __func__, word, cl );
-               else
-               {
-                  skill_table[sn]->skill_level[cl] = lev;
-                  skill_table[sn]->skill_adept[cl] = adp;
-               }
-               break;
-            }
-            KEY( "Skilladept", Class->skill_adept, fread_number( fp ) );
-            if( !str_cmp( word, "Suscept" ) )
-            {
-               if( file_ver < 1 )
-                  Class->suscept = fread_number( fp );
-               else
-                  flag_set( fp, Class->suscept, ris_flags );
-               break;
-            }
-            break;
-
-         case 'T':
-            if( !str_cmp( word, "Title" ) )
-            {
-               if( cl < 0 || cl >= MAX_CLASS )
-               {
-                  bug( "{}: Title -- Class bad/not found ({})", __func__, cl );
-                  fread_flagstring( fp );
-                  fread_flagstring( fp );
-               }
-               else if( tlev < MAX_LEVEL + 1 )
-               {
-                  if( file_ver < 2 )
-                  {
-                     fread_string( title_table[cl][tlev][SEX_MALE], fp );
-                     fread_string( title_table[cl][tlev][SEX_FEMALE], fp );
-
-                     title_table[cl][tlev][SEX_NEUTRAL] = title_table[cl][tlev][SEX_MALE];
-                     title_table[cl][tlev][SEX_HERMAPHRODYTE] = title_table[cl][tlev][SEX_FEMALE];
-                  }
-                  else
-                  {
-                     fread_string( title_table[cl][tlev][SEX_NEUTRAL], fp );
-                     fread_string( title_table[cl][tlev][SEX_MALE], fp );
-                     fread_string( title_table[cl][tlev][SEX_FEMALE], fp );
-                     fread_string( title_table[cl][tlev][SEX_HERMAPHRODYTE], fp );
-                  }
-
-                  ++tlev;
-               }
-               else
-                  bug( "{}: Too many titles. Class: {}", __func__, cl );
-               break;
-            }
-            KEY( "Thac0gain", Class->thac0_gain, fread_float( fp ) );
-            KEY( "Thac0", Class->base_thac0, fread_number( fp ) );
-            break;
-
-         case 'V':
-            KEY( "Version", file_ver, fread_number( fp ) );
-            break;
-
-         case 'W':
-            KEY( "Weapon", Class->weapon, fread_number( fp ) );
-            break;
+            ++tlev;
+         }
+         else
+            bug( "{}: Too many titles. Class: {}", __func__, cl );
+      }
+      else if( key == "End" )
+      {
+         stream.close();
+         if( cl < 0 || cl >= MAX_CLASS )
+         {
+            bug( "{}: Class ({}) bad/not found ({})", __func__, !Class->who_name.empty() ? Class->who_name : "name not found", cl );
+            deleteptr( Class );
+            return false;
+         }
+         class_table[cl] = Class;
+         return true;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
       }
    }
+   bug( "{}: Fell through to end. Corrupted class file: {}.", __func__, filename.string() );
+   std::exit( EXIT_FAILURE );
 }
 
 /*
@@ -6388,7 +6363,13 @@ bool load_class_file( std::string_view fname )
  */
 void load_classes(  )
 {
-   FILE *fpList;
+   std::filesystem::path classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
+   std::ifstream stream( classlist );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for reading: {}", __func__, classlist.string(), std::strerror(errno) );
+      std::exit( EXIT_FAILURE );
+   }
 
    MAX_PC_CLASS = 0;
    /*
@@ -6397,22 +6378,9 @@ void load_classes(  )
    for( int i = 0; i < MAX_CLASS; ++i )
       class_table[i] = nullptr;
 
-   std::filesystem::path classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
-   if( !( fpList = fopen( classlist.c_str(), "r" ) ) )
-   {
-      bug( "{}: Unable to load class list file.", __func__ );
-      std::exit( EXIT_FAILURE );
-   }
-
    for( ;; )
    {
-      std::string filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
-
-      if( filename.empty() )
-      {
-         log_printf( "{}: EOF encountered reading class list!", __func__ );
-         break;
-      }
+      std::string filename = fread_line( stream, '\n' );
 
       if( filename[0] == '$' )
          break;
@@ -6422,7 +6390,7 @@ void load_classes(  )
       else
          ++MAX_PC_CLASS;
    }
-   FCLOSE( fpList );
+   stream.close();
 
    for( int i = 0; i < MAX_CLASS; ++i )
    {
@@ -6442,40 +6410,40 @@ constexpr int CLASSFILEVER = 2;
 
 void write_class_file( int cl )
 {
-   FILE *fpout;
    class_type *Class = class_table[cl];
 
    std::filesystem::path filename = std::format( "{}{}.class", CLASS_DIR, Class->who_name );
-   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( filename );
+   if( !stream.is_open(  ) )
    {
-      bug( "{}: Cannot open: {} for writing", __func__, filename.string() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
-   fprintf( fpout, "Version     %d\n", CLASSFILEVER );
-   fprintf( fpout, "Name        %s~\n", Class->who_name.c_str() );
-   fprintf( fpout, "Class       %d\n", cl );
-   fprintf( fpout, "Attrprime   %d\n", Class->attr_prime );
-   fprintf( fpout, "Weapon      %d\n", Class->weapon );
-   fprintf( fpout, "Armor       %d\n", Class->armor );   /* Samson */
-   fprintf( fpout, "Legwear     %d\n", Class->legwear ); /* Samson 1-3-99 */
-   fprintf( fpout, "Headwear    %d\n", Class->headwear );   /* Samson 1-3-99 */
-   fprintf( fpout, "Armwear     %d\n", Class->armwear ); /* Samson 1-3-99 */
-   fprintf( fpout, "Footwear    %d\n", Class->footwear );   /* Samson 1-3-99 */
-   fprintf( fpout, "Shield      %d\n", Class->shield );  /* Samson 1-3-99 */
-   fprintf( fpout, "Held        %d\n", Class->held ); /* Samson 1-3-99 */
-   fprintf( fpout, "Skilladept  %d\n", Class->skill_adept );
-   fprintf( fpout, "Thac0       %d\n", Class->base_thac0 );
-   fprintf( fpout, "Thac0gain   %f\n", Class->thac0_gain );
-   fprintf( fpout, "Hpmin       %d\n", Class->hp_min );
-   fprintf( fpout, "Hpmax       %d\n", Class->hp_max );
-   fprintf( fpout, "Mana        %d\n", Class->fMana );
+   stream << std::format( "Version     {}\n", CLASSFILEVER );
+   stream << std::format( "Name        {}~\n", Class->who_name );
+   stream << std::format( "Class       {}\n", cl );
+   stream << std::format( "Attrprime   {}\n", Class->attr_prime );
+   stream << std::format( "Weapon      {}\n", Class->weapon );
+   stream << std::format( "Armor       {}\n", Class->armor );   /* Samson */
+   stream << std::format( "Legwear     {}\n", Class->legwear ); /* Samson 1-3-99 */
+   stream << std::format( "Headwear    {}\n", Class->headwear );   /* Samson 1-3-99 */
+   stream << std::format( "Armwear     {}\n", Class->armwear ); /* Samson 1-3-99 */
+   stream << std::format( "Footwear    {}\n", Class->footwear );   /* Samson 1-3-99 */
+   stream << std::format( "Shield      {}\n", Class->shield );  /* Samson 1-3-99 */
+   stream << std::format( "Held        {}\n", Class->held ); /* Samson 1-3-99 */
+   stream << std::format( "Skilladept  {}\n", Class->skill_adept );
+   stream << std::format( "Thac0       {}\n", Class->base_thac0 );
+   stream << std::format( "Thac0gain   {}\n", Class->thac0_gain );
+   stream << std::format( "Hpmin       {}\n", Class->hp_min );
+   stream << std::format( "Hpmax       {}\n", Class->hp_max );
+   stream << std::format( "Mana        {}\n", Class->fMana );
    if( Class->affected.any(  ) )
-      fprintf( fpout, "Affected    %s~\n", bitset_string( Class->affected, aff_flags ) );
+      stream << std::format( "Affected    {}~\n", bitset_string( Class->affected, aff_flags ) );
    if( Class->resist.any(  ) )
-      fprintf( fpout, "Resist      %s~\n", bitset_string( Class->resist, ris_flags ) );
+      stream << std::format( "Resist      {}~\n", bitset_string( Class->resist, ris_flags ) );
    if( Class->suscept.any(  ) )
-      fprintf( fpout, "Suscept     %s~\n", bitset_string( Class->suscept, ris_flags ) );
+      stream << std::format( "Suscept     {}~\n", bitset_string( Class->suscept, ris_flags ) );
 
    for( int x = 0; x < num_skills; ++x )
    {
@@ -6484,14 +6452,16 @@ void write_class_file( int cl )
       if( skill_table[x]->name.empty() )
          break;
       if( ( y = skill_table[x]->skill_level[cl] ) < LEVEL_IMMORTAL )
-         fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name.c_str(), y, skill_table[x]->skill_adept[cl] );
+         stream << std::format( "Skill '{}' {} {}\n", skill_table[x]->name, y, skill_table[x]->skill_adept[cl] );
    }
 
    for( int x = 0; x <= MAX_LEVEL; ++x )
-      fprintf( fpout, "Title\n%s~\n%s~\n%s~\n%s~\n", title_table[cl][x][SEX_NEUTRAL].c_str(), title_table[cl][x][SEX_MALE].c_str(), title_table[cl][x][SEX_FEMALE].c_str(), title_table[cl][x][SEX_HERMAPHRODYTE].c_str() );
+      stream << std::format( "Title\n{}~\n{}~\n{}~\n{}~\n", title_table[cl][x][SEX_NEUTRAL], title_table[cl][x][SEX_MALE], title_table[cl][x][SEX_FEMALE], title_table[cl][x][SEX_HERMAPHRODYTE] );
 
-   fprintf( fpout, "%s", "End\n" );
-   FCLOSE( fpout );
+   stream << "End\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 void save_classes(  )
@@ -6502,19 +6472,20 @@ void save_classes(  )
 
 void write_class_list(  )
 {
-   FILE *fpList;
-
    std::filesystem::path classlist = std::format( "{}{}", CLASS_DIR, CLASS_LIST );
-   if( !( fpList = fopen( classlist.c_str(), "w" ) ) )
+   std::ofstream stream( classlist );
+   if( !stream.is_open() )
    {
-      bug( "{}: Can't open class list for writing.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, classlist.string(), std::strerror(errno) );
       return;
    }
 
    for( int i = 0; i < MAX_PC_CLASS; ++i )
-      fprintf( fpList, "%s.class\n", class_table[i]->who_name.c_str() );
-   fprintf( fpList, "%s", "$\n" );
-   FCLOSE( fpList );
+      stream << std::format( "{}.class\n", class_table[i]->who_name );
+   stream << "$\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, classlist.string(), std::strerror(errno) );
 }
 
 /*
@@ -7185,223 +7156,206 @@ void set_bodypart_where_names( race_type *race )
 
 bool load_race_file( std::string_view fname )
 {
-   race_type *race;
-   int ra = -1, file_ver = 0;
-   FILE *fp;
-
-   std::filesystem::path buf = std::format( "{}{}", RACE_DIR, fname );
-   if( !( fp = fopen( buf.c_str(), "r" ) ) )
+   std::filesystem::path filename = std::format( "{}{}", RACE_DIR, fname );
+   std::ifstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: Unable to open {} for reading!", __func__, buf.c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename.string(), std::strerror(errno) );
       return false;
    }
 
-   race = new race_type;
+   race_type *race = new race_type;
+   int ra = -1, file_ver = 0;
    race->minalign = -1000;
    race->maxalign = 1000;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Version" )
+         stream >> file_ver;
+      else if( key == "Name" )
+         race->race_name = fread_line( stream );
+      else if( key == "Race" )
+         stream >> ra;
+      else if( key == "Classes" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
+         if( file_ver < 1 )
+            stream >> race->allowed_classes;
+         else
+         {
+            std::string temp = fread_line( stream );
+
+            flag_string_set( temp, race->allowed_classes, npc_class );
+         }
       }
-
-      switch ( to_upper( word[0] ) )
+      else if( key == "Str_Plus" )
+         stream >> race->str_plus;
+      else if( key == "Dex_Plus" )
+         stream >> race->dex_plus;
+      else if( key == "Wis_Plus" )
+         stream >> race->wis_plus;
+      else if( key == "Int_Plus" )
+         stream >> race->int_plus;
+      else if( key == "Con_Plus" )
+         stream >> race->con_plus;
+      else if( key == "Cha_Plus" )
+         stream >> race->cha_plus;
+      else if( key == "Lck_Plus" )
+         stream >> race->lck_plus;
+      else if( key == "Hit" )
+         stream >> race->hit;
+      else if( key == "Mana" )
+         stream >> race->mana;
+      else if( key == "Affected" )
       {
-         default:
-            log_printf( "%s: no match: %s", __func__, word );
-            fread_to_eol( fp );
-            break;
+         if( file_ver < 1 )
+         {
+            stream >> race->affected;
+            if( race->affected.any(  ) )
+               race->affected <<= 1;
+         }
+         else
+         {
+            std::string temp = fread_line( stream);
 
-         case '*':
-            fread_to_eol( fp );
-            break;
+            flag_string_set( temp, race->affected, aff_flags );
+         }
+      }
+      else if( key == "Resist" )
+      {
+         if( file_ver < 1 )
+            stream >> race->resist;
+         else
+         {
+            std::string temp = fread_line( stream );
 
-         case 'A':
-            KEY( "Align", race->alignment, fread_number( fp ) );
-            KEY( "AC_Plus", race->ac_plus, fread_number( fp ) );
-            if( !str_cmp( word, "Affected" ) )
-            {
-               if( file_ver < 1 )
-               {
-                  race->affected = fread_number( fp );
-                  if( race->affected.any(  ) )
-                     race->affected <<= 1;
-               }
-               else
-                  flag_set( fp, race->affected, aff_flags );
-               break;
-            }
-            if( !str_cmp( word, "Attacks" ) )
-            {
-               if( file_ver < 1 )
-                  race->attacks = fread_number( fp );
-               else
-                  flag_set( fp, race->attacks, attack_flags );
-               break;
-            }
-            break;
+            flag_string_set( temp, race->resist, ris_flags );
+         }
+      }
+      else if( key == "Suscept" )
+      {
+         if( file_ver < 1 )
+            stream >> race->suscept;
+         else
+         {
+            std::string temp = fread_line( stream );
 
-         case 'B':
-            if( !str_cmp( word, "Bodyparts" ) )
-            {
-               if( file_ver < 1 )
-                  race->body_parts = fread_number( fp );
-               else
-                  flag_set( fp, race->body_parts, part_flags );
+            flag_string_set( temp, race->suscept, ris_flags );
+         }
+      }
+      else if( key == "Language" )
+      {
+         if( file_ver < 1 )
+            stream >> race->language;
+         else
+         {
+            std::string temp = fread_line( stream );
 
-               set_bodypart_where_names( race );
-               break;
-            }
-            break;
+            flag_string_set( temp, race->language, lang_names );
+         }
+      }
+      else if( key == "Align" )
+         stream >> race->alignment;
+      else if( key == "Min_Align" )
+         stream >> race->minalign;
+      else if( key =="Max_Align" )
+         stream >> race->maxalign;
+      else if( key == "AC_Plus" )
+         stream >> race->ac_plus;
+      else if( key == "Exp_Mult" )
+         stream >> race->exp_multiplier;
+      else if( key == "Bodyparts" )
+      {
+         if( file_ver < 1 )
+            stream >> race->body_parts;
+         else
+         {
+            std::string temp = fread_line( stream );
 
-         case 'C':
-            KEY( "Con_Plus", race->con_plus, fread_number( fp ) );
-            KEY( "Cha_Plus", race->cha_plus, fread_number( fp ) );
-            if( !str_cmp( word, "Classes" ) )
-            {
-               if( file_ver < 1 )
-                  race->allowed_classes = fread_number( fp );
-               else
-                  flag_set( fp, race->allowed_classes, npc_class );
-               break;
-            }
-            break;
+            flag_string_set( temp, race->body_parts, part_flags );
 
-         case 'D':
-            KEY( "Dex_Plus", race->dex_plus, fread_number( fp ) );
-            if( !str_cmp( word, "Defenses" ) )
-            {
-               if( file_ver < 1 )
-                  race->defenses = fread_number( fp );
-               else
-                  flag_set( fp, race->defenses, defense_flags );
-               break;
-            }
-            break;
+            set_bodypart_where_names( race );
+         }
+      }
+      else if( key == "Attacks" )
+      {
+         if( file_ver < 1 )
+            stream >> race->attacks;
+         else
+         {
+            std::string temp = fread_line( stream );
 
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-            {
-               FCLOSE( fp );
-               if( ra < 0 || ra >= MAX_RACE )
-               {
-                  bug( "{}: Race ({}) bad/not found ({})", __func__, !race->race_name.empty() ? race->race_name : "name not found", ra );
-                  deleteptr( race );
-                  return false;
-               }
-               race_table[ra] = race;
-               return true;
-            }
+            flag_string_set( temp, race->attacks, attack_flags );
+         }
+      }
+      else if( key == "Defenses" )
+      {
+         if( file_ver < 1 )
+            stream >> race->defenses;
+         else
+         {
+            std::string temp;
 
-            KEY( "Exp_Mult", race->exp_multiplier, fread_number( fp ) );
-            break;
+            flag_string_set( temp, race->defenses, defense_flags );
+         }
+      }
+      else if( key == "Height" )
+         stream >> race->height;
+      else if( key == "Weight" )
+         stream >> race->weight;
+      else if( key == "Hunger_Mod" )
+         stream >> race->hunger_mod;
+      else if( key == "Thirst_mod" )
+         stream >> race->thirst_mod;
+      else if( key == "Mana_Regen" )
+         stream >> race->mana_regen;
+      else if( key == "HP_Regen" )
+         stream >> race->hp_regen;
+      else if( key == "Skill" )
+      {
+         int sn, lev, adp;
 
-         case 'I':
-            KEY( "Int_Plus", race->int_plus, fread_number( fp ) );
-            break;
+         std::string word = fread_word( stream );
+         stream >> lev;
+         stream >> adp;
+         sn = skill_lookup( word );
 
-         case 'H':
-            KEY( "Height", race->height, fread_number( fp ) );
-            KEY( "Hit", race->hit, fread_number( fp ) );
-            KEY( "HP_Regen", race->hp_regen, fread_number( fp ) );
-            KEY( "Hunger_Mod", race->hunger_mod, fread_number( fp ) );
-            break;
-
-         case 'L':
-            if( !str_cmp( word, "Language" ) )
-            {
-               if( file_ver < 1 )
-                  race->language = fread_number( fp );
-               else
-                  flag_set( fp, race->language, lang_names );
-               break;
-            }
-            KEY( "Lck_Plus", race->lck_plus, fread_number( fp ) );
-            break;
-
-         case 'M':
-            KEY( "Mana", race->mana, fread_number( fp ) );
-            KEY( "Mana_Regen", race->mana_regen, fread_number( fp ) );
-            KEY( "Min_Align", race->minalign, fread_number( fp ) );
-            KEY( "Max_Align", race->maxalign, fread_number( fp ) );
-            break;
-
-         case 'N':
-            STDSKEY( "Name", race->race_name );
-            break;
-
-         case 'R':
-            KEY( "Race", ra, fread_number( fp ) );
-            if( !str_cmp( word, "Resist" ) )
-            {
-               if( file_ver < 1 )
-                  race->resist = fread_number( fp );
-               else
-                  flag_set( fp, race->resist, ris_flags );
-               break;
-            }
-            break;
-
-         case 'S':
-            KEY( "Str_Plus", race->str_plus, fread_number( fp ) );
-            if( !str_cmp( word, "Suscept" ) )
-            {
-               if( file_ver < 1 )
-                  race->suscept = fread_number( fp );
-               else
-                  flag_set( fp, race->suscept, ris_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "Skill" ) )
-            {
-               int sn, lev, adp;
-
-               word = fread_word( fp );
-               lev = fread_number( fp );
-               adp = fread_number( fp );
-               sn = skill_lookup( word );
-               if( ra < 0 || ra >= MAX_RACE )
-                  bug( "{}: Skill {} -- race bad/not found ({})", __func__, word, ra );
-               else if( !IS_VALID_SN( sn ) )
-               {
-                  bug( "{}: skill {} = SN {}", __func__, word, sn );
-                  log_printf( "Skill '{}' unknown", word );
-               }
-               else
-               {
-                  skill_table[sn]->race_level[ra] = lev;
-                  skill_table[sn]->race_adept[ra] = adp;
-               }
-               break;
-            }
-            break;
-
-         case 'T':
-            KEY( "Thirst_Mod", race->thirst_mod, fread_number( fp ) );
-            break;
-
-         case 'V':
-            KEY( "Version", file_ver, fread_number( fp ) );
-            break;
-
-         case 'W':
-            KEY( "Weight", race->weight, fread_number( fp ) );
-            KEY( "Wis_Plus", race->wis_plus, fread_number( fp ) );
-
-            // WhereNames no longer stored in race files. Ignore them if they're found.
-            if( !str_cmp( word, "WhereName" ) )
-            {
-                  fread_flagstring( fp );
-            }
-            break;
+         if( ra < 0 || ra >= MAX_RACE )
+            bug( "{}: Skill {} -- race bad/not found ({})", __func__, word, ra );
+         else if( !IS_VALID_SN( sn ) )
+         {
+            bug( "{}: skill {} = SN {}", __func__, word, sn );
+            log_printf( "Skill '{}' unknown", word );
+         }
+         else
+         {
+            skill_table[sn]->race_level[ra] = lev;
+            skill_table[sn]->race_adept[ra] = adp;
+         }
+      }
+      else if( key == "End" )
+      {
+         stream.close();
+         if( ra < 0 || ra >= MAX_RACE )
+         {
+            bug( "{}: Race ({}) bad/not found ({})", __func__, !race->race_name.empty() ? race->race_name : "name not found", ra );
+            deleteptr( race );
+            return false;
+         }
+         race_table[ra] = race;
+         return true;
+      }
+      else if( key == "WhereName" )
+         fread_to_eol( stream );
+      else
+      {
+         bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+         fread_to_eol( stream );
       }
    }
+   bug( "{}: Fell through to end. Corrupted race file: {}.", __func__, filename.string() );
+   std::exit( EXIT_FAILURE );
 }
 
 /*
@@ -7409,8 +7363,6 @@ bool load_race_file( std::string_view fname )
  */
 void load_races(  )
 {
-   FILE *fpList;
-
    MAX_PC_RACE = 0;
    /*
     * Pre-init the race_table with blank races
@@ -7419,21 +7371,16 @@ void load_races(  )
       race_table[i] = nullptr;
 
    std::filesystem::path racelist = std::format( "{}{}", RACE_DIR, RACE_LIST );
-   if( !( fpList = fopen( racelist.c_str(), "r" ) ) )
+   std::ifstream stream( racelist );
+   if( !stream.is_open() )
    {
-      bug( "{}: Unable to open race list file!", __func__ );
-      std::exit( EXIT_FAILURE );
+      bug( "{}: Cannot open {} for reading: {}", __func__, racelist.string(), std::strerror(errno) );
+      return;
    }
 
    for( ;; )
    {
-      std::string filename = ( feof( fpList ) ? "$" : fread_word( fpList ) );
-
-      if( filename.empty() )
-      {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         break;
-      }
+      std::string filename = fread_line( stream, '\n' );
 
       if( filename[0] == '$' )
          break;
@@ -7454,7 +7401,7 @@ void load_races(  )
          race_table[i] = race;
       }
    }
-   FCLOSE( fpList );
+   stream.close();
 }
 
 // 1: Initial version.
@@ -7462,7 +7409,6 @@ constexpr int RACEFILEVER = 1;
 
 void write_race_file( int ra )
 {
-   FILE *fpout;
    race_type *race = race_table[ra];
 
    if( race->race_name.empty() )
@@ -7472,49 +7418,51 @@ void write_race_file( int ra )
    }
 
    std::filesystem::path filename = std::format( "{}{}.race", RACE_DIR, race->race_name );
-   if( !( fpout = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "Cannot open: {} for writing", filename.string() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
-   fprintf( fpout, "Version     %d\n", RACEFILEVER );
-   fprintf( fpout, "Name        %s~\n", race->race_name.c_str() );
-   fprintf( fpout, "Race        %d\n", ra );
-   fprintf( fpout, "Classes     %s~\n", bitset_string( race->allowed_classes, npc_class ) );
-   fprintf( fpout, "Str_Plus    %d\n", race->str_plus );
-   fprintf( fpout, "Dex_Plus    %d\n", race->dex_plus );
-   fprintf( fpout, "Wis_Plus    %d\n", race->wis_plus );
-   fprintf( fpout, "Int_Plus    %d\n", race->int_plus );
-   fprintf( fpout, "Con_Plus    %d\n", race->con_plus );
-   fprintf( fpout, "Cha_Plus    %d\n", race->cha_plus );
-   fprintf( fpout, "Lck_Plus    %d\n", race->lck_plus );
-   fprintf( fpout, "Hit         %d\n", race->hit );
-   fprintf( fpout, "Mana        %d\n", race->mana );
+
+   stream << std::format( "Version     {}\n", RACEFILEVER );
+   stream << std::format( "Name        {}~\n", race->race_name );
+   stream << std::format( "Race        {}\n", ra );
+   stream << std::format( "Classes     {}~\n", bitset_string( race->allowed_classes, npc_class ) );
+   stream << std::format( "Str_Plus    {}\n", race->str_plus );
+   stream << std::format( "Dex_Plus    {}\n", race->dex_plus );
+   stream << std::format( "Wis_Plus    {}\n", race->wis_plus );
+   stream << std::format( "Int_Plus    {}\n", race->int_plus );
+   stream << std::format( "Con_Plus    {}\n", race->con_plus );
+   stream << std::format( "Cha_Plus    {}\n", race->cha_plus );
+   stream << std::format( "Lck_Plus    {}\n", race->lck_plus );
+   stream << std::format( "Hit         {}\n", race->hit );
+   stream << std::format( "Mana        {}\n", race->mana );
    if( race->affected.any(  ) )
-      fprintf( fpout, "Affected    %s~\n", bitset_string( race->affected, aff_flags ) );
+      stream << std::format( "Affected    {}~\n", bitset_string( race->affected, aff_flags ) );
    if( race->resist.any(  ) )
-      fprintf( fpout, "Resist      %s~\n", bitset_string( race->resist, ris_flags ) );
+      stream << std::format( "Resist      {}~\n", bitset_string( race->resist, ris_flags ) );
    if( race->suscept.any(  ) )
-      fprintf( fpout, "Suscept     %s~\n", bitset_string( race->suscept, ris_flags ) );
+      stream << std::format( "Suscept     {}~\n", bitset_string( race->suscept, ris_flags ) );
    if( race->language.any(  ) )
-      fprintf( fpout, "Language    %s~\n", bitset_string( race->language, lang_names ) );
-   fprintf( fpout, "Align      %d\n", race->alignment );
-   fprintf( fpout, "Min_Align  %d\n", race->minalign );
-   fprintf( fpout, "Max_Align  %d\n", race->maxalign );
-   fprintf( fpout, "AC_Plus    %d\n", race->ac_plus );
-   fprintf( fpout, "Exp_Mult   %d\n", race->exp_multiplier );
+      stream << std::format( "Language    {}~\n", bitset_string( race->language, lang_names ) );
+   stream << std::format( "Align      {}\n", race->alignment );
+   stream << std::format( "Min_Align  {}\n", race->minalign );
+   stream << std::format( "Max_Align  {}\n", race->maxalign );
+   stream << std::format( "AC_Plus    {}\n", race->ac_plus );
+   stream << std::format( "Exp_Mult   {}\n", race->exp_multiplier );
    if( race->body_parts.any(  ) )
-      fprintf( fpout, "Bodyparts  %s~\n", bitset_string( race->body_parts, part_flags ) );
+      stream << std::format( "Bodyparts  {}~\n", bitset_string( race->body_parts, part_flags ) );
    if( race->attacks.any(  ) )
-      fprintf( fpout, "Attacks    %s~\n", bitset_string( race->attacks, attack_flags ) );
+      stream << std::format( "Attacks    {}~\n", bitset_string( race->attacks, attack_flags ) );
    if( race->defenses.any(  ) )
-      fprintf( fpout, "Defenses   %s~\n", bitset_string( race->defenses, defense_flags ) );
-   fprintf( fpout, "Height     %d\n", race->height );
-   fprintf( fpout, "Weight     %d\n", race->weight );
-   fprintf( fpout, "Hunger_Mod  %d\n", race->hunger_mod );
-   fprintf( fpout, "Thirst_mod  %d\n", race->thirst_mod );
-   fprintf( fpout, "Mana_Regen  %d\n", race->mana_regen );
-   fprintf( fpout, "HP_Regen    %d\n", race->hp_regen );
+      stream << std::format( "Defenses   {}~\n", bitset_string( race->defenses, defense_flags ) );
+   stream << std::format( "Height     {}\n", race->height );
+   stream << std::format( "Weight     {}\n", race->weight );
+   stream << std::format( "Hunger_Mod {}\n", race->hunger_mod );
+   stream << std::format( "Thirst_mod {}\n", race->thirst_mod );
+   stream << std::format( "Mana_Regen {}\n", race->mana_regen );
+   stream << std::format( "HP_Regen   {}\n", race->hp_regen );
 
    for( int x = 0; x < num_skills; ++x )
    {
@@ -7523,10 +7471,12 @@ void write_race_file( int ra )
       if( skill_table[x]->name.empty() )
          break;
       if( ( y = skill_table[x]->race_level[ra] ) < LEVEL_IMMORTAL )
-         fprintf( fpout, "Skill '%s' %d %d\n", skill_table[x]->name.c_str(), y, skill_table[x]->race_adept[ra] );
+         stream << std::format( "Skill '{}' {} {}\n", skill_table[x]->name, y, skill_table[x]->race_adept[ra] );
    }
-   fprintf( fpout, "%s", "End\n" );
-   FCLOSE( fpout );
+   stream << "End\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 void save_races(  )
@@ -7537,18 +7487,20 @@ void save_races(  )
 
 void write_race_list(  )
 {
-   FILE *fpList;
-
    std::filesystem::path racelist = std::format( "{}{}", RACE_DIR, RACE_LIST );
-   if( !( fpList = fopen( racelist.c_str(), "w" ) ) )
+   std::ofstream stream( racelist );
+   if( !stream.is_open() )
    {
-      bug( "{}: Error opening racelist.", __func__ );
+      bug( "{}: Cannot open {} for writing: {}", __func__, racelist.string(), std::strerror(errno) );
       return;
    }
+
    for( int i = 0; i < MAX_PC_RACE; ++i )
-      fprintf( fpList, "%s.race\n", race_table[i]->race_name.c_str() );
-   fprintf( fpList, "%s", "$\n" );
-   FCLOSE( fpList );
+      stream << std::format( "{}.race\n", race_table[i]->race_name );
+   stream << "$\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, racelist.string(), std::strerror(errno) );
 }
 
 /*
