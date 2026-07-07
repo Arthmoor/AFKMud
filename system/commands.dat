@@ -871,15 +871,6 @@ Log         normal
 End
 
 #COMMAND
-Name        dump
-Code        do_dump
-Position    dead
-Level       113
-Log         normal
-Flags       ghost
-End
-
-#COMMAND
 Name        destroychannel
 Code        do_destroychannel
 Position    dead
@@ -4013,6 +4004,15 @@ Code        do_showrealm
 Position    dead
 Level       101
 Log         normal
+End
+
+#COMMAND
+Name        showmixture
+Code        do_showmixture
+Position    dead
+Level       101
+Log         normal
+Flags       ghost
 End
 
 #COMMAND
