@@ -263,7 +263,10 @@ void read_note( note_data * note, int file_ver, std::ifstream & stream )
       else if( key == "#NOTE-END" || key == "#LOG-END" || key == "#PLR-COMMENT-END" )
          return;
       else
-         bug( "{}: Bad section '{}' in note - skipping.", __func__, key );
+      {
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
+      }
    }
 }
 
@@ -520,10 +523,11 @@ bool write_board_list( void )
    return true;
 }
 
+// Board version definition is in boards.h
+
 // 0: Original Smaug board format.
 // 1: Initial AFKMud version. Turns out it was broken :(
 // 2: The whole system was broken, so it's being rebuilt.
-constexpr int BOARDFILEVER = 2;
 
 void write_board( board_data * board )
 {

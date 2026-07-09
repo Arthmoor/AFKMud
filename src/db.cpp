@@ -116,7 +116,7 @@ int top_repair;
  * Semi-locals.
  */
 bool fBootDb;
-FILE *fpArea;
+std::ifstream fpArea;
 std::string strArea;
 
 extern int astral_target;
@@ -1080,7 +1080,6 @@ void boot_db( bool fCopyOver )
    short wear = 0;
    short x;
 
-   fpArea = nullptr;
    std::filesystem::remove( BOOTLOG_FILE );
    boot_log( "{}", "---------------------[ Boot Log: Start ]--------------------" );
    log_string( "Database bootup starting." );
@@ -1300,13 +1299,12 @@ void boot_db( bool fCopyOver )
     * Read in all the area files.
     */
    {
-      FILE *fpList;
-
       arealist.clear(  );
       area_nsort.clear(  );
       area_vsort.clear(  );
       log_string( "Reading in area files..." );
-      if( !( fpList = fopen( AREA_LIST.data(), "r" ) ) )
+      std::ifstream stream( std::filesystem::path{AREA_LIST} );
+      if( !stream.is_open(  ) )
       {
          log_string( "Cannot open area.lst file.");
          shutdown_mud( "Boot_db: Unable to open area list." );
@@ -1318,12 +1316,13 @@ void boot_db( bool fCopyOver )
 
       for( ;; )
       {
-         if( feof( fpList ) )
+         if( stream.eof() )
          {
             bug( "{}: EOF encountered reading area list - no $ found at end of file.", __func__ );
             break;
          }
-         strArea = fread_word( fpList );
+
+         strArea = fread_line( stream, '\n' );
          if( strArea[0] == '$' )
             break;
 
@@ -1332,7 +1331,7 @@ void boot_db( bool fCopyOver )
          load_area_file( strArea, false );
          set_alarm( 0 );
       }
-      FCLOSE( fpList );
+      stream.close();
       log_string( "...done reading in area files." );
    }
 
@@ -1795,23 +1794,24 @@ void process_bug( std::string_view text )
 {
    log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "[*****] BUG: {}", text );
 
-   if( fpArea != nullptr )
+   if( fpArea.is_open() )
    {
-      int iLine;
+      std::streampos current_pos = fpArea.tellg();
 
-      if( fpArea == stdin )
-         iLine = 0;
-      else
+      fpArea.clear();
+      fpArea.seekg( 0, std::ios::beg );
+
+      int iLine = 1;
+      char c;
+      while( fpArea.tellg() < current_pos && fpArea.get(c) )
       {
-         int iChar = ftell( fpArea );
-         fseek( fpArea, 0, 0 );
-         for( iLine = 0; ftell( fpArea ) < iChar; ++iLine )
-         {
-            while( getc( fpArea ) != '\n' )
-               ;
-         }
-         fseek( fpArea, iChar, 0 );
+         if( c == '\n' )
+            iLine++;
       }
+
+      fpArea.clear();
+      fpArea.seekg( current_pos );
+
       log_printf( "[*****] FILE: {} LINE: {}", strArea, iLine );
    }
 

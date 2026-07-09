@@ -190,9 +190,6 @@ clan_data *get_clan( std::string_view name )
  */
 void save_clan_storeroom( char_data * ch, clan_data * clan )
 {
-   FILE *fp;
-   short templvl;
-
    if( !clan )
    {
       bug( "{}: Null clan pointer!", __func__ );
@@ -206,19 +203,18 @@ void save_clan_storeroom( char_data * ch, clan_data * clan )
    }
 
    std::filesystem::path filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
-   {
-      log_printf( "{}: Unable to open clan storeroom for writing: {}", __func__, filename.string() );
-   }
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
+      bug( "{}: Unable to open clan storeroom for writing: {}", __func__, filename.string() );
    else
    {
-      templvl = ch->level;
+      short templvl = ch->level;
       ch->level = LEVEL_AVATAR;  /* make sure EQ doesn't get lost */
       if( !ch->in_room->objects.empty(  ) )
-         fwrite_obj( ch, ch->in_room->objects, clan, fp, 0, false );
-      fprintf( fp, "%s", "#END\n" );
+         fwrite_obj( ch, ch->in_room->objects, clan, stream, 0, false );
+      stream << "#END\n";
       ch->level = templvl;
-      FCLOSE( fp );
+      stream.close();
    }
 }
 
@@ -771,45 +767,29 @@ bool load_clan_file( std::string_view clanfile )
       return true;
    }
 
-   FILE *fp;
    filename = std::format( "{}{}.vault", CLAN_DIR, clan->filename );
-   if( ( fp = fopen( filename.c_str(), "r" ) ) != nullptr )
+   stream.open( filename );
+   if( stream.is_open() )
    {
       log_string( "Loading clan storage room." );
       rset_supermob( storeroom );
 
-      for( ;; )
+      while( stream >> key )
       {
-         char letter;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "{}: # not found. {}", __func__, clan->name );
-            break;
-         }
-
-         std::string word = fread_word( fp );
-         if( !str_cmp( word, "OBJECT" ) ) /* Objects  */
+         if( key == "#OBJECT" ) /* Objects  */
          {
             supermob->tempnum = -9999;
-            fread_obj( supermob, fp, OS_CARRY );
+            fread_obj( supermob, stream, OS_CARRY );
          }
-         else if( !str_cmp( word, "END" ) )  /* Done     */
+         else if( key == "#END" )  /* Done     */
             break;
          else
          {
-            log_printf( "{}: {} bad section.", __func__, clan->name );
-            break;
+            bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, filename.string() );
+            fread_to_eol( stream );
          }
       }
-      FCLOSE( fp );
+      stream.close();
 
       for( auto it = supermob->carrying.begin(); it != supermob->carrying.end(); )
       {

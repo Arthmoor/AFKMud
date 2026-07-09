@@ -26,6 +26,7 @@
  *                         MUDprog Quest Variables                          *
  ****************************************************************************/
 
+#include <fstream>
 #include "mud.h"
 #include "mobindex.h"
 #include "variables.h"
@@ -482,7 +483,7 @@ CMDF( do_mprmflag )
    }
 }
 
-void fwrite_variables( char_data * ch, FILE * fp )
+void fwrite_variables( char_data * ch, std::ofstream & stream )
 {
    for( auto* vd : ch->variables )
    {
@@ -491,156 +492,109 @@ void fwrite_variables( char_data * ch, FILE * fp )
       auto vr_time = std::chrono::system_clock::to_time_t( vd->r_time );
       auto expires = std::chrono::system_clock::to_time_t( vd->expires );
 
-      fprintf( fp, "#VARIABLE\n" );
-      fprintf( fp, "Type      %d\n", vd->type );
-      fprintf( fp, "Tag       %s~\n", vd->tag.c_str() );
-      fprintf( fp, "Varstring %s~\n", vd->varstring.c_str() );
-      fprintf( fp, "Flags     %lu\n", vd->varflags.to_ulong() );
-      fprintf( fp, "Vardata   %ld\n", vd->vardata );
-      fprintf( fp, "Ctime     %ld\n", vc_time );
-      fprintf( fp, "Mtime     %ld\n", vm_time );
-      fprintf( fp, "Rtime     %ld\n", vr_time );
-      fprintf( fp, "Expires   %ld\n", expires );
-      fprintf( fp, "Vnum      %d\n", vd->vnum );
-      fprintf( fp, "Timer     %d\n", vd->timer );
-      fprintf( fp, "%s", "End\n\n" );
+      stream << "#VARIABLE\n";
+      stream << std::format( "Type      {}\n", vd->type );
+      stream << std::format( "Tag       {}~\n", vd->tag );
+      stream << std::format( "Varstring {}~\n", vd->varstring );
+      stream << std::format( "Flags     {}\n", vd->varflags.to_ulong() );
+      stream << std::format( "Vardata   {}\n", vd->vardata );
+      stream << std::format( "Ctime     {}\n", vc_time );
+      stream << std::format( "Mtime     {}\n", vm_time );
+      stream << std::format( "Rtime     {}\n", vr_time );
+      stream << std::format( "Expires   {}\n", expires );
+      stream << std::format( "Vnum      {}\n", vd->vnum );
+      stream << std::format( "Timer     {}\n", vd->timer );
+      stream << "End\n\n";
    }
 }
 
-void fread_variable( char_data * ch, FILE * fp )
+void fread_variable( char_data * ch, std::ifstream & stream )
 {
-   variable_data *pvd = new variable_data;
+   variable_data *vd = new variable_data;
 
-   do
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Type" )
+         stream >> vd->type;
+      else if( key == "Tag" )
+         vd->tag = fread_line( stream );
+      else if( key == "Varstring" )
+         vd->varstring = fread_line( stream );
+      else if( key == "Flags" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
+         long varbits;
+         stream >> varbits;
+
+         vd->varflags = std::bitset<MAX_VAR_BITS>( varbits );
       }
-
-      switch ( to_upper( word[0] ) )
+      else if( key == "Vardata" )
+         stream >> vd->vardata;
+      else if( key == "Ctime")
       {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         time_t loaded_time;
+         stream >> loaded_time;
 
-         case '*':
-            fread_to_eol( fp );
-            break;
+         vd->c_time = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Mtime" )
+      {
+         time_t loaded_time;
+         stream >> loaded_time;
 
-         case 'C':
-            if( !str_cmp( word, "Ctime") )
-            {
-               time_t loaded_time = fread_long( fp );
-               pvd->c_time = std::chrono::system_clock::from_time_t( loaded_time );
+         vd->m_time = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Rtime" )
+      {
+         time_t loaded_time;
+         stream >> loaded_time;
+
+         vd->r_time = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Expires" )
+      {
+         time_t loaded_time;
+         stream >> loaded_time;
+
+         vd->expires = std::chrono::system_clock::from_time_t( loaded_time );
+      }
+      else if( key == "Vnum" )
+         stream >> vd->vnum;
+      else if( key == "Timer" )
+         stream >> vd->timer;
+      else if( key == "End" )
+      {
+         switch( vd->type )
+         {
+            default:
+               bug( "{}: invalid variable type. Discarding.", __func__ );
+               deleteptr( vd );
                break;
-            }
-            break;
 
-         case 'E':
-            if( !str_cmp( word, "Expires") )
-            {
-               time_t loaded_time = fread_long( fp );
-               pvd->expires = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-            if( !str_cmp( word, "End" ) )
-            {
-               switch( pvd->type )
+            case vtSTR:
+               if( vd->varstring.empty() )
                {
-                  default:
-                     bug( "{}: invalid variable type. Discarding.", __func__ );
-                     deleteptr( pvd );
-                     break;
-
-                  case vtSTR:
-                     if( pvd->varstring.empty() )
-                     {
-                        bug( "{}: vtSTR: Incomplete data. Discarding.", __func__ );
-                        deleteptr( pvd );
-                     }
-                     break;
-
-                  case vtXBIT:
-                     if( pvd->varflags.none() )
-                     {
-                        bug( "{}: vtXBIT: Incomplete data. Discarding.", __func__ );
-                        deleteptr( pvd );
-                     }
-                     break;
-
-                  case vtINT:
-                     tag_char( ch, pvd, 1 );
-                     break;
+                  bug( "{}: vtSTR: Incomplete data. Discarding.", __func__ );
+                  deleteptr( vd );
                }
-               return;
-            }
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               std::string varbits;
-
-               fread_string( varbits, fp );
-               pvd->varflags = std::bitset<MAX_VAR_BITS>( varbits );
-
                break;
-            }
-            break;
 
-         case 'I':
-            // Legacy data
-            if( !str_cmp( word, "Int" ) )
-            {
-               pvd->vardata = fread_long( fp );
+            case vtXBIT:
+               if( vd->varflags.none() )
+               {
+                  bug( "{}: vtXBIT: Incomplete data. Discarding.", __func__ );
+                  deleteptr( vd );
+               }
                break;
-            }
-            break;
 
-         case 'M':
-            if( !str_cmp( word, "Mtime") )
-            {
-               time_t loaded_time = fread_long( fp );
-               pvd->m_time = std::chrono::system_clock::from_time_t( loaded_time );
+            case vtINT:
+               tag_char( ch, vd, 1 );
                break;
-            }
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Rtime") )
-            {
-               time_t loaded_time = fread_long( fp );
-               pvd->r_time = std::chrono::system_clock::from_time_t( loaded_time );
-               break;
-            }
-            break;
-
-         case 'S':
-            // Legacy data
-            STDSKEY( "Str", pvd->varstring );
-            break;
-
-         case 'T':
-            STDSKEY( "Tag", pvd->tag );
-            KEY( "Timer", pvd->timer, fread_long( fp ) );
-            KEY( "Type", pvd->type, fread_number( fp ) );
-            break;
-
-         case 'V':
-            STDSKEY( "Varstring", pvd->varstring );
-            KEY( "Vardata", pvd->vardata, fread_long( fp ) );
-            KEY( "Vnum", pvd->vnum, fread_number( fp ) );
-            break;
+         }
+         return;
       }
    }
-   while( !feof( fp ) );
-
    // If you make it here, something got borked.
    bug( "{}: Fell through to bottom!", __func__ );
-   deleteptr( pvd );
+   deleteptr( vd );
 }

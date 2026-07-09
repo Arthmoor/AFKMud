@@ -124,8 +124,8 @@ class obj_data
 obj_data *get_objtype( char_data *, short );
 void obj_identify_output( char_data *, obj_data * );
 void show_list_to_char( char_data *, std::list<obj_data *>, bool, bool );
-void fwrite_obj( char_data *, std::list<obj_data *>, clan_data *, FILE *, int, bool );
-void fread_obj( char_data *, FILE *, short );
+void fwrite_obj( char_data *, std::list<obj_data *>, clan_data *, std::ofstream &, int, bool );
+void fread_obj( char_data *, std::ifstream &, short );
 obj_data *group_obj( obj_data * obj, obj_data * obj2 );
 
 extern std::list<obj_data *> objlist;

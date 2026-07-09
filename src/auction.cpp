@@ -239,7 +239,6 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
 {
    room_index *aucvault;
    char_data *aucmob;
-   FILE *fp;
 
    if( !( aucmob = supermob->get_char_world( filename ) ) )
    {
@@ -256,44 +255,29 @@ void read_aucvault( std::string_view dirname, std::string_view filename )
    }
 
    std::filesystem::path fname = std::format( "{}{}", dirname, filename );
-   if( ( fp = fopen( fname.c_str(), "r" ) ) != nullptr )
+   std::ifstream stream( fname );
+   if( stream.is_open() )
    {
       log_printf( "Loading auction house vault: {}", filename );
       rset_supermob( aucvault );
 
-      for( ;; )
+      std::string key;
+      while( stream >> key )
       {
-         char letter;
-         std::string word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "{}: # not found. {}", __func__, aucmob->short_descr );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "OBJECT" ) ) /* Objects  */
+         if( key == "#OBJECT" ) /* Objects  */
          {
             supermob->tempnum = -9999;
-            fread_obj( supermob, fp, OS_CARRY );
+            fread_obj( supermob, stream, OS_CARRY );
          }
-         else if( !str_cmp( word, "END" ) )  /* Done */
+         else if( key == "#END" )  /* Done */
             break;
          else
          {
-            bug( "{}: bad section. {}", __func__, aucmob->short_descr );
-            break;
+            bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, fname.string() );
+            fread_to_eol( stream );
          }
       }
-      FCLOSE( fp );
+      stream.close();
 
       for( auto it = supermob->carrying.begin(  ); it != supermob->carrying.end(  ); )
       {
@@ -334,21 +318,19 @@ void load_aucvaults( void )
 
 void save_aucvault( char_data * ch, std::string_view aucmob )
 {
-   room_index *aucvault;
-   FILE *fp;
-
    if( !ch )
    {
       bug( "{}: nullptr ch!", __func__ );
       return;
    }
 
-   aucvault = get_room_index( ch->in_room->vnum + 1 );
+   room_index *aucvault = get_room_index( ch->in_room->vnum + 1 );
 
    std::filesystem::path filename = std::format( "{}{}", AUC_DIR, aucmob );
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: Unable to open {} for writing.", __func__, filename.string() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
       return;
    }
 
@@ -356,10 +338,12 @@ void save_aucvault( char_data * ch, std::string_view aucmob )
    ch->level = LEVEL_AVATAR;  /* make sure EQ doesn't get lost */
 
    if( !aucvault->objects.empty(  ) )
-      fwrite_obj( ch, aucvault->objects, nullptr, fp, 0, false );
-   fprintf( fp, "%s", "#END\n" );
+      fwrite_obj( ch, aucvault->objects, nullptr, stream, 0, false );
+   stream << "#END\n";
    ch->level = templvl;
-   FCLOSE( fp );
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 char_data *find_auctioneer( char_data * ch )

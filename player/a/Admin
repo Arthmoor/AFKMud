@@ -3,18 +3,18 @@ Version      25
 Name         Admin~
 Password     $sha512$210000$kKuizk8W2mmg3QEG$2e4e35f776746ba8dc4357e32f8853846815251681724a2b0469ce69369991b49ea18f82299ad3abd86aff39b5ab425cb987796b628e64f85b6f2321e65a6a32~
 Site         local-host~
+Status       115 1909394 320993749 68 124 101 -10
 Timezone     America/Chicago~
 Sex          Male~
 Race         Iguanadon~
 Class        Cleric~
 Title        the Administrator~
 Rank         Administrator~
-Prompt       &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&c%X&wexp&z]&D ~
-FPrompt      &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&R%c&z] ~
+Prompt       &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&c%X&wexp&z]&D~
+FPrompt      &z[&W%h&whp &W%m&wm &W%v&wmv&z]  [&R%c&z]~
 PCFlags      pager nstart flags sector aname passdoor checkboards autoexits blank automap holylight roomvnum ansi msp smartsac compass~
 Channels     chat Bugs Log auction quest music shout wartalk yell newbiechat think muse comm info auth warn build guildtalk Clantalk ilog~
 Speaks       common elvish dwarven pixie ogre orcish trollese rodent insectoid mammal reptile dragon spiritual magical goblin god ancient halfling clan gith minotaur centaur gnomish sahuagin~
-Status       115 1909394 320993749 68 124 101 -10
 Status2      2 451 -1000 0 0 0 2 0
 Configs      29 0
 Motd         0 1080528906

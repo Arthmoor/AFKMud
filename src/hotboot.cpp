@@ -54,8 +54,8 @@ void reset_music( char_data * );
 void save_timedata(  );
 void save_weathermap(  );
 void check_auth_state( char_data * );
-void fwrite_mobile( char_data *, FILE *, bool );
-char_data *fread_mobile( FILE *, bool, bool );
+void fwrite_mobile( char_data *, std::ofstream &, bool );
+char_data *fread_mobile( std::ifstream &, bool, bool );
 void close_libdl( );
 void reopen_libdl( );
 #if defined(SQL)
@@ -84,24 +84,22 @@ void save_world( void )
              )
             continue;
 
-         FILE *objfp;
-
          std::filesystem::path filename = std::format( "{}{}", HOTBOOT_DIR, pRoomIndex->vnum );
-         if( !( objfp = fopen( filename.c_str(), "w" ) ) )
+         std::ofstream stream( filename );
+         if( !stream.is_open() )
          {
             bug( "{}:{} Cannot open {} for writing: {}", __func__, pRoomIndex->vnum, filename.string(), std::strerror(errno) );
             continue;
          }
-         fwrite_obj( nullptr, pRoomIndex->objects, nullptr, objfp, 0, true );
-         fprintf( objfp, "%s", "#END\n" );
-         FCLOSE( objfp );
+         fwrite_obj( nullptr, pRoomIndex->objects, nullptr, stream, 0, true );
+         stream << "#END\n";
+         stream.close();
       }
    }
 
-   FILE *mobfp;
-
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
-   if( !( mobfp = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
    }
@@ -114,19 +112,19 @@ void save_world( void )
          else
          {
             rch->hotboot = true;
-            fwrite_mobile( rch, mobfp, false );
+            fwrite_mobile( rch, stream, false );
             rch->hotboot = false;
          }
       }
-      fprintf( mobfp, "%s", "#END\n" );
-      FCLOSE( mobfp );
+      stream << "#END\n";
+      stream.close();
    }
 }
 
 void read_obj_file( int vnum )
 {
-   FILE *fp;
    room_index *room;
+
    std::filesystem::path fname = std::format( "{}{}", HOTBOOT_DIR, vnum );
 
    if( !( room = get_room_index( vnum ) ) )
@@ -136,46 +134,31 @@ void read_obj_file( int vnum )
       return;
    }
 
-   if( ( fp = fopen( fname.c_str(), "r" ) ) != nullptr )
+   std::ifstream stream( fname );
+   if( stream.is_open() )
    {
       // If the supermob still has objects in its possession, this means that a previous room dump failed.
       assert( supermob->carrying.empty( ) );
 
       rset_supermob( room );
 
-      for( ;; )
+      std::string key;
+      while( stream >> key )
       {
-         char letter;
-         std::string word;
-
-         letter = fread_letter( fp );
-         if( letter == '*' )
-         {
-            fread_to_eol( fp );
-            continue;
-         }
-
-         if( letter != '#' )
-         {
-            bug( "{}: # not found.", __func__ );
-            break;
-         }
-
-         word = fread_word( fp );
-         if( !str_cmp( word, "OBJECT" ) ) /* Objects */
+         if( key == "#OBJECT" ) /* Objects */
          {
             supermob->tempnum = -9999;
-            fread_obj( supermob, fp, OS_CARRY );
+            fread_obj( supermob, stream, OS_CARRY );
          }
-         else if( !str_cmp( word, "END" ) )  /* Done */
+         else if( key == "#END" )  /* Done */
             break;
          else
          {
-            bug( "{}: bad section: {}", __func__, word );
-            break;
+            bug( "{}: Bad section '{}' in {} - skipping.", __func__, key, fname.string() );
+            fread_to_eol( stream );
          }
       }
-      FCLOSE( fp );
+      stream.close();
       std::filesystem::remove( fname );
 
       for( auto it = supermob->carrying.begin(); it != supermob->carrying.end(); )
@@ -200,7 +183,7 @@ void read_obj_file( int vnum )
       release_supermob(  );
    }
    else
-      log_printf( "Cannot open obj file: {}", vnum );
+      bug( "{}: Cannot open {} for reading: {}", __func__, fname.string(), std::strerror(errno) );
 }
 
 void load_obj_files( )
@@ -225,12 +208,12 @@ void load_obj_files( )
 
 void load_world( void )
 {
-   FILE *mobfp;
    int done = 0;
    bool mobfile = false;
 
    std::filesystem::path file1 = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
-   if( !( mobfp = fopen( file1.c_str(), "r" ) ) )
+   std::ifstream stream( file1 );
+   if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for reading: {}", __func__, file1.string(), std::strerror(errno) );
    }
@@ -243,28 +226,24 @@ void load_world( void )
       log_string( "World state: loading mobs" );
       while( done == 0 )
       {
-         if( feof( mobfp ) )
+         if( stream.eof() )
             ++done;
          else
          {
-            std::string word = fread_word( mobfp );
-            if( str_cmp( word, "#END" ) )
-               fread_mobile( mobfp, false, true );
+            std::string word = fread_word( stream );
+            if( word != "#END" )
+               fread_mobile( stream, false, true );
             else
                ++done;
          }
       }
    }
-
-   FCLOSE( mobfp );
-   set_alarm( 0 );
-
-   load_obj_files(  );
-
-   /*
-    * Once loaded, the data needs to be purged in the event it causes a crash so that it won't try to reload 
-    */
+   stream.close();
+   // Once loaded, the data needs to be purged in the event it causes a crash so that it won't try to reload
    std::filesystem::remove( file1 );
+
+   set_alarm( 0 );
+   load_obj_files(  );
 }
 
 /* Warm reboot stuff, gotta make sure to thank Erwin for this :) */

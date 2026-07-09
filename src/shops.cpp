@@ -48,6 +48,7 @@ telnet://northwind.kilnar.com:5555/    +
 */
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -68,8 +69,8 @@ char_data *find_auctioneer( char_data * );
 std::list<shop_data *> shoplist;
 std::list<repair_data *> repairlist;
 
-void fwrite_mobile( char_data *, FILE *, bool );
-char_data *fread_mobile( FILE *, bool, bool );
+void fwrite_mobile( char_data *, std::ofstream &, bool );
+char_data *fread_mobile( std::ifstream &, bool, bool );
 
 void mprog_sell_trigger( char_data *, char_data *, obj_data * );
 
@@ -81,21 +82,21 @@ int get_repaircost( char_data *, obj_data * );
 
 void save_shop( char_data * mob )
 {
-   FILE *fp = nullptr;
-
    if( !mob->isnpc(  ) )
       return;
 
    std::filesystem::path filename = std::format( "{}{}", SHOP_DIR, capitalize( mob->short_descr ) );
-
-   if( !( fp = fopen( filename.c_str(), "w" ) ) )
+   std::ofstream stream( filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: Unable to open {} for writing.", __func__, filename.string() );
-      perror( filename.c_str() );
+      bug( "{}: Cannot open {} for writing: {}", __func__, filename.string(), std::strerror(errno) );
+      return;
    }
-   fwrite_mobile( mob, fp, true );
-   fprintf( fp, "%s", "#END\n" );
-   FCLOSE( fp );
+   fwrite_mobile( mob, stream, true );
+   stream << "#END\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
 void load_shopkeepers( void )
@@ -108,41 +109,26 @@ void load_shopkeepers( void )
       if( filename.empty() || filename[0] == '.' )
          continue;
 
-      FILE *fp;
-
       std::filesystem::path shopfile = std::format( "{}{}", path.string(), filename );
-
-      if( ( fp = fopen( shopfile.c_str(), "r" ) ) != nullptr )
+      std::ifstream stream( shopfile );
+      if( stream.is_open() )
       {
          char_data *mob = nullptr;
 
-         for( ;; )
+         std::string key;
+         while( stream >> key )
          {
-            char letter = fread_letter( fp );
-            if( letter == '*' )
-            {
-               fread_to_eol( fp );
-               continue;
-            }
-
-            if( letter != '#' )
-            {
-               bug( "{}: # not found.", __func__ );
-               break;
-            }
-
-            std::string word = fread_word( fp );
-            if( !str_cmp( word, "SHOP" ) )
-               mob = fread_mobile( fp, true, false );
-            else if( !str_cmp( word, "OBJECT" ) )
+            if( key == "#SHOP" )
+               mob = fread_mobile( stream, true, false );
+            else if( key == "#OBJECT" )
             {
                mob->tempnum = -9999;
-               fread_obj( mob, fp, OS_CARRY );
+               fread_obj( mob, stream, OS_CARRY );
             }
-            else if( !str_cmp( word, "END" ) )
+            else if( key == "#END" )
                break;
          }
-         FCLOSE( fp );
+         stream.close();
 
          if( mob )
          {

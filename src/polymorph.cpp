@@ -2375,86 +2375,85 @@ CMDF( do_morphdestroy )
 }
 
 // This data is written to the player's pfile when they save while morphed.
-void fwrite_morph_data( char_data * ch, FILE * fp )
+void fwrite_morph_data( char_data * ch, std::ofstream & stream )
 {
-   char_morph *morph;
-
    if( ch->morph == nullptr )
       return;
 
-   morph = ch->morph;
-   fprintf( fp, "%s", "#MorphData\n" );
+   char_morph *morph = ch->morph;
+
+   stream << "#MorphData\n";
    /*
     * Only Print Out what is necessary 
     */
    if( morph->morph != nullptr )
    {
-      fprintf( fp, "Vnum %d\n", morph->morph->vnum );
-      fprintf( fp, "Name %s~\n", morph->morph->name.c_str() );
+      stream << std::format( "Vnum {}\n", morph->morph->vnum );
+      stream << std::format( "Name {}~\n", morph->morph->name );
    }
    if( morph->affected_by.any(  ) )
-      fprintf( fp, "Affect          %s~\n", bitset_string( morph->affected_by, aff_flags ) );
+      stream << std::format( "Affect          {}~\n", bitset_string( morph->affected_by, aff_flags ) );
    if( morph->no_affected_by.any(  ) )
-      fprintf( fp, "NoAffect        %s~\n", bitset_string( morph->no_affected_by, aff_flags ) );
+      stream << std::format( "NoAffect        {}~\n", bitset_string( morph->no_affected_by, aff_flags ) );
    if( morph->immune.any(  ) )
-      fprintf( fp, "Immune          %s~\n", bitset_string( morph->immune, ris_flags ) );
+      stream << std::format( "Immune          {}~\n", bitset_string( morph->immune, ris_flags ) );
    if( morph->resistant.any(  ) )
-      fprintf( fp, "Resistant       %s~\n", bitset_string( morph->resistant, ris_flags ) );
+      stream << std::format( "Resistant       {}~\n", bitset_string( morph->resistant, ris_flags ) );
    if( morph->suscept.any(  ) )
-      fprintf( fp, "Suscept         %s~\n", bitset_string( morph->suscept, ris_flags ) );
+      stream << std::format( "Suscept         {}~\n", bitset_string( morph->suscept, ris_flags ) );
    if( morph->absorb.any(  ) )
-      fprintf( fp, "Absorb          %s~\n", bitset_string( morph->absorb, ris_flags ) );
+      stream << std::format( "Absorb          {}~\n", bitset_string( morph->absorb, ris_flags ) );
    if( morph->no_immune.any(  ) )
-      fprintf( fp, "NoImmune        %s~\n", bitset_string( morph->no_immune, ris_flags ) );
+      stream << std::format( "NoImmune        {}~\n", bitset_string( morph->no_immune, ris_flags ) );
    if( morph->no_resistant.any(  ) )
-      fprintf( fp, "NoResistant     %s~\n", bitset_string( morph->no_resistant, ris_flags ) );
+      stream << std::format( "NoResistant     {}~\n", bitset_string( morph->no_resistant, ris_flags ) );
    if( morph->no_suscept.any(  ) )
-      fprintf( fp, "NoSuscept       %s~\n", bitset_string( morph->no_suscept, ris_flags ) );
+      stream << std::format( "NoSuscept       {}~\n", bitset_string( morph->no_suscept, ris_flags ) );
    if( morph->ac != 0 )
-      fprintf( fp, "Armor           %d\n", morph->ac );
+      stream << std::format( "Armor           {}\n", morph->ac );
    if( morph->cha != 0 )
-      fprintf( fp, "Charisma        %d\n", morph->cha );
+      stream << std::format( "Charisma        {}\n", morph->cha );
    if( morph->con != 0 )
-      fprintf( fp, "Constitution    %d\n", morph->con );
+      stream << std::format( "Constitution    {}\n", morph->con );
    if( morph->damroll != 0 )
-      fprintf( fp, "Damroll         %d\n", morph->damroll );
+      stream << std::format( "Damroll         {}\n", morph->damroll );
    if( morph->dex != 0 )
-      fprintf( fp, "Dexterity       %d\n", morph->dex );
+      stream << std::format( "Dexterity       {}\n", morph->dex );
    if( morph->dodge != 0 )
-      fprintf( fp, "Dodge           %d\n", morph->dodge );
+      stream << std::format( "Dodge           {}\n", morph->dodge );
    if( morph->hit != 0 )
-      fprintf( fp, "Hit             %d\n", morph->hit );
+      stream << std::format( "Hit             {}\n", morph->hit );
    if( morph->hitroll != 0 )
-      fprintf( fp, "Hitroll         %d\n", morph->hitroll );
+      stream << std::format( "Hitroll         {}\n", morph->hitroll );
    if( morph->inte != 0 )
-      fprintf( fp, "Intelligence    %d\n", morph->inte );
+      stream << std::format( "Intelligence    {}\n", morph->inte );
    if( morph->lck != 0 )
-      fprintf( fp, "Luck            %d\n", morph->lck );
+      stream << std::format( "Luck            {}\n", morph->lck );
    if( morph->mana != 0 )
-      fprintf( fp, "Mana            %d\n", morph->mana );
+      stream << std::format( "Mana            {}\n", morph->mana );
    if( morph->move != 0 )
-      fprintf( fp, "Move            %d\n", morph->move );
+      stream << std::format( "Move            {}\n", morph->move );
    if( morph->parry != 0 )
-      fprintf( fp, "Parry           %d\n", morph->parry );
+      stream << std::format( "Parry           {}\n", morph->parry );
    if( morph->saving_breath != 0 )
-      fprintf( fp, "Save1           %d\n", morph->saving_breath );
+      stream << std::format( "Save1           {}\n", morph->saving_breath );
    if( morph->saving_para_petri != 0 )
-      fprintf( fp, "Save2           %d\n", morph->saving_para_petri );
+      stream << std::format( "Save2           {}\n", morph->saving_para_petri );
    if( morph->saving_poison_death != 0 )
-      fprintf( fp, "Save3           %d\n", morph->saving_poison_death );
+      stream << std::format( "Save3           {}\n", morph->saving_poison_death );
    if( morph->saving_spell_staff != 0 )
-      fprintf( fp, "Save4           %d\n", morph->saving_spell_staff );
+      stream << std::format( "Save4           {}\n", morph->saving_spell_staff );
    if( morph->saving_wand != 0 )
-      fprintf( fp, "Save5           %d\n", morph->saving_wand );
+      stream << std::format( "Save5           {}\n", morph->saving_wand );
    if( morph->str != 0 )
-      fprintf( fp, "Strength        %d\n", morph->str );
+      stream << std::format( "Strength        {}\n", morph->str );
    if( morph->timer != -1 )
-      fprintf( fp, "Timer           %d\n", morph->timer );
+      stream << std::format( "Timer           {}\n", morph->timer );
    if( morph->tumble != 0 )
-      fprintf( fp, "Tumble          %d\n", morph->tumble );
+      stream << std::format( "Tumble          {}\n", morph->tumble );
    if( morph->wis != 0 )
-      fprintf( fp, "Wisdom          %d\n", morph->wis );
-   fprintf( fp, "%s", "End\n" );
+      stream << std::format( "Wisdom          {}\n", morph->wis );
+   stream << "End\n";
 }
 
 void clear_char_morph( char_morph * morph )
@@ -2493,160 +2492,136 @@ void clear_char_morph( char_morph * morph )
 }
 
 // This is read from a player's pfile if they were morphed at the time they saved.
-void fread_morph_data( char_data * ch, FILE * fp )
+void fread_morph_data( char_data * ch, std::ifstream & stream )
 {
    char_morph *morph = new char_morph;
    clear_char_morph( morph );
    ch->morph = morph;
 
-   for( ;; )
+   std::string key;
+   std::string temp;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "End" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Vnum" )
       {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "End";
+         int vnum;
+         stream >> vnum;
+
+         morph->morph = get_morph_vnum( vnum );
       }
-
-      switch ( to_upper( word[0] ) )
+      else if( key == "Name" )
       {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         if( morph->morph )
+            if( str_cmp( morph->morph->name, fread_line( stream ) ) )
+               bug( "{}: Morph Name doesn't match vnum {}.", __func__, morph->morph->vnum );
+      }
+      else if( key == "Affect" )
+      {
+         temp = fread_line( stream );
 
-         case 'A':
-            if( !str_cmp( word, "Absorb" ) )
-            {
-               flag_set( fp, morph->absorb, ris_flags );
-               break;
-            }
-            if( !str_cmp( word, "Affect" ) )
-            {
-               flag_set( fp, morph->affected_by, aff_flags );
-               break;
-            }
-            KEY( "Armor", morph->ac, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->affected_by, aff_flags );
+      }
+      else if( key == "NoAffect" )
+      {
+         temp = fread_line( stream );
 
-         case 'C':
-            KEY( "Charisma", morph->cha, fread_number( fp ) );
-            KEY( "Constitution", morph->con, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->no_affected_by, aff_flags );
+      }
+      else if( key == "Immune" )
+      {
+         temp = fread_line( stream );
 
-         case 'D':
-            KEY( "Damroll", morph->damroll, fread_number( fp ) );
-            KEY( "Dexterity", morph->dex, fread_number( fp ) );
-            KEY( "Dodge", morph->dodge, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->immune, ris_flags );
+      }
+      else if( key == "Resistant" )
+      {
+         temp = fread_line( stream );
 
-         case 'E':
-            if( !str_cmp( word, "End" ) )
-               return;
-            break;
+         flag_string_set( temp, morph->resistant, ris_flags );
+      }
+      else if( key == "Suscept" )
+      {
+         temp = fread_line( stream );
 
-         case 'H':
-            KEY( "Hit", morph->hit, fread_number( fp ) );
-            KEY( "Hitroll", morph->hitroll, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->suscept, ris_flags );
+      }
+      else if( key == "Absorb" )
+      {
+         temp = fread_line( stream );
 
-         case 'I':
-            if( !str_cmp( word, "Immune" ) )
-            {
-               flag_set( fp, morph->immune, ris_flags );
-               break;
-            }
-            KEY( "Intelligence", morph->inte, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->absorb, ris_flags );
+      }
+      else if( key == "NoImmune" )
+      {
+         temp = fread_line( stream );
 
-         case 'L':
-            KEY( "Luck", morph->lck, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->no_immune, ris_flags );
+      }
+      else if( key == "NoResistant" )
+      {
+         temp = fread_line( stream );
 
-         case 'M':
-            KEY( "Mana", morph->mana, fread_number( fp ) );
-            KEY( "Move", morph->move, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->no_resistant, ris_flags );
+      }
+      else if( key == "NoSuscept" )
+      {
+         temp = fread_line( stream );
 
-         case 'N':
-            if( !str_cmp( "Name", word ) )
-            {
-               if( morph->morph )
-                  if( str_cmp( morph->morph->name, fread_flagstring( fp ) ) )
-                     bug( "{}: Morph Name doesn't match vnum {}.", __func__, morph->morph->vnum );
-               break;
-            }
-
-            if( !str_cmp( word, "NoAffect" ) )
-            {
-               flag_set( fp, morph->no_affected_by, aff_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "NoResistant" ) )
-            {
-               flag_set( fp, morph->no_resistant, ris_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "NoSuscept" ) )
-            {
-               flag_set( fp, morph->no_suscept, ris_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "NoImmune" ) )
-            {
-               flag_set( fp, morph->no_immune, ris_flags );
-               break;
-            }
-            break;
-
-         case 'P':
-            KEY( "Parry", morph->parry, fread_number( fp ) );
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Resistant" ) )
-            {
-               flag_set( fp, morph->resistant, ris_flags );
-               break;
-            }
-            break;
-
-         case 'S':
-            KEY( "Save1", morph->saving_breath, fread_number( fp ) );
-            KEY( "Save2", morph->saving_para_petri, fread_number( fp ) );
-            KEY( "Save3", morph->saving_poison_death, fread_number( fp ) );
-            KEY( "Save4", morph->saving_spell_staff, fread_number( fp ) );
-            KEY( "Save5", morph->saving_wand, fread_number( fp ) );
-            KEY( "Strength", morph->str, fread_number( fp ) );
-            if( !str_cmp( word, "Suscept" ) )
-            {
-               flag_set( fp, morph->suscept, ris_flags );
-               break;
-            }
-            break;
-
-         case 'T':
-            KEY( "Timer", morph->timer, fread_number( fp ) );
-            KEY( "Tumble", morph->tumble, fread_number( fp ) );
-            break;
-
-         case 'V':
-            if( !str_cmp( "Vnum", word ) )
-            {
-               morph->morph = get_morph_vnum( fread_number( fp ) );
-               break;
-            }
-            break;
-
-         case 'W':
-            KEY( "Wisdom", morph->wis, fread_number( fp ) );
-            break;
+         flag_string_set( temp, morph->no_suscept, ris_flags );
+      }
+      else if( key == "Armor" )
+         stream >> morph->ac;
+      else if( key == "Charisma" )
+         stream >> morph->cha;
+      else if( key == "Constitution" )
+         stream >> morph->con;
+      else if( key == "Damroll" )
+         stream >> morph->damroll;
+      else if( key == "Dexterity" )
+         stream >> morph->dex;
+      else if( key == "Dodge" )
+         stream >> morph->dodge;
+      else if( key == "Hit" )
+         stream >> morph->hit;
+      else if( key == "Hitroll" )
+         stream >> morph->hitroll;
+      else if( key == "Intelligence" )
+         stream >> morph->inte;
+      else if( key == "Luck" )
+         stream >> morph->lck;
+      else if( key == "Mana" )
+         stream >> morph->mana;
+      else if( key == "Move" )
+         stream >> morph->move;
+      else if( key == "Parry" )
+         stream >> morph->parry;
+      else if( key == "Save1" )
+         stream >> morph->saving_breath;
+      else if( key == "Save2" )
+         stream >> morph->saving_para_petri;
+      else if( key == "Save3" )
+         stream >> morph->saving_poison_death;
+      else if( key == "Save4" )
+         stream >> morph->saving_spell_staff;
+      else if( key == "Save5" )
+         stream >> morph->saving_wand;
+      else if( key == "Strength" )
+         stream >> morph->str;
+      else if( key == "Timer" )
+         stream >> morph->timer;
+      else if( key == "Tumble" )
+         stream >> morph->tumble;
+      else if( key == "Wisdom" )
+         stream >> morph->wis;
+      else if( key == "End" )
+         return;
+      else
+      {
+         bug( "{}: Bad section '{}' - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
+   bug( "{}: Fell through to bottom. Possible corrupted pfile. Deleting morph data from player.", __func__ );
 }
 
 /* 

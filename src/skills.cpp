@@ -74,7 +74,6 @@ int top_disease;
 skill_type *skill_table[MAX_SKILL];
 skill_type *herb_table[MAX_HERB];
 skill_type *disease_table[MAX_DISEASE];
-extern FILE *fpArea;
 
 SKILL_INDEX skill_table__index;
 SKILL_INDEX skill_table__spell;

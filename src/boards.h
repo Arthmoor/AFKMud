@@ -35,6 +35,8 @@
 inline constexpr std::string_view BOARD_LIST_FILE = "../boards/boards.lst"; // List of board files.
 inline constexpr std::string_view PROJECTS_FILE = "../system/projects.txt"; // For projects.
 
+constexpr int BOARDFILEVER = 2;
+
 constexpr int MAX_REPLY = 10;         // How many messages in each level?
 constexpr int MAX_BOARD_EXPIRE = 180; // Max days notes have to live.
 constexpr int BD_IGNORE = 2;

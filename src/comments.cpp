@@ -27,11 +27,13 @@
  *           and problem players.  -haus 6/25/1995                          * 
  ****************************************************************************/
 
+#include <fstream>
 #include "mud.h"
 #include "descriptor.h"
 #include "boards.h"
 
-note_data *read_note( FILE * );
+void read_note( note_data *, int, std::ifstream & );
+void write_note( note_data *, std::ofstream & );
 void note_to_char( char_data *, note_data *, board_data *, short );
 extern const char *note_flags[];
 void TOGGLE_NOTE_FLAG( note_data *, int );
@@ -363,204 +365,57 @@ CMDF( do_comment )
       ch->print( "     remove <player> <#>\r\n" );
 }
 
-void write_note_fp( note_data * pnote, FILE * fp )
-{
-   if( !pnote )
-   {
-      bug( "{}: Called with a nullptr note.", __func__ );
-      return;
-   }
-
-   if( pnote->sender.empty() )
-   {
-      bug( "{}: Called on a note without a valid sender!", __func__ );
-      return;
-   }
-
-   auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
-   auto expire = std::chrono::system_clock::to_time_t( pnote->expire );
-
-   fprintf( fp, "\n%s\n", "\n#COMMENT2\n" );
-   fprintf( fp, "Sender         %s~\n", pnote->sender.c_str() );
-   if( !pnote->subject.empty() )
-      fprintf( fp, "Subject        %s~\n", pnote->subject.c_str() );
-   if( !pnote->to_list.empty() )
-      fprintf( fp, "To             %s~\n", pnote->to_list.c_str() );
-   fprintf( fp, "DateStamp      %ld\n", date_stamp );
-   fprintf( fp, "Flags          %s~\n", bitset_string( pnote->flags, note_flags ) );
-   if( expire )                  // Comments and Project Logs do not use to_list or Expire
-      fprintf( fp, "Expire         %ld\n", expire );
-   if( !pnote->text.empty() )
-      fprintf( fp, "Text           %s~\n", pnote->text.c_str() );
-   fprintf( fp, "Type           %d\n", pnote->type );
-
-   fprintf( fp, "%s", "#PLR-COMMENT-END\n\n" );
-}
-
-note_data *read_note_fp( FILE * fp )
-{
-   note_data *pnote = nullptr;
-   note_data *reply = nullptr;
-   char letter;
-
-   do
-   {
-      letter = getc( fp );
-      if( feof( fp ) )
-      {
-         FCLOSE( fp );
-         return nullptr;
-      }
-   }
-   while( isspace( letter ) );
-   ungetc( letter, fp );
-
-   pnote = new note_data;
-   pnote->type = NOTE_PLAYER;
-
-   for( ;; )
-   {
-      std::string word = ( feof( fp ) ? "#END" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "%s: EOF encountered reading file!", __func__ );
-         word = "#END";
-      }
-
-      switch ( to_upper( word[0] ) )
-      {
-         default:
-            bug( "%s: no match: %s", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '*':
-            fread_to_eol( fp );
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               flag_set( fp, pnote->flags, note_flags );
-               break;
-            }
-
-         case 'D':
-            if( !str_cmp( word, "Date" ) )
-            {
-               fread_to_eol( fp );
-               break;
-            }
-            if( !str_cmp( word, "DateStamp" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-
-               pnote->date_stamp = std::chrono::system_clock::from_time_t( loaded_time );
-            }
-            break;
-
-         case 'S':
-            STDSKEY( "Sender", pnote->sender );
-            STDSKEY( "Subject", pnote->subject );
-            break;
-
-         case 'T':
-            STDSKEY( "To", pnote->to_list );
-            STDSKEY( "Text", pnote->text );
-            KEY( "Type", pnote->type, fread_short( fp ) );
-            break;
-
-         case 'E':
-            if( !str_cmp( word, "Expire" ) )
-            {
-               time_t loaded_time = fread_long( fp );
-
-               pnote->expire = std::chrono::system_clock::from_time_t( loaded_time );
-            }
-            break;
-
-         case '#':
-            if( !str_cmp( word, "#PLR-COMMENT-END" ) || !str_cmp( word, "#END" ) )
-            {
-               // Use the new sticky flag :)
-               if( pnote->expire == std::chrono::system_clock::time_point{} )
-                  TOGGLE_NOTE_FLAG( pnote, NOTE_STICKY );
-
-               if( pnote->date_stamp == std::chrono::system_clock::time_point{} )
-                  pnote->date_stamp = current_time;
-               return pnote;
-            }
-            else
-            {
-               bug( "%s: Bad section: %s", __func__, word );
-               if( reply ) // In case a half-constructed reply exists.
-                  deleteptr( reply );
-               deleteptr( pnote );
-               return nullptr;
-            }
-      }
-   }
-}
-
-void pc_data::fwrite_comments( FILE * fp )
+void pc_data::fwrite_comments( std::ofstream & stream )
 {
    if( comments.empty(  ) )
       return;
 
    for( auto* note : comments )
    {
-      fprintf( fp, "%s", "#COMMENT2\n" ); /* Set to COMMENT2 as to tell from older comments */
-      write_note_fp( note, fp ); // FIXME: Change this once saving a pfile is using std::ofstream. Once done that should allow use of write_note().
+      stream << "#COMMENT2\n"; /* Set to COMMENT2 as to tell from older comments */
+      stream << std::format( "Version      {}\n", BOARDFILEVER );
+      write_note( note, stream );
    }
 }
 
-void pc_data::fread_comment( FILE * fp )
+void pc_data::fread_comment( std::ifstream & stream )
 {
-   note_data *pcnote;
+   note_data *note = new note_data;
+   std::string key;
+   int file_ver = 0;
 
-   pcnote = read_note_fp( fp );  // FIXME: Change this once loading a pfile is using std::ifstream. Once done that should allow use of read_note().
-   comments.push_back( pcnote );
+   stream >> key;
+   if( key == "Version" )
+      stream >> file_ver;
+   read_note( note, file_ver, stream );
+   comments.push_back( note );
 }
 
 /* Function kept for backwards compatibility */
-void pc_data::fread_old_comment( FILE * fp )
+void pc_data::fread_old_comment( std::ifstream & stream )
 {
    note_data *pcnote;
 
    log_string( "Starting comment conversion..." );
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      char letter;
-
-      do
-      {
-         letter = getc( fp );
-         if( feof( fp ) )
-         {
-            FCLOSE( fp );
-            return;
-         }
-      }
-      while( isspace( letter ) );
-      ungetc( letter, fp );
-
       pcnote = new note_data;
 
-      if( !str_cmp( fread_word( fp ), "sender" ) )
-         fread_string( pcnote->sender, fp );
+      if( key == "sender" )
+         fread_string( pcnote->sender, stream );
 
-      if( !str_cmp( fread_word( fp ), "date" ) )
-         fread_to_eol( fp );
+      if( key == "date" )
+         fread_to_eol( stream );
 
-      if( !str_cmp( fread_word( fp ), "to" ) )
-         fread_to_eol( fp );
+      if( key == "to" )
+         fread_to_eol( stream );
 
-      if( !str_cmp( fread_word( fp ), "subject" ) )
-         fread_string( pcnote->subject, fp );
+      if( "subject" )
+         fread_string( pcnote->subject, stream );
 
-      if( !str_cmp( fread_word( fp ), "text" ) )
-         fread_string( pcnote->text, fp );
+      if( key == "text" )
+         fread_string( pcnote->text, stream );
 
       if( pnote->sender.empty() )
          pcnote->sender = "None";

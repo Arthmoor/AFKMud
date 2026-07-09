@@ -467,6 +467,64 @@ affect_data *fread_afk_affect( FILE * fp )
    return paf;
 }
 
+affect_data *fread_afk_affect( std::ifstream & stream )
+{
+   bool setaff = true;
+
+   affect_data *paf = new affect_data;
+   paf->location = APPLY_NONE;
+   paf->type = -1;
+   paf->duration = -1;
+   paf->bit = 0;
+   paf->modifier = 0;
+   paf->rismod.reset(  );
+
+   std::string loc = fread_word( stream );
+   int value = get_atype( loc );
+   if( value < 0 || value >= MAX_APPLY_TYPE )
+   {
+      bug( "{}: Invalid apply type: {}", __func__, loc );
+      setaff = false;
+   }
+   paf->location = value;
+
+   if( paf->location == APPLY_WEAPONSPELL
+      || paf->location == APPLY_WEARSPELL
+      || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
+      paf->modifier = skill_lookup( fread_word( stream ) );
+   else if( paf->location == APPLY_AFFECT )
+   {
+      std::string aff = fread_word( stream );
+      value = get_aflag( aff );
+      if( value < 0 || value >= MAX_AFFECTED_BY )
+      {
+         bug( "{}: Unsupportable value for affect flag: {}", __func__, aff );
+         setaff = false;
+      }
+      else
+         paf->modifier = value;
+   }
+   else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
+   {
+      std::string temp;
+      fread_string( temp, stream );
+
+      flag_string_set( temp, paf->rismod, ris_flags );
+   }
+   else
+      stream >> paf->modifier;
+
+   stream >> paf->type;
+   stream >> paf->duration;
+   stream >> paf->bit;
+
+   if( !setaff )
+      deleteptr( paf );
+   else
+      ++top_affect;
+   return paf;
+}
+
 extra_descr_data *fread_afk_exdesc( FILE * fp )
 {
    extra_descr_data *ed = new extra_descr_data;
@@ -1849,6 +1907,20 @@ void fwrite_afk_affect( FILE * fpout, affect_data * af )
       fprintf( fpout, "AffData %s %s~ %d %d %d\n", a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
    else
       fprintf( fpout, "AffData %s %d %d %d %d\n", a_types[af->location], af->modifier, af->type, af->duration, af->bit );
+}
+
+void fwrite_afk_affect( std::ofstream & stream, affect_data * af )
+{
+   if( af->location == APPLY_AFFECT )
+      stream << std::format( "AffData {} '{}' {} {} {}\n", a_types[af->location], aff_flags[af->modifier], af->type, af->duration, af->bit );
+   else if( af->location == APPLY_WEAPONSPELL || af->location == APPLY_WEARSPELL || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN
+         || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
+      stream << std::format( "AffData {} '{}' {} {} {}\n", a_types[af->location],
+               IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name : "UNKNOWN", af->type, af->duration, af->bit );
+   else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
+      stream << std::format( "AffData {} {}~ {} {} {}\n", a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
+   else
+      stream << std::format( "AffData {} {} {} {} {}\n", a_types[af->location], af->modifier, af->type, af->duration, af->bit );
 }
 
 void fwrite_afk_exdesc( FILE * fpout, extra_descr_data * desc )
