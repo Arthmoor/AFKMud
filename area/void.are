@@ -4,7 +4,7 @@ Version         1
 Name            The Great Void~
 Author          AFKMud~
 Vnums           11000 11999
-Continent       immortal~
+Continent       Immortal~
 Coordinates     0 0
 Dates           1009872000 1009872000
 Ranges          100 115 0 115
@@ -12,14 +12,16 @@ ResetMsg        A loud voice booms: Cycle complete. Restarting sequence.~
 ResetFreq       180
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport nobeacon~
 Treasure        100 0 0 0 20 50 60 75
+WeatherCoords   0 0
+
 #ENDAREADATA
 
 #MOBILE
 Vnum      11000
 Keywords  namegen~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  sitting~
 DefPos    sitting~
 Short     namegen~
@@ -46,7 +48,7 @@ Vnum      11001
 Keywords  wild stag~
 Race      mammal~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A wild stag~
@@ -71,7 +73,7 @@ Vnum      11002
 Keywords  cooshee elven dog~
 Race      dog~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A cooshee~
@@ -98,7 +100,7 @@ Vnum      11003
 Keywords  wild raccoon~
 Race      rodent~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A wild raccoon~
@@ -124,7 +126,7 @@ Vnum      11004
 Keywords  brown bear~
 Race      bear~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A brown bear~
@@ -151,7 +153,7 @@ Vnum      11005
 Keywords  giant lynx~
 Race      cat~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A giant lynx~
@@ -177,7 +179,7 @@ Vnum      11006
 Keywords  giant owl~
 Race      avis~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A giant owl~
@@ -203,7 +205,7 @@ Vnum      11007
 Keywords  skeleton horse antipaladin~
 Race      undead~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A skeleton horse~
@@ -230,7 +232,7 @@ Vnum      11008
 Keywords  pegasus horse paladin~
 Race      horse~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A pegasus~
@@ -259,7 +261,7 @@ Vnum      11009
 Keywords  nightmare horse antipaladin~
 Race      horse~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A nightmare~
@@ -288,7 +290,7 @@ Vnum      11010
 Keywords  gnomish flying machine~
 Race      magical~
 Class     Mage~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A gnomish flying machine~
@@ -348,7 +350,7 @@ Vnum      11011
 Keywords  negative magnetic space wedgy~
 Race      shadow~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Negative Magnetic Space Wedgy~
@@ -418,7 +420,7 @@ Vnum      11029
 Keywords  servitor daemon~
 Race      spirit~
 Class     Necromancer~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     A servitor daemon~
@@ -445,9 +447,9 @@ Defenses  parry dodge~
 #MOBILE
 Vnum      11030
 Keywords  traveller city overland~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a traveller~
@@ -470,9 +472,9 @@ Attacks   punch~
 #MOBILE
 Vnum      11031
 Keywords  merchant city overland~
-Race      half-elf~
+Race      Half-Elf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a merchant~
@@ -499,9 +501,9 @@ Defenses  dodge~
 #MOBILE
 Vnum      11032
 Keywords  gypsy city overland~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a gypsy~
@@ -527,9 +529,9 @@ Defenses  dodge~
 #MOBILE
 Vnum      11033
 Keywords  bandit aggressive city overland~
-Race      half-elf~
+Race      Half-Elf~
 Class     Rogue~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a bandit~
@@ -557,9 +559,9 @@ Defenses  parry dodge~
 #MOBILE
 Vnum      11034
 Keywords  farmer field overland~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a farmer~
@@ -586,7 +588,7 @@ Vnum      11035
 Keywords  cow field overland~
 Race      bovine~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a cow~
@@ -612,7 +614,7 @@ Vnum      11036
 Keywords  rabbit bunny field overland~
 Race      animal~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a bunny rabbit~
@@ -638,7 +640,7 @@ Vnum      11037
 Keywords  bull aggressive field overland~
 Race      bovine~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a raging bull~
@@ -664,7 +666,7 @@ Vnum      11038
 Keywords  deer forest overland~
 Race      animal~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a deer~
@@ -691,7 +693,7 @@ Vnum      11039
 Keywords  dryad forest overland~
 Race      magical~
 Class     Druid~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a forest dryad~
@@ -721,7 +723,7 @@ Vnum      11040
 Keywords  treant forest overland~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a treant~
@@ -750,7 +752,7 @@ Vnum      11041
 Keywords  wurm serpent aggressive forest overland~
 Race      dragon~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a forest wurm~
@@ -777,9 +779,9 @@ Defenses  dodge~
 #MOBILE
 Vnum      11042
 Keywords  dwarf hill overland~
-Race      dwarf~
+Race      Dwarf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a hill dwarf~
@@ -807,7 +809,7 @@ Vnum      11043
 Keywords  rock badger hill overland~
 Race      animal~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a rock badger~
@@ -837,7 +839,7 @@ Vnum      11044
 Keywords  crow hill overland~
 Race      animal~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a crow~
@@ -864,7 +866,7 @@ Vnum      11045
 Keywords  dragon aggressive hill overland~
 Race      dragon~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a hill dragon~
@@ -894,7 +896,7 @@ Vnum      11046
 Keywords  goat mountain overland~
 Race      animal~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a mountain goat~
@@ -920,7 +922,7 @@ Vnum      11047
 Keywords  wild hound mountain overland~
 Race      canine~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a wild hound~
@@ -947,7 +949,7 @@ Vnum      11048
 Keywords  firbolg aggressive mountain overland~
 Race      Giant~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a firbolg~
@@ -979,7 +981,7 @@ Vnum      11049
 Keywords  scarab beetle desert overland~
 Race      beetle~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a scarab beetle~
@@ -1006,9 +1008,9 @@ Defenses  dodge~
 #MOBILE
 Vnum      11050
 Keywords  nomad desert overland~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a desert nomad~
@@ -1037,7 +1039,7 @@ Vnum      11051
 Keywords  sand elemental aggressive desert overland~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a sand elemental~
@@ -1067,7 +1069,7 @@ Vnum      11052
 Keywords  stirge aggressive swamp overland~
 Race      stirge~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a stirge~
@@ -1096,7 +1098,7 @@ Vnum      11053
 Keywords  goblin aggressive swamp overland~
 Race      goblin~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a swamp goblin~
@@ -1124,7 +1126,7 @@ Vnum      11054
 Keywords  orangutan jungle overland~
 Race      ape~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     an orangutan~
@@ -1152,7 +1154,7 @@ Vnum      11055
 Keywords  python snake jungle overland~
 Race      snake~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a python~
@@ -1181,7 +1183,7 @@ Vnum      11056
 Keywords  monitor lizard jungle overland~
 Race      reptile~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a monitor lizard~
@@ -1210,7 +1212,7 @@ Vnum      11057
 Keywords  panther aggressive jungle overland~
 Race      feline~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a jungle panther~
@@ -1238,7 +1240,7 @@ Vnum      11058
 Keywords  crab shore overland~
 Race      crustacean~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a crab~
@@ -1267,7 +1269,7 @@ Vnum      11059
 Keywords  seagull shore overland~
 Race      animal~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a seagull~
@@ -1294,7 +1296,7 @@ Vnum      11060
 Keywords  hyena scrub grass overland~
 Race      canine~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a hyena~
@@ -1321,7 +1323,7 @@ Vnum      11061
 Keywords  meerkat scrub grass overland~
 Race      animal~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a meerkat~
@@ -1349,7 +1351,7 @@ Vnum      11062
 Keywords  armadillo scrub grass overland~
 Race      animal~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an armadillo~
@@ -1379,7 +1381,7 @@ Vnum      11063
 Keywords  manticore aggressive scrub grass overland~
 Race      magical~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a manticore~
@@ -1408,7 +1410,7 @@ Vnum      11072
 Keywords  skyship overland~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A magical skyship~
@@ -1432,9 +1434,9 @@ Immune    fire cold electricity energy blunt pierce slash acid poison drain slee
 #MOBILE
 Vnum      11074
 Keywords  generic cityguard guard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     A Guard~
@@ -1462,7 +1464,7 @@ Vnum      11400
 Keywords  Puff~
 Race      dragon~
 Class     Mage~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Puff~
@@ -1516,9 +1518,9 @@ say his/hers/its of victim:	$S
 #MOBILE
 Vnum      11401
 Keywords  demon imp~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A demon imp~
@@ -1617,7 +1619,7 @@ Vnum      11402
 Keywords  supermob~
 Race      god~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     the supermob~
@@ -1646,9 +1648,9 @@ Comlist   mpinvis 101
 #MOBILE
 Vnum      11403
 Keywords  undead animated corpse~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated corpse~
@@ -1671,9 +1673,9 @@ Bodyparts head arms legs~
 #MOBILE
 Vnum      11404
 Keywords  undead animated skeleton~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated skeleton~
@@ -1698,9 +1700,9 @@ Immune    cold poison drain sleep charm hold~
 #MOBILE
 Vnum      11405
 Keywords  undead animated zombie~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated zombie~
@@ -1724,9 +1726,9 @@ Immune    cold poison drain sleep charm hold~
 #MOBILE
 Vnum      11406
 Keywords  undead animated ghoul~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated ghoul~
@@ -1751,9 +1753,9 @@ Attacks   weaken~
 #MOBILE
 Vnum      11407
 Keywords  undead animated crypt thing~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated crypt thing~
@@ -1777,9 +1779,9 @@ Immune    poison drain sleep charm hold nonmagic~
 #MOBILE
 Vnum      11408
 Keywords  undead animated mummy~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated mummy~
@@ -1805,9 +1807,9 @@ Suscept   fire~
 #MOBILE
 Vnum      11409
 Keywords  undead animated ghost~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated ghost~
@@ -1832,9 +1834,9 @@ Immune    fire cold electricity energy acid poison drain sleep charm hold nonmag
 #MOBILE
 Vnum      11410
 Keywords  undead animated death knight~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated death knight~
@@ -1860,9 +1862,9 @@ Defenses  dispelmagic~
 #MOBILE
 Vnum      11411
 Keywords  undead animated dracolich~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated dracolich~
@@ -1890,7 +1892,7 @@ Vnum      11412
 Keywords  creeping doom~
 Race      insect~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The creeping doom~
@@ -1954,9 +1956,9 @@ mpgoto 11403
 #MOBILE
 Vnum      11413
 Keywords  doppleganger~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created doppleganger~
@@ -1977,7 +1979,7 @@ Vnum      11414
 Keywords  paladin warhorse horse~
 Race      horse~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A paladin war horse~
@@ -2014,9 +2016,9 @@ endif
 #MOBILE
 Vnum      11999
 Keywords  Last mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
@@ -3732,7 +3734,7 @@ Vnum      11000
 Name      Quest Storage Room~
 Sector    indoors~
 Flags     nomob indoors safe nocamp noportal proto noteleport noscry nobeacon~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This room is used for quests. No one should be in here except quest mobs/objs.
 ~
 #ENDROOM
@@ -3742,7 +3744,7 @@ Vnum      11001
 Name      The Confiscation Chamber~
 Sector    indoors~
 Flags     nomob~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is where stuff that mobs need to take from players will end up.
 ~
 #ENDROOM
@@ -3752,7 +3754,7 @@ Vnum      11002
 Name      The Mob Vanishing Room~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This room is where mobs that need to "disappear" will end up so as
 not to give away that they've left the room they were in.
 ~
@@ -3763,12 +3765,11 @@ Vnum      11400
 Name      The Void~
 Sector    indoors~
 Flags     nomob indoors nosummon norecall noportal noastral~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      All around you the blackness of the ether closes in like an evil fog.
 Nothing is visible in any direction. Even the floor itself appears
 to be nonexistant..... you are floating in pure nothingness!
 ~
-Reset M 11000 1 11400 -1 -1 -1 100
 #MUDPROG
 Progtype  speech_prog~
 Arglist   test~
@@ -3801,6 +3802,7 @@ say his/hers/its of victim:	$S
 ~
 #ENDPROG
 
+Reset M 11000 1 11400 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -3808,7 +3810,7 @@ Vnum      11401
 Name      Limbo~
 Sector    city~
 Flags     nomob indoors nosummon norecall noportal noastral~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You float in a formless void, detached from all sensation of physical
 matter, surrounded by swirling glowing light which fades into the
 relative darkness around you without any trace of edge or shadow.
@@ -3821,7 +3823,7 @@ Vnum      11402
 Name      Storage~
 Sector    city~
 Flags     nomob nosummon norecall noportal noastral~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This room is reserved for storage of polymorphed players.
 ~
 #ENDROOM
@@ -3831,7 +3833,7 @@ Vnum      11403
 Name      Creeping Doom Room~
 Sector    indoors~
 Flags     nomob indoors nosummon norecall noportal noastral~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is where all the creeping dooms come to get purged.
 ~
 #MUDPROG
@@ -3848,7 +3850,7 @@ Vnum      11404
 Name      Failed Animate Dead Room~
 Sector    indoors~
 Flags     nomob indoors nosummon norecall noportal noastral noscry~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Failed animate dead attempts get sent here. This room is not to be
 used for ANYTHING other than that.
 ~
@@ -3859,7 +3861,7 @@ Vnum      11405
 Name      Hell~
 Sector    desert~
 Flags     nomob indoors safe nosummon silence nosupplicate norecall noportal noastral~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You are suddenly dropped off in a truly hellish place! Wait.... not
 just hellish.... this IS hell! The Gods must have been truly angry
 to have sent you to dwell in such a place. Needless to say, hell is
@@ -3895,18 +3897,18 @@ Vnum      11406
 Name      Parlor of the Immortals~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The parlor room where all immortals come to meet and plan their
 activities. Build to suit, etc.
 ~
 #EXIT
-Direction west~
-ToRoom    11999
+Direction north~
+ToRoom    11998
 #ENDEXIT
 
 #EXIT
-Direction north~
-ToRoom    11998
+Direction west~
+ToRoom    11999
 #ENDEXIT
 
 Reset M 11000 10 11406 -1 -1 -1 100
@@ -3917,7 +3919,7 @@ Vnum      11407
 Name      Recall and Death Room - Primary Continent~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is where players get recalled to when recalling on the primary
 continent, and on other planes such as Astral. Also where they'll
 come when they die. You will want to change this to something more
@@ -3930,7 +3932,7 @@ Vnum      11410
 Name      Donations Room~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is where donated goods will come when the donate command is used.
 Build to suite your needs.
 ~
@@ -3941,7 +3943,7 @@ Vnum      11411
 Name      Beginning Redemption Room~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is the room players will need to be in to start a prize redemption
 using the automated system and the mpsindhae mudprog.
 ~
@@ -3952,7 +3954,7 @@ Vnum      11412
 Name      Ending Redemption Room~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is the room players will be transferred to after completing an
 automated prize redemption.
 ~
@@ -3963,7 +3965,7 @@ Vnum      11998
 Name      The Great Link~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This room is one of the strangest yet. Behind a panel of odd box
 shaped devices is a huge bundle of blue cables interconnecting with
 each other. The whole mass converges into a single device about the
@@ -3994,7 +3996,7 @@ Vnum      11999
 Name      The Great Void~
 Sector    indoors~
 Flags     nomob indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      All around you is nothing but the vast blackness of the void. There
 isn't a lot to see aside from the billions and billions of stars and
 galaxies. The void stretches infinitely in all directions.

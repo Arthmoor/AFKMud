@@ -5,7 +5,7 @@ Name            Fordwyn's Chessboard~
 Author          SillyMUD/Dwip~
 Credits         Originally written by Exxon of SillyMUD. Ported to Crystal Shard, and later updated by Dwip for Alsherok.~
 Vnums           6000 6069
-Continent       one~
+Continent       One~
 Coordinates     915 939
 Dates           754272000 1417996800
 Ranges          0 10 0 115
@@ -13,6 +13,8 @@ ResetMsg        The pieces on the chessboard line up and prepare for another rou
 ResetFreq       20
 Flags           nocamp noportal nosummon noteleport~
 Treasure        20 74 85 93 20 50 60 75
+WeatherCoords   0 0
+
 #ENDAREADATA
 
 #MOBILE
@@ -20,7 +22,7 @@ Vnum      6000
 Keywords  rook black chess chessboard~
 Race      golem~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Black Rook~
@@ -40,9 +42,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6001
 Keywords  knight black chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black Knight~
@@ -62,9 +64,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6002
 Keywords  bishop black chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black Bishop~
@@ -84,9 +86,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6003
 Keywords  queen black chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     The Black Queen~
@@ -107,9 +109,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6004
 Keywords  king black chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black King~
@@ -131,9 +133,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6008
 Keywords  pawn black chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black Pawn~
@@ -156,7 +158,7 @@ Vnum      6016
 Keywords  mini flayer mindflayer minimindflayer chessboard~
 Race      Mindflayer~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Mini Mindflayer~
@@ -178,9 +180,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye tentacles~
 #MOBILE
 Vnum      6017
 Keywords  curser chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Curser~
@@ -210,7 +212,7 @@ Vnum      6018
 Keywords  cow chessboard~
 Race      bovine~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Cow~
@@ -236,7 +238,7 @@ Vnum      6020
 Keywords  sapling young chessboard~
 Race      Tree~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Young Sapling~
@@ -257,7 +259,7 @@ Vnum      6021
 Keywords  juggler jugglernaut chessboard~
 Race      golem~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jugglernaut~
@@ -285,7 +287,7 @@ Vnum      6022
 Keywords  mutterfly butterfly fly chessboard~
 Race      avis~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Mutterfly~
@@ -314,7 +316,7 @@ Vnum      6023
 Keywords  peel banana chessboard~
 Race      Tree~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Banana Peel~
@@ -335,9 +337,9 @@ Affected  detect_invis detect_hidden sneak~
 #MOBILE
 Vnum      6024
 Keywords  pawn white chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White Pawn~
@@ -360,7 +362,7 @@ Vnum      6032
 Keywords  rook white chess chessboard~
 Race      golem~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The White Rook~
@@ -382,9 +384,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6033
 Keywords  knight white chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White Knight~
@@ -405,9 +407,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6034
 Keywords  bishop white chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White Bishop~
@@ -427,9 +429,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6035
 Keywords  queen white chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     The White Queen~
@@ -449,9 +451,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MOBILE
 Vnum      6036
 Keywords  king white chess chessboard~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White King~
@@ -474,7 +476,7 @@ Vnum      6040
 Keywords  jabberwocky chessboard~
 Race      Enfan~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jabberwocky~
@@ -495,9 +497,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      6041
 Keywords  elf cleric chessboard~
-Race      high-elf~
+Race      High-Elf~
 Class     Cleric~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Specfun   spec_cast_adept~
@@ -521,7 +523,7 @@ Vnum      6042
 Keywords  flame chessboard~
 Race      Elemental~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Flame~
@@ -545,7 +547,7 @@ Vnum      6043
 Keywords  oil beast chessboard~
 Race      slime~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  sleeping~
 DefPos    sleeping~
 Short     An Oil Beast~
@@ -568,7 +570,7 @@ Vnum      6044
 Keywords  oil beast chessboard~
 Race      slime~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     An Oil Beast~
@@ -589,9 +591,9 @@ Bodyparts guts~
 #MOBILE
 Vnum      6045
 Keywords  elf chessboard~
-Race      high-elf~
+Race      High-Elf~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Delivery Elf~
@@ -631,9 +633,9 @@ endif
 #MOBILE
 Vnum      6046
 Keywords  elf chessboard~
-Race      high-elf~
+Race      High-Elf~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     An Elf~
@@ -653,7 +655,7 @@ Vnum      6047
 Keywords  cat cheshire chessboard~
 Race      cat~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Cheshire Cat~
@@ -677,7 +679,7 @@ Vnum      6048
 Keywords  pigeon chessboard~
 Race      avis~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Pigeon~
@@ -697,9 +699,9 @@ Bodyparts head legs heart brains guts feet eye wings feathers~
 #MOBILE
 Vnum      6049
 Keywords  fordwyn chessboard~
-Race      high-elf~
+Race      High-Elf~
 Class     Mage~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Fordwyn~

@@ -4,7 +4,7 @@ Version         1
 Name            Immortal Training Grounds~
 Author          Tarl~
 Vnums           21100 21299
-Continent       immortal~
+Continent       Immortal~
 Coordinates     0 0
 Dates           982900000 982900000
 Ranges          101 115 101 115
@@ -12,14 +12,16 @@ ResetMsg        The area resets around you with a crunch.~
 ResetFreq       5
 Flags           nocamp noteleport~
 Treasure        20 74 85 93 20 50 60 75
+WeatherCoords   0 0
+
 #ENDAREADATA
 
 #MOBILE
 Vnum      21100
 Keywords  first mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created first mob~
@@ -37,9 +39,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      21101
 Keywords  rapper~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A hand~
@@ -57,9 +59,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      21102
 Keywords  takeover~
-Race      drow~
+Race      Drow~
 Class     Ranger~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     takeover~
@@ -77,9 +79,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      21103
 Keywords  rich money~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A rich man~
@@ -97,9 +99,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      21299
 Keywords  Last mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
@@ -149,7 +151,7 @@ Vnum      21100
 Name      Entrance Court~
 Sector    indoors~
 Flags     nomob indoors safe nocamp nodrop~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Greetings Immortal, Welcome to this training area.
 Please take the time here to learn the commands, so
 a higher level Imm doesn't feel the need to 'educate'
@@ -234,7 +236,7 @@ Vnum      21101
 Name      Level 101 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 101 Immortal. Alternatively, saying
 a Level 101 command out loud will transfer you to the 
@@ -416,7 +418,7 @@ Vnum      21102
 Name      Level 102 Section~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 102 Immortal. Alternatively, saying
 a Level 102 command out loud will transfer you to the 
@@ -514,7 +516,7 @@ Vnum      21103
 Name      Level 103 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 103 Immortal. Alternatively, saying
 a Level 103 command out loud will transfer you to the 
@@ -675,7 +677,7 @@ Vnum      21104
 Name      Level 104 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 104 Immortal. Alternatively, saying
 a Level 104 command out loud will transfer you to the 
@@ -794,7 +796,7 @@ Vnum      21105
 Name      Level 105 Section~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 105 Immortal. Alternatively, saying
 a Level 105 command out loud will transfer you to the 
@@ -899,7 +901,7 @@ Vnum      21106
 Name      Level 106 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 106 Immortal. Alternatively, saying
 a Level 106 command out loud will transfer you to the 
@@ -1060,7 +1062,7 @@ Vnum      21107
 Name      Level 107 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 107 Immortal. Alternatively, saying
 a Level 107 command out loud will transfer you to the 
@@ -1242,7 +1244,7 @@ Vnum      21108
 Name      Level 108 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 108 Immortal. Alternatively, saying
 a Level 108 command out loud will transfer you to the 
@@ -1403,7 +1405,7 @@ Vnum      21109
 Name      Level 109 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 109 Immortal. Alternatively, saying
 a Level 109 command out loud will transfer you to the 
@@ -1445,7 +1447,7 @@ Vnum      21110
 Name      Level 110 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 110 Immortal. Alternatively, saying
 a Level 110 command out loud will transfer you to the 
@@ -1463,7 +1465,7 @@ Vnum      21111
 Name      Level 111 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 111 Immortal. Alternatively, saying
 a Level 111 command out loud will transfer you to the 
@@ -1486,7 +1488,7 @@ Vnum      21112
 Name      Level 112 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 112 Immortal. Alternatively, saying
 a Level 112 command out loud will transfer you to the 
@@ -1509,7 +1511,7 @@ Vnum      21113
 Name      Level 113 Section.~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 113 Immortal. Alternatively, saying
 a Level 113 command out loud will transfer you to the 
@@ -1527,7 +1529,7 @@ Vnum      21116
 Name      Bamfin/Bamfout~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will change the message that is displayed when
 you use the goto command. It allows the usage of the $n operator
 in place of your name. 
@@ -1554,7 +1556,7 @@ Vnum      21117
 Name      coords~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The coords command will relocate you on the overland map
 to the co-ordinates you specify.
 For example: coord 472 392 will put you just outside of
@@ -1578,7 +1580,7 @@ Vnum      21118
 Name      fixed~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command is used to record information when you have
 fixed or otherwise made changes to an area. 
 Usage is: fixed <message up to 250 characters>
@@ -1604,7 +1606,7 @@ Vnum      21119
 Name      goto~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command is used to transport you to a different area of the MUD.
 It works by either goto <vnum> or goto <keyword> Be warned though,
 keywords are often used by several different mobs and objects, so you
@@ -1630,7 +1632,7 @@ Vnum      21120
 Name      hedit~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to create a new help file entry.
 NOTE: ALWAYS check if an entry for the keyword you are planning to use
 exists BEFORE using this command.
@@ -1656,7 +1658,7 @@ Vnum      21121
 Name      holylight~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to see (almost) every character in the MUD.
 You can see in darkness, hidden, invisible, etc.
 In addition, you can see a MUCH larger area of the overland then normal.
@@ -1680,7 +1682,7 @@ Vnum      21122
 Name      hset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command sets various aspects of help files.
 hset save will save the current list of help files to help.are
 hset level <level> <help topic> will restrict a helpfile to a
@@ -1708,7 +1710,7 @@ Vnum      21123
 Name      imotd~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This will display the Immortal MOTD to you.
 ~
 #EXIT
@@ -1728,7 +1730,7 @@ Vnum      21124
 Name      landmarks~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will list all of the landmarks displayed on the overland
 map. It will also list where they occur, as well as the distances they
 are visible from.
@@ -1752,7 +1754,7 @@ Vnum      21125
 Name      Morph/Unmorph~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Morph will, strangely enough, turn you into something.
 ie: morph 1010 will turn you into an Iron Golem.
 Similarly, unmorph will return you to your normal shape.
@@ -1798,7 +1800,7 @@ Vnum      21126
 Name      peace~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will make all characters in a room stop fighting.
 They will then sit down, to ensure no aggressive flags trigger the start of
 another fight.
@@ -1820,7 +1822,7 @@ Vnum      21127
 Name      project~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will list all the current projects. See help project
 for more details.
 ~
@@ -1841,7 +1843,7 @@ Vnum      21128
 Name      rap~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to 'rap' or 'knock' on a door, or in a 
 direction, and anyone on the other side will be able to hear you.
  
@@ -1863,7 +1865,6 @@ Direction west~
 ToRoom    21127
 #ENDEXIT
 
-Reset D 21128 0 2 100 -2
 #MUDPROG
 Progtype  act_prog~
 Arglist   p raps loudly on the door.~
@@ -1873,6 +1874,7 @@ mptransfer rapper 21246
 ~
 #ENDPROG
 
+Reset D 21128 0 2 100 -2
 #ENDROOM
 
 #ROOM
@@ -1880,7 +1882,7 @@ Vnum      21129
 Name      sedit~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command is used for editing socials. See help sedit for more
 details.
 ~
@@ -1901,7 +1903,7 @@ Vnum      21130
 Name      showclass~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will show you information about a particular class type.
 ie: showclass ranger will display information on rangers.
 ~
@@ -1922,7 +1924,7 @@ Vnum      21131
 Name      showrace~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will show you information about a particular race type.
 ie: showclass wild-elf will display information on wild-elves.
 ~
@@ -1943,7 +1945,7 @@ Vnum      21132
 Name      slookup~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to look up what a specific skill/spell does.
 For instance, slookup fly will show you information on the spell fly.
 ~
@@ -1964,7 +1966,7 @@ Vnum      21133
 Name      Think/"~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is the equivalent of chat, but only between imms. Similarly,
 a " is the shortcut for think.
 ~
@@ -1985,7 +1987,7 @@ Vnum      21134
 Name      wizinfo~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display information on the immortals.
 ~
 #EXIT
@@ -2005,7 +2007,7 @@ Vnum      21135
 Name      wizhelp~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command lists all the immortal commands available to you.
 ~
 #EXIT
@@ -2025,7 +2027,7 @@ Vnum      21136
 Name      invis~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to turn invisible to people below a certain level.
 That level is set using invis <level>
  
@@ -2056,7 +2058,7 @@ Vnum      21137
 Name      Switch/Return~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to 'take over' the body of another Non-PC character.
 The return command will bring you out of that body and take you back to your
 own.
@@ -2079,7 +2081,7 @@ Vnum      21138
 Name      showclan~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The Showclan command will reveal information on a specific clan.
 For example, showclan MistWraith
 ~
@@ -2100,7 +2102,7 @@ Vnum      21139
 Name      showcouncil~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command displays information on a council.
 Usage is: showcouncil <council name>
 ~
@@ -2121,7 +2123,7 @@ Vnum      21140
 Name      sober~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will instantly sober up a player from a drunken state.
 Usage is: sober <player>
  
@@ -2145,7 +2147,7 @@ Vnum      21141
 Name      showdeity~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The showdeity command will reveal information on a specific deity
 for you.
 ie: showdeity Ortheus
@@ -2175,7 +2177,7 @@ Vnum      21142
 Name      showorder~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The showorder command will reveal details about a specific order to you.
 ie: showorder <ordername>
 ~
@@ -2196,7 +2198,7 @@ Vnum      21143
 Name      showguild~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will show information on a particular guild.
 ie: showguild Arcanium
 ~
@@ -2217,7 +2219,7 @@ Vnum      21144
 Name      users~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will list all of the visible users connected to the server,
 including users in the process of logging in.
 If used with an argument you can view all users from that host, or all users
@@ -2242,7 +2244,7 @@ Vnum      21145
 Name      authorize~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will allow you to authorize a player's name.
 Usage: authorize by itself will list any names currently pending authorization.
 authorize <name> will authorize that player's name, and allow the player
@@ -2270,7 +2272,7 @@ Vnum      21146
 Name      at~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command executes the given command at the location specified.
 The location can be given as a vnum, the name of a mob or player, or
 the name of an object.
@@ -2294,7 +2296,7 @@ Vnum      21147
 Name      aassign~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      What can I put here, apart from, This command sucks major ass.
 This command will assign a given area to you, so you can work on it.
 ~
@@ -2315,7 +2317,7 @@ Vnum      21148
 Name      aexit~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Tell me what this does :)
 This command will list all the 'external' exits from an area. 
  
@@ -2338,7 +2340,7 @@ Vnum      21149
 Name      Loadarea/Savearea~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will load your assigned area up for you to edit.
 Similarly, the savearea command will save your assigned area.
 ~
@@ -2359,7 +2361,7 @@ Vnum      21150
 Name      newzones~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will list the vnum range for prototype (assigned) areas that
 have been loaded.
 ~
@@ -2380,7 +2382,7 @@ Vnum      21151
 Name      noemote~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will prevent a character from using emote's.
 To remove, simply use the command again.
 ~
@@ -2401,7 +2403,7 @@ Vnum      21152
 Name      notell~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will prevent a character from using tell's.
 To remove, simply use the command again.
 ~
@@ -2422,7 +2424,7 @@ Vnum      21153
 Name      notitle~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will prevent a character from using title's.
 To remove, simply use the command again.
 ~
@@ -2443,7 +2445,7 @@ Vnum      21154
 Name      rat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The rat command works similarly to the at command, except it is
 executed within the range of rooms you specify, instead of merely
 one location.
@@ -2466,7 +2468,7 @@ Vnum      21155
 Name      rdelete~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will in essence delete a room, by marking it not to be
 saved.
  
@@ -2489,7 +2491,7 @@ Vnum      21156
 Name      redit~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The redit command is used to set various things about the room.
 For example
 redit name <name> This sets the rooms name.
@@ -2515,7 +2517,7 @@ Vnum      21157
 Name      stat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command is a replacement for ostat, rstat and mstat, all rolled
 into one. It will display statistics on the target.
 Usage: stat obj <vnum or keyword>
@@ -2545,7 +2547,7 @@ Vnum      21158
 Name      show~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The show command will display a list of all the rooms, objects or
 mobiles depending on the parameters you pass it.
  
@@ -2575,7 +2577,7 @@ Vnum      21159
 Name      Silence/Unsilence~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will allow you to silence a character, ie, stop them
 from using any and all channels.
  
@@ -2599,7 +2601,7 @@ Vnum      21160
 Name      wizlock~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command toggles wizlocking on and off. When the server is wizlocked
 only level 101 or above can log in to the MUD. If a previously connected
 mortal player gets disconnected, they won't be able to log back in until
@@ -2624,7 +2626,7 @@ Vnum      21161
 Name      zones~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will list the File name, Area name, and vnum range for every
 non-prototype area in the MUD.
 ~
@@ -2645,7 +2647,7 @@ Vnum      21162
 Name      find~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will locate all the objs or mobs with a particular keyword.
 The resulting display will show you the vnum, and a short description
 of the mob or obj.
@@ -2674,7 +2676,7 @@ Vnum      21163
 Name      Hell/Unhell~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The hell command shows your displeasure. It will send a character to hell
 for a given period of time. It will automatically release them when their time
 is up. 
@@ -2703,7 +2705,7 @@ Vnum      21164
 Name      load~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The load command allows you to load an instance of either an object,
 or a mobile. 
  
@@ -2730,7 +2732,7 @@ Vnum      21165
 Name      ocreate~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Ocreate will create a new prototype object for you to edit. The object
 will appear in your inventory.
  
@@ -2753,7 +2755,7 @@ Vnum      21166
 Name      odelete~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The odelete command will in essence delete an object, by marking it not
 to be saved.
  
@@ -2776,7 +2778,7 @@ Vnum      21167
 Name      oset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The oset command is used to set everything about an object.
 As such, it would take too long to list all of its properties here,
 so please refer to help oset.
@@ -2798,7 +2800,7 @@ Vnum      21168
 Name      purge~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The purge command will remove all the mobs and objects in the current room.
 If used with an argument, it will purge one mob or object with that/those
 keywords from anywhere in the world.
@@ -2822,7 +2824,7 @@ Vnum      21169
 Name      restore~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The restore command will restore full hp's, mana points and movement points
 to the target character. Similarly, restore all does this for all mortals
 except deadly ones, and those who happen to be in the arena.
@@ -2848,7 +2850,7 @@ Vnum      21170
 Name      restoretime~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display how much time has passed since you last did
 a restore all.
 ~
@@ -2869,7 +2871,7 @@ Vnum      21171
 Name      strip~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The strip command will remove all items and clothing from a character
 and transfer them into your inventory.
 ~
@@ -2890,7 +2892,7 @@ Vnum      21172
 Name      transfer~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The transfer command allows you to transfer a mob or PC to anywhere you wish.
  
 Usage: transfer <character or mob keyword/vnum> <destination>
@@ -2914,7 +2916,7 @@ Vnum      21173
 Name      vsearch~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will list all occurances of an object with the specified
 vnum that are currently in the game.
  
@@ -2938,7 +2940,7 @@ Vnum      21174
 Name      Coinduct/Cooutcast~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      These commands induct and outcast a player into a council. 
 They should only be used if it is either your council, or you have
 authorisation to induct/remove people from it.
@@ -2960,7 +2962,7 @@ Vnum      21175
 Name      force~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The force command is used to make a character or mob execute a command.
 It only works on characters of a lower level then you.
  
@@ -2986,7 +2988,7 @@ Vnum      21176
 Name      gfighting~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      At a rough guess, this lists all the current PK fights occuring.
  
 (If you know that this is not the case, please correct us.)
@@ -3008,7 +3010,7 @@ Vnum      21177
 Name      instazone~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will do the resets for your entire zone. Simply place
 everything EXACTLY as you want it, and then use instazone. *boom*
 Resets done. :)
@@ -3033,7 +3035,7 @@ Vnum      21178
 Name      instaroom~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will do the resets for the room you are standing in.
 Simply place everything where you want it, and instaroom.
 ~
@@ -3054,7 +3056,7 @@ Vnum      21179
 Name      mcreate~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will create a new prototype mob for you to edit.
  
 Usage: mcreate <vnum> <keywords>
@@ -3076,7 +3078,7 @@ Vnum      21180
 Name      mdelete~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will in essence delete a mobile by marking it not to be
 saved.
  
@@ -3099,7 +3101,7 @@ Vnum      21181
 Name      mset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to set all aspects of a mobile. As such, it is
 much better explained under help mset
 ~
@@ -3120,7 +3122,7 @@ Vnum      21182
 Name      reset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command edits the resets of an area. However, it is strongly recommended
 that you edit resets yourself by hand, as this is much much easier and safer.
  
@@ -3143,7 +3145,7 @@ Vnum      21183
 Name      rreset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will allow you to do reset editing. However, it appears
 buggy and dangerous to use. My advice is to edit all your resets
 by hand.
@@ -3165,7 +3167,7 @@ Vnum      21184
 Name      climate~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to view, or edit the climate settings for an
 area. There are settings for temperature, precipitation and wind.
 You may also specify neighboring areas to be affected by the changes
@@ -3190,7 +3192,7 @@ Vnum      21185
 Name      makerepair~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The makerepair command will give a mobile the ability to repair damaged
 equipment. 
  
@@ -3227,7 +3229,7 @@ Vnum      21186
 Name      makeshop~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The makeshop command will turn a mobile into a shop.
  
 Say shopset or shopstat to be transferred to those rooms.
@@ -3263,7 +3265,7 @@ Vnum      21187
 Name      mpedit~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows online editing of a Mobile Prog.
 For more detailed information, please view help mpedit.
 ~
@@ -3284,7 +3286,7 @@ Vnum      21188
 Name      mpstat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The Mpstat command will display all of the mobile programs on a particular
 mob.
  
@@ -3307,7 +3309,7 @@ Vnum      21189
 Name      mpcopy~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will copy an mprog from one mobile to another.
 For exact syntax, type mpcopy.
 ~
@@ -3328,7 +3330,7 @@ Vnum      21190
 Name      opedit~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This is the command to edit or create a program on an object.
 For lots more help, see help opedit
 ~
@@ -3349,7 +3351,7 @@ Vnum      21191
 Name      opstat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display all the object programs on a particular object.
  
 Usage: opstat <obj keyword/vnum>
@@ -3371,7 +3373,7 @@ Vnum      21192
 Name      opcopy~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Opcopy will copy the mud prog of an object to another object.
 For exact syntax, please type opcopy
 ~
@@ -3392,7 +3394,7 @@ Vnum      21193
 Name      repairset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The repairset command allows you to set various aspects of a repair shop.
 For lots more information, see help repairset
 ~
@@ -3413,7 +3415,7 @@ Vnum      21194
 Name      repairshops~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display information on all the repair shops in the MUD.
 Try typing it now.
 ~
@@ -3434,7 +3436,7 @@ Vnum      21195
 Name      repairstat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The repairstat command will display detailed statistics on a certain
 mobiles repair shop.
 
@@ -3457,7 +3459,7 @@ Vnum      21196
 Name      rpedit~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows the creation and editing of a room program.
 For more information, see help rpedit
 ~
@@ -3478,7 +3480,7 @@ Vnum      21197
 Name      rpstat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command displays all the programs on a room.
  
 Test it out now.
@@ -3508,7 +3510,7 @@ Vnum      21198
 Name      shops~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The shops command displays information on all the shops in the MUD.
 Test it out now.
 ~
@@ -3529,7 +3531,7 @@ Vnum      21199
 Name      shopset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Shopset allows you to change details about a specific shop.
 See help shopset for information.
 ~
@@ -3550,7 +3552,7 @@ Vnum      21200
 Name      shopstat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display statistics on a particular shop.
 Test it using shopstat 7031
 ~
@@ -3571,7 +3573,7 @@ Vnum      21201
 Name      showweather~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command displays a whole heap of information on the weather.
 ~
 #EXIT
@@ -3591,7 +3593,7 @@ Vnum      21202
 Name      setweather~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to set the weather for an area.
 ~
 #EXIT
@@ -3611,7 +3613,7 @@ Vnum      21203
 Name      aset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The Aset command is used to set area information, such as author, filename,
 vnums used, levels, etc.
  
@@ -3634,7 +3636,7 @@ Vnum      21204
 Name      astat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display information on an area.
  
 Usage: astat <filename>
@@ -3658,7 +3660,7 @@ Vnum      21205
 Name      disconnect~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will forcibly boot a character from the MUD.
 ~
 #EXIT
@@ -3678,7 +3680,7 @@ Vnum      21206
 Name      echo~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display the specified text to everyone in the current room.
 ~
 #EXIT
@@ -3698,7 +3700,7 @@ Vnum      21207
 Name      foldarea~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The foldarea command is used to save an area file, generally after you
 have edited it.
 ~
@@ -3719,7 +3721,7 @@ Vnum      21208
 Name      Log~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The log command will cause all of a characters commands to be logged into
 the log file.
  
@@ -3742,7 +3744,7 @@ Vnum      21209
 Name      makewizlist~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will re-make the wizlist using the levels from all of the MUD's
 pfiles.
 ~
@@ -3763,7 +3765,7 @@ Vnum      21210
 Name      makeslay~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command creates a new slay type, with the default options.
 Once it is created, you then use setslay to edit it.
 ~
@@ -3784,7 +3786,7 @@ Vnum      21211
 Name      morphset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The morphset command is used to set various aspects of a new morph.
 Type morphset for more information.
 ~
@@ -3805,7 +3807,7 @@ Vnum      21212
 Name      morphstat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Morphstat displays information on a particular morph.
  
 For example: morphstat 1010
@@ -3827,7 +3829,7 @@ Vnum      21213
 Name      morphcreate~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command is used for the creation of a new morph type.
  
 Alternatively, this command can be used to copy an existing morphtype.
@@ -3852,7 +3854,7 @@ Vnum      21214
 Name      morphdestroy~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command deletes a morph type.
 ~
 #EXIT
@@ -3872,7 +3874,7 @@ Vnum      21215
 Name      morphlist~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will list all the morphs available.
  
 Try it out.
@@ -3894,7 +3896,7 @@ Vnum      21216
 Name      skills~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command allows you to view exactly what skills, and what level they
 have practiced to, a player has.
  
@@ -3917,7 +3919,7 @@ Vnum      21217
 Name      system~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      System will send whatever text you tell it to, to everyone on the MUD.
  
 ie: system Testing 1 2 3
@@ -3940,7 +3942,7 @@ Vnum      21218
 Name      slay~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will instantly kill a character. An optional type can also be
 provided.
 Use just the word slay to see the current list of slay types available.
@@ -3964,7 +3966,7 @@ Vnum      21219
 Name      setdeity~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will set all aspects of a deity. 
 Type setdeity for information.
 ~
@@ -3985,7 +3987,7 @@ Vnum      21220
 Name      scatter~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will throw a character to a random location in the MUD.
 Note that the character doesn't have to be currently connected for this
 to work.
@@ -4007,7 +4009,7 @@ Vnum      21221
 Name      strew~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The strew command allows you to toss all of a character or mobiles
 inventory or coins wildly over the MUD.
  
@@ -4033,7 +4035,7 @@ Vnum      21222
 Name      setslay~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The setslay command is used to customize a particular type of slay.
 see help setslay for more details.
 ~
@@ -4054,7 +4056,7 @@ Vnum      21223
 Name      showslay~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display information on a particular slay.
  
 For example, showslay mech
@@ -4076,7 +4078,7 @@ Vnum      21224
 Name      voice~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command displays to the entire MUD whatever text you passed it,
 preceded by The Voice of God says:
  
@@ -4100,7 +4102,7 @@ Vnum      21225
 Name      allow~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will remove a site from the ban list.
  
 Usage: allow <address>
@@ -4122,7 +4124,7 @@ Vnum      21226
 Name      ban~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will ban an address from connecting to the MUD.
  
 Usage: ban <address>
@@ -4146,7 +4148,7 @@ Vnum      21227
 Name      boards~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display statistics on all the boards in the game.
  
 Try it now.
@@ -4168,7 +4170,7 @@ Vnum      21228
 Name      bset~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command is used to set various aspects of a board.
 See help bset for more information.
 ~
@@ -4189,7 +4191,7 @@ Vnum      21229
 Name      bstat~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display information on a specific board.
  
 Usage: bstat <board filename>
@@ -4213,7 +4215,7 @@ Vnum      21230
 Name      comment~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The comment command essentially treats players like a bulletin board.
 This is so notes can be made of any disciplinary action that has been
 taken, etc.
@@ -4237,7 +4239,7 @@ Vnum      21231
 Name      deny~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Deny will stop a player being able to log in, and will throw them
 immediately out of the game. A Deny will persist past a reboot or crash, and
 can only be removed by either loading up the character and doing an 
@@ -4260,7 +4262,7 @@ Vnum      21232
 Name      dmesg~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will display the contents of the bootlog.
 ~
 #EXIT
@@ -4280,7 +4282,7 @@ Vnum      21233
 Name      delay~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will delay a victim for a specified number of rounds.
  
 Usage: delay <character> <number of rounds>
@@ -4302,7 +4304,7 @@ Vnum      21234
 Name      forceclose~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command forcibly closes a descriptor. If you don't know EXACTLY
 what you are doing here, DON'T TOUCH IT.
 ~
@@ -4323,7 +4325,7 @@ Vnum      21235
 Name      freeze~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Freeze will prevent a character from issuing any commands. 
 To unfreeze a character, simply freeze them again.
 ~
@@ -4344,7 +4346,7 @@ Vnum      21236
 Name      khistory~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Khistory will list the last few mobs killed by a player.
 ~
 #EXIT
@@ -4364,7 +4366,7 @@ Vnum      21237
 Name      litterbug~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The litterbug command allows/prevents players from dropping objects.
 ~
 #EXIT
@@ -4384,7 +4386,7 @@ Vnum      21238
 Name      makeboard~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will create a board. You should then use bset to set up
 all the attributes of the board.
 ~
@@ -4405,7 +4407,7 @@ Vnum      21239
 Name      moblog~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Please tell me. :)
 ~
 #EXIT
@@ -4425,7 +4427,7 @@ Vnum      21240
 Name      reboot~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This command will cause the mud to start a 5 minute countdown, and then
 reboot.
  
@@ -4449,7 +4451,7 @@ Vnum      21241
 Name      snoop~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The snoop command will allow you to see exactly what text is going to,
 and coming from, a character.
  
@@ -4472,7 +4474,7 @@ Vnum      21242
 Name      warn~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This will send a warning to a certain group of people. Either all those
 of one particular class, race, or host site.
 ~
@@ -4493,7 +4495,7 @@ Vnum      21243
 Name      watch~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The watch command is very similar to the log command, except it logs
 it to your own personal watch file.
  
@@ -4516,7 +4518,7 @@ Vnum      21244
 Name      fixchar~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Fixchar will unequip a character, check all their stats, affects and the like
 are correct, and then re-equip them. Use if something really weird happens
 and a character is permenantly affected by something, or something similar.
@@ -4538,7 +4540,7 @@ Vnum      21245
 Name      newpass~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The newpass command allows you to change a characters password.
 If the target is offline, you will need to load their pfile by using the 
 loadup command before you try to change their password.
@@ -4560,7 +4562,7 @@ Vnum      21246
 Name      Should you be here ?~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You aren't supposed to be in here. This is merely to demonstrate the rap
 command. Use goto 21128 to leave.
 ~
@@ -4579,7 +4581,7 @@ Vnum      21247
 Name      Engulfed in a Swirling Mass of Void Space~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 #ENDROOM
 
 #ROOM
@@ -4587,7 +4589,7 @@ Vnum      21248
 Name      Engulfed in a Swirling Mass of Void Space~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 #ENDROOM
 
 #ROOM
@@ -4595,7 +4597,7 @@ Vnum      21249
 Name      Engulfed in a Swirling Mass of Void Space~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 #ENDROOM
 
 #ROOM
@@ -4603,7 +4605,7 @@ Vnum      21299
 Name      Engulfed in a Swirling Mass of Void Space~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 #ENDROOM
 
 #ENDAREA

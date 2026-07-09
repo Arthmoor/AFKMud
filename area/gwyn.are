@@ -4,7 +4,7 @@ Version         1
 Name            Gwyn al'Fer~
 Author          Raine/Karangi~
 Vnums           2850 2949
-Continent       one~
+Continent       One~
 Coordinates     911 932
 Dates           0 0
 Ranges          0 10 0 115
@@ -12,14 +12,16 @@ ResetMsg        Glittering sparkles of divine favour shower over everyone...~
 ResetFreq       5
 Flags           noastral noportal nosummon noscry noteleport~
 Treasure        20 74 85 93 20 50 60 75
+WeatherCoords   0 0
+
 #ENDAREADATA
 
 #MOBILE
 Vnum      2850
 Keywords  faeia quenath keeper abecedarium~
-Race      high-elf~
+Race      High-Elf~
 Class     Cleric~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Faeia Quenath~
@@ -181,9 +183,9 @@ say CHALLENGE.
 #MOBILE
 Vnum      2851
 Keywords  nynae languages abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Lady Nynae~
@@ -254,9 +256,9 @@ say LANGUAGES, and the LEARNING and USING of them.
 #MOBILE
 Vnum      2852
 Keywords  raemon channels abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lord Raemon~
@@ -355,9 +357,9 @@ say CHANNELS, how to TOGGLE, SILENT rooms, SOCIALS, GROUPTELL and EMOTES.
 #MOBILE
 Vnum      2853
 Keywords  vaelyn rules abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Vaelyn~
@@ -469,9 +471,9 @@ say Your passwords should be kept private and strictly confidential.
 #MOBILE
 Vnum      2854
 Keywords  azartas configuration abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lord Azartas~
@@ -698,9 +700,9 @@ say If you need further information, please type HELP CONFIG.
 #MOBILE
 Vnum      2855
 Keywords  aringarde personal commands abecedarium~
-Race      human~
+Race      Human~
 Class     Paladin~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Sir Aringarde~
@@ -835,9 +837,9 @@ say Also REPORT, EXIT and COMPARE.
 #MOBILE
 Vnum      2856
 Keywords  t'aesa taesa offensive abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Lady T'aesa~
@@ -962,9 +964,9 @@ say When you have killed it, bring me his chains as proof.
 #MOBILE
 Vnum      2857
 Keywords  kyr defensive abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Kyr~
@@ -1061,9 +1063,9 @@ say DEFENSE, WIMPY, FLEE, RECALL and RETREAT.
 #MOBILE
 Vnum      2858
 Keywords  janos pk abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lord Janos~
@@ -1150,9 +1152,9 @@ say PK, GUIDELINES, PEACEFUL, and DEADLY.
 #MOBILE
 Vnum      2859
 Keywords  khirelle personal information abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Khirelle~
@@ -1297,9 +1299,9 @@ say As well as SIT, REST, SLEEP, STAND and WAKE.
 #MOBILE
 Vnum      2860
 Keywords  henathe dt abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Lady Henathe~
@@ -1438,9 +1440,9 @@ say Also HINTS about it, EFFECTS of death, DECAY and SUPPLICATE.
 #MOBILE
 Vnum      2861
 Keywords  sienaya healer abecedarium~
-Race      human~
+Race      Human~
 Class     Cleric~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Specfun   spec_cast_adept~
@@ -1474,9 +1476,9 @@ say Feel free to come by anytime. I would be happy to heal you.
 #MOBILE
 Vnum      2862
 Keywords  dwynian miscellaneous abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Dwynian~
@@ -1609,9 +1611,9 @@ say Also, GUILDING and TITLES.
 #MOBILE
 Vnum      2863
 Keywords  librarian veteran abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Librarian~
@@ -1740,9 +1742,9 @@ say Or, if you wish, about the CATACOMBS.
 #MOBILE
 Vnum      2864
 Keywords  marissa apothecarist abecedarium~
-Race      half-elf~
+Race      Half-Elf~
 Class     Mage~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Marissa~
@@ -1782,7 +1784,7 @@ Vnum      2865
 Keywords  kargynt abecedarium~
 Race      magical~
 Class     Mage~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The kargynt~
@@ -1835,9 +1837,9 @@ Comlist   emote growls threateningly, holding his chains protectively...
 #MOBILE
 Vnum      2866
 Keywords  khirana public information abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Khirana~
@@ -1995,9 +1997,9 @@ say You can also ask about the STRONGBOX.
 #MOBILE
 Vnum      2867
 Keywords  perina receptionist abecedarium red dragon~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Perina~
@@ -2043,9 +2045,9 @@ say So if you are ready to leave the lands, you can type RENT.
 #MOBILE
 Vnum      2868
 Keywords  guardian meia challenge abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A guardian of Meia~
@@ -2079,9 +2081,9 @@ mpecho Speak the words, "&RI am ready&D", and you will be allowed to leave.
 #MOBILE
 Vnum      2869
 Keywords  dalgren human racemaster abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Dalgren~
@@ -2133,9 +2135,9 @@ Comlist   say He resides in the town on the coast of the Misty Sea.
 #MOBILE
 Vnum      2870
 Keywords  silcorne hi-elf elf racemaster abecedarium~
-Race      high-elf~
+Race      High-Elf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Silcorne~
@@ -2187,9 +2189,9 @@ Comlist   say He wanders the citadel of our forefathers.
 #MOBILE
 Vnum      2871
 Keywords  atheia pixie racemaster abecedarium~
-Race      pixie~
+Race      Pixie~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Atheia~
@@ -2243,9 +2245,9 @@ Comlist   say He is within a magical grove at the heart of the pixie kingdom.
 #MOBILE
 Vnum      2872
 Keywords  hedrocel wild-elf elf racemaster abecedarium~
-Race      wild-elf~
+Race      Wild-Elf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Hedrocel~
@@ -2298,9 +2300,9 @@ Comlist   say He resides upon the mystic tree rising above a marbled head.
 #MOBILE
 Vnum      2873
 Keywords  krelfaere drow racemaster abecedarium~
-Race      drow~
+Race      Drow~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Krelfaere~
@@ -2352,9 +2354,9 @@ Comlist   say He wanders northward from Thingal's city, spying upon our deadlies
 #MOBILE
 Vnum      2874
 Keywords  khaz dwarf racemaster abecedarium~
-Race      dwarf~
+Race      Dwarf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Khaz~
@@ -2408,9 +2410,9 @@ Comlist   say He walks the ancient fortress of our bloodkin.
 #MOBILE
 Vnum      2875
 Keywords  andak duergar racemaster abecedarium~
-Race      duergar~
+Race      Duergar~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Andak~
@@ -2462,9 +2464,9 @@ Comlist   say He walks among the subterranean shadows not far from the halfling 
 #MOBILE
 Vnum      2876
 Keywords  epahn gnome racemaster abecedarium~
-Race      gnome~
+Race      Gnome~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Epahn~
@@ -2515,9 +2517,9 @@ Comlist   say He quests for pupils in our craggy homeland.
 #MOBILE
 Vnum      2877
 Keywords  aeredian half-elf racemaster abecedarium~
-Race      half-elf~
+Race      Half-Elf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Aeredian ~
@@ -2570,9 +2572,9 @@ Comlist   say He wanders in the city at the foot of Mount Olympus.
 #MOBILE
 Vnum      2878
 Keywords  racemaster abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     racemaster~
@@ -2596,9 +2598,9 @@ Bodyparts head heart~
 #MOBILE
 Vnum      2879
 Keywords  alienne halfling racemaster abecedarium~
-Race      halfling~
+Race      Halfling~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Alienne~
@@ -2650,9 +2652,9 @@ Comlist   say He resides in the halfling city, and may be found walking about th
 #MOBILE
 Vnum      2880
 Keywords  niestin half-orc racemaster abecedarium~
-Race      half-orc~
+Race      Half-Orc~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Niestin~
@@ -2704,9 +2706,9 @@ Comlist   say He wanders nearest to the city raised by our orcish kin.
 #MOBILE
 Vnum      2881
 Keywords  fre half-troll racemaster abecedarium~
-Race      half-troll~
+Race      Half-Troll~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Fre~
@@ -2759,9 +2761,9 @@ Comlist   say He wanders near our trollish kin within cavernous routes.
 #MOBILE
 Vnum      2882
 Keywords  geirjjir half-ogre racemaster abecedarium~
-Race      half-ogre~
+Race      Half-Ogre~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Geirjjir~
@@ -2813,9 +2815,9 @@ Comlist   say He wanders between the forts of our orcish kin and our kindred foe
 #MOBILE
 Vnum      2883
 Keywords  kisimbwachi insectoid racemaster abecedarium~
-Race      insectoid~
+Race      Insectoid~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Kisimbwachi~
@@ -2867,9 +2869,9 @@ Comlist   say He walks within the city across the ocean from the Graecian Empire
 #MOBILE
 Vnum      2884
 Keywords  clea centaur racemaster abecedarium~
-Race      centaur~
+Race      Centaur~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Clea~
@@ -2922,9 +2924,9 @@ Comlist   say He travels near the nest of the silver hawk.
 #MOBILE
 Vnum      2885
 Keywords  ochitaru gith racemaster abecedarium~
-Race      gith~
+Race      Gith~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Ochitaru~
@@ -2977,9 +2979,9 @@ Comlist   say He roves within the ruins just past Fort Perioeci.
 #MOBILE
 Vnum      2886
 Keywords  bandrek minotaur racemaster abecedarium~
-Race      minotaur~
+Race      Minotaur~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Bandrek~
@@ -3032,9 +3034,9 @@ Comlist   say He may be found within the mazy trap of Telamon's palace.
 #MOBILE
 Vnum      2887
 Keywords  hrissthzak iguanadon racemaster abecedarium~
-Race      iguanadon~
+Race      Iguanadon~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Hrissthzak~
@@ -3086,9 +3088,9 @@ Comlist   say He walks among displacer beasts and swarming insects.
 #MOBILE
 Vnum      2888
 Keywords  ceira monk guildmistress abecedarium~
-Race      human~
+Race      Human~
 Class     Monk~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Ceira~
@@ -3137,9 +3139,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2889
 Keywords  karnghaten warrior guildmaster abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Karnghaten~
@@ -3187,9 +3189,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2890
 Keywords  isomis rogue guildmaster abecedarium~
-Race      human~
+Race      Human~
 Class     Rogue~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Isomis~
@@ -3237,9 +3239,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2891
 Keywords  olianos cleric guildmaster abecedarium~
-Race      human~
+Race      Human~
 Class     Cleric~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Olianos~
@@ -3287,9 +3289,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2892
 Keywords  ilara bard guildmistress abecedarium~
-Race      human~
+Race      Human~
 Class     Bard~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Ilara~
@@ -3338,9 +3340,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2893
 Keywords  miekkin ranger guildmistress abecedarium~
-Race      human~
+Race      Human~
 Class     Ranger~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Miekkin~
@@ -3388,9 +3390,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2894
 Keywords  ursleia druid guildmistress abecedarium~
-Race      human~
+Race      Human~
 Class     Druid~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Ursleia~
@@ -3438,9 +3440,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2895
 Keywords  sekbisde mage guildmaster abecedarium~
-Race      human~
+Race      Human~
 Class     Mage~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Sekbisde~
@@ -3489,9 +3491,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2896
 Keywords  ziantos necromancer guildmaster abecedarium~
-Race      human~
+Race      Human~
 Class     Necromancer~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Ziantos~
@@ -3540,9 +3542,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2897
 Keywords  tharenn paladin guildmaster abecedarium~
-Race      human~
+Race      Human~
 Class     Paladin~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Tharenn~
@@ -3590,9 +3592,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2898
 Keywords  chiuris antipaladin guildmistress abecedarium~
-Race      human~
+Race      Human~
 Class     Antipaladin~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Chiuris~
@@ -3642,9 +3644,9 @@ say For more information, type HELP PRACTICE.
 #MOBILE
 Vnum      2899
 Keywords  Slurigak sahuagin racemaster abecedarium~
-Race      sahuagin~
+Race      Sahuagin~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Slurigak~
@@ -3698,9 +3700,9 @@ Comlist   say He may be found near the island of the iron birds.
 #MOBILE
 Vnum      2901
 Keywords  racemaster sentinel abecedarium~
-Race      half-elf~
+Race      Half-Elf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Sentinel of the Enclave~
@@ -3748,9 +3750,9 @@ mpforce $n u
 #MOBILE
 Vnum      2902
 Keywords  guildmaster sentinel abecedarium~
-Race      half-elf~
+Race      Half-Elf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Sentinel of the Guildhall~
@@ -3798,9 +3800,9 @@ Comlist   say Halt! Who goes there, FRIEND or FOE?
 #MOBILE
 Vnum      2904
 Keywords  eidwydd shopkeeper abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Eidwydd~
@@ -3833,9 +3835,9 @@ say I suggest typing LIST first.
 #MOBILE
 Vnum      2905
 Keywords  zepharn movement mounts abecedarium~
-Race      wild-elf~
+Race      Wild-Elf~
 Class     Ranger~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Zepharn~
@@ -3901,9 +3903,9 @@ say She stands at the gate of this village, guiding all who pass through.
 #MOBILE
 Vnum      2906
 Keywords  hevolas survey overland abecedarium~
-Race      wild-elf~
+Race      Wild-Elf~
 Class     Ranger~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Hevolas~
@@ -3941,9 +3943,9 @@ say survey now.
 #MOBILE
 Vnum      2907
 Keywords  beglan overland abecedarium~
-Race      wild-elf~
+Race      Wild-Elf~
 Class     Ranger~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Beglan~
@@ -3974,9 +3976,9 @@ say your viewing radius while on the overland, making it easier to navigate.
 #MOBILE
 Vnum      2908
 Keywords  gaelin overland abecedarium~
-Race      wild-elf~
+Race      Wild-Elf~
 Class     Ranger~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Gaelin~
@@ -4044,9 +4046,9 @@ say wise thing to do really). It is possible to run while mounted.
 #MOBILE
 Vnum      2909
 Keywords  lundgren stablemaster abecedarium~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lundgren~
@@ -4082,7 +4084,7 @@ Vnum      2910
 Keywords  pony abecedarium~
 Race      horse~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A pony~
@@ -4106,7 +4108,7 @@ Vnum      2911
 Keywords  riding horse abecedarium~
 Race      horse~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A riding horse~
@@ -4127,9 +4129,9 @@ Bodyparts head legs heart brains guts ear eye tail hooves~
 #MOBILE
 Vnum      2912
 Keywords  rastur smith abecedarium~
-Race      dwarf~
+Race      Dwarf~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Rastur~
@@ -4172,7 +4174,7 @@ Vnum      2913
 Keywords  statue meia carving abecedarium~
 Race      golem~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     A statue of Meia~
@@ -4253,7 +4255,7 @@ Vnum      2914
 Keywords  sentinel meia~
 Race      golem~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Sentinel of Meia~
@@ -4287,9 +4289,9 @@ endif
 #MOBILE
 Vnum      2915
 Keywords  banker kedaoa abecedarium 'Kedaoa'~
-Race      gnome~
+Race      Gnome~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Kedaoa~
@@ -4313,9 +4315,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      2947
 Keywords  hvak1 advancer~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     Hungrily, a hollow voice~
@@ -4334,9 +4336,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      2948
 Keywords  hvak2 advancer~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A rasping voice~
@@ -4355,9 +4357,9 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MOBILE
 Vnum      2949
 Keywords  Last mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
@@ -5256,7 +5258,7 @@ Keywords  wooden shield abecedarium~
 Type      armor~
 Short     A wooden Abecedarium shield~
 Long      A wooden shield engraved with the abecedarium symbol lies here.~
-Flags     donated antimage antinecro antimonk~
+Flags     antimage donated antimonk antinecro~
 WFlags    take shield~
 Values    7 7 0 14 13 0 0 0 0 0 0
 Stats     6 449 -2 9999 0 None None None
@@ -5770,10 +5772,6 @@ Direction west~
 ToRoom    2851
 #ENDEXIT
 
-Reset M 2850 1 2850 -1 -1 -1 100
-Reset O 2912 1 2850 -1 -1 -1 100
-Reset O 2913 1 2850 -1 -1 -1 100
-
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -5835,6 +5833,9 @@ endif
 ~
 #ENDPROG
 
+Reset M 2850 1 2850 -1 -1 -1 100
+Reset O 2912 1 2850 -1 -1 -1 100
+Reset O 2913 1 2850 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -5858,7 +5859,6 @@ Direction west~
 ToRoom    2852
 #ENDEXIT
 
-Reset M 2851 1 2851 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -5881,6 +5881,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2851 1 2851 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -5904,7 +5905,6 @@ Direction east~
 ToRoom    2851
 #ENDEXIT
 
-Reset M 2852 1 2852 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -5927,6 +5927,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2852 1 2852 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -5950,7 +5951,6 @@ Direction south~
 ToRoom    2863
 #ENDEXIT
 
-Reset M 2853 1 2853 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -5981,6 +5981,7 @@ For more information on the rules, type HELP RULES.
 ~
 #ENDEXDESC
 
+Reset M 2853 1 2853 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6004,7 +6005,6 @@ Direction south~
 ToRoom    2852
 #ENDEXIT
 
-Reset M 2854 1 2854 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6027,6 +6027,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2854 1 2854 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6050,7 +6051,6 @@ Direction south~
 ToRoom    2854
 #ENDEXIT
 
-Reset M 2855 1 2855 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6073,6 +6073,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2855 1 2855 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6103,7 +6104,6 @@ Direction down~
 ToRoom    2911
 #ENDEXIT
 
-Reset M 2856 1 2856 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6126,6 +6126,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2856 1 2856 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6149,7 +6150,6 @@ Direction west~
 ToRoom    2860
 #ENDEXIT
 
-Reset M 2857 1 2857 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6172,6 +6172,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2857 1 2857 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6195,7 +6196,6 @@ Direction south~
 ToRoom    2853
 #ENDEXIT
 
-Reset M 2858 1 2858 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6218,6 +6218,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2858 1 2858 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6241,7 +6242,6 @@ Direction south~
 ToRoom    2855
 #ENDEXIT
 
-Reset M 2859 1 2859 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6264,6 +6264,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2859 1 2859 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6290,7 +6291,6 @@ Direction west~
 ToRoom    2859
 #ENDEXIT
 
-Reset M 2866 1 2860 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6313,6 +6313,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2866 1 2860 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6342,7 +6343,6 @@ Direction down~
 ToRoom    2913
 #ENDEXIT
 
-Reset M 2860 1 2861 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6365,6 +6365,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2860 1 2861 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6407,7 +6408,6 @@ Direction west~
 ToRoom    2917
 #ENDEXIT
 
-Reset M 2862 1 2863 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6430,6 +6430,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2862 1 2863 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -6530,7 +6531,6 @@ Direction south~
 ToRoom    2850
 #ENDEXIT
 
-Reset O 11008 1 2866 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -6553,6 +6553,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset O 11008 1 2866 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -7732,7 +7733,6 @@ Direction north~
 ToRoom    2928
 #ENDEXIT
 
-Reset M 2867 1 2914 -1 -1 -1 100
 #EXDESC
 ExDescKey    book~
 ExDesc       It seems to be a book of accounts about the customers of the Inn and
@@ -7741,6 +7741,7 @@ Perina swiftly snatches up the book and inquires kindly after you.
 ~
 #ENDEXDESC
 
+Reset M 2867 1 2914 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -7825,7 +7826,6 @@ Direction west~
 ToRoom    2850
 #ENDEXIT
 
-Reset M 2905 1 2917 -1 -1 -1 100
 #EXDESC
 ExDescKey    MAP~
 ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as follows:
@@ -7848,6 +7848,7 @@ E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
 ~
 #ENDEXDESC
 
+Reset M 2905 1 2917 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -8036,7 +8037,6 @@ surfaces. Glowing motes of light illuminate the room with a pleasant
 bluish white light. The air here is cool and dry. There is no furniture
 or furnishings in this bare room.
 ~
-Reset M 2913 1 2926 -1 -1 -1 100
 #MUDPROG
 Progtype  entry_prog~
 Arglist   100~
@@ -8056,6 +8056,7 @@ mpecho The guardian of Meia disappears in a flash of light.
 ~
 #ENDPROG
 
+Reset M 2913 1 2926 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -8093,8 +8094,6 @@ Direction west~
 ToRoom    2928
 #ENDEXIT
 
-Reset M 2914 1 2927 -1 -1 -1 100
-Reset O 2905 1 2927 -1 -1 -1 100
 #MUDPROG
 Progtype  act_prog~
 Arglist   p from the north.~
@@ -8126,6 +8125,8 @@ mpechoat 0.$n &YThe Librarian waves kindly and leaves south.&D
 ~
 #ENDPROG
 
+Reset M 2914 1 2927 -1 -1 -1 100
+Reset O 2905 1 2927 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -8219,7 +8220,6 @@ Direction west~
 ToRoom    2916
 #ENDEXIT
 
-Reset M 2908 1 2930 -1 -1 -1 100
 #EXDESC
 ExDescKey    map signboard~
 ExDesc       &C                            [A]         [8]
@@ -8245,6 +8245,7 @@ A. The Abecedarium
 ~
 #ENDEXDESC
 
+Reset M 2908 1 2930 -1 -1 -1 100
 #ENDROOM
 
 #ROOM

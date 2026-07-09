@@ -4,7 +4,7 @@ Version         1
 Name            Halls of Creation~
 Author          Samson~
 Vnums           100 199
-Continent       immortal~
+Continent       Immortal~
 Coordinates     472 381
 Dates           902200000 902200000
 Ranges          0 1 0 115
@@ -12,14 +12,16 @@ ResetMsg        A strange pulsing sound reverberates in the background...~
 ResetFreq       240
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport~
 Treasure        20 74 85 93 20 50 60 75
+WeatherCoords   0 0
+
 #ENDAREADATA
 
 #MOBILE
 Vnum      100
 Keywords  first mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created first mob~
@@ -36,9 +38,9 @@ Actflags  npc proto~
 #MOBILE
 Vnum      199
 Keywords  spacermob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created spacermob~

@@ -4,14 +4,16 @@ Version         1
 Name            The Astral Plane~
 Author          Elquin~
 Vnums           4350 4449
-Continent       astral~
+Continent       Astral~
 Coordinates     0 0
-Ranges          1 115 0 115
 Dates           895000000 895000000
+Ranges          1 115 0 115
 ResetMsg        Masses of energy spiral past you.~
 ResetFreq       30
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport nobeacon~
 Treasure        20 74 85 93 20 50 60 75
+WeatherCoords   0 0
+
 #ENDAREADATA
 
 #MOBILE
@@ -19,7 +21,7 @@ Vnum      4350
 Keywords  illithid traveller mindflayer~
 Race      humanoid~
 Class     Mage~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Specfun   spec_cast_mage~
@@ -45,9 +47,9 @@ Defenses  dispelmagic shield stoneskin teleport~
 #MOBILE
 Vnum      4351
 Keywords  githyanki anti paladin~
-Race      gith~
+Race      Gith~
 Class     Antipaladin~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     &W&wA &Ggith&Wyanki &zantipaladin&w~
@@ -76,7 +78,7 @@ Vnum      4352
 Keywords  tiamat dragon~
 Race      dragon~
 Class     Warrior~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Specfun   spec_breath_any~
@@ -105,9 +107,9 @@ Defenses  parry dodge heal~
 #MOBILE
 Vnum      4449
 Keywords  Last mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
@@ -230,7 +232,7 @@ Vnum      4350
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -276,7 +278,7 @@ Vnum      4351
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -320,7 +322,7 @@ Vnum      4352
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -364,7 +366,7 @@ Vnum      4353
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -408,7 +410,7 @@ Vnum      4354
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -452,7 +454,7 @@ Vnum      4355
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -496,7 +498,7 @@ Vnum      4356
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -542,7 +544,7 @@ Vnum      4357
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -586,7 +588,7 @@ Vnum      4358
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -630,7 +632,7 @@ Vnum      4359
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -676,7 +678,7 @@ Vnum      4360
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -720,7 +722,7 @@ Vnum      4361
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -764,7 +766,7 @@ Vnum      4362
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -808,7 +810,7 @@ Vnum      4363
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -854,7 +856,7 @@ Vnum      4364
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -898,7 +900,7 @@ Vnum      4365
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -942,7 +944,7 @@ Vnum      4366
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -986,7 +988,7 @@ Vnum      4367
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1030,7 +1032,7 @@ Vnum      4368
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1074,7 +1076,7 @@ Vnum      4369
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1118,7 +1120,7 @@ Vnum      4370
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1164,7 +1166,7 @@ Vnum      4371
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1208,7 +1210,7 @@ Vnum      4372
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1254,7 +1256,7 @@ Vnum      4373
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1293,7 +1295,7 @@ Vnum      4374
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1337,7 +1339,7 @@ Vnum      4375
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1383,7 +1385,7 @@ Vnum      4376
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1427,7 +1429,7 @@ Vnum      4377
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1473,7 +1475,7 @@ Vnum      4378
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1517,7 +1519,7 @@ Vnum      4379
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1561,7 +1563,7 @@ Vnum      4380
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1605,7 +1607,7 @@ Vnum      4381
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1649,7 +1651,7 @@ Vnum      4382
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1693,7 +1695,7 @@ Vnum      4383
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1737,7 +1739,7 @@ Vnum      4384
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1781,7 +1783,7 @@ Vnum      4385
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1825,7 +1827,7 @@ Vnum      4386
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1871,7 +1873,7 @@ Vnum      4387
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1915,7 +1917,7 @@ Vnum      4388
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -1961,7 +1963,7 @@ Vnum      4389
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2005,7 +2007,7 @@ Vnum      4390
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2049,7 +2051,7 @@ Vnum      4391
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2093,7 +2095,7 @@ Vnum      4392
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2137,7 +2139,7 @@ Vnum      4393
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2181,7 +2183,7 @@ Vnum      4394
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2227,7 +2229,7 @@ Vnum      4395
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2271,7 +2273,7 @@ Vnum      4396
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2315,7 +2317,7 @@ Vnum      4397
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2361,7 +2363,7 @@ Vnum      4398
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2405,7 +2407,7 @@ Vnum      4399
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2449,7 +2451,7 @@ Vnum      4400
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2495,7 +2497,7 @@ Vnum      4401
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2539,7 +2541,7 @@ Vnum      4402
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2583,7 +2585,7 @@ Vnum      4403
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2629,7 +2631,7 @@ Vnum      4404
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2675,7 +2677,7 @@ Vnum      4405
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2719,7 +2721,7 @@ Vnum      4406
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2763,7 +2765,7 @@ Vnum      4407
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2807,7 +2809,7 @@ Vnum      4408
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2851,7 +2853,7 @@ Vnum      4409
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2895,7 +2897,7 @@ Vnum      4410
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2939,7 +2941,7 @@ Vnum      4411
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -2985,7 +2987,7 @@ Vnum      4412
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3031,7 +3033,7 @@ Vnum      4413
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3075,7 +3077,7 @@ Vnum      4414
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3121,7 +3123,7 @@ Vnum      4415
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3165,7 +3167,7 @@ Vnum      4416
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3209,7 +3211,7 @@ Vnum      4417
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3253,7 +3255,7 @@ Vnum      4418
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3297,7 +3299,7 @@ Vnum      4419
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3341,7 +3343,7 @@ Vnum      4420
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3385,7 +3387,7 @@ Vnum      4421
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3429,7 +3431,7 @@ Vnum      4422
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3473,7 +3475,7 @@ Vnum      4423
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3517,7 +3519,7 @@ Vnum      4424
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3561,7 +3563,7 @@ Vnum      4425
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3627,7 +3629,7 @@ Vnum      4426
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3671,7 +3673,7 @@ Vnum      4427
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3715,7 +3717,7 @@ Vnum      4428
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3761,7 +3763,7 @@ Vnum      4429
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3825,7 +3827,7 @@ Vnum      4430
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3869,7 +3871,7 @@ Vnum      4431
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3915,7 +3917,7 @@ Vnum      4432
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -3959,7 +3961,7 @@ Vnum      4433
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4003,7 +4005,7 @@ Vnum      4434
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4047,7 +4049,7 @@ Vnum      4435
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4091,7 +4093,7 @@ Vnum      4436
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4135,7 +4137,7 @@ Vnum      4437
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4179,7 +4181,7 @@ Vnum      4438
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4223,7 +4225,7 @@ Vnum      4439
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4269,7 +4271,7 @@ Vnum      4440
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4313,7 +4315,7 @@ Vnum      4441
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4357,7 +4359,7 @@ Vnum      4442
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4403,7 +4405,7 @@ Vnum      4443
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4447,7 +4449,7 @@ Vnum      4444
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4491,7 +4493,7 @@ Vnum      4445
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4565,7 +4567,7 @@ Vnum      4446
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4609,7 +4611,7 @@ Vnum      4447
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4653,7 +4655,7 @@ Vnum      4448
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
@@ -4697,7 +4699,7 @@ Vnum      4449
 Name      The Astral Plane~
 Sector    indoors~
 Flags     indoors norecall~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scenery
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly

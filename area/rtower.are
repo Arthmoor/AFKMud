@@ -4,22 +4,24 @@ Version         1
 Name            The Radiant Tower~
 Author          Raine~
 Vnums           7700 7799
-Continent       one~
+Continent       One~
 Coordinates     911 928
-Ranges          0 10 0 10
 Dates           963014400 963014400
+Ranges          0 10 0 10
 ResetMsg        &BA wave of soft blue light radiates through your surroundings...~
 ResetFreq       5
 Flags           nopkill nocamp noportal nosummon noteleport~
 Treasure        20 74 85 93 20 50 60 75
+WeatherCoords   0 0
+
 #ENDAREADATA
 
 #MOBILE
 Vnum      7700
 Keywords  first mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created first mob~
@@ -39,7 +41,7 @@ Vnum      7701
 Keywords  two clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Two of Clubs~
@@ -66,7 +68,7 @@ Vnum      7702
 Keywords  three clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Three of Clubs~
@@ -93,7 +95,7 @@ Vnum      7703
 Keywords  four clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Four of Clubs~
@@ -120,7 +122,7 @@ Vnum      7704
 Keywords  five clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Five of Clubs~
@@ -147,7 +149,7 @@ Vnum      7705
 Keywords  six clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Six of Clubs~
@@ -174,7 +176,7 @@ Vnum      7706
 Keywords  seven clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Seven of Clubs~
@@ -201,7 +203,7 @@ Vnum      7707
 Keywords  eight clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Eight of Clubs~
@@ -228,7 +230,7 @@ Vnum      7708
 Keywords  nine clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Nine of Clubs~
@@ -255,7 +257,7 @@ Vnum      7709
 Keywords  ten clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ten of Clubs~
@@ -282,7 +284,7 @@ Vnum      7710
 Keywords  jack clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jack of Clubs~
@@ -310,7 +312,7 @@ Vnum      7711
 Keywords  queen clubs rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Queen of Clubs~
@@ -338,7 +340,7 @@ Vnum      7712
 Keywords  king clubs rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The King of Clubs~
@@ -366,7 +368,7 @@ Vnum      7713
 Keywords  ace clubs rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ace of Clubs~
@@ -393,7 +395,7 @@ Vnum      7714
 Keywords  two diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Two of Diamonds~
@@ -420,7 +422,7 @@ Vnum      7715
 Keywords  three diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Three of Diamonds~
@@ -447,7 +449,7 @@ Vnum      7716
 Keywords  four diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Four of Diamonds~
@@ -474,7 +476,7 @@ Vnum      7717
 Keywords  five diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Five of Diamonds~
@@ -501,7 +503,7 @@ Vnum      7718
 Keywords  six diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Six of Diamonds~
@@ -528,7 +530,7 @@ Vnum      7719
 Keywords  seven diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Seven of Diamonds~
@@ -555,7 +557,7 @@ Vnum      7720
 Keywords  eight diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Eight of Diamonds~
@@ -582,7 +584,7 @@ Vnum      7721
 Keywords  nine diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Nine of Diamonds~
@@ -609,7 +611,7 @@ Vnum      7722
 Keywords  ten diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ten of Diamonds~
@@ -636,7 +638,7 @@ Vnum      7723
 Keywords  jack diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jack of Diamonds~
@@ -664,7 +666,7 @@ Vnum      7724
 Keywords  queen diamonds rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Queen of Diamonds~
@@ -692,7 +694,7 @@ Vnum      7725
 Keywords  king diamonds rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The King of Diamonds~
@@ -720,7 +722,7 @@ Vnum      7726
 Keywords  ace diamonds rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ace of Diamonds~
@@ -747,7 +749,7 @@ Vnum      7727
 Keywords  two hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Two of Hearts~
@@ -774,7 +776,7 @@ Vnum      7728
 Keywords  three hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Three of Hearts~
@@ -801,7 +803,7 @@ Vnum      7729
 Keywords  four hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Four of Hearts~
@@ -828,7 +830,7 @@ Vnum      7730
 Keywords  five hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Five of Hearts~
@@ -855,7 +857,7 @@ Vnum      7731
 Keywords  six hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Six of Hearts~
@@ -882,7 +884,7 @@ Vnum      7732
 Keywords  seven hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Seven of Hearts~
@@ -909,7 +911,7 @@ Vnum      7733
 Keywords  eight hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Eight of Hearts~
@@ -936,7 +938,7 @@ Vnum      7734
 Keywords  nine hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Nine of Hearts~
@@ -963,7 +965,7 @@ Vnum      7735
 Keywords  ten hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ten of Hearts~
@@ -990,7 +992,7 @@ Vnum      7736
 Keywords  jack hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jack of Hearts~
@@ -1018,7 +1020,7 @@ Vnum      7737
 Keywords  queen hearts rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Queen of Hearts~
@@ -1046,7 +1048,7 @@ Vnum      7738
 Keywords  king hearts rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The King of Hearts~
@@ -1074,7 +1076,7 @@ Vnum      7739
 Keywords  ace hearts rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ace of Hearts~
@@ -1101,7 +1103,7 @@ Vnum      7740
 Keywords  two spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Two of Spades~
@@ -1128,7 +1130,7 @@ Vnum      7741
 Keywords  three spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Three of Spades~
@@ -1155,7 +1157,7 @@ Vnum      7742
 Keywords  four spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Four of Spades~
@@ -1182,7 +1184,7 @@ Vnum      7743
 Keywords  five spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Five of Spades~
@@ -1209,7 +1211,7 @@ Vnum      7744
 Keywords  six spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Six of Spades~
@@ -1236,7 +1238,7 @@ Vnum      7745
 Keywords  seven spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Seven of Spades~
@@ -1263,7 +1265,7 @@ Vnum      7746
 Keywords  eight spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Eight of Spades~
@@ -1290,7 +1292,7 @@ Vnum      7747
 Keywords  nine spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Nine of Spades~
@@ -1317,7 +1319,7 @@ Vnum      7748
 Keywords  ten spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ten of Spades~
@@ -1344,7 +1346,7 @@ Vnum      7749
 Keywords  jack spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jack of Spades~
@@ -1372,7 +1374,7 @@ Vnum      7750
 Keywords  queen spades rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Queen of Spades~
@@ -1400,7 +1402,7 @@ Vnum      7751
 Keywords  king spades rtower~
 Race      magical~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The King of Spades~
@@ -1428,7 +1430,7 @@ Vnum      7752
 Keywords  ace spades rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ace of Spades~
@@ -1455,7 +1457,7 @@ Vnum      7753
 Keywords  inchworm worm rtower~
 Race      worm~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     An Inchworm~
@@ -1481,7 +1483,7 @@ Vnum      7754
 Keywords  ladybird bug rtower~
 Race      insect~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A Ladybird~
@@ -1506,7 +1508,7 @@ Vnum      7755
 Keywords  ginger cat rtower~
 Race      cat~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Ginger Cat~
@@ -1530,7 +1532,7 @@ Vnum      7756
 Keywords  werehound dog rtower~
 Race      canine~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Werehound~
@@ -1555,7 +1557,7 @@ Vnum      7757
 Keywords  swarm bees rtower~
 Race      insect~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The swarm of bees~
@@ -1579,7 +1581,7 @@ Vnum      7758
 Keywords  baby dragon rtower~
 Race      dragon~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The baby dragon~
@@ -1603,9 +1605,9 @@ Immune    electricity poison~
 #MOBILE
 Vnum      7759
 Keywords  girl rtower~
-Race      human~
+Race      Human~
 Class     Rogue~
-Gender    female~
+Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     The girl~
@@ -1629,9 +1631,9 @@ Bodyparts head legs heart brains~
 #MOBILE
 Vnum      7760
 Keywords  head librarian man rtower~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Head Librarian~
@@ -1654,9 +1656,9 @@ Bodyparts head legs heart brains~
 #MOBILE
 Vnum      7761
 Keywords  librarian figure rtower~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Librarian~
@@ -1679,9 +1681,9 @@ Bodyparts head legs heart brains~
 #MOBILE
 Vnum      7762
 Keywords  caretaker priest rtower~
-Race      human~
+Race      Human~
 Class     Cleric~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The priest of Meia~
@@ -1705,9 +1707,9 @@ Bodyparts head legs heart brains~
 #MOBILE
 Vnum      7763
 Keywords  priest tradiant~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The priest of Meia~
@@ -1730,9 +1732,9 @@ Bodyparts head legs heart brains~
 #MOBILE
 Vnum      7764
 Keywords  sentinel priest rtower~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The priest of Meia~
@@ -1758,7 +1760,7 @@ Vnum      7765
 Keywords  meia's flame rtower~
 Race      dragon~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     Meia's Flame~
@@ -1783,9 +1785,9 @@ Immune    electricity poison~
 #MOBILE
 Vnum      7766
 Keywords  supplicant rtower~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    male~
+Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The supplicant~
@@ -1810,7 +1812,7 @@ Vnum      7767
 Keywords  tinker rtower~
 Race      magical~
 Class     Cleric~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The tinker~
@@ -1860,9 +1862,9 @@ smile
 #MOBILE
 Vnum      7799
 Keywords  Last mob~
-Race      human~
+Race      Human~
 Class     Warrior~
-Gender    neuter~
+Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
@@ -2550,7 +2552,7 @@ Vnum      7700
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand at the northeastern corner of the garden, just beside a rose
 tree dripping paint from its white flowers. Scanning your surroundings
 briefly, you see the expanse of manicured botany stretching into the
@@ -2578,7 +2580,7 @@ Vnum      7701
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking about, you let your gaze wander around the immaculately trimmed
 greenery. The grass is neatly weeded and cut short, and each tree is 
 pruned neatly into a spherical crown. The weather is lovely, neither 
@@ -2610,7 +2612,7 @@ Vnum      7702
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A rose tree stands here, with its snowy blossoms covered with a similar
 striking shade of paint to all the other roses in your vicinity. Moving
 carefully, you manage to avoid getting any of the cold, sticky substance
@@ -2643,7 +2645,7 @@ Vnum      7703
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass crunches noisily underfoot as you move about, but there seems
 to be no lasting damage from your movement. Neatly weeded and trimmed,
 it is a lighter shade of green than the jagged leaves on the trees.
@@ -2675,7 +2677,7 @@ Vnum      7704
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand at the base of a large rose tree. However, its flowers all
 seem to be dripping blood. Upon closer examination, it becomes clear
 that the roses, once a pure white, are actually wet with a thick sticky
@@ -2706,7 +2708,7 @@ Vnum      7705
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Raising your head, you bask for a moment in the warmth of the bright
 sunlight shining down upon you. The sky is a clear blue, and your
 view of the horizon is blocked by a whitewashed wooden fence which
@@ -2738,7 +2740,7 @@ Vnum      7706
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A large rose tree grows here, rooted deeply and surrounded by neatly
 trimmed grass. Its crown has been carefully pruned into a spherical
 shape, and you note that its leaves are a deep shade of forest green.
@@ -2770,7 +2772,7 @@ Vnum      7707
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Here, you come upon a pit leading downwards into the darkness. No matter
 how hard you try, the light you are holding cannot penetrate the shadows
 below. The gaping hole is edged in dangling grasses which grows some
@@ -2801,7 +2803,7 @@ Vnum      7708
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking alongside the white fence encircling the garden, you are surprised
 to bump into a strange person here. Though he possesses a human head, arms
 and legs, his body comprises of a single card, no thicker than stiff board.
@@ -2833,7 +2835,7 @@ Vnum      7709
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You come upon a beautiful rose tree here, similar to all the others
 planted at regular intervals in this garden. The jagged leaves are
 a deep green shade, and you see no sign of fallen foilage upon the
@@ -2870,7 +2872,7 @@ Vnum      7710
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      As you wander about in this enchanted place, you catch sight of a strange
 figure walking about. It resembles a human with a card in place of its
 body. While you consider approaching it, the figure turns sideways, and
@@ -2908,7 +2910,7 @@ Vnum      7711
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Wandering about amidst the trees, you find that all of them are in
 full bloom, including the one growing here before you. The leaves
 bursting forth are a rich, lustrous green, and from the perfection 
@@ -2945,7 +2947,7 @@ Vnum      7712
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking about this part of the garden, you glimpse a glint of metal
 shining in the distance. As you squint, trying to see the source, you
 catch sight of a strange card-man standing on a ladder nearby busily
@@ -2983,7 +2985,7 @@ Vnum      7713
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Standing just beside a large rose tree which has been planted here, you
 move carefully so as to avoid getting dripped upon by the wet paint which
 flows in a viscous manner off the soft white petals, leaving a trail of
@@ -3019,7 +3021,7 @@ Vnum      7714
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass crunches noisily underfoot as you move about, but there seems
 to be no lasting damage from your movement. Neatly weeded and trimmed
 to a length no higher than your ankles, it is a lighter shade of green
@@ -3055,7 +3057,7 @@ Vnum      7715
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking around, you are nearly marked by a patch of red staining the
 grass before you, at the base of a tree bursting with scarlet blooms.
 Closer examination reveals that the roses have actually been painted,
@@ -3087,7 +3089,7 @@ Vnum      7716
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand at the base of a large rose tree, trying to avoid getting
 dripped upon by the wet paint which is apparently unable to cling to
 the velvet petals. The leaves bursting forth are a rich, lustrous green,
@@ -3120,7 +3122,7 @@ Vnum      7717
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Raising your head, you bask for a moment in the warmth of the bright
 sunlight shining down upon you. The sky is a clear blue, and your
 view of the horizon is blocked by a whitewashed wooden fence which
@@ -3158,7 +3160,7 @@ Vnum      7718
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You wander about the rose garden, among the flourishing trees. The leaves
 of each tree are a deep, rich green, with nary a touch of brown to be seen.
 The roses, however, seem to be in a fairly sad state. If they had been left
@@ -3198,7 +3200,7 @@ Vnum      7719
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass in the garden is neatly cut to an ankle-length height. As you
 walk, you can hear the soft crunching of the green stems underfoot.
 However, when you look about, you can see no trace of your passage nor
@@ -3237,7 +3239,7 @@ Vnum      7720
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A rose tree stands nearby here, its blossoms painted with the same
 striking shade of paint as all the other roses in this place. Moving
 carefully, you manage to avoid getting any of the cold, sticky substance
@@ -3278,7 +3280,7 @@ Vnum      7721
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      At this part of the garden, you come upon a curious sight. The grass 
 here has been ground up, as if by the treading of too many feet, and
 a shining hilt atop a slender blade protrudes from the earth. Looking
@@ -3321,7 +3323,7 @@ Vnum      7722
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand at the base of a large rose tree, trying to avoid getting
 dripped upon by the wet paint which is apparently unable to cling to
 the velvet petals. The leaves bursting forth are a rich, lustrous green,
@@ -3361,7 +3363,7 @@ Vnum      7723
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The sky above is a lovely shade of blue, with portions covered over by
 wispy clouds forming exotic shapes in the air. All around, you see the
 fragrant roses in full bloom dripping with carmine paint. To the east
@@ -3393,7 +3395,7 @@ Vnum      7724
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass crunches noisily underfoot as you move about, but there seems
 to be no lasting damage from your movement. Neatly trimmed and weeded,
 it is a lighter shade of green than the jagged leaves on the trees.
@@ -3426,7 +3428,7 @@ Vnum      7725
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You come upon a beautiful rose tree here, similar to all the others
 planted at regular intervals in this garden. The jagged leaves are
 a deep green shade, and you see no sign of fallen foilage upon the
@@ -3464,7 +3466,7 @@ Vnum      7726
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Within the garden, it is easy to see that every meticulous detail has 
 been taken care of. The grass is neatly weeded and trimmed to a regular
 length, and each tree is pruned neatly so that it has a spherical crown.
@@ -3499,7 +3501,7 @@ Vnum      7727
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Soft, jagged-edged leaves brush your face gently as you walk in this
 part of the garden. The tree which grows here is one of the rose species
 and quite short, reaching a height of no more than eight or so feet. Feeling
@@ -3536,7 +3538,7 @@ Vnum      7728
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Within the garden, you see that every meticulous detail has been taken
 care of. The grass is neatly weeded and trimmed to a length no higher
 than your ankles, and each tree is pruned neatly for a spherical crown.
@@ -3572,7 +3574,7 @@ Vnum      7729
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You wander about the rose garden, among the flourishing trees. The leaves
 of each tree are a deep, rich green, with nary a touch of brown to be seen.
 The roses, however, seem to be in a fairly sad state. If they had been left
@@ -3611,7 +3613,7 @@ Vnum      7730
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Wandering about in the coolness of a spring morning, you make your
 way among the manicured grass and blossoming trees planted here. Here
 and there, you see a card-person running away, but for a moment, you
@@ -3646,7 +3648,7 @@ Vnum      7731
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A rose tree stands nearby here, its blossoms painted with the same
 striking shade of paint as all the other roses in this place. Moving
 carefully, you manage to avoid getting any of the cold, sticky substance
@@ -3679,7 +3681,7 @@ Vnum      7732
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You wander about the rose garden, among the flourishing trees. All the 
 roses, once a pure white, are wet with paint in a deep carmine shade, and 
 the nearby grass is splattered with the sticky, viscous liquid as well.
@@ -3710,7 +3712,7 @@ Vnum      7733
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass crunches noisily underfoot as you move about, but there seems
 to be no lasting damage from your movement. Neatly weeded and trimmed
 to a length no higher than your ankles, it is a lighter shade of green
@@ -3751,7 +3753,7 @@ Vnum      7734
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You wander about the rose garden, among the flourishing trees. The leaves
 of each tree are a deep, rich green, with nary a touch of brown to be seen.
 The roses, however, are all covered in sticky scarlet paint. Had they been left
@@ -3788,7 +3790,7 @@ Vnum      7735
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking about, you admire the beauty of the immaculately maintained
 greenery. The grass is neatly weeded and trimmed to ankle-high length,
 and each tree is pruned neatly into a spherical crown. The weather is
@@ -3823,7 +3825,7 @@ Vnum      7736
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand at the base of a large rose tree. Oddly, you notice that its
 flowers all seem to be dripping blood. Upon closer examination, it
 becomes clear that the roses, once a pure white, are actually wet with
@@ -3862,7 +3864,6 @@ Direction down~
 ToRoom    7798
 #ENDEXIT
 
-Reset M 7755 1 7736 -1 -1 -1 100
 #EXDESC
 ExDescKey    sign~
 ExDesc       The sign seems to have grown out of the tree itself, and you can detect
@@ -3875,6 +3876,7 @@ Below, in smaller letters, you can just make out more words...
 ~
 #ENDEXDESC
 
+Reset M 7755 1 7736 -1 -1 -1 100
 #ENDROOM
 
 #ROOM
@@ -3882,7 +3884,7 @@ Vnum      7737
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Standing in the middle of a huge rose garden within a tower, you try
 looking upward to see a sky. Surprisingly enough, there is one, and the
 weather is that of a lovely spring morning. Fluffy white clouds scud
@@ -3919,7 +3921,7 @@ Vnum      7738
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Soft, jagged-edged leaves brush your face gently as you walk in this
 oart of the garden. The tree which grows here is one of the rose species
 and quite small, reaching a height no higher than eight or so feet. Feeling
@@ -3956,7 +3958,7 @@ Vnum      7739
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass crunches noisily underfoot as you move about, but there seems
 to be no lasting damage from your movement. The grass is neatly weeded 
 and trimmed to ankle-high length, and each tree is pruned neatly into
@@ -3988,7 +3990,7 @@ Vnum      7740
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Standing in the middle of a huge rose garden within a tower, you try
 looking upward to see a sky. Surprisingly enough, there is one, and the
 weather is that of a lovely spring morning. The weather is lovely, 
@@ -4022,7 +4024,7 @@ Vnum      7741
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A rose tree stands nearby here, its blossoms painted with the same
 striking shade of paint as all the other roses in this place. Moving
 carefully, you manage to avoid getting any of the cold, sticky substance
@@ -4061,7 +4063,7 @@ Vnum      7742
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      As you walk about, the grass is crushed underfoot, but even as you look
 around guiltily, there is no visible trace of your passing. In fact,
 none of the greenery here bears any signs of ill maintenance. The trees
@@ -4100,7 +4102,7 @@ Vnum      7743
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand by the slender stem of a large rose tree, trying to avoid getting
 dripped upon by the wet paint which covers all the velvet rose petals
 in an uneven layer. The leaves bursting forth are a rich, lustrous green,
@@ -4140,7 +4142,7 @@ Vnum      7744
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      As you wander about in this enchanted rose garden, you meet a strange
 person with the head, arms and legs of a human and a body made up of a
 single card. Shapes and numbers are printed on it, but you fail to note
@@ -4179,7 +4181,7 @@ Vnum      7745
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A healthy rose tree thrives here, rising upon a thick, woody stem and
 sprouting into a crown of fragrant blossoms and lush foilage. The tree
 looks to be well maintained, with no sign of blight upon it anywhere.
@@ -4219,7 +4221,7 @@ Vnum      7746
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      As you roam in this beautiful garden, you take a moment to admire the
 loveliness of the grounds. A clear blue sky is overhead, and the
 grass under your feet is a healthy green colour, with no signs of
@@ -4256,7 +4258,7 @@ Vnum      7747
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A rose tree stands nearby to where you are now, with its blossoms painted
 the same striking carmine shade as all the other roses in this strange
 garden. The leaves of each tree are a deep, lustrous green, with hardly
@@ -4287,7 +4289,7 @@ Vnum      7748
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Here,you stand at the base of a large rose tree, trying to avoid getting
 dripped upon by the wet paint which is apparently unable to cling to
 the velvet petals. The leaves bursting forth are a vibrant shade of green,
@@ -4321,7 +4323,7 @@ Vnum      7749
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass crunches noisily underfoot as you move about, but there seems
 to be no lasting damage from your movement. Neatly weeded and trimmed
 to a length no higher than your ankles, it is a lighter shade of green
@@ -4358,7 +4360,7 @@ Vnum      7750
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A beautiful rose tree grows here, similar to all the others planted
 at regular intervals all over this garden. The jagged leaves are
 a deep green shade, and you see no sign of fallen foilage upon the
@@ -4395,7 +4397,7 @@ Vnum      7751
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking leisurely along, you chance to look upward into the sky and
 gaze upon the shifting cloud formations high above. Framed in a background
 of bright blue, they move from one shape to another, never once staying
@@ -4432,7 +4434,7 @@ Vnum      7752
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand at the base of a large rose tree sprouting from the ground
 here, with its blossoms dripping bloody scarlet pools on the grass.
 Being so near the tree, you become especially aware of the sweet scent
@@ -4468,7 +4470,7 @@ Vnum      7753
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The grass crunches noisily underfoot as you walk leisurely within the
 garden. Scanning your surroundings, you see rose trees planted all
 about, with naught else but green grass and white fencing. Elusive
@@ -4504,7 +4506,7 @@ Vnum      7754
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A healthy rose tree thrives here, rising upon a thick, woody stem and
 sprouting into a crown of fragrant blossoms and lush foilage. The tree
 looks to be well maintained, with no sign of blight upon it anywhere.
@@ -4541,7 +4543,7 @@ Vnum      7755
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      As you wander about in this enchanted place, you catch sight of a strange
 figure walking about. It resembles a human with a card instead of a proper
 body. Even as you begin to approach, the figure turns sideways and moves
@@ -4573,7 +4575,7 @@ Vnum      7756
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You wander about the rose garden, among the flourishing trees. The leaves
 of each tree are a deep, rich green, with hardly any sign of blight or wilting.
 The roses, however, are not as pleasant to the eye. If they had been left
@@ -4602,7 +4604,7 @@ Vnum      7757
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand at the base of a large rose tree. Oddly, you notice that its
 flowers all seem to be dripping blood. Upon closer examination, it
 becomes clear that the roses, once a pure white, are actually wet with
@@ -4625,10 +4627,6 @@ Direction west~
 ToRoom    7756
 #ENDEXIT
 
-Reset M 7715 1 7757 -1 -1 -1 100
-  Reset E 7712 1 8 100
-  Reset E 7714 1 6 100
-  Reset E 7701 1 17 100
 #MUDPROG
 Progtype  act_prog~
 Arglist   p pushes A beehive.~
@@ -4647,6 +4645,10 @@ mpmload 7757
 ~
 #ENDPROG
 
+Reset M 7715 1 7757 -1 -1 -1 100
+  Reset E 7712 1 8 100
+  Reset E 7714 1 6 100
+  Reset E 7701 1 17 100
 #ENDROOM
 
 #ROOM
@@ -4654,7 +4656,7 @@ Vnum      7758
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Looking upward, you bask in the full sunlight. Clouds wisp silently across
 the soft blue sky, and your heart feels lightened by the eternal spring
 in this place. A huge rose garden stretches out in all directions except
@@ -4685,7 +4687,7 @@ Vnum      7759
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Here, you stand at the base of a large rose tree. Its lovely blooms are
 marred by a thick layer of carmine paint, and you find yourself having
 to move carefully to avoid the dripping liquid. The rest of the tree
@@ -4718,7 +4720,7 @@ Vnum      7760
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking alongside the white fence encircling the garden, you are surprised
 to bump into a strange person here. Though he possesses a human head, arms
 and legs, his body comprises of a single piece of card, with numbers and
@@ -4749,7 +4751,7 @@ Vnum      7761
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      A single rose tree stands beside a tall wooden fence to the south
 here. The whitewash on the fence has recently been stained by a trail
 of wet scarlet liquid, and you find that it is paint which has flowed
@@ -4780,7 +4782,7 @@ Vnum      7762
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Within the garden, you see that every tiny detail has been taken care
 of. The grass is neatly weeded and trimmed to a length no higher than
 your ankles, and the crown of each tree has been pruned into a sphere.
@@ -4812,7 +4814,7 @@ Vnum      7763
 Name      Within the Rose Garden~
 Sector    field~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You wander about the rose garden, among the flourishing trees. The roses
 are all in a state of severe mistreatment, having been covered in a layer
 of scarlet paint. If they had been left in their pristine form, you have
@@ -4840,7 +4842,7 @@ Vnum      7764
 Name      In a Dark Lair~
 Sector    indoors~
 Flags     indoors cave~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Descending slowly, you find yourself in a small underground cavern. It is
 difficult for your light to penetrate the overwhelming darkness, and you
 see virtually nothing beyond the nimbus you are casting upon the ground.
@@ -4860,7 +4862,7 @@ Vnum      7765
 Name      Among the Thorny Branches~
 Sector    indoors~
 Flags     nomob indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Scrambling quickly, you manage to avoid getting pricked by the thorns
 in the lush foilage, sitting at last in a fork in the branches of the
 rose tree. A carefully disguised staircase woven from the green crown
@@ -4884,7 +4886,7 @@ Vnum      7766
 Name      In A Crystal Casement~
 Sector    indoors~
 Flags     nomob indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Clambering awkwardly up the twisted stair, you brush aside spiked branches
 to reveal a simpler series of steps after a while. They are carved from
 mahogany, and inscribed with intricate runes. After a few moments of
@@ -4912,7 +4914,6 @@ Direction down~
 ToRoom    7765
 #ENDEXIT
 
-Reset D 7766 0 1 100 -2
 #EXDESC
 ExDescKey    sign~
 ExDesc       Carved from a strange bluish-silvery stone, it reads:
@@ -4920,6 +4921,7 @@ ExDesc       Carved from a strange bluish-silvery stone, it reads:
 ~
 #ENDEXDESC
 
+Reset D 7766 0 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -4927,7 +4929,7 @@ Vnum      7767
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You walk into one of the biggest libraries you have ever seen. Rows of
 books stretch into the distance on each side of you, and you feel reduced
 to an insignificant size by the towering shelves and mazy ladders
@@ -4962,7 +4964,7 @@ Vnum      7768
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Shelves line the walls on each side of you, and the floor is carpeted in
 a lush, thick material which muffles all but the heaviest of steps. Books
 of every size and description surround you, and you wonder how anyone
@@ -4988,7 +4990,7 @@ Vnum      7769
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Each step you take buries your feet deep in the furry carpet, and you
 can see people sitting at tables spread out about the place, deep in
 concentration as they peruse their chosen volumes. Even children are
@@ -5013,7 +5015,7 @@ Vnum      7770
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This section of the library seems to store scrolls, rather than complete
 books. All the shelves here have been converted to honeycombed racks with
 a slot for each roll of parchment, tied neatly with various colours of
@@ -5039,7 +5041,7 @@ Vnum      7771
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Librarians are hard at work all around you, and it is difficult to see
 any one of the figures in slate blue robes without a book under their
 arm or clambering up a ladder in search of something. Here, one of them
@@ -5064,7 +5066,7 @@ Vnum      7772
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Tables are spread out about the place, with padded chairs for people to
 peruse the books at leisure. On each side of you, shelves line the walls
 in unbreaking lines stretching into the distance. Upon them sit books of
@@ -5090,7 +5092,7 @@ Vnum      7773
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The lush carpet feels soft underfoot, and you have no doubt that it would
 be quite comfortable to walk on even if you were not wearing anything on
 your feet. Peering about this section, you realise that it is set aside for
@@ -5115,7 +5117,7 @@ Vnum      7774
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Rows of books fill your vision, rising a mere inch above the furry carpet
 all the way to the ceiling, nearly six or seven storeys above your head.
 To your untrained eye, the mess is completely unsorted, coming in books
@@ -5142,7 +5144,7 @@ Vnum      7775
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You feel a mild dizziness coming over you as you contemplate the ladders
 which criss cross the multitude of shelves around you. Some only reach
 up for two storeys, while others stretch all the way to the top shelves,
@@ -5168,7 +5170,7 @@ Vnum      7776
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This portion of the library is built with honeycombed shelves jutting out
 from the walls. Each alcove holds a single crystal, gleaming softly in the
 dim light in this section. Before you can wonder too much about it, you
@@ -5196,7 +5198,7 @@ Vnum      7777
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Shelves line the walls on each side of you, and the floor is carpeted in
 a lush, thick material which muffles all but the heaviest noises. You can
 see people sitting at tables spread out about the place, deep in
@@ -5221,7 +5223,7 @@ Vnum      7778
 Name      Along An Archive Corridor~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking through the Archives, you are mindful of the silence and the
 reminder to maintain it. All around you, books of all shapes and sizes
 fill the shelf space, with a confusing array of ladders leading all
@@ -5246,7 +5248,7 @@ Vnum      7779
 Name      In a Ceramic Chamber~
 Sector    indoors~
 Flags     nomob indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Puffing with the effort, you finally scale the last step and stand upon
 smooth ceramic tiles covered in cerulean glaze. A quill encircled in laurel
 leaves is printed on each tile in darker blue. On one side, a glassy
@@ -5274,8 +5276,6 @@ Direction down~
 ToRoom    7794
 #ENDEXIT
 
-Reset D 7779 1 1 100 -2
-Reset D 7779 4 1 100 -2
 #EXDESC
 ExDescKey    sign~
 ExDesc       Carved from a blue stone which sparkles with a smattering of silver,
@@ -5284,6 +5284,8 @@ the sign reads:
 ~
 #ENDEXDESC
 
+Reset D 7779 1 1 100 -2
+Reset D 7779 4 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -5291,7 +5293,7 @@ Vnum      7780
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Standing in a wide hallway which stretches to the east, you are filled
 with a sense of deep respect for this hallowed place. The realisation
 that this is a place consecrated to a deity is clear to your mind,
@@ -5321,7 +5323,7 @@ ToRoom    7785
 Direction west~
 ToRoom    7796
 Keywords  curtain~
-Flags     isdoor closed~
+Flags     isdoor~
 #ENDEXIT
 
 Reset M 7763 5 7780 -1 -1 -1 100
@@ -5334,7 +5336,7 @@ Vnum      7781
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Entering this chamber, you recognise it as a place for meditation. An ivory
 statue of Meia is set upon an altar against the wall, which is draped in
 a gauzy blue cloth edged with silver threads. Arrayed upon the altar, you
@@ -5354,7 +5356,7 @@ Flags     isdoor~
 Direction west~
 ToRoom    7782
 Keywords  door~
-Flags     isdoor closed~
+Flags     isdoor~
 #ENDEXIT
 
 Reset M 7766 4 7781 -1 -1 -1 100
@@ -5367,7 +5369,7 @@ Vnum      7782
 Name      In the Caretaker's Chambers~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You walk into a neatly kept room. It is not as lavish as the rest of
 the temple, with plain slabs of grey stone upon the floor and a number
 of simple portraits hanging from the stone walls. A bed is tucked in
@@ -5379,7 +5381,7 @@ set upon it. A small wooden door stands to the east.
 Direction east~
 ToRoom    7781
 Keywords  door~
-Flags     isdoor closed~
+Flags     isdoor~
 #ENDEXIT
 
 Reset M 7762 1 7782 -1 -1 -1 100
@@ -5391,7 +5393,7 @@ Vnum      7783
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Walking through the hallway, it is difficult for you to keep from
 going on tiptoes. Each sound you make sounds harsh and odd in this tranquil
 place, and each step you take seems to mar the lovely perfection of the
@@ -5421,7 +5423,7 @@ Vnum      7784
 Name      Before the Flame of Meia~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You find yourself standing in a sort of sheltered balcony. The walls
 are no more than three pillars of pale marble, with the floor covered
 in similar tiles. Above your head is a crackling net of energy which
@@ -5445,7 +5447,7 @@ Vnum      7785
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Taking care to walk as quietly as possible, you proceed down the hallway
 to a turn in the passage. Here, glowing orbs are set upon silver sconces
 high on the wall, lighting your way in a soft nimbus. The gleaming
@@ -5463,7 +5465,7 @@ ToRoom    7780
 Direction east~
 ToRoom    7786
 Keywords  door~
-Flags     isdoor~
+Flags     isdoor closed~
 #ENDEXIT
 
 #EXIT
@@ -5480,7 +5482,7 @@ Vnum      7786
 Name      Within the Study Chamber~
 Sector    indoors~
 Flags     indoors safe nosummon nomagic silence nomissile norecall noastral nodrop~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      This room is panelled in dark, burnished wood. A large table surrounded
 by padded chairs stands in the centre of the room, and you notice an
 assortment of books already spread out on its surface. The furnishings
@@ -5491,10 +5493,9 @@ some time. A sign is hung prominently just beside you.
 Direction west~
 ToRoom    7785
 Keywords  door~
-Flags     isdoor~
+Flags     isdoor closed~
 #ENDEXIT
 
-Reset D 7786 3 1 100 -2
 #EXDESC
 ExDescKey    sign~
 ExDesc       The script is printed neatly, and it reads in clear letters:
@@ -5506,6 +5507,7 @@ our hospitality.&z
 ~
 #ENDEXDESC
 
+Reset D 7786 3 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -5513,7 +5515,7 @@ Vnum      7787
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      As you move through the hallway, your eyes stray to the elegant architecture
 which surrounds you. High latticed arches rise majestically to the curved
 ceiling, all carved from skie marble. The faint tints of the rare stone
@@ -5537,7 +5539,7 @@ Vnum      7788
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The hallway turns here, and you can see a bright glow radiating from the
 north. A small table sits in the corner, and you see a pitcher of water
 as well as several small cups on it. A spray of edelweiss stands within a
@@ -5564,7 +5566,7 @@ Vnum      7789
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      At this point, you stand at the foot of a marble span which stretches out
 into the air above Bywater. A bright light can be seen shining from the highest
 point of the arch, far to the west, and you surmise that this must be what you
@@ -5601,7 +5603,7 @@ Vnum      7790
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      As you try to walk as lightly as possible on this delicate arch, the
 scenery all around stuns you with its brilliance. From here, you can see
 the glittering ribbon of Branduin leading all the way to the Graecian
@@ -5630,7 +5632,7 @@ Vnum      7791
 Name      Within Meia's Temple~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Here, you stand just eastward of the radiant altar consecrated to Meia
 at the tip of the arch which seems to lead nowhere after that. As you
 walk leisurely, you note the intricate carving on the marble bridge and
@@ -5656,7 +5658,7 @@ Vnum      7792
 Name      Before the High Altar of Meia~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      The bridge ends here, jutting out far above Bywater. Upon the edge stands
 a statue of Meia, dressed as she was in her youthful mortal years, blazing with
 a pearlesque radiance. It is carved from the same rare stone as the rest of her
@@ -5686,7 +5688,7 @@ Vnum      7793
 Name      The Tower Turret~
 Sector    indoors~
 Flags     nomob indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You stand in a nondescript room, right at the top of the Tower. Hay is
 scattered liberally around, and sleeping here seems like a very good
 idea. There is not much in the way of furniture, with only a small table
@@ -5703,7 +5705,6 @@ Keywords  trapdoor~
 Flags     isdoor closed~
 #ENDEXIT
 
-Reset D 7793 5 1 100 -2
 #EXDESC
 ExDescKey    card~
 ExDesc       In a beautiful cursive script, it reads:
@@ -5714,6 +5715,7 @@ right not to entertain inappropriate guests.&z
 ~
 #ENDEXDESC
 
+Reset D 7793 5 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -5721,7 +5723,7 @@ Vnum      7794
 Name      In A Crystal Casement~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You make your way leisurely down the spiralling mahogany steps into the
 small casement area at the base. Crystal panels are fitted on every
 available surface here, and each of the smooth surfaces glows softly
@@ -5749,7 +5751,6 @@ Direction down~
 ToRoom    7765
 #ENDEXIT
 
-Reset D 7794 0 1 100 -2
 #EXDESC
 ExDescKey    sign~
 ExDesc       Carved from a strange bluish-silvery stone, it reads:
@@ -5757,6 +5758,7 @@ ExDesc       Carved from a strange bluish-silvery stone, it reads:
 ~
 #ENDEXDESC
 
+Reset D 7794 0 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -5764,7 +5766,7 @@ Vnum      7795
 Name      In A Crystal Casement~
 Sector    indoors~
 Flags     indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Stepping once more into the small casement, you stand at the centre of
 the crystal panelled area. Each of the smooth mirrored surfaces glows
 softly with a light of its own, casting a soft bluish light on your
@@ -5790,7 +5792,6 @@ Direction down~
 ToRoom    7765
 #ENDEXIT
 
-Reset D 7795 0 1 100 -2
 #EXDESC
 ExDescKey    sign~
 ExDesc       Carved from a strange bluish-silvery stone, it reads:
@@ -5798,6 +5799,7 @@ ExDesc       Carved from a strange bluish-silvery stone, it reads:
 ~
 #ENDEXDESC
 
+Reset D 7795 0 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -5805,7 +5807,7 @@ Vnum      7796
 Name      In a Ceramic Chamber~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      Sweeping aside the curtain, you enter a small chamber. The ground is
 covered in smooth ceramic tiles glazed with a cerulean tint. The symbol
 of a quill encircled in laurel leaves is printed upon each tile in a
@@ -5818,7 +5820,7 @@ prominently above the curtain.
 Direction east~
 ToRoom    7780
 Keywords  curtain~
-Flags     isdoor closed~
+Flags     isdoor~
 #ENDEXIT
 
 #EXIT
@@ -5833,8 +5835,6 @@ Direction down~
 ToRoom    7794
 #ENDEXIT
 
-Reset D 7796 1 1 100 -2
-Reset D 7796 4 1 100 -2
 #EXDESC
 ExDescKey    sign~
 ExDesc       Carved from a blue stone which sparkles with a smattering of silver,
@@ -5843,6 +5843,8 @@ the sign reads:
 ~
 #ENDEXDESC
 
+Reset D 7796 1 1 100 -2
+Reset D 7796 4 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -5850,7 +5852,7 @@ Vnum      7797
 Name      In a Ceramic Chamber~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      You gingerly descend the glassy stepladder. It seems so fragile at first
 glance, but holds your weight well. Standing once more in the small
 chamber upon the smooth ceramic tiles, you take a moment to admire the
@@ -5878,7 +5880,6 @@ Direction down~
 ToRoom    7794
 #ENDEXIT
 
-Reset D 7797 4 1 100 -2
 #EXDESC
 ExDescKey    sign~
 ExDesc       Carved from a blue stone which sparkles with a smattering of silver,
@@ -5887,6 +5888,7 @@ the sign reads:
 ~
 #ENDEXDESC
 
+Reset D 7797 4 1 100 -2
 #ENDROOM
 
 #ROOM
@@ -5894,7 +5896,7 @@ Vnum      7798
 Name      At the Base of The Radiant Tower~
 Sector    indoors~
 Flags     nomob indoors~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 Desc      After trudging up the mountain, you finally reach the base of the ivory
 tower you have seen from a distance. The walls of the tower give off a
 radiant glow as though they are acting as mirrors reflecting all the
@@ -5942,7 +5944,7 @@ Vnum      7799
 Name      Standing in Pure Nothingness~
 Sector    indoors~
 Flags     ~
-Stats     0 0 0 0
+Stats     0 0 0 0 100000
 #ENDROOM
 
 #ENDAREA
