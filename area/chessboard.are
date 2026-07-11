@@ -26,10 +26,8 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Black Rook~
-Long      A black rook stands here, prepared for battle.
-~
-Desc      It reminds of you a stone golem, but quite a bit smaller.
-~
+Long      A black rook stands here, prepared for battle.~
+Desc      It reminds of you a stone golem, but quite a bit smaller.~
 Nattacks  2.000000
 Stats1    -700 0 0 0 150 100
 Stats2    5 15 5 15 2 4 0
@@ -48,10 +46,8 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black Knight~
-Long      There is a scraggly knight dressed in black here.
-~
-Desc      This is most certainly not the Black Knight of legendary fame.
-~
+Long      There is a scraggly knight dressed in black here.~
+Desc      This is most certainly not the Black Knight of legendary fame.~
 Nattacks  0.000000
 Stats1    -500 0 0 0 150 100
 Stats2    3 17 7 9 1 7 0
@@ -70,10 +66,8 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black Bishop~
-Long      There is a bishop dressed in black standing here.
-~
-Desc      Hmm, maybe it's an arch bishop.  Or an arch arch bishop.
-~
+Long      There is a bishop dressed in black standing here.~
+Desc      Hmm, maybe it's an arch bishop.  Or an arch arch bishop.~
 Nattacks  0.000000
 Stats1    -500 0 0 0 150 100
 Stats2    3 18 5 9 1 7 0
@@ -92,10 +86,8 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     The Black Queen~
-Long      There is a queen dressed in black standing here.
-~
-Desc      She looks rather fearsome.
-~
+Long      There is a queen dressed in black standing here.~
+Desc      She looks rather fearsome.~
 Nattacks  0.000000
 Stats1    -1000 500 0 0 150 100
 Stats2    8 10 1 24 3 4 0
@@ -115,11 +107,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black King~
-Long      The Black King, Ruler of Darkness, is standing here.
-~
+Long      The Black King, Ruler of Darkness, is standing here.~
 Desc      He is a far cry from the white haired wizened old man you might expect.  It
-looks as though he could put up a good fight.
-~
+looks as though he could put up a good fight.~
 Nattacks  2.000000
 Stats1    -1000 1000 0 0 150 100
 Stats2    12 6 2 48 2 7 1
@@ -139,11 +129,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Black Pawn~
-Long      A statuesque black pawn stands here.
-~
+Long      A statuesque black pawn stands here.~
 Desc      Though this scrawny fighter is not an impressive sight, he is obedient to his
-master.
-~
+master.~
 Nattacks  0.000000
 Stats1    -400 0 0 0 150 100
 Stats2    1 20 9 1 1 5 0
@@ -162,11 +150,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Mini Mindflayer~
-Long      A mini mindflayer is here, looking at you with a... well, some kind of look.
-~
+Long      A mini mindflayer is here, looking at you with a... well, some kind of look.~
 Desc      It's a three foot tall humanoid that seems rather menacing for its size.
-In the middle of its head are four tentacles with sharp points.
-~
+In the middle of its head are four tentacles with sharp points.~
 Nattacks  0.000000
 Stats1    -450 50 0 0 150 100
 Stats2    2 17 6 4 1 6 2
@@ -186,11 +172,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Curser~
-Long      The Curser is here, muttering incomprehensible obscenities to the air.
-~
+Long      The Curser is here, muttering incomprehensible obscenities to the air.~
 Desc      It is short stocky guy dressed in clashing colors, spewing guttural sounds
-and interjections continuously.
-~
+and interjections continuously.~
 Nattacks  0.000000
 Stats1    -600 0 0 0 150 100
 Stats2    3 16 5 9 2 4 0
@@ -201,8 +185,7 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MUDPROG
 Progtype  rand_prog~
 Arglist   4~
-Comlist   curse 
-~
+Comlist   curse~
 #ENDPROG
 
 #ENDMOBILE
@@ -216,14 +199,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Cow~
-Long      A hard-eyed cow is here, going about his business.
-~
+Long      A hard-eyed cow is here, going about his business.~
 Desc      He is walking around purposefully, as if searching for something,
 occasionally lowering his head, sniffing at the air, then eating
 pieces of the ground that are apparently somewhat grassy.  When he
 notices your intense scrutiny, he looks at you coldly, until you are
-forced to look away.
-~
+forced to look away.~
 Nattacks  0.000000
 Stats1    400 40 0 0 150 100
 Stats2    5 10 6 10 2 4 0
@@ -242,10 +223,8 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Young Sapling~
-Long      A sapling stands here eye to eye with you.
-~
-Desc      Its roots are rather petite, and small parts of them are above ground.
-~
+Long      A sapling stands here eye to eye with you.~
+Desc      Its roots are rather petite, and small parts of them are above ground.~
 Nattacks  4.000000
 Stats1    0 0 0 0 150 100
 Stats2    6 13 4 18 1 2 1
@@ -263,15 +242,13 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jugglernaut~
-Long      A Jugglernaut is here, juggling madly.
-~
+Long      A Jugglernaut is here, juggling madly.~
 Desc      It is kind of large, some 10 yds in length, walking on several hundred 
 tiny legs. It is metallic-looking, with large spots of corrosion 
 marring its angular skin. On its sides are large signs, written in an 
 incomprehensible language. On its top, a small eye cluster swivels back 
 and forth continually.  A number of tentacles are juggling a dizzying
-blur of objects.
-~
+blur of objects.~
 Nattacks  0.000000
 Stats1    0 500 0 0 150 100
 Stats2    8 11 3 24 2 5 1
@@ -291,10 +268,8 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Mutterfly~
-Long      An ugly butterfly-like thing is here, muttering about its problems.
-~
-Desc      It is ugly, and unfriendly.
-~
+Long      An ugly butterfly-like thing is here, muttering about its problems.~
+Desc      It is ugly, and unfriendly.~
 Nattacks  1.000000
 Stats1    -1000 10 0 0 150 100
 Stats2    1 20 9 6 1 3 0
@@ -305,8 +280,7 @@ Bodyparts head heart brains guts eye wings~
 #MUDPROG
 Progtype  rand_prog~
 Arglist   4~
-Comlist   mutter
-~
+Comlist   mutter~
 #ENDPROG
 
 #ENDMOBILE
@@ -320,11 +294,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Banana Peel~
-Long      There is a magical banana peel here.
-~
+Long      There is a magical banana peel here.~
 Desc      It seems harmless enough, although according to ancient legend, they
-cause people to slip and fall.
-~
+cause people to slip and fall.~
 Nattacks  0.000000
 Stats1    -400 0 0 0 150 100
 Stats2    2 19 7 0 1 4 0
@@ -343,11 +315,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White Pawn~
-Long      A statuesque white pawn stands here.
-~
+Long      A statuesque white pawn stands here.~
 Desc      Though this scrawny fighter is not an impressive sight, he is obedient to his
-master.
-~
+master.~
 Nattacks  0.000000
 Stats1    300 0 0 0 150 100
 Stats2    1 20 9 1 1 5 0
@@ -366,11 +336,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The White Rook~
-Long      A white rook stands here, prepared for battle.
-~
+Long      A white rook stands here, prepared for battle.~
 Desc      It reminds of you a stone golem, but quite a bit smaller.  He matches the
-white marble quite nicely.
-~
+white marble quite nicely.~
 Nattacks  2.000000
 Stats1    700 0 0 0 150 100
 Stats2    5 15 5 15 2 4 0
@@ -390,10 +358,8 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White Knight~
-Long      There is a scraggly knight dressed in white here.
-~
-Desc      You're not so sure that you'd want *him* to come to your rescue.
-~
+Long      There is a scraggly knight dressed in white here.~
+Desc      You're not so sure that you'd want *him* to come to your rescue.~
 Nattacks  0.000000
 Stats1    600 0 0 0 150 100
 Stats2    3 17 7 9 1 7 0
@@ -413,10 +379,8 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White Bishop~
-Long      There is a bishop dressed in white standing here.
-~
-Desc      Hmm, maybe it's an arch bishop.  Or an arch arch bishop.
-~
+Long      There is a bishop dressed in white standing here.~
+Desc      Hmm, maybe it's an arch bishop.  Or an arch arch bishop.~
 Nattacks  0.000000
 Stats1    500 0 0 0 150 100
 Stats2    3 18 5 9 1 7 0
@@ -435,10 +399,8 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     The White Queen~
-Long      There is a queen dressed in white standing here.
-~
-Desc      She looks rather fearsome.
-~
+Long      There is a queen dressed in white standing here.~
+Desc      She looks rather fearsome.~
 Nattacks  0.000000
 Stats1    1000 500 0 0 150 100
 Stats2    8 10 1 24 3 4 0
@@ -457,11 +419,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The White King~
-Long      The King, Protector of the Flame, is standing here.
-~
+Long      The King, Protector of the Flame, is standing here.~
 Desc      He is a far cry from the white haired wizened old man you might expect.  It
-looks as though he could put up a good fight.
-~
+looks as though he could put up a good fight.~
 Nattacks  2.000000
 Stats1    1000 1000 0 0 150 100
 Stats2    12 6 2 48 2 7 1
@@ -480,10 +440,8 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Jabberwocky~
-Long      The Jabberwocky stands here, prepared to maul you.
-~
-Desc      It is big, and alien in appearance.  Probably not here for a cup of tea.
-~
+Long      The Jabberwocky stands here, prepared to maul you.~
+Desc      It is big, and alien in appearance.  Probably not here for a cup of tea.~
 Nattacks  3.000000
 Stats1    -900 0 0 0 150 100
 Stats2    14 4 0 56 1 8 2
@@ -504,10 +462,8 @@ Position  standing~
 DefPos    standing~
 Specfun   spec_cast_adept~
 Short     The Elven Cleric~
-Long      An elven cleric is here, looking for someone to help.
-~
-Desc      He is dressed in white robes covered in red crosses.
-~
+Long      An elven cleric is here, looking for someone to help.~
+Desc      He is dressed in white robes covered in red crosses.~
 Nattacks  0.000000
 Stats1    1000 0 0 0 150 100
 Stats2    7 14 4 14 2 4 2
@@ -527,11 +483,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Flame~
-Long      The Flame hovers here before you.
-~
+Long      The Flame hovers here before you.~
 Desc      The Flame flickers almost imperceptibly about you.  You can barely feel the
-warmth, so gentle is The Flame.
-~
+warmth, so gentle is The Flame.~
 Nattacks  3.000000
 Stats1    900 0 0 0 150 100
 Stats2    14 3 0 56 3 3 4
@@ -551,11 +505,9 @@ Gender    Neuter~
 Position  sleeping~
 DefPos    sleeping~
 Short     An Oil Beast~
-Long      An oil beast is here, sleeping on the job.
-~
+Long      An oil beast is here, sleeping on the job.~
 Desc      Well, it looks beastly.  And oily.  It's black, and shiny, and oozes
-slime as it goes...hard to be more specific than that.
-~
+slime as it goes...hard to be more specific than that.~
 Nattacks  1.000000
 Stats1    800 0 0 0 150 100
 Stats2    10 10 2 40 2 6 3
@@ -574,11 +526,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     An Oil Beast~
-Long      An oil beast is here, working quasi-diligently.
-~
+Long      An oil beast is here, working quasi-diligently.~
 Desc      Well, it looks beastly.  And oily.  It's black, and shiny, and oozes
-slime as it goes...hard to be more specific than that.
-~
+slime as it goes...hard to be more specific than that.~
 Nattacks  0.000000
 Stats1    800 0 0 0 150 100
 Stats2    10 10 2 40 2 6 3
@@ -597,8 +547,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Delivery Elf~
-Long      An elf is here, making deliveries of tasty bread.
-~
+Long      An elf is here, making deliveries of tasty bread.~
 Nattacks  0.000000
 Stats1    800 49 0 0 150 100
 Stats2    10 10 2 40 2 6 3
@@ -610,8 +559,7 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye ankles~
 #MUDPROG
 Progtype  rand_prog~
 Arglist   4~
-Comlist   , mutters something about sacks of flour. 
-~
+Comlist   , mutters something about sacks of flour.~
 #ENDPROG
 
 #MUDPROG
@@ -624,8 +572,7 @@ Comlist   if ispc ($n)
    mpoload 6004
    give potion 0.$n
    wave 0.$n
-endif
-~
+endif~
 #ENDPROG
 
 #ENDMOBILE
@@ -639,8 +586,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     An Elf~
-Long      An elf is here, working diligently.
-~
+Long      An elf is here, working diligently.~
 Nattacks  0.000000
 Stats1    800 0 0 0 150 100
 Stats2    10 10 2 40 2 6 3
@@ -659,11 +605,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Cheshire Cat~
-Long      The Cheshire Cat flashes a grin at you.
-~
+Long      The Cheshire Cat flashes a grin at you.~
 Desc      Looks like the obligatory invisible monster for this area.  He has that
-confident, artificial smile that means he knows too much about you.
-~
+confident, artificial smile that means he knows too much about you.~
 Nattacks  0.000000
 Stats1    600 49 0 0 150 100
 Stats2    4 15 3 8 1 9 0
@@ -683,10 +627,8 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The Pigeon~
-Long      A plump pigeon is wandering here, oblivious to your presence.
-~
-Desc      Dinner on the table....
-~
+Long      A plump pigeon is wandering here, oblivious to your presence.~
+Desc      Dinner on the table....~
 Nattacks  0.000000
 Stats1    0 10 0 0 150 100
 Stats2    1 20 9 1 1 4 0
@@ -705,11 +647,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Fordwyn~
-Long      Fordwyn the Chessmaster is here, planning a move.
-~
+Long      Fordwyn the Chessmaster is here, planning a move.~
 Desc      The lord of the tower is a wizened old elf with wild tangles of hair
-and a somewhat crazed expression on his face.
-~
+and a somewhat crazed expression on his face.~
 Nattacks  3.000000
 Stats1    1000 0 0 0 150 100
 Stats2    47 0 -7 200 3 6 6
@@ -722,8 +662,7 @@ Progtype  greet_prog~
 Arglist   100~
 Comlist   say Oh ho, a visitor to my tower.
 say Care for a game of chess?
-cackle
-~
+cackle~
 #ENDPROG
 
 #ENDMOBILE
@@ -741,8 +680,7 @@ Stats     50 20 -2 9999 0 None None None
 #EXDESC
 ExDescKey    sack flour~
 ExDesc       Doesn't look all that exciting.  It has the words "Property of the Abecedarium"
-stamped on it.
-~
+stamped on it.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -772,8 +710,7 @@ Values    1 1 0 1 0 0 0 0 0 0 0
 Stats     1 0 0 9999 0 None None None
 #EXDESC
 ExDescKey    slime mold~
-ExDesc       It wasn't meant to be food, - Certainly not for humans.
-~
+ExDesc       It wasn't meant to be food, - Certainly not for humans.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -792,8 +729,7 @@ AffData armor -4 -1 -1 0
 AffData backstab -30 -1 -1 0
 #EXDESC
 ExDescKey    bell cow~
-ExDesc       It has a strap attached to it.
-~
+ExDesc       It has a strap attached to it.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -887,20 +823,17 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There's a
-lot of dust on the floor here.
-~
+lot of dust on the floor here.~
 #EXIT
 Direction east~
 ToRoom    6001
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6008
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6000 1 6000 -1 -1 -1 100
@@ -914,27 +847,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There's a
-lot of dust on the floor.
-~
+lot of dust on the floor.~
 #EXIT
 Direction east~
 ToRoom    6002
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6009
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6000
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6001 1 6001 -1 -1 -1 100
@@ -948,27 +877,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There's
-a lot of garbage here.
-~
+a lot of garbage here.~
 #EXIT
 Direction east~
 ToRoom    6003
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6010
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6001
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6002 1 6002 -1 -1 -1 100
@@ -982,27 +907,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  It doesn't
-seem like the janitor comes here often.
-~
+seem like the janitor comes here often.~
 #EXIT
 Direction east~
 ToRoom    6004
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6011
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6002
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6003 1 6003 -1 -1 -1 100
@@ -1016,35 +937,30 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  It smells
-like beer was spilled here.
-~
+like beer was spilled here.~
 #EXIT
 Direction east~
 ToRoom    6005
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6012
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6003
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction down~
 ToRoom    6064
 Desc      As you peer into the darkness you can only imagine what kind of beast lies
-in wait for you.
-~
+in wait for you.~
 #ENDEXIT
 
 Reset M 6004 1 6004 -1 -1 -1 100
@@ -1058,27 +974,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  It smells
-like beer here.
-~
+like beer here.~
 #EXIT
 Direction east~
 ToRoom    6006
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6013
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6004
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6002 1 6005 -1 -1 -1 100
@@ -1093,27 +1005,23 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  This is the
 northwest corner of a slime mold factory.  Malodorous toxic fumes assault
 your sense of smell.  Toxic mushrooms and half empty beer barrels are
-strewn about.
-~
+strewn about.~
 #EXIT
 Direction east~
 ToRoom    6007
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6014
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6005
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6001 1 6006 -1 -1 -1 100
@@ -1129,20 +1037,17 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  This is the
 northeast corner of a slime mold factory.  There is a large vat of slime
 bubbling juice here.  You can feel your appetite wilting away as an Oil
-Beast tosses some rotting corpses and poisonous mushrooms into the vat.
-~
+Beast tosses some rotting corpses and poisonous mushrooms into the vat.~
 #EXIT
 Direction south~
 ToRoom    6015
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6006
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6000 1 6007 -1 -1 -1 100
@@ -1157,41 +1062,35 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  It's really
-quite dusty here.  To the west is a large wall-sized mirror.
-~
+quite dusty here.  To the west is a large wall-sized mirror.~
 #EXIT
 Direction north~
 ToRoom    6000
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6009
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6016
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6066
-Desc      You see a wall sized mirror.
-~
+Desc      You see a wall sized mirror.~
 #ENDEXIT
 
 #EXDESC
 ExDescKey    mirror wall~
 ExDesc       You see your reflection, but superimposed on that is what looks like
-a distant horizon.  Maybe you can enter this mirror?
-~
+a distant horizon.  Maybe you can enter this mirror?~
 #ENDEXDESC
 
 Reset M 6008 1 6008 -1 -1 -1 100
@@ -1205,34 +1104,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  So much
-dust around here!
-~
+dust around here!~
 #EXIT
 Direction north~
 ToRoom    6001
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6010
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6017
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6008
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6008 1 6009 -1 -1 -1 100
@@ -1246,34 +1140,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  The floor
-is scuffed up and needs polishing.
-~
+is scuffed up and needs polishing.~
 #EXIT
 Direction north~
 ToRoom    6002
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6011
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6018
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6009
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6008 1 6010 -1 -1 -1 100
@@ -1287,34 +1176,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  Sure is
-filthy here!
-~
+filthy here!~
 #EXIT
 Direction north~
 ToRoom    6003
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6012
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6019
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6010
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6008 1 6011 -1 -1 -1 100
@@ -1328,34 +1212,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  It smells
-like beer around here.
-~
+like beer around here.~
 #EXIT
 Direction north~
 ToRoom    6004
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6013
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6020
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6011
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6008 1 6012 -1 -1 -1 100
@@ -1369,34 +1248,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There is
-a puddle of spilled beer here.
-~
+a puddle of spilled beer here.~
 #EXIT
 Direction north~
 ToRoom    6005
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6014
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6021
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6012
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6008 1 6013 -1 -1 -1 100
@@ -1410,34 +1284,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  This is the
 southwest corner of a slime mold factory.  Some molds have been stacked
-here ready for shipment.  You involuntarily hold your breath.
-~
+here ready for shipment.  You involuntarily hold your breath.~
 #EXIT
 Direction north~
 ToRoom    6006
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6015
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6022
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6013
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6008 1 6014 -1 -1 -1 100
@@ -1457,27 +1326,23 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  This is the
 southeast corner of a slime mold factory.  Rotting corpses and half dried
 slime molds litter the floor.  Oil Beasts slither about, leaving shiny
-trails of ooze behind them.
-~
+trails of ooze behind them.~
 #EXIT
 Direction north~
 ToRoom    6007
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6023
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6014
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6008 1 6015 -1 -1 -1 100
@@ -1493,27 +1358,23 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6008
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6017
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6024
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -1527,34 +1388,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6009
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6018
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6025
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6016
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6016 1 6017 -1 -1 -1 100
@@ -1569,34 +1425,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6010
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6019
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6026
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6017
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6017 1 6018 -1 -1 -1 100
@@ -1611,34 +1462,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6011
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6020
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6027
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6018
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6018 1 6019 -1 -1 -1 100
@@ -1656,34 +1502,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6012
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6021
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6028
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6019
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -1697,34 +1538,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6013
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6022
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6029
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6020
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6020 1 6021 -1 -1 -1 100
@@ -1739,34 +1575,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6014
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6023
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6030
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6021
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -1780,27 +1611,23 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6015
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6031
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6022
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6047 1 6023 -1 -1 -1 100
@@ -1815,27 +1642,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You hear
-crickets chirping.
-~
+crickets chirping.~
 #EXIT
 Direction north~
 ToRoom    6016
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6025
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6032
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -1848,34 +1671,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
-birds chirping in the distance.
-~
+birds chirping in the distance.~
 #EXIT
 Direction north~
 ToRoom    6017
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6026
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6033
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6024
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6023 1 6025 -1 -1 -1 100
@@ -1890,34 +1708,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6018
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6027
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6034
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6025
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6048 1 6026 -1 -1 -1 100
@@ -1931,34 +1744,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  To the
-southeast are some stairs.
-~
+southeast are some stairs.~
 #EXIT
 Direction north~
 ToRoom    6019
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6028
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6035
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6026
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -1972,34 +1780,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.  You see some stairs to the south.
-~
+cries of death.  You see some stairs to the south.~
 #EXIT
 Direction north~
 ToRoom    6020
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6029
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6036
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6027
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6021 1 6028 -1 -1 -1 100
@@ -2020,34 +1823,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  To the
-southwest are some stairs.
-~
+southwest are some stairs.~
 #EXIT
 Direction north~
 ToRoom    6021
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6030
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6037
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6028
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6048 1 6029 -1 -1 -1 100
@@ -2061,40 +1859,34 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There is
-a statue of a unicorn here.
-~
+a statue of a unicorn here.~
 #EXIT
 Direction north~
 ToRoom    6022
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6031
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6038
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6029
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXDESC
 ExDescKey    statue unicorn~
-ExDesc       The statue says "Come to Unicorn Mount!"
-~
+ExDesc       The statue says "Come to Unicorn Mount!"~
 #ENDEXDESC
 
 Reset M 6022 1 6030 -1 -1 -1 100
@@ -2109,33 +1901,28 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There is
-a statue of John the Lumberjack here.
-~
+a statue of John the Lumberjack here.~
 #EXIT
 Direction north~
 ToRoom    6023
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6039
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6030
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXDESC
 ExDescKey    statue john~
-ExDesc       The statue says "Been to the forest recently?"
-~
+ExDesc       The statue says "Been to the forest recently?"~
 #ENDEXDESC
 
 #ENDROOM
@@ -2148,27 +1935,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
-nothing here.
-~
+nothing here.~
 #EXIT
 Direction north~
 ToRoom    6024
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6033
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6040
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6041 1 6032 -1 -1 -1 100
@@ -2182,34 +1965,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
-footsteps nearby.
-~
+footsteps nearby.~
 #EXIT
 Direction north~
 ToRoom    6025
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6034
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6041
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6032
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6022 1 6033 -1 -1 -1 100
@@ -2225,34 +2003,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6026
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6035
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6042
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6033
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -2266,34 +2039,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.  You see some stairs to east.
-~
+cries of death.  You see some stairs to east.~
 #EXIT
 Direction north~
 ToRoom    6027
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6036
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6043
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6034
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -2308,41 +2076,35 @@ Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
 cries of death.  A staircase leads down from here.
-     You hear a voice say, 'Fido, I don't think we're in Bywater any more.'
-~
+     You hear a voice say, 'Fido, I don't think we're in Bywater any more.'~
 #EXIT
 Direction north~
 ToRoom    6028
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6037
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6044
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6035
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction down~
 ToRoom    6068
-Desc      The stairs spiral downwards toward familiar ground.
-~
+Desc      The stairs spiral downwards toward familiar ground.~
 #ENDEXIT
 
 #ENDROOM
@@ -2356,34 +2118,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.  You see some stairs to west.
-~
+cries of death.  You see some stairs to west.~
 #EXIT
 Direction north~
 ToRoom    6029
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6038
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6045
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6036
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6023 1 6037 -1 -1 -1 100
@@ -2397,40 +2154,34 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There is
-a statue of a spider here.
-~
+a statue of a spider here.~
 #EXIT
 Direction north~
 ToRoom    6030
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6039
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6046
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6037
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXDESC
 ExDescKey    statue spider~
-ExDesc       The statue says "I like Arachnos."
-~
+ExDesc       The statue says "I like Arachnos."~
 #ENDEXDESC
 
 #ENDROOM
@@ -2443,33 +2194,28 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There is
-a statue of a butterfly here.
-~
+a statue of a butterfly here.~
 #EXIT
 Direction north~
 ToRoom    6031
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6047
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6038
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXDESC
 ExDescKey    statue butterfly~
-ExDesc       The statue weeps "Augh, where's my Matrix?"
-~
+ExDesc       The statue weeps "Augh, where's my Matrix?"~
 #ENDEXDESC
 
 #ENDROOM
@@ -2483,27 +2229,23 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6032
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6041
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6048
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6020 1 6040 -1 -1 -1 100
@@ -2519,34 +2261,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6033
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6042
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6049
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6040
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6020 1 6041 -1 -1 -1 100
@@ -2561,34 +2298,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6034
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6043
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6050
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6041
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6048 1 6042 -1 -1 -1 100
@@ -2602,34 +2334,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  To the
-northeast are some stairs.
-~
+northeast are some stairs.~
 #EXIT
 Direction north~
 ToRoom    6035
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6044
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6051
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6042
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6017 1 6043 -1 -1 -1 100
@@ -2644,34 +2371,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.  You see some stairs to the north.
-~
+cries of death.  You see some stairs to the north.~
 #EXIT
 Direction north~
 ToRoom    6036
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6045
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6052
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6043
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6021 1 6044 -1 -1 -1 100
@@ -2692,34 +2414,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  To the
-northwest are some stairs.
-~
+northwest are some stairs.~
 #EXIT
 Direction north~
 ToRoom    6037
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6046
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6053
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6044
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6048 1 6045 -1 -1 -1 100
@@ -2734,34 +2451,29 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6038
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6047
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6054
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6045
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6016 1 6046 -1 -1 -1 100
@@ -2776,27 +2488,23 @@ Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You can hear
 all kinds of noises around you -- shouting, the clatter of swords, and
-cries of death.
-~
+cries of death.~
 #EXIT
 Direction north~
 ToRoom    6039
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6055
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6046
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #ENDROOM
@@ -2809,27 +2517,23 @@ Flags     nomob~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  This is the
 northwest corner of a bread factory.  Elves run in and out, stacking
-and removing supplies.  You feel the warmth of an oven nearby.
-~
+and removing supplies.  You feel the warmth of an oven nearby.~
 #EXIT
 Direction north~
 ToRoom    6040
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6049
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6056
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6048 -1 -1 -1 100
@@ -2845,34 +2549,29 @@ Flags     nomob~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  This is the
 northeast corner of a bread factory.  Finished pastries and breads lie
-here, awaiting delivery.
-~
+here, awaiting delivery.~
 #EXIT
 Direction north~
 ToRoom    6041
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6050
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6057
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6048
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6049 -1 -1 -1 100
@@ -2893,34 +2592,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You see
-some pastry crumbs on the floor.
-~
+some pastry crumbs on the floor.~
 #EXIT
 Direction north~
 ToRoom    6042
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6051
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6058
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6049
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6050 -1 -1 -1 100
@@ -2934,34 +2628,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  It looks
-as though someone was eating here recently.
-~
+as though someone was eating here recently.~
 #EXIT
 Direction north~
 ToRoom    6043
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6052
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6059
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6050
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6051 -1 -1 -1 100
@@ -2975,34 +2664,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  The plaza
-has a large white gladiola painted on it.
-~
+has a large white gladiola painted on it.~
 #EXIT
 Direction north~
 ToRoom    6044
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6053
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6060
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6051
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6052 -1 -1 -1 100
@@ -3016,34 +2700,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There is
-a purple tulip painted on the floor.
-~
+a purple tulip painted on the floor.~
 #EXIT
 Direction north~
 ToRoom    6045
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6054
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6061
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6052
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6053 -1 -1 -1 100
@@ -3057,34 +2736,29 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There are
-a lot puddles here.
-~
+a lot puddles here.~
 #EXIT
 Direction north~
 ToRoom    6046
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6055
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6062
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6053
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6054 -1 -1 -1 100
@@ -3098,27 +2772,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  The plaza
-is wet, and you can see your reflection in the floor.
-~
+is wet, and you can see your reflection in the floor.~
 #EXIT
 Direction north~
 ToRoom    6047
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6063
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6054
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6024 1 6055 -1 -1 -1 100
@@ -3132,20 +2802,17 @@ Flags     nomob~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  This is the
 southwest corner of a bread factory.  You see a large clay oven watched
-carefully by frantic elves.  The smell of bread is overpowering.
-~
+carefully by frantic elves.  The smell of bread is overpowering.~
 #EXIT
 Direction north~
 ToRoom    6048
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6057
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6032 1 6056 -1 -1 -1 100
@@ -3164,27 +2831,23 @@ Flags     nomob~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  This is the
 southeast corner of a bread factory.  There is a giant vat of dough
-here, and on some racks you see tidy arrays of dough.
-~
+here, and on some racks you see tidy arrays of dough.~
 #EXIT
 Direction north~
 ToRoom    6049
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6058
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6056
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6033 1 6057 -1 -1 -1 100
@@ -3199,27 +2862,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  Little
-bits of bread are scattered about.
-~
+bits of bread are scattered about.~
 #EXIT
 Direction north~
 ToRoom    6050
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6059
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6057
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6034 1 6058 -1 -1 -1 100
@@ -3233,27 +2892,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  You see
-bread crumbs strewn everywhere.
-~
+bread crumbs strewn everywhere.~
 #EXIT
 Direction north~
 ToRoom    6051
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6060
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6058
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6035 1 6059 -1 -1 -1 100
@@ -3269,34 +2924,29 @@ Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light. You hear
 all kinds of noises around you -- shouting, the clatter of swords, and
 cries of death.  To the south is a small circular building ringed by
-columns.
-~
+columns.~
 #EXIT
 Direction north~
 ToRoom    6052
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6061
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction south~
 ToRoom    6065
-Desc      It looks nice and quiet in there.
-~
+Desc      It looks nice and quiet in there.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6059
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6036 1 6060 -1 -1 -1 100
@@ -3310,27 +2960,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  There is
-a white daisy painted on the floor here.
-~
+a white daisy painted on the floor here.~
 #EXIT
 Direction north~
 ToRoom    6053
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6062
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6060
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6034 1 6061 -1 -1 -1 100
@@ -3344,28 +2990,23 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming black marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  As you
-walk along, your feet splash in puddles of water.
-
-~
+walk along, your feet splash in puddles of water.~
 #EXIT
 Direction north~
 ToRoom    6054
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction east~
 ToRoom    6063
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6061
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6033 1 6062 -1 -1 -1 100
@@ -3379,20 +3020,17 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      You are standing on a gleaming white marble plaza.  Ornate patterns
 of inlaid gold and silver in the marble glitter in the light.  It looks
-as though it rained here recently.
-~
+as though it rained here recently.~
 #EXIT
 Direction north~
 ToRoom    6055
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 #EXIT
 Direction west~
 ToRoom    6062
-Desc      The plaza continues onward.
-~
+Desc      The plaza continues onward.~
 #ENDEXIT
 
 Reset M 6032 1 6063 -1 -1 -1 100
@@ -3408,13 +3046,11 @@ Desc      It is dark and muggy in here.  The walls have a dim luminescent
 blue glow, but the room itself seems to absorb the light.  From
 somewhere in here you hear water dripping, and what might be the sound
 of a monster breathing.  A debris covered slope allows you return
-upwards to the surface.
-~
+upwards to the surface.~
 #EXIT
 Direction up~
 ToRoom    6004
-Desc      You see an opening in the plaza floor above you.
-~
+Desc      You see an opening in the plaza floor above you.~
 #ENDEXIT
 
 Reset M 6040 1 6064 -1 -1 -1 100
@@ -3430,19 +3066,16 @@ Stats     0 0 0 0 100000
 Desc      You are in a small circular chapel.  There is a dome above you with
 colorful frescoes on it depicting robed clerics driving back the warriors
 of evil with a wall of flame.  The walls have ornately carved niches occupied
-by small statues of ancient saints.  The plaza is to the north.
-~
+by small statues of ancient saints.  The plaza is to the north.~
 #EXIT
 Direction north~
 ToRoom    6060
-Desc      You see the plaza.
-~
+Desc      You see the plaza.~
 #ENDEXIT
 
 #EXDESC
 ExDescKey    statues niches~
-ExDesc       The craftsmanship is almost beyond that of mortals.
-~
+ExDesc       The craftsmanship is almost beyond that of mortals.~
 #ENDEXDESC
 
 Reset M 6042 1 6065 -1 -1 -1 100
@@ -3466,32 +3099,27 @@ interspersed with cries of seagulls floating lazily overhead.
 than Bywater, perhaps far larger than any city you've seen before.  It
 seems to extend infinitely to the north.  From this distance the city
 resembles a spectacular field of colorful lights, twinkling before you
-in silent majesty.
-~
+in silent majesty.~
 #EXIT
 Direction east~
 ToRoom    6008
-Desc      You see a giant mirror frame.
-~
+Desc      You see a giant mirror frame.~
 #ENDEXIT
 
 #EXDESC
 ExDescKey    city north~
 ExDesc       The cliffs prevent you from getting closer to it.  Perhaps you'll find this
-city some time in the future.
-~
+city some time in the future.~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    seagulls seagull~
-ExDesc       The phrase "...would have given men wings..." comes to mind.
-~
+ExDesc       The phrase "...would have given men wings..." comes to mind.~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    ocean sunset sun~
-ExDesc       It's breathtaking.  You're glad that this sun doesn't move.
-~
+ExDesc       It's breathtaking.  You're glad that this sun doesn't move.~
 #ENDEXDESC
 
 #ENDROOM
@@ -3506,8 +3134,7 @@ Desc      You seem to be in a fog shrouded room.  On a tiny table surrounded by
 some comfortable looking chairs is a chessboard.  But the pieces on the
 board are alive, and some are actually moving by themselves.  At the base
 of the table you see a two inch tall humanoid guarding a gate...or is that
-just the fog playing tricks on your imagination?
-~
+just the fog playing tricks on your imagination?~
 #ENDROOM
 
 #ROOM
@@ -3520,13 +3147,11 @@ Desc      You are inside the tower.  You see stairs spiraling above you
 towards the sky... apparently there's no roof on this tower.  Windows
 going along the stairs allow sunbeams to dance on the walls as the
 haze outside thickens and thins.  The gateway is to the east.  There
-is some writing on the wall.
-~
+is some writing on the wall.~
 #EXIT
 Direction east~
 ToRoom    6069
-Desc      You see the gateway.
-~
+Desc      You see the gateway.~
 Keywords  gate~
 Flags     isdoor closed~
 #ENDEXIT
@@ -3534,8 +3159,7 @@ Flags     isdoor closed~
 #EXIT
 Direction up~
 ToRoom    6036
-Desc      Round and round she goes, where she stops....
-~
+Desc      Round and round she goes, where she stops....~
 #ENDEXIT
 
 #EXDESC
@@ -3547,8 +3171,7 @@ come a long way since 1996.  We hope you will too.
  ^^
 (**)
 (  )
- ==
-~
+ ==~
 #ENDEXDESC
 
 Reset D 6068 1 1 100 -2
@@ -3562,8 +3185,7 @@ Flags     nomob~
 Stats     0 0 0 0 100000
 Desc      An enormous circular tower of gleaming ivory stands just west of you,
 shrouded in a bluish haze that matches the sky, giving the illusion that
-the tower disappears as it ascends above the island.
-~
+the tower disappears as it ascends above the island.~
 #EXIT
 Direction east~
 ToRoom    50000
@@ -3574,8 +3196,7 @@ Flags     overland nomob~
 #EXIT
 Direction west~
 ToRoom    6068
-Desc      You see the gated entrance to the tower.
-~
+Desc      You see the gated entrance to the tower.~
 Keywords  gate~
 Flags     isdoor closed~
 #ENDEXIT

@@ -25,14 +25,12 @@ Gender    Neuter~
 Position  sitting~
 DefPos    sitting~
 Short     namegen~
-Long      namegen is here before you, proud of his randomness.
-~
+Long      namegen is here before you, proud of his randomness.~
 Desc      namegen is a mob which was given its name via the name generator code.
 It should have a completely random name in the keywords, short description,
 long description, and in this description here that you're looking at. If
 not, it's broken. Report the bug to your administrators, or to the AFKMud
-development team.
-~
+development team.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -52,12 +50,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A wild stag~
-Long      A wild stag waits patiently for its master here.
-~
+Long      A wild stag waits patiently for its master here.~
 Desc      This is a giant wild stag that is often used as a mount by wild elves.
 It has a shiny coat of light brown fur mottled with darker spots of a
-darker brown. Upon its head is a majestic pair of branched horns.
-~
+darker brown. Upon its head is a majestic pair of branched horns.~
 Nattacks  0.000000
 Stats1    0 0 0 0 375 100
 Stats2    20 21 0 100 0 0 2
@@ -77,13 +73,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A cooshee~
-Long      A cooshee waits faithfully for its master here.
-~
+Long      A cooshee waits faithfully for its master here.~
 Desc      This canine beast is of the size of the largest common dog. It has a
 greenish coat with brown spots. This coloration, coupled with its
 ability to move silently, enables it to conceal itself easily in
-brush or woolands where it makes it home.
-~
+brush or woolands where it makes it home.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    20 21 0 100 0 0 0
@@ -104,12 +98,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A wild raccoon~
-Long      A wild raccoon paces up and down here.
-~
+Long      A wild raccoon paces up and down here.~
 Desc      This rodent-like creature has a long tail and its body is covered with
 a thick black fur with silvery highlights. Its eyes shine brightly with
-intelligence as it regards you with almost cool curiosity.
-~
+intelligence as it regards you with almost cool curiosity.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    20 21 0 80 0 0 2
@@ -130,13 +122,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A brown bear~
-Long      A brown bear is standing here, waiting for its master.
-~
+Long      A brown bear is standing here, waiting for its master.~
 Desc      A large and powerful animal with dense fur, this bear looks like it
 will make a formidable foe when angered. Its fur is brownish in colour
 and its paws end in powerful claws. Despite its fierce disposition, it
-looks pretty tame next to its elven master.
-~
+looks pretty tame next to its elven master.~
 Nattacks  0.000000
 Stats1    0 0 0 0 400 100
 Stats2    20 21 0 120 0 0 4
@@ -157,12 +147,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A giant lynx~
-Long      A giant lynx waits patiently for its master here.
-~
+Long      A giant lynx waits patiently for its master here.~
 Desc      This large cat has tufted ears and cheeks, a short bobbed tail and a
 dappled colouring. It has a compact muscular body, with heavy legs
-and unusually large paws. It looks highly intelligent.
-~
+and unusually large paws. It looks highly intelligent.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    20 21 0 100 0 0 0
@@ -183,12 +171,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A giant owl~
-Long      A giant owl waits faithfully for its master here.
-~
+Long      A giant owl waits faithfully for its master here.~
 Desc      This bird is about 2 feet long and has a 5-foot wingspread. It has a
 heart-shaped face and huge eyes. Its ears are swept back giving them
-the appearance of horns. It lets out a gentle hoot once in a while.
-~
+the appearance of horns. It lets out a gentle hoot once in a while.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    20 21 0 80 0 0 0
@@ -209,13 +195,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A skeleton horse~
-Long      A skeleton horse stands in a state of undeath here.
-~
+Long      A skeleton horse stands in a state of undeath here.~
 Desc      A morbid creation of undeath, this skeleton horse has been called forth from
 the realms of chaos to serve the antipaladin who has summoned it. It is loyal
 to its master and will defend its master with complete abandonment. Its eyes
-glow red with the evil force that is keeping it 'alive'.
-~
+glow red with the evil force that is keeping it 'alive'.~
 Nattacks  0.000000
 Stats1    -1000 0 0 0 500 100
 Stats2    15 -14 -80 60 1 6 8
@@ -236,13 +220,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A pegasus~
-Long      A magnificent pegasus is standing here, waiting for its master's orders.
-~
+Long      A magnificent pegasus is standing here, waiting for its master's orders.~
 Desc      A magnifcent horse with wings, this pegasus has been summoned from its habitat
 to faithfully serve the paladin who has summoned it. It is undyingly loyal and
 fiercely protective in battle. It abhors all evil creatures and will fight
-alongside its master, bearing him into battle.
-~
+alongside its master, bearing him into battle.~
 Nattacks  0.000000
 Stats1    1000 0 0 0 650 100
 Stats2    30 21 -80 200 2 8 4
@@ -265,14 +247,12 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A nightmare~
-Long      A demonic nightmare is standing here, waiting for its master's orders.
-~
+Long      A demonic nightmare is standing here, waiting for its master's orders.~
 Desc      A demonic steed with a huge head, glowing red eyes, flaming orange nostrils,
 and hooves which burn like embers, this nightmare has been summoned from the
 realms of chaos to serve the antipaladin who has summoned it. Its coat is dead
 black in colour, and its mane and tail are wild and rugged. It will fiercely
-protect its master in combat.
-~
+protect its master in combat.~
 Nattacks  0.000000
 Stats1    -1000 0 0 0 650 100
 Stats2    30 21 -80 200 2 8 4
@@ -294,14 +274,12 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A gnomish flying machine~
-Long      A winged gnomish machine designed for flying, rests noisily here.
-~
+Long      A winged gnomish machine designed for flying, rests noisily here.~
 Desc      An amazing gnomish contraption. It appears to be little more than a one
 person seat joined to a set of wings. Above the seat, there is a three
 bladed rotor which is spun on its axis by a steam and gear engine
 located behind the seat. The whole machine looks rather dangerous
-to fly in.
-~
+to fly in.~
 Nattacks  0.000000
 Stats1    0 0 0 0 600 100
 Stats2    10 21 0 10 0 0 0
@@ -324,8 +302,7 @@ mea 0.$n &RYou are caught in the blast and take damage!&z
 mpforce 0.$n dismount
 mpecho The machine is destroyed and no trace of it is left behind!
 mpgoto 11001
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -339,8 +316,7 @@ mpdamage 0.$n 40
 mea 0.$n &RYou are caught in the blast and take damage!&z
 mpecho The machine is destroyed and no trace of it is left behind!
 mpgoto 11001
-endif
-~
+endif~
 #ENDPROG
 
 #ENDMOBILE
@@ -354,8 +330,7 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Negative Magnetic Space Wedgy~
-Long      The negative magnetic space wedgy wanders aimlessly through the void.
-~
+Long      The negative magnetic space wedgy wanders aimlessly through the void.~
 Desc      The negative magnetic space wedgy is an interdimensional creature
 made from the void itself. The wedgy is nearly indistinguishable from
 the blackness of space. The wedgy possesses the ability to open rifts
@@ -365,8 +340,7 @@ Conjured from the very minds of the Gods themselves, the wedgy enjoys
 all of the benifits of immortality, and is impossible to destroy. It 
 spends a great deal of time doing nothing more than sucking things into 
 oblivion. Some would consider the wedgy the embodiment of all that is 
-evil, an evil that has now focused its attention on you.....
-~
+evil, an evil that has now focused its attention on you.....~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    100 21 -10 30000 100 100 1000
@@ -384,8 +358,7 @@ chat Foolish infidel! I cannot be destroyed! Muahahahahahahahahahaha!
 if name($n) == Gormican
 chat Pitiful pixie fool! Your life ends here!
 mpat gormican mpslay gormican
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -397,8 +370,7 @@ mpat gormican mpslay gormican
 else
 chat I grow weary of these games $n. Do not test my will further.
 endif
-mpgoto 11999
-~
+mpgoto 11999~
 #ENDPROG
 
 #MUDPROG
@@ -409,8 +381,7 @@ chat $n, did you think you could be rid of me so easily?
 if name($n) == Gormican
 chat Such insolence deserves the same - take that you foul pixie!
 mpat gormican mpscatter gormican
-endif
-~
+endif~
 #ENDPROG
 
 #ENDMOBILE
@@ -424,11 +395,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     A servitor daemon~
-Long      A servitor daemon has been bound to this plane.
-~
+Long      A servitor daemon has been bound to this plane.~
 Desc      A big, red, grotesque figure with claws for hands. He has a lost look
-on his face, then turns to notice you......
-~
+on his face, then turns to notice you......~
 Nattacks  0.000000
 Stats1    -1000 0 0 0 150 100
 Stats2    50 10 30 200 2 4 7
@@ -453,12 +422,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a traveller~
-Long      A traveller wanders by on some long journey.
-~
+Long      A traveller wanders by on some long journey.~
 Desc      A dusty looking traveller who looks like he's seen more than his
 fair share of wilderness travel. He travels lightly with only a single
-backpack full of camping equipment and provisions.
-~
+backpack full of camping equipment and provisions.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    15 21 0 70 2 4 8
@@ -478,14 +445,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a merchant~
-Long      A merchant passes by, leading a pair of pack mules.
-~
+Long      A merchant passes by, leading a pair of pack mules.~
 Desc      He looks tired and weary. and probably wishes he were at some comfortable
 inn rather than ferrying his trade goods across the wilderness. This
 particular merchant must be on the poorer end of the profession as he
 is not accompanied by any of the guards so commonly found around other 
-merchants.
-~
+merchants.~
 Nattacks  0.000000
 Stats1    700 -1 0 0 150 100
 Stats2    15 21 0 50 2 4 8
@@ -507,14 +472,12 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a gypsy~
-Long      A mysterious gypsy gives you a shy smile.
-~
+Long      A mysterious gypsy gives you a shy smile.~
 Desc      Dark skinned and of lithe build, this southlander gypsy is not commonly
 seen within populated cities. Strangely, their people have always
 been wanderers and are considered the most travelled among all the
 land. Yet, much of their customs and beliefs are still a mystery to
-outsiders.
-~
+outsiders.~
 Nattacks  0.000000
 Stats1    700 -1 0 0 150 100
 Stats2    15 21 0 50 2 4 8
@@ -535,14 +498,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a bandit~
-Long      A ruthless bandit tries to hide behind a bush.
-~
+Long      A ruthless bandit tries to hide behind a bush.~
 Desc      The bandit is equipped in worn leathers and wields short sword. While
 he doesn't look very dangerous, the cunning glint of greed in his eyes
 tells you to beware trickery from this scoundrel. Bandits like him
 are a dime a dozen, making it a certainty that his fellow gangmates
-are probably prowling nearby.
-~
+are probably prowling nearby.~
 Nattacks  0.000000
 Stats1    -700 -1 0 0 150 100
 Stats2    7 21 0 40 2 5 2
@@ -565,13 +526,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a farmer~
-Long      A weathered farmer plants some seeds in the soil nearby.
-~
+Long      A weathered farmer plants some seeds in the soil nearby.~
 Desc      His skin is tanned and baked from working under the midday sun and it
 looks like his hands are quite heavily calloused. These farmers dedicate
 their lives to their land and their crops almost as ferverently as
-Druids do.
-~
+Druids do.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    15 21 0 70 2 4 5
@@ -592,12 +551,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a cow~
-Long      A cow looks at impassively at you as it chews on some grass.
-~
+Long      A cow looks at impassively at you as it chews on some grass.~
 Desc      A strong-smelling cow from the farmed fields. It doesn't look too bright
 but it is however a rather heavy beast, one that you wouldn't want
-trampling on you. Best that you leave this dull animal alone.
-~
+trampling on you. Best that you leave this dull animal alone.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 0 70 2 4 8
@@ -618,12 +575,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a bunny rabbit~
-Long      A fluffy bunny hops away as you approach.
-~
+Long      A fluffy bunny hops away as you approach.~
 Desc      Its not as if you have never seen a bunny rabbit before. This particular
 one looks quite plump and healthy. Its floppy ears twitch at your
-approach and it is always ready to bound away.
-~
+approach and it is always ready to bound away.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 0 30 2 4 4
@@ -644,12 +599,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a raging bull~
-Long      A dangerous raging bull lowers its horns and charges at you.
-~
+Long      A dangerous raging bull lowers its horns and charges at you.~
 Desc      This creature of pure muscle and fury doesn't seem too happy that you're 
 here. Spittle flies from its mouth as it lowers its horns and prepares
-to gore you to death. Be assured, death like that would not be pleasant.
-~
+to gore you to death. Be assured, death like that would not be pleasant.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    20 21 0 70 2 4 8
@@ -670,12 +623,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a deer~
-Long      A deer freezes at the sight of you, looking like it would bolt any moment.
-~
+Long      A deer freezes at the sight of you, looking like it would bolt any moment.~
 Desc      A healthy brown deer. It looks skittish and nervous at the sight of
 you. This is probably due to the fact that hunters regularly kill
-these magnificent creatures for venison and skins.
-~
+these magnificent creatures for venison and skins.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 0 70 2 4 8
@@ -697,13 +648,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a forest dryad~
-Long      A delicate-looking dryad frolics through the forest. 
-~
+Long      A delicate-looking dryad frolics through the forest.~
 Desc      Her skin is the color of smooth wood and probably of the same consistency.
 A wreath of flowers binds her wild green hair, which appears to be
 nothing more than leaves and vines. It is commonly believed that it
-is unlucky to attack a child of nature such as this dryad.
-~
+is unlucky to attack a child of nature such as this dryad.~
 Nattacks  0.000000
 Stats1    1000 0 0 0 150 100
 Stats2    15 21 0 50 2 4 8
@@ -727,12 +676,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a treant~
-Long      A treant passes by, rustling its leaves and branches loudly.
-~
+Long      A treant passes by, rustling its leaves and branches loudly.~
 Desc      A rather large walking tree passes by you. It seems to be busy getting
 somewhere and is so focused on its journey that it ignores you standing
-and gaping at it.
-~
+and gaping at it.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    15 21 1 275 2 3 4
@@ -756,12 +703,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a forest wurm~
-Long      A huge serpent thunders through the forest, hissing and snarling.
-~
+Long      A huge serpent thunders through the forest, hissing and snarling.~
 Desc      You stand face-to-face with a wurm of incredible size. It most resembles
 a huge serpentine snake with the head of a spined toad. The creature
-glares at you, hissing and spiting out poisonous venom.
-~
+glares at you, hissing and spiting out poisonous venom.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    20 21 0 200 2 4 8
@@ -785,12 +730,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a hill dwarf~
-Long      A hill dwarf stands nearby, eyeing you with suspicion.
-~
+Long      A hill dwarf stands nearby, eyeing you with suspicion.~
 Desc      A simple dwarf from one of the nearby hill-clans. As with most other
 hill dwarves, he is extremely suspicious of others outside of his
-clan. He is dressed in tough leather armor and sports a notched axe.
-~
+clan. He is dressed in tough leather armor and sports a notched axe.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    15 21 0 90 3 3 8
@@ -813,13 +756,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a rock badger~
-Long      A curious badger with rocky skin pokes its head out of the hillside.
-~
+Long      A curious badger with rocky skin pokes its head out of the hillside.~
 Desc      A very curious rodent-like animal who seems to be more interested in you
 than you are of it. From what you can see, it has two powerful foreclaws
 which it uses to burrow through the hillside and dig through the rocky
-soil.
-~
+soil.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 0 70 2 4 8
@@ -843,12 +784,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a crow~
-Long      A black crow circles in the sky overhead.
-~
+Long      A black crow circles in the sky overhead.~
 Desc      The crow looks right back at you with its menacing beady eyes. It appears
 to be waiting for scraps of meat and food so it can swoop by and steal it
-from you.
-~
+from you.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 0 70 2 4 4
@@ -870,13 +809,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a hill dragon~
-Long      A huge hill dragon rears up and prepares to attack!
-~
+Long      A huge hill dragon rears up and prepares to attack!~
 Desc      A terrifying dragon that prowls the hills and preys on adventurers
 such as yourself for food and amusement. It could crush you with a
 single blow if it wanted to but it prefers to toy with you before making
-you its meal. This is an extremely evil and hostile creature.
-~
+you its meal. This is an extremely evil and hostile creature.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    20 21 -60 400 2 4 8
@@ -900,11 +837,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a mountain goat~
-Long      A sure-footed mountain goat hops on a nearby rock.
-~
+Long      A sure-footed mountain goat hops on a nearby rock.~
 Desc      Too bad you aren't as sure footed as this goat. It would surely make your
-journey through these lands much easier.
-~
+journey through these lands much easier.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 0 70 2 4 8
@@ -926,12 +861,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a wild hound~
-Long      A wild hound runs freely on this rocky terrain.
-~
+Long      A wild hound runs freely on this rocky terrain.~
 Desc      One of the common wild dogs that roam these mountains and make sport out
 of killing goats and other herd animals. Though they are somewhat of
-a nuisance to the local shepards, these creatures are no threat to you.
-~
+a nuisance to the local shepards, these creatures are no threat to you.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 -20 80 2 4 6
@@ -953,14 +886,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a firbolg~
-Long      A dangerous firbolg lurks nearby, ready to hurl stones at you.
-~
+Long      A dangerous firbolg lurks nearby, ready to hurl stones at you.~
 Desc      This is one mean looking giant-kin. Though smaller than true-blooded
 giants, this nasty creature is no less vicious. It lives on these
 mountains and attacks almost anything not bigger than it much like
 a large bully. Its favored method of killing includes smashing skulls
-with large rocks.
-~
+with large rocks.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    20 21 0 140 2 6 8
@@ -985,11 +916,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a scarab beetle~
-Long      A strange beetle with intricate patterns on its shell lies in the sand.
-~
+Long      A strange beetle with intricate patterns on its shell lies in the sand.~
 Desc      A beautiful large desert beetle. Its shiny shell carapace has a pretty
-and unique pattern upon it. Some cultures even revere these insects. 
-~
+and unique pattern upon it. Some cultures even revere these insects.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 0 60 2 4 4
@@ -1014,13 +943,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a desert nomad~
-Long      A desert nomad wanders by, eyes intently scouting the desert sands.
-~
+Long      A desert nomad wanders by, eyes intently scouting the desert sands.~
 Desc      She is wrapped so carefully in desert cloth to protect from dehydration
 that all you can see of her are her eyes. However you have no doubt
 that she is a couragous and able warrior who has live all her life under
-the desert skies.
-~
+the desert skies.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    15 21 -20 85 2 4 8
@@ -1043,11 +970,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a sand elemental~
-Long      A fearsome whirlwind of sand rises before you.
-~
+Long      A fearsome whirlwind of sand rises before you.~
 Desc      A swirling whirlwind of blinding sand. This appears to be an extra-planar
-entity which seems intent on blasting you from the face of the desert.
-~
+entity which seems intent on blasting you from the face of the desert.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    20 21 -56 300 2 6 8
@@ -1073,11 +998,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a stirge~
-Long      A large mosquito-like stirge swoops at you, hungry for fresh blood.
-~
+Long      A large mosquito-like stirge swoops at you, hungry for fresh blood.~
 Desc      Its a huge hungry stirge that seeks out warm blood to feast on and lay
-its eggs in. Horrible creatures.
-~
+its eggs in. Horrible creatures.~
 Nattacks  0.000000
 Stats1    -1000 0 0 0 150 100
 Stats2    20 21 0 70 2 4 4
@@ -1102,12 +1025,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a swamp goblin~
-Long      A ruthless goblin leaps out of the fetid swamp water.
-~
+Long      A ruthless goblin leaps out of the fetid swamp water.~
 Desc      A ruthless muck encrusted goblin. This cowardly creature would not
 hesitate to slit your throat and paint itself with your blood.
-You would do the world a great favor by killing this wretched creature.
-~
+You would do the world a great favor by killing this wretched creature.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    20 21 0 60 2 4 6
@@ -1130,12 +1051,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     an orangutan~
-Long      An orangutan hangs on a nearby tree, eating ticks.
-~
+Long      An orangutan hangs on a nearby tree, eating ticks.~
 Desc      An intelligent orangutan looks around for food. It doesn't seem to
 alarmed by your presence though. It would do no good to harm this
-peaceful creature.
-~
+peaceful creature.~
 Nattacks  0.000000
 Stats1    1000 0 0 0 150 100
 Stats2    15 21 1 90 2 3 4
@@ -1158,12 +1077,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a python~
-Long      A large snake slithers on a nearby branch.
-~
+Long      A large snake slithers on a nearby branch.~
 Desc      This scaly python seems more interested in slithering by than in attacking
 you. It does however appear quite dangerous should you decide to provoke
-it into a fight.
-~
+it into a fight.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 1 70 2 3 4
@@ -1187,12 +1104,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a monitor lizard~
-Long      A monitor lizard lounges contentedly in a nearby clump of undergrowth.
-~
+Long      A monitor lizard lounges contentedly in a nearby clump of undergrowth.~
 Desc      This large lizard stands almost motionless save for the flicking of
 its tongue. It is a denizen of the jungle and one of its less dangerous
-creatures.
-~
+creatures.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 1 70 2 4 4
@@ -1216,12 +1131,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a jungle panther~
-Long      A sleek black panther crouches on a branch, its eyes glinting in the light.
-~
+Long      A sleek black panther crouches on a branch, its eyes glinting in the light.~
 Desc      The natural predator of the jungle. This panther is in a mood for carnage
 and blood and it appears that YOU are its next prey. With a snarl, it
-leaps fully towards you. 
-~
+leaps fully towards you.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    20 21 0 150 3 4 6
@@ -1244,12 +1157,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a crab~
-Long      A nearby crab scuttles out of your way.
-~
+Long      A nearby crab scuttles out of your way.~
 Desc      Oddly enough, this common shoreside crab can scuttle away quite speedily
 whenever it perceives a threat. When accosted, it raises its powerful
-claws and slowly backs away to the nearest hole or towards the water.
-~
+claws and slowly backs away to the nearest hole or towards the water.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 -50 90 2 3 4
@@ -1273,12 +1184,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a seagull~
-Long      A white seagull glides elegantly on the shore winds.
-~
+Long      A white seagull glides elegantly on the shore winds.~
 Desc      A noble scavenging seabird regarded by most sailors as a sign of good
 fortune. As such, harming such a bird would undoubtably bring terrible
-luck upon its attacker.
-~
+luck upon its attacker.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 -20 70 2 4 4
@@ -1300,12 +1209,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a hyena~
-Long      A cackling hyena eyes you as you pass by.
-~
+Long      A cackling hyena eyes you as you pass by.~
 Desc      The hyena makes a distinctive sound that closely resembles laughter.
 It is as if all hyenas laugh at some eternal cosmic joke. All in all,
-this is a rather interesting creature.
-~
+this is a rather interesting creature.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 -20 80 2 4 6
@@ -1327,12 +1234,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     a meerkat~
-Long      A meerkat stands up on its hind legs and regards you curiously.
-~
+Long      A meerkat stands up on its hind legs and regards you curiously.~
 Desc      This creature closely resembles a ferret. However, it has the tendency to
 stand upright on its hind legs when not scampering around. No doubt
-this is quite an intelligent and resourceful rodent.
-~
+this is quite an intelligent and resourceful rodent.~
 Nattacks  0.000000
 Stats1    500 0 0 0 150 100
 Stats2    15 21 -40 60 2 4 6
@@ -1355,12 +1260,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an armadillo~
-Long      An armored armadillo wanders peacefully by, ignoring your presence.
-~
+Long      An armored armadillo wanders peacefully by, ignoring your presence.~
 Desc      A walking piece of armor. This creature has a skin of overlapping
 armor that keeps at bay all except the most dangerous of predators.
-When cornered, the armadillo curls up into an impenatrable ball.
-~
+When cornered, the armadillo curls up into an impenatrable ball.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    15 21 -100 100 2 4 2
@@ -1385,12 +1288,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     a manticore~
-Long      A manticore swoops dangerously towards you, shooting barbed spikes.
-~
+Long      A manticore swoops dangerously towards you, shooting barbed spikes.~
 Desc      A creature with the head and body of a lion, large wings of a falcon
 and a barbed tail of a scorpion that shoots poisonous spikes. It is
-fury incarnate and it next victim is going to be you!
-~
+fury incarnate and it next victim is going to be you!~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    25 -15 -140 300 3 5 6
@@ -1414,12 +1315,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A magical skyship~
-Long      A magical skyship with large glowing sails rests here awaiting passengers.
-~
+Long      A magical skyship with large glowing sails rests here awaiting passengers.~
 Desc      The skyship is a truly marvelous invention. First created by the mages
 of Palainth and initially used only for their purposes, the skyship
-has since been made safe for travel by the masses.
-~
+has since been made safe for travel by the masses.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    105 -23 -100 800 0 0 10
@@ -1440,14 +1339,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     A Guard~
-Long      A city guard watches you go by.
-~
+Long      A city guard watches you go by.~
 Desc      This guard is big and strong, and he doesn't look like someone you want
 to mess with.  He is part of the city guard, which is famed throughout
 the dominion as being one of the best fighting forces around.
 He has been trained to be vigilent, so as to watch for orc attacks, and
-he practices his training on you, watching every move you make.
-~
+he practices his training on you, watching every move you make.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    30 21 100 400 1 8 3
@@ -1468,8 +1365,7 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Puff~
-Long      Puff the Fractal Dragon is here, contemplating a higher reality.
-~
+Long      Puff the Fractal Dragon is here, contemplating a higher reality.~
 Nattacks  0.000000
 Stats1    1000 -1 0 0 150 100
 Stats2    100 20 -30 30550 4 10 200
@@ -1493,8 +1389,7 @@ say random char (name):		$r
 say random char (name&title or short): 	$R
 say random char  (he,she,it):	$J
 say random char (him,her,it):	$L
-say random char (his,hers,its):	$K
-~
+say random char (his,hers,its):	$K~
 #ENDPROG
 
 #MUDPROG
@@ -1509,8 +1404,7 @@ say firstname of victim: 	$t
 say short_desc/title of victim:	$T
 say he/she/it of victim: 	$E
 say him/her/it of victim: 	$M
-say his/hers/its of victim:	$S
-~
+say his/hers/its of victim:	$S~
 #ENDPROG
 
 #ENDMOBILE
@@ -1524,11 +1418,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A demon imp~
-Long      A demon imp hovers nearby...drooling constantly with a fiendish grin.
-~
+Long      A demon imp hovers nearby...drooling constantly with a fiendish grin.~
 Desc      This demon is clearly something that you don't want to mess with...
-It appears to be very agile, and very strong.  
-~
+It appears to be very agile, and very strong.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    100 1 -300 31550 1 2 2
@@ -1541,8 +1433,7 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 Progtype  act_prog~
 Arglist   p is dying~
 Comlist   mpforce $n drink
-c heal $n
-~
+c heal $n~
 #ENDPROG
 
 #MUDPROG
@@ -1551,55 +1442,48 @@ Arglist   p is starved~
 Comlist   mpoload 11413
 give mushroom $n
 mpforce $n eat mushroom
-cast heal $n
-~
+cast heal $n~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p bashes against~
 Comlist   cast heal $n
-cast heal $n
-~
+cast heal $n~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p shivers and~
 Comlist   cast 'cure poison' $n
-cast heal $n
-~
+cast heal $n~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p wears~
 Comlist   c heal $n
-c heal $n
-~
+c heal $n~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p wields~
 Comlist   c heal $n
-c heal $n
-~
+c heal $n~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p is DEAD.~
-Comlist   mptrans 0.$n 11405
-~
+Comlist   mptrans 0.$n 11405~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p A swirling vortex arrives, carrying Krusty!~
 Comlist   mpat 1450 yell Damn lizard! Get out of here!
-mptrans krusty 1401
-~
+mptrans krusty 1401~
 #ENDPROG
 
 #MUDPROG
@@ -1608,8 +1492,7 @@ Arglist   10~
 Comlist   if mobinroom(1203) > 0
 mpat 1450 yell Damnit Krusty! Get out of here and STAY out!
 mptrans krusty 1401
-endif
-~
+endif~
 #ENDPROG
 
 #ENDMOBILE
@@ -1623,11 +1506,9 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     the supermob~
-Long      The supermob is here. He's running himself ragged.
-~
+Long      The supermob is here. He's running himself ragged.~
 Desc      The supermob is by far the most powerful and wise
-mobs in all the multiverse. He is a true marvel of the gods.
-~
+mobs in all the multiverse. He is a true marvel of the gods.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    105 1 -300 31550 1 2 2
@@ -1639,8 +1520,7 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 #MUDPROG
 Progtype  rand_prog~
 Arglist   25~
-Comlist   mpinvis 101
-~
+Comlist   mpinvis 101~
 #ENDPROG
 
 #ENDMOBILE
@@ -1654,13 +1534,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated corpse~
-Long      An animated corpse struggles with the horror of its undeath.
-~
+Long      An animated corpse struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -1679,13 +1557,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated skeleton~
-Long      An animated skeleton struggles with the horror of its undeath.
-~
+Long      An animated skeleton struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    10 21 -10 25 1 8 2
@@ -1706,13 +1582,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated zombie~
-Long      An animated zombie struggles with the horror of its undeath.
-~
+Long      An animated zombie struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    20 21 -20 50 1 8 4
@@ -1732,13 +1606,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated ghoul~
-Long      An animated ghoul struggles with the horror of its undeath.
-~
+Long      An animated ghoul struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 -30 75 1 8 6
@@ -1759,13 +1631,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated crypt thing~
-Long      An animated crypt thing struggles with the horror of its undeath.
-~
+Long      An animated crypt thing struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    40 21 -40 100 2 6 8
@@ -1785,13 +1655,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated mummy~
-Long      An animated mummy struggles with the horror of its undeath.
-~
+Long      An animated mummy struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    50 21 -50 125 2 8 10
@@ -1813,13 +1681,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated ghost~
-Long      An animated ghost struggles with the horror of its undeath.
-~
+Long      An animated ghost struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    60 21 -60 150 2 8 12
@@ -1840,13 +1706,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated death knight~
-Long      An animated death knight struggles with the horror of its undeath.
-~
+Long      An animated death knight struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    24 0 0 0 150 100
 Stats2    70 21 -70 200 2 8 14
@@ -1868,13 +1732,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     an animated dracolich~
-Long      An animated dracolich struggles with the horror of its undeath.
-~
+Long      An animated dracolich struggles with the horror of its undeath.~
 Desc      Denied its rightful death, this animated corpse has been infused with the
 powerful energies of its master.  It exists on the precipice between life
 and unlife, even as its physical body rots and decays under the strain of
-its tasks.
-~
+its tasks.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    80 21 -80 250 2 8 16
@@ -1896,12 +1758,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The creeping doom~
-Long      A vile swarm of insects buzzes about the room.
-~
+Long      A vile swarm of insects buzzes about the room.~
 Desc      A seething morass of biting and stinging insects. It destroys everything
 in its path, leaving not even the corpses of its enemies behind. It
-is the product of a truly powerful Druidic spell.
-~
+is the product of a truly powerful Druidic spell.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    90 -30 0 7000 100 5 45
@@ -1919,8 +1779,7 @@ Arglist   100~
 Comlist   if isnpc($n)
    mpechoaround creeping &gThe creeping insects swarm over $N in a frenzy!&z
    kill $n
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1929,8 +1788,7 @@ Arglist   100~
 Comlist   if isnpc($n)
    mpechoaround creeping &gThe creeping insects swarm over $N in a frenzy!&z
    kill $n
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1939,16 +1797,14 @@ Arglist   100~
 Comlist   if isnpc($r)
    mpechoaround creeping &gThe creeping insects swarm over $R in a frenzy!&z
    kill $r
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
 Progtype  script_prog~
 Arglist   6 100~
 Comlist   mpechoaround creeping &gThe creeping doom slowly dissipates....&z
-mpgoto 11403
-~
+mpgoto 11403~
 #ENDPROG
 
 #ENDMOBILE
@@ -1962,8 +1818,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created doppleganger~
-Long      Some god abandoned a newly created doppleganger here.
-~
+Long      Some god abandoned a newly created doppleganger here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -1983,12 +1838,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A paladin war horse~
-Long      A paladin war horse waits faithfully for its master here.
-~
+Long      A paladin war horse waits faithfully for its master here.~
 Desc      A fine steed of magnificent stature, this horse is the mount of a paladin. It
 is loyal to its master and will fight alongside its master with undying
-loyalty. Its intelligent eyes regard you with an almost haughty look.
-~
+loyalty. Its intelligent eyes regard you with an almost haughty look.~
 Nattacks  0.000000
 Stats1    1000 0 0 0 500 100
 Stats2    15 -15 -80 100 1 8 8
@@ -2007,8 +1860,7 @@ follow $n
 mpecho The paladin war horse neighs gently...
 else
 mpecho The paladin horse snorts...
-endif
-~
+endif~
 #ENDPROG
 
 #ENDMOBILE
@@ -2022,8 +1874,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
-Long      Some god abandoned a newly created last mob here.
-~
+Long      Some god abandoned a newly created last mob here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -2169,8 +2020,7 @@ useful if you wanted to start a fire going.
 To build a fire, follow the steps below:
 1) Drop the firewood onto the ground where you want to build the fire.
 2) Say "strike flint" to strike the tinder with some small flint stone.
-3) Enjoy the warmth and light of your newly built fire.
-~
+3) Enjoy the warmth and light of your newly built fire.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2181,8 +2031,7 @@ mpechoat 0.$n The twigs catch fire and soon, you have a fire cackling.
 mpechoat 0.$n The tinder and flint is consumed in building the fire.
 mpoload 11002
 mposet fire timer 15
-mppurge firewood-pile-twigs
-~
+mppurge firewood-pile-twigs~
 #ENDPROG
 
 #ENDOBJECT
@@ -2200,8 +2049,7 @@ Stats     1 0 1 9999 0 None None None
 #EXDESC
 ExDescKey    acorns~
 ExDesc       Small brown nuts found in certain woodland areas. They are rather
-tasty but not really filling. Makes for excellent squirrel bait.
-~
+tasty but not really filling. Makes for excellent squirrel bait.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -2211,7 +2059,7 @@ Vnum      11030
 Keywords  aloe root~
 Type      pill~
 Short     A twisted aloe root~
-Long      A scraggly, twisted aloe root sticks out from the ground. ~
+Long      A scraggly, twisted aloe root sticks out from the ground.~
 WFlags    take~
 Values    10 -1 -1 -1 0 0 0 0 0 0 0
 Stats     1 0 -1 9999 0 None None None
@@ -2220,8 +2068,7 @@ Spells       'cure poison' 'NONE' 'NONE'
 ExDescKey    aloe root~
 ExDesc       A root from the aloe plant. Despite how simple and uninteresting it
 looks, it is said to have useful applications in warding against
-poisons of all kinds.
-~
+poisons of all kinds.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -2240,8 +2087,7 @@ Spells       'cure light' 'NONE'
 ExDescKey    fresh herbs damp poultice~
 ExDesc       Looks like a messy pile of damp mosses, leaves and fungi. It smells
 even worse too. Fortunately it has medicinal uses. Perhaps it would
-take away the sting from some of your wounds.
-~
+take away the sting from some of your wounds.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -2324,8 +2170,7 @@ Stats     1 0 -1 0 0 None None None
 Spells       'invisibility' 'NONE'
 #EXDESC
 ExDescKey    faerie dust~
-ExDesc       A shimmering pile of dust that fades in and out of sight.
-~
+ExDesc       A shimmering pile of dust that fades in and out of sight.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -2345,8 +2190,7 @@ Spells       'fireball'
 ExDescKey    gnomish flamethrower~
 ExDesc       A machine consisting of a long pipe connected to a small bottle of
 flammable oils and spirits by a rubber hose. Interestingly enough,
-there appears to be a small fire burning at the end of the pipe.
-~
+there appears to be a small fire burning at the end of the pipe.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2355,8 +2199,7 @@ Arglist   10~
 Comlist   mea 0.$n The flamethrower chokes as it shoots out a ball of fire.
 mea 0.$n You are caught in a backdraft as the flamethrower sputters!
 mpdamage 0.$n 40
-mea 0.$n &RYou are scorched by the flames and take damage!&z
-~
+mea 0.$n &RYou are scorched by the flames and take damage!&z~
 #ENDPROG
 
 #ENDOBJECT
@@ -2375,8 +2218,7 @@ AffData climb 60 -1 -1 0
 ExDescKey    gnomish collapsible ladder~
 ExDesc       A lightweight ladder made out of a mix of metals that lend it some
 strength and sturdiness. By the height of its rungs, you deduce that
-it was made for gnomish use.
-~
+it was made for gnomish use.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2385,8 +2227,7 @@ Arglist   10~
 Comlist   mea 0.$n The ladder suddenly collapses as you are attempting to hold it!
 mea 0.$n You are caught in between the steps of the ladder!
 mpdamage 0.$n 40
-mea 0.$n &ROUCH!&z
-~
+mea 0.$n &ROUCH!&z~
 #ENDPROG
 
 #ENDOBJECT
@@ -2406,8 +2247,7 @@ AffData dig 25 -1 -1 0
 ExDescKey    gnomish digging excavational device~
 ExDesc       A strange mix of machinery resembling a hand-held device with numerous
 rotating spades and spinning drills. Obviously it is used to dig
-through the earth with great efficiency.
-~
+through the earth with great efficiency.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2416,8 +2256,7 @@ Arglist   10~
 Comlist   mea 0.$n The device suddenly goes wild and takes on a life of its own!
 mea 0.$n You are injured by the wildly spinning drills!
 mpdamage 0.$n 40
-mea 0.$n &ROUCH!&z
-~
+mea 0.$n &ROUCH!&z~
 #ENDPROG
 
 #ENDOBJECT
@@ -2437,8 +2276,7 @@ AffData pick 20 -1 -1 0
 ExDescKey    gnomish univeral lockpick~
 ExDesc       A thin sliver of metal which can easily slide into a keyhole, this device
 can be adjusted to fit different keyhole sizes. It looks like it is meant
-to be used to pick open locked doors.
-~
+to be used to pick open locked doors.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -2459,8 +2297,7 @@ ExDescKey    gnomish underwater breathin apparatus~
 ExDesc       This strange piece of equipment consists of a metal cylinder with a long
 tube attached to the top. The tube ends in a mouthpiece made from some
 rubbery substance. There is a small knob at the top of the cylinder which
-when you turn, releases a steady stream of air.
-~
+when you turn, releases a steady stream of air.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -2988,8 +2825,7 @@ AffData damroll 4 -1 -1 0
 #EXDESC
 ExDescKey    vine whip~
 ExDesc       A whip made out of magically intertwining vines. It is strong and
-very durable.
-~
+very durable.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -3044,8 +2880,7 @@ AffData damroll 2 -1 -1 0
 #EXDESC
 ExDescKey    flame blade~
 ExDesc       A magically created blade seemingly made of pure fire. Only a druid or
-a ranger safely wield it.
-~
+a ranger safely wield it.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -3206,8 +3041,7 @@ mpechoat 0.$n You are forced to drop the mistletoe.
 mpechoaround 0.$n $n is forced to drop the mistletoe as it flares silver.
 mpforce 0.$n remove mistletoe
 mpforce 0.$n drop mistletoe
-endif
-~
+endif~
 #ENDPROG
 
 #ENDOBJECT
@@ -3231,8 +3065,7 @@ mpechoat 0.$n You are forced to drop the symbol.
 mpechoaround 0.$n &W$n is forced to drop the symbol as it flares white.&z
 mpforce 0.$n remove symbol-faith
 mpforce 0.$n drop symbol-faith
-endif
-~
+endif~
 #ENDPROG
 
 #ENDOBJECT
@@ -3444,8 +3277,7 @@ mpechoat 0.$n You are forced to drop the symbol.
 mpechoaround 0.$n &W$n is forced to drop the symbol as it flares white.&z
 mpforce 0.$n remove symbol-paladin
 mpforce 0.$n drop symbol-paladin
-endif
-~
+endif~
 #ENDPROG
 
 #ENDOBJECT
@@ -3469,8 +3301,7 @@ mpechoat 0.$n You are forced to drop the skull.
 mpechoaround 0.$n &r$n is forced to drop the skull as it flares red.&z
 mpforce 0.$n remove skull-death
 mpforce 0.$n drop skull-death
-endif
-~
+endif~
 #ENDPROG
 
 #ENDOBJECT
@@ -3676,8 +3507,7 @@ AffData save_spell -1 -1 -1 0
 ExDescKey    lantern wisdom light~
 ExDesc       This is one of the various types of lightsources available in the Lands.
 It comes in handy especially at night or in dark places. As you journey
-onward you will find better equipment, but this will serve you for now.
-~
+onward you will find better equipment, but this will serve you for now.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -3713,8 +3543,7 @@ PRACTICE -    Will teach you about training spells, skills, and weapons.
 INFORMATION - Will cover ways to find certain types of information.
    
 To use these help files, type HELP <topic> from the topics listed in
-capital letters above.
-~
+capital letters above.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -3735,8 +3564,7 @@ Name      Quest Storage Room~
 Sector    indoors~
 Flags     nomob indoors safe nocamp noportal proto noteleport noscry nobeacon~
 Stats     0 0 0 0 100000
-Desc      This room is used for quests. No one should be in here except quest mobs/objs.
-~
+Desc      This room is used for quests. No one should be in here except quest mobs/objs.~
 #ENDROOM
 
 #ROOM
@@ -3745,8 +3573,7 @@ Name      The Confiscation Chamber~
 Sector    indoors~
 Flags     nomob~
 Stats     0 0 0 0 100000
-Desc      This is where stuff that mobs need to take from players will end up.
-~
+Desc      This is where stuff that mobs need to take from players will end up.~
 #ENDROOM
 
 #ROOM
@@ -3756,8 +3583,7 @@ Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      This room is where mobs that need to "disappear" will end up so as
-not to give away that they've left the room they were in.
-~
+not to give away that they've left the room they were in.~
 #ENDROOM
 
 #ROOM
@@ -3768,8 +3594,7 @@ Flags     nomob indoors nosummon norecall noportal noastral~
 Stats     0 0 0 0 100000
 Desc      All around you the blackness of the ether closes in like an evil fog.
 Nothing is visible in any direction. Even the floor itself appears
-to be nonexistant..... you are floating in pure nothingness!
-~
+to be nonexistant..... you are floating in pure nothingness!~
 #MUDPROG
 Progtype  speech_prog~
 Arglist   test~
@@ -3782,8 +3607,7 @@ say random char (name):		$r
 say random char (name&title or short): 	$R
 say random char  (he,she,it):	$J
 say random char (him,her,it):	$K
-say random char (his,hers,its):	$L
-~
+say random char (his,hers,its):	$L~
 #ENDPROG
 
 #MUDPROG
@@ -3798,8 +3622,7 @@ say firstname of victim: 	$t
 say short_desc/title of victim:	$T
 say he/she/it of victim: 	$E
 say him/her/it of victim: 	$M
-say his/hers/its of victim:	$S
-~
+say his/hers/its of victim:	$S~
 #ENDPROG
 
 Reset M 11000 1 11400 -1 -1 -1 100
@@ -3813,8 +3636,7 @@ Flags     nomob indoors nosummon norecall noportal noastral~
 Stats     0 0 0 0 100000
 Desc      You float in a formless void, detached from all sensation of physical
 matter, surrounded by swirling glowing light which fades into the
-relative darkness around you without any trace of edge or shadow.
-~
+relative darkness around you without any trace of edge or shadow.~
 Reset M 11400 1 11401 -1 -1 -1 100
 #ENDROOM
 
@@ -3824,8 +3646,7 @@ Name      Storage~
 Sector    city~
 Flags     nomob nosummon norecall noportal noastral~
 Stats     0 0 0 0 100000
-Desc      This room is reserved for storage of polymorphed players.
-~
+Desc      This room is reserved for storage of polymorphed players.~
 #ENDROOM
 
 #ROOM
@@ -3834,13 +3655,11 @@ Name      Creeping Doom Room~
 Sector    indoors~
 Flags     nomob indoors nosummon norecall noportal noastral~
 Stats     0 0 0 0 100000
-Desc      This is where all the creeping dooms come to get purged.
-~
+Desc      This is where all the creeping dooms come to get purged.~
 #MUDPROG
 Progtype  act_prog~
 Arglist   creeping~
-Comlist   mpslay creeping
-~
+Comlist   mpslay creeping~
 #ENDPROG
 
 #ENDROOM
@@ -3852,8 +3671,7 @@ Sector    indoors~
 Flags     nomob indoors nosummon norecall noportal noastral noscry~
 Stats     0 0 0 0 100000
 Desc      Failed animate dead attempts get sent here. This room is not to be
-used for ANYTHING other than that.
-~
+used for ANYTHING other than that.~
 #ENDROOM
 
 #ROOM
@@ -3868,8 +3686,7 @@ to have sent you to dwell in such a place. Needless to say, hell is
 all you expected, and much more. It stretches on forever in all
 directions, and demons dog your every move. There is no escape.
 You may as well get comfortable, if that's possible, and wait for
-the Gods to decide your fate.
-~
+the Gods to decide your fate.~
 #EXIT
 Direction north~
 ToRoom    11405
@@ -3899,8 +3716,7 @@ Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      The parlor room where all immortals come to meet and plan their
-activities. Build to suit, etc.
-~
+activities. Build to suit, etc.~
 #EXIT
 Direction north~
 ToRoom    11998
@@ -3923,8 +3739,7 @@ Stats     0 0 0 0 100000
 Desc      This is where players get recalled to when recalling on the primary
 continent, and on other planes such as Astral. Also where they'll
 come when they die. You will want to change this to something more
-suitable to your needs.
-~
+suitable to your needs.~
 #ENDROOM
 
 #ROOM
@@ -3934,8 +3749,7 @@ Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      This is where donated goods will come when the donate command is used.
-Build to suite your needs.
-~
+Build to suite your needs.~
 #ENDROOM
 
 #ROOM
@@ -3945,8 +3759,7 @@ Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      This is the room players will need to be in to start a prize redemption
-using the automated system and the mpsindhae mudprog.
-~
+using the automated system and the mpsindhae mudprog.~
 #ENDROOM
 
 #ROOM
@@ -3956,8 +3769,7 @@ Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      This is the room players will be transferred to after completing an
-automated prize redemption.
-~
+automated prize redemption.~
 #ENDROOM
 
 #ROOM
@@ -3973,8 +3785,7 @@ size of a pillbox. the pillbox device has several odd blinking lights
 on it, and out of it's back side emerges a single green cable which
 then connects to an odd port on the back wall of the room.
 Strangely enough, it appears as though the cable leads out into the
-inky blackness of the void itself!
-~
+inky blackness of the void itself!~
 #EXIT
 Direction south~
 ToRoom    11406
@@ -3985,8 +3796,7 @@ ExDescKey    box~
 ExDesc       The box is labeled: [REDACTED]
 It is large enough to fit a human sized object in, and in fact upon
 closer inspection it appears to be the container Samson uses to store
-his other self, [REDACTED].
-~
+his other self, [REDACTED].~
 #ENDEXDESC
 
 #ENDROOM
@@ -3999,8 +3809,7 @@ Flags     nomob indoors~
 Stats     0 0 0 0 100000
 Desc      All around you is nothing but the vast blackness of the void. There
 isn't a lot to see aside from the billions and billions of stars and
-galaxies. The void stretches infinitely in all directions.
-~
+galaxies. The void stretches infinitely in all directions.~
 #EXIT
 Direction north~
 ToRoom    11999

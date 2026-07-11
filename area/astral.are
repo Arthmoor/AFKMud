@@ -26,13 +26,11 @@ Position  standing~
 DefPos    standing~
 Specfun   spec_cast_mage~
 Short     &W&wAn &Pillithid &wtraveller~
-Long      A travelling mindflayer zooms through the reaches of the astral plane.
-~
+Long      A travelling mindflayer zooms through the reaches of the astral plane.~
 Desc      &W&wTall, thin, and &ppurple&w, this &Pillithid &wtraveler is making his way
 &W&wto an unknown location. Peering at you briefly, what appears to be
 &W&wa veral grin appears on his face as he considers the prospect of an
-&W&wearly brunch.
-~
+&W&wearly brunch.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    40 -20 -100 100 4 5 10
@@ -53,14 +51,12 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     &W&wA &Ggith&Wyanki &zantipaladin&w~
-Long      A githyanki antipaladin is here, looking for something.
-~
+Long      A githyanki antipaladin is here, looking for something.~
 Desc      &W&wA member of a race that originated from a group of humans enslaved and
 bred by illithids, this being could easily pass for his ancestors. The
 &W&wonly difference is the &Gyellowish &wtint to his skin. Travelling the
 &W&wastral plane, he scans the horizon looking for &Pmindflayers &wto slay.
-&W&wSighting you, he moves in, obviously welcoming the new sport.
-~
+&W&wSighting you, he moves in, obviously welcoming the new sport.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    30 -20 -100 150 5 6 10
@@ -83,13 +79,11 @@ Position  standing~
 DefPos    standing~
 Specfun   spec_breath_any~
 Short     Tiamat~
-Long      Tiamat, the five-headed dragon, stands here gazing at you.
-~
+Long      Tiamat, the five-headed dragon, stands here gazing at you.~
 Desc      &W&wBefore you stands the biggest dragon you have ever seen. Looming over
 &W&wyou, &WTiamat &wglances in your direction almost questioning your presence
 &W&wwithin her area. You shiver in fear, and wonder if you should leave 
-&W&wbefore she takes offense.
-~
+&W&wbefore she takes offense.~
 Nattacks  0.000000
 Stats1    -1000 -1 0 0 150 100
 Stats2    100 -50 -300 10000 10 10 100
@@ -113,8 +107,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
-Long      Some god abandoned a newly created last mob here.
-~
+Long      Some god abandoned a newly created last mob here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -239,8 +232,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
-A &zmurky &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &zmurky &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4354
@@ -283,8 +275,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4350
@@ -327,8 +318,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4351
@@ -371,8 +361,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4352
@@ -415,8 +404,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4353
@@ -459,8 +447,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4359
@@ -505,8 +492,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Yg&Oolde&Yn yellow &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Yg&Oolde&Yn yellow &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4355
@@ -549,8 +535,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4356
@@ -593,8 +578,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4357
@@ -639,8 +623,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Ysandy &Obrown &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Ysandy &Obrown &Yp&Ooo&Yl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4358
@@ -683,8 +666,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4364
@@ -727,8 +709,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4360
@@ -771,8 +752,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4361
@@ -817,8 +797,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
-A &rm&Oudd&ry &Obrown &rp&Ooo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &rm&Oudd&ry &Obrown &rp&Ooo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4362
@@ -861,8 +840,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4363
@@ -905,8 +883,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4369
@@ -949,8 +926,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4365
@@ -993,8 +969,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4366
@@ -1037,8 +1012,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4367
@@ -1081,8 +1055,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4368
@@ -1127,8 +1100,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Phot pink pool &Bshimmers &Where.
-~
+A &Phot pink pool &Bshimmers &Where.~
 #EXIT
 Direction north~
 ToRoom    4374
@@ -1171,8 +1143,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4370
@@ -1217,8 +1188,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Gs&glim&Gy &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Gs&glim&Gy &ggreen &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4371
@@ -1261,8 +1231,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4372
@@ -1300,8 +1269,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4373
@@ -1346,8 +1314,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-An &bsh&wado&bwy &wgrey &wp&boo&wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+An &bsh&wado&bwy &wgrey &wp&boo&wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4379
@@ -1390,8 +1357,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4375
@@ -1436,8 +1402,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Ob&Yurnishe&Od &Yo&Orang&Ye &Op&Yoo&Ol &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Ob&Yurnishe&Od &Yo&Orang&Ye &Op&Yoo&Ol &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4376
@@ -1480,8 +1445,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4377
@@ -1524,8 +1488,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4378
@@ -1568,8 +1531,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4384
@@ -1612,8 +1574,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4380
@@ -1656,8 +1617,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4381
@@ -1700,8 +1660,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4382
@@ -1744,8 +1703,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4383
@@ -1788,8 +1746,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4389
@@ -1834,8 +1791,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
-&wA &Wch&zec&Wke&zre&wd&w &Wp&zoo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+&wA &Wch&zec&Wke&zre&wd&w &Wp&zoo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4385
@@ -1878,8 +1834,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4386
@@ -1924,8 +1879,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &cdeep &ppurple &Pp&poo&Pl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &cdeep &ppurple &Pp&poo&Pl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4387
@@ -1968,8 +1922,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4388
@@ -2012,8 +1965,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4394
@@ -2056,8 +2008,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4390
@@ -2100,8 +2051,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4391
@@ -2144,8 +2094,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4392
@@ -2190,8 +2139,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
-&wAn &binky&w &zblack&w &bp&zoo&bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+&wAn &binky&w &zblack&w &bp&zoo&bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4393
@@ -2234,8 +2182,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4399
@@ -2278,8 +2225,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4395
@@ -2324,8 +2270,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-&wAn angry &Yfiery &Rred&w portal stands before you, daring you to enter.
-~
+&wAn angry &Yfiery &Rred&w portal stands before you, daring you to enter.~
 #EXIT
 Direction north~
 ToRoom    4396
@@ -2368,8 +2313,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4397
@@ -2412,8 +2356,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4398
@@ -2458,8 +2401,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Rshimmering&w portal opens into the depths of the &YChaos Gate&w here.
-~
+A &Rshimmering&w portal opens into the depths of the &YChaos Gate&w here.~
 #EXIT
 Direction north~
 ToRoom    4404
@@ -2502,8 +2444,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4400
@@ -2546,8 +2487,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4401
@@ -2592,8 +2532,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-&W&wA &rr&Ra&Yi&gn&bb&Bo&pw&w-colored &Wpool &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+&W&wA &rr&Ra&Yi&gn&bb&Bo&pw&w-colored &Wpool &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4402
@@ -2638,8 +2577,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &zblack void&w swirls dangerously here.&D
-~
+A &zblack void&w swirls dangerously here.&D~
 #EXIT
 Direction north~
 ToRoom    4403
@@ -2682,8 +2620,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4409
@@ -2726,8 +2663,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4405
@@ -2770,8 +2706,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4406
@@ -2814,8 +2749,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4407
@@ -2858,8 +2792,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4408
@@ -2902,8 +2835,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4414
@@ -2948,8 +2880,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-An &Ci&Wc&Cy &Wwhite &Wp&Coo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+An &Ci&Wc&Cy &Wwhite &Wp&Coo&Wl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4410
@@ -2994,8 +2925,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
-&wA &Gsea&w &ggreen&w &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+&wA &Gsea&w &ggreen&w &Gp&goo&Gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4411
@@ -3038,8 +2968,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4412
@@ -3084,8 +3013,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
-A &zdark grey p&woo&zl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &zdark grey p&woo&zl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4413
@@ -3128,8 +3056,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4419
@@ -3172,8 +3099,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4415
@@ -3216,8 +3142,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4416
@@ -3260,8 +3185,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4417
@@ -3304,8 +3228,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4418
@@ -3348,8 +3271,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4424
@@ -3392,8 +3314,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4420
@@ -3436,8 +3357,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4421
@@ -3480,8 +3400,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4422
@@ -3524,8 +3443,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4423
@@ -3570,8 +3488,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
 
-A &Rb&rlood&Ry &Rcrimson &Rp&roo&Rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Rb&rlood&Ry &Rcrimson &Rp&roo&Rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4429
@@ -3634,8 +3551,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4425
@@ -3678,8 +3594,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4426
@@ -3724,8 +3639,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Gf&gores&Gt &Ggreen &gp&Goo&gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Gf&gores&Gt &Ggreen &gp&Goo&gl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4427
@@ -3768,8 +3682,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4428
@@ -3832,8 +3745,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4434
@@ -3878,8 +3790,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Broyal &Cblue &Bp&Coo&Bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Broyal &Cblue &Bp&Coo&Bl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4430
@@ -3922,8 +3833,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4431
@@ -3966,8 +3876,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4432
@@ -4010,8 +3919,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4433
@@ -4054,8 +3962,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4439
@@ -4098,8 +4005,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4435
@@ -4142,8 +4048,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4436
@@ -4186,8 +4091,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4437
@@ -4232,8 +4136,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Ws&zi&Wlv&zer&Wy &Cblue &Cp&Woo&Cl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Ws&zi&Wlv&zer&Wy &Cblue &Cp&Woo&Cl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4438
@@ -4276,8 +4179,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4444
@@ -4320,8 +4222,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4440
@@ -4366,8 +4267,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
 &W&wcan be seen in the &zdistance&w, as you continue your travels.
  
-A &Wbright &Rred &rp&Roo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.
-~
+A &Wbright &Rred &rp&Roo&rl &cs&Ch&ci&Cm&cm&Ce&cr&Cs &where.~
 #EXIT
 Direction north~
 ToRoom    4441
@@ -4410,8 +4310,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4442
@@ -4454,8 +4353,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4443
@@ -4498,8 +4396,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4449
@@ -4572,8 +4469,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4445
@@ -4616,8 +4512,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4446
@@ -4660,8 +4555,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4447
@@ -4704,8 +4598,7 @@ Desc      &W&rP&Ro&Yo&Rl&rs&w, &Cmists&w, and other travelers are the only scene
 &W&wwithin the &wemptiness of the &Wastral &wplane. Links between
 &Prealities &wcollide into &wmisshapen &pmasses &wof &Benergy &wconstantly
 &W&bs&Bp&Ci&Wral&Ci&Bn&bg &wtoward the center of &wall &Rtime&w. Only infinity
-&W&wcan be seen in the &zdistance&w, as you continue your travels.
-~
+&W&wcan be seen in the &zdistance&w, as you continue your travels.~
 #EXIT
 Direction north~
 ToRoom    4448

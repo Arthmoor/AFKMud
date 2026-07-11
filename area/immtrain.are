@@ -25,8 +25,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created first mob~
-Long      Some god abandoned a newly created first mob here.
-~
+Long      Some god abandoned a newly created first mob here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -45,8 +44,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A hand~
-Long      A hand floats here.
-~
+Long      A hand floats here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -65,8 +63,7 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     takeover~
-Long      Takeover, the switch test mobile stands here.
-~
+Long      Takeover, the switch test mobile stands here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    50 21 0 0 0 0 0
@@ -85,8 +82,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A rich man~
-Long      A rich man with lots of money stands here.
-~
+Long      A rich man with lots of money stands here.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -105,8 +101,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
-Long      Some god abandoned a newly created last mob here.
-~
+Long      Some god abandoned a newly created last mob here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -159,8 +154,7 @@ you. Wizhelp is still your best friend, in particular,
 because it will display what level a command is at,
 so you can go to the right section. To rush ahead to
 a section, merely say aloud the Level of command you
-are after.
-~
+are after.~
 #EXIT
 Direction south~
 ToRoom    21101
@@ -169,64 +163,55 @@ ToRoom    21101
 #MUDPROG
 Progtype  speech_prog~
 Arglist   101~
-Comlist   mptrlook $n 21101
-~
+Comlist   mptrlook $n 21101~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   102~
-Comlist   mptrlook $n 21102
-~
+Comlist   mptrlook $n 21102~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   103~
-Comlist   mptrlook $n 21103
-~
+Comlist   mptrlook $n 21103~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   104~
-Comlist   mptrlook $n 21104
-~
+Comlist   mptrlook $n 21104~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   105~
-Comlist   mptrlook $n 21105
-~
+Comlist   mptrlook $n 21105~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   106~
-Comlist   mptrlook $n 21106
-~
+Comlist   mptrlook $n 21106~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   107~
-Comlist   mptrlook $n 21107
-~
+Comlist   mptrlook $n 21107~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   108~
-Comlist   mptrlook $n 21108
-~
+Comlist   mptrlook $n 21108~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   109~
-Comlist   mptrlook $n 21109
-~
+Comlist   mptrlook $n 21109~
 #ENDPROG
 
 #ENDROOM
@@ -240,8 +225,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 101 Immortal. Alternatively, saying
 a Level 101 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21100
@@ -260,155 +244,133 @@ ToRoom    21102
 #MUDPROG
 Progtype  speech_prog~
 Arglist   bamfin~
-Comlist   mptrlook $n 21116
-~
+Comlist   mptrlook $n 21116~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   bamfout~
-Comlist   mptrlook $n 21116
-~
+Comlist   mptrlook $n 21116~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   coords~
-Comlist   mptrlook $n 21117
-~
+Comlist   mptrlook $n 21117~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   fixed~
-Comlist   mptrlook $n 21118
-~
+Comlist   mptrlook $n 21118~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   goto~
-Comlist   mptrlook $n 21119
-~
+Comlist   mptrlook $n 21119~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hedit~
-Comlist   mptrlook $n 21120
-~
+Comlist   mptrlook $n 21120~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   holylight~
-Comlist   mptrlook $n 21121
-~
+Comlist   mptrlook $n 21121~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hset~
-Comlist   mptrlook $n 21122
-~
+Comlist   mptrlook $n 21122~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   imotd~
-Comlist   mptrlook $n 21123
-~
+Comlist   mptrlook $n 21123~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   landmarks~
-Comlist   mptrlook $n 21124
-~
+Comlist   mptrlook $n 21124~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   morph~
-Comlist   mptrlook $n 21125
-~
+Comlist   mptrlook $n 21125~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   unmorph~
-Comlist   mptrlook $n 21125
-~
+Comlist   mptrlook $n 21125~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   peace~
-Comlist   mptrlook $n 21126
-~
+Comlist   mptrlook $n 21126~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   project~
-Comlist   mptrlook $n 21127
-~
+Comlist   mptrlook $n 21127~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   rap~
-Comlist   mptrlook $n 21128
-~
+Comlist   mptrlook $n 21128~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   sedit~
-Comlist   mptrlook $n 21129
-~
+Comlist   mptrlook $n 21129~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showclass~
-Comlist   mptrlook $n 21130
-~
+Comlist   mptrlook $n 21130~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showrace~
-Comlist   mptrlook $n 21131
-~
+Comlist   mptrlook $n 21131~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   slookup~
-Comlist   mptrlook $n 21132
-~
+Comlist   mptrlook $n 21132~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   think~
-Comlist   mptrlook $n 21133
-~
+Comlist   mptrlook $n 21133~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   wizinfo~
-Comlist   mptrlook $n 21134
-~
+Comlist   mptrlook $n 21134~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   wizhelp~
-Comlist   mptrlook $n 21135
-~
+Comlist   mptrlook $n 21135~
 #ENDPROG
 
 #ENDROOM
@@ -422,8 +384,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 102 Immortal. Alternatively, saying
 a Level 102 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21101
@@ -442,71 +403,61 @@ ToRoom    21103
 #MUDPROG
 Progtype  speech_prog~
 Arglist   invis~
-Comlist   mptrlook $n 21136
-~
+Comlist   mptrlook $n 21136~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   switch~
-Comlist   mptrlook $n 21137
-~
+Comlist   mptrlook $n 21137~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   return~
-Comlist   mptrlook $n 21137
-~
+Comlist   mptrlook $n 21137~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showclan~
-Comlist   mptrlook $n 21138
-~
+Comlist   mptrlook $n 21138~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showcouncil~
-Comlist   mptrlook $n 21139
-~
+Comlist   mptrlook $n 21139~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   sober~
-Comlist   mptrlook $n 21140
-~
+Comlist   mptrlook $n 21140~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showdeity~
-Comlist   mptrlook $n 21141
-~
+Comlist   mptrlook $n 21141~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showorder~
-Comlist   mptrlook $n 21142
-~
+Comlist   mptrlook $n 21142~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showguild~
-Comlist   mptrlook $n 21143
-~
+Comlist   mptrlook $n 21143~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   users~
-Comlist   mptrlook $n 21144
-~
+Comlist   mptrlook $n 21144~
 #ENDPROG
 
 #ENDROOM
@@ -520,8 +471,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 103 Immortal. Alternatively, saying
 a Level 103 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21102
@@ -540,134 +490,115 @@ ToRoom    21104
 #MUDPROG
 Progtype  speech_prog~
 Arglist   authorize~
-Comlist   mptrlook $n 21145
-~
+Comlist   mptrlook $n 21145~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   at~
-Comlist   mptrlook $n 21146
-~
+Comlist   mptrlook $n 21146~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   aassign~
-Comlist   mptrlook $n 21147
-~
+Comlist   mptrlook $n 21147~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   aexit~
-Comlist   mptrlook $n 21148
-~
+Comlist   mptrlook $n 21148~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   loadarea~
-Comlist   mptrlook $n 21149
-~
+Comlist   mptrlook $n 21149~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   savearea~
-Comlist   mptrlook $n 21149
-~
+Comlist   mptrlook $n 21149~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   newzones~
-Comlist   mptrlook $n 21150
-~
+Comlist   mptrlook $n 21150~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   noemote~
-Comlist   mptrlook $n 21151
-~
+Comlist   mptrlook $n 21151~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   notell~
-Comlist   mptrlook $n 21152
-~
+Comlist   mptrlook $n 21152~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   notitle~
-Comlist   mptrlook $n 21153
-~
+Comlist   mptrlook $n 21153~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   rat~
-Comlist   mptrlook $n 21154
-~
+Comlist   mptrlook $n 21154~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   rdelete~
-Comlist   mptrlook $n 21155
-~
+Comlist   mptrlook $n 21155~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   stat~
-Comlist   mptrlook $n 21157
-~
+Comlist   mptrlook $n 21157~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   redit~
-Comlist   mptrlook $n 21156
-~
+Comlist   mptrlook $n 21156~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   show~
-Comlist   mptrlook $n 21158
-~
+Comlist   mptrlook $n 21158~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   silence~
-Comlist   mptrlook $n 21159
-~
+Comlist   mptrlook $n 21159~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   unsilence~
-Comlist   mptrlook $n 21159
-~
+Comlist   mptrlook $n 21159~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   wizlock~
-Comlist   mptrlook $n 21160
-~
+Comlist   mptrlook $n 21160~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   zones~
-Comlist   mptrlook $n 21161
-~
+Comlist   mptrlook $n 21161~
 #ENDPROG
 
 #ENDROOM
@@ -681,8 +612,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 104 Immortal. Alternatively, saying
 a Level 104 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21103
@@ -701,92 +631,79 @@ ToRoom    21105
 #MUDPROG
 Progtype  speech_prog~
 Arglist   find~
-Comlist   mptrlook $n 21162
-~
+Comlist   mptrlook $n 21162~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   Hell~
-Comlist   mptrlook $n 21163
-~
+Comlist   mptrlook $n 21163~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   unhell~
-Comlist   mptrlook $n 21163
-~
+Comlist   mptrlook $n 21163~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   load~
-Comlist   mptrlook $n 21164
-~
+Comlist   mptrlook $n 21164~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   ocreate~
-Comlist   mptrlook $n 21165
-~
+Comlist   mptrlook $n 21165~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   odelete~
-Comlist   mptrlook $n 21166
-~
+Comlist   mptrlook $n 21166~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   oset~
-Comlist   mptrlook $n 21167
-~
+Comlist   mptrlook $n 21167~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   purge~
-Comlist   mptrlook $n 21168
-~
+Comlist   mptrlook $n 21168~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   restore~
-Comlist   mptrlook $n 21169
-~
+Comlist   mptrlook $n 21169~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   restoretime~
-Comlist   mptrlook $n 21170
-~
+Comlist   mptrlook $n 21170~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   strip~
-Comlist   mptrlook $n 21171
-~
+Comlist   mptrlook $n 21171~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   transfer~
-Comlist   mptrlook $n 21172
-~
+Comlist   mptrlook $n 21172~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   vsearch~
-Comlist   mptrlook $n 21173
-~
+Comlist   mptrlook $n 21173~
 #ENDPROG
 
 #ENDROOM
@@ -800,8 +717,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 105 Immortal. Alternatively, saying
 a Level 105 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21104
@@ -820,78 +736,67 @@ ToRoom    21106
 #MUDPROG
 Progtype  speech_prog~
 Arglist   coinduct~
-Comlist   mptrlook $n 21174
-~
+Comlist   mptrlook $n 21174~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   cooutcast~
-Comlist   mptrlook $n 21174
-~
+Comlist   mptrlook $n 21174~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   force~
-Comlist   mptrlook $n 21175
-~
+Comlist   mptrlook $n 21175~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   gfighting~
-Comlist   mptrlook $n 21176
-~
+Comlist   mptrlook $n 21176~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   instazone~
-Comlist   mptrlook $n 21177
-~
+Comlist   mptrlook $n 21177~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   instaroom~
-Comlist   mptrlook $n 21178
-~
+Comlist   mptrlook $n 21178~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   mcreate~
-Comlist   mptrlook $n 21179
-~
+Comlist   mptrlook $n 21179~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   mdelete~
-Comlist   mptrlook $n 21180
-~
+Comlist   mptrlook $n 21180~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   mset~
-Comlist   mptrlook $n 21181
-~
+Comlist   mptrlook $n 21181~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   reset~
-Comlist   mptrlook $n 21182
-~
+Comlist   mptrlook $n 21182~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   rreset~
-Comlist   mptrlook $n 21183
-~
+Comlist   mptrlook $n 21183~
 #ENDPROG
 
 #ENDROOM
@@ -905,8 +810,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 106 Immortal. Alternatively, saying
 a Level 106 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21105
@@ -925,134 +829,115 @@ ToRoom    21107
 #MUDPROG
 Progtype  speech_prog~
 Arglist   climate~
-Comlist   mptrlook $n 21184
-~
+Comlist   mptrlook $n 21184~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   makerepair~
-Comlist   mptrlook $n 21185
-~
+Comlist   mptrlook $n 21185~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   makeshop~
-Comlist   mptrlook $n 21186
-~
+Comlist   mptrlook $n 21186~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   mpedit~
-Comlist   mptrlook $n 21187
-~
+Comlist   mptrlook $n 21187~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   mpstat~
-Comlist   mptrlook $n 21188
-~
+Comlist   mptrlook $n 21188~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   mpcopy~
-Comlist   mptrlook $n 21189
-~
+Comlist   mptrlook $n 21189~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   opedit~
-Comlist   mptrlook $n 21190
-~
+Comlist   mptrlook $n 21190~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   opstat~
-Comlist   mptrlook $n 21191
-~
+Comlist   mptrlook $n 21191~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   opcopy~
-Comlist   mptrlook $n 21192
-~
+Comlist   mptrlook $n 21192~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repairset~
-Comlist   mptrlook $n 21193
-~
+Comlist   mptrlook $n 21193~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repairshops~
-Comlist   mptrlook $n 21194
-~
+Comlist   mptrlook $n 21194~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repairstat~
-Comlist   mptrlook $n 21195
-~
+Comlist   mptrlook $n 21195~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   rpedit~
-Comlist   mptrlook $n 21196
-~
+Comlist   mptrlook $n 21196~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   rpstat~
-Comlist   mptrlook $n 21197
-~
+Comlist   mptrlook $n 21197~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   shops~
-Comlist   mptrlook $n 21198
-~
+Comlist   mptrlook $n 21198~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   shopset~
-Comlist   mptrlook $n 21199
-~
+Comlist   mptrlook $n 21199~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   shopstat~
-Comlist   mptrlook $n 21200
-~
+Comlist   mptrlook $n 21200~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showweather~
-Comlist   mptrlook $n 21201
-~
+Comlist   mptrlook $n 21201~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   setweather~
-Comlist   mptrlook $n 21202
-~
+Comlist   mptrlook $n 21202~
 #ENDPROG
 
 #ENDROOM
@@ -1066,8 +951,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 107 Immortal. Alternatively, saying
 a Level 107 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21106
@@ -1086,155 +970,133 @@ ToRoom    21108
 #MUDPROG
 Progtype  speech_prog~
 Arglist   aset~
-Comlist   mptrlook $n 21203
-~
+Comlist   mptrlook $n 21203~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   astat~
-Comlist   mptrlook $n 21204
-~
+Comlist   mptrlook $n 21204~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   disconnect~
-Comlist   mptrlook $n 21205
-~
+Comlist   mptrlook $n 21205~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   echo~
-Comlist   mptrlook $n 21206
-~
+Comlist   mptrlook $n 21206~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   foldarea~
-Comlist   mptrlook $n 21207
-~
+Comlist   mptrlook $n 21207~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   Log~
-Comlist   mptrlook $n 21208
-~
+Comlist   mptrlook $n 21208~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   makewizlist~
-Comlist   mptrlook $n 21209
-~
+Comlist   mptrlook $n 21209~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   makeslay~
-Comlist   mptrlook $n 21210
-~
+Comlist   mptrlook $n 21210~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   morphset~
-Comlist   mptrlook $n 21211
-~
+Comlist   mptrlook $n 21211~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   morphstat~
-Comlist   mptrlook $n 21212
-~
+Comlist   mptrlook $n 21212~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   morphcreate~
-Comlist   mptrlook $n 21213
-~
+Comlist   mptrlook $n 21213~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   morphdestroy~
-Comlist   mptrlook $n 21214
-~
+Comlist   mptrlook $n 21214~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   morphlist~
-Comlist   mptrlook $n 21215
-~
+Comlist   mptrlook $n 21215~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   skills~
-Comlist   mptrlook $n 21216
-~
+Comlist   mptrlook $n 21216~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   system~
-Comlist   mptrlook $n 21217
-~
+Comlist   mptrlook $n 21217~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   slay~
-Comlist   mptrlook $n 21218
-~
+Comlist   mptrlook $n 21218~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   setdeity~
-Comlist   mptrlook $n 21219
-~
+Comlist   mptrlook $n 21219~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   scatter~
-Comlist   mptrlook $n 21220
-~
+Comlist   mptrlook $n 21220~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   strew~
-Comlist   mptrlook $n 21221
-~
+Comlist   mptrlook $n 21221~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   setslay~
-Comlist   mptrlook $n 21222
-~
+Comlist   mptrlook $n 21222~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   showslay~
-Comlist   mptrlook $n 21223
-~
+Comlist   mptrlook $n 21223~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   voice~
-Comlist   mptrlook $n 21224
-~
+Comlist   mptrlook $n 21224~
 #ENDPROG
 
 #ENDROOM
@@ -1248,8 +1110,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 108 Immortal. Alternatively, saying
 a Level 108 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21107
@@ -1268,134 +1129,115 @@ ToRoom    21109
 #MUDPROG
 Progtype  speech_prog~
 Arglist   allow~
-Comlist   mptrlook $n 21225
-~
+Comlist   mptrlook $n 21225~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   ban~
-Comlist   mptrlook $n 21226
-~
+Comlist   mptrlook $n 21226~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   boards~
-Comlist   mptrlook $n 21227
-~
+Comlist   mptrlook $n 21227~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   bset~
-Comlist   mptrlook $n 21228
-~
+Comlist   mptrlook $n 21228~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   bstat~
-Comlist   mptrlook $n 21229
-~
+Comlist   mptrlook $n 21229~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   comment~
-Comlist   mptrlook $n 21230
-~
+Comlist   mptrlook $n 21230~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   deny~
-Comlist   mptrlook $n 21231
-~
+Comlist   mptrlook $n 21231~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   dmesg~
-Comlist   mptrlook $n 21232
-~
+Comlist   mptrlook $n 21232~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   delay~
-Comlist   mptrlook $n 21233
-~
+Comlist   mptrlook $n 21233~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   forceclose~
-Comlist   mptrlook $n 21234
-~
+Comlist   mptrlook $n 21234~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   freeze~
-Comlist   mptrlook $n 21235
-~
+Comlist   mptrlook $n 21235~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   khistory~
-Comlist   mptrlook $n 21236
-~
+Comlist   mptrlook $n 21236~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   litterbug~
-Comlist   mptrlook $n 21237
-~
+Comlist   mptrlook $n 21237~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   makeboard~
-Comlist   mptrlook $n 21238
-~
+Comlist   mptrlook $n 21238~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   moblog~
-Comlist   mptrlook $n 21239
-~
+Comlist   mptrlook $n 21239~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   reboot~
-Comlist   mptrlook $n 21240
-~
+Comlist   mptrlook $n 21240~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   snoop~
-Comlist   mptrlook $n 21241
-~
+Comlist   mptrlook $n 21241~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   warn~
-Comlist   mptrlook $n 21242
-~
+Comlist   mptrlook $n 21242~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   watch~
-Comlist   mptrlook $n 21243
-~
+Comlist   mptrlook $n 21243~
 #ENDPROG
 
 #ENDROOM
@@ -1409,8 +1251,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 109 Immortal. Alternatively, saying
 a Level 109 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21108
@@ -1429,15 +1270,13 @@ ToRoom    21101
 #MUDPROG
 Progtype  speech_prog~
 Arglist   fixchar~
-Comlist   mptrlook $n 21244
-~
+Comlist   mptrlook $n 21244~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   newpass~
-Comlist   mptrlook $n 21245
-~
+Comlist   mptrlook $n 21245~
 #ENDPROG
 
 #ENDROOM
@@ -1451,8 +1290,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 110 Immortal. Alternatively, saying
 a Level 110 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction south~
 ToRoom    21111
@@ -1469,8 +1307,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 111 Immortal. Alternatively, saying
 a Level 111 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21110
@@ -1492,8 +1329,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 112 Immortal. Alternatively, saying
 a Level 112 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21111
@@ -1515,8 +1351,7 @@ Stats     0 0 0 0 100000
 Desc      The passage down to the east will discuss the commands
 available to a level 113 Immortal. Alternatively, saying
 a Level 113 command out loud will transfer you to the 
-appropriate room.
-~
+appropriate room.~
 #EXIT
 Direction north~
 ToRoom    21112
@@ -1537,8 +1372,7 @@ For example: bamfin Your world rocks as $n appears in a cloud of smoke.
 Then, when you use the goto command, any one in the room you appear in
 will see: Your world rocks as <your name> appears in a cloud of smoke.
 Similarly, the bamfout command will change the message displayed in the room
-you are leaving from.
-~
+you are leaving from.~
 #EXIT
 Direction east~
 ToRoom    21117
@@ -1561,8 +1395,7 @@ Desc      The coords command will relocate you on the overland map
 to the co-ordinates you specify.
 For example: coord 472 392 will put you just outside of
 Bywater on the overland map.
-Try it, and then type: goto 21117 to return here.
-~
+Try it, and then type: goto 21117 to return here.~
 #EXIT
 Direction east~
 ToRoom    21118
@@ -1587,8 +1420,7 @@ Usage is: fixed <message up to 250 characters>
 Alternatively, you can list all the recorded fixes using
 fixed list
 
-NOTE: This file supports color tokens, be careful with them.
-~
+NOTE: This file supports color tokens, be careful with them.~
 #EXIT
 Direction east~
 ToRoom    21119
@@ -1613,8 +1445,7 @@ keywords are often used by several different mobs and objects, so you
 might not end up where you meant to be.
 ie: goto 13950  This will transfer you to the Entrance Court of the 
 Arcanium Guildhall. Test it out, and then use goto 21119
-to get back here.
-~
+to get back here.~
 #EXIT
 Direction east~
 ToRoom    21120
@@ -1639,8 +1470,7 @@ exists BEFORE using this command.
  
 Usage: hedit <keyword>
 Colors are supported, but use discretion.
-See help hedit for more information.
-~
+See help hedit for more information.~
 #EXIT
 Direction east~
 ToRoom    21121
@@ -1663,8 +1493,7 @@ Desc      This command allows you to see (almost) every character in the MUD.
 You can see in darkness, hidden, invisible, etc.
 In addition, you can see a MUCH larger area of the overland then normal.
  
-NOTE: This command does not reveal invisible imms of a higher level then you.
-~
+NOTE: This command does not reveal invisible imms of a higher level then you.~
 #EXIT
 Direction east~
 ToRoom    21122
@@ -1691,8 +1520,7 @@ hset keyword <keyword> <help topic> will assign a keyword to a
 help topic. For multiple keywords, put them in quotes.
 hset remove <level.><help topic> will remove a help topic. If
 more then one help topic matches, and no level is specified, it
-will remove the lowest level first.
-~
+will remove the lowest level first.~
 #EXIT
 Direction east~
 ToRoom    21123
@@ -1711,8 +1539,7 @@ Name      imotd~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This will display the Immortal MOTD to you.
-~
+Desc      This will display the Immortal MOTD to you.~
 #EXIT
 Direction east~
 ToRoom    21124
@@ -1735,8 +1562,7 @@ Desc      This command will list all of the landmarks displayed on the overland
 map. It will also list where they occur, as well as the distances they
 are visible from.
  
-Test it out.
-~
+Test it out.~
 #EXIT
 Direction east~
 ToRoom    21125
@@ -1760,8 +1586,7 @@ ie: morph 1010 will turn you into an Iron Golem.
 Similarly, unmorph will return you to your normal shape.
 
 Practice now by morphing yourself into an Iron Golem, and returning to
-normal.
-~
+normal.~
 #EXIT
 Direction east~
 ToRoom    21126
@@ -1775,22 +1600,19 @@ ToRoom    21124
 #MUDPROG
 Progtype  act_prog~
 Arglist   p A screeching of metal on metal can be heard as~
-Comlist   echoat $n Congratulations. You have done well.
-~
+Comlist   echoat $n Congratulations. You have done well.~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p A screeching of metal on metal can be heard as~
-Comlist   mpechoat $n Congratulations. You have done well.
-~
+Comlist   mpechoat $n Congratulations. You have done well.~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p solidifies into cold iron as~
-Comlist   mpechoat $n Well Done. Half way there. :)
-~
+Comlist   mpechoat $n Well Done. Half way there. :)~
 #ENDPROG
 
 #ENDROOM
@@ -1803,8 +1625,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will make all characters in a room stop fighting.
 They will then sit down, to ensure no aggressive flags trigger the start of
-another fight.
-~
+another fight.~
 #EXIT
 Direction east~
 ToRoom    21127
@@ -1824,8 +1645,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will list all the current projects. See help project
-for more details.
-~
+for more details.~
 #EXIT
 Direction east~
 ToRoom    21128
@@ -1847,8 +1667,7 @@ Stats     0 0 0 0 100000
 Desc      This command allows you to 'rap' or 'knock' on a door, or in a 
 direction, and anyone on the other side will be able to hear you.
  
-Test it out by typing rap north
-~
+Test it out by typing rap north~
 #EXIT
 Direction north~
 ToRoom    21246
@@ -1870,8 +1689,7 @@ Progtype  act_prog~
 Arglist   p raps loudly on the door.~
 Comlist   mptransfer rapper
 mpforce rapper emote taps $n on the shoulder. Well done.
-mptransfer rapper 21246
-~
+mptransfer rapper 21246~
 #ENDPROG
 
 Reset D 21128 0 2 100 -2
@@ -1884,8 +1702,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command is used for editing socials. See help sedit for more
-details.
-~
+details.~
 #EXIT
 Direction east~
 ToRoom    21130
@@ -1905,8 +1722,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will show you information about a particular class type.
-ie: showclass ranger will display information on rangers.
-~
+ie: showclass ranger will display information on rangers.~
 #EXIT
 Direction east~
 ToRoom    21131
@@ -1926,8 +1742,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will show you information about a particular race type.
-ie: showclass wild-elf will display information on wild-elves.
-~
+ie: showclass wild-elf will display information on wild-elves.~
 #EXIT
 Direction east~
 ToRoom    21132
@@ -1947,8 +1762,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command allows you to look up what a specific skill/spell does.
-For instance, slookup fly will show you information on the spell fly.
-~
+For instance, slookup fly will show you information on the spell fly.~
 #EXIT
 Direction east~
 ToRoom    21133
@@ -1968,8 +1782,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This is the equivalent of chat, but only between imms. Similarly,
-a " is the shortcut for think.
-~
+a " is the shortcut for think.~
 #EXIT
 Direction east~
 ToRoom    21134
@@ -1988,8 +1801,7 @@ Name      wizinfo~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command will display information on the immortals.
-~
+Desc      This command will display information on the immortals.~
 #EXIT
 Direction east~
 ToRoom    21135
@@ -2008,8 +1820,7 @@ Name      wizhelp~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command lists all the immortal commands available to you.
-~
+Desc      This command lists all the immortal commands available to you.~
 #EXIT
 Direction east~
 ToRoom    21101
@@ -2032,8 +1843,7 @@ Desc      This command allows you to turn invisible to people below a certain le
 That level is set using invis <level>
  
 Similarly, using the invis command a second time will cancel the invisibility.
-Try turning yourself invisible, and then back to visible now.
-~
+Try turning yourself invisible, and then back to visible now.~
 #EXIT
 Direction east~
 ToRoom    21137
@@ -2047,8 +1857,7 @@ ToRoom    21102
 #MUDPROG
 Progtype  act_prog~
 Arglist   p slowly fades into existence.~
-Comlist   mpechoat $n Congrats! You did it :)
-~
+Comlist   mpechoat $n Congrats! You did it :)~
 #ENDPROG
 
 #ENDROOM
@@ -2061,8 +1870,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command allows you to 'take over' the body of another Non-PC character.
 The return command will bring you out of that body and take you back to your
-own.
-~
+own.~
 #EXIT
 Direction east~
 ToRoom    21138
@@ -2083,8 +1891,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The Showclan command will reveal information on a specific clan.
-For example, showclan MistWraith
-~
+For example, showclan MistWraith~
 #EXIT
 Direction east~
 ToRoom    21139
@@ -2104,8 +1911,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command displays information on a council.
-Usage is: showcouncil <council name>
-~
+Usage is: showcouncil <council name>~
 #EXIT
 Direction east~
 ToRoom    21140
@@ -2127,8 +1933,7 @@ Stats     0 0 0 0 100000
 Desc      This command will instantly sober up a player from a drunken state.
 Usage is: sober <player>
  
-Note: Immortals don't appear to be affected by alcohol.
-~
+Note: Immortals don't appear to be affected by alcohol.~
 #EXIT
 Direction east~
 ToRoom    21141
@@ -2151,8 +1956,7 @@ Stats     0 0 0 0 100000
 Desc      The showdeity command will reveal information on a specific deity
 for you.
 ie: showdeity Ortheus
-For more information on deities, say setdeity out loud here.
-~
+For more information on deities, say setdeity out loud here.~
 #EXIT
 Direction east~
 ToRoom    21144
@@ -2166,8 +1970,7 @@ ToRoom    21140
 #MUDPROG
 Progtype  speech_prog~
 Arglist   setdeity~
-Comlist   mptrlook $n 21219
-~
+Comlist   mptrlook $n 21219~
 #ENDPROG
 
 #ENDROOM
@@ -2179,8 +1982,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The showorder command will reveal details about a specific order to you.
-ie: showorder <ordername>
-~
+ie: showorder <ordername>~
 #EXIT
 Direction east~
 ToRoom    21143
@@ -2200,8 +2002,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will show information on a particular guild.
-ie: showguild Arcanium
-~
+ie: showguild Arcanium~
 #EXIT
 Direction east~
 ToRoom    21144
@@ -2225,8 +2026,7 @@ including users in the process of logging in.
 If used with an argument you can view all users from that host, or all users
 with that playername.
 Shortened forms (ie, 203.113 or fre) will also work, and display all the users
-from 203.113.* or users Frerick and Fred respectively.
-~
+from 203.113.* or users Frerick and Fred respectively.~
 #EXIT
 Direction east~
 ToRoom    21102
@@ -2253,8 +2053,7 @@ authorize <name> no will wipe the player's pfile, and deny the name.
 authorize <name> name will require the player to change names, and deny
 them from using their current name.
 authorize fixlist will attempt to fix a broken authorize list.
-authorize show approved will list all the approved names.
-~
+authorize show approved will list all the approved names.~
 #EXIT
 Direction east~
 ToRoom    21146
@@ -2277,8 +2076,7 @@ Desc      This command executes the given command at the location specified.
 The location can be given as a vnum, the name of a mob or player, or
 the name of an object.
 Usage: at <location> <command>
-To test, try: at rapper look
-~
+To test, try: at rapper look~
 #EXIT
 Direction east~
 ToRoom    21147
@@ -2298,8 +2096,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      What can I put here, apart from, This command sucks major ass.
-This command will assign a given area to you, so you can work on it.
-~
+This command will assign a given area to you, so you can work on it.~
 #EXIT
 Direction east~
 ToRoom    21148
@@ -2321,8 +2118,7 @@ Stats     0 0 0 0 100000
 Desc      Tell me what this does :)
 This command will list all the 'external' exits from an area. 
  
-Test it out now.
-~
+Test it out now.~
 #EXIT
 Direction east~
 ToRoom    21149
@@ -2342,8 +2138,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will load your assigned area up for you to edit.
-Similarly, the savearea command will save your assigned area.
-~
+Similarly, the savearea command will save your assigned area.~
 #EXIT
 Direction east~
 ToRoom    21150
@@ -2363,8 +2158,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will list the vnum range for prototype (assigned) areas that
-have been loaded.
-~
+have been loaded.~
 #EXIT
 Direction east~
 ToRoom    21151
@@ -2384,8 +2178,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will prevent a character from using emote's.
-To remove, simply use the command again.
-~
+To remove, simply use the command again.~
 #EXIT
 Direction east~
 ToRoom    21152
@@ -2405,8 +2198,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will prevent a character from using tell's.
-To remove, simply use the command again.
-~
+To remove, simply use the command again.~
 #EXIT
 Direction east~
 ToRoom    21153
@@ -2426,8 +2218,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will prevent a character from using title's.
-To remove, simply use the command again.
-~
+To remove, simply use the command again.~
 #EXIT
 Direction east~
 ToRoom    21154
@@ -2449,8 +2240,7 @@ Stats     0 0 0 0 100000
 Desc      The rat command works similarly to the at command, except it is
 executed within the range of rooms you specify, instead of merely
 one location.
-Usage: rat vnum1 vnum2 command
-~
+Usage: rat vnum1 vnum2 command~
 #EXIT
 Direction east~
 ToRoom    21155
@@ -2472,8 +2262,7 @@ Stats     0 0 0 0 100000
 Desc      This command will in essence delete a room, by marking it not to be
 saved.
  
-Usage: rdelete <vnum>
-~
+Usage: rdelete <vnum>~
 #EXIT
 Direction east~
 ToRoom    21156
@@ -2498,8 +2287,7 @@ redit name <name> This sets the rooms name.
 Also, you can 'lock' redit on, by using the command
 redit on
 To remove it, simply type done.
-For more information on redit, please see help redit.
-~
+For more information on redit, please see help redit.~
 #EXIT
 Direction east~
 ToRoom    21157
@@ -2528,8 +2316,7 @@ NOTE: This can be shortened to stat o <vnum or keyword>, etc.
  
 As an example, try stat player <your name>
 stat m rapper
-stat o keg
-~
+stat o keg~
 #EXIT
 Direction east~
 ToRoom    21158
@@ -2558,8 +2345,7 @@ show obj <area filename>
 show mob <lowvnum> <hivnum>
 show mob <area filename>
  
-This command combines and replaces mlist, olist and rlist.
-~
+This command combines and replaces mlist, olist and rlist.~
 #EXIT
 Direction east~
 ToRoom    21159
@@ -2582,8 +2368,7 @@ Desc      This command will allow you to silence a character, ie, stop them
 from using any and all channels.
  
 Simply use unsilence to remove a player's silence and return the power of
-speech to them.
-~
+speech to them.~
 #EXIT
 Direction east~
 ToRoom    21160
@@ -2607,8 +2392,7 @@ only level 101 or above can log in to the MUD. If a previously connected
 mortal player gets disconnected, they won't be able to log back in until
 the wizlock is removed.
  
-See help wizlock for more information on WHEN this command should be used.
-~
+See help wizlock for more information on WHEN this command should be used.~
 #EXIT
 Direction east~
 ToRoom    21161
@@ -2628,8 +2412,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will list the File name, Area name, and vnum range for every
-non-prototype area in the MUD.
-~
+non-prototype area in the MUD.~
 #EXIT
 Direction east~
 ToRoom    21103
@@ -2657,8 +2440,7 @@ or find o keyword
  
 This command combines and replaces ofind and mfind.
 Try find m rapper
-and find o keg
-~
+and find o keg~
 #EXIT
 Direction east~
 ToRoom    21163
@@ -2686,8 +2468,7 @@ specified, it will default to hours.
  
 Unhell <character> will release a character from hell.
  
-NOTE: This is a punishment command, do not use it as a joke.
-~
+NOTE: This is a punishment command, do not use it as a joke.~
 #EXIT
 Direction east~
 ToRoom    21164
@@ -2713,8 +2494,7 @@ Usage: load obj <vnum or keyword>
 load mob <vnum or keyword>
  
 This command combines and replaces minvoke and oinvoke.
-Try load o keg
-~
+Try load o keg~
 #EXIT
 Direction east~
 ToRoom    21165
@@ -2736,8 +2516,7 @@ Stats     0 0 0 0 100000
 Desc      Ocreate will create a new prototype object for you to edit. The object
 will appear in your inventory.
  
-Usage: ocreate <vnum> <keywords>
-~
+Usage: ocreate <vnum> <keywords>~
 #EXIT
 Direction east~
 ToRoom    21166
@@ -2759,8 +2538,7 @@ Stats     0 0 0 0 100000
 Desc      The odelete command will in essence delete an object, by marking it not
 to be saved.
  
-Usage: odelete <vnum>
-~
+Usage: odelete <vnum>~
 #EXIT
 Direction east~
 ToRoom    21167
@@ -2781,8 +2559,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      The oset command is used to set everything about an object.
 As such, it would take too long to list all of its properties here,
-so please refer to help oset.
-~
+so please refer to help oset.~
 #EXIT
 Direction east~
 ToRoom    21168
@@ -2805,8 +2582,7 @@ Desc      The purge command will remove all the mobs and objects in the current 
 If used with an argument, it will purge one mob or object with that/those
 keywords from anywhere in the world.
  
-The purge command will not get rid of PC's.
-~
+The purge command will not get rid of PC's.~
 #EXIT
 Direction east~
 ToRoom    21169
@@ -2831,8 +2607,7 @@ except deadly ones, and those who happen to be in the arena.
  
 Usage: restore <character>
 or restore all
-Try restoring yourself.
-~
+Try restoring yourself.~
 #EXIT
 Direction east~
 ToRoom    21170
@@ -2852,8 +2627,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will display how much time has passed since you last did
-a restore all.
-~
+a restore all.~
 #EXIT
 Direction east~
 ToRoom    21171
@@ -2873,8 +2647,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The strip command will remove all items and clothing from a character
-and transfer them into your inventory.
-~
+and transfer them into your inventory.~
 #EXIT
 Direction east~
 ToRoom    21172
@@ -2897,8 +2670,7 @@ Desc      The transfer command allows you to transfer a mob or PC to anywhere yo
  
 Usage: transfer <character or mob keyword/vnum> <destination>
 If no destination is specified, your current location is used.
-Try transfer rapper, then remember to put him back. He lives in 21246
-~
+Try transfer rapper, then remember to put him back. He lives in 21246~
 #EXIT
 Direction east~
 ToRoom    21173
@@ -2921,8 +2693,7 @@ Desc      This command will list all occurances of an object with the specified
 vnum that are currently in the game.
  
 Usage: vsearch <vnum>
-Try: vsearch 21101
-~
+Try: vsearch 21101~
 #EXIT
 Direction east~
 ToRoom    21104
@@ -2943,8 +2714,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      These commands induct and outcast a player into a council. 
 They should only be used if it is either your council, or you have
-authorisation to induct/remove people from it.
-~
+authorisation to induct/remove people from it.~
 #EXIT
 Direction east~
 ToRoom    21175
@@ -2969,8 +2739,7 @@ It only works on characters of a lower level then you.
 Similarly, force all will make all characters lower then you execute a command
 ie. force all save
 Try transfering rapper here, and forcing him to sit, and then stand again.
-Remember to return rapper to his room, at 21246.
-~
+Remember to return rapper to his room, at 21246.~
 #EXIT
 Direction east~
 ToRoom    21176
@@ -2991,8 +2760,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      At a rough guess, this lists all the current PK fights occuring.
  
-(If you know that this is not the case, please correct us.)
-~
+(If you know that this is not the case, please correct us.)~
 #EXIT
 Direction east~
 ToRoom    21177
@@ -3016,8 +2784,7 @@ everything EXACTLY as you want it, and then use instazone. *boom*
 Resets done. :)
  
 NOTE: This command should NEVER EVER be used on an installed area, only on a
-proto area, and even then, only use it ONCE.
-~
+proto area, and even then, only use it ONCE.~
 #EXIT
 Direction east~
 ToRoom    21178
@@ -3037,8 +2804,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will do the resets for the room you are standing in.
-Simply place everything where you want it, and instaroom.
-~
+Simply place everything where you want it, and instaroom.~
 #EXIT
 Direction east~
 ToRoom    21179
@@ -3059,8 +2825,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will create a new prototype mob for you to edit.
  
-Usage: mcreate <vnum> <keywords>
-~
+Usage: mcreate <vnum> <keywords>~
 #EXIT
 Direction east~
 ToRoom    21180
@@ -3082,8 +2847,7 @@ Stats     0 0 0 0 100000
 Desc      This command will in essence delete a mobile by marking it not to be
 saved.
  
-Usage: mdelete <vnum>
-~
+Usage: mdelete <vnum>~
 #EXIT
 Direction east~
 ToRoom    21181
@@ -3103,8 +2867,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command allows you to set all aspects of a mobile. As such, it is
-much better explained under help mset
-~
+much better explained under help mset~
 #EXIT
 Direction east~
 ToRoom    21182
@@ -3126,8 +2889,7 @@ Stats     0 0 0 0 100000
 Desc      This command edits the resets of an area. However, it is strongly recommended
 that you edit resets yourself by hand, as this is much much easier and safer.
  
-For more information on this command, see help reset
-~
+For more information on this command, see help reset~
 #EXIT
 Direction east~
 ToRoom    21183
@@ -3148,8 +2910,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will allow you to do reset editing. However, it appears
 buggy and dangerous to use. My advice is to edit all your resets
-by hand.
-~
+by hand.~
 #EXIT
 Direction east~
 ToRoom    21105
@@ -3173,8 +2934,7 @@ area. There are settings for temperature, precipitation and wind.
 You may also specify neighboring areas to be affected by the changes
 in the current areas climate.
  
-See help climate for more details.
-~
+See help climate for more details.~
 #EXIT
 Direction east~
 ToRoom    21185
@@ -3196,8 +2956,7 @@ Stats     0 0 0 0 100000
 Desc      The makerepair command will give a mobile the ability to repair damaged
 equipment. 
  
-Say either repairset or repairstat out loud to be taken to those commands.
-~
+Say either repairset or repairstat out loud to be taken to those commands.~
 #EXIT
 Direction east~
 ToRoom    21186
@@ -3211,15 +2970,13 @@ ToRoom    21184
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repairset~
-Comlist   mptrlook $n 21193
-~
+Comlist   mptrlook $n 21193~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repairstat~
-Comlist   mptrlook $n 21195
-~
+Comlist   mptrlook $n 21195~
 #ENDPROG
 
 #ENDROOM
@@ -3232,8 +2989,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      The makeshop command will turn a mobile into a shop.
  
-Say shopset or shopstat to be transferred to those rooms.
-~
+Say shopset or shopstat to be transferred to those rooms.~
 #EXIT
 Direction east~
 ToRoom    21187
@@ -3247,15 +3003,13 @@ ToRoom    21185
 #MUDPROG
 Progtype  speech_prog~
 Arglist   shopset~
-Comlist   mptrlook $n 21199
-~
+Comlist   mptrlook $n 21199~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   shopstat~
-Comlist   mptrlook $n 21200
-~
+Comlist   mptrlook $n 21200~
 #ENDPROG
 
 #ENDROOM
@@ -3267,8 +3021,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command allows online editing of a Mobile Prog.
-For more detailed information, please view help mpedit.
-~
+For more detailed information, please view help mpedit.~
 #EXIT
 Direction east~
 ToRoom    21188
@@ -3290,8 +3043,7 @@ Stats     0 0 0 0 100000
 Desc      The Mpstat command will display all of the mobile programs on a particular
 mob.
  
-Usage: mpstat <mob/vnum>
-~
+Usage: mpstat <mob/vnum>~
 #EXIT
 Direction east~
 ToRoom    21189
@@ -3311,8 +3063,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will copy an mprog from one mobile to another.
-For exact syntax, type mpcopy.
-~
+For exact syntax, type mpcopy.~
 #EXIT
 Direction east~
 ToRoom    21190
@@ -3332,8 +3083,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This is the command to edit or create a program on an object.
-For lots more help, see help opedit
-~
+For lots more help, see help opedit~
 #EXIT
 Direction east~
 ToRoom    21191
@@ -3354,8 +3104,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will display all the object programs on a particular object.
  
-Usage: opstat <obj keyword/vnum>
-~
+Usage: opstat <obj keyword/vnum>~
 #EXIT
 Direction east~
 ToRoom    21192
@@ -3375,8 +3124,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      Opcopy will copy the mud prog of an object to another object.
-For exact syntax, please type opcopy
-~
+For exact syntax, please type opcopy~
 #EXIT
 Direction east~
 ToRoom    21193
@@ -3396,8 +3144,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The repairset command allows you to set various aspects of a repair shop.
-For lots more information, see help repairset
-~
+For lots more information, see help repairset~
 #EXIT
 Direction east~
 ToRoom    21194
@@ -3417,8 +3164,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will display information on all the repair shops in the MUD.
-Try typing it now.
-~
+Try typing it now.~
 #EXIT
 Direction east~
 ToRoom    21195
@@ -3440,8 +3186,7 @@ Stats     0 0 0 0 100000
 Desc      The repairstat command will display detailed statistics on a certain
 mobiles repair shop.
 
-Test it out with repairstat 7032
-~
+Test it out with repairstat 7032~
 #EXIT
 Direction east~
 ToRoom    21196
@@ -3461,8 +3206,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command allows the creation and editing of a room program.
-For more information, see help rpedit
-~
+For more information, see help rpedit~
 #EXIT
 Direction east~
 ToRoom    21197
@@ -3483,8 +3227,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command displays all the programs on a room.
  
-Test it out now.
-~
+Test it out now.~
 #EXIT
 Direction east~
 ToRoom    21198
@@ -3499,8 +3242,7 @@ ToRoom    21196
 Progtype  speech_prog~
 Arglist   test~
 Comlist   mpechoat $n If you can read this, you obviously found the prog in this room.
-mpechoat $n Well done :)
-~
+mpechoat $n Well done :)~
 #ENDPROG
 
 #ENDROOM
@@ -3512,8 +3254,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The shops command displays information on all the shops in the MUD.
-Test it out now.
-~
+Test it out now.~
 #EXIT
 Direction east~
 ToRoom    21199
@@ -3533,8 +3274,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      Shopset allows you to change details about a specific shop.
-See help shopset for information.
-~
+See help shopset for information.~
 #EXIT
 Direction east~
 ToRoom    21200
@@ -3554,8 +3294,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will display statistics on a particular shop.
-Test it using shopstat 7031
-~
+Test it using shopstat 7031~
 #EXIT
 Direction east~
 ToRoom    21201
@@ -3574,8 +3313,7 @@ Name      showweather~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command displays a whole heap of information on the weather.
-~
+Desc      This command displays a whole heap of information on the weather.~
 #EXIT
 Direction east~
 ToRoom    21202
@@ -3594,8 +3332,7 @@ Name      setweather~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command allows you to set the weather for an area.
-~
+Desc      This command allows you to set the weather for an area.~
 #EXIT
 Direction east~
 ToRoom    21106
@@ -3617,8 +3354,7 @@ Stats     0 0 0 0 100000
 Desc      The Aset command is used to set area information, such as author, filename,
 vnums used, levels, etc.
  
-For more information on this command, see help aset
-~
+For more information on this command, see help aset~
 #EXIT
 Direction east~
 ToRoom    21204
@@ -3641,8 +3377,7 @@ Desc      This command will display information on an area.
  
 Usage: astat <filename>
  
-Test it out using astat arcanium.are
-~
+Test it out using astat arcanium.are~
 #EXIT
 Direction east~
 ToRoom    21205
@@ -3661,8 +3396,7 @@ Name      disconnect~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command will forcibly boot a character from the MUD.
-~
+Desc      This command will forcibly boot a character from the MUD.~
 #EXIT
 Direction east~
 ToRoom    21206
@@ -3681,8 +3415,7 @@ Name      echo~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command will display the specified text to everyone in the current room.
-~
+Desc      This command will display the specified text to everyone in the current room.~
 #EXIT
 Direction east~
 ToRoom    21207
@@ -3702,8 +3435,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The foldarea command is used to save an area file, generally after you
-have edited it.
-~
+have edited it.~
 #EXIT
 Direction east~
 ToRoom    21208
@@ -3725,8 +3457,7 @@ Stats     0 0 0 0 100000
 Desc      The log command will cause all of a characters commands to be logged into
 the log file.
  
-Similarly, log all will log every characters commands into the log file.
-~
+Similarly, log all will log every characters commands into the log file.~
 #EXIT
 Direction east~
 ToRoom    21209
@@ -3746,8 +3477,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will re-make the wizlist using the levels from all of the MUD's
-pfiles.
-~
+pfiles.~
 #EXIT
 Direction east~
 ToRoom    21210
@@ -3767,8 +3497,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command creates a new slay type, with the default options.
-Once it is created, you then use setslay to edit it.
-~
+Once it is created, you then use setslay to edit it.~
 #EXIT
 Direction east~
 ToRoom    21211
@@ -3788,8 +3517,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The morphset command is used to set various aspects of a new morph.
-Type morphset for more information.
-~
+Type morphset for more information.~
 #EXIT
 Direction east~
 ToRoom    21212
@@ -3810,8 +3538,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      Morphstat displays information on a particular morph.
  
-For example: morphstat 1010
-~
+For example: morphstat 1010~
 #EXIT
 Direction east~
 ToRoom    21213
@@ -3835,8 +3562,7 @@ Desc      This command is used for the creation of a new morph type.
 Alternatively, this command can be used to copy an existing morphtype.
  
 Usage: To create a new morphtype: morphcreate <name>
-To copy an existing: morphcreate <name/vnum> copy
-~
+To copy an existing: morphcreate <name/vnum> copy~
 #EXIT
 Direction east~
 ToRoom    21214
@@ -3855,8 +3581,7 @@ Name      morphdestroy~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command deletes a morph type.
-~
+Desc      This command deletes a morph type.~
 #EXIT
 Direction east~
 ToRoom    21215
@@ -3877,8 +3602,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will list all the morphs available.
  
-Try it out.
-~
+Try it out.~
 #EXIT
 Direction east~
 ToRoom    21216
@@ -3900,8 +3624,7 @@ Stats     0 0 0 0 100000
 Desc      This command allows you to view exactly what skills, and what level they
 have practiced to, a player has.
  
-Usage: skills <player>
-~
+Usage: skills <player>~
 #EXIT
 Direction east~
 ToRoom    21217
@@ -3923,8 +3646,7 @@ Stats     0 0 0 0 100000
 Desc      System will send whatever text you tell it to, to everyone on the MUD.
  
 ie: system Testing 1 2 3
-Testing 1 2 3 will be echoed to everyone on the MUD.
-~
+Testing 1 2 3 will be echoed to everyone on the MUD.~
 #EXIT
 Direction east~
 ToRoom    21218
@@ -3947,8 +3669,7 @@ Desc      This command will instantly kill a character. An optional type can als
 provided.
 Use just the word slay to see the current list of slay types available.
  
-Usage: slay <victim> [option]
-~
+Usage: slay <victim> [option]~
 #EXIT
 Direction east~
 ToRoom    21219
@@ -3968,8 +3689,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will set all aspects of a deity. 
-Type setdeity for information.
-~
+Type setdeity for information.~
 #EXIT
 Direction east~
 ToRoom    21220
@@ -3990,8 +3710,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will throw a character to a random location in the MUD.
 Note that the character doesn't have to be currently connected for this
-to work.
-~
+to work.~
 #EXIT
 Direction east~
 ToRoom    21221
@@ -4015,8 +3734,7 @@ inventory or coins wildly over the MUD.
  
 Usage: strew <character/mobile> <inv or coins>
  
-Test it out now, using strew rich coins
-~
+Test it out now, using strew rich coins~
 #EXIT
 Direction east~
 ToRoom    21222
@@ -4037,8 +3755,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      The setslay command is used to customize a particular type of slay.
-see help setslay for more details.
-~
+see help setslay for more details.~
 #EXIT
 Direction east~
 ToRoom    21223
@@ -4059,8 +3776,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will display information on a particular slay.
  
-For example, showslay mech
-~
+For example, showslay mech~
 #EXIT
 Direction east~
 ToRoom    21224
@@ -4083,8 +3799,7 @@ Desc      This command displays to the entire MUD whatever text you passed it,
 preceded by The Voice of God says:
  
 ie: voice Be kind to Bunnies.
-will display The Voice of God says: Be kind to Bunnies.
-~
+will display The Voice of God says: Be kind to Bunnies.~
 #EXIT
 Direction east~
 ToRoom    21107
@@ -4105,8 +3820,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will remove a site from the ban list.
  
-Usage: allow <address>
-~
+Usage: allow <address>~
 #EXIT
 Direction east~
 ToRoom    21226
@@ -4129,8 +3843,7 @@ Desc      This command will ban an address from connecting to the MUD.
  
 Usage: ban <address>
  
-OR, simply typing ban will list all the current bans on the MUD.
-~
+OR, simply typing ban will list all the current bans on the MUD.~
 #EXIT
 Direction east~
 ToRoom    21227
@@ -4151,8 +3864,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will display statistics on all the boards in the game.
  
-Try it now.
-~
+Try it now.~
 #EXIT
 Direction east~
 ToRoom    21228
@@ -4172,8 +3884,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command is used to set various aspects of a board.
-See help bset for more information.
-~
+See help bset for more information.~
 #EXIT
 Direction east~
 ToRoom    21229
@@ -4196,8 +3907,7 @@ Desc      This command will display information on a specific board.
  
 Usage: bstat <board filename>
  
-For example: bstat arena.brd
-~
+For example: bstat arena.brd~
 #EXIT
 Direction east~
 ToRoom    21230
@@ -4220,8 +3930,7 @@ Desc      The comment command essentially treats players like a bulletin board.
 This is so notes can be made of any disciplinary action that has been
 taken, etc.
  
-See help comment for more information.
-~
+See help comment for more information.~
 #EXIT
 Direction east~
 ToRoom    21231
@@ -4243,8 +3952,7 @@ Stats     0 0 0 0 100000
 Desc      Deny will stop a player being able to log in, and will throw them
 immediately out of the game. A Deny will persist past a reboot or crash, and
 can only be removed by either loading up the character and doing an 
-mset <character> flags deny, or by editing the pfile.
-~
+mset <character> flags deny, or by editing the pfile.~
 #EXIT
 Direction east~
 ToRoom    21232
@@ -4263,8 +3971,7 @@ Name      dmesg~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      This command will display the contents of the bootlog.
-~
+Desc      This command will display the contents of the bootlog.~
 #EXIT
 Direction east~
 ToRoom    21233
@@ -4285,8 +3992,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will delay a victim for a specified number of rounds.
  
-Usage: delay <character> <number of rounds>
-~
+Usage: delay <character> <number of rounds>~
 #EXIT
 Direction east~
 ToRoom    21234
@@ -4306,8 +4012,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command forcibly closes a descriptor. If you don't know EXACTLY
-what you are doing here, DON'T TOUCH IT.
-~
+what you are doing here, DON'T TOUCH IT.~
 #EXIT
 Direction east~
 ToRoom    21235
@@ -4327,8 +4032,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      Freeze will prevent a character from issuing any commands. 
-To unfreeze a character, simply freeze them again.
-~
+To unfreeze a character, simply freeze them again.~
 #EXIT
 Direction east~
 ToRoom    21236
@@ -4347,8 +4051,7 @@ Name      khistory~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      Khistory will list the last few mobs killed by a player.
-~
+Desc      Khistory will list the last few mobs killed by a player.~
 #EXIT
 Direction east~
 ToRoom    21237
@@ -4367,8 +4070,7 @@ Name      litterbug~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      The litterbug command allows/prevents players from dropping objects.
-~
+Desc      The litterbug command allows/prevents players from dropping objects.~
 #EXIT
 Direction east~
 ToRoom    21238
@@ -4388,8 +4090,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This command will create a board. You should then use bset to set up
-all the attributes of the board.
-~
+all the attributes of the board.~
 #EXIT
 Direction east~
 ToRoom    21239
@@ -4408,8 +4109,7 @@ Name      moblog~
 Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
-Desc      Please tell me. :)
-~
+Desc      Please tell me. :)~
 #EXIT
 Direction east~
 ToRoom    21240
@@ -4432,8 +4132,7 @@ Desc      This command will cause the mud to start a 5 minute countdown, and the
 reboot.
  
 If the command is given as reboot mud now, the MUD will immediately reboot
-saving all connected players to disk.
-~
+saving all connected players to disk.~
 #EXIT
 Direction east~
 ToRoom    21241
@@ -4455,8 +4154,7 @@ Stats     0 0 0 0 100000
 Desc      The snoop command will allow you to see exactly what text is going to,
 and coming from, a character.
  
-See help snoop for more information on the specific policies about snooping.
-~
+See help snoop for more information on the specific policies about snooping.~
 #EXIT
 Direction east~
 ToRoom    21242
@@ -4476,8 +4174,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      This will send a warning to a certain group of people. Either all those
-of one particular class, race, or host site.
-~
+of one particular class, race, or host site.~
 #EXIT
 Direction east~
 ToRoom    21243
@@ -4499,8 +4196,7 @@ Stats     0 0 0 0 100000
 Desc      The watch command is very similar to the log command, except it logs
 it to your own personal watch file.
  
-Please see help watch for important information on the command.
-~
+Please see help watch for important information on the command.~
 #EXIT
 Direction east~
 ToRoom    21108
@@ -4521,8 +4217,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      Fixchar will unequip a character, check all their stats, affects and the like
 are correct, and then re-equip them. Use if something really weird happens
-and a character is permenantly affected by something, or something similar.
-~
+and a character is permenantly affected by something, or something similar.~
 #EXIT
 Direction east~
 ToRoom    21245
@@ -4543,8 +4238,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      The newpass command allows you to change a characters password.
 If the target is offline, you will need to load their pfile by using the 
-loadup command before you try to change their password.
-~
+loadup command before you try to change their password.~
 #EXIT
 Direction east~
 ToRoom    21109
@@ -4564,8 +4258,7 @@ Sector    indoors~
 Flags     ~
 Stats     0 0 0 0 100000
 Desc      You aren't supposed to be in here. This is merely to demonstrate the rap
-command. Use goto 21128 to leave.
-~
+command. Use goto 21128 to leave.~
 #EXIT
 Direction south~
 ToRoom    21128

@@ -25,13 +25,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Faeia Quenath~
-Long      Faeia Quenath, High Priestess of Meia and Keeper of the Abecedarium stands here.
-~
+Long      Faeia Quenath, High Priestess of Meia and Keeper of the Abecedarium stands here.~
 Desc      A silver-haired high elf, she is old even by the standards of her kind.
 Yet, she stands tall, regal features showing only the faintest of lines
 in her weathered face. Having devoted herself to Meia in her youth, she
-looks kindly upon all young adventurers.
-~
+looks kindly upon all young adventurers.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -59,8 +57,7 @@ say Please type 'LOOK NEWBIE' for additional information.
 say Once you have reached level 5, return here for the final challenge.
 say If you are a veteran player, or already familiar with the game,
 say feel free to exit via the portal to the city.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -82,8 +79,7 @@ say Please type 'LOOK NEWBIE' for additional information.
 say Once you have reached level 5, return here for the final challenge.
 say If you are a veteran player, or already familiar with the game,
 say feel free to exit via the portal to the city.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -97,8 +93,7 @@ else
 say Welcome back $n. How was your trip to the city?
 say You may visit the village at any time between now and level 10.
 say You may also take the challenge anytime after level 5.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -108,8 +103,7 @@ Comlist   say Within the Abecedarium challenge, you will have to face an adversa
 say The Guardian of Meia will test your mettle in combat.
 say If you are proven worthy, then you are ready for the world outside.
 say If you succeed in the challenge before level 10, you may still return
-say to Gwyn al'Fer till you have reached level 11.
-~
+say to Gwyn al'Fer till you have reached level 11.~
 #ENDPROG
 
 #MUDPROG
@@ -138,8 +132,7 @@ endif
 endif
 endif
 endif
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -150,8 +143,7 @@ if level($n) <= 10
 say Return when you are ready, my young one.
 smile
 endif
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -165,8 +157,7 @@ say Are you ready for the challenge?
 say Say 'yes' if you are, and 'no' if you are not.
 endif
 endif
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -174,8 +165,7 @@ Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say Please look at the RING I have given you to determine it's function,
 say or look at the NEWBIE guide for help.  Or, you can ask me about the
-say CHALLENGE.
-~
+say CHALLENGE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -189,12 +179,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Lady Nynae~
-Long      Lady Nynae smiles gently and rises from her rest.
-~
+Long      Lady Nynae smiles gently and rises from her rest.~
 Desc      A priestess of Meia, you detect an impish twinkle in her sapphirine
 eyes as she greets you. Her raven hair is held neatly in a twinkling
-barrette made of twisted silver and set with tiny crystals.
-~
+barrette made of twisted silver and set with tiny crystals.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -211,8 +199,7 @@ mea $n &YThe voice of Faeia Quenath whispers magically in your ears.&D
 mea $n &YFaeia Quenath says, "You may not enter into the inner confines."&D
 mptrlook $n 2850
 endif
-say I will teach you the LANGUAGES of the land.
-~
+say I will teach you the LANGUAGES of the land.~
 #ENDPROG
 
 #MUDPROG
@@ -220,8 +207,7 @@ Progtype  speech_prog~
 Arglist   p languages~
 Comlist   say Languages are learned differently from spells and skills.
 say You must be an adept at a language before you may use it.
-say you may ask me about LEARNING and USING languages.
-~
+say you may ask me about LEARNING and USING languages.~
 #ENDPROG
 
 #MUDPROG
@@ -231,24 +217,21 @@ Comlist   say To see a list of the languages you may learn, type PRACTICE.
 say To learn a language, type LANGUAGE LEARN <language type>.
 say You may learn languages with scholars through the Lands.
 say In fact, there is another at the City Museum if you are interested.
-say For further help, type HELP LANGUAGES.
-~
+say For further help, type HELP LANGUAGES.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   p using~
 Comlist   say To speak a certain language, type SPEAK <language>.
-say For further help, type HELP SPEAK or HELP TONGUE.
-~
+say For further help, type HELP SPEAK or HELP TONGUE.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask about any of these from me.
-say LANGUAGES, and the LEARNING and USING of them.
-~
+say LANGUAGES, and the LEARNING and USING of them.~
 #ENDPROG
 
 #ENDMOBILE
@@ -262,13 +245,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lord Raemon~
-Long      Lord Raemon stands beside the board, with a slender pointer in his hand.
-~
+Long      Lord Raemon stands beside the board, with a slender pointer in his hand.~
 Desc      Once a minor prince in a distant duchy, he found fulfilment in serving
 the Goddess of Knowledge. Now older and less able to travel, he finds
 enjoyment in bringing learning to youthful voyagers, that they may
-walk the Lands in safety.
-~
+walk the Lands in safety.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -280,8 +261,7 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   say I shall teach you about CHANNELS.
-~
+Comlist   say I shall teach you about CHANNELS.~
 #ENDPROG
 
 #MUDPROG
@@ -291,8 +271,7 @@ Comlist   say Channels are the basic modes of communication here.
 say You may get a full list of channels available by typing CHAN.
 say It is possible to TOGGLE a channel on or off.
 say Reducing the number of channels received can cut down screen scroll.
-say You may ask me about SILENT rooms.
-~
+say You may ask me about SILENT rooms.~
 #ENDPROG
 
 #MUDPROG
@@ -302,16 +281,14 @@ Comlist   say To turn on a channel, type CHAN +<channel>
 say To turn off a channel, type CHAN -<channel>
 say You may also turn off all channels by typing CHAN -ALL.
 say And similarly, you may turn on all channels by typing CHAN +ALL.
-say For more aid, type HELP CHANNEL.
-~
+say For more aid, type HELP CHANNEL.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   silent~
 Comlist   say Silent rooms are places in which you are unable to use most channels.
-say In a silent room, you may only use SOCIALS, EMOTES and GROUPTELL.
-~
+say In a silent room, you may only use SOCIALS, EMOTES and GROUPTELL.~
 #ENDPROG
 
 #MUDPROG
@@ -319,8 +296,7 @@ Progtype  speech_prog~
 Arglist   socials~
 Comlist   say Socials are any of a number of preset commands which allow more
 say player expression. For example, typing GRIN will make your character grin.
-say For a list of all social commands available, type SOCIALS.
-~
+say For a list of all social commands available, type SOCIALS.~
 #ENDPROG
 
 #MUDPROG
@@ -330,8 +306,7 @@ Comlist   say This command allows you to speak privately to all characters in yo
 say It will work no matter the distance, even if they are sleeping or stunned.
 say The symbol ";" is synonymous with the command.
 say To grouptell, type GTELL <message>.
-say For further aid, type HELP GTELL. 
-~
+say For further aid, type HELP GTELL.~
 #ENDPROG
 
 #MUDPROG
@@ -340,16 +315,14 @@ Arglist   emotes~
 Comlist   say Emotes are customised expressions or actions.
 say For example, type EMOTE smiles and nods at everyone.
 say The resulting display will be seen by everyone in the room.
-say FOr more help, type HELP EMOTE.
-~
+say FOr more help, type HELP EMOTE.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
-say CHANNELS, how to TOGGLE, SILENT rooms, SOCIALS, GROUPTELL and EMOTES.
-~
+say CHANNELS, how to TOGGLE, SILENT rooms, SOCIALS, GROUPTELL and EMOTES.~
 #ENDPROG
 
 #ENDMOBILE
@@ -363,13 +336,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Vaelyn~
-Long      Mistress Vaelyn is stands beside the plaque with a stern expression.
-~
+Long      Mistress Vaelyn is stands beside the plaque with a stern expression.~
 Desc      Once a beauty admired far and wide, she sought comfort in Meia when her
 looks began to fail. Although she is kind at heart, Vaelyn Dlanrene
 has no qualms about disciplining a wayward student if her lessons are
-not followed.
-~
+not followed.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -381,8 +352,7 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   say In wandering the Lands, you will need to adhere to some RULES.
-~
+Comlist   say In wandering the Lands, you will need to adhere to some RULES.~
 #ENDPROG
 
 #MUDPROG
@@ -390,24 +360,21 @@ Progtype  speech_prog~
 Arglist   RULES~
 Comlist   say We do not have many rules. But what we have, we enforce strictly.
 say Basically they involve SPAM, MULTIPLAYING, BUGS, and character SHARING,
-say As well as aggressive SUMMONING, GROUPING and COURTESY.
-~
+say As well as aggressive SUMMONING, GROUPING and COURTESY.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   spam~
 Comlist   say Please do not spam anyone. It is highly unwelcome to all.
-say For more information, type HELP SPAM.
-~
+say For more information, type HELP SPAM.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   multiplaying~
 Comlist   say Multiplaying is not allowed here.
-say It is defined as having 2 or more characters on at the same time.
-~
+say It is defined as having 2 or more characters on at the same time.~
 #ENDPROG
 
 #MUDPROG
@@ -417,24 +384,21 @@ Comlist   say If you find a bug, you are obligated to report it immediately.
 say You may do this by telling an online immortal.
 say Optionally you could choose to post it on the nearest public board.
 say Once you have done so, you may NOT exploit the bug for any reason.
-say For more information on bugs, type HELP BUG EXPLOITATION.
-~
+say For more information on bugs, type HELP BUG EXPLOITATION.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   summoning~
 Comlist   say No summoning of aggressive monsters into the city is allowed at any point.
-say This also applies to all newbie areas, including the Zoo and Abecedarium.
-~
+say This also applies to all newbie areas, including the Zoo and Abecedarium.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   grouping~
 Comlist   say This should only be done with characters within eight levels of your own.
-say For more information, type HELP GROUP.
-~
+say For more information, type HELP GROUP.~
 #ENDPROG
 
 #MUDPROG
@@ -445,8 +409,7 @@ say No harassment or usage of swear words are allowed.
 say Should you wish to pick up equipment lying on the ground,
 say do ask about its ownership first.
 say Power-levelling is discouraged, as is hoarding.
-say For more information on the rules, type HELP RULES.
-~
+say For more information on the rules, type HELP RULES.~
 #ENDPROG
 
 #MUDPROG
@@ -454,16 +417,14 @@ Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
 say RULES, SPAM, MULTIPLAYING, BUGS, CHARACTER SHARING, SUMMONING,
-say GROUPING and COURTESY.
-~
+say GROUPING and COURTESY.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   sharing~
 Comlist   say No sharing of characters is allowed in the Lands.
-say Your passwords should be kept private and strictly confidential.
-~
+say Your passwords should be kept private and strictly confidential.~
 #ENDPROG
 
 #ENDMOBILE
@@ -477,13 +438,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lord Azartas~
-Long      Lord Azartas looks up from his paperwork to regard you solemnly.
-~
+Long      Lord Azartas looks up from his paperwork to regard you solemnly.~
 Desc      A wanderer at heart, Lord Azartas was a follower of Meia from his
 youngest days, having been brought up in a family which regarded
 learning highly. For now, however, he is content to carry out the
-request of his deity to stay here as a tutor.
-~
+request of his deity to stay here as a tutor.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -495,8 +454,7 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  speech_prog~
 Arglist   PAGER~
-Comlist   say This toggles page pausing on long scrolls.
-~
+Comlist   say This toggles page pausing on long scrolls.~
 #ENDPROG
 
 #MUDPROG
@@ -504,36 +462,31 @@ Progtype  speech_prog~
 Arglist   gag~
 Comlist   say This allows you to choose how you see battle details, in full or briefly.
 say Typing CONFIG +GAG will make you see battles in brief.
-say Typing CONFIG -GAG will make you see battles in full.
-~
+say Typing CONFIG -GAG will make you see battles in full.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   combine~
-Comlist   say This lets you see object lists in combined format.
-~
+Comlist   say This lets you see object lists in combined format.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   blank~
-Comlist   say This allows you to have a blank line before your prompt.
-~
+Comlist   say This allows you to have a blank line before your prompt.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   prompt~
-Comlist   say This allows to you have a prompt.
-~
+Comlist   say This allows to you have a prompt.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   ANSI~
-Comlist   say This lets you receive ANSI color sequences.
-~
+Comlist   say This lets you receive ANSI color sequences.~
 #ENDPROG
 
 #MUDPROG
@@ -541,15 +494,13 @@ Progtype  speech_prog~
 Arglist   RIP~
 Comlist   say This involves your ability to see RIP graphics.
 say If you type CONFIG +RIP, you will not see them.
-say If you type CONFIG -RIP, you will be able to see them.
-~
+say If you type CONFIG -RIP, you will be able to see them.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   autosac~
-Comlist   say This sets you to sacrific corpses automatically as soon as you kill a mob.
-~
+Comlist   say This sets you to sacrific corpses automatically as soon as you kill a mob.~
 #ENDPROG
 
 #MUDPROG
@@ -558,63 +509,55 @@ Arglist   autogold~
 Comlist   say If there is more than one person in your group, typing CONFIG +AUTOGOLD
 say will let you share the gold looted from mobs killed together with them.
 say It will be done in equal portions.
-say Should you be alone, it will not affect your gameplay.
-~
+say Should you be alone, it will not affect your gameplay.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   autoloot~
 Comlist   say This allows you to loot equipment from corpses you kill.
-say Bear in mind that this does not apply to PK'ed corpses or gold in general.
-~
+say Bear in mind that this does not apply to PK'ed corpses or gold in general.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   autoexit~
 Comlist   say Setting your configuration to +AUTOEXIT will allow you to see exits
-say automatically, scrolling onto the screen as you move.
-~
+say automatically, scrolling onto the screen as you move.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   SMARTSAC~
 Comlist   say This is a safeguard, overriding the AUTOSAC item in the configuration.
-say It keeps you from automatically sacrificing a corpse with items in it.
-~
+say It keeps you from automatically sacrificing a corpse with items in it.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   norecall~
 Comlist   say If you lose your link in combat, this allows you to recall automatically.
-say Typing CONFIG +NORECALL will keep the automatic recall from occurring.
-~
+say Typing CONFIG +NORECALL will keep the automatic recall from occurring.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   nosummon~
 Comlist   say Setting +NOSUMMON will keep other player characters from summoning you.
-say Remember that summoning someone without asking is an offence.
-~
+say Remember that summoning someone without asking is an offence.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   nobeep~
-Comlist   say Setting +NOBEEP will prevent other players from beeping you.
-~
+Comlist   say Setting +NOBEEP will prevent other players from beeping you.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   DRAG~
 Comlist   say This allows other players to drag you if you are incapacitated.
-say If you set CONFIG -DRAG, they will not be able to do so.
-~
+say If you set CONFIG -DRAG, they will not be able to do so.~
 #ENDPROG
 
 #MUDPROG
@@ -623,31 +566,27 @@ Arglist   nice~
 Comlist   say This determines your response to another player's attack.
 say If it is set at +NICE, you will not retaliate.
 say You will also be kept from attacking another player, regardless of intent.
-say It is advised to maintain +NICE until you are ready to turn PK.
-~
+say It is advised to maintain +NICE until you are ready to turn PK.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   telnetga~
-Comlist   say Setting this at +TELNETGA would allow you to receive a Telnet GA sequence.
-~
+Comlist   say Setting this at +TELNETGA would allow you to receive a Telnet GA sequence.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   groupwho~
 Comlist   say This toggles an announcement of your willingness to group.
-say If you set it at +GROUPWHO, then a message will be sent out to all players.
-~
+say If you set it at +GROUPWHO, then a message will be sent out to all players.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   nointro~
 Comlist   say This toggles whether or not you see the graphic screen at login.
-say If you type CONFIG -NOINTRO, then you will not see it.
-~
+say If you type CONFIG -NOINTRO, then you will not see it.~
 #ENDPROG
 
 #MUDPROG
@@ -655,31 +594,27 @@ Progtype  speech_prog~
 Arglist   pager length~
 Comlist   say This is not set in the standard CONFIG syntax.
 say It determines the length of your page pausing.
-say To adjust it, simply type PAGE <number of lines>
-~
+say To adjust it, simply type PAGE <number of lines>~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   WIMPY~
 Comlist   say This is not set in the standard CONFIG syntax.
-say You will be taught more about it later in the combat section.
-~
+say You will be taught more about it later in the combat section.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any item on your CONFIG menu.
-say To get a list of the menu, type CONFIG.
-~
+say To get a list of the menu, type CONFIG.~
 #ENDPROG
 
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   say I will teach you about CONFIGURATION.
-~
+Comlist   say I will teach you about CONFIGURATION.~
 #ENDPROG
 
 #MUDPROG
@@ -691,8 +626,7 @@ say To get a list of this menu, type CONFIG.
 say You may ask me about any item on the menu by saying it.
 say It is advised, unless you wish to be a deadly (PK),
 say That you should type CONFIG +NICE. It will safeguard you.
-say If you need further information, please type HELP CONFIG.
-~
+say If you need further information, please type HELP CONFIG.~
 #ENDPROG
 
 #ENDMOBILE
@@ -706,12 +640,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Sir Aringarde~
-Long      Sir Aringarde smiles benevolently at you as he stands here.
-~
+Long      Sir Aringarde smiles benevolently at you as he stands here.~
 Desc      Snowy curls sit atop his balding head, and a huge well-groomed moustache
 twitches occasionally as he smiles at you. He speaks in resonant tones,
-enunciating each word clearly and slowly.
-~
+enunciating each word clearly and slowly.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -723,8 +655,7 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   say I will teach you useful PERSONAL commands you will need in your journeys.
-~
+Comlist   say I will teach you useful PERSONAL commands you will need in your journeys.~
 #ENDPROG
 
 #MUDPROG
@@ -733,8 +664,7 @@ Arglist   personal~
 Comlist   say In the course of your travelling, you will need to refer to these.
 say The most important are SCORE, EQUIPMENT, INVENTORY, LEVEL and PRACTICE.
 say Also useful are REPORT, EXIT and COMPARE.
-say You may ask me about any of these.
-~
+say You may ask me about any of these.~
 #ENDPROG
 
 #MUDPROG
@@ -743,8 +673,7 @@ Arglist   SCORE~
 Comlist   say Typing SCORE will allow you to see your character statistics.
 say Only you will see the display listed.
 say If you wish to let others see your character's health, you can type REPORT.
-say For more information, you may type HELP SCORE.
-~
+say For more information, you may type HELP SCORE.~
 #ENDPROG
 
 #MUDPROG
@@ -753,8 +682,7 @@ Arglist   equipment~
 Comlist   say To use this, simply type EQUIPMENT.
 say This command displays a list of equipment you are wearing at the moment.
 say Only you will see the display listed.
-say To see what another character is wearing, simply type LOOK <character>.
-~
+say To see what another character is wearing, simply type LOOK <character>.~
 #ENDPROG
 
 #MUDPROG
@@ -765,8 +693,7 @@ say This will display a list of items you have in your inventory.
 say It refers to all items you have on you which you are not wearing.
 say Only you will see the display listed.
 say Other players may not look at your inventory unless they are playing
-say a class which teaches them a skill or spell allowing them to do so.
-~
+say a class which teaches them a skill or spell allowing them to do so.~
 #ENDPROG
 
 #MUDPROG
@@ -775,8 +702,7 @@ Arglist   level~
 Comlist   say Your character advances in power by gaining experience points.
 say The command LEVEL shows you how many points you need to advance further.
 say Typing in LEVEL will show a display only you will see.
-say For further information, type HELP LEVEL.
-~
+say For further information, type HELP LEVEL.~
 #ENDPROG
 
 #MUDPROG
@@ -788,8 +714,7 @@ say Only you will see the display, and you may do this at any point.
 say Typing PRACTICE <skill/spell> will enable you to use practices to gain
 say proficiency in the skill or spell.
 say Practicing skills and spells may only be done at a guild master.
-say For further information, type HELP PRACTICE.
-~
+say For further information, type HELP PRACTICE.~
 #ENDPROG
 
 #MUDPROG
@@ -797,8 +722,7 @@ Progtype  speech_prog~
 Arglist   report~
 Comlist   say To report, type REPORT.
 say This command announces your current statistics to everyone in the room.
-say For more information, type HELP REPORT.
-~
+say For more information, type HELP REPORT.~
 #ENDPROG
 
 #MUDPROG
@@ -807,8 +731,7 @@ Arglist   exit~
 Comlist   say To use this command, type EXITS.
 say This will tell you the visible exits of the room you are in.
 say Not all exits are readily visible.
-say For more information, type HELP EXITS.
-~
+say For more information, type HELP EXITS.~
 #ENDPROG
 
 #MUDPROG
@@ -819,8 +742,7 @@ say To do this, type COMPARE <object 1> <object 2>.
 say It will help you distinguish the better of the two.
 say Typing COMPARE <object> will compare the object to what you are presently
 say wearing of the same type.
-say For further information, type HELP COMPARE.
-~
+say For further information, type HELP COMPARE.~
 #ENDPROG
 
 #MUDPROG
@@ -828,8 +750,7 @@ Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
 say PERSONAL commands, SCORE, EQUIPMENT, INVENTORY, LEVEL and PRACTICE.
-say Also REPORT, EXIT and COMPARE.
-~
+say Also REPORT, EXIT and COMPARE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -843,13 +764,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Lady T'aesa~
-Long      Lady T'aesa appraises you as she flips her staff about idly.
-~
+Long      Lady T'aesa appraises you as she flips her staff about idly.~
 Desc      Born and raised among nomadic horsemen, T'aesa Eh'oran is possibly the
 leanest female you have ever laid your eyes on. She seems to be made of
 nothing but skin and sinew, with her slender form accented by her 
-musculature.
-~
+musculature.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -862,8 +781,7 @@ Bodyparts head heart~
 Progtype  all_greet_prog~
 Arglist   100~
 Comlist   emote bows formally.
-say I will teach you the art of offensive COMBAT.
-~
+say I will teach you the art of offensive COMBAT.~
 #ENDPROG
 
 #MUDPROG
@@ -875,24 +793,21 @@ say These commands are LOOK, CONSIDER and IDENTIFY.
 say Not all mobs will await your move. Some will attack you on sight.
 say You may start a fight by using the commands KILL or MURDER.
 say OTHER means of starting fights are also possible.
-say When you are ready, you may TEST yourself downstairs.
-~
+say When you are ready, you may TEST yourself downstairs.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   LOOK~
 Comlist   say By typing LOOK <mob> you can see its equipment and description.
-say It may help to gauge how hard a fight will be.
-~
+say It may help to gauge how hard a fight will be.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   CONSIDER~
 Comlist   say Typing CONSIDER <mob> will compare the mob's level and hitpoints to yours.
-say However, this is only a rough estimate.
-~
+say However, this is only a rough estimate.~
 #ENDPROG
 
 #MUDPROG
@@ -900,16 +815,14 @@ Progtype  speech_prog~
 Arglist   identify~
 Comlist   say This is rightly a spell, not a command.
 say If you have it, you may CAST 'IDENTIFY' <mob> to gain information.
-say For more information, type HELP IDENTIFY.
-~
+say For more information, type HELP IDENTIFY.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   kill~
 Comlist   say Typing KILL <mob> will start a fight.
-say If you have not overreached your abilities, then you will kill the mob.
-~
+say If you have not overreached your abilities, then you will kill the mob.~
 #ENDPROG
 
 #MUDPROG
@@ -917,8 +830,7 @@ Progtype  speech_prog~
 Arglist   murder~
 Comlist   say This command is used by typing MURDER <mob>.
 say It may only be used by level 5 players and above.
-say It will start a fight, but the mobile will yell out if you MURDER it.
-~
+say It will start a fight, but the mobile will yell out if you MURDER it.~
 #ENDPROG
 
 #MUDPROG
@@ -927,8 +839,7 @@ Arglist   other~
 Comlist   say There are also other ways to start a fight.
 say You may use a skill such as backstab or kick.
 say Offensive spells like 'magic missile' are also popular.
-say Wands and scrolls may also be used to start a fight.
-~
+say Wands and scrolls may also be used to start a fight.~
 #ENDPROG
 
 #MUDPROG
@@ -938,8 +849,7 @@ Comlist   say Well done! Here, take this. You have earned it.
 mpoload 2873
 give collar $n
 mpforce $n save
-mpjunk chains
-~
+mpjunk chains~
 #ENDPROG
 
 #MUDPROG
@@ -947,16 +857,14 @@ Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
 say COMBAT, LOOK, CONSIDER, IDENTIFY, KILL, MURDER and OTHER ways of fighting.
-say You can also ask about the TEST.
-~
+say You can also ask about the TEST.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   test~
 Comlist   say You may test yourself by fighting the creature downstairs.
-say When you have killed it, bring me his chains as proof.
-~
+say When you have killed it, bring me his chains as proof.~
 #ENDPROG
 
 #ENDMOBILE
@@ -970,13 +878,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Kyr~
-Long      Master Kyr sits cross-legged on the mat in apparent meditation.
-~
+Long      Master Kyr sits cross-legged on the mat in apparent meditation.~
 Desc      An impish rogue in his youth, Kyr Lighthand seems to have settled down
 upon reaching middle-aged status, devoting himself completely to the
 service of Meia. As you look at him, however, he winks one grass-green
-eye and you realise that the end of his tricks are some way off yet.
-~
+eye and you realise that the end of his tricks are some way off yet.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -989,8 +895,7 @@ Bodyparts head heart~
 Progtype  all_greet_prog~
 Arglist   100~
 Comlist   grin
-say I will teach you the art of self DEFENSE.
-~
+say I will teach you the art of self DEFENSE.~
 #ENDPROG
 
 #MUDPROG
@@ -999,8 +904,7 @@ Arglist   defense~
 Comlist   say There are a number of defensive tactics available.
 say They are useful when you want to get out of a fight fast.
 say Mainly you may use WIMPY, FLEE and RECALL.
-say You may ask me about any of them.
-~
+say You may ask me about any of them.~
 #ENDPROG
 
 #MUDPROG
@@ -1012,8 +916,7 @@ say To set your wimpy, type WIMPY <number>.
 say The number is the number of hitpoints at which the withdrawal is triggered.
 say To toggle WIMPY on or off, simply type WIMPY.
 say You will lose experience points each time you wimpy out of a fight.
-say For more information, type HELP WIMPY.
-~
+say For more information, type HELP WIMPY.~
 #ENDPROG
 
 #MUDPROG
@@ -1025,8 +928,7 @@ say You may FLEE regardless of the number of hitpoints you have.
 say You will lose experience points each time you flee from a fight.
 say A skill-based version of FLEE is RETREAT.
 say You may ask me about RETREAT if you wish.
-say For more information, type HELP FLEE.
-~
+say For more information, type HELP FLEE.~
 #ENDPROG
 
 #MUDPROG
@@ -1037,8 +939,7 @@ say You may do this with the spell "WORD OF RECALL".
 say Potions and scrolls of recall are also available for your use.
 say It is not possible for you to recall during a fight.
 say However, you may do it at any other time you are not engaged in combat.
-say If you are using this method, use FLEE first, then RECALL.
-~
+say If you are using this method, use FLEE first, then RECALL.~
 #ENDPROG
 
 #MUDPROG
@@ -1046,16 +947,14 @@ Progtype  speech_prog~
 Arglist   retreat~
 Comlist   say This is a skill-based version of FLEE.
 say It allows you to withdraw from a fight with no loss of experience.
-say For more information you may type HELP RETREAT.
-~
+say For more information you may type HELP RETREAT.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
-say DEFENSE, WIMPY, FLEE, RECALL and RETREAT.
-~
+say DEFENSE, WIMPY, FLEE, RECALL and RETREAT.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1069,13 +968,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lord Janos~
-Long      Lord Janos stands in a relaxed pose before you, arms folded across his chest.
-~
+Long      Lord Janos stands in a relaxed pose before you, arms folded across his chest.~
 Desc      Janos Jo-Janekk is a huge man, and you wonder if he has some ogre or
 troll blood in him somewhere. Fixing you with an icy gaze, he smiles.
 Even that seems somehow sinister, and you find yourself afraid of
-this person, although you are not certain why.
-~
+this person, although you are not certain why.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1088,8 +985,7 @@ Bodyparts head heart~
 Progtype  all_greet_prog~
 Arglist   100~
 Comlist   emote bows formally.
-say I will tell you about player killing, otherwise known as PK.
-~
+say I will tell you about player killing, otherwise known as PK.~
 #ENDPROG
 
 #MUDPROG
@@ -1099,8 +995,7 @@ Comlist   say Player killing exists here, as it does on many other worlds.
 say Being a pkiller means you have access to new facets of the game.
 say However, there are certain GUIDELINES you must observe.
 say All players start the game as peaceful players.
-say You may ask me how to become DEADLY, if you wish.
-~
+say You may ask me how to become DEADLY, if you wish.~
 #ENDPROG
 
 #MUDPROG
@@ -1111,8 +1006,7 @@ say However, you are obviously exempt from one rule in particular.
 say There are no rules governing contact between pkillers.
 say Therefore, you may engage in combat with other pkillers if you so wish.
 say Nonetheless, you must adhere to all other rules governing play.
-say Also, there are rules concerning contact with PEACEFUL players.
-~
+say Also, there are rules concerning contact with PEACEFUL players.~
 #ENDPROG
 
 #MUDPROG
@@ -1123,8 +1017,7 @@ say A deadly may not harm a peaceful, be it intentional or otherwise.
 say Also, it is forbidden for a peaceful to get involved in deadly combat.
 say This applies even if you are just helping one deadly fight another.
 say You may, however, choose to group peaceful with deadly to tackle mobs.
-say Players caught violating these rules will be severely dealt with.
-~
+say Players caught violating these rules will be severely dealt with.~
 #ENDPROG
 
 #MUDPROG
@@ -1135,16 +1028,14 @@ say To become a deadly player, type DEADLY YES.
 say Remember, ONCE DEADLY ALWAYS DEADLY. This decision is irreversible!
 say You may also accidentally become deadly through unintentional combat.
 say To prevent this, type CONFIG +NICE.
-say Again, becoming deadly is irreversible, regardless of intent.
-~
+say Again, becoming deadly is irreversible, regardless of intent.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
-say PK, GUIDELINES, PEACEFUL, and DEADLY.
-~
+say PK, GUIDELINES, PEACEFUL, and DEADLY.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1158,14 +1049,12 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Khirelle~
-Long      Mistress Khirelle is seated on the carpet here, enjoying the warmth.
-~
+Long      Mistress Khirelle is seated on the carpet here, enjoying the warmth.~
 Desc      A strikingly beautiful woman, even at her age, Khirelle Forestchild
 is only human ever to be brought up by wild elves. Her hair, once
 platinum blonde, is mixed with streaks of pure white, giving her an
 ageless look. Looking at you with friendly emerald eyes, she beckons
-you to sit down by the fire.
-~
+you to sit down by the fire.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1179,8 +1068,7 @@ Progtype  all_greet_prog~
 Arglist   100~
 Comlist   say In the course of your travels, you will experience HUNGER and THIRST.
 say You will also need to SIT, REST or SLEEP at times.
-say You may ask me about any of these subjects.
-~
+say You may ask me about any of these subjects.~
 #ENDPROG
 
 #MUDPROG
@@ -1190,8 +1078,7 @@ Comlist   say This is important to the state of your well-being.
 say If you let yourself starve, your mental state will be affected.
 say You may experience problems performing even the simplest of tasks.
 say Typing SCORE will give you an indication of your current mental state.
-say To stave off the hunger pangs, naturally, you will need to EAT.
-~
+say To stave off the hunger pangs, naturally, you will need to EAT.~
 #ENDPROG
 
 #MUDPROG
@@ -1201,8 +1088,7 @@ Comlist   say This is important to the state of your well-being.
 say If you let yourself dehydrate, your mental state will be affected.
 say You may experience problems performing even the simplest of tasks.
 say Typing SCORE will give you an indication of your current mental state.
-say To quench your thirst, the natural recourse would be to DRINK.
-~
+say To quench your thirst, the natural recourse would be to DRINK.~
 #ENDPROG
 
 #MUDPROG
@@ -1212,8 +1098,7 @@ Comlist   say Eating will enable you to ingest an item of food or a magical pill
 say Pills will not absolve your hunger pangs, but food will.
 say You may eat something by typing EAT <object>.
 say Food is freely available in several shops throughout the Lands.
-say You may buy food and carry it about with you.
-~
+say You may buy food and carry it about with you.~
 #ENDPROG
 
 #MUDPROG
@@ -1223,8 +1108,7 @@ Comlist   say Drinking will allow you to drink from a fountain or drink containe
 say Drink containers are widely available in a variety of forms.
 say You may drink from something by typing DRINK <object>.
 say You may carry liquid about with you in drink containers.
-say It is also possible to FILL a container at a water source.
-~
+say It is also possible to FILL a container at a water source.~
 #ENDPROG
 
 #MUDPROG
@@ -1233,8 +1117,7 @@ Arglist   FILL~
 Comlist   say This will allow you to fill up a drink container with liquid.
 say To fill something, type FILL <object> <water source>.
 say For example, if you are trying to fill a wineskin at a fountain,
-say you would type FILL WINESKIN FOUNTAIN.
-~
+say you would type FILL WINESKIN FOUNTAIN.~
 #ENDPROG
 
 #MUDPROG
@@ -1243,8 +1126,7 @@ Arglist   SIT~
 Comlist   say As the command suggests, it allows you to sit down on the ground.
 say This will not affect the regeneration of hitpoints, mana or movement.
 say Simply type SIT to sit down.
-say To get up again, type STAND.
-~
+say To get up again, type STAND.~
 #ENDPROG
 
 #MUDPROG
@@ -1253,8 +1135,7 @@ Arglist   rest~
 Comlist   say Typing REST allows you to sprawl out and take a rest on the ground.
 say You will regenerate hitpoints, mana and movement faster than usual.
 say However, you are more vulnerable to attack in that position.
-say To get up again, simply STAND.
-~
+say To get up again, simply STAND.~
 #ENDPROG
 
 #MUDPROG
@@ -1264,16 +1145,14 @@ Comlist   say Sleeping allows you to regenerate faster than you would standing o
 say However, you are more vulnerable to attack.
 say Also, you will not hear anything on private channels when you sleep.
 say To sleep, simply type SLEEP.
-say To get up and continue your journey, simply WAKE.
-~
+say To get up and continue your journey, simply WAKE.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   stand~
 Comlist   say This command allows you to recover from your position on the ground.
-say To stand, just type STAND.
-~
+say To stand, just type STAND.~
 #ENDPROG
 
 #MUDPROG
@@ -1281,8 +1160,7 @@ Progtype  speech_prog~
 Arglist   wake~
 Comlist   say You will need to WAKE up after you sleep.
 say When you are prepared to journey onward, type WAKE to get up.
-say It is also possible to wake a sleeping person by typing WAKE <target>.
-~
+say It is also possible to wake a sleeping person by typing WAKE <target>.~
 #ENDPROG
 
 #MUDPROG
@@ -1290,8 +1168,7 @@ Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
 say They are HUNGER, THIRST, EAT, DRINK, and FILL,
-say As well as SIT, REST, SLEEP, STAND and WAKE.
-~
+say As well as SIT, REST, SLEEP, STAND and WAKE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1305,14 +1182,12 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Lady Henathe~
-Long      Lady Henathe stands beside the onyx circle here.
-~
+Long      Lady Henathe stands beside the onyx circle here.~
 Desc      Hazel ringlets fall to her shoulders, framing her plump features. Smiling
 widely, she looks at you with dark almond eyes. Meeting her gaze, you 
 feel almost unprepared to go out and explore the Lands, recognising that
 she has travelled in her youth and seen countless horrors along with the
-beauty to be found.
-~
+beauty to be found.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1324,16 +1199,14 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  all_greet_prog~
 Arglist   100~
-Comlist   say I will tell you all you need to know about DYING and DEATHTRAPS.
-~
+Comlist   say I will tell you all you need to know about DYING and DEATHTRAPS.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hints~
 Comlist   say Clues which might alert you include room descriptions.
-say Also, typing EXIT or LOOK may help you detect a deathtrap.
-~
+say Also, typing EXIT or LOOK may help you detect a deathtrap.~
 #ENDPROG
 
 #MUDPROG
@@ -1343,8 +1216,7 @@ Comlist   say As you wander the Lands, you will encounter certain dangers.
 say One of these is the DEATHTRAP, more commonly known as a DT.
 say If you wish, you may ask me what a DEATHTRAP is and HOW to detect it.
 say You may also ask WHAT to do in the event of one.
-say In addition, you may go downward to gain a better idea about DTs.
-~
+say In addition, you may go downward to gain a better idea about DTs.~
 #ENDPROG
 
 #MUDPROG
@@ -1353,8 +1225,7 @@ Arglist   DEATHTRAP DT~
 Comlist   say It is a room that causes death upon entry.
 say Unlike a regular death, you do not leave a corpse behind.
 say All items you wear or carry at the time of entry is destroyed.
-say It is not possible to get items back if you enter a deathtrap.
-~
+say It is not possible to get items back if you enter a deathtrap.~
 #ENDPROG
 
 #MUDPROG
@@ -1362,8 +1233,7 @@ Progtype  speech_prog~
 Arglist   how~
 Comlist   say Usually, there are obvious HINTS to the location of DTs.
 say For example, a room might mention that there is a sheer drop eastward.
-say Therefore, if there is an eastward exit, it would lead to a fall.
-~
+say Therefore, if there is an eastward exit, it would lead to a fall.~
 #ENDPROG
 
 #MUDPROG
@@ -1372,8 +1242,7 @@ Arglist   what~
 Comlist   say There is no corpse remaining when you enter a DT.
 say Everything you have on your person is destroyed.
 say Thus, your loss cannot be redeemed.
-say The only thing to do would therefore be to gather up equipment again.
-~
+say The only thing to do would therefore be to gather up equipment again.~
 #ENDPROG
 
 #MUDPROG
@@ -1389,8 +1258,7 @@ say behind where you were killed and you either have to retrieve it or
 say SUPPLICATE the corpse if you have chosen a deity and have enough favour
 say points to do so. There are also certain EFFECTS of death to take note of.
 say Corpses will decay after a time and your equipment will spill out on the
-say ground and be free for the taking by other players or mobs.
-~
+say ground and be free for the taking by other players or mobs.~
 #ENDPROG
 
 #MUDPROG
@@ -1398,8 +1266,7 @@ Progtype  speech_prog~
 Arglist   effects~
 Comlist   say Any spells which were affecting you are canceled by death.
 say Also, you will lose experience points.
-say Following and groups are not affected by death.
-~
+say Following and groups are not affected by death.~
 #ENDPROG
 
 #MUDPROG
@@ -1411,8 +1278,7 @@ say Player corpses last roughly 20 minutes of real time.
 say Only the player who died or someone in their group can retrieve objects
 say from the player's corpse.
 say Deadly characters are exempt from this.
-say Deadlies can loot each others' corpses at will.
-~
+say Deadlies can loot each others' corpses at will.~
 #ENDPROG
 
 #MUDPROG
@@ -1422,8 +1288,7 @@ Comlist   say If you have chosen a deity, you would have a favor point score.
 say To see this, type SCORE. If you have enough favour, you may supplicate.
 say This is a prayer for the god to bring your corpse to you.
 say To supplicate, merely type SUPPLICATE CORPSE.
-say For more information, type HELP SUPPLICATE.
-~
+say For more information, type HELP SUPPLICATE.~
 #ENDPROG
 
 #MUDPROG
@@ -1431,8 +1296,7 @@ Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
 say DYING, DEATHTRAPS, HOW to detect the latter and WHAT to do.
-say Also HINTS about it, EFFECTS of death, DECAY and SUPPLICATE.
-~
+say Also HINTS about it, EFFECTS of death, DECAY and SUPPLICATE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1447,13 +1311,11 @@ Position  standing~
 DefPos    standing~
 Specfun   spec_cast_adept~
 Short     Sienaya Annwn~
-Long      Sienaya Annwn turns and smiles at you, preparing to cast her healing spells.
-~
+Long      Sienaya Annwn turns and smiles at you, preparing to cast her healing spells.~
 Desc      Sienaya Annwn is closely related to the healing faeries, but having had
 a human ancestor, she is not a true Annwn, though she has adopted their
 name. However, the lady is blessed with their ravishing looks and gift
-for the healing arts, using the latter for the good of all.
-~
+for the healing arts, using the latter for the good of all.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1467,8 +1329,7 @@ Progtype  all_greet_prog~
 Arglist   100~
 Comlist   say Come and sit by me, young one.
 say I will heal your wounds as you rest.
-say Feel free to come by anytime. I would be happy to heal you.
-~
+say Feel free to come by anytime. I would be happy to heal you.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1482,13 +1343,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Dwynian~
-Long      Master Dwynian lounges on the cushion, flashing you a lazy smile.
-~
+Long      Master Dwynian lounges on the cushion, flashing you a lazy smile.~
 Desc      The son of a peasant, Dwynian Brooshwinter dedicated himself to Meia
 as a lark, only to find that he was unable to change his devotions
 until he had rendered her sincere service. With time, however, he
-came to accept her honestly and has served her faithfully since.
-~
+came to accept her honestly and has served her faithfully since.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1502,8 +1361,7 @@ Progtype  all_greet_prog~
 Arglist   100~
 Comlist   emote gestures airily for you to sit, swishing his silk handkerchief in the air.
 say Salutations, young one. I shall tell you of MISCELLANEOUS information.
-say Might be helpful in your journeys, after all.
-~
+say Might be helpful in your journeys, after all.~
 #ENDPROG
 
 #MUDPROG
@@ -1511,8 +1369,7 @@ Progtype  speech_prog~
 Arglist   miscellaneous~
 Comlist   say In your travels, you might like to devote to a DEITY some time.
 say It helps sometimes. Also, you could think about GUILDING or TITLES.
-say Ask me about any of these whenever you wish.
-~
+say Ask me about any of these whenever you wish.~
 #ENDPROG
 
 #MUDPROG
@@ -1523,8 +1380,7 @@ say You may DEVOTE at any time after you reach level 10.
 say Once you devote, you will have to earn FAVOR.
 say For a list, type DEITIES. To find out more about a particular deity,
 say you should type DEITIES <deityname>.
-say If you want more aid, type HELP DEITY.
-~
+say If you want more aid, type HELP DEITY.~
 #ENDPROG
 
 #MUDPROG
@@ -1535,16 +1391,14 @@ say To devote, simpy type DEVOTE <deityname>.
 say Make sure you think carefully before devoting.
 say If you leave your deity there will be PENALTIES incurred.
 say To stop devoting to a deity, type DEVOTE NONE.
-say If you wish to devote to a new deity you must first type DEVOTE NONE.
-~
+say If you wish to devote to a new deity you must first type DEVOTE NONE.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   penalties~
 Comlist   say If you stop devoting to a deity, you incur holy wrath.
-say Thus, your favor falls to -2500 and you are blinded for a period.
-~
+say Thus, your favor falls to -2500 and you are blinded for a period.~
 #ENDPROG
 
 #MUDPROG
@@ -1556,8 +1410,7 @@ say For a list of guilds, type GUILDS.
 say For a list of clans, type CLANS.
 say Guilds are for peaceful players, and Clans are for deadly players.
 say If you wish further information on a specific guild or clan,
-say simply type GUILDS <guildname> or CLANS <clanname>.
-~
+say simply type GUILDS <guildname> or CLANS <clanname>.~
 #ENDPROG
 
 #MUDPROG
@@ -1568,8 +1421,7 @@ say They are subject to the same rules for use of language as channels.
 say Each time you advance a level, the game will set you a new title.
 say To set your title, simply type TITLE <text>.
 say For example, to call yourself "The Great Hoohah"
-say type TITLE The Great Hoohah.
-~
+say type TITLE The Great Hoohah.~
 #ENDPROG
 
 #MUDPROG
@@ -1579,8 +1431,7 @@ Comlist   say This is a reflection of how much your deity favors you.
 say It will increase if you follow the principles of your deity.
 say Likewise, it will decrease if you go against them.
 say High favor gives you better chance rolls and weapon bonuses.
-say Favor points may be used to SUPPLICATE to your deity.
-~
+say Favor points may be used to SUPPLICATE to your deity.~
 #ENDPROG
 
 #MUDPROG
@@ -1593,8 +1444,7 @@ say Successful supplication for an avatar would summon the deity's avatar.
 say Object supplication, if successful, summons an object of the deity.
 say A successful recall supplication would send a player to his recall point.
 say This form of holy recall bypasses the norecall flags.
-say For more help, type HELP SUPPLICATE. 
-~
+say For more help, type HELP SUPPLICATE.~
 #ENDPROG
 
 #MUDPROG
@@ -1602,8 +1452,7 @@ Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
 say DEITY, DEVOTE, FAVOR, PENALTIES and SUPPLICATE,
-say Also, GUILDING and TITLES.
-~
+say Also, GUILDING and TITLES.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1617,13 +1466,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Librarian~
-Long      The Librarian stands here, watching over his books.
-~
+Long      The Librarian stands here, watching over his books.~
 Desc      Known only as The Librarian, he has been a dedicated devotee of Meia
 since he discovered the joys of reading. It is said that he has been
 granted eternal life in exchange for his services as her personal
-librarian through the changing ages.
-~
+librarian through the changing ages.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1639,8 +1486,7 @@ Comlist   say There are many different exits you will have to pass through.
 say Having walked through the Abecedarium, you would have experienced
 say the usual open exits you will come to be familiar with.
 say However, you will also need to go through DOORS and PORTALS.
-say Also, you need to know about LOCKS and HIDDEN exits.
-~
+say Also, you need to know about LOCKS and HIDDEN exits.~
 #ENDPROG
 
 #MUDPROG
@@ -1650,8 +1496,7 @@ Comlist   say As the name suggests, some exits have doors.
 say Simply type OPEN <direction> or OPEN <door> to open them.
 say This will enable you to walk through the exit.
 say If you wish, you may also type CLOSE <direction> or CLOSE <door>.
-say This will close the door and block the exit.
-~
+say This will close the door and block the exit.~
 #ENDPROG
 
 #MUDPROG
@@ -1662,8 +1507,7 @@ say They may appear as shimmering rifts in the ether.
 say If you type EXITS, it is listed as being in the "somewhere" direction.
 say These exits are known as portals.
 say The ivy archway to the north of here is a good example.
-say To enter a portal, simply type ENTER or ENTER PORTAL.
-~
+say To enter a portal, simply type ENTER or ENTER PORTAL.~
 #ENDPROG
 
 #MUDPROG
@@ -1674,8 +1518,7 @@ say It's a good place for young adventurers to start their journey.
 say Also, the mobs in there are not very difficult.
 say As you level, you will need to seek increasingly tougher places.
 say I recommend typing AREAS. It will call up a list of areas for you.
-say This will enable you to ask other players about places more easily.
-~
+say This will enable you to ask other players about places more easily.~
 #ENDPROG
 
 #MUDPROG
@@ -1683,8 +1526,7 @@ Progtype  speech_prog~
 Arglist   AREAS~
 Comlist   say Typing AREAS will call up a list of the areas in the Lands.
 say If you look at the third column, you will see a recommended range.
-say It shows you what level at which it would be suitable to go there.
-~
+say It shows you what level at which it would be suitable to go there.~
 #ENDPROG
 
 #MUDPROG
@@ -1697,8 +1539,7 @@ say For example, to unlock a door, you might type UNLOCK DOOR.
 say Or if you are unlocking a chest, you would type UNLOCK CHEST.
 say If you have the skill "pick lock" or the spell "knock",
 say You may use them to undo the locks instead.
-say For more help on them, type HELP PICK LOCK or HELP KNOCK.
-~
+say For more help on them, type HELP PICK LOCK or HELP KNOCK.~
 #ENDPROG
 
 #MUDPROG
@@ -1706,8 +1547,7 @@ Progtype  speech_prog~
 Arglist   hidden~
 Comlist   say Some exits are hidden. As a result, you will either need to
 say use the skill "search" to find them, or use the BUMP technique.
-say For more help on the skill, type HELP SEARCH.
-~
+say For more help on the skill, type HELP SEARCH.~
 #ENDPROG
 
 #MUDPROG
@@ -1715,16 +1555,14 @@ Progtype  speech_prog~
 Arglist   bump~
 Comlist   say This is a technique in which you simply walk in a particular direction.
 say Although you may not see the exit, you can sometimes walk into a door
-say or into another room, revealing a hidden door.
-~
+say or into another room, revealing a hidden door.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
-say EXITTYPES, DOORS, PORTALS, LOCKS, HIDDEN, BUMP, CATACOMBS and AREAS.
-~
+say EXITTYPES, DOORS, PORTALS, LOCKS, HIDDEN, BUMP, CATACOMBS and AREAS.~
 #ENDPROG
 
 #MUDPROG
@@ -1733,8 +1571,7 @@ Arglist   100~
 Comlist   say Feel free to get any book to read.
 say Examine the cabinet to see the list of books.
 say You may also ask me about EXITTYPES in the world.
-say Or, if you wish, about the CATACOMBS.
-~
+say Or, if you wish, about the CATACOMBS.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1748,13 +1585,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Marissa~
-Long      Marissa the apothecarist is merrily brewing a herbal tea here.
-~
+Long      Marissa the apothecarist is merrily brewing a herbal tea here.~
 Desc      A cheerful half-elf, Marissa decided to open a shop in this village
 offering her home-made remedies and potions to young adventurers. She
 seldom talks about her past, preferring to dwell instead on the present.
-Perhaps she has a past that she rather not remember.
-~
+Perhaps she has a past that she rather not remember.~
 Nattacks  0.000000
 Stats1    0 250000 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1773,8 +1608,7 @@ say I have a variety of potions which you might find useful.
 say You may wish to type LIST to see what I have brewed.
 emote gives you a friendly smile.
 say If you need to recharge wands or staves, I could also help you.
-say Just type REPAIR <item>, and I'll restore the charges for you.
-~
+say Just type REPAIR <item>, and I'll restore the charges for you.~
 #ENDPROG
 
 #ENDMOBILE
@@ -1788,14 +1622,12 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     The kargynt~
-Long      The kargynt cackles chillingly and looks warily at you.
-~
+Long      The kargynt cackles chillingly and looks warily at you.~
 Desc      It seems like a particularly filthy specimen of a goblin crossbred with
 some other bestial creature. Although its movements and features are
 humanoid, it stares at you with bright golden eyes and its mouth is
 filled with jagged teeth jutting out, some looking more like wild boar
-tusks or snake fangs than anything else.
-~
+tusks or snake fangs than anything else.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    2 21 100 0 1 1 0
@@ -1807,29 +1639,25 @@ Immune    charm~
 #MUDPROG
 Progtype  rand_prog~
 Arglist   10~
-Comlist   emote giggles and slobbers...
-~
+Comlist   emote giggles and slobbers...~
 #ENDPROG
 
 #MUDPROG
 Progtype  rand_prog~
 Arglist   10~
-Comlist   emote taunts you about your inability to fight him...
-~
+Comlist   emote taunts you about your inability to fight him...~
 #ENDPROG
 
 #MUDPROG
 Progtype  rand_prog~
 Arglist   10~
-Comlist   say Another miserable young one, eh? I won't let you take my chains!
-~
+Comlist   say Another miserable young one, eh? I won't let you take my chains!~
 #ENDPROG
 
 #MUDPROG
 Progtype  rand_prog~
 Arglist   10~
-Comlist   emote growls threateningly, holding his chains protectively...
-~
+Comlist   emote growls threateningly, holding his chains protectively...~
 #ENDPROG
 
 #ENDMOBILE
@@ -1843,13 +1671,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Khirana~
-Long      Mistress Khirana sits upon the marble block and looks at you inquiringly.
-~
+Long      Mistress Khirana sits upon the marble block and looks at you inquiringly.~
 Desc      Her hair cascades in light coppery waves around her shoulders, framing an
 impish face and grass-green eyes somehow reminiscent of Master Kyr and
 Mistress Khirelle. She seems to be in her early twenties. Running her
-slender fingers through her hair, she flashes you a confident smile.
-~
+slender fingers through her hair, she flashes you a confident smile.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -1863,8 +1689,7 @@ Progtype  all_greet_prog~
 Arglist   100~
 Comlist   emote smiles fetchingly.
 say In your journeys, you will need to do some SHOPPING for supplies.
-say It is also very important to take note of the RENTING and CAMPING process.
-~
+say It is also very important to take note of the RENTING and CAMPING process.~
 #ENDPROG
 
 #MUDPROG
@@ -1873,16 +1698,14 @@ Arglist   shopping~
 Comlist   say Shops are set up all over the Lands.
 say As long as you have gold to spend, they will freely dispense service.
 say In a shop, you may BUY, SELL or REPAIR items, even RECHARGE wands.
-say Usually you can request a LIST of their services.
-~
+say Usually you can request a LIST of their services.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   buy~
 Comlist   say You may purchase items from a shop by typing BUY <item>.
-say This may only be done within the shop itself.
-~
+say This may only be done within the shop itself.~
 #ENDPROG
 
 #MUDPROG
@@ -1892,8 +1715,7 @@ Comlist   say Sometimes, you may interest a shopkeeper into buying something fro
 say Not all items will appeal to them.
 say They would normally buy something they are able to sell again.
 say For example, a jeweller might not buy a breastplate from you.
-say Instead, he may purchase a ring or crystal gem.
-~
+say Instead, he may purchase a ring or crystal gem.~
 #ENDPROG
 
 #MUDPROG
@@ -1905,8 +1727,7 @@ say To get something repaired, make sure you are not wearing it.
 say Then type REPAIR <object>.
 say This command will only work if you are in the shop.
 say You may also type REPAIR ALL.
-say This command will repair everything in your inventory.
-~
+say This command will repair everything in your inventory.~
 #ENDPROG
 
 #MUDPROG
@@ -1917,16 +1738,14 @@ say To recharge a wand, simply go to a shop which markets the service.
 say Then type REPAIR WAND.
 say This will bring the number of charges in the wand to maximum again.
 say Also, the spell RECHARGE may be used.
-say To find out more about the spell, type HELP RECHARGE.
-~
+say To find out more about the spell, type HELP RECHARGE.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   list~
 Comlist   say This allows you to see what a shop sells.
-say To use this command, simply stand within the shop and type LIST.
-~
+say To use this command, simply stand within the shop and type LIST.~
 #ENDPROG
 
 #MUDPROG
@@ -1938,8 +1757,7 @@ say If you do not rent, your character will be subject to autorent after
 say a certain period of time.
 say If you fail autorent, you may lose your items.
 say To rent, simply go to the receptionist of an inn and type RENT.
-say To find out more, type HELP RENT.
-~
+say To find out more, type HELP RENT.~
 #ENDPROG
 
 #MUDPROG
@@ -1953,8 +1771,7 @@ say Camping requires three items before it is possible.
 say You will need a bedroll, some camping gear and a piece of steel flint.
 say All these are available at cities throughout the Lands.
 say A STRONGBOX will be made available upon making camp.
-say You may camp in most open areas which are free of aggressive creatures.
-~
+say You may camp in most open areas which are free of aggressive creatures.~
 #ENDPROG
 
 #MUDPROG
@@ -1965,8 +1782,7 @@ say It will cause you to lose everything you are wearing and carrying.
 say The items will be dropped where you quit the game.
 say People will then be free to take them if they so wish.
 say However, if you truly wish to quit, then you will be able to do so.
-say It can be done by typing QUIT YES.
-~
+say It can be done by typing QUIT YES.~
 #ENDPROG
 
 #MUDPROG
@@ -1978,8 +1794,7 @@ say Strongboxes save past reboots.
 say Upon your return, you will be given a key to open your box.
 say This key will be consumed upon opening the box.
 say Be sure to remove your goods quickly once you log back on.
-say The box will degenerate with time as soon as you return to the game.
-~
+say The box will degenerate with time as soon as you return to the game.~
 #ENDPROG
 
 #MUDPROG
@@ -1988,8 +1803,7 @@ Arglist   repeat~
 Comlist   say You may ask me about any of these topics.
 say SHOPPING, RENTING, and CAMPING, QUIT.
 say Also, about how to BUY, SELL, REPAIR or RECHARGE and get a LIST.
-say You can also ask about the STRONGBOX.
-~
+say You can also ask about the STRONGBOX.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2003,13 +1817,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Perina~
-Long      A plump halfling girl bustles about here with a duster.
-~
+Long      A plump halfling girl bustles about here with a duster.~
 Desc      One of the many halflings populating the city, Perina belongs
 to the same family owning the famed Green Dragon Inn. With her sister,
 she negotiated a contract to open branches within the Abecedarium,
-provided they cater specifically to students and aid their learning.
-~
+provided they cater specifically to students and aid their learning.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2024,8 +1836,7 @@ Arglist   p entered the game.~
 Comlist   say Welcome back to the world! I hope you had a good rest in my inn.
 say Go on now and explore the areas around Gwyn al'Fer.
 say Do remember to return here to RENT when you need to leave.
-emote smiles warmly and waves.
-~
+emote smiles warmly and waves.~
 #ENDPROG
 
 #MUDPROG
@@ -2036,8 +1847,7 @@ say I will then tell you how much it would cost you to RENT here.
 say Objects with a rent value of less than 25000 will not be charged.
 smile
 say I'm sure I can offer you a comfortable room for you to rest in.
-say So if you are ready to leave the lands, you can type RENT.
-~
+say So if you are ready to leave the lands, you can type RENT.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2051,13 +1861,11 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A guardian of Meia~
-Long      A guardian of Meia stands stationary here waiting for you.
-~
+Long      A guardian of Meia stands stationary here waiting for you.~
 Desc      The guardian of Meia stands ready to test your mettle in the Abecedarium
 Challenge. Looking closer at the guardian's face, you are shocked to see
 your own face. Only by defeating the guardian will you be able to leave
-the island of Reonn and venture into the city and beyond.
-~
+the island of Reonn and venture into the city and beyond.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    10 16 0 20 2 4 0
@@ -2072,8 +1880,7 @@ Arglist   100~
 Comlist   mpecho A blinding flash of light fills the room.
 mpecho A voice speaks to you, "Well done! You have passed the test."
 mpqset $n 4
-mpecho Speak the words, "&RI am ready&D", and you will be allowed to leave.
-~
+mpecho Speak the words, "&RI am ready&D", and you will be allowed to leave.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2087,13 +1894,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Dalgren~
-Long      Dalgren the Human stands here awaiting pupils.
-~
+Long      Dalgren the Human stands here awaiting pupils.~
 Desc      A mane of raven curls falls loosely around his shoulders. Even in the
 shapeless robes of the Abecedarium, you can tell that he has the build
 of a warrior born. Striking green eyes assess you calmly even as you
-look at him.
-~
+look at him.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2109,8 +1914,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race($r) == human
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning HUMANS.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2119,15 +1923,13 @@ Arglist   humans~
 Comlist   say Well now, you're still young at the moment.
 say But as you gain experience you will learn skills natural to you.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He resides in the town on the coast of the Misty Sea.
-~
+Comlist   say He resides in the town on the coast of the Misty Sea.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2141,13 +1943,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Silcorne~
-Long      Silcorne the High Elf awaits his pupils here.
-~
+Long      Silcorne the High Elf awaits his pupils here.~
 Desc      With his fey, delicate features and ears sweeping upward into unmistakeably
 pointed tips, it is difficult not to recognise this person as a member of
 the elvish race. Moving with an uncanny grace natural to his long-lived
-race, Silcorne walks across the room and offers you a goblet of wine.
-~
+race, Silcorne walks across the room and offers you a goblet of wine.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    35 21 0 5000 10 10 1000
@@ -2163,8 +1963,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == high-elf
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning HIGH-ELVES.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2173,15 +1972,13 @@ Arglist   high-elves~
 Comlist   say You are still youthful and have much to learn.
 say As you gain in experience, you will learn skills natural to you.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He wanders the citadel of our forefathers.
-~
+Comlist   say He wanders the citadel of our forefathers.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2195,15 +1992,13 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Atheia~
-Long      Atheia the Pixie flits about here and awaits her pupils.
-~
+Long      Atheia the Pixie flits about here and awaits her pupils.~
 Desc      A member of one of the tiniest races in the Lands, Atheia stands at a
 mere three feet tall. Like her elven cousins, her ears are pointed, and
 her eyes shine with an otherworldly light. However, delicate veins in
 a woven tracery on an iridescent surface spreading from her back mark
 the unique gift of her race - flight. Her moth wings are a boon to her
-race, granting them the agility and speed they depend on to survive.
-~
+race, granting them the agility and speed they depend on to survive.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    35 21 0 5000 10 10 1000
@@ -2219,8 +2014,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == pixie
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning PIXIES.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2229,15 +2023,13 @@ Arglist   pixies~
 Comlist   emote laughs merrily.
 say You are still young. As you gain experience, you will gain more skills.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He is within a magical grove at the heart of the pixie kingdom.
-~
+Comlist   say He is within a magical grove at the heart of the pixie kingdom.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2251,14 +2043,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Hedrocel~
-Long      Hedrocel the Wild-Elf is seated upon a shrub, waiting for students.
-~
+Long      Hedrocel the Wild-Elf is seated upon a shrub, waiting for students.~
 Desc      The first thing you notice about this person is the intricate tattoos
 covering his arms. Done in an elegant weave of black, browns and greens,
 it is far more detailed and complicated that the designs usually found.
 These tattoos, along with the smooth grace and sharp pointed ears,
-identify him as a member of the elusive elven breed known as the wild-elves.
-~
+identify him as a member of the elusive elven breed known as the wild-elves.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2274,8 +2064,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == wild-elf
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning WILD-ELVES.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2284,15 +2073,13 @@ Arglist   wild-elves~
 Comlist   say Well now, you're still young at the moment.
 say But as you gain experience you will learn skills natural to you.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He resides upon the mystic tree rising above a marbled head.
-~
+Comlist   say He resides upon the mystic tree rising above a marbled head.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2306,13 +2093,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Krelfaere~
-Long      Krelfaere the Drow stands here, awaiting his students.
-~
+Long      Krelfaere the Drow stands here, awaiting his students.~
 Desc      A shimmering cascade of silvery platinum frames an ebon-skinned face.
 He is characteristic of his kind, with a slender build and pointed
 ears. However, his eyes are a peculiar shade of bright blue seldom
-found among the dark elven kin.
-~
+found among the dark elven kin.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    35 21 0 5000 10 10 1000
@@ -2328,8 +2113,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == drow
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning the DROW.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2338,15 +2122,13 @@ Arglist   drow~
 Comlist   say You are still very young.
 say However, as you gain experience points, you will learn more skills.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He wanders northward from Thingal's city, spying upon our deadliest foes.
-~
+Comlist   say He wanders northward from Thingal's city, spying upon our deadliest foes.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2360,13 +2142,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Khaz~
-Long      Khaz the Dwarf stands here awaiting his pupils.
-~
+Long      Khaz the Dwarf stands here awaiting his pupils.~
 Desc      Short and stocky, he seems a perfect embodiment of everything you have
 ever heard about these hardy folk. Wiry hair grows freely upon his
 grizzled face, and it seems that he is made of naught but tough leathery
-skin and battle-hardened muscles. 
-~
+skin and battle-hardened muscles.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2383,8 +2163,7 @@ say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == dwarf
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning DWARVES.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2394,15 +2173,13 @@ Comlist   emote chuckles.
 say You are still too young to learn your natural skills.
 say You will gain experience soon enough, though, never fear.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He walks the ancient fortress of our bloodkin.
-~
+Comlist   say He walks the ancient fortress of our bloodkin.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2416,13 +2193,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Andak~
-Long      Andak the Duergar stands here, ready to receive his students.
-~
+Long      Andak the Duergar stands here, ready to receive his students.~
 Desc      His diminished height and powerful build attest to years of hard living
 in caves and other subterranean places. Paler of skin than his dwarven
 cousins, the duergar is no less formidable in appearance. His eyes
-glitter with the chill red of flawless rubies as he looks at you.
-~
+glitter with the chill red of flawless rubies as he looks at you.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2438,8 +2213,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == duergar
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning the DUERGAR.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2448,15 +2222,13 @@ Arglist   duergar~
 Comlist   say You are yet too young to learn aught of the skills you own naturally.
 say However, as you gain experience points, you will learn more.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He walks among the subterranean shadows not far from the halfling home.
-~
+Comlist   say He walks among the subterranean shadows not far from the halfling home.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2470,13 +2242,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Epahn~
-Long      Epahn the Gnome sits by the table awaiting his pupils.
-~
+Long      Epahn the Gnome sits by the table awaiting his pupils.~
 Desc      Although he has the height of a dwarf, he is not as stocky as you would
 expect a dwarf to be. A pensive look crosses his face as he contemplates
 you, and as you look more closely, you realise that he is a member of
-the dwarven cousins' race - the gnomes.
-~
+the dwarven cousins' race - the gnomes.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    35 21 0 5000 10 10 1000
@@ -2492,8 +2262,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == gnome
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning the GNOMES.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2501,15 +2270,13 @@ Progtype  speech_prog~
 Arglist   gnomes~
 Comlist   say You are still young. As you gain experience, you will gain more skills.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He quests for pupils in our craggy homeland.
-~
+Comlist   say He quests for pupils in our craggy homeland.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2522,15 +2289,13 @@ Class     Warrior~
 Gender    Male~
 Position  standing~
 DefPos    standing~
-Short     Aeredian ~
-Long      Aeredian the Half-Elf is about to eat while waiting for his pupils.
-~
+Short     Aeredian~
+Long      Aeredian the Half-Elf is about to eat while waiting for his pupils.~
 Desc      Looking at him, you wonder at first how a pointy-eared elf could grow
 a beard, for a neatly trimmed growth covers the lower half of his face.
 Then you realise that he is a halfbreed, one of the results of a mixed
 parentage. More muscular than his elven kin, he still owns the sharp
-ears of a person with elf-blood in his veins.
-~
+ears of a person with elf-blood in his veins.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2546,8 +2311,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == half-elf
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning HALF-ELVES.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2556,15 +2320,13 @@ Arglist   half-elves~
 Comlist   say Well now, you're still young at the moment.
 say But as you gain experience you will learn skills natural to you.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He wanders in the city at the foot of Mount Olympus.
-~
+Comlist   say He wanders in the city at the foot of Mount Olympus.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2578,13 +2340,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     racemaster~
-Long      A racemaster
-~
+Long      A racemaster~
 Desc      The son of a peasant, Dwynian Brooshwinter dedicated himself to Meia
 as a lark, only to find that he was unable to change his devotions
 until he had rendered her sincere service. With time, however, he
-came to accept her honestly and has served her faithfully since.
-~
+came to accept her honestly and has served her faithfully since.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2604,13 +2364,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Alienne~
-Long      Alienne the Halfling paces about here, waiting for pupils.
-~
+Long      Alienne the Halfling paces about here, waiting for pupils.~
 Desc      Short and plump, Alienne is a member of the Halfling race which populates
 the city. Dark brown ringlets fall to her shoulders, and she
 examines you with bright almond eyes. A smile splits her freckled face,
-and she invites you to take a seat.
-~
+and she invites you to take a seat.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    35 21 0 5000 10 10 1000
@@ -2626,8 +2384,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == halfling
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning HALFLINGS.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2636,15 +2393,13 @@ Arglist   halflings~
 Comlist   say You are still very youthful at the moment.
 say However, as you gain experience points, you will learn more skills.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He resides in the halfling city, and may be found walking about there.
-~
+Comlist   say He resides in the halfling city, and may be found walking about there.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2658,13 +2413,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Niestin~
-Long      Niestin the Half-Orc stands here, awaiting his students.
-~
+Long      Niestin the Half-Orc stands here, awaiting his students.~
 Desc      Large and broad-shouldered, Niestin exhibits certain qualities which
 identify him quite easily as a halfbreed of the Orcish race. While he
 has a snub piglike snout and fanglike incisors, he seems otherwise
-completely human. Snorting loudly, he waves for you to take a seat.
-~
+completely human. Snorting loudly, he waves for you to take a seat.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    25 21 0 5000 10 10 1000
@@ -2680,8 +2433,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == half-orc
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning HALF-ORCS.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2690,15 +2442,13 @@ Arglist   half-orcs~
 Comlist   say You are yet too young to learn aught of the skills you own naturally.
 say However, as you gain experience points, you will learn more.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He wanders nearest to the city raised by our orcish kin.
-~
+Comlist   say He wanders nearest to the city raised by our orcish kin.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2712,14 +2462,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Fre~
-Long      Fre the Half-Troll sits here reading while he waits for pupils.
-~
+Long      Fre the Half-Troll sits here reading while he waits for pupils.~
 Desc      The monstrous creature before you appears to be a Troll at first, before
 you realise that it is smaller. With his bluish-green scaly skin, Fre
 could easily be mistaken for his Trollish kin instead of being recognised
 as the halfbreed he is. The pair of spectacles he wears seems incongruous
-with his rough appearance, but he simply smiles as he waves for you to sit.
-~
+with his rough appearance, but he simply smiles as he waves for you to sit.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2735,8 +2483,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == half-troll
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning HALF-TROLLS.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2745,15 +2492,13 @@ Arglist   half-trolls~
 Comlist   say Well now, you're still young at the moment.
 say But as you gain experience you will learn skills natural to you.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He wanders near our trollish kin within cavernous routes.
-~
+Comlist   say He wanders near our trollish kin within cavernous routes.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2767,13 +2512,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Geirjjir~
-Long      Geirjjir the Half-Ogre sits upon the stool, waiting for students.
-~
+Long      Geirjjir the Half-Ogre sits upon the stool, waiting for students.~
 Desc      The muscular giant standing before you seems almost disproportionate,
 with limbs seemingly too large for his torso. Standing in a stooping
 position, he waves a hairy orange-green arm at you, gesturing you
-to be seated.
-~
+to be seated.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2789,8 +2532,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == half-ogre
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning HALF-OGRES.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2799,15 +2541,13 @@ Arglist   half-ogres~
 Comlist   say You are still very youthful.
 say However, as you gain experience points, you will learn more skills.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He wanders between the forts of our orcish kin and our kindred foes.
-~
+Comlist   say He wanders between the forts of our orcish kin and our kindred foes.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2821,13 +2561,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Kisimbwachi~
-Long      Kisimbwachi the Insectoid stands here, awaiting new pupils.
-~
+Long      Kisimbwachi the Insectoid stands here, awaiting new pupils.~
 Desc      This person seems to be a humanoid insect. Covered in a reddish-brown
 chitin armour, he stares at you with multifaceted eyes, twitching long
 feelers about. Standing at about seven feet tall, he is more than a
-match for you.
-~
+match for you.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    35 21 0 5000 10 10 1000
@@ -2843,8 +2581,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == insectoid
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning INSECTOIDS.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2853,15 +2590,13 @@ Arglist   insectoids~
 Comlist   say You are yet too young to learn aught of the skills you own naturally.
 say However, as you gain experience points, you will learn more.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He walks within the city across the ocean from the Graecian Empire.
-~
+Comlist   say He walks within the city across the ocean from the Graecian Empire.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2875,14 +2610,12 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Clea~
-Long      Clea the Centaur stands here with a book in hand, awaiting pupils.
-~
+Long      Clea the Centaur stands here with a book in hand, awaiting pupils.~
 Desc      A perfectly formed female torso extends waist downward to an equine
 body. Her long golden hair falls loosely upon her chestnut flanks,
 and she looks at you with inquisitive eyes of gold-flecked sapphire.
 Folding her long, slender legs under her body, she invites you to
-sit by her.
-~
+sit by her.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -2898,8 +2631,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == centaur
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning the CENTAUR.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2908,15 +2640,13 @@ Arglist   centaur~
 Comlist   say You are still very youthful.
 say However, as you gain experience points, you will learn more skills.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He travels near the nest of the silver hawk.
-~
+Comlist   say He travels near the nest of the silver hawk.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2930,14 +2660,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Ochitaru~
-Long      Ochitaru the Gith stands here, waiting for his students.
-~
+Long      Ochitaru the Gith stands here, waiting for his students.~
 Desc      With sunken, haunted eyes and yellowed skin, he looks as if he has
 not seen the light of day for several years. Yet, he peers at you
 with a stare which seems to see right through you, into your heart.
 Gesturing with an arm which seems too long for a person his height,
-he waves for you to be seated.
-~
+he waves for you to be seated.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    35 21 0 5000 10 10 1000
@@ -2953,8 +2681,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == gith
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning the GITH.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2963,15 +2690,13 @@ Arglist   gith~
 Comlist   say Well now, you're still young at the moment.
 say But as you gain experience you will learn skills natural to you.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He roves within the ruins just past Fort Perioeci.
-~
+Comlist   say He roves within the ruins just past Fort Perioeci.~
 #ENDPROG
 
 #ENDMOBILE
@@ -2985,14 +2710,12 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Bandrek~
-Long      Bandrek the Minotaur paces over the deck, waiting for his students.
-~
+Long      Bandrek the Minotaur paces over the deck, waiting for his students.~
 Desc      With the powerful build of his human body and solemn dignity in his
 bovine eyes, there is no mistaking the bull-headed seafarer for any
 save a member of the proud race of Minotaurs. Wearing only a furry
 hide about his waist, he moves about with the sureness of a seasoned
-sailor.
-~
+sailor.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3008,8 +2731,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == minotaur
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning MINOTAURS.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3018,15 +2740,13 @@ Arglist   minotaurs~
 Comlist   say You are yet too young to learn aught of the skills you own naturally.
 say However, as you gain experience points, you will learn more.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He may be found within the mazy trap of Telamon's palace.
-~
+Comlist   say He may be found within the mazy trap of Telamon's palace.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3040,13 +2760,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Hrissthzak~
-Long      Hrissthzak the Iguanadon wades through the swamp, awaiting pupils.
-~
+Long      Hrissthzak the Iguanadon wades through the swamp, awaiting pupils.~
 Desc      Lashing his powerful tail on the ground, this person looks like a lizard,
 save for his upright posture. With six-inch claws protruding out of each
 fingertip and large pointed teeth glinting in the dim light, he is easily
-recognisable as a member of the unique race known as the Iguanadons.
-~
+recognisable as a member of the unique race known as the Iguanadons.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3062,8 +2780,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == iguanadon
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning IGUANADONS.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3072,15 +2789,13 @@ Arglist   iguanadons~
 Comlist   say You are still very youthful.
 say However, as you gain experience points, you will learn more skills.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He walks among displacer beasts and swarming insects.
-~
+Comlist   say He walks among displacer beasts and swarming insects.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3094,13 +2809,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Ceira~
-Long      Ceira, the Monk Guildmistress stands here.
-~
+Long      Ceira, the Monk Guildmistress stands here.~
 Desc      Having spent several years in solitude and meditation, she has only
 recently rejoined civilisation due to a holy summons from her deity
 to teach young monks the knowledge that she has gained during her
-hermitage.
-~
+hermitage.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3119,8 +2832,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3130,8 +2842,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3145,12 +2856,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Karnghaten~
-Long      Karnghaten, the Warrior Guildmaster stands here.
-~
+Long      Karnghaten, the Warrior Guildmaster stands here.~
 Desc      With his rippling muscles built up from long years of experience as
 a wandering warrior, Karnghaten finally forswore bloodshed in favour
-of the worship of Meia.
-~
+of the worship of Meia.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3169,8 +2878,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3180,8 +2888,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3195,12 +2902,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Isomis~
-Long      Isomis, the Rogue Guildmaster stands here
-~
+Long      Isomis, the Rogue Guildmaster stands here~
 Desc      Lithe and slender, Isomis is famed through the Lands as one of the
 most cunning rogues ever to roam the world. Now dedicated to Meia's
-service, he devotes his time to tutoring young rogues in their craft.
-~
+service, he devotes his time to tutoring young rogues in their craft.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3219,8 +2924,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3230,8 +2934,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3245,12 +2948,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Olianos~
-Long      Olianos, the Cleric Guildmaster stands here
-~
+Long      Olianos, the Cleric Guildmaster stands here~
 Desc      A middle-aged portly man, Olianos used to be a cleric of Mithgilran
 until he received a holy summons one day to serve his daughter.
-Now, he is dedicated to aiding young clerics in their learning.
-~
+Now, he is dedicated to aiding young clerics in their learning.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3269,8 +2970,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3280,8 +2980,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3295,13 +2994,11 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Ilara~
-Long      Ilara, the Bard Guildmistress stands here
-~
+Long      Ilara, the Bard Guildmistress stands here~
 Desc      A lady of humble origins, Ilara possesses one of the finest soprano
 voices to be found in the Lands. Having devoted herself to Meia at
 an early age, she now dedicates her life to teaching the bardic arts
-to those who would learn them.
-~
+to those who would learn them.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3320,8 +3017,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3331,8 +3027,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3346,12 +3041,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Miekkin~
-Long      Miekkin, the Ranger Guildmistress stands here
-~
+Long      Miekkin, the Ranger Guildmistress stands here~
 Desc      Her sun-kissed complexion is framed by flowing platinum blonde locks.
 Having followed Meia since her youth, she has decided to teach for
-a term at the Abecedarium.
-~
+a term at the Abecedarium.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3370,8 +3063,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3381,8 +3073,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3396,12 +3087,10 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Ursleia~
-Long      Ursleia, the Druid Guildmistress stands here
-~
+Long      Ursleia, the Druid Guildmistress stands here~
 Desc      A lady of advanced years, she appears amazingly spry for her age. Grey
 locks are neatly bunned up and held with a jewelled comb, and she is
-dressed simply in the robes of the Abecedarium tutors.
-~
+dressed simply in the robes of the Abecedarium tutors.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3420,8 +3109,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3431,8 +3119,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3446,13 +3133,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Sekbisde~
-Long      Sekbisde, the Mage Guildmaster stands here
-~
+Long      Sekbisde, the Mage Guildmaster stands here~
 Desc      A firm devotee of Meia, he was first given to her service by his parents
 when he was born. Later, he became one of the finest mages in the Lands
 under the tutelage of an ancient master. Inspired, he has dedicated his
-life to teaching magecraft to those who would follow the Way of Magic.
-~
+life to teaching magecraft to those who would follow the Way of Magic.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3471,8 +3156,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the spells listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3482,8 +3166,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3497,13 +3180,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Ziantos~
-Long      Ziantos, the Necromancer Guildmaster stands here
-~
+Long      Ziantos, the Necromancer Guildmaster stands here~
 Desc      A wizened man, Ziantos has been committed to his undead craft all
 his life. Only recently did he turn to Meia and repent his sins. To
 atone for the lives he wrongfully took, he now teaches his craft
-to the young wayfarers who would practice it.
-~
+to the young wayfarers who would practice it.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3522,8 +3203,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the spells listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3533,8 +3213,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3548,12 +3227,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Tharenn~
-Long      Tharenn, the Paladin Guildmaster stands here
-~
+Long      Tharenn, the Paladin Guildmaster stands here~
 Desc      Though in his twilight years, you cannot help but admire the aged
 paladin. He stands with a dignified posture, neither hunched nor sunken.
-His eyes shine with health and the strength of his faith in his deity.
-~
+His eyes shine with health and the strength of his faith in his deity.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3572,8 +3249,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3583,8 +3259,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3598,14 +3273,12 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Chiuris~
-Long      Chiuris, the Antipaladin Guildmistress stands here
-~
+Long      Chiuris, the Antipaladin Guildmistress stands here~
 Desc      Her once-black hair is streaked with silver, and even though her face
 is lined by the ravages of time, you can tell that once upon a time,
 she must have been very beautiful. Now, her wandering days are over,
 and she has dedicated herself to a quiet life teaching young pupils
-in the arts she knows best.
-~
+in the arts she knows best.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3624,8 +3297,7 @@ say When you gain a new skill, you must go to a Guildmaster to practice it.
 say Type HELP SLIST for help in a list of skills.
 say For now, however, I will teach you if you wish.
 say Please type slist 1 <present level>. You may PRACTICE the skills listed.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3635,8 +3307,7 @@ Comlist   say To practice a skill, simply type PRACTICE <skill name>.
 say You may practice only at your own guildmasters.
 say And even then, only if you have practice sessions left.
 say To see the skills you have, type PRACTICE.
-say For more information, type HELP PRACTICE.
-~
+say For more information, type HELP PRACTICE.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3650,15 +3321,13 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Slurigak~
-Long      Slurigak the Sahuagin swims about, waiting for his students.
-~
+Long      Slurigak the Sahuagin swims about, waiting for his students.~
 Desc      Slurigak is a typical member of his race, the Sahuagin.  His body is
 a bluish-green sleek humanoid form with clawed and webbed hands and
 feet, and a fin running down his back.  His head is faintly shark-
 shaped, with a large mouth with hundreds of needle-sharp teeth and
 large bulbous eyes.  The look he projects is that of barely restrained
-hunger.
-~
+hunger.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3674,8 +3343,7 @@ Comlist   say Welcome, young wayfarer. You may stay here as long as you wish.
 if race ($r) == sahuagin
 say I am one of your Racemasters.
 say If you wish, I may teach you things concerning SAHUAGIN.
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -3684,15 +3352,13 @@ Arglist   sahuagin~
 Comlist   say You are yet too young to learn aught of the skills you own naturally.
 say However, as you gain experience points, you will learn more.
 say You will need to find a teacher for your racial abilities, however.
-say I may give you a HINT to your tutor's location, if you wish.
-~
+say I may give you a HINT to your tutor's location, if you wish.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   hint~
-Comlist   say He may be found near the island of the iron birds.
-~
+Comlist   say He may be found near the island of the iron birds.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3706,13 +3372,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Sentinel of the Enclave~
-Long      The Sentinel of the Enclave stands here, guarding the entranceway.
-~
+Long      The Sentinel of the Enclave stands here, guarding the entranceway.~
 Desc      He stands here with solemn dignity, dressed in full warrior regalia, with
 a huge two-handed sword held before him. A long velvet cape cloaks him
 from shoulder to toe, but it emphasises, rather than hides, the huge
-muscular form within.
-~
+muscular form within.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3724,16 +3388,14 @@ Bodyparts head heart~
 #MUDPROG
 Progtype  act_prog~
 Arglist   p from above.~
-Comlist   say Halt! Who goes there, FRIEND or FOE?
-~
+Comlist   say Halt! Who goes there, FRIEND or FOE?~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   friend~
 Comlist   say You are welcome, young wayfarer. Find the Racemaster of your own race.
-say He will teach you some things only those of your kind should know.
-~
+say He will teach you some things only those of your kind should know.~
 #ENDPROG
 
 #MUDPROG
@@ -3741,8 +3403,7 @@ Progtype  speech_prog~
 Arglist   foe~
 Comlist   say Then get thee gone. We need none of thy like around here.
 emote pushes you unceremoniously out of the Enclave.
-mpforce $n u
-~
+mpforce $n u~
 #ENDPROG
 
 #ENDMOBILE
@@ -3756,13 +3417,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     The Sentinel of the Guildhall~
-Long      The Sentinel of the Guildhall stands here, guarding the entranceway.
-~
+Long      The Sentinel of the Guildhall stands here, guarding the entranceway.~
 Desc      He stands here with solemn dignity, dressed in full warrior regalia, with
 a huge two-handed sword held before him. A long velvet cape cloaks him
 from shoulder to toe, but it emphasises, rather than hides, the huge
-muscular form within.
-~
+muscular form within.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    30 21 0 5000 10 10 1000
@@ -3775,8 +3434,7 @@ Bodyparts head heart~
 Progtype  speech_prog~
 Arglist   friend~
 Comlist   say Then you are very welcome to the Guildhall.
-say Locate your guildmaster. He will help you to practice your skills.
-~
+say Locate your guildmaster. He will help you to practice your skills.~
 #ENDPROG
 
 #MUDPROG
@@ -3784,15 +3442,13 @@ Progtype  speech_prog~
 Arglist   foe~
 Comlist   say We have no need of your ilk around here!
 emote throws you unceremoniously out of the Guildhall.
-mpforce $n u
-~
+mpforce $n u~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p from above.~
-Comlist   say Halt! Who goes there, FRIEND or FOE?
-~
+Comlist   say Halt! Who goes there, FRIEND or FOE?~
 #ENDPROG
 
 #ENDMOBILE
@@ -3806,13 +3462,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Eidwydd~
-Long      The shopkeeper stands behind the counter, arranging his goods. 
-~
+Long      The shopkeeper stands behind the counter, arranging his goods.~
 Desc      Eidwydd the shopkeeper is a snowy haired man of about fifty years of age.
 His lined face attest to his journey of time, yet the twinkle in his
 icy blue eyes tell you that he will live for many more years in good
-health.
-~
+health.~
 Nattacks  0.000000
 Stats1    0 250000 0 0 150 100
 Stats2    30 21 0 0 0 0 0
@@ -3826,8 +3480,7 @@ ShopData   2 8 0 0 0 130 80 0 27
 Progtype  all_greet_prog~
 Arglist   100~
 Comlist   say Welcome to my Shoppe! Feel free to browse around my items.
-say I suggest typing LIST first.
-~
+say I suggest typing LIST first.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3841,8 +3494,7 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Zepharn~
-Long      Master Zepharn smiles cheerfully as you arrive.
-~
+Long      Master Zepharn smiles cheerfully as you arrive.~
 Nattacks  0.000000
 Stats1    0 0 0 0 2700 2700
 Stats2    50 21 0 0 0 0 0
@@ -3861,8 +3513,7 @@ mptrlook $n 2850
 endif
 say Welcome young one. I am Master Zepharn, ranger of the woods.
 say I am here to teach you about MOVEMENT and MOUNTS.
-say You may ask me about either of these subjects.
-~
+say You may ask me about either of these subjects.~
 #ENDPROG
 
 #MUDPROG
@@ -3874,8 +3525,7 @@ say southwest, up, and down. You will need to watch your movement
 say points though because when you run out, you will need to rest and wait
 say for them to regenerate. This is especially important to remember
 say when travelling on the OVERLAND. The use of MOUNTS will allow you to
-say move greater distances before needing to stop and rest.
-~
+say move greater distances before needing to stop and rest.~
 #ENDPROG
 
 #MUDPROG
@@ -3886,16 +3536,14 @@ say being horses. Mounts are especially useful when it comes to traveling
 say on the OVERLAND as they have more movement points. Mounts can be bought
 say from stables and pet shops in most of the major cities. To be able to
 say use a mount, you will need to have learned the skill 'mount'. For more
-say information on this skill, type 'HELP MOUNT'.
-~
+say information on this skill, type 'HELP MOUNT'.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
 Arglist   overland~
 Comlist   say For more information on this subject, seek out my sister ranger, Gaelin.
-say She stands at the gate of this village, guiding all who pass through.
-~
+say She stands at the gate of this village, guiding all who pass through.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3909,8 +3557,7 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Hevolas~
-Long      Master Hevolas rises from his rest as you approach.
-~
+Long      Master Hevolas rises from his rest as you approach.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    50 21 0 0 0 0 0
@@ -3923,8 +3570,7 @@ Bodyparts head arms legs heart brains guts hands feet fingers ear eye~
 Progtype  all_greet_prog~
 Arglist   100~
 Comlist   say Hail young one. I am Master Hevolas, ranger of the plains.
-say I am here to teach you how to SURVEY your surroundings while on the overland.
-~
+say I am here to teach you how to SURVEY your surroundings while on the overland.~
 #ENDPROG
 
 #MUDPROG
@@ -3934,8 +3580,7 @@ Comlist   say The survey command tells you about your surroundings. If any major
 say are within range, you will be told approximately how far away it is, and
 say in what general direction to travel to reach it. Landmarks can be anything
 say from old ruins to cities to major landforms in the world. Go ahead and type
-say survey now.
-~
+say survey now.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3949,8 +3594,7 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Master Beglan~
-Long      Master Beglan beams a smile as you arrive.
-~
+Long      Master Beglan beams a smile as you arrive.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    50 21 0 0 0 0 0
@@ -3967,8 +3611,7 @@ say overland is fairing well? I dropped my glasses in that forest at the end
 say of this trail here. Something else is in there and I'm not going back to
 say get them now. If you find them, feel free to keep them. They will grant
 say you a wizardeye spell for as long as you wear them. Wizardeye enlarges
-say your viewing radius while on the overland, making it easier to navigate.
-~
+say your viewing radius while on the overland, making it easier to navigate.~
 #ENDPROG
 
 #ENDMOBILE
@@ -3982,8 +3625,7 @@ Gender    Female~
 Position  standing~
 DefPos    standing~
 Short     Mistress Gaelin~
-Long      Mistress Gaelin stands here guarding the entrance to Gywn al'Fer.
-~
+Long      Mistress Gaelin stands here guarding the entrance to Gywn al'Fer.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    50 21 0 0 0 0 0
@@ -3997,8 +3639,7 @@ Progtype  all_greet_prog~
 Arglist   100~
 Comlist   say Welcome young one. I am Mistress Gaelin, ranger of the wilds.
 say I am here to teach you about the OVERLAND and RUNNING.
-say You may ask me about this subject.
-~
+say You may ask me about this subject.~
 #ENDPROG
 
 #MUDPROG
@@ -4012,8 +3653,7 @@ say some terrain types use the same symbols with different colors to
 say tell them apart. If you would like to experience the overland,
 say feel free to make use of the exit to the west. It will take you
 say to Reonn, a protected reserve in the Storm Sea set aside for the
-say benefit of newcomers to the world.
-~
+say benefit of newcomers to the world.~
 #ENDPROG
 
 #MUDPROG
@@ -4023,8 +3663,7 @@ Comlist   say ANSI will allow you to see the world in color. A lot of things loo
 say better when viewed in color, but especially the OVERLAND. Without
 say color, terrain symbols would look the same to you. If your connection
 say supports ANSI, you should turn it on to experience the world as it
-say was meant to be seen.
-~
+say was meant to be seen.~
 #ENDPROG
 
 #MUDPROG
@@ -4037,8 +3676,7 @@ say direction is any of the direction of movement possible and distance
 say is an integer value indicating the number of squares you want to
 say move on the OVERLAND. If distance is not given, then you will run
 say in the given direction till you run out of movement points (not a
-say wise thing to do really). It is possible to run while mounted.
-~
+say wise thing to do really). It is possible to run while mounted.~
 #ENDPROG
 
 #ENDMOBILE
@@ -4052,13 +3690,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Lundgren~
-Long      The stablemaster is busy grooming and feeding the horses.
-~
+Long      The stablemaster is busy grooming and feeding the horses.~
 Desc      Lundgren the stablemaster is a stocky man with bow legs. He is in his
 early forties and is of a hearty constitution. He likes to show off
 his toothy grin even though the missing tooth he has does make him
-rather comical to look at when he flashes his grin.
-~
+rather comical to look at when he flashes his grin.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    30 21 0 0 0 0 0
@@ -4073,8 +3709,7 @@ Arglist   100~
 Comlist   say Welcome! Would you like to acquire a fine pony or horse?
 say They would be most useful in travelling overland.
 say Type LIST to get the prices of the steeds available here.
-emote grins toothily.
-~
+emote grins toothily.~
 #ENDPROG
 
 #ENDMOBILE
@@ -4088,12 +3723,10 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A pony~
-Long      A shaggy haired pony stands here.
-~
+Long      A shaggy haired pony stands here.~
 Desc      The pony is a small sized mount suitable for shorter characters. It
 is a stockier version of a horse and has shaggy hair that gives it
-a rather cute appearance.
-~
+a rather cute appearance.~
 Nattacks  0.000000
 Stats1    0 0 0 0 350 100
 Stats2    5 20 70 30 1 6 0
@@ -4112,11 +3745,9 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A riding horse~
-Long      A riding horse grazes on some grass here.
-~
+Long      A riding horse grazes on some grass here.~
 Desc      One of the many horses sold at the Gwyn al'Fer stables. It appears
-strong enough for a good travelling distance.
-~
+strong enough for a good travelling distance.~
 Nattacks  0.000000
 Stats1    0 0 0 0 450 100
 Stats2    10 20 70 75 1 4 0
@@ -4135,13 +3766,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Rastur~
-Long      The smith is at the forge working on a new piece of armour.
-~
+Long      The smith is at the forge working on a new piece of armour.~
 Desc      Rastur is a stout dwarf with powerfully built arms that are well suited
 to the task of swinging his heavy mallet in forging metal into pieces
 of armour and weapons. He seems unaffected by the strong heat coming
-from the forge and hardly a perspiration can be seen on his brow.
-~
+from the forge and hardly a perspiration can be seen on his brow.~
 Nattacks  0.000000
 Stats1    0 -1 0 0 150 100
 Stats2    30 21 0 0 0 0 0
@@ -4163,8 +3792,7 @@ say Typing REPAIR ALL will repair all your equipped items that are
 say damaged but it will cost you 10% more.
 emote pauses for a while and eyeballs you before giving a huff.
 say If you want to recharge wands or staves, go look for Marissa.
-say Now what do you want?
-~
+say Now what do you want?~
 #ENDPROG
 
 #ENDMOBILE
@@ -4178,12 +3806,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     A statue of Meia~
-Long      An elegant statue of Meia stands watch over you.
-~
+Long      An elegant statue of Meia stands watch over you.~
 Desc      This is a white marble statue of Lady Meia, the Goddess of Knowledge and
 Learning. She sppears as a beautiful young maiden with eyes full of depth
-and intelligence. In her delicate hands is a large tome.
-~
+and intelligence. In her delicate hands is a large tome.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -4244,8 +3870,7 @@ mpecho You are drawn through a magical portal which opens before you.
 mpopenpassage 2926 7035 4
 mpforce $n up
 mpclosepassage 2926 4
-endif
-~
+endif~
 #ENDPROG
 
 #ENDMOBILE
@@ -4259,12 +3884,10 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Sentinel of Meia~
-Long      A sentinel of Meia stands guard here.
-~
+Long      A sentinel of Meia stands guard here.~
 Desc      This is a white marble statue of Lady Meia, the Goddess of Knowledge and
 Learning. She appears as a beautiful young maiden with eyes full of depth
-and intelligence. In her delicate hands is a large tome.
-~
+and intelligence. In her delicate hands is a large tome.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    105 21 0 0 0 0 0
@@ -4280,8 +3903,7 @@ Comlist   if level($n) > 10
 mea $n &YThe voice of Faeia Quenath whispers magically in your ears.&D
 mea $n &YFaeia Quenath says, "You may not enter into the inner confines."&D
 mptrlook $n 2850
-endif
-~
+endif~
 #ENDPROG
 
 #ENDMOBILE
@@ -4295,13 +3917,11 @@ Gender    Male~
 Position  standing~
 DefPos    standing~
 Short     Kedaoa~
-Long      Kedaoa, a grumpy gnome banker stares at you.
-~
+Long      Kedaoa, a grumpy gnome banker stares at you.~
 Desc      Kedaoa originally moved to Gwyn al`Fer when he became sick of the hustle
 and bustle of Mount Nevermore. As he glares grumpily around him, you
 realise that his only love is money, so maybe you should deposit some to
-make him happy.
-~
+make him happy.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    100 21 0 0 0 0 0
@@ -4321,8 +3941,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     Hungrily, a hollow voice~
-Long      Hvak1 Advancer is here (should always be in 2949)
-~
+Long      Hvak1 Advancer is here (should always be in 2949)~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    50 21 0 0 0 0 0
@@ -4342,8 +3961,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     A rasping voice~
-Long      Hvak2 Advancer is here (should always be in 2949)
-~
+Long      Hvak2 Advancer is here (should always be in 2949)~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    50 21 0 0 0 0 0
@@ -4363,8 +3981,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created last mob~
-Long      Some god abandoned a newly created last mob here.
-~
+Long      Some god abandoned a newly created last mob here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -4387,8 +4004,7 @@ ExDescKey    cabinet abecedarium~
 ExDesc       It is made in the elegant style of Elven woodcraft. Beautiful carvings
 of trees cover the surface, and a large owl stands within each door,
 seeming to guard the knowledge within.
-Type EXAMINE CABINET to look inside it.
-~
+Type EXAMINE CABINET to look inside it.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4406,8 +4022,7 @@ Stats     1 50 -2 9999 0 None None None
 ExDescKey    salted meat abecedarium~
 ExDesc       The meat is salted to preserve it, and seems quite tough. It has been
 dried for some time, and is useful to have in case you get hungry
-while travelling.
-~
+while travelling.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4424,8 +4039,7 @@ Stats     1 10 -2 9999 0 None None None
 #EXDESC
 ExDescKey    water cup abecedarium~
 ExDesc       This is a small cup of water. While it does not hold much, it
-can help to quench your thirst for a time.
-~
+can help to quench your thirst for a time.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4446,8 +4060,7 @@ ExDescKey    silver scroll~
 ExDesc       This is a regular scroll similar to others found throughout the Lands.
 Most scrolls are not labelled for the spells they hold. However, for
 Abecedarium purposes, the ribbon on this scroll is scribed "RECALL".
-To use this scroll, simply type RECITE SCROLL.
-~
+To use this scroll, simply type RECITE SCROLL.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4465,8 +4078,7 @@ Stats     1 20 -2 9999 0 None None None
 ExDescKey    tinder flint firewood~
 ExDesc       The firewood is neatly bundled together with a small length of rope. Dangling
 from the rope is a small tinder and flint with which you can light the
-firewood. There is also a small piece of paper with some instructions on it.
-~
+firewood. There is also a small piece of paper with some instructions on it.~
 #ENDEXDESC
 
 #EXDESC
@@ -4476,8 +4088,7 @@ ExDesc       To build a fire, follow the steps below:
 2) Say "strike flint" to strike the tinder with the small flint provided.
 3) Enjoy the warmth and light of your newly built fire.
  
--- The Blue Frog Shoppe
-~
+-- The Blue Frog Shoppe~
 #ENDEXDESC
 
 #MUDPROG
@@ -4488,8 +4099,7 @@ mpechoat 0.$n The firewood catches fire and soon, you have a fire cackling.
 mpechoat 0.$n The tinder and flint is consumed in building the fire.
 mpoload 11002
 mposet fire timer 15
-mppurge firewood-abecedarium
-~
+mppurge firewood-abecedarium~
 #ENDPROG
 
 #ENDOBJECT
@@ -4508,8 +4118,7 @@ Stats     20 100 -2 9999 0 None None None
 ExDescKey    raft abecedarium~
 ExDesc       Made from lightweight wood spliced together with sturdy hemp, the
 raft looks slightly battered but usable. A small bracket holds a
-paddle which can be used to move the raft about on water.
-~
+paddle which can be used to move the raft about on water.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4528,8 +4137,7 @@ ExDescKey    campgear gear abecedarium~
 ExDesc       This is a jumbled pile of camp gear, including a dented pot and ladle
 for making food. Equipment used to make a tent is also included. This
 will be needed if you are planning to camp outdoors. To use this, just
-have it in your inventory when you camp.
-~
+have it in your inventory when you camp.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4550,8 +4158,7 @@ ExDescKey    gold scroll~
 ExDesc       This is a regular scroll similar to others found throughout the Lands.
 Most scrolls are not labelled for the spells they hold. However, for
 Abecedarium purposes, the ribbon on this scroll is scribed "IDENTIFY".
-To use this scroll, simply type RECITE SCROLL.
-~
+To use this scroll, simply type RECITE SCROLL.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4642,8 +4249,7 @@ Stats     3 100 -2 9999 0 None None None
 ExDescKey    bedroll abecedarium~
 ExDesc       This is a downy bedroll, quilted with an expert hand. It will be
 needed if you are planning to camp outdoors. Simply have this in
-your inventory when you camp.
-~
+your inventory when you camp.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4662,8 +4268,7 @@ ExDescKey    torch abecedarium~
 ExDesc       This is a torch, and can be used to light your way in dark places.
 To use it, simply type HOLD TORCH. However, be warned that it may
 only burn for a certain amount of time, and will not light once
-fuel has run out.
-~
+fuel has run out.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4682,8 +4287,7 @@ ExDescKey    cloth bag abecedarium~
 ExDesc       This is a bag, in which you can put things and enable yourself to
 carry more than you otherwise could. To put anything in a bag, simply
 type PUT <object> <bag>. In the same fashion, to get something out of
-a bag, type GET <object> <bag>.
-~
+a bag, type GET <object> <bag>.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4712,8 +4316,7 @@ To read any of the sections listed below, type LOOK <section>.
 5. Aggro Summoning
 6. Grouping
 7. Player Courtesy
-8. Common Sense
-~
+8. Common Sense~
 #ENDEXDESC
 
 #EXDESC
@@ -4721,16 +4324,14 @@ ExDescKey    spam~
 ExDesc       Please, no spamming, we all hate it. If you don't get a response
 right away on a public channel, try again later on. This includes
 requests for equipment supplies and anything of that sort.
-For a clearer definition of spam, type 'help spam'.
-~
+For a clearer definition of spam, type 'help spam'.~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    multiplaying~
 ExDesc       No Multiplaying at all! Multiplaying is defined as having 2 or more
 characters on from the same site at once. This includes multiplaying
-for the purpose of transferring equipment!
-~
+for the purpose of transferring equipment!~
 #ENDEXDESC
 
 #EXDESC
@@ -4739,8 +4340,7 @@ ExDesc       If you find a bug, you are obligated to report it to either an
 online immortal, or to post it on the nearest available public board.
 Once you have done so, you may NOT exploit the bug for any reason.
 Anyone caught doing so will be punished accordingly.
-For more information on bugs, type 'help bug exploitation'. 
-~
+For more information on bugs, type 'help bug exploitation'.~
 #ENDEXDESC
 
 #EXDESC
@@ -4748,22 +4348,19 @@ ExDescKey    sharing characters~
 ExDesc       No players should be in the game using someone else's character.
 If you need help from another character, get that person to load it
 for you. Your passwords should also be kept strictly confidential,
-and not be revealed to allow someone else to access your character.
-~
+and not be revealed to allow someone else to access your character.~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    aggro summoning~
 ExDesc       No summoning of aggressive monsters into the city, or any of the
-newbie areas nearby, including the Zoo and the Academy.
-~
+newbie areas nearby, including the Zoo and the Academy.~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    grouping~
 ExDesc       This should only be done with characters within eight levels of your
-own. Type 'help group' for further information.
-~
+own. Type 'help group' for further information.~
 #ENDEXDESC
 
 #EXDESC
@@ -4775,15 +4372,13 @@ Concerning Harassment                    | harassment
 Concerning Usage of Swear Words          | swearing
 Concerning Equipment Pickup              | pickup
 Concerning Power Levelling               | powerlevelling
-Concerning Hoarding of Equipment         | hoarding&D
-~
+Concerning Hoarding of Equipment         | hoarding&D~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    common sense~
 ExDesc       Simple enough: if it seems wrong, don't do it. Ask first. You'll live
-longer :P
-~
+longer :P~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4819,8 +4414,7 @@ PRACTICE -    Will teach you about training spells, skills, and weapons.
 INFORMATION - Will cover ways to find certain types of information.
    
 To use these help files, type HELP <topic> from the topics listed in
-capital letters above.
-~
+capital letters above.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4841,8 +4435,7 @@ AffData intelligence 1 -1 -1 0
 ExDescKey    graduation collar abecedarium~
 ExDesc       Congratulations! You have successfully passed the combat test of the
 Abecedarium and have earned the right to wear this collar! Type
-WEAR COLLAR to use.
-~
+WEAR COLLAR to use.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4861,8 +4454,7 @@ Stats     5 0 -2 9999 0 None None None
 ExDescKey    plate armour abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4882,8 +4474,7 @@ AffData strength 1 -1 -1 0
 ExDescKey    armbands~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4893,7 +4484,7 @@ Vnum      2876
 Keywords  magic hat abecedarium~
 Type      armor~
 Short     A magic hat~
-Long      A pointed hat with a wide floppy brim lies here. ~
+Long      A pointed hat with a wide floppy brim lies here.~
 Flags     magic antirogue antiwarrior donated antibard antidruid antimonk antiranger antipaladin antiapal~
 WFlags    take head~
 Values    2 2 0 0 0 0 0 0 0 0 0
@@ -4903,8 +4494,7 @@ ExDescKey    magic hat abecedarium~
 ExDesc       Specially created for young spellcasters, the hat is of the traditional
 sorcerer's variety, with a tall conical shape and a wide brim. A tiny
 symbol of two crossed lightning bolts encircled by a laurel wreath is
-sewn into the underside of the brim.
-~
+sewn into the underside of the brim.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4924,15 +4514,14 @@ AffData save_spell -1 -1 -1 0
 ExDescKey    lantern wisdom light abecedarium~
 ExDesc       This is one of the various types of light sources available in the Lands.
 It comes in handy especially at night or in dark places. As you journey
-onward you will find better equipment, but this will serve you for now.
-~
+onward you will find better equipment, but this will serve you for now.~
 #ENDEXDESC
 
 #ENDOBJECT
 
 #OBJECT
 Vnum      2878
-Keywords  staff abecedarium ~
+Keywords  staff abecedarium~
 Type      weapon~
 Short     An Abecedarium staff~
 Long      A sturdy staff with the abecedarium symbol engraved on its tip lies here.~
@@ -4946,15 +4535,14 @@ AffData damroll 1 -1 -1 0
 ExDescKey    staff abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
 
 #OBJECT
 Vnum      2879
-Keywords  axe abecedarium ~
+Keywords  axe abecedarium~
 Type      weapon~
 Short     An Abecedarium axe~
 Long      A small axe with the abecedarium symbol engraved on its haft lies here.~
@@ -4967,16 +4555,14 @@ AffData damroll 1 -1 -1 0
 #EXDESC
 ExDescKey    sword~
 ExDesc       Made of decent quality, this sword should serve you well in your battles
-to come.
-~
+to come.~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    axe abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -4994,8 +4580,7 @@ Stats     1 100 -2 9999 0 None None None
 ExDescKey    calabash abecedarium~
 ExDesc       This is one of the many water containers to be found through the Lands.
 It allows you to carry water about with you and will be useful in dry
-places.
-~
+places.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5015,16 +4600,14 @@ AffData damroll 1 -1 -1 0
 #EXDESC
 ExDescKey    mace~
 ExDesc       Made of decent quality this weapon shall serve you well in the battles
-to come.
-~
+to come.~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    spear abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5045,8 +4628,7 @@ AffData damroll 1 -1 -1 0
 ExDescKey    gloves abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5066,8 +4648,7 @@ AffData armor -3 -1 -1 0
 ExDescKey    prize kargynt abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5086,8 +4667,7 @@ Stats     3 500 -2 9999 0 None None None
 ExDescKey    leather breastplate breast plate abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5106,8 +4686,7 @@ Stats     3 500 -2 9999 0 None None None
 ExDescKey    leather leggings abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5126,8 +4705,7 @@ Stats     3 500 -2 9999 0 None None None
 ExDescKey    leather sleeves abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5146,8 +4724,7 @@ Stats     3 500 -2 9999 0 None None None
 ExDescKey    leather helmet abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5166,8 +4743,7 @@ Stats     3 500 -2 9999 0 None None None
 ExDescKey    leather boots abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5186,8 +4762,7 @@ Stats     10 674 -2 9999 0 None None None
 ExDescKey    chainmail chain mail hauberk abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5206,8 +4781,7 @@ Stats     10 674 -2 9999 0 None None None
 ExDescKey    chainmail chain mail coif abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5226,8 +4800,7 @@ Stats     10 674 -2 9999 0 None None None
 ExDescKey    chainmail chain mail leggings abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5246,8 +4819,7 @@ Stats     10 674 -2 9999 0 None None None
 ExDescKey    chainmail chain mail sleeves abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5266,8 +4838,7 @@ Stats     6 449 -2 9999 0 None None None
 ExDescKey    wooden shield abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5286,8 +4857,7 @@ Stats     5 0 -2 9999 0 None None None
 ExDescKey    long sword longsword abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5306,8 +4876,7 @@ Stats     3 0 -2 9999 0 None None None
 ExDescKey    short sword shortsword abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5326,8 +4895,7 @@ Stats     5 0 -2 9999 0 None None None
 ExDescKey    mace abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5346,8 +4914,7 @@ Stats     3 0 -2 9999 0 None None None
 ExDescKey    quarterstaff staff abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5366,8 +4933,7 @@ Stats     5 0 -2 9999 0 None None None
 ExDescKey    sickle abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5388,8 +4954,7 @@ ExDescKey    wand abecedarium~
 ExDesc       This is one of the many wands available in the Lands. To use it,
 simply hold it and type ZAP <target>. Wands do not necessarily
 advertise the spells they hold, but this one is labeled in
-neat script, "Magic missile".
-~
+neat script, "Magic missile".~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5407,8 +4972,7 @@ Stats     1 0 -2 0 0 None None None
 ExDescKey    robe abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5435,8 +4999,7 @@ to you by Meia Quickquill. If you are ever lost, or have need to return
 quickly to the Abecedarium, simply type &YWEAR RETREAT&C and it will bring
 you to Faeia safely. &RMark that the ring will only work if you are standing
 and will not help you to escape from a fight!&C Also, once you are past
-level 5, the ring will be reclaimed after one final use.&D
-~
+level 5, the ring will be reclaimed after one final use.&D~
 #ENDEXDESC
 
 #MUDPROG
@@ -5455,8 +5018,7 @@ mea 0.$n The ring flares with a bright blue light which momentarily blinds you.
 mea 0.$n You find yourself back in the Abecedarium standing in front of Faeia.
 mptrlook 0.$n 2850
 endif
-endif
-~
+endif~
 #ENDPROG
 
 #ENDOBJECT
@@ -5473,22 +5035,19 @@ Stats     1 0 0 9999 0 None None None
 ExDescKey    gem~
 ExDesc       The gem is perfectly symmetrical and glows with an inner light. It is suspended
 in mid-air, held by magical forces. It can be pushed or pulled away from its
-position but cannot be removed from its place.
-~
+position but cannot be removed from its place.~
 #ENDEXDESC
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p pushes A gem.~
-Comlist   mpecho The gem glows brighter until its light fills the entire room!
-~
+Comlist   mpecho The gem glows brighter until its light fills the entire room!~
 #ENDPROG
 
 #MUDPROG
 Progtype  act_prog~
 Arglist   p pulls A gem.~
-Comlist   mpecho The gem glows brighter until its light fills the entire room!
-~
+Comlist   mpecho The gem glows brighter until its light fills the entire room!~
 #ENDPROG
 
 #ENDOBJECT
@@ -5508,8 +5067,7 @@ ExDescKey    sapphire glasses~
 ExDesc       A strange looking device with two pieces of glasses placed into a silver frame
 inset with sapphires. The frame has two thin gold wires sticking to the back
 and curving at the ends. Apparently, the device is to be worn over the eyes
-with the aid of the two wires sitting on the ears.
-~
+with the aid of the two wires sitting on the ears.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5540,8 +5098,7 @@ AffData damroll 1 -1 -1 0
 ExDescKey    long sword longsword abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5562,8 +5119,7 @@ AffData damroll 1 -1 -1 0
 ExDescKey    short sword shortsword abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5584,8 +5140,7 @@ AffData damroll 1 -1 -1 0
 ExDescKey    mace abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5606,8 +5161,7 @@ AffData damroll 1 -1 -1 0
 ExDescKey    quarterstaff staff abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5628,8 +5182,7 @@ AffData damroll 1 -1 -1 0
 ExDescKey    sickle abecedarium~
 ExDesc       This is one of the various pieces of weaponry available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium weapon will have to do.
-~
+Abecedarium weapon will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5699,8 +5252,7 @@ Once you have reached level 5, you can attempt the Abecedarium challenge
 where you will be rewarded with a weapon on successful completion and be
 transported into Bywater City where more adventures await in the lands. At
 level 10, you MUST attempt the challenge as you may no longer access the
-Abecedarium and the newbie areas.
-~
+Abecedarium and the newbie areas.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5719,8 +5271,7 @@ Stats     3 500 -2 9999 0 None None None
 ExDescKey    sandals abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
-Abecedarium armour will have to do.
-~
+Abecedarium armour will have to do.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -5750,8 +5301,7 @@ everything they may have to say. To talk to any mobile, just type
 &YSAY <KEYWORD>&D. Although these keywords are not always obvious, they
 will be highlighted throughout the Abecedarium in capital letters. If
 you want them to repeat anything they say, merely say the keyword again.
-Also, you can type &YSAY REPEAT&D for them to tell you the topics again.
-~
+Also, you can type &YSAY REPEAT&D for them to tell you the topics again.~
 #EXIT
 Direction north~
 ToRoom    2866
@@ -5791,8 +5341,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 #EXDESC
@@ -5803,8 +5352,7 @@ For example, [A]-[B] would represent 2 rooms, A and B.
 Room A would have an exit leading east to B
 And Room B would have an exit leading west to A.
 If two chambers are seen presented as follows,  [ ]  [ ]
-It means that they are not connected to each other.
-~
+It means that they are not connected to each other.~
 #ENDEXDESC
 
 #MUDPROG
@@ -5829,8 +5377,7 @@ mea $n A voice whispers, "You must wait your turn. Be patient."
 endif
 endif
 endif
-endif
-~
+endif~
 #ENDPROG
 
 Reset M 2850 1 2850 -1 -1 -1 100
@@ -5847,8 +5394,7 @@ Stats     0 0 0 0 100000
 Desc      You walk into a small chamber decorated with silken draperies hanging
 over the bare marble walls. On one wall, a map is displayed clearly,
 showing your precise position. A lady is seated in a plush armchair,
-upholstered in velvet, before you.
-~
+upholstered in velvet, before you.~
 #EXIT
 Direction east~
 ToRoom    2850
@@ -5877,8 +5423,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2851 1 2851 -1 -1 -1 100
@@ -5893,8 +5438,7 @@ Stats     0 0 0 0 100000
 Desc      Ornate tapestries adorn the walls of this chamber, and you notice a
 map displayed clearly on one wall, showing your present location. To
 one side, the tapestries have been drawn aside to reveal a slate board
-set into the marbled wall.
-~
+set into the marbled wall.~
 #EXIT
 Direction north~
 ToRoom    2854
@@ -5923,8 +5467,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2852 1 2852 -1 -1 -1 100
@@ -5932,15 +5475,14 @@ Reset M 2852 1 2852 -1 -1 -1 100
 
 #ROOM
 Vnum      2853
-Name      An Abecedarium Classroom ~
+Name      An Abecedarium Classroom~
 Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      The bare marble walls are draped with silken hangings, and a map is
 framed clearly on the southern wall. To the north, a stand has been
 set up to display a large golden plaque, engraved in flowing script.
-Beside the stand is a high wooden stool which is presently unoccupied.
-~
+Beside the stand is a high wooden stool which is presently unoccupied.~
 #EXIT
 Direction north~
 ToRoom    2858
@@ -5969,16 +5511,14 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 #EXDESC
 ExDescKey    plaque~
 ExDesc       In large letters, the words "Rules of Conduct"
 are engraved on it.
-For more information on the rules, type HELP RULES.
-~
+For more information on the rules, type HELP RULES.~
 #ENDEXDESC
 
 Reset M 2853 1 2853 -1 -1 -1 100
@@ -5993,8 +5533,7 @@ Stats     0 0 0 0 100000
 Desc      Walking into this room, you find that it is decorated with ornate
 tapestries. To one side, a map is displayed behind a glass panel.
 A large oak table sits in the middle of the room, with several
-papers arrayed upon it.
-~
+papers arrayed upon it.~
 #EXIT
 Direction north~
 ToRoom    2855
@@ -6023,8 +5562,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2854 1 2854 -1 -1 -1 100
@@ -6039,8 +5577,7 @@ Stats     0 0 0 0 100000
 Desc      The room is devoid of adornments, with only a large chair in the corner
 and a suit of gleaming armour displayed proudly within a crystal cabinet.
 On one side, you notice once more the map which marks your position as
-you walk through the Abecedarium.
-~
+you walk through the Abecedarium.~
 #EXIT
 Direction north~
 ToRoom    2859
@@ -6069,8 +5606,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2855 1 2855 -1 -1 -1 100
@@ -6087,8 +5623,7 @@ see at least one of each weapon type here, and many varieties of each.
 Framed on one side is a parchment map of the Abecedarium grounds, with
 an indicator to show your position. A small stairwell has been sunk in
 the corner of the room, leading off somewhere, while a padded mat has
-been laid on the ground here.
-~
+been laid on the ground here.~
 #EXIT
 Direction east~
 ToRoom    2861
@@ -6122,8 +5657,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2856 1 2856 -1 -1 -1 100
@@ -6138,8 +5672,7 @@ Stats     0 0 0 0 100000
 Desc      Elegant scrolls of calligraphy hang from the walls of this chamber. Among
 the brushstrokes, you notice one faded parchment inked clearly in straight
 lines, showing a map of where you are now. A padded mat has been placed
-on the ground here.
-~
+on the ground here.~
 #EXIT
 Direction east~
 ToRoom    2856
@@ -6168,8 +5701,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2857 1 2857 -1 -1 -1 100
@@ -6177,15 +5709,14 @@ Reset M 2857 1 2857 -1 -1 -1 100
 
 #ROOM
 Vnum      2858
-Name      An Abecedarium Classroom ~
+Name      An Abecedarium Classroom~
 Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      This chamber is conspicuously spartan, with only a display of crossed
 daggers in a crystal case to one side and a familiar map framed on the
 southern wall. All else is smooth, bare tiles of cool marble laid in
-a concentric pattern on the ground of the circular chamber.
-~
+a concentric pattern on the ground of the circular chamber.~
 #EXIT
 Direction north~
 ToRoom    2861
@@ -6214,8 +5745,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2858 1 2858 -1 -1 -1 100
@@ -6230,8 +5760,7 @@ Stats     0 0 0 0 100000
 Desc      Walking in, you discover a fire crackling warmly within an alcove in
 one wall, behind a steel grill. A carpet has been laid out just before
 it, with plump cushions scattered over the elegant weave. A map is
-displayed clearly on one of the walls, indicating your present position.
-~
+displayed clearly on one of the walls, indicating your present position.~
 #EXIT
 Direction east~
 ToRoom    2860
@@ -6260,8 +5789,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2859 1 2859 -1 -1 -1 100
@@ -6279,8 +5807,7 @@ map indicating your position is hung from a pillar. To the north and
 south, you see more of the Abecedarium. Westward, you see a reception
 area tucked in a small room. A jumble of items can be seen to the east,
 arrayed all over in a sales display. In the center of the room, a
-block of marble has been placed.
-~
+block of marble has been placed.~
 #EXIT
 Direction east~
 ToRoom    2857
@@ -6309,8 +5836,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2866 1 2860 -1 -1 -1 100
@@ -6318,7 +5844,7 @@ Reset M 2866 1 2860 -1 -1 -1 100
 
 #ROOM
 Vnum      2861
-Name      An Abecedarium Classroom ~
+Name      An Abecedarium Classroom~
 Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
@@ -6326,8 +5852,7 @@ Desc      Black velvet curtains are hung tastefully on the walls of this room,
 and a thick carpet has been laid upon the floor. In the middle, you
 see a circle of onyx stones set around a hole, which you realise is
 actually a stairwell leading downwards. The steps seem quite slippery.
-A map is pinned on the wall, showing your exact position.
-~
+A map is pinned on the wall, showing your exact position.~
 #EXIT
 Direction south~
 ToRoom    2858
@@ -6361,8 +5886,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2860 1 2861 -1 -1 -1 100
@@ -6377,8 +5901,7 @@ Stats     0 0 0 0 100000
 Desc      The chamber has a domed ceiling that twinkles with magical lights that
 create everchanging intricate patterns. White satin meets your eye in
 this peaceful feeling room. A raised dais has been set in the centre,
-and a figure is seated upon it. A pearlescent radiance fills the room.
-~
+and a figure is seated upon it. A pearlescent radiance fills the room.~
 #EXIT
 Direction west~
 ToRoom    2934
@@ -6389,15 +5912,14 @@ Reset M 2861 1 2862 -1 -1 -1 100
 
 #ROOM
 Vnum      2863
-Name      An Abecedarium Classroom ~
+Name      An Abecedarium Classroom~
 Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
 Desc      An eclectic collection of items clutter up this chamber. Yet, a space
 on one side has been cleared so you have a clear view of the map pinned
 to the wall there, and a large cushion rests atop a messy heap in the
-center of the room.
-~
+center of the room.~
 #EXIT
 Direction north~
 ToRoom    2853
@@ -6426,8 +5948,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2862 1 2863 -1 -1 -1 100
@@ -6443,8 +5964,7 @@ Desc      You walk into a chamber panelled in solemn oak. Upon the burnished
 panels, you see drawings of the various races of the world. Along the
 walls, a plush bench stretches from end to end, leaving plenty of
 space for anyone to sit. An ornate stairway leads downwards in the
-centre, with a sign beside it.
-~
+centre, with a sign beside it.~
 #EXIT
 Direction south~
 ToRoom    2934
@@ -6462,8 +5982,7 @@ ExDesc       &YTHE INTERRACIAL ENCLAVE&D
 Within the enclave, you will find the Racemasters who have been
 brought together under one roof by Meia. They will teach you your
 racial skills and guide you in finding their kind when you leave
-the safety of Reonn.
-~
+the safety of Reonn.~
 #ENDEXDESC
 
 #MUDPROG
@@ -6474,8 +5993,7 @@ mea $n A voice from nowhere speaks to you gently.
 mea $n "You are experienced enough and have no need of this place."
 mea $n "Take your leave and may Meia bless you."
 mpforce $n down
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -6490,8 +6008,7 @@ Desc      Beautiful birch carvings panel the walls of this room. The carvings
 are of the various classes who adventure in the world, uncovering its
 many mysteries. A glass stairway spirals downwards into the depths of
 an amethyst-ringed pit, and a sign stands beside the delicate railing.
-Magical globes of light hanging from the ceiling illuminate the hall.
-~
+Magical globes of light hanging from the ceiling illuminate the hall.~
 #EXIT
 Direction north~
 ToRoom    2934
@@ -6508,8 +6025,7 @@ ExDesc       &YTHE HALL OF GUILDS&D
 
 Within the hall, you will find the Guildmasters who have been
 brought together under one roof by Meia. They will teach you your
-class skills which will serve you in good stead in your adventures.
-~
+class skills which will serve you in good stead in your adventures.~
 #ENDEXDESC
 
 #ENDROOM
@@ -6524,8 +6040,7 @@ Desc      You come to a circular chamber, with an archway leading back south int
 the main foyer. Comfortable velvet cushions are scattered about on soft
 multicoloured carpets, creating an inviting and cozy environment for
 young adventurers to meet and trade stories and information. A map of the
-Abecedarium is loosely pinned on the wall next to the message board.
-~
+Abecedarium is loosely pinned on the wall next to the message board.~
 #EXIT
 Direction south~
 ToRoom    2850
@@ -6549,8 +6064,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset O 11008 1 2866 -1 -1 -1 100
@@ -6567,8 +6081,7 @@ to floral. It is a cosy shop, and a circle of chairs is arrayed about a
 fire blazing merrily in the hearth. Some kind of herbal tea is boiling
 in a kettle hanging over the fire, giving off a pleasant aroma. Shelves
 containing a variety of coloured potions line the walls. On one of the
-wall hangs a drawing of a yellow turtle.
-~
+wall hangs a drawing of a yellow turtle.~
 #EXIT
 Direction north~
 ToRoom    2933
@@ -6595,8 +6108,7 @@ has a grainy texture which sparkles with refracted light. A stairway
 leads upward, while three doors made of quartz stand before you. The
 north door is carved with the word "High Elf". To the west, you see
 the engraving "Human", while the southern door is scribed with "Pixie".
-To the east, the hallway stretches onward.
-~
+To the east, the hallway stretches onward.~
 #EXIT
 Direction north~
 ToRoom    2870
@@ -6634,8 +6146,7 @@ Stats     0 0 0 0 100000
 Desc      Stepping into the room, the first thing you notice is the welcoming
 warmth. Red-hot coals glow in a brazier on a small table to one side,
 and beside the table is a chair. In a corner, a bed has been neatly
-made, and a rug lies alongside.
-~
+made, and a rug lies alongside.~
 #EXIT
 Direction east~
 ToRoom    2868
@@ -6654,8 +6165,7 @@ Desc      The walls are covered in a layer of frosted crystal, and a great silve
 chandelier hangs from the center of the domed ceiling. The ground is
 covered under a fantastic weave of intricate shapes, and you notice a
 rich purple cloth spread over a rosewood table on one side. A crystal
-flask holding a burgundy liquid stands beside two goblets upon the cloth.
-~
+flask holding a burgundy liquid stands beside two goblets upon the cloth.~
 #EXIT
 Direction south~
 ToRoom    2868
@@ -6674,8 +6184,7 @@ Desc      At first, you think that you have been transported out of the Abecedar
 altogether. This chamber resembles the crown of an ancient oak, and you
 stand on a branch spreading out from the massive bole. Specks of gold
 swirl weightlessly in the air, and you can feel the raw magic surging
-through the tree.
-~
+through the tree.~
 #EXIT
 Direction north~
 ToRoom    2868
@@ -6693,8 +6202,7 @@ Stats     0 0 0 0 100000
 Desc      Following the shimmering red walls, you come to two emerald doors on
 either side of you. To the north, the word "Wild Elf" is carved neatly
 in clear letters, while the door to the south reads "Drow". The passage
-continues east and west.
-~
+continues east and west.~
 #EXIT
 Direction north~
 ToRoom    2873
@@ -6727,8 +6235,7 @@ Desc      Sweeping aside a leafy curtain which falls back over the doorway behin
 you, you step into a grassy clearing surrounded by ash trees. Stray
 beams of sunlight filter through the thick canopy over your head,
 speckling the ground in gold and green. An exquisite table seems to
-grow from the ground before you, with two shrubs for chairs. 
-~
+grow from the ground before you, with two shrubs for chairs.~
 #EXIT
 Direction south~
 ToRoom    2872
@@ -6748,8 +6255,7 @@ at them, you cannot help but admire them even as you are disgusted by the
 sheer horrors they depict. One captures the moment of a sacrifice to
 Zeslavin, the spider deity. Yet another shows a furious battle between
 the elfkin and a dwarf troop. Cringing inside, you tear your eyes away
-from the terrible beauty of the artwork.
-~
+from the terrible beauty of the artwork.~
 #EXIT
 Direction north~
 ToRoom    2872
@@ -6767,8 +6273,7 @@ Stats     0 0 0 0 100000
 Desc      At this point, the coralite passage brings you to twin emerald doors,
 set into the walls on both sides. The northern door is a little smaller
 than the one to the south, and the word "Gnome" is carved into its
-sparkling surface. The other door is inscribed "Half-Elf".
-~
+sparkling surface. The other door is inscribed "Half-Elf".~
 #EXIT
 Direction north~
 ToRoom    2876
@@ -6800,8 +6305,7 @@ Stats     0 0 0 0 100000
 Desc      This chamber has been cut out of the bedrock beneath the city.
 Various contraptions are scattered about the floor, some seemingly broken
 and others in a state of semi-completion. A small bed is tucked in one
-corner, and a cluttered granite table stands in the centre of the room.
-~
+corner, and a cluttered granite table stands in the centre of the room.~
 #EXIT
 Direction south~
 ToRoom    2875
@@ -6820,8 +6324,7 @@ Desc      As you enter, the first things to catch your eye are the many hunting
 trophies hung on the walls. In fact, you stand on a thick bearskin rug.
 On one side, a sizable teak closet stands against the wall, with a
 neatly made bed beside it. A table is placed nearby, and a meal has
-been laid out on it.
-~
+been laid out on it.~
 #EXIT
 Direction north~
 ToRoom    2875
@@ -6839,8 +6342,7 @@ Stats     0 0 0 0 100000
 Desc      The beautiful hallway continues eastward and westward. Here, you stand
 before two amethyst doors. Glimmering in the light of the passageway,
 the inscription on the northern door reads "Halfling". Another carving
-can be seen on the door to the south, which says "Half-Orc".
-~
+can be seen on the door to the south, which says "Half-Orc".~
 #EXIT
 Direction north~
 ToRoom    2879
@@ -6874,8 +6376,7 @@ five feet. All the furnishing is done on a proportionate scale, which
 means that most people would not fit on the tiny stools around the
 small table. A bed is tucked away in one corner, and you notice a
 stove built into an alcove in the wall, with a chimney pipe leading
-off somewhere above.
-~
+off somewhere above.~
 #EXIT
 Direction south~
 ToRoom    2878
@@ -6894,8 +6395,7 @@ Desc      A mess meets your eyes as you step into this room. Rumpled clothes are
 scattered around, and it seems as if no one has cleaned up for some
 time. A jumble of dirty wooden plates lie untouched on a badly stained
 table, and looking at the crumpled bedsheets nearby, you see scraps of
-past meals stuck to the grimy linen.
-~
+past meals stuck to the grimy linen.~
 #EXIT
 Direction north~
 ToRoom    2878
@@ -6914,8 +6414,7 @@ Desc      Here, you stand between two doors crafted of sapphire standing on each
 side. The door to the north has a carving which says "Half-Troll" while
 the southern door is inscribed with the words "Half-Ogre". Peering down
 the length of the hallway, you find that it stretches onward east and
-west.
-~
+west.~
 #EXIT
 Direction north~
 ToRoom    2882
@@ -6948,8 +6447,7 @@ Desc      Carved out of granite, this chamber seems rather inhospitable at first
 Slowly, you make out the great smooth slab which is used as a bed in
 one corner, and the simple table and chairs crafted from the speckled
 grey rock at one side. Beside the table stands a stone bookcase filled
-with all kinds of books.
-~
+with all kinds of books.~
 #EXIT
 Direction south~
 ToRoom    2881
@@ -6968,8 +6466,7 @@ Desc      A ragged furry skin is laid on the floor here as a doormat. Besides
 that, the room is sparsely furnished. Built of sandy-grey stone, it
 is large, rising overhead in a huge dome. A giant bed lies to one
 side, while a bone table occupies the remaining space on the other
-side of the room with a stone stool.
-~
+side of the room with a stone stool.~
 #EXIT
 Direction north~
 ToRoom    2881
@@ -6987,8 +6484,7 @@ Stats     0 0 0 0 100000
 Desc      The rough coralite is embedded with a pair of aquamarine doors at this
 point. In the dimly lighted hallway, you notice a word, "Insectoid"
 carved onto the surface of the northern door, while "Centaur" is scribed
-on the door to the south. Towards the east and west, the hallway continues.
-~
+on the door to the south. Towards the east and west, the hallway continues.~
 #EXIT
 Direction north~
 ToRoom    2885
@@ -7021,8 +6517,7 @@ Desc      As you enter the room, you notice that the air within is noticeably
 drier. It seems to have been built with sandstone walls, and fine
 sand covers the floor in a thick layer. In one corner, you see a
 nest of some sort made of dried mud. The rest of the chamber holds
-nothing of particular interest.
-~
+nothing of particular interest.~
 #EXIT
 Direction south~
 ToRoom    2884
@@ -7042,8 +6537,7 @@ from somewhere above to dance on rich green grass. Willow trees grow
 around you within the chamber, clustering thickly on a small mound
 at one corner. A small net woven of leaves and slender boughs forms
 a bookshelf which blends in almost perfectly with your surroundings
-if not for the bright colours of the books within.
-~
+if not for the bright colours of the books within.~
 #EXIT
 Direction north~
 ToRoom    2884
@@ -7064,8 +6558,7 @@ stand before you, each with a single word engraved in clear, flowing
 script. To the north, you read "Gith", while the southern door says
 "Minotaur", the eastern door bears the word "Iguanadon", and the
 northeast door is labeled "Sahuagin".  Standing in the center of the
-hallway here is a small raised dais with a portal on it.
-~
+hallway here is a small raised dais with a portal on it.~
 #EXIT
 Direction north~
 ToRoom    2888
@@ -7105,8 +6598,7 @@ feel unsteady beneath your feet. Looking around, you find yourself
 disorientated and getting dizzier by the moment. In fact, most races
 find it impossible to walk into a Gith abode and leave without feeling
 some trace of nausea. The mental energy in this room is very strong,
-and you find yourself struggling to keep from being overwhelmed.
-~
+and you find yourself struggling to keep from being overwhelmed.~
 #EXIT
 Direction south~
 ToRoom    2887
@@ -7125,8 +6617,7 @@ Desc      Stepping into the room, you find yourself aboard a ship of some kind,
 riding the waves on a gentle sea. Seeing the stone walls and ceiling
 of the chamber, however, arouses your curiosity and you peer over the
 railing. Apparently, you stand on a replica of a ship's deck which
-floats like a raft in a large pool of lapping water.
-~
+floats like a raft in a large pool of lapping water.~
 #EXIT
 Direction north~
 ToRoom    2887
@@ -7145,8 +6636,7 @@ Desc      A damp mist wreathes much of the chamber, and you find yourself steppi
 into shallow pools of water interspersed with hardy, twisted plants, much
 as if this were a swamp. Small clouds of mud puff through the water as
 you walk, obscuring your path entirely. A nest has been built of reeds
-and grasses on an island you glimpse nearby.
-~
+and grasses on an island you glimpse nearby.~
 #EXIT
 Direction west~
 ToRoom    2887
@@ -7164,8 +6654,7 @@ Stats     0 0 0 0 100000
 Desc      The glittering passage leads you to two exquisite doors crafted from
 flawlessly cut diamonds, set into low arches in the walls on both
 sides. An elegant carving on the arch to the north reads "Dwarf",
-whilst another on the southern arch says "Duergar".
-~
+whilst another on the southern arch says "Duergar".~
 #EXIT
 Direction north~
 ToRoom    2892
@@ -7198,8 +6687,7 @@ Desc      Glittering limestone stalactites cover the entire ceiling, poised abov
 you like serrated teeth. A small piece of glowing amber is affixed to
 the point of each, lighting the chamber. Near the walls, you see the
 stalagmite formations rising upward, but the rest of the room has been
-ground down so that you stand on a shimmering level floor.
-~
+ground down so that you stand on a shimmering level floor.~
 #EXIT
 Direction south~
 ToRoom    2891
@@ -7218,8 +6706,7 @@ Desc      This chamber is encrusted with obsidian shards, some large enough to
 form crude outcroppings along the walls. In fact, a particularly
 flawless boulder has been sheared in half to make a table which is
 placed in the centre of the room, surrounded by smaller chunks used
-as stools.
-~
+as stools.~
 #EXIT
 Direction north~
 ToRoom    2891
@@ -7237,8 +6724,7 @@ Stats     0 0 0 0 100000
 Desc      You stand in a hallway of grey stone, within the Hall of Guilds. Here,
 a group of guildmasters have been gathered at Meia's behest to lead
 young wayfarers on their first steps in their chosen profession. To
-the east, the hallway continues while a glass stairway leads up.
-~
+the east, the hallway continues while a glass stairway leads up.~
 #EXIT
 Direction east~
 ToRoom    2895
@@ -7261,8 +6747,7 @@ Stats     0 0 0 0 100000
 Desc      The hallway stretches to the east and west. To the north and south,
 you see two doors, each carved from huge blocks of pale greenish jade.
 Both doors have a single word carved on them, "Warrior" northward and 
-"Rogue" southward.
-~
+"Rogue" southward.~
 #EXIT
 Direction north~
 ToRoom    2896
@@ -7294,8 +6779,7 @@ Stats     0 0 0 0 100000
 Desc      You come to a small room decorated with assorted weaponry, and a simple
 straw mat laid on the ground. A suit of armour hangs from its rack on
 one side, and various books written about warfare are arrayed in a
-wooden bookcase beside the armour.
-~
+wooden bookcase beside the armour.~
 #EXIT
 Direction south~
 ToRoom    2895
@@ -7314,8 +6798,7 @@ Desc      A variety of daggers are displayed from hooked racks along the walls.
 To one side stands a small cupboard, and you glimpse a set of gleaming
 lockpicks within. A suit of solemn black leather is draped informally
 over the cupboard, and a neatly coiled rope attached to a grapnel has
-been placed on the leather.
-~
+been placed on the leather.~
 #EXIT
 Direction north~
 ToRoom    2895
@@ -7333,8 +6816,7 @@ Stats     0 0 0 0 100000
 Desc      The grey hallway continues eastward and westward. Two doors stand to
 the north and south of you, cut from sandstone slabs. Each door has
 a word cut into it, "Cleric" for the north and "Bard" for the south,
-in beautiful cursive lettering.
-~
+in beautiful cursive lettering.~
 #EXIT
 Direction north~
 ToRoom    2899
@@ -7367,8 +6849,7 @@ Desc      The first thing to catch your eye in this chamber is a clothes rack
 against the wall. A number of garments are hung there, all pristinely
 white. Altars to the various deities in the Lands are set in alcoves
 dug out of the walls, with Meia's taking the place of honour in the
-center.
-~
+center.~
 #EXIT
 Direction south~
 ToRoom    2898
@@ -7386,8 +6867,7 @@ Stats     0 0 0 0 100000
 Desc      Various instrument parts are scattered around the ground. To one side,
 you see a silver display case, where an engraved platinum lute is on
 display. Other instruments are also kept in clear cases beside the
-lute.
-~
+lute.~
 #EXIT
 Direction north~
 ToRoom    2898
@@ -7406,8 +6886,7 @@ Desc      You stand in the middle of a hallway built of grey stone, sanded down
 and polished to a smooth finish. A giant pearl seems to have been sliced
 apart for the creation of twin doors, gleaming softly in the dim light.
 To the north is inscribed "Ranger" on the door, while southward you see
-the word "Druid".
-~
+the word "Druid".~
 #EXIT
 Direction north~
 ToRoom    2902
@@ -7440,8 +6919,7 @@ Desc      Entering the chamber, you find that it is furnished simply with a sing
 sturdy table with two chairs beside it and a bed obscured by a tapestry
 curtain on one side. A half-open closet near the table reveals a suit
 of ragged clothes in forest green, as well as a longbow and a full quiver
-of green-fletched arrows stored within.
-~
+of green-fletched arrows stored within.~
 #EXIT
 Direction south~
 ToRoom    2901
@@ -7459,8 +6937,7 @@ Stats     0 0 0 0 100000
 Desc      Plants cover almost every surface in this room, climbing up the walls
 and twining above your head in a leafy canopy which obscured the grey
 walls. A bed of various flowers grows in the centre like a lush carpet,
-complimenting the thick grass. 
-~
+complimenting the thick grass.~
 #EXIT
 Direction north~
 ToRoom    2901
@@ -7479,8 +6956,7 @@ Desc      The grey stone used in the construction of the hallway is smooth and
 unmarked, suggesting that it is a new addition to the Abecedarium's
 grounds. Giant shards of jet have been cut and set into two doorways
 on each wall alongside the passage. The carved word on the northern
-door says "Mage", while the one on the southern door says "Necromancer".
-~
+door says "Mage", while the one on the southern door says "Necromancer".~
 #EXIT
 Direction north~
 ToRoom    2905
@@ -7512,8 +6988,7 @@ Stats     0 0 0 0 100000
 Desc      A variety of flasks and wands line the walls of the room from various
 hooks and display racks. In the corner of a room, a large cauldron
 bubbles softly over a firepit, scenting the room with a strange 
-fragrance which leaves you feeling tingly all over.
-~
+fragrance which leaves you feeling tingly all over.~
 #EXIT
 Direction south~
 ToRoom    2904
@@ -7532,8 +7007,7 @@ Desc      An ominous feeling seems to emanate from the very walls of this chambe
 Assorted flasks sit upon wooden shelves lining the room, and a large
 stone pot sits over a fireplace inset within an alcove. A cluttered
 table stands to one side, with a skull on it which seems to peer at
-you unblinkingly with malevolent eyes.
-~
+you unblinkingly with malevolent eyes.~
 #EXIT
 Direction north~
 ToRoom    2904
@@ -7552,8 +7026,7 @@ Desc      You stand at the end of the grey hallway. Large chunks of blackrock ha
 been sculpted and polished to form the three doors you see before you. To
 the north, the gleaming ebon has been scribed with "Paladin". Southward,
 a carving on the door states. "Antipaladin". Yet another carving upon the
-eastern door reads "Monk".
-~
+eastern door reads "Monk".~
 #EXIT
 Direction north~
 ToRoom    2908
@@ -7586,8 +7059,7 @@ Desc      As you step into the room, you catch sight of an impressive suit of
 armour burnished in white, with a flowing cape in the same spotless
 condition draped from golden shoulder-clasps. It stands beside an
 altar dedicated to Meia, and behind the suit, a great sword and shield
-made of flawless crystal is hung on the walls.
-~
+made of flawless crystal is hung on the walls.~
 #EXIT
 Direction south~
 ToRoom    2907
@@ -7607,8 +7079,7 @@ one side, you see a suit of armour in deepest black, with a velvet
 cloak cascading in soft folds from a silver neck clasp. Behind the
 armour, a great two-handed sword forged of glossy ebon adamantite
 hangs in its scabbard of etched mithril. An altar to Meia has been
-set up in an alcove on the opposite wall.
-~
+set up in an alcove on the opposite wall.~
 #EXIT
 Direction north~
 ToRoom    2907
@@ -7628,8 +7099,7 @@ is, in grey stone as it is there. Few items catch your interest in
 the spartan furnishing. A simple bed lies in one corner, with a 
 rosewood bookshelf beside it filled with various books concerning the
 clergy and theological concepts. In a small wall alcove, there is an
-altar dedicated to Meia Quickquill.
-~
+altar dedicated to Meia Quickquill.~
 #EXIT
 Direction west~
 ToRoom    2907
@@ -7647,8 +7117,7 @@ Stats     0 0 0 0 100000
 Desc      Descending the stairwell, you find yourself in a small chamber with
 bare marble walls. A dish of water, as well as a platter of food, sits
 untouched where they have been placed at the foot of the stairs.
-Looking about, you notice something moving at the far corner...
-~
+Looking about, you notice something moving at the far corner...~
 #EXIT
 Direction up~
 ToRoom    2856
@@ -7670,8 +7139,7 @@ and unknown world. White marble columns rise up to the high ceiling that
 is painted with a stunning montage of the deities of the lands. The room
 is tastefully done up in burnished cedar, giving a nice contrast to the
 cool white marble. Chairs are spread about around small tables. People
-are sitting about reading, but take no notice of your sudden appearance.
-~
+are sitting about reading, but take no notice of your sudden appearance.~
 #EXIT
 Direction north~
 ToRoom    2927
@@ -7694,8 +7162,7 @@ steps. Bumping roughly down, you try to recover your balance, but cannot
 get a grip on the smooth banisters. In a matter of moments, you hurtle
 downward awkwardly, slamming onto the ground at the bottom. Unfortunately,
 you seem to have landed badly. The last thing you know is the sensation
-of your neck snapping and the ugly sound of cracking bones.
-~
+of your neck snapping and the ugly sound of cracking bones.~
 #EXIT
 Direction up~
 ToRoom    2861
@@ -7709,8 +7176,7 @@ mpechoat 0.$n &C"This is what a DT will look like from the inside.&D
 mpechoat 0.$n &CBy the time you see this, it will be too late to escape.&D
 mpechoat 0.$n &CRemember to take hints from the other room descriptions.&D
 mpechoat 0.$n &CIn case you are worrying, not every place has DTs.&D
-mpechoat 0.$n There are none in Gywn al'Fer and the island of Reonn.&D
-~
+mpechoat 0.$n There are none in Gywn al'Fer and the island of Reonn.&D~
 #ENDPROG
 
 #ENDROOM
@@ -7726,8 +7192,7 @@ end of the main hall. Beside the table, you notice a corridor leading
 off somewhere, partly obscured by a beaded curtain. You surmise that
 that corridor must lead to the inn rooms. To the north, the main door
 leads out onto the village street. A book is laid open upon the table,
-and you can see words and numbers written in a small, but precise hand.
-~
+and you can see words and numbers written in a small, but precise hand.~
 #EXIT
 Direction north~
 ToRoom    2928
@@ -7737,8 +7202,7 @@ ToRoom    2928
 ExDescKey    book~
 ExDesc       It seems to be a book of accounts about the customers of the Inn and
 their particulars. Before you can read anything specific, however,
-Perina swiftly snatches up the book and inquires kindly after you.
-~
+Perina swiftly snatches up the book and inquires kindly after you.~
 #ENDEXDESC
 
 Reset M 2867 1 2914 -1 -1 -1 100
@@ -7753,8 +7217,7 @@ Stats     0 0 0 0 100000
 Desc      A wide variety of items are displayed on racks and shelves in here. You
 see several cabinets containing camping equipment, bookcases filled with
 scrolls and salted meat hung on hooks just behind the counter on one side.
-Jars of sweets stand on the counter, beside boxes of tidbits.
-~
+Jars of sweets stand on the counter, beside boxes of tidbits.~
 #EXIT
 Direction north~
 ToRoom    2929
@@ -7788,8 +7251,7 @@ while on the overland you will encounter random monsters, some of which
 may be aggressive. This will not happen on the island, it is protected
 by powerful magic to keep you safe on your journey. There will be two
 ranger guides on the island to assist you in your travels. There is also
-a valuable prize to be had while on the island - keep an eye out for it.
-~
+a valuable prize to be had while on the island - keep an eye out for it.~
 #EXIT
 Direction east~
 ToRoom    2930
@@ -7814,8 +7276,7 @@ Desc      This room is much larger than the previous rooms, and in its center
 is a magical globe which glows with an odd greenish light. Instead of
 carpeting this room sustains a miniature outdoor environment. The floor
 is covered in lush grasses and underbrush. As usual, the map on the
-wall indicates your position in the Abecedarium.
-~
+wall indicates your position in the Abecedarium.~
 #EXIT
 Direction east~
 ToRoom    2863
@@ -7844,8 +7305,7 @@ ExDesc       &CDrawn in glimmering silver on a black parchment, the map reads as
 B. Languages           G. Shopping and Renting          L. Rules of Conduct
 C. Channels            H. Self Defense                  M. Misc. Information
 D. Configuration       I. Combat                        N. Movement and Overland
-E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D
-~
+E. Personal Commands   J. Death and DTs                 O. Abecedarium Porch&D~
 #ENDEXDESC
 
 Reset M 2905 1 2917 -1 -1 -1 100
@@ -7861,8 +7321,7 @@ Desc      Congratulations newcomer! Hopefully your journey was a success.
 As you can see, the overland is vast. In your travels it would be
 advised to invest in alternative means of travelling. Horses and
 other things are available throughout the world. To return to the
-village, exit to the west.
-~
+village, exit to the west.~
 #EXIT
 Direction west~
 ToRoom    2930
@@ -7872,8 +7331,7 @@ ToRoom    2930
 Progtype  leave_prog~
 Arglist   100~
 Comlist   mea $n You step through an archway shimmering with magical energy.
-mea $n You find yourself transported to the village.
-~
+mea $n You find yourself transported to the village.~
 #ENDPROG
 
 #ENDROOM
@@ -7888,8 +7346,7 @@ Desc      A thick carpet of leaves and dried needles covers the ground in this
 odd forest. Birds and other animals can be heard scurrying about nearby,
 but none dare to come close enough to be touched. The only thing different
 about this patch of the forest is a large stump where one of the great
-pines once stood. It appears to be used as a chair for someone, or something.
-~
+pines once stood. It appears to be used as a chair for someone, or something.~
 #EXIT
 Direction east~
 ToRoom    2921
@@ -7911,8 +7368,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      A thick carpet of leaves and dried needles covers the ground in this
 odd forest. Birds and other animals can be heard scurrying about nearby,
-but none dare to come close enough to be touched.
-~
+but none dare to come close enough to be touched.~
 #EXIT
 Direction south~
 ToRoom    2923
@@ -7933,8 +7389,7 @@ Flags     ~
 Stats     0 0 0 0 100000
 Desc      A thick carpet of leaves and dried needles covers the ground in this
 odd forest. Birds and other animals can be heard scurrying about nearby,
-but none dare to come close enough to be touched.
-~
+but none dare to come close enough to be touched.~
 #EXIT
 Direction north~
 ToRoom    2920
@@ -7957,8 +7412,7 @@ Desc      The trail ends here at a small clearing in the thick forest. It looks
 as though it has been deliberately cleared out here for someone or
 something to make camp nearby. Birds and other animals can be heard
 scurrying about high up in the trees, but none dare to come close
-enough to be touched.
-~
+enough to be touched.~
 #EXIT
 Direction north~
 ToRoom    2921
@@ -7985,8 +7439,7 @@ Stats     0 0 0 0 100000
 Desc      The trail makes a large bend to the north into some sort of
 small clearing in the otherwise thick forest. The branches
 prevent movement in any other direction except for the way
-you came in.
-~
+you came in.~
 #EXIT
 Direction north~
 ToRoom    2923
@@ -8009,8 +7462,7 @@ Desc      The unbroken thickness of the forest is pierced by a narrow
 trail leading deep into the woods. It is barely wide enough
 for you to walk down, but appears to be regularly traveled
 by someone or something. The birds and other small animals
-that inhabit the woods scatter at your approach.
-~
+that inhabit the woods scatter at your approach.~
 #EXIT
 Direction east~
 ToRoom    50000
@@ -8035,8 +7487,7 @@ Desc      You are transported into a non-descript room with smooth marbled walls
 floor and ceiling. You can see your own reflection in the polished
 surfaces. Glowing motes of light illuminate the room with a pleasant
 bluish white light. The air here is cool and dry. There is no furniture
-or furnishings in this bare room.
-~
+or furnishings in this bare room.~
 #MUDPROG
 Progtype  entry_prog~
 Arglist   100~
@@ -8044,16 +7495,14 @@ Comlist   if mobinroom(2868) == 1
 mppurge guardian
 endif
 mpmload 2868
-mpecho A guardian of Meia materialises in front of you.
-~
+mpecho A guardian of Meia materialises in front of you.~
 #ENDPROG
 
 #MUDPROG
 Progtype  death_prog~
 Arglist   100~
 Comlist   mppurge guardian
-mpecho The guardian of Meia disappears in a flash of light.
-~
+mpecho The guardian of Meia disappears in a flash of light.~
 #ENDPROG
 
 Reset M 2913 1 2926 -1 -1 -1 100
@@ -8072,8 +7521,7 @@ basin of the fountain. Trees line the perimeter of the plaza offering
 shade from the sun. To the north stands a large white marble building with
 the sign, "&WThe Abecedarium&D", displayed prominently above the entrance.
 To the south is a stately looking building with white marble columns. A
-sign next to the entrance reads, "&WThe Abecedarium Library&D".
-~
+sign next to the entrance reads, "&WThe Abecedarium Library&D".~
 #EXIT
 Direction north~
 ToRoom    2850
@@ -8101,8 +7549,7 @@ Comlist   if level($n) > 10
 mea $n The voice of Faeia Quenath whispers magically in your ears.
 mea $n Faeia Quenath says, "You may not enter into the village."
 mptrlook $n 2850
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -8121,8 +7568,7 @@ give silver-armbands $n
 mpforce $n save
 endif
 mpechoat 0.$n &C"Don't forget to type SAVE frequently!"&D
-mpechoat 0.$n &YThe Librarian waves kindly and leaves south.&D
-~
+mpechoat 0.$n &YThe Librarian waves kindly and leaves south.&D~
 #ENDPROG
 
 Reset M 2914 1 2927 -1 -1 -1 100
@@ -8142,8 +7588,7 @@ of the street is dominated by the Abecedarium while to the south of
 the street is a cluster of smaller white marble buildings built in a
 block-like style. The buildings house shops and other services that are
 useful to the young adventurer. A sign on the building just south of
-here reads, "&RThe Red Dragon Inn&D".
-~
+here reads, "&RThe Red Dragon Inn&D".~
 #EXIT
 Direction east~
 ToRoom    2927
@@ -8175,8 +7620,7 @@ of the street is dominated by the Abecedarium while to the south of
 the street is a cluster of smaller white marble buildings built in a
 block-like style. The buildings house shops and other services that are
 useful to the young adventurer. A sign on the building just south of
-here reads, "&BThe Blue Frog Shoppe&D".
-~
+here reads, "&BThe Blue Frog Shoppe&D".~
 #EXIT
 Direction east~
 ToRoom    2928
@@ -8208,8 +7652,7 @@ magic. Its streets are clean and its buildings are all constructed of
 white marble in a block-like style. To the west of here is the great
 magical archway which leads from Gwyn al'Fer into the overland area of
 the island of Reonn.
-&BA signboard with the village map pinned on it is standing here.&D
-~
+&BA signboard with the village map pinned on it is standing here.&D~
 #EXIT
 Direction east~
 ToRoom    2929
@@ -8241,8 +7684,7 @@ A. The Abecedarium
 6. The Yellow Turtle Apothecary
 7. The Hall of Guilds
 8. The Interracial Enclave
-9. The Healing Chamber&D
-~
+9. The Healing Chamber&D~
 #ENDEXDESC
 
 Reset M 2908 1 2930 -1 -1 -1 100
@@ -8261,8 +7703,7 @@ of the street is dominated by the Abecedarium while to the south of
 the street is a cluster of smaller white marble buildings built in a
 block-like style. The buildings house shops and other services that are
 useful to the young adventurer. A sign on the building just south of
-here reads, "&GThe Gwyn al'Fer Stables&D".
-~
+here reads, "&GThe Gwyn al'Fer Stables&D".~
 #EXIT
 Direction east~
 ToRoom    2932
@@ -8293,8 +7734,7 @@ of the street is dominated by the Abecedarium while to the south of
 the street is a cluster of smaller white marble buildings built in a
 block-like style. The buildings house shops and other services that are
 useful to the young adventurer. A sign on the building just south of
-here reads, "&OThe Gwyn al'Fer Smithy&D".
-~
+here reads, "&OThe Gwyn al'Fer Smithy&D".~
 #EXIT
 Direction east~
 ToRoom    2933
@@ -8325,8 +7765,7 @@ of the street is dominated by the Abecedarium while to the south of
 the street is a cluster of smaller white marble buildings built in a
 block-like style. The buildings house shops and other services that are
 useful to the young adventurer. A sign on the building just south of
-here reads, "&YThe Yellow Turtle Apothecary&D".
-~
+here reads, "&YThe Yellow Turtle Apothecary&D".~
 #EXIT
 Direction north~
 ToRoom    2939
@@ -8362,8 +7801,7 @@ the three buildings frequently. A sign above the entrance to the
 building to the north reads, "&PThe Interracial Enclave&D", while a
 sign above the entrance to the almost identical building to the south
 reads, "&PThe Hall of Guilds&D". The domed building to the east has a
-sign that reads, "&PThe Healing Chamber&D".
-~
+sign that reads, "&PThe Healing Chamber&D".~
 #EXIT
 Direction north~
 ToRoom    2864
@@ -8396,8 +7834,7 @@ Desc      The neighing of horses and ponies fill the air of the stables. You see
 many stalls housing a wide variety of horses and ponies of different
 breeds, sizes and shades. There seems to be a horse or pony for every
 character of whatever size. Fresh stacks of hay are pushed into one
-corner while troughs containing drinking water are in another corner.
-~
+corner while troughs containing drinking water are in another corner.~
 #EXIT
 Direction north~
 ToRoom    2931
@@ -8412,8 +7849,7 @@ Name      The Gywn al'Fer Stable Stalls~
 Sector    indoors~
 Flags     indoors~
 Stats     0 0 0 0 100000
-Desc      This place is to store pets for the Gwyn al'Fer Stables.
-~
+Desc      This place is to store pets for the Gwyn al'Fer Stables.~
 Reset M 2910 1 2936 -1 -1 -1 100
 Reset M 2911 1 2936 -1 -1 -1 100
 #ENDROOM
@@ -8428,8 +7864,7 @@ Desc      This room is rather hot and stuffy as a large forge is belching out fi
 in the centre of the room. A marble chimney set above the forge channels
 smoke out of the smithy. Surprisingly, the white marble walls seem quite
 pristine despite the soot and smoke that must be produced in such a place.
-Perhaps some protective magic helps to keep the smithy looking so clean.
-~
+Perhaps some protective magic helps to keep the smithy looking so clean.~
 #EXIT
 Direction north~
 ToRoom    2932
@@ -8447,8 +7882,7 @@ Stats     0 0 0 0 100000
 Desc      This chamber is a large pool of water, rimmed with coral.  The entire
 chamber, in fact, is decorated with various types of coral, creating
 an eerily beautiful scene, made slightly murky by the water.  A small
-coral walkway extends out into the pool.
-~
+coral walkway extends out into the pool.~
 #EXIT
 Direction southwest~
 ToRoom    2887
@@ -8470,8 +7904,7 @@ small person could climb through. Obviously, the meager wealth of the bank
 is locked away, far from your reach.  The remainder of the room is taken
 up by accounting ledgers, and a small desk, with a massive feather pen
 sitting next to an ink jar. The sheer size of the feather astounds you, as
-you begin to wonder what manner of bird it came from.
-~
+you begin to wonder what manner of bird it came from.~
 #EXIT
 Direction south~
 ToRoom    2933
@@ -8492,8 +7925,7 @@ noted by the inhabitants herein.
  
 ** This room should *not* be used for any activities of any kind
 other than those of the two mobs residing here.  Do not ever move
-or purge either of these mobiles if the pre-auth system is used. **
-~
+or purge either of these mobiles if the pre-auth system is used. **~
 Reset M 2947 1 2949 -1 -1 -1 100
 Reset M 2948 1 2949 -1 -1 -1 100
 #ENDROOM

@@ -25,8 +25,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created first mob~
-Long      Some god abandoned a newly created first mob here.
-~
+Long      Some god abandoned a newly created first mob here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -44,8 +43,7 @@ Gender    Neuter~
 Position  standing~
 DefPos    standing~
 Short     a newly created spacermob~
-Long      Some god abandoned a newly created spacermob here.
-~
+Long      Some god abandoned a newly created spacermob here.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
 Stats2    1 21 0 0 0 0 0
@@ -83,8 +81,7 @@ a response, pull the rope again.
 The rope is on a 30 second timer, meaning you can pull it as often as you
 wish, but the Immortals will only be notified once every 30 seconds.  The
 Immortals are often busy and may not see you the first time around, so
-please be patient - one will be with you as quickly as possible.
-~
+please be patient - one will be with you as quickly as possible.~
 #ENDEXDESC
 
 #ENDOBJECT
@@ -118,8 +115,7 @@ From somewhere high overhead a deep booming voice shouts:
 "Welcome stranger! Examine the &wpaintings&c before you and choose 
 your new race by saying its name out loud. For example, if you wish to
 become a High Elf, you would type: &wsay high-elf&c to do so. You may get a
-brief overview of which classes are allowed by examining the &wscrolls&c here."&D
-~
+brief overview of which classes are allowed by examining the &wscrolls&c here."&D~
 #EXDESC
 ExDescKey    scroll scrolls~
 ExDesc       &cPlease look at &wscrolls1&c, &wscrolls2&c, &wscrolls3&c, or
@@ -128,8 +124,7 @@ ExDesc       &cPlease look at &wscrolls1&c, &wscrolls2&c, &wscrolls3&c, or
 &wScrolls1&c contains Human, Dwarf, High-Elf, Wild-Elf, and Half-Elf.
 &wScrolls2&c contains Halfling, Pixie, Half-Orc, Half-Troll, and Gith.
 &wScrolls3&c contains Minotaur, Duergar, Centaur, and Half-Ogre.
-&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.&D
-~
+&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.&D~
 #ENDEXDESC
 
 #EXDESC
@@ -148,8 +143,7 @@ Wild-Elf
 Warrior Ranger Cleric Druid Rogue Bard
 
 Half-Elf
-Warrior Mage Necromancer Cleric Rogue Bard 
-~
+Warrior Mage Necromancer Cleric Rogue Bard~
 #ENDEXDESC
 
 #EXDESC
@@ -167,8 +161,7 @@ Half-Troll
 Warrior Cleric
 
 Gith
-Warrior Mage Necromancer Cleric Rogue Antipaladin
-~
+Warrior Mage Necromancer Cleric Rogue Antipaladin~
 #ENDEXDESC
 
 #EXDESC
@@ -186,8 +179,7 @@ Drow
 Warrior Mage Necromancer Cleric Rogue
 
 Half-Ogre
-Warrior Cleric
-~
+Warrior Cleric~
 #ENDEXDESC
 
 #EXDESC
@@ -202,8 +194,7 @@ Insectoid
 Warrior Ranger Cleric Druid Monk
 
 Sahuagin
-Warrior Cleric Rogue Antipaladin Necromancer
-~
+Warrior Cleric Rogue Antipaladin Necromancer~
 #ENDEXDESC
 
 #EXDESC
@@ -215,8 +206,7 @@ Human, High-Elf, Wild-Elf, Half-Elf, Halfling, Pixie, Half-Orc,
 Half-Troll, Dwarf, Gith, Minotaur, Duergar, Centaur, Drow, Half-Ogre,
 Iguanadon, Gnome, Insectoid, and Sahuagin.
 
-To pick your race, say its name out loud and you will be transformed.
-~
+To pick your race, say its name out loud and you will be transformed.~
 #ENDEXDESC
 
 #MUDPROG
@@ -227,8 +217,7 @@ mpmset 0.$n race human
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 104
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -239,8 +228,7 @@ mpmset 0.$n race high-elf
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 103
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -251,8 +239,7 @@ mpmset 0.$n race wild-elf
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 108
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -263,8 +250,7 @@ mpmset 0.$n race half-elf
 mptrlook 0.$n 109
 mpat 0.$n mpapplyb 0.$n
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -275,8 +261,7 @@ mpmset 0.$n race halfling
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 110
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -287,8 +272,7 @@ mpmset 0.$n race pixie
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 111
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -299,8 +283,7 @@ mpmset 0.$n race half-orc
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 112
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -311,8 +294,7 @@ mpmset 0.$n race half-troll
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 113
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -323,8 +305,7 @@ mpmset 0.$n race dwarf
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 114
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -335,8 +316,7 @@ mpmset 0.$n race gith
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 115
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -347,8 +327,7 @@ mpmset 0.$n race minotaur
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 116
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -359,8 +338,7 @@ mpmset 0.$n race centaur
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 117
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -371,8 +349,7 @@ mpmset 0.$n race drow
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 118
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -383,8 +360,7 @@ mpmset 0.$n race half-ogre
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 119
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -395,8 +371,7 @@ mpmset 0.$n race iguanadon
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 122
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -407,8 +382,7 @@ mpmset 0.$n race gnome
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 123
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -419,8 +393,7 @@ mpmset 0.$n race duergar
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 124
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -431,8 +404,7 @@ mpmset 0.$n race insectoid
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 126
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -443,8 +415,7 @@ mpmset 0.$n race sahuagin
 mpat 0.$n mpapplyb 0.$n
 mptrlook 0.$n 125
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -470,8 +441,7 @@ your new race by saying its name out loud. For example, if you wish to
 become a High Elf, you would type: &wsay high-elf&c to do so.
 
 You may get a brief overview of which classes are allowed by examining the
-&wscrolls&c here."&D
-~
+&wscrolls&c here."&D~
 #EXDESC
 ExDescKey    scroll scrolls~
 ExDesc       &cPlease look at &wscrolls1&c, &wscrolls2&c, &wscrolls3&c, or
@@ -480,8 +450,7 @@ ExDesc       &cPlease look at &wscrolls1&c, &wscrolls2&c, &wscrolls3&c, or
 &wScrolls1&c contains Human, Dwarf, High-Elf, Wild-Elf, and Half-Elf.
 &wScrolls2&c contains Halfling, Pixie, Half-Orc, Half-Troll, and Gith.
 &wScrolls3&c contains Minotaur, Duergar, Centaur, and Half-Ogre.
-&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.&D
-~
+&wScrolls4&c contains Iguanadon, Gnome, Insectoid, and Sahuagin.&D~
 #ENDEXDESC
 
 #EXDESC
@@ -500,8 +469,7 @@ Wild-Elf
 Warrior Ranger Cleric Druid Rogue Bard
 
 Half-Elf
-Warrior Mage Necromancer Cleric Rogue Bard 
-~
+Warrior Mage Necromancer Cleric Rogue Bard~
 #ENDEXDESC
 
 #EXDESC
@@ -519,8 +487,7 @@ Half-Troll
 Warrior Cleric
 
 Gith
-Warrior Mage Necromancer Cleric Rogue
-~
+Warrior Mage Necromancer Cleric Rogue~
 #ENDEXDESC
 
 #EXDESC
@@ -538,8 +505,7 @@ Drow
 Warrior Mage Necromancer Cleric Rogue
 
 Half-Ogre
-Warrior Cleric
-~
+Warrior Cleric~
 #ENDEXDESC
 
 #EXDESC
@@ -554,8 +520,7 @@ Insectoid
 Warrior Ranger Cleric Druid Monk
 
 Sahuagin
-Warrior Cleric Rogue Antipaladin Necromancer
-~
+Warrior Cleric Rogue Antipaladin Necromancer~
 #ENDEXDESC
 
 #EXDESC
@@ -567,8 +532,7 @@ Human, High-Elf, Wild-Elf, Half-Elf, Halfling, Pixie, Half-Orc,
 Half-Troll, Dwarf, Gith, Minotaur, Duergar, Centaur, Drow, Half-Ogre,
 Iguanadon, Gnome, Insectoid, and Sahuagin.
 
-To pick your race, say its name out loud and you will be transformed.
-~
+To pick your race, say its name out loud and you will be transformed.~
 #ENDEXDESC
 
 #MUDPROG
@@ -578,8 +542,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race human
 mptrlook 0.$n 104
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -589,8 +552,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race high-elf
 mptrlook 0.$n 103
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -600,8 +562,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race wild-elf
 mptrlook 0.$n 108
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -611,8 +572,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race half-elf
 mptrlook 0.$n 109
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -622,8 +582,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race halfling
 mptrlook 0.$n 110
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -633,8 +592,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race pixie
 mptrlook 0.$n 111
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -644,8 +602,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race half-orc
 mptrlook 0.$n 112
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -655,8 +612,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race half-troll
 mptrlook 0.$n 113
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -666,8 +622,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race dwarf
 mptrlook 0.$n 114
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -677,8 +632,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race gith
 mptrlook 0.$n 115
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -688,8 +642,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race minotaur
 mptrlook 0.$n 116
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -699,8 +652,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race centaur
 mptrlook 0.$n 117
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -710,8 +662,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race drow
 mptrlook 0.$n 118
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -721,8 +672,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race half-ogre
 mptrlook 0.$n 119
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -732,8 +682,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race iguanadon
 mptrlook 0.$n 122
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -743,8 +692,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race gnome
 mptrlook 0.$n 123
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -754,8 +702,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race duergar
 mptrlook 0.$n 124
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -765,8 +712,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race insectoid
 mptrlook 0.$n 126
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -776,8 +722,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n race sahuagin
 mptrlook 0.$n 125
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -805,15 +750,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a high elf you may choose from the following list of classes for your
 character:
  
-Mage, Cleric, Rogue, Warrior, Necromancer, Druid, Ranger, and Bard.
-~
+Mage, Cleric, Rogue, Warrior, Necromancer, Druid, Ranger, and Bard.~
 #ENDEXDESC
 
 #MUDPROG
@@ -822,8 +765,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -833,8 +775,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class mage
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -844,8 +785,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -855,8 +795,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -866,8 +805,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -877,8 +815,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class necromancer
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -888,8 +825,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class druid
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -899,8 +835,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class ranger
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -910,8 +845,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class bard
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -939,16 +873,14 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a human you may choose from the following list of classes for your
 character:
  
 Mage, Cleric, Rogue, Warrior, Necromancer, Druid, Ranger, Monk,
-Antipaladin, Paladin, and Bard.
-~
+Antipaladin, Paladin, and Bard.~
 #ENDEXDESC
 
 #MUDPROG
@@ -957,8 +889,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -968,8 +899,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class mage
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -979,8 +909,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -990,8 +919,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1001,8 +929,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1012,8 +939,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class necromancer
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1023,8 +949,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class druid
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1034,8 +959,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class ranger
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1045,8 +969,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class monk
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1056,8 +979,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class antipaladin
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1067,8 +989,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class paladin
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1078,8 +999,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class bard
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1107,15 +1027,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a wild elf you may choose from the following list of classes for 
 your character:
  
-Cleric, Rogue, Warrior, Druid, Ranger, and Bard.
-~
+Cleric, Rogue, Warrior, Druid, Ranger, and Bard.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1124,8 +1042,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1135,8 +1052,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1146,8 +1062,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1157,8 +1072,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1168,8 +1082,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class druid
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1179,8 +1092,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class ranger
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1190,8 +1102,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class bard
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1219,15 +1130,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a half-elf you may choose from the following list of classes for 
 your character:
  
-Mage, Cleric, Rogue, Warrior, Necromancer, and Bard.
-~
+Mage, Cleric, Rogue, Warrior, Necromancer, and Bard.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1236,8 +1145,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1247,8 +1155,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class mage
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1258,8 +1165,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1269,8 +1175,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1280,8 +1185,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1291,8 +1195,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class necromancer
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1302,8 +1205,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class bard
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1331,15 +1233,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a halfling you may choose from the following list of classes for your
 character:
  
-Cleric, Rogue, Warrior, and Bard.
-~
+Cleric, Rogue, Warrior, and Bard.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1348,8 +1248,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1359,8 +1258,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1370,8 +1268,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1381,8 +1278,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1392,8 +1288,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class bard
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1421,15 +1316,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a pixie you may choose from the following list of classes for your
 character:
  
-Mage, Cleric, Rogue, Druid, and Ranger.
-~
+Mage, Cleric, Rogue, Druid, and Ranger.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1438,8 +1331,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1449,8 +1341,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class mage
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1460,8 +1351,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1471,8 +1361,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1482,8 +1371,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class druid
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1493,8 +1381,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class ranger
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1522,15 +1409,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a half-orc you may choose from the following list of classes for 
 your character:
  
-Cleric, Rogue, and Warrior.
-~
+Cleric, Rogue, and Warrior.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1539,8 +1424,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1550,8 +1434,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1561,8 +1444,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1572,8 +1454,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1601,15 +1482,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a half-troll you may choose from the following list of classes for 
 your character:
  
-Cleric, and Warrior.
-~
+Cleric, and Warrior.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1618,8 +1497,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1629,8 +1507,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1640,8 +1517,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1669,15 +1545,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a dwarf you may choose from the following list of classes for your
 character:
  
-Cleric, Rogue, and Warrior.
-~
+Cleric, Rogue, and Warrior.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1686,8 +1560,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1697,8 +1570,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1708,8 +1580,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1719,8 +1590,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1748,15 +1618,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a gith you may choose from the following list of classes for your
 character:
  
-Mage, Cleric, Rogue, Warrior, and Necromancer.
-~
+Mage, Cleric, Rogue, Warrior, and Necromancer.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1765,8 +1633,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1776,8 +1643,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class mage
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1787,8 +1653,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class antipaladin
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1798,8 +1663,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1809,8 +1673,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1820,8 +1683,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1831,8 +1693,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class necromancer
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1860,15 +1721,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a minotaur you may choose from the following list of classes for 
 your character:
  
-Cleric, and Warrior.
-~
+Cleric, and Warrior.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1877,8 +1736,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1888,8 +1746,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1899,8 +1756,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -1928,15 +1784,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a centaur you may choose from the following list of classes for your
 character:
  
-Cleric, Warrior, Druid, and Ranger.
-~
+Cleric, Warrior, Druid, and Ranger.~
 #ENDEXDESC
 
 #MUDPROG
@@ -1945,8 +1799,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1956,8 +1809,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1967,8 +1819,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1978,8 +1829,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class druid
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -1989,8 +1839,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class ranger
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2018,15 +1867,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a drow you may choose from the following list of classes for your
 character:
  
-Mage, Cleric, Rogue, Warrior, and Necromancer.
-~
+Mage, Cleric, Rogue, Warrior, and Necromancer.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2035,8 +1882,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2046,8 +1892,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class mage
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2057,8 +1902,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2068,8 +1912,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2079,8 +1922,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2090,8 +1932,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class necromancer
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2119,15 +1960,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a half-ogre you may choose from the following list of classes for 
 your character:
  
-Cleric, and Warrior.
-~
+Cleric, and Warrior.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2136,8 +1975,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2147,8 +1985,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2158,8 +1995,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2184,15 +2020,13 @@ simply type &wsay reroll&c and a new set will be rolled for you, with
 the option to accept or continue rerolling. If you are happy with your
 stats, type &wsay accept&c and you will be transported into the world."
 
-With that, the voice is silent.&D
-~
+With that, the voice is silent.&D~
 #MUDPROG
 Progtype  speech_prog~
 Arglist   p reroll~
 Comlist   if level($n) == 1
 mpstatreroll 0.$n
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2202,8 +2036,7 @@ Comlist   if level($n) == 1
 mpraceset 0.$n
 mptrlook 0.$n 121
 mpat 121 mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2222,8 +2055,7 @@ Only time will tell. Step out into your new world brave soul.......
 
 (This is your chance to review the character you have rolled. If you are
 not satisfied with what you have, simply type &Wsay restart&D and you
-will be transported back to the race room to start again.)
-~
+will be transported back to the race room to start again.)~
 #EXIT
 Direction up~
 ToRoom    2850
@@ -2239,8 +2071,7 @@ mpat 0.$n mpforce 0.$n bounce
 mpat 0.$n mpforce 0.$n remove all
 mpat 0.$n mpforce 0.$n drop all
 mpat 0.$n mppurge
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2268,15 +2099,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As an iguanadon you may choose from the following list of classes for 
 your character:
  
-Cleric, Rogue, Warrior, and Ranger.
-~
+Cleric, Rogue, Warrior, and Ranger.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2285,8 +2114,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2296,8 +2124,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2307,8 +2134,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2318,8 +2144,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2329,8 +2154,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class ranger
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2358,15 +2182,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a gnome you may choose from the following list of classes for your
 character:
  
-Mage, Cleric, Rogue, and Warrior.
-~
+Mage, Cleric, Rogue, and Warrior.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2375,8 +2197,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2386,8 +2207,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class mage
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2397,8 +2217,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2408,8 +2227,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2419,8 +2237,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2448,15 +2265,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a duergar you may choose from the following list of classes for 
 your character:
  
-Cleric, Rogue, and Warrior.
-~
+Cleric, Rogue, and Warrior.~
 #ENDEXDESC
 
 #MUDPROG
@@ -2465,8 +2280,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2476,8 +2290,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2487,8 +2300,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2498,8 +2310,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2527,15 +2338,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As a sahuagin you may choose from the following list of classes for 
 your character:
 
-Cleric, Rogue, Warrior, Necromancer, Antipaladin
-~
+Cleric, Rogue, Warrior, Necromancer, Antipaladin~
 #ENDEXDESC
 
 #MUDPROG
@@ -2544,8 +2353,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2555,8 +2363,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2566,8 +2373,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2577,8 +2383,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class necromancer
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2588,8 +2393,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class antipaladin
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2599,8 +2403,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
@@ -2628,15 +2431,13 @@ Indeed, upon the wall adjacent to the mirror is a small pouch tacked
 to a board. Inside is a &wlist&c of what you can choose to become.
 
 Should you decide you wish to choose a different race, simply type
-&wsay go back&c and you will be able to start again.&D
-~
+&wsay go back&c and you will be able to start again.&D~
 #EXDESC
 ExDescKey    list~
 ExDesc       As an insectoid you may choose from the following list of classes for 
 your character:
  
-Cleric, Warrior, Ranger, Druid, Monk
-~
+Cleric, Warrior, Ranger, Druid, Monk~
 #ENDEXDESC
 
 #MUDPROG
@@ -2645,8 +2446,7 @@ Arglist   p go back~
 Comlist   if level($n) == 1
 mptrlook 0.$n 102
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2656,8 +2456,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class cleric
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2667,8 +2466,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class rogue
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2678,8 +2476,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class warrior
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2689,8 +2486,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class druid
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #MUDPROG
@@ -2700,8 +2496,7 @@ Comlist   if level($n) == 1
 mpmset 0.$n class monk
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
-endif
-~
+endif~
 #ENDPROG
 
 #ENDROOM
