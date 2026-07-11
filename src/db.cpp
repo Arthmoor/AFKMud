@@ -322,29 +322,6 @@ bool is_valid_filename( char_data * ch, std::string_view direct, std::string_vie
 /*
  * Read a letter from a file.
  */
-char fread_letter( FILE* fp )
-{
-   int c;
-
-   while( ( c = std::getc( fp ) ) != EOF )
-   {
-      if( !std::isspace( static_cast<unsigned char>( c ) ) )
-      {
-         return static_cast<char>( c );
-      }
-   }
-
-   bug( "{}: EOF encountered on read.", __func__ );
-
-   if( fBootDb )
-   {
-      shutdown_mud( "Corrupt file somewhere." );
-      std::exit( EXIT_FAILURE );
-   }
-
-   return '\0';
-}
-
 char fread_letter( std::ifstream & stream )
 {
    char c;
@@ -366,50 +343,6 @@ char fread_letter( std::ifstream & stream )
    }
 
    return '\0';
-}
-
-static std::string internal_fread_flagstring( FILE* fp )
-{
-   int c;
-
-   while( ( c = std::getc( fp ) ) != EOF && std::isspace( static_cast<unsigned char>( c ) ) );
-
-   if( c == EOF )
-   {
-      bug( "{}: EOF encountered on read.", __func__ );
-      if( fBootDb )
-      {
-         shutdown_mud( "Corrupt file somewhere." );
-         std::exit( EXIT_FAILURE );
-      }
-      return "";
-   }
-
-   if( c == '~' )
-      return "";
-
-   std::string result;
-   result.reserve( 256 );
-   result.push_back( static_cast<char>( c ) );
-
-   while( ( c = std::getc( fp ) ) != EOF )
-   {
-      if( c == '~' )
-         return result;
-
-      if( c == '\n' )
-      {
-         result.push_back( '\n' );
-         result.push_back( '\r' );
-      }
-      else if( c != '\r' )
-      {
-         result.push_back( static_cast<char>( c ) );
-      }
-   }
-
-   bug( "{}: EOF encountered before ~", __func__ );
-   return result;
 }
 
 static std::string internal_fread_flagstring( std::ifstream & stream )
@@ -458,112 +391,20 @@ static std::string internal_fread_flagstring( std::ifstream & stream )
    return result;
 }
 
-/*
- * Read a string of text based flags from file fp. Ending in ~
- */
-const char* fread_flagstring( FILE* fp )
-{
-   static std::string buffer;
-
-   buffer = internal_fread_flagstring( fp );
-
-   return buffer.c_str();
-}
-
 // Read a string from a file and assign it to a std::string.
-void fread_string( std::string & newstring, FILE* fp )
-{
-   newstring = internal_fread_flagstring( fp );
-}
-
 void fread_string( std::string & newstring, std::ifstream & stream )
 {
    newstring = internal_fread_flagstring( stream );
 }
 
 /*
- * Read to end of line (for comments).
- */
-void fread_to_eol( FILE* fp )
-{
-   int c;
-
-   while( ( c = std::getc( fp ) ) != EOF && c != '\n' );
-
-   if( c == EOF && ferror( fp ) )
-   {
-      bug( "{}: EOF encountered on read.", __func__ );
-
-      if( fBootDb )
-      {
-         shutdown_mud( "Corrupt file somewhere." );
-         std::exit( EXIT_FAILURE );
-      }
-   }
-}
-
-/*
- * C++23 version of the above. When called for a file comment, will ignore up to MSL characters, or it hits a newline.
+ * When called for a file comment, will ignore up to MSL characters, or it hits a newline.
  * The chances of this overflowing the MSL buffer size is extremely remote because someone would have to have written a book to fill that much space.
  * Even though this isn't the "right" way to do it, it avoided a massive amount of inclusion bloat.
  */
 void fread_to_eol( std::ifstream & stream )
 {
    stream.ignore( static_cast<std::streamsize>(MSL), '\n' );
-}
-
-static std::string internal_fread_line( FILE* fp )
-{
-   int c;
-
-   while( ( c = std::getc( fp ) ) != EOF && std::isspace( static_cast<unsigned char>( c ) ) );
-
-   if( c == EOF )
-   {
-      bug( "{}: EOF encountered on read.", __func__ );
-
-      if( fBootDb )
-      {
-         shutdown_mud( "Corrupt file somewhere." );
-         std::exit( EXIT_FAILURE );
-      }
-      return "";
-   }
-
-   std::string line;
-   line.push_back( static_cast<char>( c ) );
-
-   while( ( c = std::getc( fp ) ) != EOF && c != '\n' && c != '\r' )
-   {
-      line.push_back( static_cast<char>( c ) );
-   }
-
-   if( c == EOF )
-   {
-      bug( "{}: EOF encountered mid-line.", __func__ );
-
-      if( fBootDb )
-         std::exit( EXIT_FAILURE );
-   }
-
-   return line;
-}
-
-/*
- * Read to end of line into static buffer - Thoric
- */
-const char* fread_line( FILE* fp )
-{
-   static std::string buffer;
-
-   buffer = internal_fread_line( fp );
-
-   return buffer.c_str();
-}
-
-void fread_line( std::string & newstring, FILE* fp )
-{
-   newstring = internal_fread_line( fp );
 }
 
 // Read one line into a std::string, with delimiter check. Usually a '~' but can be overridden at the call site.
@@ -580,59 +421,6 @@ std::string fread_line( std::ifstream & stream, char delimiter )
 /*
  * Read one word from a file. Can be wrapped in '' or "".
  */
-std::string fread_word( FILE* fp )
-{
-   int c;
-
-   // Skip leading whitespace.
-   while( ( c = std::getc(fp) ) != EOF && std::isspace( static_cast<unsigned char>(c) ) );
-
-   if( c == EOF )
-   {
-      bug( "{}: EOF encountered on read.", __func__ );
-
-      if( fBootDb )
-      {
-         shutdown_mud( "Corrupt file." );
-         std::exit( EXIT_FAILURE );
-      }
-      return {};
-   }
-
-   std::string word;
-   word.reserve(64);
-
-   if( c == '\'' || c == '"' )
-   {
-      const int cEnd = c;
-
-      while( ( c = std::getc(fp) ) != EOF && c != cEnd )
-      {
-         word.push_back( static_cast<char>(c) );
-      }
-
-      if( c == EOF )
-      {
-         bug( "{}: EOF encountered inside quoted string.", __func__ );
-         if( fBootDb )
-            std::exit( EXIT_FAILURE );
-      }
-      return word;
-   }
-
-   word.push_back( static_cast<char>(c) );
-   while( ( c = std::getc(fp) ) != EOF )
-   {
-      if( std::isspace( static_cast<unsigned char>(c) ) )
-      {
-         std::ungetc( c, fp );
-         break;
-      }
-      word.push_back( static_cast<char>(c) );
-   }
-   return word;
-}
-
 std::string fread_word( std::ifstream & stream )
 {
    char c;

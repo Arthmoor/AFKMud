@@ -324,6 +324,29 @@ const char *mprog_flags[] = {
    "emote", "login", "void", "load", "greetinfight"
 };
 
+std::string flag_string( int bitvector, const char *flagarray[] )
+{
+   std::string result;
+   bool first = true;
+
+   for( int x = 0; x < 32; ++x )
+   {
+      if( IS_SET( bitvector, ( 1 << x ) ) )
+      {
+         if( flagarray[x] && flagarray[x][0] != '\0' )
+         {
+            if( !first )
+            {
+               result += ' ';
+            }
+            result += flagarray[x];
+            first = false;
+         }
+      }
+   }
+   return result;
+}
+
 /* Bamfin parsing code by Altrag, installed by Samson 12-10-97
    Allows use of $n where the player's name would be */
 std::string bamf_print( const std::string & fmt, char_data * ch )
@@ -412,39 +435,6 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
          return;
       }
    }
-}
-
-char *flag_string( int bitvector, const char *flagarray[] )
-{
-   static char buf[MSL];
-   buf[0] = '\0';
-
-   size_t len = 0;
-   bool first = true;
-
-   for( int x = 0; x < 32; ++x )
-   {
-      if( IS_SET( bitvector, ( 1 << x ) ) )
-      {
-         if( flagarray[x] && flagarray[x][0] != '\0' )
-         {
-            size_t flag_len = strlen( flagarray[x] );
-
-            if( len + flag_len + 2 < MSL )
-            {
-               if( !first )
-               {
-                  buf[len++] = ' ';
-               }
-               memcpy( buf + len, flagarray[x], flag_len );
-               len += flag_len;
-               buf[len] = '\0';
-               first = false;
-            }
-         }
-      }
-   }
-   return buf;
 }
 
 bool can_rmodify( char_data * ch, room_index * room )

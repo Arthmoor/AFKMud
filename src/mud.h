@@ -818,7 +818,7 @@ int get_logflag( std::string_view );
 int get_trapflag( std::string_view );
 int get_flag( std::string_view, const char **, size_t );
 int get_dir( std::string_view );
-char *flag_string( int, const char *flagarray[] );
+std::string flag_string( int, const char *flagarray[] );
 
 // calendar.cpp
 const std::string c_time( std::chrono::system_clock::time_point, const std::string & );
@@ -834,22 +834,15 @@ void check_switch( char_data * );
 void fread_to_eol( std::ifstream & );
 std::string fread_word( std::ifstream & );
 std::string fread_line( std::ifstream &, char delimiter = '~' ); // Default to using the tilde, since this gets used mostly for string names. So be careful to specify a different one when needed!
-void append( std::string_view, std::string );
+char fread_letter( std::ifstream & );
+void fread_string( std::string &, std::ifstream & );
 void process_bug( std::string_view );
 bool has_illegal_file_chars( std::string_view, bool );
 bool is_valid_filename( char_data *, std::string_view, std::string_view );
 void shutdown_mud( std::string_view );
 bool truncate_file( std::string_view );
+void append( std::string_view, std::string );
 bool exists_file( std::string_view );
-char fread_letter( FILE * );
-char fread_letter( std::ifstream & );
-const char *fread_flagstring( FILE * );
-void fread_to_eol( FILE * );
-const char *fread_line( FILE * );
-std::string fread_word( FILE * );
-void fread_string( std::string &, FILE * );
-void fread_string( std::string &, std::ifstream & );
-void fread_line( std::string &, FILE * );
 int number_percent( void );
 int number_fuzzy( int );
 int number_range( int, int );
