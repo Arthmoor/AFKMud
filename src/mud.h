@@ -529,31 +529,6 @@ inline constexpr std::string_view TONGUE_FILE      = "../system/tongues.dat";   
 inline constexpr std::string_view TYPO_FILE        = "../system/typos.txt";     // For 'typo' command.
 inline constexpr std::string_view WIZLIST_FILE     = "../system/WIZLIST";       // Wizlist - Used with 'who' command, and 'wizlist' command.
 
-// This damn thing is used in so many places it was about time to just move it here - Samson 10-4-03
-#define KEY( literal, field, value ) \
-if( !str_cmp( word, (literal) ) )    \
-{                                    \
-   (field) = (value);                \
-   break;                            \
-}
-
-// This reads in a value and uses the class function to assign the value to the field - Samson 3-1-05
-#define CLKEY( literal, value )   \
-if( !str_cmp( word, (literal) ) ) \
-{                                 \
-   (value);                       \
-   break;                         \
-}
-
-// This reads a string value into a C++ string variable using the tilde as a delimiter - Samson 10-3-04
-#define STDSKEY( literal, field )      \
-if( !str_cmp( word, (literal) ) )      \
-{                                      \
-   (field).clear();                    \
-   fread_string( (field), fp );        \
-   break;                              \
-}
-
 /*
  * Old-style Bit manipulation macros
  *
@@ -569,10 +544,6 @@ if( !str_cmp( word, (literal) ) )      \
 #define IS_EXIT_FLAG(var, bit)     (var)->flags.test((bit))
 #define SET_EXIT_FLAG(var, bit)    (var)->flags.set((bit))
 #define REMOVE_EXIT_FLAG(var, bit) (var)->flags.reset((bit))
-
-// Safe fclose macro adopted from DOTD Codebase.
-// Now updated to protect against being inside unguarded if/else blocks. - Samson 6/7/2026.
-#define FCLOSE(fp) do { if ((fp)) { fclose((fp)); (fp) = nullptr; } } while(0)
 
 // These 3 functions replace the UMIN, UMAX, and URANGE macros. Must be declared here because the headers use them.
 int umin( int, int );
@@ -867,11 +838,12 @@ void check_switch( char_data * );
 void fread_to_eol( std::ifstream & );
 std::string fread_word( std::ifstream & );
 std::string fread_line( std::ifstream &, char delimiter = '~' ); // Default to using the tilde, since this gets used mostly for string names. So be careful to specify a different one when needed!
-
+void append( std::string_view, std::string_view );
 void process_bug( std::string_view );
 bool has_illegal_file_chars( std::string_view, bool );
 bool is_valid_filename( char_data *, std::string_view, std::string_view );
 void shutdown_mud( std::string_view );
+bool truncate_file( std::string_view );
 bool exists_file( std::string_view );
 char fread_letter( FILE * );
 char fread_letter( std::ifstream & );
@@ -1203,11 +1175,7 @@ void append_to_file( std::string_view file, std::format_string<Args...> fmt, Arg
    if( str.back() != '\n' )
       str += '\n';
 
-   if( FILE* fp = fopen( file.data(), "a" ) )
-   {
-      fprintf( fp, "%s", str.c_str() );
-      FCLOSE( fp );
-   }
+   append( file, str );
 }
 
 /*
@@ -1225,11 +1193,8 @@ void append_file( int vnum, std::string_view name, std::string_view file, std::f
    if( str.back() != '\n' )
       str += '\n';
 
-   if( FILE* fp = fopen( file.data(), "a" ) )
-   {
-      fprintf( fp, "[%5d] %s: %s", vnum, name.data(), str.c_str() );
-      FCLOSE( fp );
-   }
+   std::string content = std::format( "[{:5}] {}: {}", vnum, name, str );
+   append( file, content );
 }
 
 template <typename... Args>

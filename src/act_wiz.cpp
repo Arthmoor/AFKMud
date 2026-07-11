@@ -8123,16 +8123,16 @@ CMDF( do_fixed )
          ch->print( "\r\n" );
       return;
    }
+
    if( !str_cmp( argument, "clear now" ) && ch->get_trust(  ) >= LEVEL_ASCENDANT )
    {
-      FILE *fp = fopen( FIXED_FILE.data(), "w" );
-      if( fp )
-      {
-         FCLOSE( fp );
-      }
-      ch->print( "Fixed file cleared.\r\n" );
+      if( !truncate_file( FIXED_FILE ) )
+         ch->print_fmt( "Unable to truncate {}.", FIXED_FILE );
+      else
+         ch->print( "Fixed file cleared.\r\n" );
       return;
    }
+
    if( !str_cmp( argument, "list" ) )
    {
       ch->print( "\r\n&g[&GDate  &g|  &GVnum&g]\r\n" );

@@ -957,13 +957,12 @@ void tybuid( char_data * ch, std::string_view argument, int type )
 
    if( !str_cmp( argument, "clear now" ) && ch->get_trust(  ) >= LEVEL_ASCENDANT )
    {
-      FILE *fp;
-      if( !( fp = fopen( tybuid_file[type], "w" ) ) )
+      if( !truncate_file( tybuid_file[type] ) )
       {
-         bug( "{}: unable to stat {} file '{}'!", __func__, tybuid_name[type], tybuid_file[type] );
+         ch->print_fmt( "Unable to truncate {} file.\r\n", tybuid_name[type] );
+         bug( "{}: unable to truncate {} file '{}'!", __func__, tybuid_name[type], tybuid_file[type] );
          return;
       }
-      FCLOSE( fp );
       ch->print_fmt( "The {} file has been cleared.\r\n", tybuid_name[type] );
       return;
    }

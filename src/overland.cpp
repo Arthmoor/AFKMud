@@ -186,7 +186,8 @@ void continent_data::load_png_file( void )
          }
       }
    }
-   FCLOSE( jpgin );
+   fclose( jpgin );
+   jpgin = nullptr;
    gdImageDestroy( im );
 }
 
@@ -238,7 +239,8 @@ void continent_data::save_png_file( )
    /*
     * Close the file. 
     */
-   FCLOSE( PngOut );
+   fclose( PngOut );
+   PngOut = nullptr;
 
    /*
     * Destroy the image in memory. 

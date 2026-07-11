@@ -2335,16 +2335,17 @@ CMDF( do_defeats )
 
    if( ch->pcdata->clan->clan_type == CLAN_CLAN )
    {
-      std::filesystem::path filename = std::format( "{}{}.defeats", CLAN_DIR, ch->pcdata->clan->name );
+      std::string filename = std::format( "{}{}.defeats", CLAN_DIR, ch->pcdata->clan->name );
       ch->set_pager_color( AT_PURPLE );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
       {
-         FILE *fp = fopen( filename.c_str(), "w" );
-         if( fp )
+         if( !truncate_file( filename ) )
          {
-            FCLOSE( fp );
+            ch->print( "Unable to clear the defeats ledger.\r\n" );
+            bug( "{}: Cannot truncate file {}: {}", __func__, filename, std::strerror(errno) );
          }
-         ch->print( "\r\nDefeats ledger has been cleared.\r\n" );
+         else
+            ch->print( "\r\nDefeats ledger has been cleared.\r\n" );
          return;
       }
       else
@@ -2371,15 +2372,16 @@ CMDF( do_victories )
 
    if( ch->pcdata->clan->clan_type == CLAN_CLAN )
    {
-      std::filesystem::path filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
+      std::string filename = std::format( "{}{}.record", CLAN_DIR, ch->pcdata->clan->name );
       if( !str_cmp( ch->name, ch->pcdata->clan->leader ) && !str_cmp( argument, "clean" ) )
       {
-         FILE *fp = fopen( filename.c_str(), "w" );
-         if( fp )
+         if( !truncate_file( filename ) )
          {
-            FCLOSE( fp );
+            ch->print( "Unable to clear the victories ledger.\r\n" );
+            bug( "{}: Cannot truncate file {}: {}", __func__, filename, std::strerror(errno) );
          }
-         ch->print( "\r\nVictories ledger has been cleared.\r\n" );
+         else
+            ch->print( "\r\nVictories ledger has been cleared.\r\n" );
          return;
       }
       else

@@ -28,11 +28,11 @@
 
 #pragma once
 
-constexpr int AREA_STOCK_VERSION = 3;       // The current top version for stock Smaug 1.8b files
-constexpr int AREA_SMAUGWIZ_VERSION = 1000; // The current top version for SmaugWiz files
-constexpr int AREA_FUSS_VERSION = 1;        // The current top version for SmaugFUSS files
+constexpr int AREA_STOCK_VERSION = 3;       // The current top version for stock Smaug 1.8b files.
+constexpr int AREA_SMAUGWIZ_VERSION = 1000; // The current top version for SmaugWiz files.
+constexpr int AREA_FUSS_VERSION = 1;        // The current top version for SmaugFUSS files.
 
-/* Extended bitvector material is now kept only for legacy purposes to convert old areas. */
+// Extended bitvector material is now kept only for legacy purposes to convert old areas.
 typedef struct extended_bitvector EXT_BV;
 
 /*

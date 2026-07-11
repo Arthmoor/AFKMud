@@ -202,9 +202,7 @@ void reopen_libdl( void )
 
 void shutdown_mud( std::string_view reason )
 {
-   std::ofstream stream;
-
-   stream.open( std::filesystem::path( SHUTDOWN_FILE ), std::ios::app );
+   std::ofstream stream( std::filesystem::path( SHUTDOWN_FILE ), std::ios::app );
    if( !stream.is_open() )
    {
       bug( "{}: Cannot open {} for writing: {}", __func__, SHUTDOWN_FILE, std::strerror(errno) );
@@ -215,6 +213,32 @@ void shutdown_mud( std::string_view reason )
    stream.close();
    if( stream.fail() )
       bug( "{}: Error occurred after closing {}: ", __func__, SHUTDOWN_FILE, std::strerror(errno) );
+}
+
+bool truncate_file( std::string_view filename )
+{
+   std::ofstream stream( std::filesystem::path( filename ), std::ios::trunc );
+
+   if( !stream.is_open() )
+      return false;
+
+   stream.close();
+   return true;
+}
+
+void append( std::string_view file, std::string_view content )
+{
+   std::ofstream stream( std::filesystem::path( file ), std::ios::app );
+   if( !stream.is_open() )
+   {
+      bug( "{}: Cannot open {} for writing: {}", __func__, file, std::strerror(errno) );
+      return;
+   }
+
+   stream << std::format( "{}\n", content );
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, file, std::strerror(errno) );
 }
 
 bool exists_file( std::string_view name )
@@ -1022,10 +1046,10 @@ void make_wizlist( )
    wizlist.sort( []( const std::unique_ptr<wizent>& a, const std::unique_ptr<wizent>& b ) { return a->level > b->level; } );
 
    // Open WIZLIST_FILE file for writing.
-   std::ofstream out( std::filesystem::path( WIZLIST_FILE ), std::ios::trunc );
+   std::ofstream stream( std::filesystem::path( WIZLIST_FILE ), std::ios::trunc );
 
    // Center the top banner with the MUD's name.
-   out << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
+   stream << std::format( "{:^78}\n", std::format( "The Immortal Masters of {}", sysdata->mud_name ) );
 
    int current_level = -1;
    std::string line_buffer;
@@ -1036,25 +1060,25 @@ void make_wizlist( )
       if( wiz->level != current_level )
       {
          if( !line_buffer.empty() )
-            out << std::format( "{:^78}\n ", line_buffer );
+            stream << std::format( "{:^78}\n ", line_buffer );
 
-         out << std::format( "\n{:^78}\n ", get_title( wiz->level ) );
+         stream << std::format( "\n{:^78}\n ", get_title( wiz->level ) );
          line_buffer.clear();
          current_level = wiz->level;
       }
 
       if( line_buffer.length() + wiz->name.length() > 70 )
       {
-         out << std::format( "{:^78}\n", line_buffer );
+         stream << std::format( "{:^78}\n", line_buffer );
          line_buffer.clear();
       }
       line_buffer += ( line_buffer.empty() ? "" : " " ) + wiz->name;
    }
 
    if( !line_buffer.empty() )
-      out << std::format( "{:^78}\n", line_buffer );
+      stream << std::format( "{:^78}\n", line_buffer );
 
-   // File stream will close automatically when function goes out of scope.
+   stream.close();
 }
 
 CMDF( do_makewizlist )

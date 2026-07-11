@@ -31,6 +31,7 @@
 #include <sys/wait.h>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <thread>
 #include "mud.h"
 #include "descriptor.h"
@@ -250,7 +251,7 @@ void open_mud_log()
    // Dude, if you have over 100000 logs you have problems!
    if( !found )
    {
-      fprintf( stderr, "You have too damn many log files! Clean them up!\n" );
+      std::cerr << "You have too damn many log files! Clean them up!\nWhat's too many? 100,000 of them!\n";
       std::exit( EXIT_FAILURE );
    }
 
@@ -258,13 +259,14 @@ void open_mud_log()
    FILE* error_log = fopen( log_path.c_str(), "a" );
    if( !error_log )
    {
-      fprintf( stderr, "Unable to append to %s.\n", log_path.c_str() );
+      std::cerr << std::format( "Unable to append to {}.\n", log_path.string() );
       std::exit( EXIT_FAILURE );
    }
 
    // Redirect stderr.
    dup2( fileno( error_log ), STDERR_FILENO );
-   FCLOSE( error_log );
+   fclose( error_log );
+   error_log = nullptr;
 }
 
 /*
