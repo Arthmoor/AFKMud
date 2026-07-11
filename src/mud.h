@@ -541,10 +541,6 @@ inline constexpr std::string_view WIZLIST_FILE     = "../system/WIZLIST";       
 #define REMOVE_BIT(var, bit)	((var) &= ~(bit))
 #define TOGGLE_BIT(var, bit)	((var) ^= (bit))
 
-#define IS_EXIT_FLAG(var, bit)     (var)->flags.test((bit))
-#define SET_EXIT_FLAG(var, bit)    (var)->flags.set((bit))
-#define REMOVE_EXIT_FLAG(var, bit) (var)->flags.reset((bit))
-
 // These 3 functions replace the UMIN, UMAX, and URANGE macros. Must be declared here because the headers use them.
 int umin( int, int );
 int umax( int, int );
@@ -838,7 +834,7 @@ void check_switch( char_data * );
 void fread_to_eol( std::ifstream & );
 std::string fread_word( std::ifstream & );
 std::string fread_line( std::ifstream &, char delimiter = '~' ); // Default to using the tilde, since this gets used mostly for string names. So be careful to specify a different one when needed!
-void append( std::string_view, std::string_view );
+void append( std::string_view, std::string );
 void process_bug( std::string_view );
 bool has_illegal_file_chars( std::string_view, bool );
 bool is_valid_filename( char_data *, std::string_view, std::string_view );
@@ -1172,9 +1168,6 @@ void append_to_file( std::string_view file, std::format_string<Args...> fmt, Arg
    if( str.empty() )
       return;
 
-   if( str.back() != '\n' )
-      str += '\n';
-
    append( file, str );
 }
 
@@ -1189,9 +1182,6 @@ void append_file( int vnum, std::string_view name, std::string_view file, std::f
    // Discard null and zero-length messages.
    if( str.empty() )
       return;
-
-   if( str.back() != '\n' )
-      str += '\n';
 
    std::string content = std::format( "[{:5}] {}: {}", vnum, name, str );
    append( file, content );

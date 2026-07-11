@@ -226,7 +226,7 @@ bool truncate_file( std::string_view filename )
    return true;
 }
 
-void append( std::string_view file, std::string_view content )
+void append( std::string_view file, std::string content )
 {
    std::ofstream stream( std::filesystem::path( file ), std::ios::app );
    if( !stream.is_open() )
@@ -235,7 +235,10 @@ void append( std::string_view file, std::string_view content )
       return;
    }
 
-   stream << std::format( "{}\n", content );
+   if( content.back() != '\n' )
+      content += '\n';
+
+   stream << content;
    stream.close();
    if( stream.fail() )
       bug( "{}: Error occurred after closing {}: ", __func__, file, std::strerror(errno) );

@@ -248,6 +248,23 @@ room_index::room_index(  )
 {
 }
 
+bool IS_EXIT_FLAG( exit_data * pexit, int flag )
+{
+   if( pexit->flags.test( flag ) )
+      return true;
+   return false;
+}
+
+void SET_EXIT_FLAG( exit_data * pexit, int flag )
+{
+   pexit->flags.set( flag );
+}
+
+void REMOVE_EXIT_FLAG( exit_data * pexit, int flag )
+{
+   pexit->flags.reset( flag );
+}
+
 /*
  * Translate all room exits from virtual to real.
  * Has to be done after all rooms are read in.

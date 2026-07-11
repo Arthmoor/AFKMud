@@ -162,6 +162,9 @@ room_index *get_room_index( int );
 room_index *make_room( int, area_data * );
 int get_dirnum( std::string_view );
 std::string rev_exit( short );
+bool IS_EXIT_FLAG( exit_data *, int );
+void SET_EXIT_FLAG( exit_data *, int );
+void REMOVE_EXIT_FLAG( exit_data *, int );
 
 /*
  * Delayed teleport type.
