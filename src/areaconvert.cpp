@@ -30,6 +30,7 @@
 // Converts SmaugWiz version 1000 files into AFKMud format - Samson 4-24-03
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "areaconvert.h"
@@ -176,21 +177,22 @@ const char *stock_sect[] = {
 /*
  * Read an extended bitvector from a file. - Thoric
  */
-EXT_BV fread_bitvector( FILE * fp )
+EXT_BV fread_bitvector( std::ifstream & stream )
 {
    EXT_BV ret{0};
-   int c, x = 0;
+   int x = 0;
    int num = 0;
+   char c;
 
    for( ;; )
    {
-      num = fread_number( fp );
+      stream >> num;
       if( x < XBI )
          ret.bits[x] = num;
       ++x;
-      if( ( c = getc( fp ) ) != '&' )
+      if( stream.get(c) && c != '&' )
       {
-         ungetc( c, fp );
+         stream.putback(c);
          break;
       }
    }
@@ -216,11 +218,11 @@ std::string ext_flag_string( const EXT_BV & bitvector, const char * const flagar
    return result;
 }
 
-void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
+void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
 {
    mob_index *pMobIndex;
-   const char *ln;
-   int x1, x2, x3, x4, x5, x6, x7;
+   int dummyval = 0;        // For skipping unwanted numericals.
+   int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0;
 
    if( !tarea )
    {
@@ -236,10 +238,9 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
    for( ;; )
    {
-      char letter;
       bool oldmob, tmpBootDb;
 
-      letter = fread_letter( fp );
+      char letter = fread_letter( stream );
       if( letter != '#' )
       {
          bug( "{}: # not found.", __func__ );
@@ -252,7 +253,8 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             return;
       }
 
-      int vnum = fread_number( fp );
+      int vnum;
+      stream >> vnum;
       if( vnum == 0 )
          break;
 
@@ -328,10 +330,10 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             tarea->hi_vnum = vnum;
       }
       pMobIndex->area = tarea;
-      fread_string( pMobIndex->player_name, fp );
-      fread_string( pMobIndex->short_descr, fp );
-      fread_string( pMobIndex->long_descr, fp );
-      fread_string( pMobIndex->chardesc, fp );
+      pMobIndex->player_name = fread_line( stream );
+      pMobIndex->short_descr = fread_line( stream );
+      pMobIndex->long_descr = fread_line( stream );
+      pMobIndex->chardesc = fread_line( stream );
 
       if( !pMobIndex->chardesc.empty() )
          pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
@@ -344,7 +346,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          EXT_BV temp;
          int value;
 
-         temp = fread_bitvector( fp );
+         temp = fread_bitvector( stream );
          sact = ext_flag_string( temp, stock_act );
 
          while( sact[0] != '\0' )
@@ -358,7 +360,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          }
          pMobIndex->actflags.set( ACT_IS_NPC );
 
-         temp = fread_bitvector( fp );
+         temp = fread_bitvector( stream );
          saff = ext_flag_string( temp, stock_aff );
 
          while( saff[0] != '\0' )
@@ -374,45 +376,43 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
       pMobIndex->pShop = nullptr;
       pMobIndex->rShop = nullptr;
-      pMobIndex->alignment = fread_number( fp );
-      letter = fread_letter( fp );
-      pMobIndex->level = fread_number( fp );
+      stream >> pMobIndex->alignment;
+      letter = fread_letter( stream ); // This is the type marker. It gets processed further down.
+      stream >> pMobIndex->level;
 
-      fread_number( fp );
-      pMobIndex->mobthac0 = 21;  /* Autoconvert to the autocomputation value */
-      pMobIndex->ac = fread_number( fp );
-      pMobIndex->hitnodice = fread_number( fp );
+      stream >> dummyval;
+      pMobIndex->mobthac0 = 21;  // Autoconvert to the autocomputation value. Actual value in files is skipped.
+      stream >> pMobIndex->ac;
+      stream >> pMobIndex->hitnodice;
       /*
        * 'd'      
        */
-      fread_letter( fp );
-      pMobIndex->hitsizedice = fread_number( fp );
+      fread_letter( stream );
+      stream >> pMobIndex->hitsizedice;
       /*
        * '+'      
        */
-      fread_letter( fp );
-      pMobIndex->hitplus = fread_number( fp );
-      pMobIndex->damnodice = fread_number( fp );
+      fread_letter( stream );
+      stream >> pMobIndex->hitplus;
+      stream >> pMobIndex->damnodice;
       /*
        * 'd'      
        */
-      fread_letter( fp );
-      pMobIndex->damsizedice = fread_number( fp );
+      fread_letter( stream );
+      stream >> pMobIndex->damsizedice;
       /*
        * '+'      
        */
-      fread_letter( fp );
-      pMobIndex->damplus = fread_number( fp );
+      fread_letter( stream );
+      stream >> pMobIndex->damplus;
 
-      ln = fread_line( fp );
-      x1 = x2 = 0;
-      sscanf( ln, "%d %d", &x1, &x2 );
-      pMobIndex->gold = x1;
+      stream >> pMobIndex->gold;
+      stream >> dummyval;
       pMobIndex->exp = -1; /* Convert mob to use autocalc exp */
 
       {
-         const char *spos;
-         int pos = fread_number( fp );
+         int pos;
+         stream >> pos;
 
          if( pos < 100 )
          {
@@ -451,13 +451,13 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          else
             pos -= 100;
 
-         spos = stock_pos[pos];
+         std::string spos = stock_pos[pos];
          pMobIndex->position = get_npc_position( spos );
       }
 
       {
-         const char *sdefpos;
-         int defpos = fread_number( fp );
+         int defpos;
+         stream >> defpos;
 
          if( defpos < 100 )
          {
@@ -497,14 +497,14 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          {
             defpos -= 100;
          }
-         sdefpos = stock_pos[defpos];
+         std::string sdefpos = stock_pos[defpos];
          pMobIndex->defposition = get_npc_position( sdefpos );
       }
 
       /*
        * Back to meaningful values.
        */
-      pMobIndex->sex = fread_number( fp );
+      stream >> pMobIndex->sex;
 
       if( letter != 'S' && letter != 'C' && letter != 'D' && letter != 'Z' && letter != 'V' )
       {
@@ -515,27 +515,15 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
       if( letter == 'C' || letter == 'D' || letter == 'Z' || letter == 'V' ) /* Realms complex mob  -Thoric */
       {
-         pMobIndex->perm_str = fread_number( fp );
-         pMobIndex->perm_int = fread_number( fp );
-         pMobIndex->perm_wis = fread_number( fp );
-         pMobIndex->perm_dex = fread_number( fp );
-         pMobIndex->perm_con = fread_number( fp );
-         pMobIndex->perm_cha = fread_number( fp );
-         pMobIndex->perm_lck = fread_number( fp );
-         pMobIndex->saving_poison_death = fread_number( fp );
-         pMobIndex->saving_wand = fread_number( fp );
-         pMobIndex->saving_para_petri = fread_number( fp );
-         pMobIndex->saving_breath = fread_number( fp );
-         pMobIndex->saving_spell_staff = fread_number( fp );
+         stream >> pMobIndex->perm_str >> pMobIndex->perm_int >> pMobIndex->perm_wis >> pMobIndex->perm_dex;
+         stream >> pMobIndex->perm_con >> pMobIndex->perm_cha >> pMobIndex->perm_lck;
+         stream >> pMobIndex->saving_poison_death >> pMobIndex->saving_wand >> pMobIndex->saving_para_petri >> pMobIndex->saving_breath >> pMobIndex->saving_spell_staff;
 
          if( tarea->version < AREA_SMAUGWIZ_VERSION )   /* Standard Smaug up to version 3 */
          {
-            ln = fread_line( fp );
-            x1 = x2 = x3 = x4 = x5 = x6 = x7 = 0;
-            sscanf( ln, "%d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7 );
-
+            stream >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7;
             {
-               const char *srace, *sclass;
+               std::string srace, sclass;
 
                if( x1 >= 0 && x1 < 90 )
                   srace = stock_race[x1];
@@ -601,10 +589,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             std::string speaking, flag;
             int value;
 
-            ln = fread_line( fp );
-            x1 = x2 = x3 = x4 = x5 = 0;
-            sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
-
+            stream >> x1 >> x2 >> x3 >> x4 >> x5;
             {
                std::string srace, sclass;
 
@@ -638,9 +623,9 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
             pMobIndex->weight = x4;
             pMobIndex->numattacks = ( float )x5;
 
-            flag_set( fp, pMobIndex->speaks, lang_names );
+            flag_set( stream, pMobIndex->speaks, lang_names );
 
-            speaking = fread_flagstring( fp );
+            speaking = fread_line( stream );
 
             while( !speaking.empty() )
             {
@@ -663,19 +648,13 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          else
             pMobIndex->gold = 0;
 
-         pMobIndex->hitroll = fread_number( fp );
-         pMobIndex->damroll = fread_number( fp );
-         pMobIndex->body_parts = fread_number( fp );
-         pMobIndex->resistant = fread_number( fp );
-         pMobIndex->immune = fread_number( fp );
-         pMobIndex->susceptible = fread_number( fp );
-
+         stream >> pMobIndex->hitroll >> pMobIndex->damroll >> pMobIndex->body_parts >> pMobIndex->resistant >> pMobIndex->immune >> pMobIndex->susceptible;
          {
             std::string attacks, defenses, flag;
             EXT_BV temp;
             int value;
 
-            temp = fread_bitvector( fp );
+            temp = fread_bitvector( stream );
             attacks = ext_flag_string( temp, stock_attack_flags );
 
             while( !attacks.empty() )
@@ -688,7 +667,7 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
                   pMobIndex->attacks.set( value );
             }
 
-            temp = fread_bitvector( fp );
+            temp = fread_bitvector( stream );
             defenses = ext_flag_string( temp, stock_defense_flags );
 
             while( !defenses.empty() )
@@ -703,25 +682,15 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
          }
 
          if( letter == 'V' ) // Smaug 1.8b mobs with stances. Just read it, we don't care.
-            fread_line( fp );
+            fread_to_eol( stream );
 
          if( letter == 'Z' )
-         {
-            fread_number( fp );
-            fread_number( fp );
-            fread_number( fp );
-            fread_number( fp );
-            fread_number( fp );
-            fread_number( fp );
-            fread_number( fp );
-            fread_number( fp );
-         }
+            stream >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval;
 
          if( letter == 'D' && dotdcheck )
          {
-            fread_number( fp );
-            fread_number( fp );
-            pMobIndex->absorb = fread_number( fp );
+            stream >> dummyval >> dummyval;
+            stream >> pMobIndex->absorb;
          }
       }
       else
@@ -747,24 +716,24 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
 
       for( ;; )
       {
-         letter = fread_letter( fp );
+         letter = fread_letter( stream );
 
          if( letter == 'S' || letter == '$' )
             break;
 
          if( letter == '#' )
          {
-            ungetc( letter, fp );
+            stream .putback( letter );
             break;
          }
 
          if( letter == 'T' )
-            fread_to_eol( fp );
+            fread_to_eol( stream );
 
          else if( letter == '>' )
          {
-            ungetc( letter, fp );
-            pMobIndex->mprog_read_programs( fp );
+            stream.putback( letter );
+            pMobIndex->mprog_read_programs( stream );
          }
          else
          {
@@ -783,12 +752,10 @@ void load_stmobiles( area_data * tarea, FILE * fp, bool manual )
    }
 }
 
-void load_stobjects( area_data * tarea, FILE * fp, bool manual )
+void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
 {
    obj_index *pObjIndex;
-   char letter;
-   const char *ln;
-   int x1, x2, x3, x4, x5, x6;
+   int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0;
 
    if( !tarea )
    {
@@ -806,7 +773,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
    {
       bool tmpBootDb, oldobj;
 
-      letter = fread_letter( fp );
+      char letter = fread_letter( stream );
       if( letter != '#' )
       {
          bug( "{}: # not found.", __func__ );
@@ -819,7 +786,8 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             return;
       }
 
-      int vnum = fread_number( fp );
+      int vnum;
+      stream >> vnum;
       if( vnum == 0 )
          break;
 
@@ -896,21 +864,22 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       }
 
       pObjIndex->area = tarea;
-      fread_string( pObjIndex->name, fp );
-      fread_string( pObjIndex->short_descr, fp );
-      fread_string( pObjIndex->objdesc, fp );
-      fread_string( pObjIndex->action_desc, fp );
+      pObjIndex->name = fread_line( stream );
+      pObjIndex->short_descr = fread_line( stream );
+      pObjIndex->objdesc = fread_line( stream );
+      pObjIndex->action_desc = fread_line( stream );
 
       pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
       {
          std::string sotype, eflags, wflags, flag;
          EXT_BV temp;
-         int value;
+         int value, o_type;
 
-         sotype = stock_o_types[fread_number( fp )];
+         stream >> o_type;
+         sotype = stock_o_types[o_type];
          pObjIndex->item_type = get_otype( sotype );
 
-         temp = fread_bitvector( fp );
+         temp = fread_bitvector( stream );
          eflags = ext_flag_string( temp, stock_oflags );
 
          while( eflags[0] != '\0' )
@@ -923,10 +892,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
                pObjIndex->extra_flags.set( value );
          }
 
-         ln = fread_line( fp );
-         x1 = x2 = x3 = 0;
-         sscanf( ln, "%d %d %d", &x1, &x2, &x3 );
-
+         stream >> x1;
          wflags = flag_string( x1, stock_wflags );
 
          while( wflags[0] != '\0' )
@@ -938,15 +904,20 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             else
                pObjIndex->wear_flags.set( value );
          }
+
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream iss( ln );
+
+         x2 = x3 = 0;
+         iss >> x2 >> x3;
          pObjIndex->layers = x2;
          pObjIndex->level = x3; // Smaug 1.8b v2 or v3
       }
 
       if( tarea->version < AREA_SMAUGWIZ_VERSION )
       {
-         ln = fread_line( fp );
-         x1 = x2 = x3 = x4 = x5 = x6 = 0;
-         sscanf( ln, "%d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6 );
+         stream >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
          pObjIndex->value[0] = x1;
          pObjIndex->value[1] = x2;
          pObjIndex->value[2] = x3;
@@ -954,10 +925,10 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
          pObjIndex->value[4] = x5;
          pObjIndex->value[5] = x6;
 
-         pObjIndex->weight = fread_number( fp );
+         stream >> pObjIndex->weight;
          pObjIndex->weight = umax( 1, pObjIndex->weight );
-         pObjIndex->cost = fread_number( fp );
-         pObjIndex->ego = fread_number( fp );
+         stream >> pObjIndex->cost;
+         stream >> pObjIndex->ego;
 
          if( pObjIndex->ego >= sysdata->minego )
          {
@@ -971,9 +942,11 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
       }
       else
       {
-         ln = fread_line( fp );
+         std::string ln;
+         std::getline( stream, ln );
          x1 = x2 = x3 = x4 = x5 = x6 = 0;
-         sscanf( ln, "%d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6 );
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
+
          pObjIndex->value[0] = x1;
          pObjIndex->value[1] = x2;
          pObjIndex->value[2] = x3;
@@ -984,7 +957,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
       if( ( tarea->version >= 1 && tarea->version <= AREA_STOCK_VERSION ) || tarea->version == AREA_SMAUGWIZ_VERSION )
       {
-         switch ( pObjIndex->item_type )
+         switch( pObjIndex->item_type )
          {
             default:
                break;
@@ -992,33 +965,33 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             case ITEM_PILL:
             case ITEM_POTION:
             case ITEM_SCROLL:
-               pObjIndex->value[1] = skill_lookup( fread_word( fp ) );
-               pObjIndex->value[2] = skill_lookup( fread_word( fp ) );
-               pObjIndex->value[3] = skill_lookup( fread_word( fp ) );
+               pObjIndex->value[1] = skill_lookup( fread_word( stream ) );
+               pObjIndex->value[2] = skill_lookup( fread_word( stream ) );
+               pObjIndex->value[3] = skill_lookup( fread_word( stream ) );
                break;
 
             case ITEM_STAFF:
             case ITEM_WAND:
-               pObjIndex->value[3] = skill_lookup( fread_word( fp ) );
+               pObjIndex->value[3] = skill_lookup( fread_word( stream ) );
                break;
 
             case ITEM_SALVE:
-               pObjIndex->value[4] = skill_lookup( fread_word( fp ) );
-               pObjIndex->value[5] = skill_lookup( fread_word( fp ) );
+               pObjIndex->value[4] = skill_lookup( fread_word( stream ) );
+               pObjIndex->value[5] = skill_lookup( fread_word( stream ) );
                break;
          }
       }
 
       if( tarea->version == AREA_SMAUGWIZ_VERSION )
       {
-         while( !isdigit( letter = fread_letter( fp ) ) )
-            fread_to_eol( fp );
-         ungetc( letter, fp );
+         while( !isdigit( letter = fread_letter( stream ) ) )
+            fread_to_eol( stream );
+         stream.putback( letter );
 
-         pObjIndex->weight = fread_number( fp );
+         stream >> pObjIndex->weight;
          pObjIndex->weight = umax( 1, pObjIndex->weight );
-         pObjIndex->cost = fread_number( fp );
-         pObjIndex->ego = fread_number( fp );
+         stream >> pObjIndex->cost;
+         stream >> pObjIndex->ego;
 
          if( pObjIndex->ego >= sysdata->minego )
          {
@@ -1033,7 +1006,7 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
 
       for( ;; )
       {
-         letter = fread_letter( fp );
+         letter = fread_letter( stream );
 
          if( letter == 'S' )
             break;
@@ -1051,15 +1024,20 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
             paf->modifier = 0;
             paf->rismod.reset(  );
 
-            paf->location = fread_number( fp );
+            stream >> paf->location;
 
             if( paf->location == APPLY_WEAPONSPELL
                 || paf->location == APPLY_WEARSPELL
                 || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
-               paf->modifier = slot_lookup( fread_number( fp ) );
+            {
+               int mod;
+               stream >> mod;
+
+               paf->modifier = slot_lookup( mod );
+            }
             else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
             {
-               value = fread_number( fp );
+               stream >> value;
                risa = flag_string( value, ris_flags );
 
                while( !risa.empty() )
@@ -1073,36 +1051,32 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
                }
             }
             else
-               paf->modifier = fread_number( fp );
-            paf->bit = 0;
+               stream >> paf->modifier;
             pObjIndex->affects.push_back( paf );
             ++top_affect;
          }
 
          else if( letter == 'D' )
-         {
-            fread_number( fp );
-            fread_number( fp );
-         }
+            fread_to_eol( stream );
 
          else if( letter == 'E' )
          {
             extra_descr_data *ed = new extra_descr_data;
 
-            fread_string( ed->keyword, fp );
-            fread_string( ed->desc, fp );
+            fread_string( ed->keyword, stream );
+            fread_string( ed->desc, stream );
             pObjIndex->extradesc.push_back( ed );
             ++top_ed;
          }
          else if( letter == '>' )
          {
-            ungetc( letter, fp );
-            pObjIndex->oprog_read_programs( fp );
+            stream.putback( letter );
+            pObjIndex->oprog_read_programs( stream );
          }
 
          else
          {
-            ungetc( letter, fp );
+            stream.putback( letter );
             break;
          }
       }
@@ -1153,10 +1127,9 @@ void load_stobjects( area_data * tarea, FILE * fp, bool manual )
    }
 }
 
-void load_strooms( area_data * tarea, FILE * fp, bool manual )
+void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
 {
    room_index *pRoomIndex;
-   const char *ln;
    int count = 0;
 
    if( !tarea )
@@ -1168,13 +1141,12 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
    for( ;; )
    {
-      char letter;
       int door;
       bool tmpBootDb;
       bool oldroom;
-      int x1, x2, x3, x4, x5, x6, x7, x8, x9;
+      int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0;
 
-      letter = fread_letter( fp );
+      char letter = fread_letter( stream );
       if( letter != '#' )
       {
          bug( "{}: # not found.", __func__ );
@@ -1187,7 +1159,8 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             return;
       }
 
-      int vnum = fread_number( fp );
+      int vnum = 0;
+      stream >> vnum;
       if( vnum == 0 )
          break;
 
@@ -1264,16 +1237,16 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          if( vnum > tarea->hi_vnum )
             tarea->hi_vnum = vnum;
       }
-      fread_string( pRoomIndex->name, fp );
-      fread_string( pRoomIndex->roomdesc, fp );
+      pRoomIndex->name = fread_line( stream );
+      pRoomIndex->roomdesc = fread_line( stream );
 
       /*
        * Area number         fread_number( fp ); 
        */
-      ln = fread_line( fp );
       x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = 0;
-      sscanf( ln, "%d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9 );
-
+      std::string ln;
+      std::istringstream iss( ln );
+      iss >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9;
       {
          std::string roomflags, flag;
          int value;
@@ -1308,14 +1281,14 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
 
       for( ;; )
       {
-         letter = fread_letter( fp );
+         letter = fread_letter( stream );
 
          if( letter == 'S' )
             break;
 
          // Smaug resets, applied reset fix. We can cheat some here since we wrote that :)
          if( letter == 'R' && tarea->version <= AREA_STOCK_VERSION )
-            pRoomIndex->load_reset( fp, false );
+            pRoomIndex->load_reset( stream, false );
 
          else if( letter == 'R' && tarea->version == AREA_SMAUGWIZ_VERSION ) /* SmaugWiz resets */
          {
@@ -1323,13 +1296,13 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             char letter2;
             int extra, arg1, arg2, arg3, arg4;
 
-            letter2 = fread_letter( fp );
-            extra = fread_number( fp );
-            arg1 = fread_number( fp );
-            arg2 = fread_number( fp );
-            arg3 = fread_number( fp );
-            arg4 = ( letter2 == 'G' || letter2 == 'R' ) ? 0 : fread_number( fp );
-            fread_to_eol( fp );
+            letter2 = fread_letter( stream );
+            stream >> extra >> arg1 >> arg2 >> arg3;
+            if( letter2 == 'G' || letter2 == 'R' )
+               arg4 = 0;
+            else
+               stream >> arg4;
+            fread_to_eol( stream );
 
             ++count;
 
@@ -1421,7 +1394,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             exit_data *pexit;
             int locks;
 
-            door = fread_number( fp );
+            stream >> door;
             if( door < 0 || door > DIR_SOMEWHERE )
             {
                bug( "{}: vnum {} has bad door number {}.", __func__, vnum, door );
@@ -1431,12 +1404,13 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             else
             {
                pexit = pRoomIndex->make_exit( nullptr, door );
-               fread_string( pexit->exitdesc, fp );
-               fread_string( pexit->keyword, fp );
+               fread_string( pexit->exitdesc, stream );
+               fread_string( pexit->keyword, stream );
                pexit->flags.reset(  );
-               ln = fread_line( fp );
+
                x1 = x2 = x3 = x4 = x5 = x6 = 0;
-               sscanf( ln, "%d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6 );
+               std::getline( stream, ln );
+               std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
 
                locks = x1;
                pexit->key = x2;
@@ -1480,8 +1454,8 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
          {
             extra_descr_data *ed = new extra_descr_data;
 
-            fread_string( ed->keyword, fp );
-            fread_string( ed->desc, fp );
+            fread_string( ed->keyword, stream );
+            fread_string( ed->desc, stream );
             pRoomIndex->extradesc.push_back( ed );
             ++top_ed;
          }
@@ -1498,15 +1472,19 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
             paf->modifier = 0;
             paf->rismod.reset(  );
 
-            paf->location = fread_number( fp );
+            stream >> paf->location;
 
             if( paf->location == APPLY_WEAPONSPELL
                 || paf->location == APPLY_WEARSPELL
                 || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
-               paf->modifier = slot_lookup( fread_number( fp ) );
+            {
+               int mod;
+               stream >> mod;
+               paf->modifier = slot_lookup( mod );
+            }
             else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
             {
-               value = fread_number( fp );
+               stream >> value;
                risa = flag_string( value, ris_flags );
 
                while( !risa.empty() )
@@ -1520,17 +1498,16 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
                }
             }
             else
-               paf->modifier = fread_number( fp );
-            paf->bit = 0;
+               stream >> paf->modifier;
             pRoomIndex->permaffects.push_back( paf );
             ++top_affect;
          }
          else if( letter == 'M' )   /* maps */
-            fread_to_eol( fp );  /* Skip, AFKMud doesn't have these */
+            fread_to_eol( stream );  /* Skip, AFKMud doesn't have these */
          else if( letter == '>' )
          {
-            ungetc( letter, fp );
-            pRoomIndex->rprog_read_programs( fp );
+            stream.putback( letter );
+            pRoomIndex->rprog_read_programs( stream );
          }
          else
          {
@@ -1549,7 +1526,7 @@ void load_strooms( area_data * tarea, FILE * fp, bool manual )
    }
 }
 
-void load_stresets( area_data * tarea, FILE * fp )
+void load_stresets( area_data * tarea, std::ifstream & stream )
 {
    room_index *pRoomIndex = nullptr;
    bool not01 = false;
@@ -1585,31 +1562,30 @@ void load_stresets( area_data * tarea, FILE * fp )
       char letter;
       int extra, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11;
 
-      if( ( letter = fread_letter( fp ) ) == 'S' )
+      if( ( letter = fread_letter( stream ) ) == 'S' )
          break;
 
       if( letter == '*' )
       {
-         fread_to_eol( fp );
+         fread_to_eol( stream );
          continue;
       }
 
       // Useful to ferret out bad stuff
       extra = arg1 = arg2 = arg3 = arg4 = arg5 = arg6 = arg7 = arg8 = arg9 = arg10 = arg11 = -2;
 
-      extra = fread_number( fp );
+      stream >> extra;
       if( letter == 'M' || letter == 'O' )
          extra = 0;
-      arg1 = fread_number( fp );
-      arg2 = fread_number( fp );
+      stream >> arg1 >> arg2;
       if( letter != 'G' && letter != 'R' )
-         arg3 = fread_number( fp );
+         stream >> arg3;
 
       arg4 = arg5 = arg6 = -1;  // Converted resets have no overland coordinates
-      fread_to_eol( fp );
+      fread_to_eol( stream );
       ++count;
 
-      // Converted resets are assumed to fire off 100% of the time
+      // Converted resets are assumed to fire off 100% of the time.
       switch ( letter )
       {
          default:
@@ -1768,62 +1744,54 @@ void load_stresets( area_data * tarea, FILE * fp )
    }
 }
 
-void load_stshops( FILE * fp )
+void load_stshops( std::ifstream & stream )
 {
-   shop_data *pShop;
-
    for( ;; )
    {
-      mob_index *pMobIndex;
-      int iTrade;
-
-      pShop = new shop_data;
-      pShop->keeper = fread_number( fp );
-      if( pShop->keeper == 0 )
-      {
-         deleteptr( pShop );
+      int keeper;
+      stream >> keeper;
+      if( keeper == 0 )
          break;
-      }
-      for( iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
-         pShop->buy_type[iTrade] = fread_number( fp );
-      pShop->profit_buy = fread_number( fp );
-      pShop->profit_sell = fread_number( fp );
+
+      shop_data *pShop = new shop_data;
+      pShop->keeper = keeper;
+
+      for( int iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
+         stream >> pShop->buy_type[iTrade];
+
+      stream >> pShop->profit_buy >> pShop->profit_sell;
       pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
       pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
-      pShop->open_hour = fread_number( fp );
-      pShop->close_hour = fread_number( fp );
-      fread_to_eol( fp );
-      pMobIndex = get_mob_index( pShop->keeper );
+
+      stream >> pShop->open_hour >> pShop->close_hour;
+      fread_to_eol( stream );
+
+      mob_index *pMobIndex = get_mob_index( pShop->keeper );
       pMobIndex->pShop = pShop;
       shoplist.push_back( pShop );
       ++top_shop;
    }
 }
 
-void load_strepairs( FILE * fp )
+void load_strepairs( std::ifstream & stream )
 {
-   repair_data *rShop;
-
    for( ;; )
    {
-      mob_index *pMobIndex;
-      int iFix;
-
-      rShop = new repair_data;
-      rShop->keeper = fread_number( fp );
-      if( rShop->keeper == 0 )
-      {
-         deleteptr( rShop );
+      int repair;
+      stream >> repair;
+      if( repair == 0 )
          break;
-      }
-      for( iFix = 0; iFix < MAX_FIX; ++iFix )
-         rShop->fix_type[iFix] = fread_number( fp );
-      rShop->profit_fix = fread_number( fp );
-      rShop->shop_type = fread_number( fp );
-      rShop->open_hour = fread_number( fp );
-      rShop->close_hour = fread_number( fp );
-      fread_to_eol( fp );
-      pMobIndex = get_mob_index( rShop->keeper );
+
+      repair_data *rShop = new repair_data;
+      rShop->keeper = repair;
+
+      for( int iFix = 0; iFix < MAX_FIX; ++iFix )
+         stream >> rShop->fix_type[iFix];
+
+      stream >> rShop->profit_fix >> rShop->shop_type >> rShop->open_hour >> rShop->close_hour;
+      fread_to_eol( stream );
+
+      mob_index *pMobIndex = get_mob_index( rShop->keeper );
       pMobIndex->rShop = rShop;
       repairlist.push_back( rShop );
       ++top_repair;
@@ -1836,8 +1804,8 @@ void load_stock_area_file( const std::string & filename, bool manual )
    std::chrono::system_clock::time_point umod = std::chrono::system_clock::time_point::min();
    std::filesystem::path target_path = manual ? std::filesystem::path( AREA_CONVERT_DIR ) / filename : std::filesystem::path( filename );
 
-   fpArea = fopen( target_path.c_str(), "r" );
-   if( !fpArea )
+   fpArea.open( target_path );
+   if( !fpArea.is_open() )
    {
       bug( "{}: Error locating file: {}. Not present in conversion directory.", __func__, target_path.string() );
       return;
@@ -1865,14 +1833,15 @@ void load_stock_area_file( const std::string & filename, bool manual )
    if( !str_cmp( word, "AREA" ) )
    {
       tarea = create_area(  );
-      fread_string( tarea->name, fpArea );
+      tarea->name = fread_line( fpArea );
       tarea->author = "Unknown";
       tarea->filename = strArea;
       tarea->version = 0;
    }
    else if( !str_cmp( word, "VERSION" ) )
    {
-      int temp = fread_number( fpArea );
+      int temp;
+      fpArea >> temp;
 
       if( temp >= AREA_SMAUGWIZ_VERSION )
       {
@@ -1888,7 +1857,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          else
          {
             area_failed = true;
-            FCLOSE( fpArea );
+            fpArea.close();
             log_printf( "{}: Invalid header at start of area file {}", __func__, filename );
             return;
          }
@@ -1897,17 +1866,18 @@ void load_stock_area_file( const std::string & filename, bool manual )
    else
    {
       area_failed = true;
-      FCLOSE( fpArea );
+      fpArea.close();
       log_printf( "{}: Invalid header at start of area file {}", __func__, filename );
       return;
    }
    dotdcheck = 0;
+   int dummyval = 0;
 
    for( ;; )
    {
       if( manual && area_failed )
       {
-         FCLOSE( fpArea );
+         fpArea.close();
          return;
       }
 
@@ -1923,7 +1893,8 @@ void load_stock_area_file( const std::string & filename, bool manual )
          break;
       else if( !str_cmp( word, "VERSION" ) )
       {
-         int area_version = fread_number( fpArea );
+         int area_version;
+         fpArea >> area_version;
 
          if( ( area_version < 0 || area_version > AREA_STOCK_VERSION ) && area_version != AREA_SMAUGWIZ_VERSION )
          {
@@ -1948,58 +1919,55 @@ void load_stock_area_file( const std::string & filename, bool manual )
       // Skip the helps as we no longer support them embedded in area files
       else if( !str_cmp( word, "HELPS" ) )
       {
-         const char *key, *text;
+         std::string key, text;
 
-         fread_number( fpArea );
-         key = fread_flagstring( fpArea );
+         fpArea >> dummyval;
+         fread_string( key, fpArea );
          if( key[0] == '$' )
             continue;
-         text = fread_flagstring( fpArea );
-         if( text[0] == '\0' )
+         fread_string( text, fpArea );
+         if( text.empty() )
             continue;
       }
       else if( !str_cmp( word, "AUTHOR" ) )
       {
-         fread_string( tarea->author, fpArea );
+         tarea->author = fread_line( fpArea );
       }
       else if( !str_cmp( word, "CREDITS" ) ) /* Smaug 1.8b v3 format */
       {
-         fread_string( tarea->credits, fpArea );
+         tarea->credits = fread_line( fpArea );
       }
       else if( !str_cmp( word, "RANGES" ) )
       {
-         int x1, x2, x3, x4;
-         const char *ln;
+         fpArea >> tarea->low_soft_range >> tarea->hi_soft_range >> tarea->low_hard_range >> tarea->hi_hard_range;
 
-         for( ;; )
+         char ln = fread_letter( fpArea );
+         if( ln != '$' )
          {
-            ln = fread_line( fpArea );
-
-            if( ln[0] == '$' )
-               break;
-
-            x1 = x2 = x3 = x4 = 0;
-            sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
-
-            tarea->low_soft_range = x1;
-            tarea->hi_soft_range = x2;
-            tarea->low_hard_range = x3;
-            tarea->hi_hard_range = x4;
+            bug( "{}: No $ found after ranges. Invalid format. Unable to process.", __func__ );
+            if( !manual )
+            {
+               shutdown_mud( "Non-standard area format" );
+               std::exit( EXIT_FAILURE );
+            }
+            deleteptr( tarea );
+            --top_area;
+            return;
          }
       }
       else if( !str_cmp( word, "RESETMSG" ) )
       {
-         fread_string( tarea->resetmsg, fpArea );
+         tarea->resetmsg = fread_line( fpArea );
       }
       else if( !str_cmp( word, "FLAGS" ) )
       {
-         const char *ln;
          std::string aflags, flag;
          int x1, x2, value;
 
-         ln = fread_line( fpArea );
          x1 = x2 = 0;
-         sscanf( ln, "%d %d", &x1, &x2 );
+         std::string ln;
+         std::getline( fpArea, ln );
+         std::istringstream( ln ) >> x1 >> x2;
 
          aflags = flag_string( x1, stock_area_flags );
 
@@ -2019,8 +1987,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          /*
           * Not that these values are used anymore, but hey. 
           */
-         fread_number( fpArea );
-         fread_number( fpArea );
+         fpArea >> dummyval >> dummyval;
       }
       else if( !str_cmp( word, "CLIMATE" ) )
       {
@@ -2031,13 +1998,13 @@ void load_stock_area_file( const std::string & filename, bool manual )
             std::exit( EXIT_FAILURE );
          }
 
-         fread_line( fpArea );
+         std::string dummy = fread_line( fpArea );
 
          // Climate values are no longer used with the new weather code.
       }
       else if( !str_cmp( word, "NEIGHBOR" ) )
       {
-         fread_line( fpArea );
+         std::string dummy = fread_line( fpArea );
 
          // This section is no longer used with the new weather code.
       }
@@ -2059,9 +2026,10 @@ void load_stock_area_file( const std::string & filename, bool manual )
 
          for( ;; )
          {
-            mob_index *pMobIndex;
+            mob_index *pMobIndex = nullptr;
             std::string temp;
             char letter;
+            int vnum = 0;
 
             switch ( letter = fread_letter( fpArea ) )
             {
@@ -2079,7 +2047,8 @@ void load_stock_area_file( const std::string & filename, bool manual )
                   break;
 
                case 'M':
-                  pMobIndex = get_mob_index( fread_number( fpArea ) );
+                  fpArea >> vnum;
+                  pMobIndex = get_mob_index( vnum );
                   temp = fread_word( fpArea );
                   if( !pMobIndex )
                   {
@@ -2102,7 +2071,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          }
       }
       else if( !str_cmp( word, "SPELLLIMIT" ) )  /* Skip, AFKMud doesn't have this */
-         fread_number( fpArea );
+         fread_to_eol( fpArea );
       else if( !str_cmp( word, "DERIVATIVES" ) )   /* Chronicles tag, safe to skip */
          fread_to_eol( fpArea );
       else if( !str_cmp( word, "NAMEFORMAT" ) ) /* Chronicles tag, safe to skip */
@@ -2112,7 +2081,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
       else if( !str_cmp( word, "PLANE" ) )   /* DOTD 2.3.6 tag, safe to skip */
       {
          ++dotdcheck;
-         fread_number( fpArea );
+         fpArea >> dummyval;
       }
       else if( !str_cmp( word, "CURRENCY" ) )   /* DOTD 2.3.6 tag, safe to skip */
       {
@@ -2139,12 +2108,12 @@ void load_stock_area_file( const std::string & filename, bool manual )
          }
          else
          {
-            FCLOSE( fpArea );
+            fpArea.close();
             return;
          }
       }
    }
-   FCLOSE( fpArea );
+   fpArea.close();
 
    if( tarea )
    {

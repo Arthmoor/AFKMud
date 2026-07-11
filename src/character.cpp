@@ -3831,11 +3831,11 @@ void char_data::set_actflags( std::bitset<MAX_ACT_FLAG> bits )
    }
 }
 
-void char_data::set_actflags_string( std::string flags )
+void char_data::set_actflags_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->actflags, act_flags );
+      flag_set( stream, this->actflags, act_flags );
    }
    catch( std::exception & e )
    {
@@ -3908,11 +3908,11 @@ void char_data::set_immunes( std::bitset<MAX_RIS_FLAG> bits )
    }
 }
 
-void char_data::set_immunes_string( std::string flags )
+void char_data::set_immunes_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->immune, ris_flags );
+      flag_set( stream, this->immune, ris_flags );
    }
    catch( std::exception & e )
    {
@@ -3961,11 +3961,11 @@ void char_data::set_noimmunes( std::bitset<MAX_RIS_FLAG> bits )
    }
 }
 
-void char_data::set_noimmunes_string( std::string flags )
+void char_data::set_noimmunes_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->no_immune, ris_flags );
+      flag_set( stream, this->no_immune, ris_flags );
    }
    catch( std::exception & e )
    {
@@ -4038,11 +4038,11 @@ void char_data::set_resists( std::bitset<MAX_RIS_FLAG> bits )
    }
 }
 
-void char_data::set_resists_string( std::string flags )
+void char_data::set_resists_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->resistant, ris_flags );
+      flag_set( stream, this->resistant, ris_flags );
    }
    catch( std::exception & e )
    {
@@ -4091,11 +4091,11 @@ void char_data::set_noresists( std::bitset<MAX_RIS_FLAG> bits )
    }
 }
 
-void char_data::set_noresists_string( std::string flags )
+void char_data::set_noresists_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->no_resistant, ris_flags );
+      flag_set( stream, this->no_resistant, ris_flags );
    }
    catch( std::exception & e )
    {
@@ -4168,11 +4168,11 @@ void char_data::set_susceps( std::bitset<MAX_RIS_FLAG> bits )
    }
 }
 
-void char_data::set_susceps_string( std::string flags )
+void char_data::set_susceps_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->susceptible, ris_flags );
+      flag_set( stream, this->susceptible, ris_flags );
    }
    catch( std::exception & e )
    {
@@ -4221,11 +4221,11 @@ void char_data::set_nosusceps( std::bitset<MAX_RIS_FLAG> bits )
    }
 }
 
-void char_data::set_nosusceps_string( std::string flags )
+void char_data::set_nosusceps_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->no_susceptible, ris_flags );
+      flag_set( stream, this->no_susceptible, ris_flags );
    }
    catch( std::exception & e )
    {
@@ -4298,11 +4298,11 @@ void char_data::set_absorbs( std::bitset<MAX_RIS_FLAG> bits )
    }
 }
 
-void char_data::set_absorbs_string( std::string flags )
+void char_data::set_absorbs_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->absorb, ris_flags );
+      flag_set( stream, this->absorb, ris_flags );
    }
    catch( std::exception & e )
    {
@@ -4375,11 +4375,11 @@ void char_data::set_attacks( std::bitset<MAX_ATTACK_TYPE> bits )
    }
 }
 
-void char_data::set_file_attacks( FILE * fp )
+void char_data::set_file_attacks( std::ifstream & stream )
 {
    try
    {
-      flag_set( fp, this->attacks, attack_flags );
+      flag_set( stream, this->attacks, attack_flags );
    }
    catch( std::exception & e )
    {
@@ -4452,11 +4452,11 @@ void char_data::set_defenses( std::bitset<MAX_DEFENSE_TYPE> bits )
    }
 }
 
-void char_data::set_file_defenses( FILE * fp )
+void char_data::set_file_defenses( std::ifstream & stream )
 {
    try
    {
-      flag_set( fp, this->defenses, defense_flags );
+      flag_set( stream, this->defenses, defense_flags );
    }
    catch( std::exception & e )
    {
@@ -4529,11 +4529,11 @@ void char_data::set_aflags( std::bitset<MAX_AFFECTED_BY> bits )
    }
 }
 
-void char_data::set_aflags_string( std::string flags )
+void char_data::set_aflags_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->affected_by, aff_flags );
+      flag_set( stream, this->affected_by, aff_flags );
    }
    catch( std::exception & e )
    {
@@ -4606,11 +4606,11 @@ void char_data::set_noaflags( std::bitset<MAX_AFFECTED_BY> bits )
    }
 }
 
-void char_data::set_noaflags_string( std::string flags )
+void char_data::set_noaflags_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->no_affected_by, aff_flags );
+      flag_set( stream, this->no_affected_by, aff_flags );
    }
    catch( std::exception & e )
    {
@@ -4691,11 +4691,11 @@ void char_data::set_bparts( std::bitset<MAX_BPART> bits )
       this->set_bodypart_where_names();
 }
 
-void char_data::set_bparts_string( std::string flags )
+void char_data::set_bparts_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, this->body_parts, part_flags );
+      flag_set( stream, this->body_parts, part_flags );
    }
    catch( std::exception & e )
    {
@@ -4908,7 +4908,7 @@ std::bitset < MAX_PCFLAG > char_data::get_pcflags(  )
       return this->pcdata->flags;
 }
 
-void char_data::set_pcflags_string( std::string flags )
+void char_data::set_pcflags_file( std::ifstream & stream )
 {
    if( this->isnpc(  ) )
    {
@@ -4918,7 +4918,7 @@ void char_data::set_pcflags_string( std::string flags )
 
    try
    {
-      flag_string_set( flags, this->pcdata->flags, pc_flags );
+      flag_set( stream, this->pcdata->flags, pc_flags );
    }
    catch( std::exception & e )
    {
@@ -4996,11 +4996,11 @@ void char_data::set_langs( std::bitset<LANG_UNKNOWN> bits )
    }
 }
 
-void char_data::set_langs_string( std::string flags )
+void char_data::set_langs_file( std::ifstream & stream )
 {
    try
    {
-      flag_string_set( flags, speaks, lang_names );
+      flag_set( stream, speaks, lang_names );
    }
    catch( std::exception & e )
    {

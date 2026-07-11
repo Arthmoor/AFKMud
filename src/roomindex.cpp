@@ -27,10 +27,12 @@
  ****************************************************************************/
 
 #include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "mobindex.h"
 #include "mud_prog.h"
+#include "mudprog_loader.h"
 #include "objindex.h"
 #include "overland.h"
 #include "roomindex.h"
@@ -566,11 +568,11 @@ room_index *make_room( int vnum, area_data * area )
 
 /* This procedure is responsible for reading any in_file ROOMprograms.
  */
-void room_index::rprog_read_programs( FILE * fp )
+void room_index::rprog_read_programs( std::ifstream & stream )
 {
    for( ;; )
    {
-      char letter = fread_letter( fp );
+      char letter = fread_letter( stream );
 
       if( letter == '|' )
          return;
@@ -583,7 +585,7 @@ void room_index::rprog_read_programs( FILE * fp )
       mud_prog_data *mprg = new mud_prog_data;
       mudprogs.push_back( mprg );
 
-      std::string word = fread_word( fp );
+      std::string word = fread_word( stream );
       mprg->type = mprog_name_to_type( word );
 
       switch ( mprg->type )
@@ -593,7 +595,7 @@ void room_index::rprog_read_programs( FILE * fp )
             std::exit( EXIT_FAILURE );
 
          case IN_FILE_PROG:
-            fread_string( mprg->arglist, fp );
+            fread_string( mprg->arglist, stream );
             mprg->fileprog = false;
             mprog_file_read( this, mprg->arglist );
             break;
@@ -601,8 +603,8 @@ void room_index::rprog_read_programs( FILE * fp )
          default:
             progtypes.set( mprg->type );
             mprg->fileprog = false;
-            fread_string( mprg->arglist, fp );
-            fread_string( mprg->comlist, fp );
+            fread_string( mprg->arglist, stream );
+            fread_string( mprg->comlist, stream );
             break;
       }
    }
@@ -1785,19 +1787,18 @@ void room_index::reset(  )
    }
 }
 
-void room_index::load_reset( FILE * fp, bool newformat )
+void room_index::load_reset( std::ifstream & stream, bool newformat )
 {
    exit_data *pexit;
-   char letter;
-   const char *line;
+   std::string ln;
    // Attention at the keyboard: Don't go setting these back to shorts. Charlana.are will drain your soul!
    // Cause, ya know, this shit loads vnums all over the place and you'll break stuff. Badly.
    int extra, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11;
    bool not01 = false;
    int count = 0;
 
-   letter = fread_letter( fp );
-   line = fread_line( fp );
+   char letter = fread_letter( stream );
+   std::getline( stream, ln );
 
    // Useful to ferret out bad stuff
    extra = arg1 = arg2 = arg3 = arg7 = arg8 = arg9 = arg10 = arg11 = -2;
@@ -1852,12 +1853,12 @@ void room_index::load_reset( FILE * fp, bool newformat )
    if( !newformat )
    {
       if( letter == 'P' || letter == 'T' || letter == 'W' )
-         sscanf( line, "%d %d %d %d %d %d %d %d %d %d %d", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+         std::istringstream( ln ) >> arg1 >> arg2 >> arg3 >> arg4 >> arg5 >> arg6 >> arg7 >> arg8 >> arg9 >> arg10 >> arg11;
       else
-         sscanf( line, "%d %d %d %d %d %d %d %d %d %d %d %d", &extra, &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+         std::istringstream( ln ) >> extra >> arg1 >> arg2 >> arg3 >> arg4 >> arg5 >> arg6 >> arg7 >> arg8 >> arg9 >> arg10 >> arg11;
    }
    else  // Means this is an AFKMud 2.0 native area.
-      sscanf( line, "%d %d %d %d %d %d %d %d %d %d %d", &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7, &arg8, &arg9, &arg10, &arg11 );
+      std::istringstream( ln ) >> arg1 >> arg2 >> arg3 >> arg4 >> arg5 >> arg6 >> arg7 >> arg8 >> arg9 >> arg10 >> arg11;
    ++count;
 
    /*

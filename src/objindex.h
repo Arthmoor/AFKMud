@@ -44,7 +44,7 @@ class obj_index
    void clean_obj(  );
    obj_data *create_object( int );
    int set_ego(  );
-   void oprog_read_programs( FILE * );
+   void oprog_read_programs( std::ifstream & );
 
    class area_data *area = nullptr;             // Area this objindex is associated with.
    std::list<affect_data *> affects;            // List of affects the object has.

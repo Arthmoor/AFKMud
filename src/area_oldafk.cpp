@@ -26,10 +26,11 @@
  *                  Area Conversion Support for AFKMud 1.x                  *
  ****************************************************************************/
 
+#include <fstream>
 #include "mud.h"
+#include "mud_prog.h"
 #include "area.h"
 #include "mobindex.h"
-#include "mud_prog.h"
 #include "objindex.h"
 #include "overland.h"
 #include "roomindex.h"
@@ -41,13 +42,12 @@ extern int top_shop;
 extern int top_repair;
 
 void save_sysdata(  );
-int get_continent( const std::string & );
 void validate_treasure_settings( area_data * );
 
 /*
  * Load a mob section. Old style AFKMud area file.
  */
-void load_mobiles( area_data * tarea, FILE * fp )
+void load_mobiles( area_data * tarea, std::ifstream & stream )
 {
    mob_index *pMobIndex;
    int x1, x2, x3, x4, x5, x6, x7, value;
@@ -68,10 +68,9 @@ void load_mobiles( area_data * tarea, FILE * fp )
    for( ;; )
    {
       int vnum;
-      char letter;
       bool oldmob, tmpBootDb;
 
-      letter = fread_letter( fp );
+      char letter = fread_letter( stream );
       if( letter != '#' )
       {
          bug( "{}: # not found.", __func__ );
@@ -84,7 +83,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
             return;
       }
 
-      vnum = fread_number( fp );
+      stream >> vnum;
       if( vnum == 0 )
          break;
 
@@ -123,10 +122,10 @@ void load_mobiles( area_data * tarea, FILE * fp )
             tarea->hi_vnum = vnum;
       }
       pMobIndex->area = tarea;
-      fread_string( pMobIndex->player_name, fp );
-      fread_string( pMobIndex->short_descr, fp );
-      fread_string( pMobIndex->long_descr, fp );
-      fread_string( pMobIndex->chardesc, fp );
+      pMobIndex->player_name = fread_line( stream );
+      pMobIndex->short_descr = fread_line( stream );
+      pMobIndex->long_descr = fread_line( stream );
+      pMobIndex->chardesc = fread_line( stream );
 
       if( !pMobIndex->chardesc.empty() )
       {
@@ -137,19 +136,22 @@ void load_mobiles( area_data * tarea, FILE * fp )
       if( !pMobIndex->long_descr.empty() && str_prefix( "namegen", pMobIndex->long_descr ) )
          pMobIndex->long_descr[0] = to_upper( pMobIndex->long_descr[0] );
 
-      flag_set( fp, pMobIndex->actflags, act_flags );
-      flag_set( fp, pMobIndex->affected_by, aff_flags );
+      flag_set( stream, pMobIndex->actflags, act_flags );
+      flag_set( stream, pMobIndex->affected_by, aff_flags );
 
       pMobIndex->actflags.set( ACT_IS_NPC );
       pMobIndex->pShop = nullptr;
       pMobIndex->rShop = nullptr;
 
-      const char *ln = fread_line( fp );
+      std::string ln;
+      std::getline( stream, ln );
+
       x1 = x2 = x3 = x4 = x5 = 0;
       x6 = 150;
       x7 = 100;
       float x8 = 0;
-      sscanf( ln, "%d %d %d %d %d %d %d %f", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8 );
+
+      std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8;
 
       pMobIndex->alignment = x1;
       pMobIndex->gold = x2;
@@ -171,27 +173,27 @@ void load_mobiles( area_data * tarea, FILE * fp )
       if( tarea->version < 17 && pMobIndex->gold > 0 )
          pMobIndex->gold = -1;
 
-      pMobIndex->level = fread_number( fp );
-      pMobIndex->mobthac0 = fread_number( fp );
-      pMobIndex->ac = fread_number( fp );
+      stream >> pMobIndex->level;
+      stream >> pMobIndex->mobthac0;
+      stream >> pMobIndex->ac;
       pMobIndex->hitnodice = pMobIndex->level;
       pMobIndex->hitsizedice = 8;
-      pMobIndex->hitplus = fread_number( fp );
-      pMobIndex->damnodice = fread_number( fp );
+      stream >> pMobIndex->hitplus;
+      stream >> pMobIndex->damnodice;
       /*
        * 'd' 
        */
-      fread_letter( fp );
-      pMobIndex->damsizedice = fread_number( fp );
+      fread_letter( stream );
+      stream >> pMobIndex->damsizedice;
       /*
        * '+' 
        */
-      fread_letter( fp );
-      pMobIndex->damplus = fread_number( fp );
+      fread_letter( stream );
+      stream >> pMobIndex->damplus;
 
-      flag_set( fp, pMobIndex->speaks, lang_names );
+      flag_set( stream, pMobIndex->speaks, lang_names );
 
-      std::string speaking = fread_flagstring( fp );
+      std::string speaking = fread_line( stream );
 
       speaking = one_argument( speaking, flag );
       value = get_langnum( flag );
@@ -205,7 +207,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       if( !pMobIndex->speaking )
          pMobIndex->speaking = LANG_COMMON;
 
-      int position = get_npc_position( fread_flagstring( fp ) );
+      int position = get_npc_position( fread_line( stream ) );
       if( position < 0 || position >= POS_MAX )
       {
          bug( "{}: vnum {}: Mobile in invalid position! Defaulting to standing.", __func__, vnum );
@@ -213,7 +215,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       }
       pMobIndex->position = position;
 
-      position = get_npc_position( fread_flagstring( fp ) );
+      position = get_npc_position( fread_line( stream ) );
       if( position < 0 || position >= POS_MAX )
       {
          bug( "{}: vnum {}: Mobile in invalid default position! Defaulting to standing.", __func__, vnum );
@@ -221,7 +223,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       }
       pMobIndex->defposition = position;
 
-      int sex = get_npc_sex( fread_flagstring( fp ) );
+      int sex = get_npc_sex( fread_line( stream ) );
       if( sex < 0 || sex >= SEX_MAX )
       {
          bug( "{}: vnum {}: Mobile has invalid sex! Defaulting to neuter.", __func__, vnum );
@@ -229,7 +231,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       }
       pMobIndex->sex = sex;
 
-      int race = get_npc_race( fread_flagstring( fp ) );
+      int race = get_npc_race( fread_line( stream ) );
       if( race < 0 || race >= MAX_NPC_RACE )
       {
          bug( "{}: vnum {}: Mob has invalid race! Defaulting to monster.", __func__, vnum );
@@ -237,7 +239,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
       }
       pMobIndex->race = race;
 
-      int Class = get_npc_class( fread_flagstring( fp ) );
+      int Class = get_npc_class( fread_line( stream ) );
       if( Class < 0 || Class >= MAX_NPC_CLASS )
       {
          bug( "{}: vnum {}: Mob has invalid Class! Defaulting to warrior.", __func__, vnum );
@@ -245,22 +247,22 @@ void load_mobiles( area_data * tarea, FILE * fp )
       }
       pMobIndex->Class = Class;
 
-      flag_set( fp, pMobIndex->body_parts, part_flags );
-      flag_set( fp, pMobIndex->resistant, ris_flags );
-      flag_set( fp, pMobIndex->immune, ris_flags );
-      flag_set( fp, pMobIndex->susceptible, ris_flags );
-      flag_set( fp, pMobIndex->absorb, ris_flags );
-      flag_set( fp, pMobIndex->attacks, attack_flags );
-      flag_set( fp, pMobIndex->defenses, defense_flags );
+      flag_set( stream, pMobIndex->body_parts, part_flags );
+      flag_set( stream, pMobIndex->resistant, ris_flags );
+      flag_set( stream, pMobIndex->immune, ris_flags );
+      flag_set( stream, pMobIndex->susceptible, ris_flags );
+      flag_set( stream, pMobIndex->absorb, ris_flags );
+      flag_set( stream, pMobIndex->attacks, attack_flags );
+      flag_set( stream, pMobIndex->defenses, defense_flags );
 
-      letter = fread_letter( fp );
+      letter = fread_letter( stream );
       if( letter == '>' )
       {
-         ungetc( letter, fp );
-         pMobIndex->mprog_read_programs( fp );
+         stream.putback( letter );
+         pMobIndex->mprog_read_programs( stream );
       }
       else
-         ungetc( letter, fp );
+         stream.putback( letter );
 
       if( !oldmob )
       {
@@ -274,7 +276,7 @@ void load_mobiles( area_data * tarea, FILE * fp )
 /*
  * Load an obj section. Old style AFKMud area file.
  */
-void load_objects( area_data * tarea, FILE * fp )
+void load_objects( area_data * tarea, std::ifstream & stream )
 {
    obj_index *pObjIndex;
    char letter;
@@ -294,10 +296,10 @@ void load_objects( area_data * tarea, FILE * fp )
 
    for( ;; )
    {
-      int vnum, value;
+      int vnum = 0, value;
       bool tmpBootDb, oldobj;
 
-      letter = fread_letter( fp );
+      letter = fread_letter( stream );
       if( letter != '#' )
       {
          bug( "{}: # not found.", __func__ );
@@ -310,7 +312,7 @@ void load_objects( area_data * tarea, FILE * fp )
             return;
       }
 
-      vnum = fread_number( fp );
+      stream >> vnum;
       if( vnum == 0 )
          break;
 
@@ -349,14 +351,14 @@ void load_objects( area_data * tarea, FILE * fp )
             tarea->hi_vnum = vnum;
       }
       pObjIndex->area = tarea;
-      fread_string( pObjIndex->name, fp );
-      fread_string( pObjIndex->short_descr, fp );
-      fread_string( pObjIndex->objdesc, fp );
-      fread_string( pObjIndex->action_desc, fp );
+      pObjIndex->name = fread_line( stream );
+      pObjIndex->short_descr = fread_line( stream );
+      pObjIndex->objdesc = fread_line( stream );
+      pObjIndex->action_desc = fread_line( stream );
 
       pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
 
-      value = get_otype( fread_flagstring( fp ) );
+      value = get_otype( fread_line( stream ) );
       if( value < 0 )
       {
          bug( "{}: vnum {}: Object has invalid type! Defaulting to trash.", __func__, vnum );
@@ -364,16 +366,17 @@ void load_objects( area_data * tarea, FILE * fp )
       }
       pObjIndex->item_type = value;
 
-      flag_set( fp, pObjIndex->extra_flags, o_flags );
-      flag_set( fp, pObjIndex->wear_flags, w_flags );
+      flag_set( stream, pObjIndex->extra_flags, o_flags );
+      flag_set( stream, pObjIndex->wear_flags, w_flags );
 
       // Magic Flags
       // These things were never used, but will leave this here to allow it to get ignored if it's been inserted.
-      fread_flagstring( fp );
+      fread_line( stream );
 
-      const char *ln = fread_line( fp );
       x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x10 = x11 = 0;
-      sscanf( ln, "%d %d %d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9, &x10, &x11 );
+      std::string ln;
+      std::getline( stream, ln );
+      std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9 >> x10 >> x11;
 
       if( x1 == 0 && ( pObjIndex->item_type == ITEM_WEAPON || pObjIndex->item_type == ITEM_MISSILE_WEAPON ) )
       {
@@ -399,14 +402,14 @@ void load_objects( area_data * tarea, FILE * fp )
       pObjIndex->value[9] = x10;
       pObjIndex->value[10] = x11;
 
-      char temp[3][MSL];
-      ln = fread_line( fp );
+      std::getline( stream, ln );
+      std::string s1 = "None", s2 = "None", s3 = "None";
+
       x1 = x2 = x3 = x5 = 0;
       x4 = 9999;
-      temp[0][0] = '\0';
-      temp[1][0] = '\0';
-      temp[2][0] = '\0';
-      sscanf( ln, "%d %d %d %d %d %s %s %s", &x1, &x2, &x3, &x4, &x5, temp[0], temp[1], temp[2] );
+
+      std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> s1 >> s2 >> s3;
+
       pObjIndex->weight = x1;
       pObjIndex->weight = umax( 1, pObjIndex->weight );
       pObjIndex->cost = x2;
@@ -414,22 +417,11 @@ void load_objects( area_data * tarea, FILE * fp )
       pObjIndex->limit = x4;
       pObjIndex->layers = x5;
 
-      if( temp[0][0] == '\0' )
-         pObjIndex->socket[0] = "None";
-      else
-         pObjIndex->socket[0] = temp[0];
+      pObjIndex->socket[0] = s1;
+      pObjIndex->socket[1] = s2;
+      pObjIndex->socket[2] = s3;
 
-      if( temp[1][0] == '\0' )
-         pObjIndex->socket[1] = "None";
-      else
-         pObjIndex->socket[1] = temp[1];
-
-      if( temp[2][0] == '\0' )
-         pObjIndex->socket[2] = "None";
-      else
-         pObjIndex->socket[2] = temp[2];
-
-      switch ( pObjIndex->item_type )
+      switch( pObjIndex->item_type )
       {
          default:
             break;
@@ -437,25 +429,25 @@ void load_objects( area_data * tarea, FILE * fp )
          case ITEM_PILL:
          case ITEM_POTION:
          case ITEM_SCROLL:
-            pObjIndex->value[1] = skill_lookup( fread_word( fp ) );
-            pObjIndex->value[2] = skill_lookup( fread_word( fp ) );
-            pObjIndex->value[3] = skill_lookup( fread_word( fp ) );
+            pObjIndex->value[1] = skill_lookup( fread_word( stream ) );
+            pObjIndex->value[2] = skill_lookup( fread_word( stream ) );
+            pObjIndex->value[3] = skill_lookup( fread_word( stream ) );
             break;
 
          case ITEM_STAFF:
          case ITEM_WAND:
-            pObjIndex->value[3] = skill_lookup( fread_word( fp ) );
+            pObjIndex->value[3] = skill_lookup( fread_word( stream ) );
             break;
 
          case ITEM_SALVE:
-            pObjIndex->value[4] = skill_lookup( fread_word( fp ) );
-            pObjIndex->value[5] = skill_lookup( fread_word( fp ) );
+            pObjIndex->value[4] = skill_lookup( fread_word( stream ) );
+            pObjIndex->value[5] = skill_lookup( fread_word( stream ) );
             break;
       }
 
       for( ;; )
       {
-         letter = fread_letter( fp );
+         letter = fread_letter( stream );
 
          if( letter == 'A' )
          {
@@ -474,15 +466,19 @@ void load_objects( area_data * tarea, FILE * fp )
             {
                std::string aff, risa, flag;
 
-               paf->location = fread_number( fp );
+               stream >> paf->location;
 
                if( paf->location == APPLY_WEAPONSPELL
                    || paf->location == APPLY_WEARSPELL
                    || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
-                  paf->modifier = slot_lookup( fread_number( fp ) );
+               {
+                  int mod;
+                  stream >> mod;
+                  paf->modifier = slot_lookup( mod );
+               }
                else if( paf->location == APPLY_AFFECT )
                {
-                  paf->modifier = fread_number( fp );
+                  stream >> paf->modifier;
                   aff = flag_string( paf->modifier, aff_flags );
                   value = get_aflag( aff );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
@@ -498,7 +494,7 @@ void load_objects( area_data * tarea, FILE * fp )
                }
                else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
                {
-                  value = fread_number( fp );
+                  stream >> value;
                   risa = flag_string( value, ris_flags );
 
                   while( !risa.empty() )
@@ -512,13 +508,13 @@ void load_objects( area_data * tarea, FILE * fp )
                   }
                }
                else
-                  paf->modifier = fread_number( fp );
+                  stream >> paf->modifier;
             }
             else
             {
                std::string loc, aff;
 
-               loc = fread_word( fp );
+               loc = fread_word( stream );
                value = get_atype( loc );
                if( value < 0 || value >= MAX_APPLY_TYPE )
                {
@@ -530,10 +526,10 @@ void load_objects( area_data * tarea, FILE * fp )
                if( paf->location == APPLY_WEAPONSPELL
                    || paf->location == APPLY_WEARSPELL
                    || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
-                  paf->modifier = skill_lookup( fread_word( fp ) );
+                  paf->modifier = skill_lookup( fread_word( stream ) );
                else if( paf->location == APPLY_AFFECT )
                {
-                  aff = fread_word( fp );
+                  aff = fread_word( stream );
                   value = get_aflag( aff );
                   if( value < 0 || value >= MAX_AFFECTED_BY )
                   {
@@ -544,9 +540,9 @@ void load_objects( area_data * tarea, FILE * fp )
                      paf->modifier = value;
                }
                else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
-                  flag_set( fp, paf->rismod, ris_flags );
+                  flag_set( stream, paf->rismod, ris_flags );
                else
-                  paf->modifier = fread_number( fp );
+                  stream >> paf->modifier;
             }
 
             if( !setaff )
@@ -562,19 +558,19 @@ void load_objects( area_data * tarea, FILE * fp )
          {
             extra_descr_data *ed = new extra_descr_data;
 
-            fread_string( ed->keyword, fp );
-            fread_string( ed->desc, fp );
+            fread_string( ed->keyword, stream );
+            fread_string( ed->desc, stream );
             pObjIndex->extradesc.push_back( ed );
             ++top_ed;
          }
          else if( letter == '>' )
          {
-            ungetc( letter, fp );
-            pObjIndex->oprog_read_programs( fp );
+            stream.putback( letter );
+            pObjIndex->oprog_read_programs( stream );
          }
          else
          {
-            ungetc( letter, fp );
+            stream.putback( letter );
             break;
          }
       }
@@ -594,7 +590,7 @@ void load_objects( area_data * tarea, FILE * fp )
 /*
  * Load a reset section. This is maintained only for legacy areas.
  */
-void load_resets( area_data * tarea, FILE * fp )
+void load_resets( area_data * tarea, std::ifstream & stream )
 {
    room_index *pRoomIndex = nullptr;
    bool not01 = false;
@@ -629,36 +625,33 @@ void load_resets( area_data * tarea, FILE * fp )
       exit_data *pexit;
       char letter;
       int extra, arg1, arg2, arg3 = 0;
-      short arg4, arg5, arg6, arg7 = 0;
+      short arg4, arg5, arg6, arg7 = -2;
 
-      if( ( letter = fread_letter( fp ) ) == 'S' )
+      if( ( letter = fread_letter( stream ) ) == 'S' )
          break;
 
       if( letter == '*' )
       {
-         fread_to_eol( fp );
+         fread_to_eol( stream );
          continue;
       }
 
-      extra = fread_number( fp );
+      stream >> extra;
       if( letter == 'M' || letter == 'O' )
          extra = 0;
-      arg1 = fread_number( fp );
-      arg2 = fread_number( fp );
+      stream >> arg1 >> arg2;
       if( letter != 'G' && letter != 'R' )
-         arg3 = fread_number( fp );
-      arg4 = arg5 = arg6 = -1;
+         stream >> arg3;
+      arg4 = arg5 = arg6 = -2;
 
       if( tarea->version > 18 )
       {
          if( letter == 'O' || letter == 'M' )
          {
-            arg4 = fread_short( fp );
-            arg5 = fread_short( fp );
-            arg6 = fread_short( fp );
+            stream >> arg4 >> arg5 >> arg6;
          }
       }
-      fread_to_eol( fp );
+      fread_to_eol( stream );
       ++count;
 
       // Legacy resets are assumed to fire off 100% of the time
@@ -832,20 +825,18 @@ void load_resets( area_data * tarea, FILE * fp )
 /*
  * Load a room section. Old style AFKMud area file.
  */
-void load_rooms( area_data * tarea, FILE * fp )
+void load_rooms( area_data * tarea, std::ifstream & stream )
 {
    room_index *pRoomIndex;
-   const char *ln;
    int area_number, value;
 
    for( ;; )
    {
-      char letter;
       int vnum, door;
       bool tmpBootDb, oldroom;
-      int x1, x2, x3, x4, x5, x6;
+      int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0;
 
-      letter = fread_letter( fp );
+      char letter = fread_letter( stream );
       if( letter != '#' )
       {
          bug( "{}: # not found.", __func__ );
@@ -858,7 +849,7 @@ void load_rooms( area_data * tarea, FILE * fp )
             return;
       }
 
-      vnum = fread_number( fp );
+      stream >> vnum;
       if( vnum == 0 )
          break;
 
@@ -921,18 +912,18 @@ void load_rooms( area_data * tarea, FILE * fp )
          if( vnum > tarea->hi_vnum )
             tarea->hi_vnum = vnum;
       }
-      fread_string( pRoomIndex->name, fp );
-      fread_string( pRoomIndex->roomdesc, fp );
+      pRoomIndex->name = fread_line( stream );
+      pRoomIndex->roomdesc = fread_line( stream );
 
       /*
        * Check for NiteDesc's  -- Dracones 
        */
       if( tarea->version > 13 )
       {
-         fread_string( pRoomIndex->nitedesc, fp );
+         pRoomIndex->nitedesc = fread_line( stream );
       }
 
-      int sector = get_sectypes( fread_flagstring( fp ) );
+      int sector = get_sectypes( fread_line( stream ) );
       if( sector < 0 || sector >= SECT_MAX )
       {
          bug( "{}: Room #{} has bad sector type.", __func__, vnum );
@@ -942,15 +933,17 @@ void load_rooms( area_data * tarea, FILE * fp )
       pRoomIndex->sector_type = sector;
       pRoomIndex->winter_sector = -1;
 
-      flag_set( fp, pRoomIndex->flags, r_flags );
+      flag_set( stream, pRoomIndex->flags, r_flags );
 
-      area_number = fread_number( fp );
+      stream >> area_number;
 
       if( area_number > 0 )
       {
-         ln = fread_line( fp );
+         std::string ln;
+         std::getline( stream, ln );
+
          x1 = x2 = x3 = x4 = 0;
-         sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4;
 
          pRoomIndex->tele_delay = x1;
          pRoomIndex->tele_vnum = x2;
@@ -974,7 +967,7 @@ void load_rooms( area_data * tarea, FILE * fp )
 
       for( ;; )
       {
-         letter = fread_letter( fp );
+         letter = fread_letter( stream );
 
          if( letter == 'S' )
             break;
@@ -992,7 +985,7 @@ void load_rooms( area_data * tarea, FILE * fp )
             paf->modifier = 0;
             paf->rismod.reset(  );
 
-            loc = fread_word( fp );
+            loc = fread_word( stream );
             value = get_atype( loc );
             if( value < 0 || value >= MAX_APPLY_TYPE )
                bug( "{}: Invalid apply type: {}", __func__, loc );
@@ -1002,10 +995,10 @@ void load_rooms( area_data * tarea, FILE * fp )
             if( paf->location == APPLY_WEAPONSPELL
                 || paf->location == APPLY_WEARSPELL
                 || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
-               paf->modifier = skill_lookup( fread_word( fp ) );
+               paf->modifier = skill_lookup( fread_word( stream ) );
             else if( paf->location == APPLY_AFFECT )
             {
-               aff = fread_word( fp );
+               aff = fread_word( stream );
                value = get_aflag( aff );
                if( value < 0 || value >= MAX_AFFECTED_BY )
                   bug( "{}: Unsupportable value for affect flag: {}", __func__, aff );
@@ -1013,13 +1006,13 @@ void load_rooms( area_data * tarea, FILE * fp )
                   paf->modifier = value;
             }
             else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
-               flag_set( fp, paf->rismod, ris_flags );
+               flag_set( stream, paf->rismod, ris_flags );
             else
-               paf->modifier = fread_number( fp );
+               stream >> paf->modifier;
 
-            paf->type = fread_short( fp );
-            paf->duration = fread_number( fp );
-            paf->bit = fread_number( fp );
+            stream >> paf->type;
+            stream >> paf->duration;
+            stream >> paf->bit;
 
             if( paf->bit >= MAX_AFFECTED_BY )
                deleteptr( paf );
@@ -1028,7 +1021,7 @@ void load_rooms( area_data * tarea, FILE * fp )
          }
          else if( letter == 'D' )
          {
-            door = get_dir( fread_flagstring( fp ) );
+            door = get_dir( fread_line( stream ) );
 
             if( door < 0 || door > DIR_SOMEWHERE )
             {
@@ -1039,14 +1032,16 @@ void load_rooms( area_data * tarea, FILE * fp )
             else
             {
                exit_data *pexit = pRoomIndex->make_exit( nullptr, door );
-               fread_string( pexit->exitdesc, fp );
-               fread_string( pexit->keyword, fp );
+               fread_string( pexit->exitdesc, stream );
+               fread_string( pexit->keyword, stream );
 
-               flag_set( fp, pexit->flags, ex_flags );
+               flag_set( stream, pexit->flags, ex_flags );
 
-               ln = fread_line( fp );
+               std::string ln;
+               std::getline( stream, ln );
+
                x1 = x2 = x3 = x4 = x5 = x6 = 0;
-               sscanf( ln, "%d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6 );
+               std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
 
                pexit->key = x1;
                pexit->vnum = x2;
@@ -1067,18 +1062,18 @@ void load_rooms( area_data * tarea, FILE * fp )
          {
             extra_descr_data *ed = new extra_descr_data;
 
-            fread_string( ed->keyword, fp );
-            fread_string( ed->desc, fp );
+            fread_string( ed->keyword, stream );
+            fread_string( ed->desc, stream );
             pRoomIndex->extradesc.push_back( ed );
             ++top_ed;
          }
 
          else if( letter == 'R' )
-            pRoomIndex->load_reset( fp, false );
+            pRoomIndex->load_reset( stream, false );
          else if( letter == '>' )
          {
-            ungetc( letter, fp );
-            pRoomIndex->rprog_read_programs( fp );
+            stream.putback( letter );
+            pRoomIndex->rprog_read_programs( stream );
          }
          else
          {
@@ -1099,32 +1094,28 @@ void load_rooms( area_data * tarea, FILE * fp )
 }
 
 // Old style AFKMud area file.
-void load_shops( FILE * fp )
+void load_shops( std::ifstream & stream )
 {
-   shop_data *pShop;
-
    for( ;; )
    {
-      mob_index *pMobIndex;
-      int iTrade;
-
-      pShop = new shop_data;
-      pShop->keeper = fread_number( fp );
-      if( pShop->keeper == 0 )
-      {
-         deleteptr( pShop );
+      int keeper;
+      stream >> keeper;
+      if( keeper == 0 )
          break;
-      }
-      for( iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
-         pShop->buy_type[iTrade] = fread_number( fp );
-      pShop->profit_buy = fread_number( fp );
-      pShop->profit_sell = fread_number( fp );
+
+      shop_data *pShop = new shop_data;
+      pShop->keeper = keeper;
+
+      for( int iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
+         stream >> pShop->buy_type[iTrade];
+      stream >> pShop->profit_buy >> pShop->profit_sell;
       pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
       pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
-      pShop->open_hour = fread_number( fp );
-      pShop->close_hour = fread_number( fp );
-      fread_to_eol( fp );
-      pMobIndex = get_mob_index( pShop->keeper );
+
+      stream >> pShop->open_hour >> pShop->close_hour;
+      fread_to_eol( stream );
+
+      mob_index *pMobIndex = get_mob_index( pShop->keeper );
       pMobIndex->pShop = pShop;
       shoplist.push_back( pShop );
       ++top_shop;
@@ -1132,30 +1123,24 @@ void load_shops( FILE * fp )
 }
 
 // Old style AFKMud area file.
-void load_repairs( FILE * fp )
+void load_repairs( std::ifstream & stream )
 {
-   repair_data *rShop;
-
    for( ;; )
    {
-      mob_index *pMobIndex;
-      int iFix;
-
-      rShop = new repair_data;
-      rShop->keeper = fread_number( fp );
-      if( rShop->keeper == 0 )
-      {
-         deleteptr( rShop );
+      int keeper;
+      stream >> keeper;
+      if( keeper == 0 )
          break;
-      }
-      for( iFix = 0; iFix < MAX_FIX; ++iFix )
-         rShop->fix_type[iFix] = fread_number( fp );
-      rShop->profit_fix = fread_number( fp );
-      rShop->shop_type = fread_number( fp );
-      rShop->open_hour = fread_number( fp );
-      rShop->close_hour = fread_number( fp );
-      fread_to_eol( fp );
-      pMobIndex = get_mob_index( rShop->keeper );
+
+      repair_data *rShop = new repair_data;
+      rShop->keeper = keeper;
+
+      for( int iFix = 0; iFix < MAX_FIX; ++iFix )
+         stream >> rShop->fix_type[iFix];
+      stream >> rShop->profit_fix >> rShop->shop_type >> rShop->open_hour >> rShop->close_hour;
+      fread_to_eol( stream );
+
+      mob_index *pMobIndex = get_mob_index( rShop->keeper );
       pMobIndex->rShop = rShop;
       repairlist.push_back( rShop );
       ++top_repair;
@@ -1163,14 +1148,8 @@ void load_repairs( FILE * fp )
 }
 
 // Return true for failure, false if ok at end.
-bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
+bool load_oldafk_area( std::ifstream & stream, area_data *tarea, int area_version )
 {
-   if( !fpArea )
-   {
-      bug( "{}: Bad FILE pointer passed!", __func__ );
-      return true;
-   }
-
    if( !tarea )
    {
       bug( "{}: Bad area pointer passed!", __func__ );
@@ -1181,13 +1160,13 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
 
    for( ;; )
    {
-      if( fread_letter( fpArea ) != '#' )
+      if( fread_letter( stream ) != '#' )
       {
          bug( "{}: # not found {}", __func__, tarea->filename );
          std::exit( EXIT_FAILURE );
       }
 
-      std::string word = fread_word( fpArea );
+      std::string word = fread_word( stream );
 
       if( word[0] == '$' )
          break;
@@ -1195,12 +1174,11 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       // Resuming from where area.cpp left off. AUTHOR should be next valid field.
       else if( !str_cmp( word, "AUTHOR" ) )
       {
-         fread_string( tarea->author, fpArea );
+         tarea->author = fread_line( stream );
       }
       else if( !str_cmp( word, "VNUMS" ) )
       {
-         tarea->low_vnum = fread_number( fpArea );
-         tarea->hi_vnum = fread_number( fpArea );
+         stream >> tarea->low_vnum >> tarea->hi_vnum;
 
          /*
           * Protection against forgetting to raise the MaxVnum value before adding a new zone that would exceed it.
@@ -1209,52 +1187,41 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
          if( tarea->hi_vnum >= sysdata->maxvnum )
          {
             sysdata->maxvnum = tarea->hi_vnum + 1;
-            log_printf( "MaxVnum value raised to {} to accomadate new zone.", sysdata->maxvnum );
+            log_printf( "MaxVnum value raised to {} to accommodate new zone.", sysdata->maxvnum );
             save_sysdata(  );
          }
       }
       else if( !str_cmp( word, "RANGES" ) )
       {
-         int x1, x2, x3, x4;
-         const char *ln;
-
-         for( ;; )
+         stream >> tarea->low_soft_range >> tarea->hi_soft_range >> tarea->low_hard_range >> tarea->hi_hard_range;
+         char ln = fread_letter( stream );
+         if( ln != '$' )
          {
-            ln = fread_line( fpArea );
-
-            if( ln[0] == '$' )
-               break;
-
-            x1 = x2 = x3 = x4 = 0;
-            sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
-
-            tarea->low_soft_range = x1;
-            tarea->hi_soft_range = x2;
-            tarea->low_hard_range = x3;
-            tarea->hi_hard_range = x4;
+            bug( "{}: No $ found after ranges. Invalid format. Unable to process.", __func__ );
+            shutdown_mud( "Non-standard area format" );
+            std::exit( EXIT_FAILURE );
          }
       }
       else if( !str_cmp( word, "RESETMSG" ) )
       {
-         fread_string( tarea->resetmsg, fpArea );
+         tarea->resetmsg = fread_line( stream );
       }
       /*
        * Frequency loader - Samson 5-10-99 
        */
       else if( !str_cmp( word, "RESETFREQUENCY" ) )
       {
-         tarea->reset_frequency = fread_number( fpArea );
+         stream >> tarea->reset_frequency;
          tarea->age = tarea->reset_frequency;
       }
       else if( !str_cmp( word, "FLAGS" ) )
       {
-         flag_set( fpArea, tarea->flags, area_flags );
+         flag_set( stream, tarea->flags, area_flags );
       }
       else if( !str_cmp( word, "CONTINENT" ) )
       {
          continent_data *continent = nullptr;
-         std::string value;
-         fread_string( value, fpArea );
+         std::string value = fread_line( stream );
 
          if( !( continent = find_continent_by_name( value ) ) )
          {
@@ -1265,14 +1232,12 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
          {
             tarea->continent = continent;
          }
-         break;
       }
       else if( !str_cmp( word, "COORDS" ) )
       {
          short x, y;
 
-         x = fread_short( fpArea );
-         y = fread_short( fpArea );
+         stream >> x >> y;
 
          if( !is_valid_x( x ) )
          {
@@ -1291,31 +1256,33 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       else if( !str_cmp( word, "CLIMATE" ) )
       {
          // These values are ignored with the new weather code.
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       }
       else if( !str_cmp( word, "TREASURE" ) )
       {
          unsigned short x1, x2, x3, x4;
-         const char *ln = fread_line( fpArea );
 
          x1 = 20;
          x2 = 74;
          x3 = 85;
          x4 = 93;
-         sscanf( ln, "%hu %hu %hu %hu", &x1, &x2, &x3, &x4 );
+
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4;
 
          tarea->tg_nothing = x1;
          tarea->tg_gold = x2;
          tarea->tg_item = x3;
          tarea->tg_gem = x4;
 
-         ln = fread_line( fpArea );
-
          x1 = 20;
          x2 = 50;
          x3 = 60;
          x4 = 75;
-         sscanf( ln, "%hu %hu %hu %hu", &x1, &x2, &x3, &x4 );
+
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4;
 
          tarea->tg_scroll = x1;
          tarea->tg_potion = x2;
@@ -1327,20 +1294,20 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
       else if( !str_cmp( word, "NEIGHBOR" ) )
       {
          // This section is no longer used with the new weather code.
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       }
       else if( !str_cmp( word, "MOBILES" ) )
-         load_mobiles( tarea, fpArea );
+         load_mobiles( tarea, stream );
       else if( !str_cmp( word, "OBJECTS" ) )
-         load_objects( tarea, fpArea );
+         load_objects( tarea, stream );
       else if( !str_cmp( word, "RESETS" ) )
-         load_resets( tarea, fpArea );
+         load_resets( tarea, stream );
       else if( !str_cmp( word, "ROOMS" ) )
-         load_rooms( tarea, fpArea );
+         load_rooms( tarea, stream );
       else if( !str_cmp( word, "SHOPS" ) )
-         load_shops( fpArea );
+         load_shops( stream );
       else if( !str_cmp( word, "REPAIRS" ) )
-         load_repairs( fpArea );
+         load_repairs( stream );
       else if( !str_cmp( word, "SPECIALS" ) )
       {
          bool done = false;
@@ -1351,7 +1318,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
             std::string temp;
             char letter;
 
-            switch ( letter = fread_letter( fpArea ) )
+            switch ( letter = fread_letter( stream ) )
             {
                default:
                   bug( "{}: letter '{}' not *MSOR.", __func__, letter );
@@ -1365,14 +1332,15 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
                   break;
 
                case 'M':
-                  pMobIndex = get_mob_index( fread_number( fpArea ) );
-                  temp = fread_word( fpArea );
+                  int vnum;
+                  stream >> vnum;
+                  pMobIndex = get_mob_index( vnum );
+                  temp = fread_word( stream );
                   if( !pMobIndex )
                   {
                      bug( "{}: 'M': Invalid mob vnum!", __func__ );
-                     break;
                   }
-                  if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
+                  else if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
                   {
                      bug( "{}: 'M': vnum {}, no spec_fun called {}.", __func__, pMobIndex->vnum, temp );
                      pMobIndex->spec_funname.clear(  );
@@ -1383,7 +1351,7 @@ bool load_oldafk_area( FILE *fpArea, area_data *tarea, int area_version )
             }
             if( done )
                break;
-            fread_to_eol( fpArea );
+            fread_to_eol( stream );
          }
       }
       else

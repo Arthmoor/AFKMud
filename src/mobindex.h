@@ -44,7 +44,7 @@ class mob_index
 
    void clean_mob(  );
    char_data *create_mobile(  );
-   void mprog_read_programs( FILE * fp );
+   void mprog_read_programs( std::ifstream & );
 
    class area_data *area = nullptr;             // Area this mob is associated with.
    SPEC_FUN *spec_fun = nullptr;                // Pointer to the special function this mob uses if one was specified.

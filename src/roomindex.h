@@ -112,7 +112,7 @@ class room_index
    exit_data *get_exit_to( short, int );
    exit_data *get_exit_num( short );
    void echo( std::string_view );
-   void rprog_read_programs( FILE * );
+   void rprog_read_programs( std::ifstream & );
    bool is_dark( char_data * );
    bool is_private(  );
    void room_affect( affect_data *, bool );
@@ -122,7 +122,7 @@ class room_index
    void wipe_resets(  );
    void clean_resets(  );
    void renumber_put_resets(  );
-   void load_reset( FILE *, bool );
+   void load_reset( std::ifstream &, bool );
 
    area_data *area = nullptr;                   // Area this room belongs to.
    reset_data *last_mob_reset = nullptr;

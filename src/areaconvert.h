@@ -53,7 +53,7 @@ struct extended_bitvector
    unsigned int bits[XBI]; /* Needs to be unsigned to compile in Redhat 6 - Samson */
 };
 
-EXT_BV fread_bitvector( FILE * );
+EXT_BV fread_bitvector( std::ifstream & );
 std::string ext_flag_string( const EXT_BV & bitvector, const char * const flagarray[] );
 
 extern int top_affect;
@@ -61,7 +61,7 @@ extern int top_exit;
 extern int top_reset;
 extern int top_shop;
 extern int top_repair;
-extern FILE *fpArea;
+extern std::ifstream fpArea;
 
 template <typename T>
 bool xIS_SET( const T& var, int bit )

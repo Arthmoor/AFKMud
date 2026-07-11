@@ -298,7 +298,7 @@ class char_data
    bool has_actflags(  );
    std::bitset<MAX_ACT_FLAG> get_actflags(  );
    void set_actflags( std::bitset<MAX_ACT_FLAG> );
-   void set_actflags_string( std::string );
+   void set_actflags_file( std::ifstream & );
 
    bool has_immune( int );
    void set_immune( int );
@@ -307,14 +307,14 @@ class char_data
    bool has_immunes(  );
    std::bitset<MAX_RIS_FLAG> get_immunes(  );
    void set_immunes( std::bitset<MAX_RIS_FLAG> );
-   void set_immunes_string( std::string );
+   void set_immunes_file( std::ifstream & );
 
    bool has_noimmune( int );
    void set_noimmune( int );
    bool has_noimmunes(  );
    std::bitset<MAX_RIS_FLAG> get_noimmunes(  );
    void set_noimmunes( std::bitset<MAX_RIS_FLAG> );
-   void set_noimmunes_string( std::string );
+   void set_noimmunes_file( std::ifstream & );
 
    bool has_resist( int );
    void set_resist( int );
@@ -323,14 +323,14 @@ class char_data
    bool has_resists(  );
    std::bitset<MAX_RIS_FLAG> get_resists(  );
    void set_resists( std::bitset<MAX_RIS_FLAG> );
-   void set_resists_string( std::string );
+   void set_resists_file( std::ifstream & );
 
    bool has_noresist( int );
    void set_noresist( int );
    bool has_noresists(  );
    std::bitset<MAX_RIS_FLAG> get_noresists(  );
    void set_noresists( std::bitset<MAX_RIS_FLAG> );
-   void set_noresists_string( std::string );
+   void set_noresists_file( std::ifstream & );
 
    bool has_suscep( int );
    void set_suscep( int );
@@ -339,14 +339,14 @@ class char_data
    bool has_susceps(  );
    std::bitset<MAX_RIS_FLAG> get_susceps(  );
    void set_susceps( std::bitset<MAX_RIS_FLAG> );
-   void set_susceps_string( std::string );
+   void set_susceps_file( std::ifstream & );
 
    bool has_nosuscep( int );
    void set_nosuscep( int );
    bool has_nosusceps(  );
    std::bitset<MAX_RIS_FLAG> get_nosusceps(  );
    void set_nosusceps( std::bitset<MAX_RIS_FLAG> );
-   void set_nosusceps_string( std::string );
+   void set_nosusceps_file( std::ifstream & );
 
    bool has_absorb( int );
    void set_absorb( int );
@@ -355,7 +355,7 @@ class char_data
    bool has_absorbs(  );
    std::bitset<MAX_RIS_FLAG> get_absorbs(  );
    void set_absorbs( std::bitset< MAX_RIS_FLAG> );
-   void set_absorbs_string( std::string );
+   void set_absorbs_file( std::ifstream & );
 
    bool has_attack( int );
    void set_attack( int );
@@ -364,7 +364,7 @@ class char_data
    bool has_attacks(  );
    std::bitset<MAX_ATTACK_TYPE> get_attacks(  );
    void set_attacks( std::bitset<MAX_ATTACK_TYPE> );
-   void set_file_attacks( FILE * );
+   void set_file_attacks( std::ifstream & );
 
    bool has_defense( int );
    void set_defense( int );
@@ -373,7 +373,7 @@ class char_data
    bool has_defenses(  );
    std::bitset<MAX_DEFENSE_TYPE> get_defenses(  );
    void set_defenses( std::bitset<MAX_DEFENSE_TYPE> );
-   void set_file_defenses( FILE * );
+   void set_file_defenses( std::ifstream & );
 
    bool has_aflag( int );
    void set_aflag( int );
@@ -382,7 +382,7 @@ class char_data
    bool has_aflags(  );
    std::bitset<MAX_AFFECTED_BY> get_aflags(  );
    void set_aflags( std::bitset<MAX_AFFECTED_BY> );
-   void set_aflags_string( std::string );
+   void set_aflags_file( std::ifstream & );
 
    bool has_noaflag( int );
    void set_noaflag( int );
@@ -391,7 +391,7 @@ class char_data
    bool has_noaflags(  );
    std::bitset<MAX_AFFECTED_BY> get_noaflags(  );
    void set_noaflags( std::bitset<MAX_AFFECTED_BY> );
-   void set_noaflags_string( std::string );
+   void set_noaflags_file( std::ifstream & );
 
    bool has_bpart( int );
    void set_bpart( int );
@@ -400,7 +400,7 @@ class char_data
    bool has_bparts(  );
    std::bitset<MAX_BPART> get_bparts(  );
    void set_bparts( std::bitset<MAX_BPART> );
-   void set_bparts_string( std::string );
+   void set_bparts_file( std::ifstream & );
    void set_bodypart_where_names( );
 
    bool has_pcflag( int );
@@ -409,7 +409,7 @@ class char_data
    void toggle_pcflag( int );
    bool has_pcflags(  );
    std::bitset<MAX_PCFLAG> get_pcflags(  );
-   void set_pcflags_string( std::string );
+   void set_pcflags_file( std::ifstream & );
 
    bool has_lang( int );
    void set_lang( int );
@@ -418,7 +418,7 @@ class char_data
    bool has_langs(  );
    std::bitset<LANG_UNKNOWN> get_langs(  );
    void set_langs( std::bitset<LANG_UNKNOWN> );
-   void set_langs_string( std::string );
+   void set_langs_file( std::ifstream & );
 
    bool isnpc(  )
    {

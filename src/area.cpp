@@ -33,6 +33,7 @@
 #include "calendar.h"
 #include "mobindex.h"
 #include "mud_prog.h"
+#include "mudprog_loader.h"
 #include "objindex.h"
 #include "overland.h"
 #include "roomindex.h"
@@ -45,7 +46,7 @@ extern int top_prog;
 extern int top_affect;
 extern int top_shop;
 extern int top_repair;
-extern FILE *fpArea;
+extern std::ifstream fpArea;
 
 std::list < area_data * >arealist;
 std::list < area_data * >area_nsort;
@@ -55,8 +56,8 @@ int recall( char_data *, int );
 void save_sysdata(  );
 bool check_area_conflict( area_data *, int, int );
 void web_arealist(  );
-area_data *fread_smaugfuss_area( FILE * );
-bool load_oldafk_area( FILE *, area_data *, int );
+area_data *fread_smaugfuss_area( std::ifstream & );
+bool load_oldafk_area( std::ifstream &, area_data *, int );
 CMDF( do_areaconvert );
 
 area_data::area_data(  )
@@ -327,144 +328,51 @@ void validate_treasure_settings( area_data * area )
    }
 }
 
-void fread_afk_exit( FILE * fp, room_index * pRoomIndex )
+void fread_afk_exit( std::ifstream & stream, room_index * pRoomIndex )
 {
    exit_data *pexit = nullptr;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "#ENDEXIT" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Direction" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "#ENDEXIT";
-      }
+         int door = get_dir( fread_line( stream ) );
 
-      switch ( word[0] )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '#':
-            if( !str_cmp( word, "#ENDEXIT" ) )
-            {
+         if( door < 0 || door > DIR_SOMEWHERE )
+         {
+            bug( "{}: vnum {} has bad door number {}.", __func__, pRoomIndex->vnum, door );
+            if( fBootDb )
                return;
-            }
-            break;
-
-         case 'D':
-            STDSKEY( "Desc", pexit->exitdesc );
-            if( !str_cmp( word, "Direction" ) )
-            {
-               int door = get_dir( fread_flagstring( fp ) );
-
-               if( door < 0 || door > DIR_SOMEWHERE )
-               {
-                  bug( "{}: vnum {} has bad door number {}.", __func__, pRoomIndex->vnum, door );
-                  if( fBootDb )
-                     return;
-               }
-               pexit = pRoomIndex->make_exit( nullptr, door );
-            }
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               flag_set( fp, pexit->flags, ex_flags );
-               break;
-            }
-            break;
-
-         case 'K':
-            KEY( "Key", pexit->key, fread_number( fp ) );
-            STDSKEY( "Keywords", pexit->keyword );
-            break;
-
-         case 'P':
-            if( !str_cmp( word, "Pull" ) )
-            {
-               pexit->pulltype = fread_number( fp );
-               pexit->pull = fread_number( fp );
-               break;
-            }
-            break;
-
-         case 'T':
-            KEY( "ToRoom", pexit->vnum, fread_number( fp ) );
-            if( !str_cmp( word, "ToCoords" ) )
-            {
-               pexit->map_x = fread_number( fp );
-               pexit->map_y = fread_number( fp );
-               break;
-            }
-            break;
+         }
+         pexit = pRoomIndex->make_exit( nullptr, door );
+      }
+      else if( key == "ToRoom" )
+         stream >> pexit->vnum;
+      else if( key == "Key" )
+         stream >> pexit->key;
+      else if( key == "ToCoords" )
+         stream >> pexit->map_x >> pexit->map_y;
+      else if( key == "Pull" )
+         stream >> pexit->pulltype >> pexit->pull;
+      else if( key == "Desc" )
+         pexit->exitdesc = fread_line( stream ) ;
+      else if( key == "Keywords" )
+         pexit->keyword = fread_line( stream );
+      else if( key == "Flags" )
+         flag_set( stream, pexit->flags, ex_flags );
+      else if( key == "#ENDEXIT" )
+         return;
+      else
+      {
+         bug( "{}: Bad section '{}' in exits - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
-
    // Reach this point, you fell through somehow. The data is no longer valid.
    bug( "{}: Reached fallout point! Exit data invalid.", __func__ );
    if( pexit )
       pRoomIndex->extract_exit( pexit );
-}
-
-affect_data *fread_afk_affect( FILE * fp )
-{
-   std::string loc;
-   std::string aff;
-   int value;
-   bool setaff = true;
-
-   affect_data *paf = new affect_data;
-   paf->location = APPLY_NONE;
-   paf->type = -1;
-   paf->duration = -1;
-   paf->bit = 0;
-   paf->modifier = 0;
-   paf->rismod.reset(  );
-
-   loc = fread_word( fp );
-   value = get_atype( loc );
-   if( value < 0 || value >= MAX_APPLY_TYPE )
-   {
-      bug( "{}: Invalid apply type: {}", __func__, loc );
-      setaff = false;
-   }
-   paf->location = value;
-
-   if( paf->location == APPLY_WEAPONSPELL
-       || paf->location == APPLY_WEARSPELL
-       || paf->location == APPLY_REMOVESPELL || paf->location == APPLY_STRIPSN || paf->location == APPLY_RECURRINGSPELL || paf->location == APPLY_EAT_SPELL )
-      paf->modifier = skill_lookup( fread_word( fp ) );
-   else if( paf->location == APPLY_AFFECT )
-   {
-      aff = fread_word( fp );
-      value = get_aflag( aff );
-      if( value < 0 || value >= MAX_AFFECTED_BY )
-      {
-         bug( "{}: Unsupportable value for affect flag: {}", __func__, aff );
-         setaff = false;
-      }
-      else
-         paf->modifier = value;
-   }
-   else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
-      flag_set( fp, paf->rismod, ris_flags );
-   else
-      paf->modifier = fread_number( fp );
-
-   paf->type = fread_short( fp );
-   paf->duration = fread_number( fp );
-   paf->bit = fread_number( fp );
-
-   if( !setaff )
-      deleteptr( paf );
-   else
-      ++top_affect;
-   return paf;
 }
 
 affect_data *fread_afk_affect( std::ifstream & stream )
@@ -505,12 +413,7 @@ affect_data *fread_afk_affect( std::ifstream & stream )
          paf->modifier = value;
    }
    else if( paf->location == APPLY_RESISTANT || paf->location == APPLY_IMMUNE || paf->location == APPLY_SUSCEPTIBLE || paf->location == APPLY_ABSORB )
-   {
-      std::string temp;
-      fread_string( temp, stream );
-
-      flag_string_set( temp, paf->rismod, ris_flags );
-   }
+      flag_set( stream, paf->rismod, ris_flags );
    else
       stream >> paf->modifier;
 
@@ -525,1175 +428,795 @@ affect_data *fread_afk_affect( std::ifstream & stream )
    return paf;
 }
 
-extra_descr_data *fread_afk_exdesc( FILE * fp )
+extra_descr_data *fread_afk_exdesc( std::ifstream & stream )
 {
    extra_descr_data *ed = new extra_descr_data;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "#ENDEXDESC" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "ExDescKey" )
+         ed->keyword = fread_line( stream );
+      else if( key == "ExDesc" )
+         ed->desc = fread_line( stream );
+      else if( key == "#ENDEXDESC" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "#ENDEXDESC";
+         if( ed->keyword.empty(  ) )
+         {
+            bug( "{}: Missing ExDesc keyword. Returning nullptr.", __func__ );
+            deleteptr( ed );
+            return nullptr;
+         }
+         return ed;
       }
-
-      switch ( word[0] )
+      else
       {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '#':
-            if( !str_cmp( word, "#ENDEXDESC" ) )
-            {
-               if( ed->keyword.empty(  ) )
-               {
-                  bug( "{}: Missing ExDesc keyword. Returning nullptr.", __func__ );
-                  deleteptr( ed );
-                  return nullptr;
-               }
-               return ed;
-            }
-            break;
-
-         case 'E':
-            STDSKEY( "ExDescKey", ed->keyword );
-            STDSKEY( "ExDesc", ed->desc );
-            break;
+         bug( "{}: Bad section '{}' in exdesc - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
-
    // Reach this point, you fell through somehow. The data is no longer valid.
    bug( "{}: Reached fallout point! ExtraDesc data invalid.", __func__ );
    deleteptr( ed );
    return nullptr;
 }
 
-void fread_afk_areadata( FILE * fp, area_data * tarea )
+void fread_afk_areadata( std::ifstream & stream, area_data * tarea )
 {
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "#ENDAREADATA" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Version" )
+         stream >> tarea->version;
+      else if( key == "Name" )
+         tarea->name = fread_line( stream );
+      else if( key == "Author" )
+         tarea->author = fread_line( stream );
+      else if( key == "Credits" )
+         tarea->credits = fread_line( stream );
+      else if( key == "Climate" || key == "Neighbor" ) // These values are no longer used with the new weather code.
+         fread_to_eol( stream );
+      else if( key == "Vnums" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "#ENDAREADATA";
+         stream >> tarea->low_vnum >> tarea->hi_vnum;
+
+         /*
+          * Protection against forgetting to raise the MaxVnum value before adding a new zone that would exceed it.
+          * Potentially dangerous if some blockhead makes insanely high vnums and then installs the area.
+          */
+         if( tarea->hi_vnum >= sysdata->maxvnum )
+         {
+            sysdata->maxvnum = tarea->hi_vnum + 1;
+            log_printf( "MaxVnum value raised to {} to accomadate new zone.", sysdata->maxvnum );
+            save_sysdata(  );
+         }
       }
-
-      switch ( word[0] )
+      else if( key == "Continent" )
       {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         continent_data *continent = nullptr;
+         std::string value = fread_line( stream );
 
-         case '#':
-            if( !str_cmp( word, "#ENDAREADATA" ) )
-            {
-               tarea->age = tarea->reset_frequency;
-               return;
-            }
-            break;
+         if( !( continent = find_continent_by_name( value ) ) )
+         {
+            bug( "{}: Invalid area continent '{}' - Needs to be manually corrected.", __func__, value );
+            tarea->continent = nullptr;
+         }
+         else
+         {
+            tarea->continent = continent;
+         }
+      }
+      else if( key == "Coordinates" )
+      {
+         short x, y;
 
-         case 'A':
-            STDSKEY( "Author", tarea->author );
-            break;
+         stream >> x >> y;
 
-         case 'C':
-            STDSKEY( "Credits", tarea->credits );
+         if( !is_valid_x( x ) )
+         {
+            bug( "{}: Area has bad x coord - setting X to 0", __func__ );
+            x = 0;
+         }
 
-            if( !str_cmp( word, "Climate" ) )
-            {
-               // These values are no longer used with the new weather code.
-               fread_to_eol( fp );
-               break;
-            }
+         if( !is_valid_y( y ) )
+         {
+            bug( "{}: Area has bad y coord - setting Y to 0", __func__ );
+            y = 0;
+         }
 
-            if( !str_cmp( word, "Continent" ) )
-            {
-               continent_data *continent = nullptr;
-               std::string value;
+         tarea->map_x = x;
+         tarea->map_y = y;
+      }
+      else if( key == "Dates" )
+      {
+         time_t cdate;
+         stream >> cdate;
+         tarea->creation_date = std::chrono::system_clock::from_time_t( cdate );
 
-               fread_string( value, fp );
+         time_t idate;
+         stream >> idate;
+         tarea->install_date = std::chrono::system_clock::from_time_t( idate );
+      }
+      else if( key == "Ranges" )
+         stream >> tarea->low_soft_range >> tarea->hi_soft_range >> tarea->low_hard_range >> tarea->hi_hard_range;
+      else if( key == "ResetMsg" )
+         tarea->resetmsg = fread_line( stream );
+      else if( key == "ResetFreq" )
+         stream >> tarea->reset_frequency;
+      else if( key == "Flags" )
+         flag_set( stream, tarea->flags, area_flags );
+      else if( key == "Treasure" )
+      {
+         stream >> tarea->tg_nothing >> tarea->tg_gold >> tarea->tg_item >> tarea->tg_gem >> tarea->tg_scroll >> tarea->tg_potion >> tarea->tg_wand >> tarea->tg_armor;
 
-               if( !( continent = find_continent_by_name( value ) ) )
-               {
-                  bug( "{}: Invalid area continent '{}' - Needs to be manually corrected.", __func__, value );
-                  tarea->continent = nullptr;
-               }
-               else
-               {
-                  tarea->continent = continent;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Coordinates" ) )
-            {
-               short x, y;
-
-               x = fread_short( fp );
-               y = fread_short( fp );
-
-               if( !is_valid_x( x ) )
-               {
-                  bug( "{}: Area has bad x coord - setting X to 0", __func__ );
-                  x = 0;
-               }
-
-               if( !is_valid_y( y ) )
-               {
-                  bug( "{}: Area has bad y coord - setting Y to 0", __func__ );
-                  y = 0;
-               }
-
-               tarea->map_x = x;
-               tarea->map_y = y;
-               break;
-            }
-
-         case 'D':
-            if( !str_cmp( word, "Dates" ) )
-            {
-               time_t cdate = fread_long( fp );
-               tarea->creation_date = std::chrono::system_clock::from_time_t( cdate );
-
-               time_t idate = fread_long( fp );
-               tarea->install_date = std::chrono::system_clock::from_time_t( idate );
-               break;
-            }
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               flag_set( fp, tarea->flags, area_flags );
-               break;
-            }
-            break;
-
-         case 'N':
-            STDSKEY( "Name", tarea->name );
-            if( !str_cmp( word, "Neighbor" ) )
-            {
-               // This section is no longer used with the new weather code.
-               fread_to_eol( fp );
-               break;
-            }
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Ranges" ) )
-            {
-               int x1, x2, x3, x4;
-               const char *ln = fread_line( fp );
-
-               x1 = x2 = x3 = x4 = 0;
-               sscanf( ln, "%d %d %d %d", &x1, &x2, &x3, &x4 );
-
-               tarea->low_soft_range = x1;
-               tarea->hi_soft_range = x2;
-               tarea->low_hard_range = x3;
-               tarea->hi_hard_range = x4;
-
-               break;
-            }
-            STDSKEY( "ResetMsg", tarea->resetmsg );
-            KEY( "ResetFreq", tarea->reset_frequency, fread_short( fp ) );
-            break;
-
-         case 'T':
-            if( !str_cmp( word, "Treasure" ) )
-            {
-               unsigned short x1, x2, x3, x4, x5, x6, x7, x8;
-               const char *ln = fread_line( fp );
-
-               x1 = 20;
-               x2 = 74;
-               x3 = 85;
-               x4 = 93;
-               x5 = 20;
-               x6 = 50;
-               x7 = 60;
-               x8 = 75;
-               sscanf( ln, "%hu %hu %hu %hu, %hu %hu %hu %hu", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8 );
-
-               tarea->tg_nothing = x1;
-               tarea->tg_gold = x2;
-               tarea->tg_item = x3;
-               tarea->tg_gem = x4;
-               tarea->tg_scroll = x5;
-               tarea->tg_potion = x6;
-               tarea->tg_wand = x7;
-               tarea->tg_armor = x8;
-
-               validate_treasure_settings( tarea );
-               break;
-            }
-            break;
-
-         case 'V':
-            KEY( "Version", tarea->version, fread_short( fp ) );
-            if( !str_cmp( word, "Vnums" ) )
-            {
-               tarea->low_vnum = fread_number( fp );
-               tarea->hi_vnum = fread_number( fp );
-
-               /*
-                * Protection against forgetting to raise the MaxVnum value before adding a new zone that would exceed it.
-                * Potentially dangerous if some blockhead makes insanely high vnums and then installs the area.
-                */
-               if( tarea->hi_vnum >= sysdata->maxvnum )
-               {
-                  sysdata->maxvnum = tarea->hi_vnum + 1;
-                  log_printf( "MaxVnum value raised to {} to accomadate new zone.", sysdata->maxvnum );
-                  save_sysdata(  );
-               }
-               break;
-            }
-            break;
+         validate_treasure_settings( tarea );
+      }
+      else if( key == "WeatherCoords" )
+         stream >> tarea->weatherx >> tarea->weathery;
+      else if( key == "#ENDAREADATA" )
+      {
+         tarea->age = tarea->reset_frequency;
+         return;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' in header data - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
 }
 
-void fread_afk_mobile( FILE * fp, area_data * tarea )
+void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
 {
    mob_index *pMobIndex = nullptr;
    bool oldmob = false;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "#ENDMOBILE" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Vnum" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "#ENDMOBILE";
-      }
+         bool tmpBootDb = fBootDb;
+         fBootDb = false;
 
-      switch ( word[0] )
-      {
-         default:
-            log_printf( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
+         int vnum;
+         stream >> vnum;
 
-         case '#':
-            if( !str_cmp( word, "#MUDPROG" ) )
+         if( get_mob_index( vnum ) )
+         {
+            if( tmpBootDb )
             {
-               mud_prog_data *mprg = new mud_prog_data;
-               fread_afk_mudprog( fp, mprg, pMobIndex );
-               pMobIndex->mudprogs.push_back( mprg );
-               ++top_prog;
-               break;
-            }
-
-            if( !str_cmp( word, "#ENDMOBILE" ) )
-            {
-               if( !oldmob )
-               {
-                  mob_index_table.insert( std::map<int, mob_index *>::value_type( pMobIndex->vnum, pMobIndex ) );
-                  tarea->mobs.push_back( pMobIndex );
-                  ++top_mob_index;
-               }
-               return;
-            }
-            break;
-
-         case 'A':
-            if( !str_cmp( word, "Absorb" ) )
-            {
-               flag_set( fp, pMobIndex->absorb, ris_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "Actflags" ) )
-            {
-               flag_set( fp, pMobIndex->actflags, act_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "Affected" ) )
-            {
-               flag_set( fp, pMobIndex->affected_by, aff_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "Attacks" ) )
-            {
-               flag_set( fp, pMobIndex->attacks, attack_flags );
-               break;
-            }
-            break;
-
-         case 'B':
-            if( !str_cmp( word, "Bodyparts" ) )
-            {
-               flag_set( fp, pMobIndex->body_parts, part_flags );
-               break;
-            }
-            break;
-
-         case 'C':
-            if( !str_cmp( word, "Class" ) )
-            {
-               short Class = get_npc_class( fread_flagstring( fp ) );
-
-               if( Class < 0 || Class >= MAX_NPC_CLASS )
-               {
-                  bug( "{}: vnum {}: Mob has invalid Class! Defaulting to warrior.", __func__, pMobIndex->vnum );
-                  Class = get_npc_class( "warrior" );
-               }
-
-               pMobIndex->Class = Class;
-               break;
-            }
-            break;
-
-         case 'D':
-            if( !str_cmp( word, "Defenses" ) )
-            {
-               flag_set( fp, pMobIndex->defenses, defense_flags );
-               break;
-            }
-
-            if( !str_cmp( word, "DefPos" ) )
-            {
-               short position = get_npc_position( fread_flagstring( fp ) );
-
-               if( position < 0 || position >= POS_MAX )
-               {
-                  bug( "{}: vnum {}: Mobile in invalid default position! Defaulting to standing.", __func__, pMobIndex->vnum );
-                  position = POS_STANDING;
-               }
-               pMobIndex->defposition = position;
-               break;
-            }
-
-            if( !str_cmp( word, "Desc" ) )
-            {
-               fread_string( pMobIndex->chardesc, fp );
-
-               if( !pMobIndex->chardesc.empty() )
-               {
-                  if( str_prefix( "namegen", pMobIndex->chardesc ) )
-                     pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
-               }
-               break;
-            }
-            break;
-
-         case 'G':
-            if( !str_cmp( word, "Gender" ) )
-            {
-               short sex = get_npc_sex( fread_flagstring( fp ) );
-
-               if( sex < 0 || sex >= SEX_MAX )
-               {
-                  bug( "{}: vnum {}: Mobile has invalid gender! Defaulting to neuter.", __func__, pMobIndex->vnum );
-                  sex = SEX_NEUTRAL;
-               }
-               pMobIndex->sex = sex;
-               break;
-            }
-            break;
-
-         case 'I':
-            if( !str_cmp( word, "Immune" ) )
-            {
-               flag_set( fp, pMobIndex->immune, ris_flags );
-               break;
-            }
-            break;
-
-         case 'K':
-            STDSKEY( "Keywords", pMobIndex->player_name );
-            break;
-
-         case 'L':
-            STDSKEY( "Long", pMobIndex->long_descr );
-            break;
-
-         case 'N':
-            KEY( "Nattacks", pMobIndex->numattacks, fread_float( fp ) );
-            break;
-
-         case 'P':
-            if( !str_cmp( word, "Position" ) )
-            {
-               short position = get_npc_position( fread_flagstring( fp ) );
-
-               if( position < 0 || position >= POS_MAX )
-               {
-                  bug( "{}: vnum {}: Mobile in invalid position! Defaulting to standing.", __func__, pMobIndex->vnum );
-                  position = POS_STANDING;
-               }
-               pMobIndex->position = position;
-               break;
-            }
-            break;
-
-         case 'R':
-            if( !str_cmp( word, "Race" ) )
-            {
-               const char *race_text = fread_flagstring( fp );
-               short race = get_npc_race( race_text );
-
-               if( race < 0 || race >= MAX_NPC_RACE )
-               {
-                  bug( "{}: vnum {}: Mob has invalid race: %s. Defaulting to monster.", __func__, pMobIndex->vnum, race_text );
-                  race = get_npc_race( "monster" );
-               }
-
-               pMobIndex->race = race;
-               break;
-            }
-
-            if( !str_cmp( word, "RepairData" ) )
-            {
-               int iFix;
-               repair_data *rShop = new repair_data;
-
-               rShop->keeper = pMobIndex->vnum;
-               for( iFix = 0; iFix < MAX_FIX; ++iFix )
-                  rShop->fix_type[iFix] = fread_number( fp );
-               rShop->profit_fix = fread_number( fp );
-               rShop->shop_type = fread_number( fp );
-               rShop->open_hour = fread_number( fp );
-               rShop->close_hour = fread_number( fp );
-
-               pMobIndex->rShop = rShop;
-               repairlist.push_back( rShop );
-               ++top_repair;
-
-               break;
-            }
-
-            if( !str_cmp( word, "Resist" ) )
-            {
-               flag_set( fp, pMobIndex->resistant, ris_flags );
-               break;
-            }
-            break;
-
-         case 'S':
-            STDSKEY( "Short", pMobIndex->short_descr );
-
-            if( !str_cmp( word, "ShopData" ) )
-            {
-               int iTrade;
-               shop_data *pShop = new shop_data;
-
-               pShop->keeper = pMobIndex->vnum;
-               for( iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
-                  pShop->buy_type[iTrade] = fread_number( fp );
-               pShop->profit_buy = fread_number( fp );
-               pShop->profit_sell = fread_number( fp );
-               pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
-               pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
-               pShop->open_hour = fread_number( fp );
-               pShop->close_hour = fread_number( fp );
-
-               pMobIndex->pShop = pShop;
-               shoplist.push_back( pShop );
-               ++top_shop;
-
-               break;
-            }
-
-            if( !str_cmp( word, "Speaks" ) )
-            {
-               flag_set( fp, pMobIndex->speaks, lang_names );
-
-               if( pMobIndex->speaks.none(  ) )
-                  pMobIndex->speaks.set( LANG_COMMON );
-               break;
-            }
-
-            if( !str_cmp( word, "Speaking" ) )
-            {
-               std::string speaking, flag;
-               int value;
-
-               speaking = fread_flagstring( fp );
-
-               speaking = one_argument( speaking, flag );
-               value = get_langnum( flag );
-               if( value < 0 || value >= LANG_UNKNOWN )
-                  bug( "Unknown speaking language: {}", flag );
-               else
-                  pMobIndex->speaking = value;
-
-               if( !pMobIndex->speaking )
-                  pMobIndex->speaking = LANG_COMMON;
-               break;
-            }
-
-            if( !str_cmp( word, "Specfun" ) )
-            {
-               const char *temp = fread_flagstring( fp );
-
-               if( !pMobIndex )
-               {
-                  bug( "{}: Specfun: Invalid mob vnum!", __func__ );
-                  break;
-               }
-               if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
-               {
-                  bug( "{}: Specfun: vnum {}, no spec_fun called {}.", __func__, pMobIndex->vnum, temp );
-                  pMobIndex->spec_funname.clear(  );
-               }
-               else
-                  pMobIndex->spec_funname = temp;
-               break;
-            }
-
-            if( !str_cmp( word, "Stats1" ) )
-            {
-               const char *ln = fread_line( fp );
-               int x1, x2, x3, x4, x5 = 150, x6 = 100;
-
-               x1 = x2 = x3 = x4 = 0;
-               sscanf( ln, "%d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6 );
-
-               pMobIndex->alignment = x1;
-               pMobIndex->gold = x2;
-               pMobIndex->height = x3;
-               pMobIndex->weight = x4;
-               pMobIndex->max_move = x5;
-               pMobIndex->max_mana = x6;
-
-               if( pMobIndex->max_move < 1 )
-                  pMobIndex->max_move = 150;
-
-               if( pMobIndex->max_mana < 1 )
-                  pMobIndex->max_mana = 100;
-               break;
-            }
-
-            if( !str_cmp( word, "Stats2" ) )
-            {
-               const char *ln = fread_line( fp );
-               int x1, x2, x3, x4, x5, x6, x7;
-               x1 = x2 = x3 = x4 = x5 = x6 = x7 = 0;
-               sscanf( ln, "%d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7 );
-
-               pMobIndex->level = x1;
-               pMobIndex->mobthac0 = x2;
-               pMobIndex->ac = x3;
-               pMobIndex->hitplus = x4;
-               pMobIndex->damnodice = x5;
-               pMobIndex->damsizedice = x6;
-               pMobIndex->damplus = x7;
-
-               pMobIndex->hitnodice = pMobIndex->level;
-               pMobIndex->hitsizedice = 8;
-
-               break;
-            }
-
-            if( !str_cmp( word, "Suscept" ) )
-            {
-               flag_set( fp, pMobIndex->susceptible, ris_flags );
-               break;
-            }
-            break;
-
-         case 'V':
-            if( !str_cmp( word, "Vnum" ) )
-            {
-               bool tmpBootDb = fBootDb;
-               fBootDb = false;
-
-               int vnum = fread_number( fp );
-
-               if( get_mob_index( vnum ) )
-               {
-                  if( tmpBootDb )
-                  {
-                     fBootDb = tmpBootDb;
-                     bug( "{}: vnum {} duplicated.", __func__, vnum );
-
-                     // Try to recover, read to end of duplicated mobile and then bail out
-                     for( ;; )
-                     {
-                        word = feof( fp ) ? "#ENDMOBILE" : fread_word( fp );
-
-                        if( !str_cmp( word, "#ENDMOBILE" ) )
-                           return;
-                     }
-                  }
-                  else
-                  {
-                     pMobIndex = get_mob_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: {}", vnum );
-                     pMobIndex->clean_mob(  );
-                     oldmob = true;
-                  }
-               }
-               else
-               {
-                  pMobIndex = new mob_index;
-                  pMobIndex->clean_mob(  );
-               }
-               pMobIndex->vnum = vnum;
-               pMobIndex->area = tarea;
                fBootDb = tmpBootDb;
+               bug( "{}: vnum {} duplicated.", __func__, vnum );
 
-               if( fBootDb )
+               // Try to recover, read to end of duplicated mobile and then bail out
+               for( ;; )
                {
-                  if( !tarea->low_vnum )
-                     tarea->low_vnum = vnum;
-                  if( vnum > tarea->hi_vnum )
-                     tarea->hi_vnum = vnum;
+                  stream >> key;
+                  if( key == "#ENDMOBILE" || stream.eof() )
+                     return;
                }
-               break;
             }
-            break;
+            else
+            {
+               pMobIndex = get_mob_index( vnum );
+               log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: {}", vnum );
+               pMobIndex->clean_mob(  );
+               oldmob = true;
+            }
+         }
+         else
+         {
+            pMobIndex = new mob_index;
+            pMobIndex->clean_mob(  );
+         }
+         pMobIndex->vnum = vnum;
+         pMobIndex->area = tarea;
+         fBootDb = tmpBootDb;
+
+         if( fBootDb )
+         {
+            if( !tarea->low_vnum )
+               tarea->low_vnum = vnum;
+            if( vnum > tarea->hi_vnum )
+               tarea->hi_vnum = vnum;
+         }
+      }
+      else if( key == "Keywords" )
+         pMobIndex->player_name = fread_line( stream );
+      else if( key == "Race" )
+      {
+         std::string race_text = fread_line( stream );
+         short race = get_npc_race( race_text );
+
+         if( race < 0 || race >= MAX_NPC_RACE )
+         {
+            bug( "{}: vnum {}: Mob has invalid race: {}. Defaulting to monster.", __func__, pMobIndex->vnum, race_text );
+            race = get_npc_race( "monster" );
+         }
+
+         pMobIndex->race = race;
+      }
+      else if( key == "Class" )
+      {
+         std::string class_text = fread_line( stream );
+         short Class = get_npc_class( class_text );
+
+         if( Class < 0 || Class >= MAX_NPC_CLASS )
+         {
+            bug( "{}: vnum {}: Mob has invalid class: {}. Defaulting to warrior.", __func__, pMobIndex->vnum, class_text );
+            Class = get_npc_class( "warrior" );
+         }
+
+         pMobIndex->Class = Class;
+      }
+      else if( key == "Gender" )
+      {
+         std::string gender = fread_line( stream );
+         short sex = get_npc_sex( gender );
+
+         if( sex < 0 || sex >= SEX_MAX )
+         {
+            bug( "{}: vnum {}: Mobile has invalid gender: {}. Defaulting to neuter.", __func__, pMobIndex->vnum, gender );
+            sex = SEX_NEUTRAL;
+         }
+         pMobIndex->sex = sex;
+      }
+      else if( key == "Position" )
+      {
+         std::string pos_text = fread_line( stream );
+         short position = get_npc_position( pos_text );
+
+         if( position < 0 || position >= POS_MAX )
+         {
+            bug( "{}: vnum {}: Mobile in invalid position: {}. Defaulting to standing.", __func__, pMobIndex->vnum, pos_text );
+            position = POS_STANDING;
+         }
+         pMobIndex->position = position;
+      }
+      else if( key == "DefPos" )
+      {
+         std::string npc_pos = fread_line( stream );
+         short position = get_npc_position( npc_pos );
+
+         if( position < 0 || position >= POS_MAX )
+         {
+            bug( "{}: vnum {}: Mobile in invalid default position: {}. Defaulting to standing.", __func__, pMobIndex->vnum, npc_pos );
+            position = POS_STANDING;
+         }
+         pMobIndex->defposition = position;
+      }
+      else if( key == "Specfun" )
+      {
+         std::string temp = fread_line( stream );
+
+         if( !pMobIndex )
+            bug( "{}: Specfun: Invalid mob vnum!", __func__ );
+         else if( !( pMobIndex->spec_fun = m_spec_lookup( temp ) ) )
+         {
+            bug( "{}: Specfun: vnum {}, no spec_fun called {}.", __func__, pMobIndex->vnum, temp );
+            pMobIndex->spec_funname.clear(  );
+         }
+         else
+            pMobIndex->spec_funname = temp;
+      }
+      else if( key == "Short" )
+         pMobIndex->short_descr = fread_line( stream );
+      else if( key == "Long" )
+         pMobIndex->long_descr = fread_line( stream );
+      else if( key == "Desc" )
+      {
+         pMobIndex->chardesc = fread_line( stream );
+
+         if( !pMobIndex->chardesc.empty() )
+         {
+            if( str_prefix( "namegen", pMobIndex->chardesc ) )
+               pMobIndex->chardesc[0] = to_upper( pMobIndex->chardesc[0] );
+         }
+      }
+      else if( key == "Nattacks" )
+         stream >> pMobIndex->numattacks;
+      else if( key == "Stats1" )
+      {
+         stream >> pMobIndex->alignment >> pMobIndex->gold >> pMobIndex->height >> pMobIndex->weight >> pMobIndex->max_move >> pMobIndex->max_mana;
+
+         if( pMobIndex->max_move < 1 )
+            pMobIndex->max_move = 150;
+
+         if( pMobIndex->max_mana < 1 )
+            pMobIndex->max_mana = 100;
+      }
+      else if( key == "Stats2" )
+      {
+         stream >> pMobIndex->level >> pMobIndex->mobthac0 >> pMobIndex->ac >> pMobIndex->hitplus >> pMobIndex->damnodice >> pMobIndex->damsizedice >> pMobIndex->damplus;
+
+         pMobIndex->hitnodice = pMobIndex->level;
+         pMobIndex->hitsizedice = 8;
+      }
+      else if( key == "Speaks" )
+      {
+         flag_set( stream, pMobIndex->speaks, lang_names );
+
+         if( pMobIndex->speaks.none(  ) )
+            pMobIndex->speaks.set( LANG_COMMON );
+      }
+      else if( key == "Speaking" )
+      {
+         std::string speaking, flag;
+         int value;
+
+         speaking = fread_line( stream );
+
+         speaking = one_argument( speaking, flag );
+         value = get_langnum( flag );
+         if( value < 0 || value >= LANG_UNKNOWN )
+            bug( "Unknown speaking language: {}", flag );
+         else
+            pMobIndex->speaking = value;
+
+         if( !pMobIndex->speaking )
+            pMobIndex->speaking = LANG_COMMON;
+      }
+      else if( key == "Actflags" )
+         flag_set( stream, pMobIndex->actflags, act_flags );
+      else if( key == "Affected" )
+         flag_set( stream, pMobIndex->affected_by, aff_flags );
+      else if( key == "Bodyparts" )
+         flag_set( stream, pMobIndex->body_parts, part_flags );
+      else if( key == "Resist" )
+         flag_set( stream, pMobIndex->resistant, ris_flags );
+      else if( key == "Immune" )
+         flag_set( stream, pMobIndex->immune, ris_flags );
+      else if( key == "Suscept" )
+         flag_set( stream, pMobIndex->susceptible, ris_flags );
+      else if( key == "Absorb" )
+         flag_set( stream, pMobIndex->absorb, ris_flags );
+      else if( key == "Attacks" )
+         flag_set( stream, pMobIndex->attacks, attack_flags );
+      else if( key == "Defenses" )
+         flag_set( stream, pMobIndex->defenses, defense_flags );
+      else if( key == "ShopData" )
+      {
+         int iTrade;
+         shop_data *pShop = new shop_data;
+
+         pShop->keeper = pMobIndex->vnum;
+         for( iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
+            stream >> pShop->buy_type[iTrade];
+
+         stream >> pShop->profit_buy >> pShop->profit_sell;
+         pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
+         pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
+
+         stream >> pShop->open_hour >> pShop->close_hour;
+
+         pMobIndex->pShop = pShop;
+         shoplist.push_back( pShop );
+         ++top_shop;
+      }
+      else if( key == "RepairData" )
+      {
+         int iFix;
+         repair_data *rShop = new repair_data;
+
+         rShop->keeper = pMobIndex->vnum;
+         for( iFix = 0; iFix < MAX_FIX; ++iFix )
+            stream >> rShop->fix_type[iFix];
+
+         stream >> rShop->profit_fix >> rShop->shop_type >> rShop->open_hour >> rShop->close_hour;
+
+         pMobIndex->rShop = rShop;
+         repairlist.push_back( rShop );
+         ++top_repair;
+      }
+      else if( key == "#MUDPROG" )
+      {
+         mud_prog_data *mprg = new mud_prog_data;
+         fread_afk_mudprog( stream, mprg, pMobIndex );
+         pMobIndex->mudprogs.push_back( mprg );
+         ++top_prog;
+      }
+      else if( key == "#ENDMOBILE" )
+      {
+         if( !oldmob )
+         {
+            mob_index_table.insert( std::map<int, mob_index *>::value_type( pMobIndex->vnum, pMobIndex ) );
+            tarea->mobs.push_back( pMobIndex );
+            ++top_mob_index;
+         }
+         return;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' in mobiles - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
 }
 
-void fread_afk_object( FILE * fp, area_data * tarea )
+void fread_afk_object( std::ifstream & stream, area_data * tarea )
 {
    obj_index *pObjIndex = nullptr;
    bool oldobj = false;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "#ENDOBJECT" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Vnum" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         word = "#ENDOBJECT";
-      }
+         bool tmpBootDb = fBootDb;
+         fBootDb = false;
+         int vnum;
+         stream >> vnum;
 
-      switch ( word[0] )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '#':
-            if( !str_cmp( word, "#ENDOBJECT" ) )
+         if( get_obj_index( vnum ) )
+         {
+            if( tmpBootDb )
             {
-               if( !oldobj )
-               {
-                  obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
-                  tarea->objects.push_back( pObjIndex );
-                  ++top_obj_index;
-               }
-               return;
-            }
-
-            if( !str_cmp( word, "#EXDESC" ) )
-            {
-               extra_descr_data *ed = fread_afk_exdesc( fp );
-               if( ed )
-               {
-                  pObjIndex->extradesc.push_back( ed );
-                  ++top_ed;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "#MUDPROG" ) )
-            {
-               mud_prog_data *mprg = new mud_prog_data;
-               fread_afk_mudprog( fp, mprg, pObjIndex );
-               pObjIndex->mudprogs.push_back( mprg );
-               ++top_prog;
-               break;
-            }
-            break;
-
-         case 'A':
-            STDSKEY( "Action", pObjIndex->action_desc );
-
-            if( !str_cmp( word, "AffData" ) )
-            {
-               affect_data *af = fread_afk_affect( fp );
-
-               if( af )
-                  pObjIndex->affects.push_back( af );
-               break;
-            }
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               flag_set( fp, pObjIndex->extra_flags, o_flags );
-               break;
-            }
-            break;
-
-         case 'K':
-            STDSKEY( "Keywords", pObjIndex->name );
-            break;
-
-         case 'L':
-            STDSKEY( "Long", pObjIndex->objdesc );
-            break;
-
-         case 'S':
-            STDSKEY( "Short", pObjIndex->short_descr );
-
-            if( !str_cmp( word, "Spells" ) )
-            {
-               switch ( pObjIndex->item_type )
-               {
-                  default:
-                     break;
-
-                  case ITEM_PILL:
-                  case ITEM_POTION:
-                  case ITEM_SCROLL:
-                     pObjIndex->value[1] = skill_lookup( fread_word( fp ) );
-                     pObjIndex->value[2] = skill_lookup( fread_word( fp ) );
-                     pObjIndex->value[3] = skill_lookup( fread_word( fp ) );
-                     break;
-
-                  case ITEM_STAFF:
-                  case ITEM_WAND:
-                     pObjIndex->value[3] = skill_lookup( fread_word( fp ) );
-                     break;
-
-                  case ITEM_SALVE:
-                     pObjIndex->value[4] = skill_lookup( fread_word( fp ) );
-                     pObjIndex->value[5] = skill_lookup( fread_word( fp ) );
-                     break;
-               }
-               break;
-            }
-
-            if( !str_cmp( word, "Stats" ) )
-            {
-               char temp[3][MSL];
-               const char *ln = fread_line( fp );
-               int x1, x2, x3, x4, x5;
-
-               x1 = x2 = x3 = x5 = 0;
-               x4 = 9999;
-               temp[0][0] = '\0';
-               temp[1][0] = '\0';
-               temp[2][0] = '\0';
-
-               sscanf( ln, "%d %d %d %d %d %s %s %s", &x1, &x2, &x3, &x4, &x5, temp[0], temp[1], temp[2] );
-               pObjIndex->weight = x1;
-               pObjIndex->weight = umax( 1, pObjIndex->weight );
-               pObjIndex->cost = x2;
-               pObjIndex->ego = x3;
-               pObjIndex->limit = x4;
-               pObjIndex->layers = x5;
-
-               if( temp[0][0] == '\0' )
-                  pObjIndex->socket[0] = "None";
-               else
-                  pObjIndex->socket[0] = temp[0];
-
-               if( temp[1][0] == '\0' )
-                  pObjIndex->socket[1] = "None";
-               else
-                  pObjIndex->socket[1] = temp[1];
-
-               if( temp[2][0] == '\0' )
-                  pObjIndex->socket[2] = "None";
-               else
-                  pObjIndex->socket[2] = temp[2];
-
-               if( pObjIndex->ego > 90 )
-                  pObjIndex->ego = -2;
-
-               break;
-            }
-            break;
-
-         case 'T':
-            if( !str_cmp( word, "Type" ) )
-            {
-               int value = get_otype( fread_flagstring( fp ) );
-
-               if( value < 0 )
-               {
-                  bug( "{}: vnum {}: Object has invalid type! Defaulting to trash.", __func__, pObjIndex->vnum );
-                  value = get_otype( "trash" );
-               }
-               pObjIndex->item_type = value;
-               break;
-            }
-            break;
-
-         case 'V':
-            if( !str_cmp( word, "Values" ) )
-            {
-               const char *ln = fread_line( fp );
-               int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
-               x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x10 = x11 = 0;
-
-               sscanf( ln, "%d %d %d %d %d %d %d %d %d %d %d", &x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8, &x9, &x10, &x11 );
-
-               if( x1 == 0 && ( pObjIndex->item_type == ITEM_WEAPON || pObjIndex->item_type == ITEM_MISSILE_WEAPON ) )
-               {
-                  x1 = sysdata->initcond;
-                  x7 = x1;
-               }
-
-               if( x1 == 0 && pObjIndex->item_type == ITEM_PROJECTILE )
-               {
-                  x1 = sysdata->initcond;
-                  x6 = x1;
-               }
-
-               pObjIndex->value[0] = x1;
-               pObjIndex->value[1] = x2;
-               pObjIndex->value[2] = x3;
-               pObjIndex->value[3] = x4;
-               pObjIndex->value[4] = x5;
-               pObjIndex->value[5] = x6;
-               pObjIndex->value[6] = x7;
-               pObjIndex->value[7] = x8;
-               pObjIndex->value[8] = x9;
-               pObjIndex->value[9] = x10;
-               pObjIndex->value[10] = x11;
-
-               break;
-            }
-
-            if( !str_cmp( word, "Vnum" ) )
-            {
-               bool tmpBootDb = fBootDb;
-               fBootDb = false;
-
-               int vnum = fread_number( fp );
-
-               if( get_obj_index( vnum ) )
-               {
-                  if( tmpBootDb )
-                  {
-                     fBootDb = tmpBootDb;
-                     bug( "{}: vnum {} duplicated.", __func__, vnum );
-
-                     // Try to recover, read to end of duplicated object and then bail out
-                     for( ;; )
-                     {
-                        word = feof( fp ) ? "#ENDOBJECT" : fread_word( fp );
-
-                        if( !str_cmp( word, "#ENDOBJECT" ) )
-                           return;
-                     }
-                  }
-                  else
-                  {
-                     pObjIndex = get_obj_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: {}", vnum );
-                     pObjIndex->clean_obj(  );
-                     oldobj = true;
-                  }
-               }
-               else
-               {
-                  pObjIndex = new obj_index;
-                  pObjIndex->clean_obj(  );
-               }
-               pObjIndex->vnum = vnum;
-               pObjIndex->area = tarea;
                fBootDb = tmpBootDb;
+               bug( "{}: vnum {} duplicated.", __func__, vnum );
 
-               if( fBootDb )
+               // Try to recover, read to end of duplicated object and then bail out
+               for( ;; )
                {
-                  if( !tarea->low_vnum )
-                     tarea->low_vnum = vnum;
-                  if( vnum > tarea->hi_vnum )
-                     tarea->hi_vnum = vnum;
+                  stream >> key;
+                  if( key == "#ENDOBJECT" || stream.eof() )
+                     return;
                }
-               break;
             }
-            break;
-
-         case 'W':
-            if( !str_cmp( word, "WFlags" ) )
+            else
             {
-               flag_set( fp, pObjIndex->wear_flags, w_flags );
-               break;
+               pObjIndex = get_obj_index( vnum );
+               log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: {}", vnum );
+               pObjIndex->clean_obj(  );
+               oldobj = true;
             }
-            break;
+         }
+         else
+         {
+            pObjIndex = new obj_index;
+            pObjIndex->clean_obj(  );
+         }
+         pObjIndex->vnum = vnum;
+         pObjIndex->area = tarea;
+         fBootDb = tmpBootDb;
+
+         if( fBootDb )
+         {
+            if( !tarea->low_vnum )
+               tarea->low_vnum = vnum;
+            if( vnum > tarea->hi_vnum )
+               tarea->hi_vnum = vnum;
+         }
+      }
+      else if( key == "Keywords" )
+         pObjIndex->name = fread_line( stream );
+      else if( key == "Type" )
+      {
+         std::string o_type = fread_line( stream );
+         int value = get_otype( o_type );
+
+         if( value < 0 )
+         {
+            bug( "{}: vnum {}: Object has invalid type: {}. Defaulting to trash.", __func__, pObjIndex->vnum, o_type );
+            value = get_otype( "trash" );
+         }
+         pObjIndex->item_type = value;
+      }
+      else if( key == "Short" )
+         pObjIndex->short_descr = fread_line( stream );
+      else if( key == "Long" )
+         pObjIndex->objdesc = fread_line( stream );
+      else if( key == "Action" )
+         pObjIndex->action_desc = fread_line( stream );
+      else if( key == "Flags" )
+         flag_set( stream, pObjIndex->extra_flags, o_flags );
+      else if( key == "WFlags" )
+         flag_set( stream, pObjIndex->wear_flags, w_flags );
+      else if( key == "Values" )
+      {
+         int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
+         stream >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9 >> x10 >> x11;
+
+         if( x1 == 0 && ( pObjIndex->item_type == ITEM_WEAPON || pObjIndex->item_type == ITEM_MISSILE_WEAPON ) )
+         {
+            x1 = sysdata->initcond;
+            x7 = x1;
+         }
+
+         if( x1 == 0 && pObjIndex->item_type == ITEM_PROJECTILE )
+         {
+            x1 = sysdata->initcond;
+            x6 = x1;
+         }
+
+         pObjIndex->value[0] = x1;
+         pObjIndex->value[1] = x2;
+         pObjIndex->value[2] = x3;
+         pObjIndex->value[3] = x4;
+         pObjIndex->value[4] = x5;
+         pObjIndex->value[5] = x6;
+         pObjIndex->value[6] = x7;
+         pObjIndex->value[7] = x8;
+         pObjIndex->value[8] = x9;
+         pObjIndex->value[9] = x10;
+         pObjIndex->value[10] = x11;
+      }
+      else if( key == "Stats" )
+      {
+         std::string ln;
+         std::getline( stream, ln );
+
+         int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0;
+         std::string s1 = "None", s2 = "None", s3 = "None";
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> s1 >> s2 >> s3;
+
+         pObjIndex->weight = x1;
+         pObjIndex->weight = umax( 1, pObjIndex->weight );
+         pObjIndex->cost = x2;
+         pObjIndex->ego = x3;
+         pObjIndex->limit = x4;
+         pObjIndex->layers = x5;
+
+         pObjIndex->socket[0] = s1;
+         pObjIndex->socket[1] = s2;
+         pObjIndex->socket[2] = s3;
+
+         if( pObjIndex->ego > 90 )
+            pObjIndex->ego = -2;
+      }
+      else if( key == "AffData" )
+      {
+         affect_data *af = fread_afk_affect( stream );
+
+         if( af )
+            pObjIndex->affects.push_back( af );
+      }
+      else if( key == "Spells" )
+      {
+         switch( pObjIndex->item_type )
+         {
+            default:
+               break;
+
+            case ITEM_PILL:
+            case ITEM_POTION:
+            case ITEM_SCROLL:
+               pObjIndex->value[1] = skill_lookup( fread_word( stream ) );
+               pObjIndex->value[2] = skill_lookup( fread_word( stream ) );
+               pObjIndex->value[3] = skill_lookup( fread_word( stream ) );
+               break;
+
+            case ITEM_STAFF:
+            case ITEM_WAND:
+               pObjIndex->value[3] = skill_lookup( fread_word( stream ) );
+               break;
+
+            case ITEM_SALVE:
+               pObjIndex->value[4] = skill_lookup( fread_word( stream ) );
+               pObjIndex->value[5] = skill_lookup( fread_word( stream ) );
+               break;
+         }
+      }
+      else if( key == "#EXDESC" )
+      {
+         extra_descr_data *ed = fread_afk_exdesc( stream );
+         if( ed )
+         {
+            pObjIndex->extradesc.push_back( ed );
+            ++top_ed;
+         }
+      }
+      else if( key == "#MUDPROG" )
+      {
+         mud_prog_data *mprg = new mud_prog_data;
+         fread_afk_mudprog( stream, mprg, pObjIndex );
+         pObjIndex->mudprogs.push_back( mprg );
+         ++top_prog;
+      }
+      else if( key == "#ENDOBJECT" )
+      {
+         if( !oldobj )
+         {
+            obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
+            tarea->objects.push_back( pObjIndex );
+            ++top_obj_index;
+         }
+         return;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' in objects - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
 }
 
-void fread_afk_room( FILE * fp, area_data * tarea )
+void fread_afk_room( std::ifstream & stream, area_data * tarea )
 {
    room_index *pRoomIndex = nullptr;
    bool oldroom = false;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      std::string word = ( feof( fp ) ? "#ENDROOM" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
+      if( key == "Vnum" )
       {
-         log_printf( "{}: EOF encountered reading file!", __func__ );
-         if( fBootDb )
-            std::exit( EXIT_FAILURE );
+         bool tmpBootDb = fBootDb;
+         fBootDb = false;
 
-         word = "#ENDROOM";
-      }
+         int vnum;
+         stream >> vnum;
 
-      switch ( word[0] )
-      {
-         default:
-            bug( "{}: no match: {}", __func__, word );
-            fread_to_eol( fp );
-            break;
-
-         case '#':
-            if( !str_cmp( word, "#ENDROOM" ) )
+         if( get_room_index( vnum ) )
+         {
+            if( tmpBootDb )
             {
-               if( !oldroom )
-               {
-                  room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
-                  tarea->rooms.push_back( pRoomIndex );
-                  ++top_room;
-               }
-               return;
-            }
-
-            if( !str_cmp( word, "#EXIT" ) )
-            {
-               fread_afk_exit( fp, pRoomIndex );
-               break;
-            }
-
-            if( !str_cmp( word, "#EXDESC" ) )
-            {
-               extra_descr_data *ed = fread_afk_exdesc( fp );
-               if( ed )
-                  pRoomIndex->extradesc.push_back( ed );
-               break;
-            }
-
-            if( !str_cmp( word, "#MUDPROG" ) )
-            {
-               mud_prog_data *mprg = new mud_prog_data;
-               fread_afk_mudprog( fp, mprg, pRoomIndex );
-               pRoomIndex->mudprogs.push_back( mprg );
-               ++top_prog;
-               break;
-            }
-            break;
-
-         case 'A':
-            if( !str_cmp( word, "AffData" ) )
-            {
-               affect_data *af = fread_afk_affect( fp );
-
-               if( af )
-                  pRoomIndex->permaffects.push_back( af );
-               break;
-            }
-            break;
-
-         case 'D':
-            STDSKEY( "Desc", pRoomIndex->roomdesc );
-            break;
-
-         case 'F':
-            if( !str_cmp( word, "Flags" ) )
-            {
-               flag_set( fp, pRoomIndex->flags, r_flags );
-               break;
-            }
-            break;
-
-         case 'N':
-            STDSKEY( "Name", pRoomIndex->name );
-            STDSKEY( "Nightdesc", pRoomIndex->nitedesc );
-            break;
-
-         case 'R':
-            CLKEY( "Reset", pRoomIndex->load_reset( fp, true ) );
-            break;
-
-         case 'S':
-            if( !str_cmp( word, "Sector" ) )
-            {
-               int sector = get_sectypes( fread_flagstring( fp ) );
-
-               if( sector < 0 || sector >= SECT_MAX )
-               {
-                  bug( "{}: Room #{} has bad sector type.", __func__, pRoomIndex->vnum );
-                  sector = 1;
-               }
-
-               pRoomIndex->sector_type = sector;
-               pRoomIndex->winter_sector = -1;
-               break;
-            }
-
-            if( !str_cmp( word, "Stats" ) )
-            {
-               const char *ln = fread_line( fp );
-               int x1, x2, x3, x4, x5;
-
-               x1 = x2 = x3 = x4 = 0;
-               x5 = 100000;
-               sscanf( ln, "%d %d %d %d %d", &x1, &x2, &x3, &x4, &x5 );
-
-               pRoomIndex->tele_delay = x1;
-               pRoomIndex->tele_vnum = x2;
-               pRoomIndex->tunnel = x3;
-               pRoomIndex->baselight = x4;
-               pRoomIndex->light = x4;
-               pRoomIndex->max_weight = x5;  // Imported from Smaug 1.8
-               break;
-            }
-            break;
-
-         case 'V':
-            if( !str_cmp( word, "Vnum" ) )
-            {
-               bool tmpBootDb = fBootDb;
-               fBootDb = false;
-
-               int vnum = fread_number( fp );
-
-               if( get_room_index( vnum ) )
-               {
-                  if( tmpBootDb )
-                  {
-                     fBootDb = tmpBootDb;
-                     bug( "{}: vnum {} duplicated.", __func__, vnum );
-
-                     // Try to recover, read to end of duplicated room and then bail out
-                     for( ;; )
-                     {
-                        word = feof( fp ) ? "#ENDROOM" : fread_word( fp );
-
-                        if( !str_cmp( word, "#ENDROOM" ) )
-                           return;
-                     }
-                  }
-                  else
-                  {
-                     pRoomIndex = get_room_index( vnum );
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: {}", vnum );
-                     pRoomIndex->clean_room(  );
-                     oldroom = true;
-                  }
-               }
-               else
-               {
-                  pRoomIndex = new room_index;
-                  pRoomIndex->clean_room(  );
-               }
-               pRoomIndex->vnum = vnum;
-               pRoomIndex->area = tarea;
                fBootDb = tmpBootDb;
+               bug( "{}: vnum {} duplicated.", __func__, vnum );
 
-               if( fBootDb )
+               // Try to recover, read to end of duplicated room and then bail out
+               for( ;; )
                {
-                  if( !tarea->low_vnum )
-                     tarea->low_vnum = vnum;
-                  if( vnum > tarea->hi_vnum )
-                     tarea->hi_vnum = vnum;
+                  stream >> key;
+                  if( key == "#ENDROOM" || stream.eof() )
+                     return;
                }
-
-               if( !pRoomIndex->resets.empty(  ) )
-               {
-                  if( fBootDb )
-                  {
-                     int count = 0;
-
-                     bug( "{}: WARNING: resets already exist for this room.", __func__ );
-                     for( auto* rtmp : pRoomIndex->resets )
-                     {
-                        ++count;
-                        if( !rtmp->resets.empty(  ) )
-                           count += rtmp->resets.size(  );
-                     }
-                  }
-                  else
-                  {
-                     /*
-                      * Clean out the old resets
-                      */
-                     log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: {}", tarea->name );
-                     pRoomIndex->clean_resets(  );
-                  }
-               }
-               break;
             }
-            break;
-
-         case 'W':
-            if( !str_cmp( word, "WeatherCoords" ) )
+            else
             {
-               tarea->weatherx = fread_number( fp );
-               tarea->weathery = fread_number( fp );
+               pRoomIndex = get_room_index( vnum );
+               log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: {}", vnum );
+               pRoomIndex->clean_room(  );
+               oldroom = true;
             }
-            break;
+         }
+         else
+         {
+            pRoomIndex = new room_index;
+            pRoomIndex->clean_room(  );
+         }
+         pRoomIndex->vnum = vnum;
+         pRoomIndex->area = tarea;
+         fBootDb = tmpBootDb;
+
+         if( fBootDb )
+         {
+            if( !tarea->low_vnum )
+               tarea->low_vnum = vnum;
+            if( vnum > tarea->hi_vnum )
+               tarea->hi_vnum = vnum;
+         }
+
+         if( !pRoomIndex->resets.empty(  ) )
+         {
+            if( fBootDb )
+            {
+               int count = 0;
+
+               bug( "{}: WARNING: resets already exist for this room.", __func__ );
+               for( auto* rtmp : pRoomIndex->resets )
+               {
+                  ++count;
+                  if( !rtmp->resets.empty(  ) )
+                     count += rtmp->resets.size(  );
+               }
+            }
+            else
+            {
+               /*
+                * Clean out the old resets
+                */
+               log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning resets: {}", tarea->name );
+               pRoomIndex->clean_resets(  );
+            }
+         }
+      }
+      else if( key == "Name" )
+         pRoomIndex->name = fread_line( stream );
+      else if( key == "Sector" )
+      {
+         std::string sec_type = fread_line( stream );
+         int sector = get_sectypes( sec_type );
+
+         if( sector < 0 || sector >= SECT_MAX )
+         {
+            bug( "{}: Room #{} has bad sector type: {}.", __func__, pRoomIndex->vnum, sec_type );
+            sector = 1;
+         }
+
+         pRoomIndex->sector_type = sector;
+         pRoomIndex->winter_sector = -1;
+      }
+      else if( key == "Flags" )
+         flag_set( stream, pRoomIndex->flags, r_flags );
+      else if( key == "Stats" )
+      {
+         int x1, x2, x3, x4, x5;
+         stream >> x1 >> x2 >> x3 >> x4 >> x5;
+
+         pRoomIndex->tele_delay = x1;
+         pRoomIndex->tele_vnum = x2;
+         pRoomIndex->tunnel = x3;
+         pRoomIndex->baselight = x4;
+         pRoomIndex->light = x4;
+
+         if( x5 == 0 )
+            x5 = 100000;
+         pRoomIndex->max_weight = x5;  // Imported from Smaug 1.8
+      }
+      else if( key == "Desc" )
+         pRoomIndex->roomdesc = fread_line( stream );
+      else if( key == "Nightdesc" )
+         pRoomIndex->nitedesc = fread_line( stream );
+      else if( key == "AffData" )
+      {
+         affect_data *af = fread_afk_affect( stream );
+
+         if( af )
+            pRoomIndex->permaffects.push_back( af );
+      }
+      else if( key == "#EXIT" )
+         fread_afk_exit( stream, pRoomIndex );
+      else if( key == "#EXDESC" )
+      {
+         extra_descr_data *ed = fread_afk_exdesc( stream );
+         if( ed )
+            pRoomIndex->extradesc.push_back( ed );
+      }
+      else if( key == "#MUDPROG" )
+      {
+         mud_prog_data *mprg = new mud_prog_data;
+         fread_afk_mudprog( stream, mprg, pRoomIndex );
+         pRoomIndex->mudprogs.push_back( mprg );
+         ++top_prog;
+      }
+      else if( key == "Reset" )
+         pRoomIndex->load_reset( stream, true );
+      else if( key == "#ENDROOM" )
+      {
+         if( !oldroom )
+         {
+            room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
+            tarea->rooms.push_back( pRoomIndex );
+            ++top_room;
+         }
+         return;
+      }
+      else
+      {
+         bug( "{}: Bad section '{}' in rooms - skipping.", __func__, key );
+         fread_to_eol( stream );
       }
    }
 }
 
 // AFKMud 2.0 Area file format. Liberal use of KEY macro support. Far more flexible.
-area_data *fread_afk_area( FILE * fp )
+area_data *fread_afk_area( std::ifstream & stream )
 {
    area_data *tarea = nullptr;
 
-   for( ;; )
+   std::string key;
+   while( stream >> key )
    {
-      char letter;
-      std::string word;
-
-      letter = fread_letter( fp );
-      if( letter == '*' )
-      {
-         fread_to_eol( fp );
-         continue;
-      }
-
-      if( letter != '#' )
-      {
-         bug( "{}: # not found. Invalid format.", __func__ );
-         if( fBootDb )
-            std::exit( EXIT_FAILURE );
-         break;
-      }
-
-      word = ( feof( fp ) ? "ENDAREA" : fread_word( fp ) );
-
-      if( word[0] == '\0' )
-      {
-         bug( "{}: EOF encountered reading file!", __func__ );
-         word = "ENDAREA";
-      }
-
-      if( !str_cmp( word, "AREADATA" ) )
+      if( key == "#AREADATA" )
       {
          tarea = create_area(  );
          tarea->filename = strArea;
-         fread_afk_areadata( fp, tarea );
+         fread_afk_areadata( stream, tarea );
       }
-      else if( !str_cmp( word, "MOBILE" ) )
-         fread_afk_mobile( fp, tarea );
-      else if( !str_cmp( word, "OBJECT" ) )
-         fread_afk_object( fp, tarea );
-      else if( !str_cmp( word, "ROOM" ) )
-         fread_afk_room( fp, tarea );
-      else if( !str_cmp( word, "ENDAREA" ) )
+      else if( key == "#MOBILE" )
+         fread_afk_mobile( stream, tarea );
+      else if( key == "#OBJECT" )
+         fread_afk_object( stream, tarea );
+      else if( key == "#ROOM" )
+         fread_afk_room( stream, tarea );
+      else if( key == "#ENDAREA" )
          break;
       else
       {
-         bug( "{}: Bad section header: {}", __func__, word );
-         fread_to_eol( fp );
+         bug( "{}: Bad section header: {}", __func__, key );
+         fread_to_eol( stream );
       }
    }
    return tarea;
@@ -1716,9 +1239,10 @@ void load_area_file( const std::string & filename, bool isproto )
 {
    area_data *tarea = nullptr;
 
-   if( !( fpArea = fopen( filename.c_str(  ), "r" ) ) )
+   fpArea.open( filename );
+   if( !fpArea.is_open() )
    {
-      bug( "{}: error loading file (can't open) {}", __func__, filename );
+      bug( "{}: Cannot open {} for reading: {}", __func__, filename, std::strerror(errno) );
       return;
    }
 
@@ -1732,7 +1256,7 @@ void load_area_file( const std::string & filename, bool isproto )
       else
       {
          bug( "{}: No # found at start of area file.", __func__ );
-         FCLOSE( fpArea );
+         fpArea.close();
          return;
       }
    }
@@ -1740,10 +1264,10 @@ void load_area_file( const std::string & filename, bool isproto )
    std::string word = fread_word( fpArea );
 
    // New AFKMud area format support -- Samson 10/28/06
-   if( !str_cmp( word, "AFKAREA" ) )
+   if( word == "AFKAREA" )
    {
       tarea = fread_afk_area( fpArea );
-      FCLOSE( fpArea );
+      fpArea.close();
 
       if( tarea )
          process_sorting( tarea, isproto );
@@ -1753,12 +1277,12 @@ void load_area_file( const std::string & filename, bool isproto )
    // Support conversions from other bases if encountered. -- Samson 12/31/06
    log_printf( "Area format conversion: {}", filename );
 
-   if( !str_cmp( word, "FUSSAREA" ) )
+   if( word == "FUSSAREA" )
    {
       log_string( "SmaugFUSS 1.7+ area encountered. Passing to SmaugFUSS area parser." );
 
       tarea = fread_smaugfuss_area( fpArea );
-      FCLOSE( fpArea );
+      fpArea.close();
 
       if( tarea )
          process_sorting( tarea, isproto );
@@ -1766,22 +1290,23 @@ void load_area_file( const std::string & filename, bool isproto )
    }
 
    // Found #AREA, let the process begin!
-   if( !str_cmp( word, "AREA" ) )
+   if( word == "AREA" )
    {
       tarea = create_area();
 
       tarea->filename = filename;
-      fread_string( tarea->name, fpArea );
+      tarea->name = fread_line( fpArea );
    }
    else
    {
       // If you found #VERSION first though, it's a SmaugWiz zone or it's invalid.
-      if( !str_cmp( word, "VERSION" ) )
+      if( word == "VERSION" )
       {
-         int temp = fread_number( fpArea );
+         int temp;
+         fpArea >> temp;
          if( temp >= 1000 )
          {
-            FCLOSE( fpArea );
+            fpArea.close();
             do_areaconvert( nullptr, filename );
             return;
          }
@@ -1791,7 +1316,7 @@ void load_area_file( const std::string & filename, bool isproto )
             std::exit( EXIT_FAILURE );
          else
          {
-            FCLOSE( fpArea );
+            fpArea.close();
             return;
          }
       }
@@ -1801,14 +1326,14 @@ void load_area_file( const std::string & filename, bool isproto )
          std::exit( EXIT_FAILURE );
       else
       {
-         FCLOSE( fpArea );
+         fpArea.close();
          return;
       }
    }
 
    for( ;; )
    {
-      if( !fpArea )  /* Should only happen if a stock conversion takes place */
+      if( !fpArea.is_open() )  /* Should only happen if a stock conversion takes place */
          return;
 
       if( fread_letter( fpArea ) != '#' )
@@ -1822,14 +1347,15 @@ void load_area_file( const std::string & filename, bool isproto )
       if( word[0] == '$' )
          break;
 
-      else if( !str_cmp( word, "VERSION" ) )
+      else if( word == "VERSION" )
       {
-         int aversion = fread_number( fpArea );
+         int aversion;
+         fpArea >> aversion;
 
          if( aversion <= 3 )
          {
             log_string( "Smaug 1.02a, 1.4a, or 1.8b area encountered. Attempting to pass to Area Converter." );
-            FCLOSE( fpArea );
+            fpArea.close();
             deleteptr( tarea );
             --top_area;
             do_areaconvert( nullptr, filename );
@@ -1839,13 +1365,14 @@ void load_area_file( const std::string & filename, bool isproto )
          if( aversion == 1000 )
          {
             log_string( "SmaugWiz 2.02 area encountered. Attempting to pass to Area Converter." );
-            FCLOSE( fpArea );
+            fpArea.close();
             deleteptr( tarea );
             do_areaconvert( nullptr, filename );
             return;
          }
 
          // AFKMud 1.x files only went up to version 20. Anything higher is invalid.
+         // This is gonna become a problem for old areas if RoD ever releases another version of SMAUG and they bump their area version past 3.
          if( aversion > 3 && aversion <= 20 )
          {
             bool oldafk_fail = load_oldafk_area( fpArea, tarea, aversion );
@@ -1859,7 +1386,7 @@ void load_area_file( const std::string & filename, bool isproto )
                   std::exit( EXIT_FAILURE );
                else
                {
-                  FCLOSE( fpArea );
+                  fpArea.close();
                }
             }
             return;
@@ -1870,7 +1397,7 @@ void load_area_file( const std::string & filename, bool isproto )
             std::exit( EXIT_FAILURE );
          else
          {
-            FCLOSE( fpArea );
+            fpArea.close();
             return;
          }
       }
@@ -1881,32 +1408,17 @@ void load_area_file( const std::string & filename, bool isproto )
             std::exit( EXIT_FAILURE );
          else
          {
-            FCLOSE( fpArea );
+            fpArea.close();
             return;
          }
       }
    }
-   FCLOSE( fpArea );
+   fpArea.close();
 
    if( tarea )
       process_sorting( tarea, isproto );
    else
       log_printf( "({})", filename );
-}
-
-void fwrite_afk_affect( FILE * fpout, affect_data * af )
-{
-   if( af->location == APPLY_AFFECT )
-      fprintf( fpout, "AffData %s '%s' %d %d %d\n", a_types[af->location], aff_flags[af->modifier], af->type, af->duration, af->bit );
-   else if( af->location == APPLY_WEAPONSPELL
-            || af->location == APPLY_WEARSPELL
-            || af->location == APPLY_REMOVESPELL || af->location == APPLY_STRIPSN || af->location == APPLY_RECURRINGSPELL || af->location == APPLY_EAT_SPELL )
-      fprintf( fpout, "AffData %s '%s' %d %d %d\n", a_types[af->location],
-               IS_VALID_SN( af->modifier ) ? skill_table[af->modifier]->name.c_str() : "UNKNOWN", af->type, af->duration, af->bit );
-   else if( af->location == APPLY_RESISTANT || af->location == APPLY_IMMUNE || af->location == APPLY_SUSCEPTIBLE || af->location == APPLY_ABSORB )
-      fprintf( fpout, "AffData %s %s~ %d %d %d\n", a_types[af->location], bitset_string( af->rismod, ris_flags ), af->type, af->duration, af->bit );
-   else
-      fprintf( fpout, "AffData %s %d %d %d %d\n", a_types[af->location], af->modifier, af->type, af->duration, af->bit );
 }
 
 void fwrite_afk_affect( std::ofstream & stream, affect_data * af )
@@ -1923,54 +1435,54 @@ void fwrite_afk_affect( std::ofstream & stream, affect_data * af )
       stream << std::format( "AffData {} {} {} {} {}\n", a_types[af->location], af->modifier, af->type, af->duration, af->bit );
 }
 
-void fwrite_afk_exdesc( FILE * fpout, extra_descr_data * desc )
+void fwrite_afk_exdesc( std::ofstream & stream, extra_descr_data * desc )
 {
-   fprintf( fpout, "%s", "#EXDESC\n" );
-   fprintf( fpout, "ExDescKey    %s~\n", desc->keyword.c_str(  ) );
+   stream << "#EXDESC\n";
+   stream << std::format( "ExDescKey    {}~\n", desc->keyword );
    if( !desc->desc.empty(  ) )
-      fprintf( fpout, "ExDesc       %s~\n", strip_cr( desc->desc ).c_str(  ) );
-   fprintf( fpout, "%s", "#ENDEXDESC\n\n" );
+      stream << std::format( "ExDesc       {}~\n", strip_cr( desc->desc ) );
+   stream << "#ENDEXDESC\n\n";
 }
 
-void fwrite_afk_exit( FILE * fpout, exit_data * pexit )
+void fwrite_afk_exit( std::ofstream & stream, exit_data * pexit )
 {
-   fprintf( fpout, "%s", "#EXIT\n" );
-   fprintf( fpout, "Direction %s~\n", strip_cr( dir_name[pexit->vdir] ).c_str(  ) );
-   fprintf( fpout, "ToRoom    %d\n", pexit->vnum );
+   stream << "#EXIT\n";
+   stream << std::format( "Direction {}~\n", strip_cr( dir_name[pexit->vdir] ) );
+   stream << std::format( "ToRoom    {}\n", pexit->vnum );
    if( pexit->key > 0 )
-      fprintf( fpout, "Key       %d\n", pexit->key );
+      stream << std::format( "Key       {}\n", pexit->key );
    if( IS_EXIT_FLAG( pexit, EX_OVERLAND ) && pexit->map_x != -1 && pexit->map_y != -1 )
-      fprintf( fpout, "ToCoords  %d %d\n", pexit->map_x, pexit->map_y );
+      stream << std::format( "ToCoords  {} {}\n", pexit->map_x, pexit->map_y );
    if( pexit->pull )
-      fprintf( fpout, "Pull      %d %d\n", pexit->pulltype, pexit->pull );
+      stream << std::format( "Pull      {} {}\n", pexit->pulltype, pexit->pull );
    if( !pexit->exitdesc.empty() )
-      fprintf( fpout, "Desc      %s~\n", strip_cr( pexit->exitdesc ).c_str() );
+      stream << std::format( "Desc      {}~\n", strip_cr( pexit->exitdesc ) );
    if( !pexit->keyword.empty() )
-      fprintf( fpout, "Keywords  %s~\n", strip_cr( pexit->keyword ).c_str() );
+      stream << std::format( "Keywords  {}~\n", strip_cr( pexit->keyword ) );
    if( pexit->flags.any(  ) )
-      fprintf( fpout, "Flags     %s~\n", bitset_string( pexit->flags, ex_flags ) );
-   fprintf( fpout, "%s", "#ENDEXIT\n\n" );
+      stream << std::format( "Flags     {}~\n", bitset_string( pexit->flags, ex_flags ) );
+   stream << "#ENDEXIT\n\n";
 }
 
 // Write a prog
-bool mprog_write_prog( FILE * fpout, mud_prog_data * mprog )
+bool mprog_write_prog( std::ofstream & stream, mud_prog_data * mprog )
 {
    if( !mprog->arglist.empty() )
    {
-      fprintf( fpout, "%s", "#MUDPROG\n" );
-      fprintf( fpout, "Progtype  %s~\n", mprog_type_to_name( mprog->type ).c_str(  ) );
-      fprintf( fpout, "Arglist   %s~\n", mprog->arglist.c_str() );
+      stream << "#MUDPROG\n";
+      stream << std::format( "Progtype  {}~\n", mprog_type_to_name( mprog->type ) );
+      stream << std::format( "Arglist   {}~\n", mprog->arglist );
 
       if( !mprog->comlist.empty() && !mprog->fileprog )
-         fprintf( fpout, "Comlist   %s~\n", strip_cr( mprog->comlist ).c_str(  ) );
+         stream << std::format( "Comlist   {}~\n", strip_cr( mprog->comlist ) );
 
-      fprintf( fpout, "%s", "#ENDPROG\n\n" );
+      stream << "#ENDPROG\n\n";
       return true;
    }
    return false;
 }
 
-void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int level )
+void save_reset_level( std::ofstream & stream, std::list<reset_data *> source, const int level )
 {
    int spaces = level * 2;
 
@@ -1986,7 +1498,7 @@ void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int l
             break;
 
          case 'Z':  // RT room object - no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
+            stream << std::format( "{:>{}}Reset {} {} {} {} {} {} {} {} {} {} {} {}\n", "", spaces, to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6,
                      pReset->arg7, pReset->arg8, pReset->arg9, pReset->arg10, pReset->arg11 );
             break;
@@ -1994,37 +1506,37 @@ void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int l
          case 'M':
          case 'O':
          case 'Y':  // RT give - has no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
+            stream << std::format( "{:>{}}Reset {} {} {} {} {} {} {} {}\n", "", spaces, to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7 );
             break;
 
          case 'W':  // RT put - has no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
+            stream << std::format( "{:>{}}Reset {} {} {} {} {} {} {} {} {} {}\n", "", spaces, to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8, pReset->arg9 );
             break;
 
          case 'P':
          case 'E':
             if( pReset->command == 'E' )
-               fprintf( fpout, "%*.sReset %c %d %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
+               stream << std::format( "{:>{}}Reset {} {} {} {} {}\n", "", spaces, to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4 );
             else
-               fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
+               stream << std::format( "{:>{}}Reset {} {} {} {} {} {}\n", "", spaces, to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
             break;
 
          case 'G':
          case 'R':
-            fprintf( fpout, "%*.sReset %c %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3 );
+            stream << std::format( "{:>{}}Reset {} {} {} {}\n", "", spaces, to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3 );
             break;
 
          case 'X':  // RT equipped - has no sub-resets
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ),
+            stream << std::format( "{:>{}}Reset {} {} {} {} {} {} {} {} {}\n", "", spaces, to_upper( pReset->command ),
                      pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5, pReset->arg6, pReset->arg7, pReset->arg8 );
             break;
 
          case 'T':
          case 'H':
          case 'D':
-            fprintf( fpout, "%*.sReset %c %d %d %d %d %d\n", spaces, "", to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
+            stream << std::format( "{:>{}}Reset {} {} {} {} {} {}\n", "", spaces, to_upper( pReset->command ), pReset->arg1, pReset->arg2, pReset->arg3, pReset->arg4, pReset->arg5 );
             break;
       }  /* end of switch on command */
 
@@ -2032,44 +1544,44 @@ void save_reset_level( FILE * fpout, std::list<reset_data *> source, const int l
        * recurse to save nested resets 
        */
       if( !pReset->resets.empty(  ) )
-         save_reset_level( fpout, pReset->resets, level + 1 );
+         save_reset_level( stream, pReset->resets, level + 1 );
    }  /* end of looping through resets */
 }  /* end of save_reset_level */
 
 // Write out the top header for the file.
-void fwrite_area_header( area_data * area, FILE * fpout )
+void fwrite_area_header( area_data * area, std::ofstream & stream )
 {
-   fprintf( fpout, "%s", "#AREADATA\n" );
-   fprintf( fpout, "Version         %d\n", area->version );
-   fprintf( fpout, "Name            %s~\n", area->name.c_str() );
-   fprintf( fpout, "Author          %s~\n", area->author.c_str() );
+   stream << "#AREADATA\n";
+   stream << std::format( "Version         {}\n", area->version );
+   stream << std::format( "Name            {}~\n", area->name );
+   stream << std::format( "Author          {}~\n", area->author );
    if( !area->credits.empty() )
-      fprintf( fpout, "Credits         %s~\n", area->credits.c_str() );
-   fprintf( fpout, "Vnums           %d %d\n", area->low_vnum, area->hi_vnum );
+      stream << std::format( "Credits         {}~\n", area->credits );
+   stream << std::format( "Vnums           {} {}\n", area->low_vnum, area->hi_vnum );
    if( area->continent )
-      fprintf( fpout, "Continent       %s~\n", area->continent->name.c_str( ) );
-   fprintf( fpout, "Coordinates     %d %d\n", area->map_x, area->map_y );
+      stream << std::format( "Continent       {}~\n", area->continent->name );
+   stream << std::format( "Coordinates     {} {}\n", area->map_x, area->map_y );
 
    auto cdate = std::chrono::system_clock::to_time_t( area->creation_date );
    auto idate = std::chrono::system_clock::to_time_t( area->install_date );
 
-   fprintf( fpout, "Dates           %ld %ld\n", cdate, idate );
-   fprintf( fpout, "Ranges          %d %d %d %d\n", area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
+   stream << std::format( "Dates           {} {}\n", cdate, idate );
+   stream << std::format( "Ranges          {} {} {} {}\n", area->low_soft_range, area->hi_soft_range, area->low_hard_range, area->hi_hard_range );
    if( !area->resetmsg.empty() ) /* Rennard */
-      fprintf( fpout, "ResetMsg        %s~\n", area->resetmsg.c_str() );
+      stream << std::format( "ResetMsg        {}~\n", area->resetmsg );
    if( area->reset_frequency )
-      fprintf( fpout, "ResetFreq       %d\n", area->reset_frequency );
+      stream << std::format( "ResetFreq       {}\n", area->reset_frequency );
    if( area->flags.any(  ) )
-      fprintf( fpout, "Flags           %s~\n", bitset_string( area->flags, area_flags ) );
-   fprintf( fpout, "Treasure        %d %d %d %d %d %d %d %d\n",
+      stream << std::format( "Flags           {}~\n", bitset_string( area->flags, area_flags ) );
+   stream << std::format( "Treasure        {} {} {} {} {} {} {} {}\n",
             area->tg_nothing, area->tg_gold, area->tg_item, area->tg_gem, area->tg_scroll, area->tg_potion, area->tg_wand, area->tg_armor );
-   fprintf( fpout, "WeatherCoords   %d %d\n\n", area->weatherx, area->weathery );
+   stream << std::format( "WeatherCoords   {} {}\n\n", area->weatherx, area->weathery );
 
-   fprintf( fpout, "%s", "#ENDAREADATA\n\n" );
+   stream << "#ENDAREADATA\n\n";
 }
 
 // Write out an individual mob
-void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
+void fwrite_afk_mobile( std::ofstream & stream, mob_index * pMobIndex, bool install )
 {
    shop_data *pShop = nullptr;
    repair_data *pRepair = nullptr;
@@ -2077,51 +1589,51 @@ void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
    if( install )
       pMobIndex->actflags.reset( ACT_PROTOTYPE );
 
-   fprintf( fpout, "%s", "#MOBILE\n" );
-   fprintf( fpout, "Vnum      %d\n", pMobIndex->vnum );
-   fprintf( fpout, "Keywords  %s~\n", pMobIndex->player_name.c_str() );
-   fprintf( fpout, "Race      %s~\n", npc_race[pMobIndex->race] );
-   fprintf( fpout, "Class     %s~\n", npc_class[pMobIndex->Class] );
-   fprintf( fpout, "Gender    %s~\n", npc_sex[pMobIndex->sex] );
-   fprintf( fpout, "Position  %s~\n", npc_position[pMobIndex->position] );
-   fprintf( fpout, "DefPos    %s~\n", npc_position[pMobIndex->defposition] );
+   stream << "#MOBILE\n";
+   stream << std::format( "Vnum      {}\n", pMobIndex->vnum );
+   stream << std::format( "Keywords  {}~\n", pMobIndex->player_name );
+   stream << std::format( "Race      {}~\n", npc_race[pMobIndex->race] );
+   stream << std::format( "Class     {}~\n", npc_class[pMobIndex->Class] );
+   stream << std::format( "Gender    {}~\n", npc_sex[pMobIndex->sex] );
+   stream << std::format( "Position  {}~\n", npc_position[pMobIndex->position] );
+   stream << std::format( "DefPos    {}~\n", npc_position[pMobIndex->defposition] );
    if( pMobIndex->spec_fun && !pMobIndex->spec_funname.empty(  ) )
-      fprintf( fpout, "Specfun   %s~\n", pMobIndex->spec_funname.c_str(  ) );
-   fprintf( fpout, "Short     %s~\n", pMobIndex->short_descr.c_str() );
+      stream << std::format( "Specfun   {}~\n", pMobIndex->spec_funname );
+   stream << std::format( "Short     {}~\n", pMobIndex->short_descr );
    if( !pMobIndex->long_descr.empty() )
-      fprintf( fpout, "Long      %s~\n", strip_cr( pMobIndex->long_descr ).c_str() );
+      stream << std::format( "Long      {}~\n", strip_cr( pMobIndex->long_descr ) );
    if( !pMobIndex->chardesc.empty() )
-      fprintf( fpout, "Desc      %s~\n", strip_cr( pMobIndex->chardesc ).c_str() );
-   fprintf( fpout, "Nattacks  %f\n", pMobIndex->numattacks );
-   fprintf( fpout, "Stats1    %d %d %d %d %d %d\n", pMobIndex->alignment, pMobIndex->gold, pMobIndex->height, pMobIndex->weight, pMobIndex->max_move, pMobIndex->max_mana );
-   fprintf( fpout, "Stats2    %d %d %d %d %d %d %d\n",
+      stream << std::format( "Desc      {}~\n", strip_cr( pMobIndex->chardesc ) );
+   stream << std::format( "Nattacks  {:.6f}\n", pMobIndex->numattacks );
+   stream << std::format( "Stats1    {} {} {} {} {} {}\n", pMobIndex->alignment, pMobIndex->gold, pMobIndex->height, pMobIndex->weight, pMobIndex->max_move, pMobIndex->max_mana );
+   stream << std::format( "Stats2    {} {} {} {} {} {} {}\n",
             pMobIndex->level, pMobIndex->mobthac0, pMobIndex->ac, pMobIndex->hitplus, pMobIndex->damnodice, pMobIndex->damsizedice, pMobIndex->damplus );
    if( pMobIndex->speaks.any(  ) )
-      fprintf( fpout, "Speaks    %s~\n", bitset_string( pMobIndex->speaks, lang_names ) );
-   fprintf( fpout, "Speaking  %s~\n", lang_names[pMobIndex->speaking] );
+      stream << std::format( "Speaks    {}~\n", bitset_string( pMobIndex->speaks, lang_names ) );
+   stream << std::format( "Speaking  {}~\n", lang_names[pMobIndex->speaking] );
    if( pMobIndex->actflags.any(  ) )
-      fprintf( fpout, "Actflags  %s~\n", bitset_string( pMobIndex->actflags, act_flags ) );
+      stream << std::format( "Actflags  {}~\n", bitset_string( pMobIndex->actflags, act_flags ) );
    if( pMobIndex->affected_by.any(  ) )
-      fprintf( fpout, "Affected  %s~\n", bitset_string( pMobIndex->affected_by, aff_flags ) );
+      stream << std::format( "Affected  {}~\n", bitset_string( pMobIndex->affected_by, aff_flags ) );
    if( pMobIndex->body_parts.any(  ) )
-      fprintf( fpout, "Bodyparts %s~\n", bitset_string( pMobIndex->body_parts, part_flags ) );
+      stream << std::format( "Bodyparts {}~\n", bitset_string( pMobIndex->body_parts, part_flags ) );
    if( pMobIndex->resistant.any(  ) )
-      fprintf( fpout, "Resist    %s~\n", bitset_string( pMobIndex->resistant, ris_flags ) );
+      stream << std::format( "Resist    {}~\n", bitset_string( pMobIndex->resistant, ris_flags ) );
    if( pMobIndex->immune.any(  ) )
-      fprintf( fpout, "Immune    %s~\n", bitset_string( pMobIndex->immune, ris_flags ) );
+      stream << std::format( "Immune    {}~\n", bitset_string( pMobIndex->immune, ris_flags ) );
    if( pMobIndex->susceptible.any(  ) )
-      fprintf( fpout, "Suscept   %s~\n", bitset_string( pMobIndex->susceptible, ris_flags ) );
+      stream << std::format( "Suscept   {}~\n", bitset_string( pMobIndex->susceptible, ris_flags ) );
    if( pMobIndex->absorb.any(  ) )
-      fprintf( fpout, "Absorb    %s~\n", bitset_string( pMobIndex->absorb, ris_flags ) );
+      stream << std::format( "Absorb    {}~\n", bitset_string( pMobIndex->absorb, ris_flags ) );
    if( pMobIndex->attacks.any(  ) )
-      fprintf( fpout, "Attacks   %s~\n", bitset_string( pMobIndex->attacks, attack_flags ) );
+      stream << std::format( "Attacks   {}~\n", bitset_string( pMobIndex->attacks, attack_flags ) );
    if( pMobIndex->defenses.any(  ) )
-      fprintf( fpout, "Defenses  %s~\n", bitset_string( pMobIndex->defenses, defense_flags ) );
+      stream << std::format( "Defenses  {}~\n", bitset_string( pMobIndex->defenses, defense_flags ) );
 
    // Mob has a shop? Add that data to the mob index.
    if( ( pShop = pMobIndex->pShop ) != nullptr )
    {
-      fprintf( fpout, "ShopData   %d %d %d %d %d %d %d %d %d\n",
+      stream << std::format( "ShopData   {} {} {} {} {} {} {} {} {}\n",
                pShop->buy_type[0], pShop->buy_type[1], pShop->buy_type[2], pShop->buy_type[3], pShop->buy_type[4],
                pShop->profit_buy, pShop->profit_sell, pShop->open_hour, pShop->close_hour );
    }
@@ -2129,35 +1641,35 @@ void fwrite_afk_mobile( FILE * fpout, mob_index * pMobIndex, bool install )
    // Mob is a repair shop? Add that data to the mob index.
    if( ( pRepair = pMobIndex->rShop ) != nullptr )
    {
-      fprintf( fpout, "RepairData %d %d %d %d %d %d %d\n",
+      stream << std::format( "RepairData {} {} {} {} {} {} {}\n",
                pRepair->fix_type[0], pRepair->fix_type[1], pRepair->fix_type[2], pRepair->profit_fix, pRepair->shop_type, pRepair->open_hour, pRepair->close_hour );
    }
 
    for( auto* mp : pMobIndex->mudprogs )
-      mprog_write_prog( fpout, mp );
+      mprog_write_prog( stream, mp );
 
-   fprintf( fpout, "%s", "#ENDMOBILE\n\n" );
+   stream << "#ENDMOBILE\n\n";
 }
 
 // Write out an individual obj
-void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
+void fwrite_afk_object( std::ofstream & stream, obj_index * pObjIndex, bool install )
 {
    if( install )
       pObjIndex->extra_flags.reset( ITEM_PROTOTYPE );
 
-   fprintf( fpout, "%s", "#OBJECT\n" );
-   fprintf( fpout, "Vnum      %d\n", pObjIndex->vnum );
-   fprintf( fpout, "Keywords  %s~\n", pObjIndex->name.c_str() );
-   fprintf( fpout, "Type      %s~\n", o_types[pObjIndex->item_type] );
-   fprintf( fpout, "Short     %s~\n", pObjIndex->short_descr.c_str() );
+   stream << "#OBJECT\n";
+   stream << std::format( "Vnum      {}\n", pObjIndex->vnum );
+   stream << std::format( "Keywords  {}~\n", pObjIndex->name );
+   stream << std::format( "Type      {}~\n", o_types[pObjIndex->item_type] );
+   stream << std::format( "Short     {}~\n", pObjIndex->short_descr );
    if( !pObjIndex->objdesc.empty() )
-      fprintf( fpout, "Long      %s~\n", strip_cr( pObjIndex->objdesc ).c_str() );
+      stream << std::format( "Long      {}~\n", strip_cr( pObjIndex->objdesc ) );
    if( !pObjIndex->action_desc.empty() )
-      fprintf( fpout, "Action    %s~\n", pObjIndex->action_desc.c_str() );
+      stream << std::format( "Action    {}~\n", pObjIndex->action_desc );
    if( pObjIndex->extra_flags.any(  ) )
-      fprintf( fpout, "Flags     %s~\n", bitset_string( pObjIndex->extra_flags, o_flags ) );
+      stream << std::format( "Flags     {}~\n", bitset_string( pObjIndex->extra_flags, o_flags ) );
    if( pObjIndex->wear_flags.any(  ) )
-      fprintf( fpout, "WFlags    %s~\n", bitset_string( pObjIndex->wear_flags, w_flags ) );
+      stream << std::format( "WFlags    {}~\n", bitset_string( pObjIndex->wear_flags, w_flags ) );
 
    int val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10;
    val0 = pObjIndex->value[0];
@@ -2201,15 +1713,15 @@ void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
             val5 = HAS_SPELL_INDEX;
          break;
    }
-   fprintf( fpout, "Values    %d %d %d %d %d %d %d %d %d %d %d\n", val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10 );
+   stream << std::format( "Values    {} {} {} {} {} {} {} {} {} {} {}\n", val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10 );
 
-   fprintf( fpout, "Stats     %d %d %d %d %d %s %s %s\n",
+   stream << std::format( "Stats     {} {} {} {} {} {} {} {}\n",
             pObjIndex->weight, pObjIndex->cost, pObjIndex->ego,
             pObjIndex->limit, pObjIndex->layers,
-            !pObjIndex->socket[0].empty() ? pObjIndex->socket[0].c_str() : "None", !pObjIndex->socket[1].empty() ? pObjIndex->socket[1].c_str() : "None", pObjIndex->socket[2].empty() ? pObjIndex->socket[2].c_str() : "None" );
+            !pObjIndex->socket[0].empty() ? pObjIndex->socket[0] : "None", !pObjIndex->socket[1].empty() ? pObjIndex->socket[1] : "None", pObjIndex->socket[2].empty() ? pObjIndex->socket[2] : "None" );
 
    for( auto* af : pObjIndex->affects )
-      fwrite_afk_affect( fpout, af );
+      fwrite_afk_affect( stream, af );
 
    switch ( pObjIndex->item_type )
    {
@@ -2219,35 +1731,35 @@ void fwrite_afk_object( FILE * fpout, obj_index * pObjIndex, bool install )
       case ITEM_PILL:
       case ITEM_POTION:
       case ITEM_SCROLL:
-         fprintf( fpout, "Spells       '%s' '%s' '%s'\n",
-                  IS_VALID_SN( pObjIndex->value[1] ) ? skill_table[pObjIndex->value[1]]->name.c_str() : "NONE",
-                  IS_VALID_SN( pObjIndex->value[2] ) ? skill_table[pObjIndex->value[2]]->name.c_str() : "NONE",
-                  IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name.c_str() : "NONE" );
+         stream << std::format( "Spells       '{}' '{}' '{}'\n",
+                  IS_VALID_SN( pObjIndex->value[1] ) ? skill_table[pObjIndex->value[1]]->name : "NONE",
+                  IS_VALID_SN( pObjIndex->value[2] ) ? skill_table[pObjIndex->value[2]]->name : "NONE",
+                  IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name : "NONE" );
          break;
 
       case ITEM_STAFF:
       case ITEM_WAND:
-         fprintf( fpout, "Spells       '%s'\n", IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name.c_str() : "NONE" );
+         stream << std::format( "Spells       '{}'\n", IS_VALID_SN( pObjIndex->value[3] ) ? skill_table[pObjIndex->value[3]]->name : "NONE" );
          break;
 
       case ITEM_SALVE:
-         fprintf( fpout, "Spells       '%s' '%s'\n",
-                  IS_VALID_SN( pObjIndex->value[4] ) ? skill_table[pObjIndex->value[4]]->name.c_str() : "NONE",
-                  IS_VALID_SN( pObjIndex->value[5] ) ? skill_table[pObjIndex->value[5]]->name.c_str() : "NONE" );
+         stream << std::format( "Spells       '{}' '{}'\n",
+                  IS_VALID_SN( pObjIndex->value[4] ) ? skill_table[pObjIndex->value[4]]->name : "NONE",
+                  IS_VALID_SN( pObjIndex->value[5] ) ? skill_table[pObjIndex->value[5]]->name : "NONE" );
          break;
    }
 
    for( auto* desc : pObjIndex->extradesc )
-      fwrite_afk_exdesc( fpout, desc );
+      fwrite_afk_exdesc( stream, desc );
 
    for( auto* mp : pObjIndex->mudprogs )
-      mprog_write_prog( fpout, mp );
+      mprog_write_prog( stream, mp );
 
-   fprintf( fpout, "%s", "#ENDOBJECT\n\n" );
+   stream << "#ENDOBJECT\n\n";
 }
 
 // Write out an individual room
-void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
+void fwrite_afk_room( std::ofstream & stream, room_index * room, bool install )
 {
    if( install )
    {
@@ -2275,7 +1787,7 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       }
    }
 
-   fprintf( fpout, "%s", "#ROOM\n" );
+   stream << "#ROOM\n";
 
    /*
     * Take off track flags before saving 
@@ -2283,15 +1795,15 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
    if( room->flags.test( ROOM_TRACK ) )
       room->flags.reset( ROOM_TRACK );
 
-   fprintf( fpout, "Vnum      %d\n", room->vnum );
-   fprintf( fpout, "Name      %s~\n", strip_cr( room->name ).c_str() );
+   stream << std::format( "Vnum      {}\n", room->vnum );
+   stream << std::format( "Name      {}~\n", strip_cr( room->name ) );
 
    /*
     * Retain the ORIGINAL sector type to the area file - Samson 7-19-00 
     */
    if( time_info.season == SEASON_WINTER && room->winter_sector != -1 )
       room->sector_type = room->winter_sector;
-   fprintf( fpout, "Sector    %s~\n", strip_cr( sect_types[room->sector_type] ).c_str(  ) );
+   stream << std::format( "Sector    {}~\n", strip_cr( sect_types[room->sector_type] ) );
 
    /*
     * And change it back again so that the season is not disturbed in play - Samson 7-19-00 
@@ -2311,21 +1823,21 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       }
    }
 
-   fprintf( fpout, "Flags     %s~\n", bitset_string( room->flags, r_flags ) );
-   fprintf( fpout, "Stats     %d %d %d %d %d\n", room->tele_delay, room->tele_vnum, room->tunnel, room->baselight, room->max_weight );
+   stream << std::format( "Flags     {}~\n", bitset_string( room->flags, r_flags ) );
+   stream << std::format( "Stats     {} {} {} {} {}\n", room->tele_delay, room->tele_vnum, room->tunnel, room->baselight, room->max_weight );
 
    if( !room->roomdesc.empty() )
-      fprintf( fpout, "Desc      %s~\n", strip_cr( room->roomdesc ).c_str() );
+      stream << std::format( "Desc      {}~\n", strip_cr( room->roomdesc ) );
 
    /*
     * write NiteDesc's -- Dracones 
     */
    if( !room->nitedesc.empty() )
-      fprintf( fpout, "Nightdesc %s~\n", strip_cr( room->nitedesc ).c_str() );
+      stream << std::format( "Nightdesc {}~\n", strip_cr( room->nitedesc ) );
 
    // Save the list of room index affects.
    for( auto* af : room->permaffects )
-      fwrite_afk_affect( fpout, af );
+      fwrite_afk_affect( stream, af );
 
    // Save the list of room exits.
    for( auto* pexit : room->exits )
@@ -2333,21 +1845,21 @@ void fwrite_afk_room( FILE * fpout, room_index * room, bool install )
       if( IS_EXIT_FLAG( pexit, EX_PORTAL ) ) // Don't fold portals
          continue;
 
-      fwrite_afk_exit( fpout, pexit );
+      fwrite_afk_exit( stream, pexit );
    }
 
    // Save the list of extra descriptions.
    for( auto* desc : room->extradesc )
-      fwrite_afk_exdesc( fpout, desc );
+      fwrite_afk_exdesc( stream, desc );
 
    // Save the list of mudprogs.
    for( auto* mp : room->mudprogs )
-      mprog_write_prog( fpout, mp );
+      mprog_write_prog( stream, mp );
 
    // Recursive function that saves the nested resets.
-   save_reset_level( fpout, room->resets, 0 );
+   save_reset_level( stream, room->resets, 0 );
 
-   fprintf( fpout, "%s", "#ENDROOM\n\n" );
+   stream << "#ENDROOM\n\n";
 }
 
 /*
@@ -2368,35 +1880,36 @@ constexpr int AREA_VERSION_WRITE = 1;
 
 void area_data::fold( const std::string & fname, bool install )
 {
-   FILE *fpout;
-
    log_printf_plus( LOG_BUILD, LEVEL_GREATER, "Saving {}...", this->filename );
 
    std::filesystem::path buf = std::format( "{}.bak", fname );
    std::filesystem::rename( fname, buf );
-   if( !( fpout = fopen( fname.c_str(), "w" ) ) )
+   std::ofstream stream( this->filename );
+   if( !stream.is_open() )
    {
-      bug( "{}: Cannot open area file '{}' for writing!", __func__, fname );
+      bug( "{}: Cannot open {} for writing: {}", __func__, this->filename, std::strerror(errno) );
       return;
    }
 
    this->version = AREA_VERSION_WRITE;
 
-   fprintf( fpout, "%s", "#AFKAREA\n" );
+   stream << "#AFKAREA\n";
 
-   fwrite_area_header( this, fpout );
+   fwrite_area_header( this, stream );
 
    for( auto* pMobIndex : mobs )
-      fwrite_afk_mobile( fpout, pMobIndex, install );
+      fwrite_afk_mobile( stream, pMobIndex, install );
 
    for( auto* pObjIndex : objects )
-      fwrite_afk_object( fpout, pObjIndex, install );
+      fwrite_afk_object( stream, pObjIndex, install );
 
    for( auto* pRoomIndex : rooms )
-      fwrite_afk_room( fpout, pRoomIndex, install );
+      fwrite_afk_room( stream, pRoomIndex, install );
 
-   fprintf( fpout, "%s", "#ENDAREA\n" );
-   FCLOSE( fpout );
+   stream << "#ENDAREA\n";
+   stream.close();
+   if( stream.fail() )
+      bug( "{}: Error occurred after closing {}: ", __func__, this->filename, std::strerror(errno) );
 }
 
 void close_all_areas( void )
@@ -2410,7 +1923,6 @@ void close_all_areas( void )
    }
 }
 
-// FIXME: Update once ::fold accepts std::string as an argument.
 CMDF( do_savearea )
 {
    area_data *tarea;
@@ -2435,7 +1947,7 @@ CMDF( do_savearea )
          if( !tarea->flags.test( AFLAG_PROTOTYPE ) )
             continue;
          fname = std::format( "{}{}", BUILD_DIR, tarea->filename );
-         tarea->fold( fname.c_str(), false );
+         tarea->fold( fname, false );
       }
       ch->print( "&[immortal]Prototype areas saved.\r\n" );
       return;

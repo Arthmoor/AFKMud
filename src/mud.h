@@ -1038,11 +1038,11 @@ template < size_t N > const char *bitset_string( std::bitset < N > bits, const c
 
 // This template is used during file reading to set flags based on the string names.
 // Loosely resembles Remcon's WEXTKEY macro from his LoP codebase.
-template < size_t N > void flag_set( FILE * fp, std::bitset < N > &field, const char *flagarray[] )
+template < size_t N > void flag_set( std::ifstream & stream, std::bitset < N > &field, const char *flagarray[] )
 {
    std::string flags, flag;
 
-   flags = fread_flagstring( fp );
+   flags = fread_line( stream );
    while( flags[0] != '\0' )
    {
       flags = one_argument( flags, flag );

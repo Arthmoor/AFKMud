@@ -26,9 +26,12 @@
  *                        Object Index Support Functions                    *
  ****************************************************************************/
 
+#include <filesystem>
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "mud_prog.h"
+#include "mudprog_loader.h"
 #include "objindex.h"
 #include "smaugaffect.h"
 
@@ -783,11 +786,11 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
 
 /* This procedure is responsible for reading any in_file OBJprograms.
  */
-void obj_index::oprog_read_programs( FILE * fp )
+void obj_index::oprog_read_programs( std::ifstream & stream )
 {
    for( ;; )
    {
-      char letter = fread_letter( fp );
+      char letter = fread_letter( stream );
 
       if( letter == '|' )
          return;
@@ -800,7 +803,7 @@ void obj_index::oprog_read_programs( FILE * fp )
       mud_prog_data *mprg = new mud_prog_data;
       mudprogs.push_back( mprg );
 
-      std::string word = fread_word( fp );
+      std::string word = fread_word( stream );
       mprg->type = mprog_name_to_type( word );
 
       switch ( mprg->type )
@@ -810,7 +813,7 @@ void obj_index::oprog_read_programs( FILE * fp )
             std::exit( EXIT_FAILURE );
 
          case IN_FILE_PROG:
-            fread_string( mprg->arglist, fp );
+            fread_string( mprg->arglist, stream );
             mprg->fileprog = false;
             mprog_file_read( this, mprg->arglist );
             break;
@@ -818,8 +821,8 @@ void obj_index::oprog_read_programs( FILE * fp )
          default:
             progtypes.set( mprg->type );
             mprg->fileprog = false;
-            fread_string( mprg->arglist, fp );
-            fread_string( mprg->comlist, fp );
+            fread_string( mprg->arglist, stream );
+            fread_string( mprg->comlist, stream );
             break;
       }
    }

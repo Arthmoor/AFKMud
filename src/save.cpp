@@ -975,11 +975,11 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       else if( key == "Clan" )
          ch->pcdata->clan_name = fread_line( stream );
       else if( key == "PCFlags" )
-         ch->set_pcflags_string( fread_line( stream ) );
+         ch->set_pcflags_file( stream );
       else if( key == "Channels" )
          ch->pcdata->chan_listen = fread_line( stream );
       else if( key =="Speaks" )
-         ch->set_langs_string( fread_line( stream ) );
+         ch->set_langs_file( stream );
       else if( key == "Speaking" )
       {
          std::string speaking = fread_line( stream );
@@ -1143,25 +1143,25 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       else if( key == "RentRooms" )
          stream >> ch->pcdata->one;
       else if( key == "BodyParts" )
-         ch->set_bparts_string( fread_line( stream ) );
+         ch->set_bparts_file( stream );
       else if( key == "AffectFlags" )
-         ch->set_aflags_string( fread_line( stream ) );
+         ch->set_aflags_file( stream );
       else if( key == "NoAffectedBy" )
-         ch->set_noaflags_string( fread_line( stream ) );
+         ch->set_noaflags_file( stream );
       else if( key == "Resistant" )
-         ch->set_resists_string( fread_line( stream ) );
+         ch->set_resists_file( stream );
       else if( key == "Nores" )
-         ch->set_noresists_string( fread_line( stream ) );
+         ch->set_noresists_file( stream );
       else if( key == "Susceptible" )
-         ch->set_susceps_string( fread_line( stream ) );
+         ch->set_susceps_file( stream );
       else if( key == "Nosusc" )
-         ch->set_nosusceps_string( fread_line( stream ) );
+         ch->set_nosusceps_file( stream );
       else if( key == "Immune" )
-         ch->set_immunes_string( fread_line( stream ) );
+         ch->set_immunes_file( stream );
       else if( key == "Noimm" )
-         ch->set_noimmunes_string( fread_line( stream ) );
+         ch->set_noimmunes_file( stream );
       else if( key == "Absorb" )
-         ch->set_absorbs_string( fread_line( stream ) );
+         ch->set_absorbs_file( stream );
       else if( key == "KillInfo" )
          stream >> ch->pcdata->pkills >> ch->pcdata->pdeaths >> ch->pcdata->mkills >> ch->pcdata->mdeaths >> ch->pcdata->illegal_pk;
       else if( key == "PTimer" )
@@ -2077,17 +2077,9 @@ char_data *fread_mobile( std::ifstream & stream, bool shopmob, bool hotboot )
       else if( key == "Position" )
          stream >> mob->position;
       else if( key == "ActFlags" )
-      {
-         std::string flags = fread_line( stream );
-
-         mob->set_actflags_string( flags );
-      }
+         mob->set_actflags_file( stream );
       else if( key == "AffectedBy" )
-      {
-         std::string flags = fread_line( stream );
-
-         mob->set_aflags_string( flags );
-      }
+         mob->set_aflags_file( stream );
       else if( key == "Affect" || key == "AffectData" )
       {
          affect_data *paf;
