@@ -969,6 +969,7 @@ void weather_update( void );
 // weather.cpp
 bool is_indoor_sector( int );
 
+// This should remain above any new templates added so if they need to include bug() calls they won't throw errors.
 template <typename... Args>
 void bug( std::format_string<Args...> fmt, Args&&... args )
 {
@@ -978,11 +979,9 @@ void bug( std::format_string<Args...> fmt, Args&&... args )
 }
 
 // This used to be the old ext_flagstring converted to C++ and using strings so it can't overflow the temporary buffer.
-template < size_t N > const char *bitset_string( std::bitset < N > bits, const char *flagarray[] )
+template < size_t N > std::string bitset_string( std::bitset < N > bits, const char *flagarray[] )
 {
-   static std::string s;
-
-   s.clear();
+   std::string s;
 
    for( size_t i = 0; i < bits.size (); ++i )
    {
@@ -994,7 +993,7 @@ template < size_t N > const char *bitset_string( std::bitset < N > bits, const c
    }
    strip_tspace(s); // get rid of final space
 
-   return s.c_str();
+   return s;
 }
 
 // This template is used during file reading to set flags based on the string names.
@@ -1070,77 +1069,6 @@ template < class N > extra_descr_data * set_extra_descr( N * target, const std::
    }
    return desc;
 }
-
-// Read a number from a file. Used to be several clones in db.cpp for each type. Now there is only one.
-template <typename T> T fread_numeric( FILE *fp )
-{
-   static_assert( std::is_arithmetic<T>::value, "fread_numeric requires an arithmetic type (int, float, etc)." );
-
-   int c;
-   do
-   {
-      c = std::getc( fp );
-      if( c == EOF )
-         return 0;
-   } while( std::isspace(c) );
-
-   bool sign = false;
-   if( c == '+' )
-   {
-      c = std::getc( fp );
-   }
-   else if( c == '-' )
-   {
-      sign = true;
-      c = std::getc( fp );
-   }
-
-   double number = 0.0;
-
-   // Parse integer part
-   while( std::isdigit( c ) )
-   {
-      number = ( number * 10.0 ) + (c - '0' );
-      c = std::getc( fp );
-   }
-
-   // Parse decimal part (if floating point type requested)
-   if constexpr( std::is_floating_point<T>::value )
-   {
-      if( c == '.' )
-      {
-         double divisor = 10.0;
-         c = std::getc( fp );
-         while( std::isdigit( c ) )
-         {
-            number += (c - '0') / divisor;
-            divisor *= 10.0;
-            c = std::getc( fp );
-         }
-      }
-   }
-
-   if( sign )
-      number = -number;
-
-   // Handle flags (pipe operator) - note: only logical for integer flags
-   if( c == '|' )
-   {
-      number += fread_numeric<double>( fp );
-   }
-   else if( c != EOF && c != ' ' )
-   {
-      std::ungetc( c, fp );
-   }
-
-   return static_cast<T>( number );
-}
-
-// Add any new types as needed here.
-inline short fread_short( FILE *fp )  { return fread_numeric<short>( fp ); }
-inline int   fread_number( FILE *fp ) { return fread_numeric<int>( fp ); }
-inline long  fread_long( FILE *fp )   { return fread_numeric<long>( fp ); }
-inline float fread_float( FILE *fp )  { return fread_numeric<float>( fp ); }
 
 // This only exists to correct a legit mistake on the part of the C++ committee. Boolean values are not WORDS, they are NUMBERS. Treat them as such.
 template <>

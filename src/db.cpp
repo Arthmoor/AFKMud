@@ -528,7 +528,7 @@ void load_buildlist( void )
       set_alarm( AREA_FILE_ALARM );
       alarm_section = "load_buildlist: read prototype area files";
 
-      load_area_file( full_path.string().c_str(), true );
+      load_area_file( full_path.string(), true );
    }
 }
 
@@ -1378,7 +1378,7 @@ int number_bits( int width )
 }
 
 /*
- * Roll some dice.						-Thoric
+ * Roll some dice.   -Thoric
  */
 int dice( int number, int size )
 {
@@ -1404,21 +1404,21 @@ CMDF( do_randtest )
    ch->print_fmt( "3d35 ( 3 35 sided dice ): {}\r\n", dice( 3, 35 ) );
 }
 
-/* Command so imms can view the imotd - Samson 1-20-01 */
+// Command so imms can view the imotd - Samson 1-20-01
 CMDF( do_imotd )
 {
    if( exists_file( IMOTD_FILE ) )
       show_file( ch, IMOTD_FILE );
 }
 
-/* Command so people can call up the MOTDs - Samson 1-20-01 */
+// Command so people can call up the MOTDs - Samson 1-20-01
 CMDF( do_motd )
 {
    if( exists_file( MOTD_FILE ) )
       show_file( ch, MOTD_FILE );
 }
 
-/* Saves MOTDs to disk - Samson 12-31-00 */
+// Saves MOTDs to disk - Samson 12-31-00
 void save_motd( std::string_view name, std::string_view str )
 {
    std::ofstream stream( std::filesystem::path{name} );
@@ -1453,7 +1453,7 @@ void load_motd( char_data * ch, std::string_view name )
    stream.close();
 }
 
-/* Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00 */
+// Handles editing the MOTDs on the server, independent of helpfiles now - Samson 12-31-00
 CMDF( do_motdedit )
 {
    std::string arg1;

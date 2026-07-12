@@ -907,10 +907,9 @@ void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
 
          std::string ln;
          std::getline( stream, ln );
-         std::istringstream iss( ln );
 
          x2 = x3 = 0;
-         iss >> x2 >> x3;
+         std::istringstream( ln ) >> x2 >> x3;
          pObjIndex->layers = x2;
          pObjIndex->level = x3; // Smaug 1.8b v2 or v3
       }
@@ -1240,13 +1239,10 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
       pRoomIndex->name = fread_line( stream );
       pRoomIndex->roomdesc = fread_line( stream );
 
-      /*
-       * Area number         fread_number( fp ); 
-       */
       x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = 0;
       std::string ln;
-      std::istringstream iss( ln );
-      iss >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9;
+      std::getline( stream, ln );
+      std::istringstream( ln ) >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9;
       {
          std::string roomflags, flag;
          int value;
