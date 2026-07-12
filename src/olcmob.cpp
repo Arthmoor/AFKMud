@@ -71,7 +71,6 @@ std::string specmenu[100];
 void medit_disp_menu( descriptor_data * );
 int calc_thac0( char_data *, char_data *, int );
 void cleanup_olc( descriptor_data * );
-void olc_log( descriptor_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 int mob_xp( char_data * );
 bool can_mmodify( char_data *, char_data * );
 
@@ -655,7 +654,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          {
             victim->pIndexData->player_name = victim->name;
          }
-         olc_log( d, "Changed name to %s", arg.c_str(  ) );
+         olc_log( d->character, "Changed name to {}", arg );
          break;
 
       case MEDIT_S_DESC:
@@ -664,7 +663,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          {
             victim->pIndexData->short_descr = victim->short_descr;
          }
-         olc_log( d, "Changed short desc to %s", arg.c_str(  ) );
+         olc_log( d->character, "Changed short desc to {}", arg );
          break;
 
       case MEDIT_L_DESC:
@@ -673,7 +672,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          {
             victim->pIndexData->long_descr = victim->long_descr;
          }
-         olc_log( d, "Changed long desc to %s", arg.c_str(  ) );
+         olc_log( d->character, "Changed long desc to {}", arg );
          break;
 
       case MEDIT_D_DESC:
@@ -738,7 +737,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
             {
                number -= 1;
                victim->toggle_aflag( number );
-               olc_log( d, "%s the affect %s", victim->has_aflag( number ) ? "Added" : "Removed", aff_flags[number] );
+               olc_log( d->character, "{} the affect {}", victim->has_aflag( number ) ? "Added" : "Removed", aff_flags[number] );
             }
          }
          else
@@ -750,7 +749,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
                if( number > 0 )
                {
                   victim->toggle_aflag( number );
-                  olc_log( d, "%s the affect %s", victim->has_aflag( number ) ? "Added" : "Removed", aff_flags[number] );
+                  olc_log( d->character, "{} the affect {}", victim->has_aflag( number ) ? "Added" : "Removed", aff_flags[number] );
                }
             }
          }
@@ -763,99 +762,99 @@ void medit_parse( descriptor_data * d, std::string & arg )
 /*. Numerical responses .*/
       case MEDIT_HITPOINT:
          victim->max_hit = urange( 1, std::stoi( arg ), 32700 );
-         olc_log( d, "Changed hitpoints to %d", victim->max_hit );
+         olc_log( d->character, "Changed hitpoints to {}", victim->max_hit );
          break;
 
       case MEDIT_MANA:
          victim->max_mana = urange( 1, std::stoi( arg ), 30000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->max_mana = victim->max_mana;
-         olc_log( d, "Changed mana to %d", victim->max_mana );
+         olc_log( d->character, "Changed mana to {}", victim->max_mana );
          break;
 
       case MEDIT_MOVE:
          victim->max_move = urange( 1, std::stoi( arg ), 30000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->max_move = victim->max_move;
-         olc_log( d, "Changed moves to %d", victim->max_move );
+         olc_log( d->character, "Changed moves to {}", victim->max_move );
          break;
 
       case MEDIT_SEX:
          victim->sex = urange( 0, std::stoi( arg ), SEX_MAX - 1 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->sex = victim->sex;
-         olc_log( d, "Changed sex to %s", victim->sex == SEX_MALE ? "Male" : victim->sex == SEX_FEMALE ? "Female" : victim->sex == SEX_NEUTRAL ? "Neutral" : "Hermaphrodite" );
+         olc_log( d->character, "Changed sex to {}", victim->sex == SEX_MALE ? "Male" : victim->sex == SEX_FEMALE ? "Female" : victim->sex == SEX_NEUTRAL ? "Neutral" : "Hermaphrodite" );
          break;
 
       case MEDIT_HITROLL:
          victim->hitroll = urange( 0, std::stoi( arg ), 85 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->hitroll = victim->hitroll;
-         olc_log( d, "Changed hitroll to %d", victim->hitroll );
+         olc_log( d->character, "Changed hitroll to {}", victim->hitroll );
          break;
 
       case MEDIT_DAMROLL:
          victim->damroll = urange( 0, std::stoi( arg ), 65 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->damroll = victim->damroll;
-         olc_log( d, "Changed damroll to %d", victim->damroll );
+         olc_log( d->character, "Changed damroll to {}", victim->damroll );
          break;
 
       case MEDIT_DAMNUMDIE:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->damnodice = urange( 0, std::stoi( arg ), 100 );
-         olc_log( d, "Changed damnumdie to %d", victim->pIndexData->damnodice );
+         olc_log( d->character, "Changed damnumdie to {}", victim->pIndexData->damnodice );
          break;
 
       case MEDIT_DAMSIZEDIE:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->damsizedice = urange( 0, std::stoi( arg ), 100 );
-         olc_log( d, "Changed damsizedie to %d", victim->pIndexData->damsizedice );
+         olc_log( d->character, "Changed damsizedie to {}", victim->pIndexData->damsizedice );
          break;
 
       case MEDIT_DAMPLUS:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->damplus = urange( 0, std::stoi( arg ), 1000 );
-         olc_log( d, "Changed damplus to %d", victim->pIndexData->damplus );
+         olc_log( d->character, "Changed damplus to {}", victim->pIndexData->damplus );
          break;
 
       case MEDIT_HITPLUS:
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->hitplus = urange( 0, std::stoi( arg ), 32767 );
-         olc_log( d, "Changed hitplus to %d", victim->pIndexData->hitplus );
+         olc_log( d->character, "Changed hitplus to {}", victim->pIndexData->hitplus );
          break;
 
       case MEDIT_AC:
          victim->armor = urange( -300, std::stoi( arg ), 300 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->ac = victim->armor;
-         olc_log( d, "Changed armor to %d", victim->armor );
+         olc_log( d->character, "Changed armor to {}", victim->armor );
          break;
 
       case MEDIT_GOLD:
          victim->gold = urange( -1, std::stoi( arg ), 2000000000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->gold = victim->gold;
-         olc_log( d, "Changed gold to %d", victim->gold );
+         olc_log( d->character, "Changed gold to {}", victim->gold );
          break;
 
       case MEDIT_POS:
          victim->position = urange( 0, std::stoi( arg ), POS_STANDING );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->position = victim->position;
-         olc_log( d, "Changed position to %d", victim->position );
+         olc_log( d->character, "Changed position to {}", victim->position );
          break;
 
       case MEDIT_DEFPOS:
          victim->defposition = urange( 0, std::stoi( arg ), POS_STANDING );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->defposition = victim->defposition;
-         olc_log( d, "Changed default position to %d", victim->defposition );
+         olc_log( d->character, "Changed default position to {}", victim->defposition );
          break;
 
       case MEDIT_MENTALSTATE:
          victim->mental_state = urange( -100, std::stoi( arg ), 100 );
-         olc_log( d, "Changed mental state to %d", victim->mental_state );
+         olc_log( d->character, "Changed mental state to {}", victim->mental_state );
          break;
 
       case MEDIT_CLASS:
@@ -868,7 +867,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
             break;
          }
          victim->Class = urange( 0, number, MAX_CLASS );
-         olc_log( d, "Changed Class to %s", npc_class[victim->Class] );
+         olc_log( d->character, "Changed Class to {}", npc_class[victim->Class] );
          break;
 
       case MEDIT_RACE:
@@ -881,7 +880,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
             break;
          }
          victim->race = urange( 0, number, MAX_RACE - 1 );
-         olc_log( d, "Changed race to %s", npc_race[victim->race] );
+         olc_log( d->character, "Changed race to {}", npc_race[victim->race] );
          break;
 
       case MEDIT_PARTS:
@@ -903,7 +902,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
             if( victim->has_actflag( ACT_PROTOTYPE ) )
                victim->pIndexData->body_parts = victim->get_bparts(  );
          }
-         olc_log( d, "%s the body part %s", victim->has_bpart( number ) ? "Added" : "Removed", part_flags[number] );
+         olc_log( d->character, "{} the body part {}", victim->has_bpart( number ) ? "Added" : "Removed", part_flags[number] );
          medit_disp_parts( d );
          return;
 
@@ -940,7 +939,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->attacks = victim->get_attacks(  );
          medit_disp_attack_menu( d );
-         olc_log( d, "%s the attack %s", victim->has_attack( number ) ? "Added" : "Removed", attack_flags[number] );
+         olc_log( d->character, "{} the attack {}", victim->has_attack( number ) ? "Added" : "Removed", attack_flags[number] );
          return;
 
       case MEDIT_DEFENSE:
@@ -976,21 +975,21 @@ void medit_parse( descriptor_data * d, std::string & arg )
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->defenses = victim->get_defenses(  );
          medit_disp_defense_menu( d );
-         olc_log( d, "%s the attack %s", victim->has_defense( number ) ? "Added" : "Removed", defense_flags[number] );
+         olc_log( d->character, "{} the attack {}", victim->has_defense( number ) ? "Added" : "Removed", defense_flags[number] );
          return;
 
       case MEDIT_LEVEL:
          victim->level = urange( 1, std::stoi( arg ), LEVEL_IMMORTAL + 5 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->level = victim->level;
-         olc_log( d, "Changed level to %d", victim->level );
+         olc_log( d->character, "Changed level to {}", victim->level );
          break;
 
       case MEDIT_ALIGNMENT:
          victim->alignment = urange( -1000, std::stoi( arg ), 1000 );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->alignment = victim->alignment;
-         olc_log( d, "Changed alignment to %d", victim->alignment );
+         olc_log( d->character, "Changed alignment to {}", victim->alignment );
          break;
 
       case MEDIT_EXP:
@@ -999,14 +998,14 @@ void medit_parse( descriptor_data * d, std::string & arg )
             victim->pIndexData->exp = victim->exp;
          if( victim->exp == -1 )
             victim->exp = mob_xp( victim );
-         olc_log( d, "Changed exp to %d", victim->exp );
+         olc_log( d->character, "Changed exp to {}", victim->exp );
          break;
 
       case MEDIT_THACO:
          victim->mobthac0 = std::stoi( arg );
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->mobthac0 = victim->mobthac0;
-         olc_log( d, "Changed thac0 to %d", victim->mobthac0 );
+         olc_log( d->character, "Changed thac0 to {}", victim->mobthac0 );
          break;
 
       case MEDIT_RESISTANT:
@@ -1041,7 +1040,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->resistant = victim->get_resists(  );
          medit_disp_ris( d );
-         olc_log( d, "%s the resistant %s", victim->has_resist( number ) ? "Added" : "Removed", ris_flags[number] );
+         olc_log( d->character, "{} the resistant {}", victim->has_resist( number ) ? "Added" : "Removed", ris_flags[number] );
          return;
 
       case MEDIT_IMMUNE:
@@ -1077,7 +1076,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
             victim->pIndexData->immune = victim->get_immunes(  );
 
          medit_disp_ris( d );
-         olc_log( d, "%s the immune %s", victim->has_immune( number ) ? "Added" : "Removed", ris_flags[number] );
+         olc_log( d->character, "{} the immune {}", victim->has_immune( number ) ? "Added" : "Removed", ris_flags[number] );
          return;
 
       case MEDIT_SUSCEPTIBLE:
@@ -1112,7 +1111,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->susceptible = victim->get_susceps(  );
          medit_disp_ris( d );
-         olc_log( d, "%s the suscept %s", victim->has_suscep( number ) ? "Added" : "Removed", ris_flags[number] );
+         olc_log( d->character, "{} the suscept {}", victim->has_suscep( number ) ? "Added" : "Removed", ris_flags[number] );
          return;
 
       case MEDIT_ABSORB:
@@ -1147,7 +1146,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
          if( victim->has_actflag( ACT_PROTOTYPE ) )
             victim->pIndexData->absorb = victim->get_absorbs(  );
          medit_disp_ris( d );
-         olc_log( d, "%s the absorb %s", victim->has_absorb( number ) ? "Added" : "Removed", ris_flags[number] );
+         olc_log( d->character, "{} the absorb {}", victim->has_absorb( number ) ? "Added" : "Removed", ris_flags[number] );
          return;
 
       case MEDIT_SPEC:
@@ -1173,7 +1172,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
             victim->pIndexData->spec_fun = victim->spec_fun;
             victim->pIndexData->spec_funname = victim->spec_funname;
          }
-         olc_log( d, "Changes spec_func to %s", !victim->spec_funname.empty(  )? victim->spec_funname.c_str(  ) : "None" );
+         olc_log( d->character, "Changes spec_func to {}", !victim->spec_funname.empty(  )? victim->spec_funname.c_str(  ) : "None" );
          break;
 
       default:

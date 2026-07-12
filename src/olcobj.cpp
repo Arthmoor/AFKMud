@@ -71,7 +71,6 @@ extern const char *liquid_types[];
 
 void medit_disp_aff_flags( descriptor_data * );
 void medit_disp_ris( descriptor_data * );
-void olc_log( descriptor_data *, const char *, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
 int get_traptype( const std::string & );
 bool can_omodify( char_data *, obj_data * );
 
@@ -168,7 +167,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
             ch->print( "Projectile fired must match on the projectiles this weapon fires.\r\n" );
          }
          ch->print_fmt( "{}Value[6] - Current Condition: &c{}\r\n", olc ? "&gK&w) " : "&w", obj->value[6] );
-         ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ).c_str(  ) );
+         ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[6], obj->value[0] ) );
          ch->print_fmt( "{}Value[7] - Available sockets: &c{}\r\n", olc ? "&gL&w) " : "&w", obj->value[7] );
          ch->print_fmt( "Socket 1: {}\r\n", obj->socket[0] );
          ch->print_fmt( "Socket 2: {}\r\n", obj->socket[1] );
@@ -182,7 +181,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
       case ITEM_ARMOR:
          ch->print_fmt( "{}Value[0] - Current AC: &c{}\r\n", olc ? "&gE&w) " : "&w", obj->value[0] );
          ch->print_fmt( "{}Value[1] - Base AC: &c{}\r\n", olc ? "&gF&w) " : "&w", obj->value[1] );
-         ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[0], obj->value[1] ).c_str(  ) );
+         ch->print_fmt( "Condition: {}\r\n", condtxt( obj->value[0], obj->value[1] ) );
          ch->print_fmt( "{}Value[2] - Available sockets( applies only to body armor ): &c{}\r\n", olc ? "&gG&w) " : "&w", obj->value[2] );
          ch->print_fmt( "Socket 1: {}\r\n", obj->socket[0] );
          ch->print_fmt( "Socket 2: {}\r\n", obj->socket[1] );
@@ -411,7 +410,7 @@ void ostat_plus( char_data * ch, obj_data * obj, bool olc )
                ch->print( "Casts spell: Change Sex\r\n" );
                break;
          }
-         ch->print_fmt( "Text Displayed: {}\r\n", buf.c_str() );
+         ch->print_fmt( "Text Displayed: {}\r\n", buf );
          ch->print_fmt( "{}Value[3] - Trap Flags ({}): &c", olc ? "&gH&w) " : "&w", obj->value[3] );
          ch->print_fmt( "{}\r\n", flag_string( obj->value[3], trap_flags ) );
          ch->print_fmt( "{}Value[4] - Min. Damage: &c{}\r\n", olc ? "&gI&w) " : "&w", obj->value[4] );
@@ -665,8 +664,8 @@ CMDF( do_ocopy )
       return;
    }
 
-   ovnum = atoi( arg1.c_str(  ) );
-   cvnum = atoi( argument.c_str(  ) );
+   ovnum = std::stoi( arg1 );
+   cvnum = std::stoi( argument );
 
    if( ch->get_trust(  ) < LEVEL_GREATER )
    {
@@ -1862,7 +1861,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          {
             obj->pIndexData->name = obj->name;
          }
-         olc_log( d, "Changed name to %s", obj->name.c_str() );
+         olc_log( d->character, "Changed name to {}", obj->name );
          break;
 
       case OEDIT_SHORTDESC:
@@ -1871,7 +1870,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          {
             obj->pIndexData->short_descr = obj->short_descr;
          }
-         olc_log( d, "Changed short to %s", obj->short_descr.c_str() );
+         olc_log( d->character, "Changed short to {}", obj->short_descr );
          break;
 
       case OEDIT_LONGDESC:
@@ -1880,7 +1879,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          {
             obj->pIndexData->objdesc = obj->objdesc;
          }
-         olc_log( d, "Changed longdesc to %s", obj->objdesc.c_str() );
+         olc_log( d->character, "Changed longdesc to {}", obj->objdesc );
          break;
 
       case OEDIT_ACTDESC:
@@ -1889,7 +1888,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          {
             obj->pIndexData->action_desc = obj->action_desc;
          }
-         olc_log( d, "Changed actiondesc to %s", obj->action_desc.c_str() );
+         olc_log( d->character, "Changed actiondesc to {}", obj->action_desc );
          break;
 
       case OEDIT_TYPE:
@@ -1909,7 +1908,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
                obj->pIndexData->item_type = obj->item_type;
          }
-         olc_log( d, "Changed object type to %s", o_types[number] );
+         olc_log( d->character, "Changed object type to {}", o_types[number] );
          break;
 
       case OEDIT_EXTRAS:
@@ -1918,7 +1917,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             arg = one_argument( arg, arg1 );
             if( is_number( arg1 ) )
             {
-               number = atoi( arg1.c_str(  ) );
+               number = std::stoi( arg1 );
 
                if( number == 0 )
                {
@@ -1947,7 +1946,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             else
             {
                obj->extra_flags.flip( number );
-               olc_log( d, "%s the flag %s", obj->extra_flags.test( number ) ? "Added" : "Removed", o_flags[number] );
+               olc_log( d->character, "{} the flag {}", obj->extra_flags.test( number ) ? "Added" : "Removed", o_flags[number] );
             }
 
             /*
@@ -1976,7 +1975,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             {
                number -= 1;   /* Offset to accomodate 0 */
                obj->wear_flags.flip( number );
-               olc_log( d, "%s the wearloc %s", obj->wear_flags.test( number ) ? "Added" : "Removed", w_flags[number] );
+               olc_log( d->character, "{} the wearloc {}", obj->wear_flags.test( number ) ? "Added" : "Removed", w_flags[number] );
             }
          }
          else
@@ -1988,7 +1987,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                if( number != -1 )
                {
                   obj->wear_flags.flip( number );
-                  olc_log( d, "%s the wearloc %s", obj->wear_flags.test( number ) ? "Added" : "Removed", w_flags[number] );
+                  olc_log( d->character, "{} the wearloc {}", obj->wear_flags.test( number ) ? "Added" : "Removed", w_flags[number] );
                }
             }
          }
@@ -2000,7 +1999,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
       case OEDIT_WEIGHT:
          number = std::stoi( arg );
          obj->weight = number;
-         olc_log( d, "Changed weight to %d", obj->weight );
+         olc_log( d->character, "Changed weight to {}", obj->weight );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->weight = obj->weight;
          break;
@@ -2008,7 +2007,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
       case OEDIT_COST:
          number = std::stoi( arg );
          obj->cost = number;
-         olc_log( d, "Changed cost to %d", obj->cost );
+         olc_log( d->character, "Changed cost to {}", obj->cost );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->cost = obj->cost;
          break;
@@ -2019,33 +2018,33 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          {
             obj->pIndexData->ego = number;
             obj->ego = number;
-            olc_log( d, "Changed ego to %d", obj->pIndexData->ego );
+            olc_log( d->character, "Changed ego to {}", obj->pIndexData->ego );
             if( number == -2 )
                obj->ego = obj->pIndexData->set_ego(  );
             if( obj->ego == -2 )
-               olc_log( d, "%s", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
+               olc_log( d->character, "%s", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
          }
          else
          {
             obj->ego = number;
             if( number == -2 )
                obj->ego = obj->pIndexData->set_ego(  );
-            olc_log( d, "Changed rent to %d", obj->ego );
+            olc_log( d->character, "Changed rent to {}", obj->ego );
             if( obj->ego == -2 )
-               olc_log( d, "%s", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
+               olc_log( d->character, "%s", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
          }
          break;
 
       case OEDIT_TIMER:
          number = std::stoi( arg );
          obj->timer = number;
-         olc_log( d, "Changed timer to %d", obj->timer );
+         olc_log( d->character, "Changed timer to {}", obj->timer );
          break;
 
       case OEDIT_LEVEL:
          number = std::stoi( arg );
          obj->level = urange( 0, number, MAX_LEVEL );
-         olc_log( d, "Changed object level to %d", obj->level );
+         olc_log( d->character, "Changed object level to {}", obj->level );
          break;
 
       case OEDIT_LAYERS:  // FIXME: Jesus Christ, for the love of God, etc. This is *NOT* right!
@@ -2090,7 +2089,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                d->character->print( "Invalid selection, try again: " );
                return;
          }
-         olc_log( d, "Changed layers to %d", obj->pIndexData->layers );
+         olc_log( d->character, "Changed layers to {}", obj->pIndexData->layers );
          oedit_disp_layer_menu( d );
          return;
 
@@ -2109,7 +2108,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             {
                number -= 1;   /* Offset to accommodate 0 */
                TOGGLE_BIT( obj->value[3], 1 << number );
-               olc_log( d, "%s the trapflag %s", IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
+               olc_log( d->character, "{} the trapflag {}", IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
             }
          }
          else
@@ -2121,7 +2120,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                if( number != -1 )
                {
                   TOGGLE_BIT( obj->value[3], 1 << number );
-                  olc_log( d, "%s the trapflag %s", IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
+                  olc_log( d->character, "{} the trapflag {}", IS_SET( obj->value[3], 1 << number ) ? "Added" : "Removed", trap_flags[number] );
                }
             }
          }
@@ -2154,7 +2153,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
                   obj->pIndexData->value[0] = number;
          }
-         olc_log( d, "Changed v0 to %d", obj->value[0] );
+         olc_log( d->character, "Changed v0 to {}", obj->value[0] );
          break;
 
       case OEDIT_VALUE_1:
@@ -2205,7 +2204,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                   obj->pIndexData->value[1] = number;
                break;
          }
-         olc_log( d, "Changed v1 to %d", obj->value[1] );
+         olc_log( d->character, "Changed v1 to {}", obj->value[1] );
          break;
 
       case OEDIT_VALUE_2:
@@ -2243,7 +2242,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             case ITEM_FURNITURE:
                min_val = 0;
                max_val = 2147483647;
-               number = atoi( arg.c_str(  ) );
+               number = std::stoi( arg );
                if( number < 0 || number > 31 )
                   oedit_disp_furniture_flags_menu( d );
                else
@@ -2270,7 +2269,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[2] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v2 to %d", obj->value[2] );
+         olc_log( d->character, "Changed v2 to {}", obj->value[2] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[2] = obj->value[2];
          break;
@@ -2316,7 +2315,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[3] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v3 to %d", obj->value[3] );
+         olc_log( d->character, "Changed v3 to {}", obj->value[3] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[3] = obj->value[3];
          if( obj->item_type == ITEM_ARMOR && obj->value[3] > 0 && obj->value[4] > 0 )
@@ -2366,7 +2365,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[4] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v4 to %d", obj->value[4] );
+         olc_log( d->character, "Changed v4 to {}", obj->value[4] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[4] = obj->value[4];
          if( obj->item_type == ITEM_ARMOR && obj->value[3] > 0 && obj->value[4] > 0 )
@@ -2401,11 +2400,11 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          }
          if( obj->item_type == ITEM_CORPSE_PC )
          {
-            olc_log( d, "Error - can't change skeleton value on corpses." );
+            olc_log( d->character, "Error - can't change skeleton value on corpses." );
             break;
          }
          obj->value[5] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v5 to %d", obj->value[5] );
+         olc_log( d->character, "Changed v5 to {}", obj->value[5] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[5] = obj->value[5];
          break;
@@ -2428,7 +2427,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[6] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v6 to %d", obj->value[6] );
+         olc_log( d->character, "Changed v6 to {}", obj->value[6] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[6] = obj->value[6];
          break;
@@ -2450,7 +2449,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[7] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v7 to %d", obj->value[7] );
+         olc_log( d->character, "Changed v7 to {}", obj->value[7] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[7] = obj->value[7];
          break;
@@ -2475,7 +2474,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[8] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v8 to %d", obj->value[8] );
+         olc_log( d->character, "Changed v8 to {}", obj->value[8] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[8] = obj->value[8];
          if( obj->item_type == ITEM_WEAPON && obj->value[8] > 0 && obj->value[9] > 0 && obj->value[10] > 0 )
@@ -2502,7 +2501,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[9] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v9 to %d", obj->value[9] );
+         olc_log( d->character, "Changed v9 to {}", obj->value[9] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[9] = obj->value[9];
          if( obj->item_type == ITEM_WEAPON && obj->value[8] > 0 && obj->value[9] > 0 && obj->value[10] > 0 )
@@ -2529,7 +2528,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                break;
          }
          obj->value[10] = urange( min_val, number, max_val );
-         olc_log( d, "Changed v10 to %d", obj->value[10] );
+         olc_log( d->character, "Changed v10 to {}", obj->value[10] );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->value[10] = obj->value[10];
          if( obj->item_type == ITEM_WEAPON && obj->value[8] > 0 && obj->value[9] > 0 && obj->value[10] > 0 )
@@ -2556,7 +2555,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                arg = one_argument( arg, arg1 );
                if( !arg.empty(  ) )
                {
-                  number = atoi( arg.c_str(  ) );
+                  number = std::stoi( arg );
                   remove_affect_from_obj( obj, number );
                   oedit_disp_prompt_apply_menu( d );
                }
@@ -2700,7 +2699,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          if( !value || d->olc->value == true )
          {
             paf->modifier = value;
-            olc_log( d, "Modified affect to: %s by %d", a_types[paf->location], value );
+            olc_log( d->character, "Modified affect to: {} by {}", a_types[paf->location], value );
             d->olc->value = false;
             oedit_disp_prompt_apply_menu( d );
             return;
@@ -2717,7 +2716,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          else
             obj->affects.push_back( npaf );
          ++top_affect;
-         olc_log( d, "Added new affect: %s by %d", a_types[npaf->location], npaf->modifier );
+         olc_log( d->character, "Added new affect: {} by {}", a_types[npaf->location], npaf->modifier );
 
          deleteptr( paf );
          d->character->pcdata->spare_ptr = nullptr;
@@ -2739,7 +2738,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
       case OEDIT_AFFECT_REMOVE:
          number = std::stoi( arg );
          remove_affect_from_obj( obj, number );
-         olc_log( d, "Removed affect #%d", number );
+         olc_log( d->character, "Removed affect #{}", number );
          oedit_disp_prompt_apply_menu( d );
          return;
 
@@ -2752,7 +2751,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
           * return;
           * } 
           */
-         olc_log( d, "Changed exdesc %s to %s", ed->keyword.c_str(  ), arg.c_str(  ) );
+         olc_log( d->character, "Changed exdesc {} to {}", ed->keyword, arg );
          ed->keyword = arg;
          oedit_disp_extra_choice( d );
          return;
@@ -2792,12 +2791,12 @@ void oedit_parse( descriptor_data * d, std::string & arg )
          break;
 
       case OEDIT_EXTRADESC_DELETE:
-         if( !( ed = oedit_find_extradesc( obj, atoi( arg.c_str(  ) ) ) ) )
+         if( !( ed = oedit_find_extradesc( obj, std::stoi( arg ) ) ) )
          {
             d->character->print( "Extra description not found, try again: " );
             return;
          }
-         olc_log( d, "Deleted exdesc %s", ed->keyword.c_str(  ) );
+         olc_log( d->character, "Deleted exdesc {}", ed->keyword );
          if( obj->extra_flags.test( ITEM_PROTOTYPE ) )
             obj->pIndexData->extradesc.remove( ed );
          else
@@ -2821,7 +2820,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                   obj->extradesc.push_back( ed );
                ++top_ed;
                d->character->pcdata->spare_ptr = ed;
-               olc_log( d, "Added new exdesc" );
+               olc_log( d->character, "Added new exdesc" );
                oedit_disp_extra_choice( d );
                return;
 
@@ -2833,7 +2832,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             default:
                if( is_number( arg ) )
                {
-                  if( !( ed = oedit_find_extradesc( obj, atoi( arg.c_str(  ) ) ) ) )
+                  if( !( ed = oedit_find_extradesc( obj, std::stoi( arg ) ) ) )
                   {
                      d->character->print( "Not found, try again: " );
                      return;

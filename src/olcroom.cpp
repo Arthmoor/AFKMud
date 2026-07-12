@@ -90,7 +90,7 @@ CMDF( do_oredit )
    else
    {
       if( is_number( argument ) )
-         room = get_room_index( atoi( argument.c_str(  ) ) );
+         room = get_room_index( std::stoi( argument ) );
       else
       {
          ch->print( "Vnum must be specified in numbers!\r\n" );
@@ -257,43 +257,39 @@ bool is_inolc( descriptor_data * d )
    return false;
 }
 
-// FIXME: Tagging this for upgrade to std::format. Follow example from character.cpp
 /*
  * Log all changes to catch those sneaky bastards =)
  */
-void olc_log( descriptor_data * d, const char *format, ... ) __attribute__ ( ( format( printf, 2, 3 ) ) );
-
-void olc_log( descriptor_data * d, const char *format, ... )
+void process_olc_log( char_data * ch, std::string_view message )
 {
-   char logline[MSL];
-   va_list args;
-
-   if( !d )
+   if( !ch )
    {
-      bug( "{}: called with null descriptor", __func__ );
+      bug( "{}: called with null ch", __func__ );
       return;
    }
 
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   if( ch->isnpc() )
+   {
+      bug( "{}: called by NPC!", __func__ );
+      return;
+   }
 
-   va_start( args, format );
-   vsnprintf( logline, MSL, format, args );
-   va_end( args );
+   room_index *room = ( room_index * ) ch->pcdata->dest_buf;
+   obj_data *obj = ( obj_data * ) ch->pcdata->dest_buf;
+   char_data *victim = ( char_data * ) ch->pcdata->dest_buf;
 
-   if( d->connected == CON_REDIT )
-      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} ROOM({}): ", d->character->name, room->vnum );
+   if( ch->desc->connected == CON_REDIT )
+      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} ROOM({}): {}", ch->name, room->vnum, message );
 
-   else if( d->connected == CON_OEDIT )
-      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} OBJ({}): ", d->character->name, obj->pIndexData->vnum );
+   else if( ch->desc->connected == CON_OEDIT )
+      log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} OBJ({}): {}", ch->name, obj->pIndexData->vnum, message );
 
-   else if( d->connected == CON_MEDIT )
+   else if( ch->desc->connected == CON_MEDIT )
    {
       if( victim->isnpc(  ) )
-         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} MOB({}): ", d->character->name, victim->pIndexData->vnum );
+         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} MOB({}): {}", ch->name, victim->pIndexData->vnum, message );
       else
-         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} PLR({}): ", d->character->name, victim->name );
+         log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} PLR({}): {}", ch->name, victim->name, message );
    }
    else
       bug( "{}: called with a bad connected state", __func__ );
@@ -530,7 +526,7 @@ CMDF( do_redit_reset )
          ch->desc->connected = CON_REDIT;
          ch->substate = SUB_NONE;
 
-         olc_log( ch->desc, "Edited room description" );
+         olc_log( ch, "Edited room description: {}", room->vnum );
          redit_disp_menu( ch->desc );
          return;
 
@@ -552,7 +548,7 @@ CMDF( do_redit_reset )
          ch->desc->connected = CON_REDIT;
          ch->substate = SUB_NONE;
 
-         olc_log( ch->desc, "Edited room night description" );
+         olc_log( ch, "Edited room night description: {}", room->vnum );
          redit_disp_menu( ch->desc );
          return;
 
@@ -565,7 +561,7 @@ CMDF( do_redit_reset )
          ch->desc->connected = CON_REDIT;
          oedit_disp_extra_choice( ch->desc );
          ch->desc->olc->mode = REDIT_EXTRADESC_CHOICE;
-         olc_log( ch->desc, "Edit description for exdesc %s", ed->keyword.c_str(  ) );
+         olc_log( ch, "Edit description for exdesc {}", ed->keyword );
          return;
    }
 }
@@ -664,7 +660,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
 
       case REDIT_NAME:
          room->name = arg;
-         olc_log( d, "Changed name to %s", room->name.c_str() );
+         olc_log( d->character, "Changed name to {}", room->name );
          break;
 
       case REDIT_DESC:
@@ -696,7 +692,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             {
                number -= 1;   /* Offset for 0 */
                room->flags.flip( number );
-               olc_log( d, "%s the room flag %s", room->flags.test( number ) ? "Added" : "Removed", r_flags[number] );
+               olc_log( d->character, "{} the room flag {}", room->flags.test( number ) ? "Added" : "Removed", r_flags[number] );
             }
          }
          else
@@ -708,7 +704,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
                if( number > 0 )
                {
                   room->flags.flip( number );
-                  olc_log( d, "%s the room flag %s", room->flags.test( number ) ? "Added" : "Removed", r_flags[number] );
+                  olc_log( d->character, "{} the room flag {}", room->flags.test( number ) ? "Added" : "Removed", r_flags[number] );
                }
             }
          }
@@ -725,31 +721,31 @@ void redit_parse( descriptor_data * d, std::string & arg )
          }
          else
             room->sector_type = number;
-         olc_log( d, "Changed sector to %s", sect_types[number] );
+         olc_log( d->character, "Changed sector to {}", sect_types[number] );
          break;
 
       case REDIT_TUNNEL:
          number = std::stoi( arg );
          room->tunnel = urange( 0, number, 1000 );
-         olc_log( d, "Changed tunnel amount to %d", room->tunnel );
+         olc_log( d->character, "Changed tunnel amount to {}", room->tunnel );
          break;
 
       case REDIT_TELEDELAY:
          number = std::stoi( arg );
          room->tele_delay = number;
-         olc_log( d, "Changed teleportation delay to %d", room->tele_delay );
+         olc_log( d->character, "Changed teleportation delay to {}", room->tele_delay );
          break;
 
       case REDIT_TELEVNUM:
          number = std::stoi( arg );
          room->tele_vnum = urange( 1, number, sysdata->maxvnum );
-         olc_log( d, "Changed teleportation vnum to %d", room->tele_vnum );
+         olc_log( d->character, "Changed teleportation vnum to {}", room->tele_vnum );
          break;
 
       case REDIT_LIGHT:
          number = std::stoi( arg );
          room->baselight = urange( -32000, number, 32000 );
-         olc_log( d, "Changed base lighting factor %d", room->baselight );
+         olc_log( d->character, "Changed base lighting factor {}", room->baselight );
          break;
 
       case REDIT_EXIT_MENU:
@@ -823,7 +819,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          if( !arg.empty(  ) )
             pexit->exitdesc = std::format( "{}\r\n", arg );
 
-         olc_log( d, "Changed %s description to %s", dir_name[pexit->vdir], !arg.empty(  ) ? arg.c_str(  ) : "none" );
+         olc_log( d->character, "Changed {} description to {}", dir_name[pexit->vdir], !arg.empty(  ) ? arg : "none" );
          redit_disp_exit_edit( d );
          return;
 
@@ -913,7 +909,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
          act( AT_IMMORT, "$n reveals a hidden passage!", d->character, nullptr, nullptr, TO_ROOM );
          d->character->pcdata->spare_ptr = pexit;
 
-         olc_log( d, "Added %s exit to %d", dir_name[pexit->vdir], pexit->vnum );
+         olc_log( d->character, "Added {} exit to {}", dir_name[pexit->vdir], pexit->vnum );
 
          d->olc->mode = REDIT_EXIT_EDIT;
          redit_disp_exit_edit( d );
@@ -932,7 +928,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             d->character->print( "That exit does not exist.\r\n" );
             redit_disp_exit_menu( d );
          }
-         olc_log( d, "Removed %s exit", dir_name[pexit->vdir] );
+         olc_log( d->character, "Removed {} exit", dir_name[pexit->vdir] );
          room->extract_exit( pexit );
          redit_disp_exit_menu( d );
          return;
@@ -954,13 +950,13 @@ void redit_parse( descriptor_data * d, std::string & arg )
           */
          pexit->to_room = get_room_index( number );
 
-         olc_log( d, "%s exit vnum changed to %d", dir_name[pexit->vdir], pexit->to_room->vnum );
+         olc_log( d->character, "{} exit vnum changed to {}", dir_name[pexit->vdir], pexit->to_room->vnum );
          redit_disp_exit_edit( d );
          return;
 
       case REDIT_EXIT_KEYWORD:
          pexit->keyword = arg;
-         olc_log( d, "Changed %s keyword to %s", dir_name[pexit->vdir], pexit->keyword.c_str() );
+         olc_log( d->character, "Changed {} keyword to {}", dir_name[pexit->vdir], pexit->keyword );
          redit_disp_exit_edit( d );
          return;
 
@@ -973,7 +969,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             pexit->key = number;
             redit_disp_exit_edit( d );
          }
-         olc_log( d, "%s key vnum is now %d", dir_name[pexit->vdir], pexit->key );
+         olc_log( d->character, "{} key vnum is now {}", dir_name[pexit->vdir], pexit->key );
          return;
 
       case REDIT_EXIT_FLAGS:
@@ -991,17 +987,17 @@ void redit_parse( descriptor_data * d, std::string & arg )
          }
          number -= 1;
          pexit->flags.flip( number );
-         olc_log( d, "%s %s to %s exit", IS_EXIT_FLAG( pexit, number ) ? "Added" : "Removed", ex_flags[number], dir_name[pexit->vdir] );
+         olc_log( d->character, "{} {} to {} exit", IS_EXIT_FLAG( pexit, number ) ? "Added" : "Removed", ex_flags[number], dir_name[pexit->vdir] );
          redit_disp_exit_flag_menu( d );
          return;
 
       case REDIT_EXTRADESC_DELETE:
-         if( !( ed = redit_find_extradesc( room, atoi( arg.c_str(  ) ) ) ) )
+         if( !( ed = redit_find_extradesc( room, std::stoi( arg ) ) ) )
          {
             d->character->print( "Not found, try again: " );
             return;
          }
-         olc_log( d, "Deleted exdesc %s", ed->keyword.c_str(  ) );
+         olc_log( d->character, "Deleted exdesc {}", ed->keyword );
          room->extradesc.remove( ed );
          deleteptr( ed );
          --top_ed;
@@ -1050,7 +1046,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
           * return;
           * } 
           */
-         olc_log( d, "Changed exkey %s to %s", ed->keyword.c_str(  ), arg.c_str(  ) );
+         olc_log( d->character, "Changed exkey {} to {}", ed->keyword, arg );
          ed->keyword = arg;
          oedit_disp_extra_choice( d );
          d->olc->mode = REDIT_EXTRADESC_CHOICE;
@@ -1067,7 +1063,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
                room->extradesc.push_back( ed );
                ++top_ed;
                d->character->pcdata->spare_ptr = ed;
-               olc_log( d, "Added new exdesc" );
+               olc_log( d->character, "Added new exdesc" );
 
                oedit_disp_extra_choice( d );
                d->olc->mode = REDIT_EXTRADESC_CHOICE;
@@ -1081,7 +1077,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
             default:
                if( is_number( arg ) )
                {
-                  if( !( ed = redit_find_extradesc( room, atoi( arg.c_str(  ) ) ) ) )
+                  if( !( ed = redit_find_extradesc( room, std::stoi( arg ) ) ) )
                   {
                      d->character->print( "Not found, try again: " );
                      return;
@@ -1109,7 +1105,7 @@ void redit_parse( descriptor_data * d, std::string & arg )
     */
    /*
     * if ( d->olc->mode != REDIT_FLAGS )
-    * olc_log( d, arg ); 
+    * olc_log( d->character, arg );
     */
 
    /*

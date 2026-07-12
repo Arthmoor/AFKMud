@@ -628,3 +628,13 @@ constexpr int MEDIT_MANA = 34;
 constexpr int MEDIT_MOVE = 35;
 constexpr int MEDIT_CLASS = 36;
 constexpr int MEDIT_RACE = 37;
+
+void process_olc_log( char_data *, std::string_view );
+
+template<typename... Args>
+void olc_log( char_data * ch, std::format_string<Args...> fmt, Args&&... args )
+{
+   std::string formatted = std::format( fmt, std::forward<Args>( args )... );
+
+   process_olc_log( ch, formatted );
+}
