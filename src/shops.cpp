@@ -2296,7 +2296,7 @@ CMDF( do_balance )
 
    if( ch->isnpc(  ) )
    {
-      interpret( banker, "say Sorry, %s, we don't do business with mobs." );
+      interpret( banker, std::format( "say Sorry, {}, we don't do business with mobs.", ch->short_descr ) );
       return;
    }
 

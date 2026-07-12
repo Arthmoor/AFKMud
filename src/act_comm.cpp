@@ -973,8 +973,7 @@ void tybuid( char_data * ch, std::string_view argument, int type )
       return;
    }
 
-   std::string t = std::format( "{:%a %b %d, %Y %I:%M:%S %p}", current_time );
-   append_file( ch->in_room ? ch->in_room->vnum : 0, ch->name, tybuid_file[type], "({}:  {}", t, argument );
+   append_file( ch->in_room ? ch->in_room->vnum : 0, ch->name, tybuid_file[type], "({}:  {}", c_time( current_time, "" ), argument );
    ch->print_fmt( "Thank you! Your {} has been recorded.\r\n", tybuid_name[type] );
 }
 
@@ -1056,7 +1055,7 @@ CMDF( do_gtell )
                if( gch == ch )
                   gch->print_fmt( "&[gtells]You tell the group '{}'\r\n", argument );
                else
-                  gch->print_fmt( "&[gtells]{} tells the group '%s'\r\n", ch->name, argument );
+                  gch->print_fmt( "&[gtells]{} tells the group '{}'\r\n", ch->name, argument );
             }
          }
          else
@@ -1064,7 +1063,7 @@ CMDF( do_gtell )
             if( gch == ch )
                gch->print_fmt( "&[gtells]You tell the group '{}'\r\n", argument );
             else
-               gch->print_fmt( "&[gtells]%s tells the group '{}'\r\n", ch->name, argument );
+               gch->print_fmt( "&[gtells]{} tells the group '{}'\r\n", ch->name, argument );
          }
       }
    }
@@ -1258,7 +1257,7 @@ CMDF( do_languages )
       else if( ch->pcdata->learned[sn] < 60 )
          ch->print_fmt( "You continue lessons in {}.\r\n", lang_names[lang] );
       else if( ch->pcdata->learned[sn] < 60 + prct )
-         ch->print_fmt( "You feel you can start communicating in %s.\r\n", lang_names[lang] );
+         ch->print_fmt( "You feel you can start communicating in {}.\r\n", lang_names[lang] );
       else if( ch->pcdata->learned[sn] < 99 )
          ch->print_fmt( "You become more fluent in {}.\r\n", lang_names[lang] );
       else

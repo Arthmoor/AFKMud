@@ -313,7 +313,7 @@ void char_data::set_pager_color( short AType )
    this->desc->pager( color_str( AType ) );
    if( !this->desc )
    {
-      bug( "{}: nullptr descriptor after WTP! CH: %s", __func__, !this->name.empty() ? this->name : "Unknown?!?" );
+      bug( "{}: nullptr descriptor after WTP! CH: {}", __func__, !this->name.empty() ? this->name : "Unknown?!?" );
       return;
    }
    this->desc->pagecolor = this->pcdata->colors[AType];

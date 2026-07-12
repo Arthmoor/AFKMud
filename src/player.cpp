@@ -551,7 +551,7 @@ CMDF( do_affected )
       if( ch->has_absorbs(  ) )
       {
          ch->print( "&zYou absorb: \r\n" );
-         ch->print_fmt( "&C%s&D\r\n\r\n", bitset_string( ch->get_absorbs(  ), ris_flags ) );
+         ch->print_fmt( "&C{}&D\r\n\r\n", bitset_string( ch->get_absorbs(  ), ris_flags ) );
       }
       else
          ch->print( "&zYou absorb: \r\n&CNothing&D\r\n\r\n" );
@@ -909,7 +909,7 @@ CMDF( do_description )
    switch ( ch->substate )
    {
       default:
-         bug( "{}: {} illegal substate %d", __func__, ch->name, ch->substate );
+         bug( "{}: {} illegal substate {}", __func__, ch->name, ch->substate );
          return;
 
       case SUB_RESTRICTED:

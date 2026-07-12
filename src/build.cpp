@@ -5447,7 +5447,7 @@ CMDF( do_ocreate )
    obj->to_char( ch );
 
    act( AT_IMMORT, "$n makes arcane gestures, and opens $s hands to reveal $p!", ch, obj, nullptr, TO_ROOM );
-   ch->print_fmt( "&YYou make arcane gestures, and open your hands to reveal {}!\r\nObjVnum:  &W%d   &YKeywords:  &W%s\r\n",
+   ch->print_fmt( "&YYou make arcane gestures, and open your hands to reveal {}!\r\nObjVnum:  &W{}   &YKeywords:  &W{}\r\n",
                pObjIndex->short_descr, pObjIndex->vnum, pObjIndex->name );
 }
 
@@ -5532,7 +5532,7 @@ CMDF( do_mcreate )
    fix_maps( ch, mob );
 
    act( AT_IMMORT, "$n waves $s arms about, and $N appears at $s command!", ch, nullptr, mob, TO_ROOM );
-   ch->print_fmt( "&YYou wave your arms about, and {} appears at your command!\r\nMobVnum:  &W%d   &YKeywords:  &W%s\r\n",
+   ch->print_fmt( "&YYou wave your arms about, and {} appears at your command!\r\nMobVnum:  &W{}   &YKeywords:  &W{}\r\n",
                pMobIndex->short_descr, pMobIndex->vnum, pMobIndex->player_name );
 }
 

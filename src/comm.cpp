@@ -791,102 +791,94 @@ void game_loop( void )
  */
 void cleanup_memory( void )
 {
-   fprintf( stdout, "%s", "Quote List.\n" );
+   std::cerr << "Quote List.\n";
    free_quotes(  );
 
-   fprintf( stdout, "%s", "Random Environment Data.\n" );
+   std::cerr << "Random Environment Data.\n";
    free_envs(  );
 
-   fprintf( stdout, "%s", "Auction Sale Data.\n" );
+   std::cerr << "Auction Sale Data.\n";
    free_sales(  );
 
-   fprintf( stdout, "%s", "Project Data.\n" );
+   std::cerr << "Project Data.\n";
    free_projects(  );
 
-   fprintf( stdout, "%s", "Ban Data.\n" );
+   std::cerr << "Ban Data.\n";
    free_bans(  );
 
-   fprintf( stdout, "%s", "Auth List.\n" );
+   std::cerr << "Auth List.\n";
    free_all_auths(  );
 
-   fprintf( stdout, "%s", "Morph Data.\n" );
+   std::cerr << "Morph Data.\n";
    free_morphs(  );
 
-   fprintf( stdout, "%s", "Rune Data.\n" );
+   std::cerr << "Rune Data.\n";
    free_runedata(  );
 
-   fprintf( stdout, "%s", "Immortal Hosts Data.\n" );
+   std::cerr << "Immortal Hosts Data.\n";
    free_immhosts();
 
-   fprintf( stdout, "%s", "Connection History Data.\n" );
+   std::cerr << "Connection History Data.\n";
    free_connhistory( 0 );
 
-   fprintf( stdout, "%s", "Slay Table.\n" );
+   std::cerr << "Slay Table.\n";
    free_slays(  );
 
-   fprintf( stdout, "%s", "Holidays.\n" );
+   std::cerr << "Holidays.\n";
    free_holidays(  );
 
-   fprintf( stdout, "%s", "Specfun List.\n" );
+   std::cerr << "Specfun List.\n";
    free_specfuns(  );
 
-   fprintf( stdout, "%s", "Wizinfo Data.\n" );
+   std::cerr << "Wizinfo Data.\n";
    clear_wizinfo(  );
 
-   fprintf( stdout, "%s", "Ships.\n" );
+   std::cerr << "Ships.\n";
    free_ships(  );
 
-   fprintf( stdout, "%s", "Overland Data.\n" );
+   std::cerr << "Overland Data.\n";
    free_continents(  );
 
-   fprintf( stdout, "%s", "Mixtures and Liquids.\n" );
+   std::cerr << "Mixtures and Liquids.\n";
    free_liquiddata(  );
 
-   fprintf( stdout, "%s", "Treasure weapon table.\n" );
+   std::cerr << "Treasure weapon table.\n";
    free_weapon_table(  );
 
-   fprintf( stdout, "%s", "DNS Cache data.\n" );
+   std::cerr << "DNS Cache data.\n";
    free_dns_list(  );
 
-   fprintf( stdout, "%s", "Local Channels.\n" );
+   std::cerr << "Local Channels.\n";
    free_mudchannels(  );
 
-   // Helps
-   fprintf( stdout, "%s", "Helps.\n" );
+   std::cerr << "Helps.\n";
    free_helps(  );
 
-   // Commands
-   fprintf( stdout, "%s", "Commands.\n" );
+   std::cerr << "Commands.\n";
    free_commands(  );
 
 #ifdef MULTIPORT
-   // Shell Commands
-   fprintf( stdout, "%s", "Shell Commands.\n" );
+   std::cerr << "Shell Commands.\n";
    free_shellcommands(  );
 #endif
 
-   // Socials
-   fprintf( stdout, "%s", "Socials.\n" );
+   std::cerr << "Socials.\n";
    free_socials(  );
 
-   // Languages
-   fprintf( stdout, "%s", "Languages.\n" );
+   std::cerr << "Languages.\n";
    free_tongues(  );
 
-   // Boards
-   fprintf( stdout, "%s", "Boards.\n" );
+   std::cerr << "Boards.\n";
    free_boards(  );
 
-   // Events
-   fprintf( stdout, "%s", "Events.\n" );
+   std::cerr << "Events.\n";
    free_all_events(  );
 
-   // Find and eliminate all running chess games
-   fprintf( stdout, "%s", "Ending chess games.\n" );
+   // Find and eliminate all running chess games.
+   std::cerr << "Ending chess games.\n";
    free_all_chess_games(  );
 
-   // Whack supermob
-   fprintf( stdout, "%s", "Whacking supermob.\n" );
+   std::cerr << "Whacking supermob.\n";
    if( supermob )
    {
       supermob->from_room(  );
@@ -894,82 +886,68 @@ void cleanup_memory( void )
       deleteptr( supermob );
    }
 
-   // Free Characters
-   fprintf( stdout, "%s", "Characters.\n" );
+   std::cerr << "Characters.\n";
    extract_all_chars(  );
 
-   // Free Objects
-   fprintf( stdout, "%s", "Objects.\n" );
+   std::cerr << "Objects.\n";
    extract_all_objs(  );
 
-   // Descriptors
-   fprintf( stdout, "%s", "Descriptors.\n" );
+   std::cerr << "Descriptors.\n";
    free_all_descs(  );
 
-   // Deities
-   fprintf( stdout, "%s", "Deities.\n" );
+   std::cerr << "Deities.\n";
    free_deities(  );
 
-   // Clans
-   fprintf( stdout, "%s", "Clans.\n" );
+   std::cerr << "Clans.\n";
    free_clans(  );
 
-   // Realms
-   fprintf( stdout, "%s", "Realms.\n" );
+   std::cerr << "Realms.\n";
    free_realms(  );
 
-   // Races
-   fprintf( stdout, "%s", "Races.\n" );
+   std::cerr << "Races.\n";
    free_all_races(  );
 
-   // Classes
-   fprintf( stdout, "%s", "Classes.\n" );
+   std::cerr << "Classes.\n";
    free_all_classes(  );
 
-   // Teleport lists
-   fprintf( stdout, "%s", "Teleport Data.\n" );
+   std::cerr << "Teleport Data.\n";
    free_teleports(  );
 
-   // Areas - this includes killing off the hash tables and such
-   fprintf( stdout, "%s", "Area Data Tables.\n" );
+   std::cerr << "Area Data Tables.\n";
    close_all_areas(  );
 
-   // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED
-   fprintf( stdout, "%s", "Auction.\n" );
+   // Get rid of auction pointer MUST BE AFTER OBJECTS DESTROYED.
+   std::cerr << "Auction.\n";
    clear_auction(  );
 
-   // Skills
-   fprintf( stdout, "%s", "Skills and Herbs.\n" );
+   std::cerr << "Skills and Herbs.\n";
    free_skills(  );
 
-   // Prog Act lists
-   fprintf( stdout, "%s", "Mudprog act lists.\n" );
+   std::cerr << "Mudprog act lists.\n";
    free_prog_actlists(  );
 
-   // Questbit data
-   fprintf( stdout, "%s", "Abit/Qbit Data.\n" );
+   std::cerr << "Abit/Qbit Data.\n";
    free_questbits(  );
 
+   std::cerr << "MSSP Info\n";
    free_mssp_info();
 
-   // Wizlist
-   fprintf( stdout, "%s", "Wizlist Data\n" );
+   std::cerr << "Wizlist Data\n";
    free_wizlist_data( );
 
-   // Web version
-   fprintf( stdout, "%s", "Web Wizlist Data\n" );
+   std::cerr << "Web Wizlist Data\n";
    free_wizlist_web_data( );
 
 #if defined(SQL)
-   fprintf( stdout, "%s", "Closing database connection.\n" );
+   std::cerr << "Closing database connection.\n";
    close_db(  );
 #endif
 
    // Last but not least, close the libdl and dispose of sysdata - Samson
-   fprintf( stdout, "%s", "System data.\n" );
+   std::cerr << "System data.\n";
    close_libdl( );
    deleteptr( sysdata );
-   fprintf( stdout, "%s", "Memory cleanup complete, exiting.\n" );
+   std::cerr << "Memory cleanup complete, exiting.\n";
 }
 
 void bailout( int sig )
@@ -1014,12 +992,12 @@ int main( int argc, char **argv )
    {
       if( !is_number( argv[1] ) )
       {
-         fprintf( stderr, "Usage: %s [port #]\n", argv[0] );
+         std::cerr << std::format( "Usage: {} [port #]\n", argv[0] );
          std::exit( EXIT_FAILURE );
       }
       else if( ( mud_port = atoi( argv[1] ) ) <= 1024 )
       {
-         fprintf( stderr, "%s", "Port number must be above 1024.\n" );
+         std::cerr << "Port number must be above 1024.\n";
          std::exit( EXIT_FAILURE );
       }
 

@@ -2097,8 +2097,8 @@ CMDF( do_showclan )
    ch->print_fmt( "&wLeader   : &W{:<19.19}\t&wRank: &W{}\r\n", clan->leader, clan->leadrank );
    ch->print_fmt( "&wNumber1  : &W{:<19.19}\t&wRank: &W{}\r\n", clan->number1, clan->onerank );
    ch->print_fmt( "&wNumber2  : &W{:<19.19}\t&wRank: &W{}\r\n", clan->number2, clan->tworank );
-   ch->print_fmt( "&wBalance  : &W%d\r\n", clan->balance );
-   ch->print_fmt( "&wTithe    : &W%d\r\n", clan->tithe );
+   ch->print_fmt( "&wBalance  : &W{}\r\n", clan->balance );
+   ch->print_fmt( "&wTithe    : &W{}\r\n", clan->tithe );
    ch->print_fmt( "&wPKills   : &w1-9:&W{:<5} &w10-14:&W{:<5} &w15-19:&W{:<5} &w20-29:&W{:<5} &w30-39:&W{:<5} &w40-49:&W{:<5} &w50:&W{:<5}\r\n",
         clan->pkills[0], clan->pkills[1], clan->pkills[2], clan->pkills[3], clan->pkills[4], clan->pkills[5], clan->pkills[6] );
    ch->print_fmt( "&wPDeaths  : &w1-9:&W{:<5} &w10-14:&W{:<5} &w15-19:&W{:<5} &w20-29:&W{:<5} &w30-39:&W{:<5} &w40-49:&W{:<5} &w50:&W{:<5}\r\n",
@@ -2208,7 +2208,7 @@ CMDF( do_roster )
    argument = one_argument( argument, arg );
    if( !( clan = get_clan( arg ) ) )
    {
-      ch->print_fmt( "No such guild or clan known as %s\r\n", arg );
+      ch->print_fmt( "No such guild or clan known as {}\r\n", arg );
       return;
    }
 

@@ -440,7 +440,7 @@ void write_note( note_data * pnote, std::ofstream & stream )
    }
 
    if( pnote->type < NOTE_BOARD && pnote->type > NOTE_OLCMAP )
-      bug( "{}: Invalid note type passed: %d", __func__, pnote->type );
+      bug( "{}: Invalid note type passed: {}", __func__, pnote->type );
 
    auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
    auto expire = std::chrono::system_clock::to_time_t( pnote->expire );
@@ -1134,7 +1134,7 @@ CMDF( do_note_set )
       auto expiry_time = current_time + std::chrono::days( value );
       pnote->expire = expiry_time;
 
-      ch->print_fmt( "&[board]Set the expiration time for '&[board2]{}&[board]' to &[board2]%d&D\r\n", pnote->subject, value );
+      ch->print_fmt( "&[board]Set the expiration time for '&[board2]{}&[board]' to &[board2]{}&D\r\n", pnote->subject, value );
       write_board( board );
       return;
    }
@@ -2946,7 +2946,7 @@ void write_projects( void )
       stream << std::format( "Name   {}~\n", proj->name );
       stream << std::format( "Owner  {}~\n", ( !proj->owner.empty() ) ? proj->owner : "None" );
       if( !proj->coder.empty() )
-         stream << std::format( "Coder  %s~\n", proj->coder );
+         stream << std::format( "Coder  {}~\n", proj->coder );
       stream << std::format( "Status {}~\n", ( !proj->status.empty() ) ? proj->status : "No update." );
       stream << std::format( "Date_stamp   {}\n", date_stamp );
       if( !proj->realm_name.empty() )

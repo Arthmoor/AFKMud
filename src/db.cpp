@@ -1312,7 +1312,7 @@ CMDF( do_memory )
    ch->print_fmt( "&wExtDes:  &W{:5}\t\t\t&wExits:   &W{:5}\r\n", top_ed, top_exit );
    ch->print_fmt( "&wResets:  &W{:5}\r\n", top_reset );
    ch->print_fmt( "&wIdxMobs: &W{:5}\t\t\t&wMobiles: &W{:5}\r\n", top_mob_index, nummobsloaded );
-   ch->print_fmt( "&wIdxObjs: &W{:5}\t\t\t&wObjs:    &W{:5}(%d)\r\n", top_obj_index, numobjsloaded, physicalobjects );
+   ch->print_fmt( "&wIdxObjs: &W{:5}\t\t\t&wObjs:    &W{:5}({})\r\n", top_obj_index, numobjsloaded, physicalobjects );
    ch->print_fmt( "&wRooms:   &W{:5}\r\n", top_room );
    ch->print_fmt( "&wShops:   &W{:5}\t\t\t&wRepShps: &W{:5}\r\n", top_shop, top_repair );
    ch->print_fmt( "&wCurOq's: &W{:5}\t\t\t&wCurCq's: &W{:5}\r\n", cur_qobjs, cur_qchars );
@@ -1600,9 +1600,8 @@ void generate_backtrace( void )
  *
  * Example:
  *
- * bug( "%s -> %s:%d: Backtrace test.", __func__, __FILE__, __LINE__ );
+ * bug( "{} -> {}:{}: Backtrace test.", __func__, __FILE__, __LINE__ );
  *
- * Due to the formatting attributes, at least __func__ is required.
  * It's helpful to include the file and line tags since for some odd reason the backtrace code won't include the function that called "bug".
  */
 void process_bug( std::string_view text )

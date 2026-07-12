@@ -77,12 +77,12 @@ void teleport( char_data *, int, int );
 void found_prey( char_data *, char_data * );
 
 const char *corpse_descs[] = {
-   "A skeleton of %s lies here in a pile.",
-   "The corpse of %s is in the last stages of decay.",
-   "The corpse of %s is crawling with vermin.",
-   "The corpse of %s fills the air with a foul stench.",
-   "The corpse of %s is buzzing with flies.",
-   "The corpse of %s lies here."
+   "A skeleton of {} lies here in a pile.",
+   "The corpse of {} is in the last stages of decay.",
+   "The corpse of {} is crawling with vermin.",
+   "The corpse of {} fills the air with a foul stench.",
+   "The corpse of {} is buzzing with flies.",
+   "The corpse of {} lies here."
 };
 
 /*

@@ -196,12 +196,10 @@ void update_connhistory( descriptor_data * d, int type )
       deleteptr( con );
    }
 
-   auto local_now = std::chrono::zoned_time{ std::chrono::current_zone(), current_time };
-
    con = new conn_data;
    con->user = !vch->name.empty() ? vch->name : "NoName";
 
-   con->when = std::format( "{:%m/%d %H:%M}", local_now );
+   con->when = c_time( current_time, "" );
 
    con->host = !d->hostname.empty() ? d->hostname : d->ipaddress;
    con->type = type;

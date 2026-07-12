@@ -315,7 +315,7 @@ void show_visible_affects_to_char( char_data * victim, char_data * ch )
    if( victim->has_aflag( AFF_ICESHIELD ) )
       ch->print_fmt( "&C{} is ensphered by shards of glistening ice.\r\n", name );
    if( victim->has_aflag( AFF_CHARM ) )
-      ch->print_fmt( "&[magic]{} follows %s around everywhere.\r\n", name, victim->master == ch ? "you" : victim->master->name );
+      ch->print_fmt( "&[magic]{} follows {} around everywhere.\r\n", name, victim->master == ch ? "you" : victim->master->name );
    if( !victim->isnpc(  ) && !victim->desc && victim->switched && victim->switched->has_aflag( AFF_POSSESS ) )
       ch->print_fmt( "&[magic]{} appears to be in a deep trance...\r\n", PERS( victim, ch, false ) );
 }
@@ -564,7 +564,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
                else if( IS_SET( victim->on->value[2], REST_ON ) )
                   buf.append( std::format( " is resting on {}.", victim->on->short_descr ) );
                else
-                  buf.append( std::format( " is resting in %s.", victim->on->short_descr ) );
+                  buf.append( std::format( " is resting in {}.", victim->on->short_descr ) );
             }
             else
             {

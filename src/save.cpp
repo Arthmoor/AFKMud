@@ -706,7 +706,7 @@ void fwrite_mobile( char_data * mob, std::ofstream & stream, bool shopmob )
          stream << std::format( "Room  {}\n", mob->in_room->vnum );
    }
    else
-      stream << std::format( "Room           {}%d\n", ROOM_VNUM_LIMBO );
+      stream << std::format( "Room           {}\n", ROOM_VNUM_LIMBO );
    if( mob->hotboot && mob->continent )
       stream << std::format( "Continent      {}\n", mob->continent->name );
    stream << std::format( "Coordinates    {} {}\n", mob->map_x, mob->map_y );

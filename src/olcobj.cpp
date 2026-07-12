@@ -2022,7 +2022,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
             if( number == -2 )
                obj->ego = obj->pIndexData->set_ego(  );
             if( obj->ego == -2 )
-               olc_log( d->character, "%s", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
+               olc_log( d->character, "{}", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
          }
          else
          {
@@ -2031,7 +2031,7 @@ void oedit_parse( descriptor_data * d, std::string & arg )
                obj->ego = obj->pIndexData->set_ego(  );
             olc_log( d->character, "Changed rent to {}", obj->ego );
             if( obj->ego == -2 )
-               olc_log( d->character, "%s", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
+               olc_log( d->character, "{}", "&YWARNING: This object exceeds allowable ego specs.\r\n" );
          }
          break;
 

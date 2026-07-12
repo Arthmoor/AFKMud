@@ -243,7 +243,7 @@ void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_are
          if( new_vnum != NOT_FOUND )
          {
             if( verbose )
-               ch->pager_fmt( "...   container {}; fixing objval2 (key vnum) {} -> %d\r\n", i, obj->value[2], new_vnum );
+               ch->pager_fmt( "...   container {}; fixing objval2 (key vnum) {} -> {}\r\n", i, obj->value[2], new_vnum );
             obj->value[2] = new_vnum;
          }
          else if( verbose )
@@ -864,7 +864,7 @@ CMDF( do_renumber )
    /*
     * ok, do it!
     */
-   ch->pager_fmt( "Renumbering area '{}' to new base {}, filling gaps: %s\r\n", area->filename, new_base, fill_gaps ? "yes" : "no" );
+   ch->pager_fmt( "Renumbering area '{}' to new base {}, filling gaps: {}\r\n", area->filename, new_base, fill_gaps ? "yes" : "no" );
    renumber_area( ch, area, r_area, verbose );
    ch->pager( "Done.\r\n" );
 

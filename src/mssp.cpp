@@ -502,7 +502,7 @@ void mssp_reply( descriptor_data * d, const char *var, std::string_view fmt, aut
    catch( const std::exception & e )
    {
       // In case someone bodged a call to this that isn't formatted right.
-      bug( "{}: Formatting error: %s", __func__, e.what() );
+      bug( "{}: Formatting error: {}", __func__, e.what() );
       return;
    }
 

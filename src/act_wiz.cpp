@@ -854,10 +854,10 @@ CMDF( do_rstat )
    ch->print_fmt( "&wVnum: &G{}&w  Light: &G{}&w  TeleDelay: &G{}&w  TeleVnum: &G{}&w  Tunnel: &G{}&w  Max Weight: &G{}&w\r\n",
                location->vnum, location->light, location->tele_delay, location->tele_vnum, location->tunnel, location->max_weight );
 
-   ch->print_fmt( "Room flags: &G%s&w\r\n", bitset_string( location->flags, r_flags ) );
-   ch->print_fmt( "Sector type: &G%s&w\r\n", sect_types[location->sector_type] );
+   ch->print_fmt( "Room flags: &G{}&w\r\n", bitset_string( location->flags, r_flags ) );
+   ch->print_fmt( "Sector type: &G{}&w\r\n", sect_types[location->sector_type] );
 
-   ch->print_fmt( "Description:&w\r\n%s&w", location->roomdesc );
+   ch->print_fmt( "Description:&w\r\n{}&w", location->roomdesc );
 
    /*
     * NiteDesc rstat added by Dracones 
@@ -1492,7 +1492,7 @@ void find_oftype( char_data * ch, std::string_view argument )
       if( type == pObjIndex->item_type )
       {
          ++nMatch;
-         ch->pager_fmt( "[{:5}] %s\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
+         ch->pager_fmt( "[{:5}] {}\r\n", pObjIndex->vnum, capitalize( pObjIndex->short_descr ) );
       }
       ++iobj;
    }
@@ -1644,7 +1644,7 @@ CMDF( do_bodybag )
       return;
    }
    if( owner->pcdata->deity )
-      ch->pager_fmt( "&P{} ({}) has {} favor with {} (needed to supplicate: %d)\r\n",
+      ch->pager_fmt( "&P{} ({}) has {} favor with {} (needed to supplicate: {})\r\n",
                   owner->name, owner->level, owner->pcdata->favor, owner->pcdata->deity->name, owner->pcdata->deity->scorpse );
    else
       ch->pager_fmt( "&P{} ({}) has no deity.\r\n", owner->name, owner->level );
@@ -4609,7 +4609,7 @@ CMDF( do_bestowarea )
       if( buf.empty(  ) )
          ch->print_fmt( "{} does not have any areas bestowed upon them.\r\n", victim->name );
       else
-         ch->print_fmt( "{}'s bestowed areas: %s\r\n", victim->name, buf );
+         ch->print_fmt( "{}'s bestowed areas: {}\r\n", victim->name, buf );
       return;
    }
 
@@ -4622,7 +4622,7 @@ CMDF( do_bestowarea )
          argument = one_argument( argument, arg );
          if( !hasname( victim->pcdata->bestowments, arg ) )
          {
-            ch->print_fmt( "{} does not have an area named %s bestowed.\r\n", victim->name, arg );
+            ch->print_fmt( "{} does not have an area named {} bestowed.\r\n", victim->name, arg );
             return;
          }
          removename( victim->pcdata->bestowments, arg );
@@ -4657,14 +4657,14 @@ CMDF( do_bestowarea )
 
       if( hasname( victim->pcdata->bestowments, arg ) )
       {
-         ch->print_fmt( "{} already has the area %s bestowed.\r\n", victim->name, arg );
+         ch->print_fmt( "{} already has the area {} bestowed.\r\n", victim->name, arg );
          return;
       }
 
       smash_tilde( arg );
       addname( victim->pcdata->bestowments, arg );
-      victim->print_fmt( "{} has bestowed on you the area: %s\r\n", ch->name, arg );
-      ch->print_fmt( "{} has been bestowed: %s\r\n", victim->name, arg );
+      victim->print_fmt( "{} has bestowed on you the area: {}\r\n", ch->name, arg );
+      ch->print_fmt( "{} has been bestowed: {}\r\n", victim->name, arg );
       victim->save(  );
 
       argument = one_argument( argument, arg );
@@ -5483,11 +5483,11 @@ CMDF( do_cset )
       ch->pager( "-------------\r\n" );
       ch->pager_fmt( "&BMaxVnum&c: {} &BOverland Radius&c: {} &BReboot Count&c: {} &BAuction Seconds&c: {}\r\n",
                   sysdata->maxvnum, sysdata->mapsize, sysdata->rebootcount, sysdata->auctionseconds );
-      ch->pager_fmt( "&BMin Guild Level&c: {} &BMax Condition Value&c: {} &BMax Ignores&c: %zu &BMax Item Impact&c: {} &BInit Weapon Condition&c: {}\r\n",
+      ch->pager_fmt( "&BMin Guild Level&c: {} &BMax Condition Value&c: {} &BMax Ignores&c: {} &BMax Item Impact&c: {} &BInit Weapon Condition&c: {}\r\n",
            sysdata->minguildlevel, sysdata->maxcondval, sysdata->maxign, sysdata->maximpact, sysdata->initcond );
 
       int freq = sysdata->save_frequency.count();
-      ch->pager_fmt( "&BForce Players&c: {} &BPrivate Override&c: {} &BGet Notake&c: {} &BAutosave-Freq&c: {} &BMax Holidays&c: %zu\r\n",
+      ch->pager_fmt( "&BForce Players&c: {} &BPrivate Override&c: {} &BGet Notake&c: {} &BAutosave-Freq&c: {} &BMax Holidays&c: {}\r\n",
            sysdata->level_forcepc, sysdata->level_override_private, sysdata->level_getobjnotake, freq, sysdata->maxholiday );
 
       ch->pager_fmt( "&BProto Mod&c: {} &B &BMset Player&c: {} &BBestow Diff&c: {} &BBuild Level&c: {}\r\n",
@@ -8140,8 +8140,7 @@ CMDF( do_fixed )
    }
    else
    {
-      std::string t = std::format( "{:%a %b %d, %Y %I:%M:%S %p}", current_time );
-      append_to_file( FIXED_FILE, "&g|&G{} &g| &G{:5}&g|  {}:  &G{}", t, ch->in_room ? ch->in_room->vnum : 0, ch->isnpc(  ) ? ch->short_descr : ch->name, argument );
+      append_to_file( FIXED_FILE, "&g|&G{} &g| &G{:5}&g|  {}:  &G{}", c_time( current_time, "" ), ch->in_room ? ch->in_room->vnum : 0, ch->isnpc(  ) ? ch->short_descr : ch->name, argument );
       ch->print( "Thanks, your modification has been logged.\r\n" );
    }
 }

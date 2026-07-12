@@ -305,7 +305,7 @@ void found_prey( char_data * ch, char_data * victim )
 
    if( victim->in_room == nullptr )
    {
-      bug( "{}: null victim->in_room: %s", __func__, victim->name );
+      bug( "{}: null victim->in_room: {}", __func__, victim->name );
       return;
    }
 

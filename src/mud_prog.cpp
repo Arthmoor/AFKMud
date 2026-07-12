@@ -398,7 +398,7 @@ bool mprog_veval( int lhs, std::string_view opr, int rhs, char_data * mob )
    if( !str_cmp( opr, "|" ) )
       return ( lhs | rhs );
 
-   progbugf( mob, "Improper MOBprog operator '%s'", opr );
+   progbugf( mob, "Improper MOBprog operator '{}'", opr );
    return 0;
 }
 

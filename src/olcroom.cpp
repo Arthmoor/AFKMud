@@ -345,7 +345,7 @@ void redit_disp_exit_menu( descriptor_data * d )
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( auto* pexit : room->exits )
    {
-      d->character->print_fmt( "&g{:2}&w) {:<10.10} to {:<5}. Key: {} Keywords: {} Flags: %s\r\n",
+      d->character->print_fmt( "&g{:2}&w) {:<10.10} to {:<5}. Key: {} Keywords: {} Flags: {}\r\n",
                             ++cnt, dir_name[pexit->vdir], pexit->to_room ? pexit->to_room->vnum : 0,
                             pexit->key, !pexit->keyword.empty() ? pexit->keyword : "(none)", bitset_string( pexit->flags, ex_flags ) );
    }
@@ -389,7 +389,7 @@ void redit_disp_exit_dirs( descriptor_data * d )
 {
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i <= DIR_SOMEWHERE; ++i )
-      d->character->print_fmt( "&g{:2}&w) %s\r\n", i, dir_name[i] );
+      d->character->print_fmt( "&g{:2}&w) {}\r\n", i, dir_name[i] );
 
    d->character->print( "\r\nChoose a direction: " );
 }

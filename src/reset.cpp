@@ -208,7 +208,7 @@ std::string sprint_reset( reset_data * pReset, short & num )
                      roomname = "Object2: *nullptr obj*";
                   else
                      roomname = obj->name;
-                  buf.append( std::format( "{:2}) (RT put) {} ({}%) -> {} (%d)\r\n", num, objname, tReset->arg9, roomname, obj ? obj->vnum : tReset->arg8 ) );
+                  buf.append( std::format( "{:2}) (RT put) {} ({}%) -> {} ({})\r\n", num, objname, tReset->arg9, roomname, obj ? obj->vnum : tReset->arg8 ) );
                   break;
 
                case 'T':

@@ -189,14 +189,14 @@ CMDF( do_mudexec )
       execvp( argv[0], argv );
 #endif
 
-      fprintf( stderr, "Shell process: %s failed!\n", argument.c_str() );
+      std::cerr << std::format( "Shell process: {} failed!\n", argument );
       perror( "mudexec" );
       std::exit( EXIT_SUCCESS );
    }
    else if( pid < 2 )
    {
       ch->print( "Process fork failed.\r\n" );
-      fprintf( stderr, "%s", "Shell process: fork failed!\n" );
+      std::cerr << "Shell process: fork failed!\n" );
       return;
    }
    else

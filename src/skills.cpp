@@ -1700,7 +1700,7 @@ void char_data::learn_racials( int sn )
             gain = sklvl * 1000;
             if( Class == CLASS_MAGE )
                gain = gain * 2;
-            print_fmt( "&WYou are now an adept of {}! You gain %d bonus experience!\r\n", skill_table[sn]->name, gain );
+            print_fmt( "&WYou are now an adept of {}! You gain {} bonus experience!\r\n", skill_table[sn]->name, gain );
             gain_exp( gain );
          }
       }
@@ -2645,7 +2645,7 @@ CMDF( do_slookup )
    else if( !str_cmp( argument, "herbs" ) )
    {
       for( sn = 0; sn < top_herb && herb_table[sn] && !herb_table[sn]->name.empty(); ++sn )
-         ch->pager_fmt( "{}) %s\r\n", sn, herb_table[sn]->name );
+         ch->pager_fmt( "{}) {}\r\n", sn, herb_table[sn]->name );
    }
    else
    {

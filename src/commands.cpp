@@ -1495,7 +1495,7 @@ CMDF( do_bestow )
 
       smash_tilde( arg );
       addname( victim->pcdata->bestowments, arg );
-      victim->print_fmt( "{} has bestowed on you the command: %s\r\n", ch->name, arg );
+      victim->print_fmt( "{} has bestowed on you the command: {}\r\n", ch->name, arg );
       ch->print_fmt( "{} has been bestowed: {}\r\n", victim->name, arg );
 
       argument = one_argument( argument, arg );
@@ -2005,7 +2005,7 @@ void add_social( social_type * social )
 
    if( social->char_no_arg.empty(  ) )
    {
-      bug( "{}: nullptr social->char_no_arg on social %s", __func__, social->name );
+      bug( "{}: nullptr social->char_no_arg on social {}", __func__, social->name );
       return;
    }
 
@@ -2194,7 +2194,7 @@ CMDF( do_sedit )
                   !social->char_auto.empty(  ) ? social->char_auto : "(not set)", !social->others_auto.empty(  ) ? social->others_auto : "(not set)" );
       ch->print_fmt( "ObjSelf  : {}\r\nObjOthers: {}\r\n",
                   !social->obj_self.empty(  ) ? social->obj_self : "(not set)", !social->obj_others.empty(  ) ? social->obj_others : "(not set)" );
-      ch->print_fmt( "MinPos   : %s\r\n", npc_position[social->minposition] );
+      ch->print_fmt( "MinPos   : {}\r\n", npc_position[social->minposition] );
       return;
    }
 

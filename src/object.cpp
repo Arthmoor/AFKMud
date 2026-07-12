@@ -132,7 +132,7 @@ void obj_data::fall( bool through )
 
    if( fall_count > 30 )
    {
-      bug( "%s: object falling in loop more than 30 times", __func__ );
+      bug( "{}: object falling in loop more than 30 times", __func__ );
       extract(  );
       fall_count = 0;
       return;
@@ -150,7 +150,7 @@ void obj_data::fall( bool through )
 
       if( in_room == to )
       {
-         bug( "%s: Object falling into same room, room %d", __func__, to->vnum );
+         bug( "{}: Object falling into same room, room {}", __func__, to->vnum );
          extract(  );
          return;
       }
@@ -801,7 +801,7 @@ void obj_data::from_char(  )
 
    if( !( ch = carried_by ) )
    {
-      bug( "%s: null ch.", __func__ );
+      bug( "{}: null ch.", __func__ );
       log_printf( "Object was vnum {} - {}", pIndexData->vnum, short_descr );
       return;
    }
@@ -876,7 +876,7 @@ void obj_data::from_room(  )
 
    if( !( room = in_room ) )
    {
-      bug( "%s: %s not in a room!", __func__, name );
+      bug( "{}: {} not in a room!", __func__, name );
       return;
    }
 
@@ -1003,7 +1003,7 @@ obj_data *obj_data::to_obj( obj_data * obj_to )
 {
    if( this == obj_to )
    {
-      bug( "%s: trying to put object inside itself: vnum %d", __func__, pIndexData->vnum );
+      bug( "{}: trying to put object inside itself: vnum {}", __func__, pIndexData->vnum );
       return this;
    }
 
@@ -1040,7 +1040,7 @@ void obj_data::from_obj(  )
 
    if( !( obj_from = in_obj ) )
    {
-      bug( "%s: %s null obj_from.", __func__, name );
+      bug( "{}: {} null obj_from.", __func__, name );
       return;
    }
 
@@ -1084,7 +1084,7 @@ void obj_data::extract(  )
 {
    if( extracted(  ) )
    {
-      bug( "%s: obj %d already extracted!", __func__, pIndexData->vnum );
+      bug( "{}: obj {} already extracted!", __func__, pIndexData->vnum );
       /*
        * return; Seeing if we can get it to either extract it for real, or die trying! 
        */
@@ -1158,7 +1158,7 @@ const std::string obj_data::item_type_name(  )
 {
    if( item_type < 1 || item_type >= MAX_ITEM_TYPE )
    {
-      bug( "%s: unknown type %d.", __func__, item_type );
+      bug( "{}: unknown type {}.", __func__, item_type );
       return "(unknown)";
    }
    return o_types[item_type];
@@ -1441,7 +1441,7 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
       }
       return movedsome;
    }
-   bug( "%s: could not determine a destination for vnum %d", __func__, pIndexData->vnum );
+   bug( "{}: could not determine a destination for vnum {}", __func__, pIndexData->vnum );
    return false;
 }
 
@@ -1451,7 +1451,7 @@ void obj_data::remove_portal(  )
 
    if( !( fromRoom = in_room ) )
    {
-      bug( "%s: portal->in_room is nullptr", __func__ );
+      bug( "{}: portal->in_room is nullptr", __func__ );
       return;
    }
 
@@ -1471,15 +1471,15 @@ void obj_data::remove_portal(  )
 
    if( !found )
    {
-      bug( "%s: portal not found in room %d!", __func__, fromRoom->vnum );
+      bug( "{}: portal not found in room {}!", __func__, fromRoom->vnum );
       return;
    }
 
    if( pexit->vdir != DIR_PORTAL )
-      bug( "%s: exit in dir %d != DIR_PORTAL", __func__, pexit->vdir );
+      bug( "{}: exit in dir {} != DIR_PORTAL", __func__, pexit->vdir );
 
    if( !( toRoom = pexit->to_room ) )
-      bug( "%s: toRoom is nullptr", __func__ );
+      bug( "{}: toRoom is nullptr", __func__ );
 
    fromRoom->extract_exit( pexit );
 }

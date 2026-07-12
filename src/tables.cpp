@@ -50,7 +50,7 @@ SPEC_FUN *m_spec_lookup( std::string_view name )
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
-         bug( "{}: Error locating {} in symbol table. %s", __func__, name, error );
+         bug( "{}: Error locating {} in symbol table. {}", __func__, name, error );
          return nullptr;
 
          // Edge case. Apparently a symbol can be valid but point to a NULL. This catches those.

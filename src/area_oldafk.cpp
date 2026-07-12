@@ -750,7 +750,7 @@ void load_resets( area_data * tarea, std::ifstream & stream )
          case 'G':
          case 'E':
             if( get_obj_index( arg1 ) == nullptr && fBootDb )
-               boot_log( "{}: {} ({}) '{}': object %d doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
+               boot_log( "{}: {} ({}) '{}': object {} doesn't exist.", __func__, tarea->filename, count, letter, arg1 );
             if( !pRoomIndex )
                bug( "{}: Unable to add room reset - room not found.", __func__ );
             else

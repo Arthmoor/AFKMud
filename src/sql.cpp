@@ -125,7 +125,7 @@ int mysql_safe_query( std::string_view fmt, auto&&... args )
    }
    catch( const std::exception & e )
    {
-      bug( "{}: Formatting error: %s", __func__, e.what() );
+      bug( "{}: Formatting error: {}", __func__, e.what() );
       return -1;
    }
 }

@@ -492,6 +492,6 @@ CMDF( do_destroyslay )
    }
 
    deleteptr( pslay );
-   ch->print_fmt( "Slaytype \"{}%s\" has beed deleted.\r\n", argument );
+   ch->print_fmt( "Slaytype \"{}\" has been deleted.\r\n", argument );
    save_slays(  );
 }

@@ -211,9 +211,6 @@ CMDF( do_finger )
          return;
       }
 
-      auto laston = std::filesystem::last_write_time( fingload );
-      time_str = std::format( "{:%Y-%m-%d %H:%M:%S}", laston );
-
       temproom = get_room_index( ROOM_VNUM_LIMBO );
       if( !temproom )
       {
@@ -221,6 +218,10 @@ CMDF( do_finger )
          ch->print( "Fatal error, report to the immortals.\r\n" );
          return;
       }
+
+      auto laston = std::filesystem::last_write_time( fingload );
+      auto sys_time = std::chrono::clock_cast<std::chrono::system_clock>(laston);
+      time_str = c_time( sys_time, ch->pcdata->timezone_name );
 
       d = new descriptor_data;
       d->init(  );
