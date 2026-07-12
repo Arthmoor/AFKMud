@@ -743,7 +743,7 @@ CMDF( do_slotlookup )
 {
    int sn;
 
-   if( ( sn = slot_lookup( atoi( argument.c_str(  ) ) ) ) == -1 )
+   if( ( sn = slot_lookup( std::stoi( argument ) ) ) == -1 )
    {
       ch->print_fmt( "{} is not a valid slot number.\r\n", argument );
       return;
@@ -2496,7 +2496,7 @@ CMDF( do_slist )
       {
          if( is_number( arg2 ) )
          {
-            lowlev = atoi( arg2.c_str(  ) );
+            lowlev = std::stoi( arg2 );
             if( lowlev < 1 || lowlev > LEVEL_AVATAR )
             {
                ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", lowlev, LEVEL_AVATAR );
@@ -2509,7 +2509,7 @@ CMDF( do_slist )
       {
          if( is_number( argument ) )
          {
-            hilev = atoi( argument.c_str(  ) );
+            hilev = std::stoi( argument );
             if( hilev < 1 || hilev > LEVEL_AVATAR )
             {
                ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", hilev, LEVEL_AVATAR );
@@ -2520,7 +2520,7 @@ CMDF( do_slist )
    }
    else if( !arg1.empty(  ) && is_number( arg1 ) )
    {
-      lowlev = atoi( arg1.c_str(  ) );
+      lowlev = std::stoi( arg1 );
       if( lowlev < 1 || lowlev > LEVEL_AVATAR )
       {
          ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", lowlev, LEVEL_AVATAR );
@@ -2529,7 +2529,7 @@ CMDF( do_slist )
 
       if( !arg2.empty(  ) && is_number( arg2 ) )
       {
-         hilev = atoi( arg2.c_str(  ) );
+         hilev = std::stoi( arg2 );
          if( hilev < 1 || hilev > LEVEL_AVATAR )
          {
             ch->print_fmt( "{} is out of range. Only valid between 1 and {}\r\n", hilev, LEVEL_AVATAR );
@@ -2651,7 +2651,7 @@ CMDF( do_slookup )
    {
       if( argument[0] == 'h' && is_number( argument.substr( 1, argument.length(  ) ) ) )
       {
-         sn = atoi( argument.substr( 1, argument.length(  ) ).c_str(  ) );
+         sn = std::stoi( argument.substr( 1, argument.length(  ) ) );
          if( !IS_VALID_HERB( sn ) )
          {
             ch->print( "Invalid herb.\r\n" );
@@ -3530,7 +3530,7 @@ CMDF( do_sset )
       return;
    }
 
-   value = atoi( argument.c_str(  ) );
+   value = std::stoi( argument );
    if( value < 0 || value > 100 )
    {
       ch->print( "Value range is 0 to 100.\r\n" );

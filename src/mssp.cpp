@@ -403,11 +403,11 @@ CMDF( do_setmssp )
    {
       int value;
 
-      value = atoi( argument.c_str() );
+      value = std::stoi( argument );
 
       if( !is_number( argument ) || ( value < MSSP_MINCREATED ) || ( value > MSSP_MAXCREATED ) )
       {
-         ch->print_fmt( "The value for created must be between {} and {}.%d\r\n", MSSP_MINCREATED, MSSP_MAXCREATED );
+         ch->print_fmt( "The value for created must be between {} and {}.\r\n", MSSP_MINCREATED, MSSP_MAXCREATED );
          return;
       }
       mssp_info->created = value;

@@ -1044,7 +1044,7 @@ CMDF( do_goto )
 
    if( !( location = ch->find_location( arg ) ) )
    {
-      vnum = atoi( arg.c_str(  ) );
+      vnum = std::stoi( arg );
       if( vnum < 0 || get_room_index( vnum ) )
       {
          ch->print( "You cannot find that...\r\n" );
@@ -1343,7 +1343,7 @@ CMDF( do_mset )
       RelCreate( relMSET_ON, ch, victim );
       return;
    }
-   value = is_number( arg3 ) ? atoi( arg3.c_str(  ) ) : -1;
+   value = is_number( arg3 ) ? std::stoi( arg3 ) : -1;
 
    if( std::stoi( arg3 ) < -1 && value == -1 )
       value = std::stoi( arg3 );
@@ -2959,7 +2959,7 @@ CMDF( do_oset )
       ch->pcdata->dest_buf = obj;
 
    obj->separate(  );
-   value = atoi( arg3.c_str(  ) );
+   value = std::stoi( arg3 );
 
    if( !can_omodify( ch, obj ) )
       return;
@@ -3480,7 +3480,7 @@ CMDF( do_oset )
       }
       else
       {
-         value = atoi( arg3.c_str(  ) );
+         value = std::stoi( arg3 );
          found = true;
       }
       if( !found )
@@ -3531,7 +3531,7 @@ CMDF( do_oset )
          ch->print( "Usage: oset <object> rmaffect <affect#>\r\n" );
          return;
       }
-      loc = atoi( argument.c_str(  ) );
+      loc = std::stoi( argument );
       if( loc < 1 )
       {
          ch->print( "Invalid number.\r\n" );
@@ -4544,7 +4544,7 @@ CMDF( do_redit )
          ch->print( "Usage: redit teledelay <value>\r\n" );
          return;
       }
-      location->tele_delay = atoi( argument.c_str(  ) );
+      location->tele_delay = std::stoi( argument );
       ch->print( "Teledelay set.\r\n" );
       return;
    }
@@ -4560,7 +4560,7 @@ CMDF( do_redit )
          ch->print( "Usage: redit televnum <vnum>\r\n" );
          return;
       }
-      tvnum = atoi( argument.c_str(  ) );
+      tvnum = std::stoi( argument );
       if( tvnum < 1 || tvnum > sysdata->maxvnum )
       {
          ch->print_fmt( "Invalid vnum. Allowable range is 1 to {}\r\n", sysdata->maxvnum );
@@ -4613,7 +4613,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4621,7 +4621,7 @@ CMDF( do_redit )
          edir = get_dir( arg2 );
          xit = location->get_exit( edir );
       }
-      value = atoi( arg3.c_str(  ) );
+      value = std::stoi( arg3 );
       if( !xit )
       {
          ch->print( "No exit in that direction. Use 'redit exit ...' first.\r\n" );
@@ -4721,7 +4721,7 @@ CMDF( do_redit )
       argument = one_argument( argument, arg2 );
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -4777,7 +4777,7 @@ CMDF( do_redit )
             addexit = true;
             break;
          case '#':
-            edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+            edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
             numnotdir = true;
             break;
       }
@@ -4786,7 +4786,7 @@ CMDF( do_redit )
       if( arg3.empty(  ) )
          evnum = 0;
       else
-         evnum = atoi( arg3.c_str(  ) );
+         evnum = std::stoi( arg3 );
 
       if( numnotdir )
       {
@@ -4873,7 +4873,7 @@ CMDF( do_redit )
       argument = one_argument( argument, arg3 );
       if( !arg3.empty(  ) )
       {
-         ekey = atoi( arg3.c_str(  ) );
+         ekey = std::stoi( arg3 );
          if( ekey != 0 || arg3[0] == '0' )
             xit->key = ekey;
       }
@@ -4933,7 +4933,7 @@ CMDF( do_redit )
             break;
          case '#':
             numnotdir = true;
-            edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+            edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
             break;
          case '+':
             edir = get_dir( arg2.substr( 1, arg2.length(  ) ) );
@@ -4997,7 +4997,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -5031,7 +5031,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -5060,7 +5060,7 @@ CMDF( do_redit )
       }
       if( arg2[0] == '#' )
       {
-         edir = atoi( arg2.substr( 1, arg2.length(  ) ).c_str(  ) );
+         edir = std::stoi( arg2.substr( 1, arg2.length(  ) ) );
          xit = location->get_exit_num( edir );
       }
       else
@@ -5231,9 +5231,9 @@ CMDF( do_rgrid )
       ch->print( "Usage: rgrid <x> <y> <z>\r\n" );
       return;
    }
-   x = atoi( arg.c_str(  ) );
-   y = atoi( arg2.c_str(  ) );
-   z = atoi( argument.c_str(  ) );
+   x = std::stoi( arg );
+   y = std::stoi( arg2 );
+   z = std::stoi( argument );
 
    if( x < 1 || y < 1 )
    {
@@ -5383,7 +5383,7 @@ CMDF( do_ocreate )
    }
    argument = one_argument( argument, arg );
 
-   vnum = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+   vnum = is_number( arg ) ? std::stoi( arg ) : -1;
 
    if( vnum == -1 || argument.empty(  ) )
    {
@@ -5398,7 +5398,7 @@ CMDF( do_ocreate )
    }
 
    one_argument( argument, arg2 );
-   cvnum = atoi( arg2.c_str(  ) );
+   cvnum = std::stoi( arg2 );
    if( cvnum != 0 )
       argument = one_argument( argument, arg2 );
    if( cvnum < 1 )
@@ -5467,7 +5467,7 @@ CMDF( do_mcreate )
 
    argument = one_argument( argument, arg );
 
-   vnum = is_number( arg ) ? atoi( arg.c_str(  ) ) : -1;
+   vnum = is_number( arg ) ? std::stoi( arg ) : -1;
 
    if( vnum == -1 || argument.empty(  ) )
    {
@@ -5482,7 +5482,7 @@ CMDF( do_mcreate )
    }
 
    one_argument( argument, arg2 );
-   cvnum = atoi( arg2.c_str(  ) );
+   cvnum = std::stoi( arg2 );
    if( cvnum != 0 )
       argument = one_argument( argument, arg2 );
    if( cvnum < 1 )
@@ -5763,7 +5763,7 @@ CMDF( do_mpedit )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
    argument = one_argument( argument, arg3 );
-   value = atoi( arg3.c_str(  ) );
+   value = std::stoi( arg3 );
    if( arg1.empty(  ) || arg2.empty(  ) )
    {
       ch->print( "Syntax: mpedit <victim> <command> [number] <program> <value>\r\n\r\n" );
@@ -6551,7 +6551,7 @@ CMDF( do_opcopy )
    {
       argument = one_argument( argument, num );
       argument = one_argument( argument, dobj );
-      value = atoi( num.c_str(  ) );
+      value = std::stoi( num );
    }
 
    if( ch->get_trust(  ) < LEVEL_GOD )
@@ -6709,7 +6709,7 @@ CMDF( do_mpcopy )
    {
       argument = one_argument( argument, num );
       argument = one_argument( argument, dmob );
-      value = atoi( num.c_str(  ) );
+      value = std::stoi( num );
    }
 
    if( ch->get_trust(  ) < LEVEL_GOD )
@@ -6871,10 +6871,10 @@ CMDF( do_rpcopy )
    {
       argument = one_argument( argument, num );
       argument = one_argument( argument, droom );
-      value = atoi( num.c_str(  ) );
+      value = std::stoi( num );
    }
 
-   if( !( source = get_room_index( atoi( sroom.c_str(  ) ) ) ) )
+   if( !( source = get_room_index( std::stoi( sroom ) ) ) )
    {
       ch->print( "Source room does not exist.\r\n" );
       return;
@@ -7088,8 +7088,8 @@ CMDF( do_vassign )
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
    argument = one_argument( argument, arg3 );
-   lo = atoi( arg2.c_str(  ) );
-   hi = atoi( arg3.c_str(  ) );
+   lo = std::stoi( arg2 );
+   hi = std::stoi( arg3 );
 
    if( arg1.empty(  ) || lo < 0 || hi < 0 )
    {
@@ -7240,7 +7240,7 @@ CMDF( do_vassign )
    tarea->flags.set( AFLAG_PROTOTYPE );
    tarea->creation_date = current_time;
    filename = std::format( "{}{}", BUILD_DIR, tarea->filename );
-   tarea->fold( filename.c_str(), false );
+   tarea->fold( filename, false );
 
    ch->set_color( AT_IMMORT );
    ch->print_fmt( "Vnum range set for {} and initialized.\r\n", victim->name );

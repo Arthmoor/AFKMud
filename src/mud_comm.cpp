@@ -120,7 +120,7 @@ CMDF( do_mpmset )
    }
 
    value = is_number( arg3 ) ? std::stoi( arg3 ) : -1;
-   if( atoi( arg3.c_str(  ) ) < -1 && value == -1 )
+   if( std::stoi( arg3 ) < -1 && value == -1 )
       value = std::stoi( arg3 );
 
    if( !str_cmp( arg2, "str" ) )
@@ -294,7 +294,7 @@ CMDF( do_mpmset )
    {
       value = get_npc_class( arg3 );
       if( value < 0 )
-         value = atoi( arg3.c_str(  ) );
+         value = std::stoi( arg3 );
 
       if( !victim->isnpc(  ) )
       {
@@ -326,7 +326,7 @@ CMDF( do_mpmset )
    {
       value = get_npc_race( arg3 );
       if( value < 0 )
-         value = atoi( arg3.c_str(  ) );
+         value = std::stoi( arg3 );
       if( !victim->isnpc(  ) )
       {
          if( value < 0 || value >= MAX_RACE )
@@ -1050,7 +1050,7 @@ CMDF( do_mposet )
       return;
    }
    obj->separate(  );
-   value = atoi( arg3.c_str(  ) );
+   value = std::stoi( arg3 );
 
    if( !str_cmp( arg2, "value0" ) || !str_cmp( arg2, "v0" ) )
    {
@@ -1321,7 +1321,7 @@ CMDF( do_mposet )
          return;
       }
 
-      loc = atoi( argument.c_str(  ) );
+      loc = std::stoi( argument );
       if( loc < 1 )
       {
          progbug( "MpOset: Invalid rmaffect", ch );
@@ -1741,7 +1741,7 @@ CMDF( do_mpasupress )
       return;
    }
 
-   rnds = atoi( argument.c_str(  ) );
+   rnds = std::stoi( argument );
    if( rnds < 0 || rnds > 32000 )
    {
       progbug( "Mpsupress: invalid rounds argument, non-numeric", ch );
@@ -1977,7 +1977,7 @@ CMDF( do_mpmload )
       return;
    }
 
-   if( !( pMobIndex = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+   if( !( pMobIndex = get_mob_index( std::stoi( argument ) ) ) )
    {
       progbugf( ch, "Mpmload - Bad mob vnum {}", argument );
       return;
@@ -2019,7 +2019,7 @@ CMDF( do_mpoload )
          return;
       }
 
-      level = atoi( arg2.c_str(  ) );
+      level = std::stoi( arg2 );
       if( level < 0 || level > ch->get_trust(  ) )
       {
          progbugf( ch, "Mpoload - Bad level {}", level );
@@ -2029,7 +2029,7 @@ CMDF( do_mpoload )
       /*
        * New feature from Thoric.
        */
-      timer = atoi( argument.c_str(  ) );
+      timer = std::stoi( argument );
       if( timer < 0 )
       {
          progbugf( ch, "Mpoload - Bad timer {}", timer );
@@ -2037,7 +2037,7 @@ CMDF( do_mpoload )
       }
    }
 
-   if( !( obj = get_obj_index( atoi( arg1.c_str(  ) ) )->create_object( level ) ) )
+   if( !( obj = get_obj_index( std::stoi( arg1 ) )->create_object( level ) ) )
    {
       log_printf( "create_object: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       progbugf( ch, "Mpoload - Bad vnum arg {}", arg1 );
@@ -2183,7 +2183,7 @@ CMDF( do_mpinvis )
          return;
       }
 
-      level = atoi( argument.c_str(  ) );
+      level = std::stoi( argument );
       if( level < 2 || level > LEVEL_IMMORTAL ) /* Updated hardcode level check - Samson */
       {
          progbugf( ch, "MPinvis - Invalid level {}", level );
@@ -2306,7 +2306,7 @@ CMDF( do_mpadvance )
    if( victim->level >= LEVEL_AVATAR )
       return;
 
-   level = atoi( argument.c_str(  ) );
+   level = std::stoi( argument );
 
    if( victim->level > ch->level )
    {
@@ -2712,7 +2712,7 @@ CMDF( do_mpstrew )
       return;
    }
 
-   vnum = atoi( argument.c_str(  ) );
+   vnum = std::stoi( argument );
 
    for( iobj = victim->carrying.begin(  ); iobj != victim->carrying.end(  ); )
    {
@@ -3088,7 +3088,7 @@ CMDF( do_mp_damage )
       return;
    }
 
-   double dam = atoi( argument.c_str(  ) );
+   double dam = std::stoi( argument );
    if( dam < 0 || dam > 32000 )
    {
       progbugf( ch, "Mpdamage: invalid (nonexistent?) argument {}", dam );
@@ -3155,7 +3155,7 @@ CMDF( do_mp_restore )
       return;
    }
 
-   hp = atoi( argument.c_str(  ) );
+   hp = std::stoi( argument );
    if( hp < 0 || hp > 32000 )
    {
       progbugf( ch, "Mprestore: invalid hp amount {}", hp );
@@ -3210,7 +3210,7 @@ CMDF( do_mpfavor )
    if( argument[0] == '-' && argument.length(  ) > 1 )
       minus = true;
 
-   favor = atoi( argument.c_str(  ) );
+   favor = std::stoi( argument );
    if( plus )
       victim->pcdata->favor = urange( -2500, victim->pcdata->favor + favor, 2500 );
    else if( minus )
@@ -3263,7 +3263,7 @@ CMDF( do_mp_open_passage )
       return;
    }
 
-   fromRoomVnum = atoi( arg1.c_str(  ) );
+   fromRoomVnum = std::stoi( arg1 );
    if( !( fromRoom = get_room_index( fromRoomVnum ) ) )
    {
       progbug( "MpOpenPassage - arg1 isn't an existing room.", ch );
@@ -3276,7 +3276,7 @@ CMDF( do_mp_open_passage )
       return;
    }
 
-   targetRoomVnum = atoi( arg2.c_str(  ) );
+   targetRoomVnum = std::stoi( arg2 );
    if( !( targetRoom = get_room_index( targetRoomVnum ) ) )
    {
       progbug( "MpOpenPassage - arg2 isn't an existing room.", ch );
@@ -3292,7 +3292,7 @@ CMDF( do_mp_open_passage )
       }
    }
    else if( is_number( argument ) )
-      exit_num = atoi( argument.c_str(  ) );
+      exit_num = std::stoi( argument );
 
    if( ( exit_num < 0 ) || ( exit_num > MAX_DIR ) )
    {
@@ -3370,7 +3370,7 @@ CMDF( do_mp_close_passage )
       return;
    }
 
-   fromRoomVnum = atoi( arg1.c_str(  ) );
+   fromRoomVnum = std::stoi( arg1 );
    if( !( fromRoom = get_room_index( fromRoomVnum ) ) )
    {
       progbug( "MpClosePassage - arg1 isn't an existing room.", ch );
@@ -3386,7 +3386,7 @@ CMDF( do_mp_close_passage )
       }
    }
    else if( is_number( argument ) )
-      exit_num = atoi( argument.c_str(  ) );
+      exit_num = std::stoi( argument );
 
    if( ( exit_num < 0 ) || ( exit_num > MAX_DIR ) )
    {
@@ -3472,7 +3472,7 @@ CMDF( do_mpdelay )
       return;
    }
 
-   delay = atoi( argument.c_str(  ) );
+   delay = std::stoi( argument );
    if( delay < 1 || delay > 30 )
    {
       progbugf( ch, "Mpdelay:  argument {} out of range (1 to 30)", delay );
@@ -4433,7 +4433,7 @@ CMDF( do_mphate )
    {
       if( is_number( arg2 ) )
       {
-         vnum = atoi( arg2.c_str(  ) );
+         vnum = std::stoi( arg2 );
          if( vnum < 1 || vnum > sysdata->maxvnum )
          {
             progbugf( ch, "Mphate -- aggressor vnum {} out of range", vnum );
@@ -4508,7 +4508,7 @@ CMDF( do_mphunt )
    {
       if( is_number( arg2 ) )
       {
-         vnum = atoi( arg2.c_str(  ) );
+         vnum = std::stoi( arg2 );
          if( vnum < 1 || vnum > sysdata->maxvnum )
          {
             progbugf( ch, "Mphunt -- aggressor vnum {} out of range", vnum );
@@ -4583,7 +4583,7 @@ CMDF( do_mpfear )
    {
       if( is_number( arg2 ) )
       {
-         vnum = atoi( arg2.c_str(  ) );
+         vnum = std::stoi( arg2 );
          if( vnum < 1 || vnum > sysdata->maxvnum )
          {
             progbugf( ch, "Mpfear -- aggressor vnum {} out of range", vnum );

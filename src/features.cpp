@@ -337,7 +337,7 @@ CMDF( do_mpsoundaround )
       return;
    }
 
-   volume = atoi( vol.c_str(  ) );
+   volume = std::stoi( vol );
 
    if( volume < 1 || volume > 100 )
    {
@@ -392,7 +392,7 @@ CMDF( do_mpsoundat )
       return;
    }
 
-   volume = atoi( vol.c_str(  ) );
+   volume = std::stoi( vol );
 
    if( volume < 1 || volume > 100 )
    {
@@ -415,7 +415,6 @@ CMDF( do_mpsoundat )
 CMDF( do_mpsound )
 {
    std::string vol;
-   int volume;
    std::bitset<MAX_ACT_FLAG> actflags;
 
    if( !ch->isnpc(  ) || ch->has_aflag( AFF_CHARM ) )
@@ -438,7 +437,7 @@ CMDF( do_mpsound )
       return;
    }
 
-   volume = atoi( vol.c_str(  ) );
+   int volume = std::stoi( vol );
 
    if( volume < 1 || volume > 100 )
    {
@@ -482,7 +481,7 @@ CMDF( do_mpsoundzone )
       return;
    }
 
-   int volume = atoi( vol.c_str(  ) );
+   int volume = std::stoi( vol );
 
    if( volume < 1 || volume > 100 )
    {
@@ -511,7 +510,6 @@ CMDF( do_mpsoundzone )
 CMDF( do_mpmusicaround )
 {
    std::string target, vol;
-   int volume;
    char_data *victim;
    std::bitset<MAX_ACT_FLAG> actflags;
 
@@ -543,7 +541,7 @@ CMDF( do_mpmusicaround )
       return;
    }
 
-   volume = atoi( vol.c_str(  ) );
+   int volume = std::stoi( vol );
 
    if( volume < 1 || volume > 100 )
    {
@@ -566,7 +564,6 @@ CMDF( do_mpmusicaround )
 CMDF( do_mpmusic )
 {
    std::string target, vol;
-   int volume;
    char_data *victim;
    std::bitset<MAX_ACT_FLAG> actflags;
 
@@ -598,7 +595,7 @@ CMDF( do_mpmusic )
       return;
    }
 
-   volume = atoi( vol.c_str(  ) );
+   int volume = std::stoi( vol );
 
    if( volume < 1 || volume > 100 )
    {
@@ -620,7 +617,6 @@ CMDF( do_mpmusic )
 CMDF( do_mpmusicat )
 {
    std::string target, vol;
-   int volume;
    char_data *victim;
    std::bitset<MAX_ACT_FLAG> actflags;
 
@@ -652,7 +648,7 @@ CMDF( do_mpmusicat )
       return;
    }
 
-   volume = atoi( vol.c_str(  ) );
+   int volume = std::stoi( vol );
 
    if( volume < 1 || volume > 100 )
    {

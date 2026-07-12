@@ -485,7 +485,7 @@ CMDF( do_hset )
 
    if( !str_cmp( arg1, "level" ) )
    {
-      pHelp->level = atoi( arg2.c_str(  ) );
+      pHelp->level = std::stoi( arg2 );
       ch->print( "Done.\r\n" );
       return;
    }
@@ -518,7 +518,7 @@ CMDF( do_hset )
 }
 
 /*
- * Show help topics in a level range				-Thoric
+ * Show help topics in a level range   -Thoric
  * Idea suggested by Gorog
  * prefix keyword indexing added by Fireblade
  */

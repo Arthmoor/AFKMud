@@ -1534,7 +1534,7 @@ void pcsetclan( char_data * ch, std::string argument )
 
    if( !str_cmp( arg1, "tithe" ) )
    {
-      int value = atoi( argument.c_str(  ) );
+      int value = std::stoi( argument );
 
       if( value < 0 || value > 100 )
       {
@@ -1898,7 +1898,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "align" ) )
    {
-      int value = atoi( argument.c_str(  ) );
+      int value = std::stoi( argument );
 
       if( value < -1000 || value > 1000 )
       {
@@ -1924,7 +1924,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "class" ) )
    {
-      clan->Class = atoi( argument.c_str(  ) );
+      clan->Class = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1968,7 +1968,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "memlimit" ) )
    {
-      clan->mem_limit = atoi( argument.c_str(  ) );
+      clan->mem_limit = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -1976,7 +1976,7 @@ CMDF( do_setclan )
 
    if( !str_cmp( arg2, "members" ) )
    {
-      clan->members = atoi( argument.c_str(  ) );
+      clan->members = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_clan( clan );
       return;
@@ -2030,7 +2030,7 @@ CMDF( do_setclan )
          do_setclan( ch, "" );
          return;
       }
-      clan->pkills[temp_value] = atoi( argument.c_str(  ) );
+      clan->pkills[temp_value] = std::stoi( argument );
       ch->print( "Ok.\r\n" );
       return;
    }
@@ -2058,7 +2058,7 @@ CMDF( do_setclan )
          do_setclan( ch, "" );
          return;
       }
-      clan->pdeaths[temp_value] = atoi( argument.c_str(  ) );
+      clan->pdeaths[temp_value] = std::stoi( argument );
       ch->print( "Ok.\r\n" );
       return;
    }
@@ -2351,7 +2351,7 @@ CMDF( do_defeats )
       else
       {
          ch->pager( "\r\nLVL  Character                LVL  Character\r\n" );
-         show_file( ch, filename.c_str() );
+         show_file( ch, filename );
          return;
       }
    }
@@ -2387,7 +2387,7 @@ CMDF( do_victories )
       else
       {
          ch->pager( "\r\nLVL  Character       LVL  Character\r\n" );
-         show_file( ch, filename.c_str() );
+         show_file( ch, filename );
          return;
       }
    }

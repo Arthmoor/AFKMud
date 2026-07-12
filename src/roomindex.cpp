@@ -182,7 +182,7 @@ room_index::~room_index(  )
                   filename = pArea->filename;
                else
                   filename = std::format( "{}{}", BUILD_DIR, pArea->filename );
-               pArea->fold( filename.c_str(), false );
+               pArea->fold( filename, false );
             }
          }
       }
@@ -793,7 +793,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string &
    }
    else
    {
-      value = atoi( argument.c_str(  ) );
+      value = std::stoi( argument );
       found = true;
    }
    if( !found )

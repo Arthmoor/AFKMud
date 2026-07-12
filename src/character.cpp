@@ -623,7 +623,7 @@ char_data *char_data::get_char_room( std::string_view argument )
       return this;
 
    if( this->get_trust(  ) >= LEVEL_SAVIOR && is_number( arg ) )
-      vnum = atoi( arg.c_str(  ) );
+      vnum = std::stoi( arg );
 
    std::list<char_data *>::iterator ich;
    for( ich = this->in_room->people.begin(  ); ich != this->in_room->people.end(  ); ++ich )
@@ -885,7 +885,7 @@ obj_data *char_data::get_obj_carry( std::string_view argument )
 
    number = number_argument( argument, arg );
    if( this->get_trust(  ) >= LEVEL_SAVIOR && is_number( arg ) )
-      vnum = atoi( arg.c_str(  ) );
+      vnum = std::stoi( arg );
    else
       vnum = -1;
 
@@ -931,7 +931,7 @@ obj_data *char_data::get_obj_wear( std::string_view argument )
    number = number_argument( argument, arg );
 
    if( this->get_trust(  ) >= LEVEL_SAVIOR && is_number( arg ) )
-      vnum = atoi( arg.c_str(  ) );
+      vnum = std::stoi( arg );
    else
       vnum = -1;
 
@@ -1002,7 +1002,7 @@ obj_data *char_data::get_obj_world( std::string_view argument )
     * Allow reference by vnum for saints+       -Thoric
     */
    if( this->get_trust(  ) >= LEVEL_SAVIOR && is_number( arg ) )
-      vnum = atoi( arg.c_str(  ) );
+      vnum = std::stoi( arg );
    else
       vnum = -1;
 
@@ -2325,7 +2325,7 @@ bool char_data::to_room( room_index * pRoomIndex )
    // Ok, asshole code, lets see you get past this!
    if( !pRoomIndex || !get_room_index( pRoomIndex->vnum ) )
    {
-      bug( "{}: {} -> nullptr room!  Putting char in limbo ({})", __func__, this->name.c_str(), ROOM_VNUM_LIMBO );
+      bug( "{}: {} -> nullptr room!  Putting char in limbo ({})", __func__, this->name, ROOM_VNUM_LIMBO );
       if( pRoomIndex )
          log_printf( "Supposedly from Vnum: {}", pRoomIndex->vnum );
 

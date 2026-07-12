@@ -189,7 +189,7 @@ CMDF( do_mptag )
    else if( !str_cmp( arg1, "timer" ) )
    {
       argument = one_argument( argument, arg1 );
-      exp = atoi( arg1.c_str() );
+      exp = std::stoi( arg1 );
       argument = one_argument( argument, arg1 );
    }
    else
@@ -243,7 +243,7 @@ CMDF( do_mptag )
    else
    {
       vd = new variable_data( vtINT, vnum, arg2 );
-      vd->vardata = atol( argument.c_str() );
+      vd->vardata = std::stoi( argument );
    }
    vd->timer = exp;
    tag_char( victim, vd, 1 );
@@ -328,7 +328,7 @@ CMDF( do_mpflag )
    else if( !str_cmp( arg1, "timer" ) )
    {
       argument = one_argument( argument, arg1 );
-      exp = atoi( arg1.c_str() );
+      exp = std::stoi( arg1 );
       argument = one_argument( argument, arg1 );
    }
    else
@@ -357,7 +357,7 @@ CMDF( do_mpflag )
    else
    {
       p = arg2.substr( x + 1, arg2.length(  ) );
-      vnum = atoi( p.c_str() );
+      vnum = std::stoi( p );
    }
 
    if( !is_valid_tag( arg2 ) )
@@ -376,7 +376,7 @@ CMDF( do_mpflag )
       }
    }
 
-   flag = atoi( arg3.c_str() );
+   flag = std::stoi( arg3 );
    if( error || flag < 0 || flag >= MAX_VAR_BITS )
    {
       progbug( "Mpflag: invalid flag value", ch );
@@ -443,7 +443,7 @@ CMDF( do_mprmflag )
    else
    {
       p = arg2.substr( x + 1, arg2.length(  ) );
-      vnum = atoi( p.c_str() );
+      vnum = std::stoi( p );
    }
 
    if( !is_valid_tag( arg2 ) )
@@ -478,7 +478,7 @@ CMDF( do_mprmflag )
          progbug( "Mprmflag: type mismatch", ch );
          return;
       }
-      vd->varflags.reset( atoi( arg3.c_str() ) );
+      vd->varflags.reset( std::stoi( arg3 ) );
       tag_char( victim, vd, 1 );
    }
 }

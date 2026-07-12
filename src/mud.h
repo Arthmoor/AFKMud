@@ -952,7 +952,7 @@ const std::string escape_formatting( std::string );
 void string_erase( std::string &, char );
 void string_erase( std::string &, std::string_view );
 void string_replace( std::string &, std::string_view, std::string_view );
-const char *print_array_string( const char *flagarray[], size_t );
+std::string print_array_string( const char *flagarray[], size_t );
 bool nifty_is_name_prefix( std::string, std::string );
 bool is_name2_prefix( std::string_view, std::string );
 

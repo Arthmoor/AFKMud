@@ -712,7 +712,7 @@ CMDF( do_setholiday )
     */
    if( !str_cmp( arg2, "day" ) )
    {
-      value = atoi( argument.c_str(  ) );
+      value = std::stoi( argument );
       if( argument.empty(  ) || !is_number( argument ) || value > sysdata->dayspermonth || value < 1 )
       {
          ch->print_fmt( "You must specify a numeric value : {} - {}", 1, sysdata->dayspermonth );
@@ -730,7 +730,7 @@ CMDF( do_setholiday )
 
    if( !str_cmp( arg2, "month" ) )
    {
-      value = atoi( argument.c_str(  ) );
+      value = std::stoi( argument );
       /*
        * Go through the months and find argument
        */

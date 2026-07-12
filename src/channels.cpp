@@ -643,7 +643,7 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
    }
 
    // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
-   strip_spaces( argument );
+   strip_whitespace( argument );
 
    std::string arg, word;
    char_data *victim = nullptr;

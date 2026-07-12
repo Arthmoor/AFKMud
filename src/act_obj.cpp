@@ -183,7 +183,7 @@ CMDF( do_get )
 
    if( is_number( arg1 ) )
    {
-      number = atoi( arg1.c_str(  ) );
+      number = std::stoi( arg1 );
       if( number < 1 )
       {
          ch->print( "That was easy...\r\n" );
@@ -582,7 +582,7 @@ CMDF( do_put )
    argument = one_argument( argument, arg1 );
    if( is_number( arg1 ) )
    {
-      number = atoi( arg1.c_str(  ) );
+      number = std::stoi( arg1 );
       if( number < 1 )
       {
          ch->print( "That was easy...\r\n" );
@@ -869,7 +869,7 @@ CMDF( do_drop )
    argument = one_argument( argument, arg );
    if( is_number( arg ) )
    {
-      number = atoi( arg.c_str(  ) );
+      number = std::stoi( arg );
       if( number < 1 )
       {
          ch->print( "That was easy...\r\n" );
@@ -1156,7 +1156,7 @@ CMDF( do_give )
        */
       int amount;
 
-      amount = atoi( arg1.c_str(  ) );
+      amount = std::stoi( arg1 );
       if( amount <= 0 || ( str_cmp( arg2, "coins" ) && str_cmp( arg2, "coin" ) ) )
       {
          ch->print( "Sorry, you can't do that.\r\n" );

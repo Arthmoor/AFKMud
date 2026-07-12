@@ -695,7 +695,7 @@ CMDF( do_setrune )
          return;
       }
       rune->stat1[0] = value;
-      rune->stat1[1] = atoi( argument.c_str(  ) );
+      rune->stat1[1] = std::stoi( argument );
       save_runes(  );
       ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
       return;
@@ -751,7 +751,7 @@ CMDF( do_setrune )
 
       if( value == APPLY_WEAPONSPELL || value == APPLY_REMOVESPELL || value == APPLY_WEARSPELL )
       {
-         int val2 = skill_lookup( argument.c_str(  ) );
+         int val2 = skill_lookup( argument );
 
          if( !IS_VALID_SN( val2 ) )
          {
@@ -771,7 +771,7 @@ CMDF( do_setrune )
          return;
       }
       rune->stat2[0] = value;
-      rune->stat2[1] = atoi( argument.c_str(  ) );
+      rune->stat2[1] = std::stoi( argument );
       save_runes(  );
       ch->print_fmt( "{} rune now confers: {} {}\r\n", rune->get_name(  ), arg3, argument );
       return;
@@ -2252,8 +2252,8 @@ CMDF( do_rttest )
       return;
    }
 
-   mlvl = atoi( arg.c_str(  ) );
-   times = atoi( argument.c_str(  ) );
+   mlvl = std::stoi( arg );
+   times = std::stoi( argument );
 
    if( times < 1 )
    {

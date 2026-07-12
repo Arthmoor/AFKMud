@@ -1917,7 +1917,7 @@ CMDF( do_deities )
    }
 
    ch->pager_fmt( "&gDeity:        &G{}\r\n", deity->name );
-   ch->pager_fmt( "&gDescription:\r\n&G%s", deity->deitydesc.c_str(  ) );
+   ch->pager_fmt( "&gDescription:\r\n&G{}", deity->deitydesc );
 }
 
 /*

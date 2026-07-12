@@ -408,7 +408,7 @@ CMDF( do_makeenv )
       return;
    }
 
-   intensity = atoi( argument.c_str(  ) );
+   intensity = std::stoi( argument );
    if( intensity < 1 && atype == ENV_QUAKE )
    {
       ch->print( "Intensity must be greater than zero.\r\n" );

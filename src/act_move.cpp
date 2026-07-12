@@ -134,7 +134,7 @@ CMDF( do_run )
       if( is_number( argument ) )
       {
          limited = true;
-         amount = atoi( argument.c_str(  ) );
+         amount = std::stoi( argument );
       }
    }
 
@@ -1056,7 +1056,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
    {
       act( AT_DEAD, "$n falls prey to a terrible death!", ch, nullptr, nullptr, TO_ROOM );
       ch->print( "&[dead]Oopsie... you're dead!\r\n" );
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} hit a DEATH TRAP in room {}!", ch->name.c_str(), ch->in_room->vnum );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} hit a DEATH TRAP in room {}!", ch->name, ch->in_room->vnum );
       if( ch->isnpc(  ) )
          ch->extract( true );
       else
@@ -1396,7 +1396,7 @@ CMDF( do_close )
        */
       exit_data *pexit_rev;
 
-      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && pexit->keyword.c_str() && !hasname( pexit->keyword, argument ) )
+      if( IS_EXIT_FLAG( pexit, EX_SECRET ) && !pexit->keyword.empty() && !hasname( pexit->keyword, argument ) )
       {
          ch->print_fmt( "You see no {} here.\r\n", argument );
          return;
@@ -2530,7 +2530,7 @@ void teleportch( char_data * ch, room_index * room, bool show )
    if( ch->in_room->flags.test( ROOM_DEATH ) && !ch->is_immortal(  ) )
    {
       ch->print( "&[dead]Oopsie... you're dead!\r\n" );
-      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} hit a DEATH TRAP in room {}!", ch->name.c_str(), ch->in_room->vnum );
+      log_printf_plus( LOG_INFO, LEVEL_IMMORTAL, "{} hit a DEATH TRAP in room {}!", ch->name, ch->in_room->vnum );
       if( ch->isnpc(  ) )
          ch->extract( true );
       else

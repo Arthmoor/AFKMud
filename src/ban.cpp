@@ -89,7 +89,7 @@ CIDR::CIDR( const std::string & cidr )
    IPADDR i( ip );
    _lower = i.decimal();
 
-   int p = atoi( pow.c_str() );
+   int p = std::stoi( pow );
    _upper = _lower + ( ::pow( 2, 32 - p ) -1 );
 }
 
@@ -236,7 +236,7 @@ bool is_valid_cidr( const std::string & cidr )
    {
       ipaddress = cidr.substr( 0, x );
       cidr_string = cidr.substr( x + 1, cidr.length(  ) );
-      cidr_int = atoi( cidr_string.c_str() );
+      cidr_int = std::stoi( cidr_string );
 
       if( !is_valid_ip( ipaddress ) )
          return false;

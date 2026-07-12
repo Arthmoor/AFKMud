@@ -746,7 +746,7 @@ void mobile_update( void )
 
       if( !ch->in_room->area )
       {
-         log_printf( "Room {} for mob {} is not associated with an area?", ch->in_room->vnum, ch->name.c_str() );
+         log_printf( "Room {} for mob {} is not associated with an area?", ch->in_room->vnum, ch->name );
          if( ch->was_in_room )
             log_printf( "Was in room {}", ch->was_in_room->vnum );
          ch->extract( true );

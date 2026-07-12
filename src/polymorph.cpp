@@ -1081,10 +1081,10 @@ CMDF( do_morphset )
       ch->print( "Syntax: morphset <morph> on.\r\n" );
       return;
    }
-   value = is_number( arg3 ) ? atoi( arg3.c_str(  ) ) : -1;
+   value = is_number( arg3 ) ? std::stoi( arg3 ) : -1;
 
-   if( atoi( arg3.c_str(  ) ) < -1 && value == -1 )
-      value = atoi( arg3.c_str(  ) );
+   if( std::stoi( arg3 ) < -1 && value == -1 )
+      value = std::stoi( arg3 );
 
    if( ch->substate != SUB_REPEATCMD && !arg1.empty(  ) && !str_cmp( arg1, "save" ) )
    {
@@ -1126,7 +1126,7 @@ CMDF( do_morphset )
       if( !is_number( arg1 ) )
          morph = get_morph( arg1 );
       else
-         morph = get_morph_vnum( atoi( arg1.c_str(  ) ) );
+         morph = get_morph_vnum( std::stoi( arg1 ) );
 
       if( morph == nullptr )
       {
@@ -1427,7 +1427,7 @@ CMDF( do_morphset )
          return;
       }
       temp = arg2.substr( 3, arg3.length(  ) );
-      oindex = atoi( temp.c_str(  ) );
+      oindex = std::stoi( temp );
       if( oindex > 3 || oindex < 1 )
       {
          ch->print( "Obj 1, 2, or 3.\r\n" );
@@ -1478,7 +1478,7 @@ CMDF( do_morphset )
          return;
       }
       temp = arg2.substr( 6, arg2.length(  ) );
-      oindex = atoi( temp.c_str(  ) );
+      oindex = std::stoi( temp );
       if( oindex > 3 || oindex < 1 )
       {
          ch->print( "Objuse 1, 2, or 3?\r\n" );
@@ -1832,7 +1832,7 @@ CMDF( do_morphstat )
    if( !is_number( arg ) )
       morph = get_morph( arg );
    else
-      morph = get_morph_vnum( atoi( arg.c_str(  ) ) );
+      morph = get_morph_vnum( std::stoi( arg ) );
 
    if( morph == nullptr )
    {
@@ -2310,7 +2310,7 @@ CMDF( do_morphcreate )
    {
       if( is_number( arg1 ) )
       {
-         if( !( temp = get_morph_vnum( atoi( arg1.c_str(  ) ) ) ) )
+         if( !( temp = get_morph_vnum( std::stoi( arg1 ) ) ) )
          {
             ch->print_fmt( "No such morph vnum {} exists.\r\n", std::stoi( arg1 ) );
             return;
@@ -2361,7 +2361,7 @@ CMDF( do_morphdestroy )
       return;
    }
    if( is_number( argument ) )
-      morph = get_morph_vnum( atoi( argument.c_str(  ) ) );
+      morph = get_morph_vnum( std::stoi( argument ) );
    else
       morph = get_morph( argument );
 
@@ -2647,7 +2647,7 @@ CMDF( do_imm_morph )
       ch->print( "Syntax: morph <vnum>\r\n" );
       return;
    }
-   vnum = atoi( arg.c_str(  ) );
+   vnum = std::stoi( arg );
    morph = get_morph_vnum( vnum );
 
    if( morph == nullptr )

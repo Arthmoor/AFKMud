@@ -547,7 +547,7 @@ CMDF( do_reset )
          ch->print( "Specified reset must be designated by number. See &Wredit rlist&D.\r\n" );
          return;
       }
-      num = atoi( argument.c_str(  ) );
+      num = std::stoi( argument );
 
       for( auto it = ch->in_room->resets.begin(); it != ch->in_room->resets.end(); )
       {
@@ -614,7 +614,7 @@ CMDF( do_reset )
          ch->print( "Specified reset must be designated by number. See &Wredit rlist&D.\r\n" );
          return;
       }
-      num = atoi( arg.c_str(  ) );
+      num = std::stoi( arg );
 
       if( argument.empty(  ) )
       {
@@ -626,7 +626,7 @@ CMDF( do_reset )
          ch->print( "Specified value must be numeric.\r\n" );
          return;
       }
-      value = atoi( argument.c_str(  ) );
+      value = std::stoi( argument );
 
       for( auto it = ch->in_room->resets.begin(); it != ch->in_room->resets.end(); )
       {

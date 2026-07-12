@@ -429,7 +429,7 @@ CMDF( do_setslay )
 
    if( !str_cmp( arg2, "color" ) )
    {
-      slay->set_color( atoi( argument.c_str(  ) ) );
+      slay->set_color( std::stoi( argument ) );
       ch->print( "Slay color set.\r\n" );
       save_slays(  );
       return;

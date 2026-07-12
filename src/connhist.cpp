@@ -199,7 +199,7 @@ void update_connhistory( descriptor_data * d, int type )
    auto local_now = std::chrono::zoned_time{ std::chrono::current_zone(), current_time };
 
    con = new conn_data;
-   con->user = !vch->name.empty() ? vch->name.c_str() : "NoName";
+   con->user = !vch->name.empty() ? vch->name : "NoName";
 
    con->when = std::format( "{:%m/%d %H:%M}", local_now );
 

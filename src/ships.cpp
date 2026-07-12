@@ -336,7 +336,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "vnum" ) )
    {
-      ship->vnum = atoi( argument.c_str(  ) );
+      ship->vnum = std::stoi( argument );
       save_ships(  );
       ch->print( "Vnum modified.\r\n" );
       return;
@@ -344,7 +344,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "type" ) )
    {
-      ship->type = atoi( argument.c_str(  ) );
+      ship->type = std::stoi( argument );
       save_ships(  );
       ch->print( "Type modified.\r\n" );
       return;
@@ -352,7 +352,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "hull" ) )
    {
-      ship->hull = atoi( argument.c_str(  ) );
+      ship->hull = std::stoi( argument );
       save_ships(  );
       ch->print( "Hull changed.\r\n" );
       return;
@@ -360,7 +360,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "max_hull" ) )
    {
-      ship->max_hull = atoi( argument.c_str(  ) );
+      ship->max_hull = std::stoi( argument );
       save_ships(  );
       ch->print( "Maximum hull changed.\r\n" );
       return;
@@ -368,7 +368,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "fuel" ) )
    {
-      ship->fuel = atoi( argument.c_str(  ) );
+      ship->fuel = std::stoi( argument );
       save_ships(  );
       ch->print( "Fuel changed.\r\n" );
       return;
@@ -376,7 +376,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "max_fuel" ) )
    {
-      ship->max_fuel = atoi( argument.c_str(  ) );
+      ship->max_fuel = std::stoi( argument );
       save_ships(  );
       ch->print( "Maximum fuel changed.\r\n" );
       return;
@@ -384,7 +384,7 @@ CMDF( do_shipset )
 
    if( !str_cmp( mod, "room" ) )
    {
-      ship->room = atoi( argument.c_str(  ) );
+      ship->room = std::stoi( argument );
       save_ships(  );
       ch->print( "Room set.\r\n" );
       return;
@@ -402,8 +402,8 @@ CMDF( do_shipset )
          return;
       }
 
-      ship->map_x = atoi( arg3.c_str(  ) );
-      ship->map_y = atoi( argument.c_str(  ) );
+      ship->map_x = std::stoi( arg3 );
+      ship->map_y = std::stoi( argument );
       save_ships(  );
       ch->print( "Coordinates changed.\r\n" );
       return;

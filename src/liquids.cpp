@@ -554,7 +554,7 @@ CMDF( do_setliquid )
       }
       else
       {
-         int i = atoi( argument.c_str(  ) );
+         int i = std::stoi( argument );
 
          if( !( liq = get_liq_vnum( i ) ) )
          {
@@ -653,7 +653,7 @@ CMDF( do_setliquid )
             if( !str_cmp( arg2, arg_names[i] ) )
             {
                found = true;
-               liq->mod[i] = atoi( argument.c_str(  ) );
+               liq->mod[i] = std::stoi( argument );
             }
          if( !found )
          {
@@ -886,7 +886,7 @@ CMDF( do_setmixture )
          int i = 0;
 
          if( is_number( argument ) )
-            i = atoi( argument.c_str(  ) );
+            i = std::stoi( argument );
          else
          {
             ch->print( "Invalid liquid vnum.\r\n" );
@@ -928,7 +928,7 @@ CMDF( do_setmixture )
          int i = 0;
 
          if( is_number( argument ) )
-            i = atoi( argument.c_str(  ) );
+            i = std::stoi( argument );
          else
          {
             ch->print( "Invalid liquid vnum.\r\n" );
@@ -962,7 +962,7 @@ CMDF( do_setmixture )
          int i;
 
          if( is_number( argument ) )
-            i = atoi( argument.c_str(  ) );
+            i = std::stoi( argument );
          else
          {
             ch->print( "Invalid liquid vnum.\r\n" );

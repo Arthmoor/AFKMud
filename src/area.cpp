@@ -2347,7 +2347,7 @@ CMDF( do_aset )
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
-   vnum = atoi( argument.c_str(  ) );
+   vnum = std::stoi( argument );
 
    if( arg1.empty(  ) || arg2.empty(  ) )
    {
@@ -2475,8 +2475,8 @@ CMDF( do_aset )
          return;
       }
 
-      x = atoi( arg3.c_str(  ) );
-      y = atoi( argument.c_str(  ) );
+      x = std::stoi( arg3 );
+      y = std::stoi( argument );
 
       if( !is_valid_x( x ) )
       {
@@ -2793,7 +2793,7 @@ CMDF( do_freevnums )
       return;
    }
 
-   int low_range = atoi( arg1.c_str(  ) ), high_range = atoi( argument.c_str(  ) );
+   int low_range = std::stoi( arg1 ), high_range = std::stoi( argument );
 
    if( low_range < 1 || low_range > sysdata->maxvnum )
    {
@@ -2882,7 +2882,7 @@ CMDF( do_check_vnums )
       return;
    }
 
-   int low_range = atoi( arg.c_str(  ) ), high_range = atoi( argument.c_str(  ) );
+   int low_range = std::stoi( arg ), high_range = std::stoi( argument );
 
    if( low_range < 1 || low_range > sysdata->maxvnum )
    {
@@ -3046,7 +3046,7 @@ CMDF( do_areas )
       {
          num_args = 1;
 
-         upper_bound = atoi( arg.c_str(  ) );
+         upper_bound = std::stoi( arg );
          /*
           * Will need to swap this with ubound later 
           */
@@ -3063,7 +3063,7 @@ CMDF( do_areas )
             num_args = 2;
 
             lower_bound = upper_bound;
-            upper_bound = atoi( arg.c_str(  ) );
+            upper_bound = std::stoi( arg );
          }
 
          argument = one_argument( argument, arg );

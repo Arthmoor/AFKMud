@@ -389,30 +389,29 @@ CMDF( do_pcrename )
 void search_pfiles( char_data* ch, const std::string & dirname, const std::string & filename, int cvnum )
 {
    std::filesystem::path fname = std::filesystem::path( dirname ) / filename;
-   std::ifstream is( fname, std::ios::in );
-
-   if( !is.is_open() )
+   std::ifstream stream( fname );
+   if( !stream.is_open() )
    {
-      perror( fname.string().c_str() );
+      bug( "{}: Cannot open {} for reading: {}", __func__, fname.string(), std::strerror(errno) );
       return;
    }
 
    // Using a simple loop to process the stream
    std::string word;
-   while( is >> word )
+   while( stream >> word )
    {
       if( word == "#OBJECT" )
       {
          int vnum = 0, counter = 1;
          bool done = false;
 
-         while( !done && ( is >> word ) )
+         while( !done && ( stream >> word ) )
          {
             switch( toupper( word[0] ) )
             {
                case 'C':
                   if( word == "Count" )
-                     is >> counter;
+                     stream >> counter;
                   break;
                case 'E':
                   if( word == "End" )
@@ -422,13 +421,13 @@ void search_pfiles( char_data* ch, const std::string & dirname, const std::strin
                   if( word == "Nest" )
                   {
                      int n;
-                     is >> n;
+                     stream >> n;
                   }
                   break;
                case 'O':
                   if( word == "Ovnum" )
                   {
-                     is >> vnum;
+                     stream >> vnum;
                      if( !get_obj_index( vnum ) )
                      {
                         bug( "{}: Bad obj vnum: {}", __func__, vnum );
@@ -441,7 +440,7 @@ void search_pfiles( char_data* ch, const std::string & dirname, const std::strin
                   }
                   break;
                default:
-                  is.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+                  stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
                   break;
             }
          }

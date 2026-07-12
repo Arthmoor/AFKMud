@@ -431,8 +431,8 @@ CMDF( do_gfighting )
          ch->pager( "\r\n&wSyntax:  gfighting | gfighting <low> <high> | gfighting <low> <high> mobs\r\n" );
          return;
       }
-      low = atoi( arg1.c_str(  ) );
-      high = atoi( arg2.c_str(  ) );
+      low = std::stoi( arg1 );
+      high = std::stoi( arg2 );
    }
 
    if( low < 1 || high < low || low > high || high > MAX_LEVEL )
@@ -3071,7 +3071,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
             if( ch->pcdata && ch->pcdata->clan && ch->pcdata->clan->name == victim->pcdata->clan->name )
                ;
             else
-               append_to_file( filename.c_str(), "&P({:2}) {:<12} &wdefeated by &P({:2}) {} &P{} ... &w{}",
+               append_to_file( filename.string(), "&P({:2}) {:<12} &wdefeated by &P({:2}) {} &P{} ... &w{}",
                      victim->level, victim->name, ch->level, !ch->CAN_PKILL( ) ? "&W<Peaceful>" :
                      ch->pcdata->clan ? ch->pcdata->clan->badge : "&P(&WUnclanned&P)", ch->name, victim->in_room->area->name );
          }

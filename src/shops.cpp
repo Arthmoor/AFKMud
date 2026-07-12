@@ -351,7 +351,7 @@ CMDF( do_setprice )
    {
       int price;
 
-      price = atoi( argument.c_str(  ) );
+      price = std::stoi( argument );
 
       if( price < -1 || price > 2000000000 )
       {
@@ -757,7 +757,7 @@ CMDF( do_buy )
 
       if( is_number( arg ) )
       {
-         noi = atoi( arg.c_str(  ) );
+         noi = std::stoi( arg );
          argument = one_argument( argument, arg );
          if( noi > mnoi )
          {
@@ -1490,7 +1490,7 @@ CMDF( do_destroyshop )
       return;
    }
 
-   if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+   if( !( mob = get_mob_index( std::stoi( argument ) ) ) )
    {
       ch->print( "No mob with that vnum exists.\r\n" );
       return;
@@ -1549,7 +1549,7 @@ CMDF( do_shopset )
       return;
    }
    shop = mob->pShop;
-   value = atoi( argument.c_str(  ) );
+   value = std::stoi( argument );
 
    if( !str_cmp( arg2, "remove" ) )
    {
@@ -1825,7 +1825,7 @@ CMDF( do_destroyrepair )
       return;
    }
 
-   if( !( mob = get_mob_index( atoi( argument.c_str(  ) ) ) ) )
+   if( !( mob = get_mob_index( std::stoi( argument ) ) ) )
    {
       ch->print( "No mob with that vnum exists.\r\n" );
       return;
@@ -1882,7 +1882,7 @@ CMDF( do_repairset )
       return;
    }
    repair = mob->rShop;
-   value = atoi( argument.c_str(  ) );
+   value = std::stoi( argument );
 
    if( !str_cmp( arg2, "fix0" ) )
    {
@@ -2147,7 +2147,7 @@ CMDF( do_deposit )
    if( !str_cmp( argument, "all" ) )
       amount = ch->gold;
    else
-      amount = atoi( argument.c_str(  ) );
+      amount = std::stoi( argument );
 
    if( amount > ch->gold )
    {
@@ -2243,7 +2243,7 @@ CMDF( do_withdraw )
          amount = ch->pcdata->balance;
    }
    else
-      amount = atoi( argument.c_str(  ) );
+      amount = std::stoi( argument );
 
    if( found )
    {

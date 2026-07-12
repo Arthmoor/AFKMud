@@ -148,7 +148,7 @@ int open_queue( void )
    return 1;
 }
 
-void mud_send_message( const char *arg )
+void mud_send_message( const std::string arg )
 {
    struct mud_msgbuf qbuf;
    int x;
@@ -170,7 +170,7 @@ void mud_send_message( const char *arg )
    }
 }
 
-void mud_message( char_data * ch, mud_channel * channel, const std::string & arg )
+void mud_message( char_data * ch, mud_channel * channel, std::string_view arg )
 {
    int invis;
    bool isinvis = ch->isnpc(  )? ch->has_actflag( ACT_MOBINVIS ) : ch->has_pcflag( PCFLAG_WIZINVIS );
@@ -180,7 +180,7 @@ void mud_message( char_data * ch, mud_channel * channel, const std::string & arg
 
    std::string tbuf = std::format( "{} {} {} {} {} \"{}@{}\" {}", channel->name, invis, ch->level, isnpc, isinvis, ch->name, mud_port, arg );
 
-   mud_send_message( tbuf.c_str() );
+   mud_send_message( tbuf );
 }
 
 void recv_text_handler( std::string & str )
@@ -197,10 +197,10 @@ void recv_text_handler( std::string & str )
    str = one_argument( str, arg4 );
    str = one_argument( str, arg5 );
    str = one_argument( str, chname );
-   ilevel = atoi( arg2.c_str(  ) );
-   clevel = atoi( arg3.c_str(  ) );
-   isnpc = atoi( arg4.c_str(  ) );
-   isinvis = atoi( arg5.c_str(  ) );
+   ilevel = std::stoi( arg2 );
+   clevel = std::stoi( arg3 );
+   isnpc = std::stoi( arg4 );
+   isinvis = std::stoi( arg5 );
 
    if( !( channel = find_channel( arg1 ) ) )
    {

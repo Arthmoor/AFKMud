@@ -534,7 +534,7 @@ CMDF( do_authorize )
                switch ( au->state )
                {
                   default:
-                     ch->print_fmt( "\t%s\t\tUnknown?\r\n", au->name.c_str(  ) );
+                     ch->print_fmt( "\t{}\t\tUnknown?\r\n", au->name );
                      break;
                   case AUTH_LINK_DEAD:
                      ch->print_fmt( "\t{}\t\tLink Dead\r\n", au->name );

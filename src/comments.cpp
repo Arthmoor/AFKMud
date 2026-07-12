@@ -224,7 +224,7 @@ CMDF( do_comment )
       for( auto* note : victim->pcdata->comments )
       {
          ++vnum;
-         if( fAll || vnum == atoi( argument.c_str(  ) ) )
+         if( fAll || vnum == std::stoi( argument ) )
          {
             note_to_char( ch, note, nullptr, 0 );
             return;
@@ -347,7 +347,7 @@ CMDF( do_comment )
       for( auto* note : victim->pcdata->comments )
       {
          ++vnum;
-         if( ( LEVEL_KL <= ch->get_trust(  ) ) && ( vnum == atoi( argument.c_str(  ) ) ) )
+         if( ( LEVEL_KL <= ch->get_trust(  ) ) && ( vnum == std::stoi( argument ) ) )
          {
             comment_remove( victim, note );
             ch->print( "Comment removed..\r\n" );

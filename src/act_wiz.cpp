@@ -372,7 +372,7 @@ CMDF( do_disconnect )
    }
 
    if( is_number( argument ) )
-      desc = atoi( argument.c_str(  ) );
+      desc = std::stoi( argument );
    else if( ( victim = ch->get_char_world( argument ) ) )
    {
       if( victim->desc == nullptr )
@@ -769,8 +769,8 @@ CMDF( do_rat )
       return;
    }
 
-   Start = atoi( arg1.c_str(  ) );
-   End = atoi( arg2.c_str(  ) );
+   Start = std::stoi( arg1 );
+   End = std::stoi( arg2 );
    if( Start < 1 || End < Start || Start > End || Start == End || End > sysdata->maxvnum )
    {
       ch->print( "Invalid range.\r\n" );
@@ -976,7 +976,7 @@ CMDF( do_ostat )
    ch->print_fmt( "|Area   : {}\r\n", obj->pIndexData->area ? obj->pIndexData->area->name : "(NONE)" );
 
    ch->print_fmt( "|Vnum   : &G{:5}&w |Type  :     &G{:9}&w |Count     : &G{:3}&w |Gcount: &G{:3}&w\r\n",
-               obj->pIndexData->vnum, obj->item_type_name(  ).c_str(  ), obj->pIndexData->count, obj->count );
+               obj->pIndexData->vnum, obj->item_type_name(), obj->pIndexData->count, obj->count );
 
    ch->print_fmt( "|Number : &G{:2}&w/&G{:2}&w |Weight:     &G{:4}&w/&G{:4}&w |Wear_loc  : &G{:3}&w |Layers: &G{}&w\r\n",
                1, obj->get_number(  ), obj->weight, obj->get_weight(  ), obj->wear_loc, obj->pIndexData->layers );
@@ -1123,7 +1123,7 @@ CMDF( do_vstat )
 
          case vtXBIT:
             if( vd->varflags.any() )
-               ch->pager_fmt( "&CBitflags: &w[&W{}&w]", vd->varflags.to_string().c_str() );
+               ch->pager_fmt( "&CBitflags: &w[&W{}&w]", vd->varflags.to_string() );
             break;
       }
       ch->pager( "\r\n\r\n" );
@@ -1686,7 +1686,7 @@ CMDF( do_owhere )
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            buf.append( std::format( "&Coverland &Y[&W{}&Y] &C{} {}\r\n", obj->continent->name.c_str( ), obj->map_x, obj->map_y ) );
+            buf.append( std::format( "&Coverland &Y[&W{}&Y] &C{} {}\r\n", obj->continent->name, obj->map_x, obj->map_y ) );
          else
             buf.append( std::format( "&Croom     &Y[&W{:5}&Y] &C{}\r\n", obj->in_room->vnum, obj->in_room->name ) );
       }
@@ -1723,7 +1723,7 @@ CMDF( do_owhere )
       else if( obj->in_room )
       {
          if( obj->extra_flags.test( ITEM_ONMAP ) )
-            buf.append( std::format( "&Coverland &Y[&W{}&Y] &C{} {}\r\n", obj->continent->name.c_str( ), obj->map_x, obj->map_y ) );
+            buf.append( std::format( "&Coverland &Y[&W{}&Y] &C{} {}\r\n", obj->continent->name, obj->map_x, obj->map_y ) );
          else
             buf.append( std::format( "&Croom     &Y[&W{:5}&Y] &C{}\r\n", obj->in_room->vnum, obj->in_room->name ) );
       }
@@ -1759,7 +1759,7 @@ CMDF( do_pwhere )
          {
             found = true;
             if( victim->has_pcflag( PCFLAG_ONMAP ) )
-               ch->pager_fmt( "&G{:<28} &Y[&WOverland&Y] &C{} {} {}\r\n", victim->name, victim->continent->name.c_str( ), victim->map_x, victim->map_y );
+               ch->pager_fmt( "&G{:<28} &Y[&WOverland&Y] &C{} {} {}\r\n", victim->name, victim->continent->name, victim->map_x, victim->map_y );
             else
                ch->pager_fmt( "&G{:<28} &Y[&W{:5}&Y]&C {}\r\n", victim->name, victim->in_room->vnum, victim->in_room->name );
          }
@@ -1871,7 +1871,7 @@ CMDF( do_where )
          return;
       }
 
-      int vnum = atoi( argument.c_str(  ) );
+      int vnum = std::stoi( argument );
 
       if( !( pObjIndex = get_obj_index( vnum ) ) )
       {
@@ -2191,7 +2191,7 @@ void objinvoke( char_data * ch, std::string & argument )
          return;
       }
 
-      level = atoi( arg2.c_str(  ) );
+      level = std::stoi( arg2 );
       if( level < 0 || level > ch->get_trust(  ) )
       {
          ch->print( "Limited to your trust level.\r\n" );
@@ -2209,7 +2209,7 @@ void objinvoke( char_data * ch, std::string & argument )
          return;
       }
 
-      quantity = atoi( argument.c_str(  ) );
+      quantity = std::stoi( argument );
       if( quantity < 1 || quantity > MAX_OINVOKE_QUANTITY )
       {
          ch->print_fmt( "You must oinvoke between 1 and {} items.\r\n", MAX_OINVOKE_QUANTITY );
@@ -2243,7 +2243,7 @@ void objinvoke( char_data * ch, std::string & argument )
       }
    }
    else
-      vnum = atoi( arg.c_str(  ) );
+      vnum = std::stoi( arg );
 
    if( !( pObjIndex = get_obj_index( vnum ) ) )
    {
@@ -2356,7 +2356,7 @@ void mobinvoke( char_data * ch, std::string & argument )
       }
    }
    else
-      vnum = atoi( argument.c_str(  ) );
+      vnum = std::stoi( argument );
 
    if( ch->get_trust(  ) < LEVEL_DEMI )
    {
@@ -2630,7 +2630,7 @@ void destroy_immdata( char_data * ch, std::string_view vicname )
          std::filesystem::path buildfile = std::format( "{}{}", BUILD_DIR, areafile );
          std::filesystem::path buildbackup = std::format( "{}{}.bak", BUILD_DIR, areafile );
 
-         area->fold( buildfile.string().c_str(), false );
+         area->fold( buildfile.string(), false );
          deleteptr( area );
 
          ec.clear();
@@ -3070,7 +3070,7 @@ CMDF( do_trust )
    if( !( victim = get_wizvictim( ch, arg1, true ) ) )
       return;
 
-   if( ( level = atoi( argument.c_str(  ) ) ) < 0 || level > MAX_LEVEL )
+   if( ( level = std::stoi( argument ) ) < 0 || level > MAX_LEVEL )
    {
       ch->print_fmt( "Level must be 0 (reset) or 1 to {}.\r\n", MAX_LEVEL );
       return;
@@ -3111,7 +3111,7 @@ CMDF( do_stash )
        */
       int amount;
 
-      amount = atoi( arg1.c_str(  ) );
+      amount = std::stoi( arg1 );
       if( amount <= 0 || ( str_cmp( arg2, "coins" ) && str_cmp( arg2, "coin" ) ) )
       {
          ch->print( "Sorry, you can't do that.\r\n" );
@@ -3283,7 +3283,7 @@ CMDF( do_immget )
    }
 
    if( is_number( arg1 ) )
-      vnum = atoi( arg1.c_str(  ) );
+      vnum = std::stoi( arg1 );
    else
       vnum = -1;
 
@@ -4344,7 +4344,7 @@ CMDF( do_invis )
          ch->print( "Usage: invis | invis <level>\r\n" );
          return;
       }
-      level = atoi( arg.c_str(  ) );
+      level = std::stoi( arg );
       if( level < 2 || level > ch->get_trust(  ) )
       {
          ch->print( "Invalid level.\r\n" );
@@ -5271,7 +5271,7 @@ CMDF( do_hell )
       return;
    }
 
-   htime = atoi( arg.c_str(  ) );
+   htime = std::stoi( arg );
    if( htime <= 0 )
    {
       ch->print( "You cannot hell for zero or negative time.\r\n" );
@@ -6504,7 +6504,7 @@ CMDF( do_showclass )
       ch->print( "Syntax: showclass <class> [level range]\r\n" );
       return;
    }
-   if( is_number( arg1 ) && ( cl = atoi( arg1.c_str(  ) ) ) >= 0 && cl < MAX_CLASS )
+   if( is_number( arg1 ) && ( cl = std::stoi( arg1 ) ) >= 0 && cl < MAX_CLASS )
       Class = class_table[cl];
    else
    {
@@ -6537,8 +6537,8 @@ CMDF( do_showclass )
    {
       int x, y, cnt;
 
-      low = umax( 0, atoi( arg2.c_str(  ) ) );
-      hi = urange( low, atoi( argument.c_str(  ) ), MAX_LEVEL );
+      low = umax( 0, std::stoi( arg2 ) );
+      hi = urange( low, std::stoi( argument ), MAX_LEVEL );
       for( x = low; x <= hi; ++x )
       {
          ch->pager_fmt( "&wLevel: &W{}     &wExperience required: &W{}\r\n", x, exp_level( x ) );
@@ -6613,7 +6613,7 @@ CMDF( do_setclass )
       return;
    }
 
-   if( is_number( arg1 ) && ( cl = atoi( arg1.c_str(  ) ) ) >= 0 && cl < MAX_CLASS )
+   if( is_number( arg1 ) && ( cl = std::stoi( arg1 ) ) >= 0 && cl < MAX_CLASS )
       Class = class_table[cl];
    else
    {
@@ -6682,9 +6682,9 @@ CMDF( do_setclass )
       {
          skill = get_skilltype( sn );
          argument = one_argument( argument, arg2 );
-         level = atoi( arg2.c_str(  ) );
+         level = std::stoi( arg2 );
          argument = one_argument( argument, arg2 );
-         adept = atoi( arg2.c_str(  ) );
+         adept = std::stoi( arg2 );
          skill->skill_level[cl] = level;
          skill->skill_adept[cl] = adept;
          write_class_file( cl );
@@ -6817,7 +6817,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "weapon" ) )
    {
-      Class->weapon = atoi( argument.c_str(  ) );
+      Class->weapon = std::stoi( argument );
       ch->print( "Starting weapon set.\r\n" );
       write_class_file( cl );
       return;
@@ -6825,7 +6825,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "armor" ) )
    {
-      Class->armor = atoi( argument.c_str(  ) );
+      Class->armor = std::stoi( argument );
       ch->print( "Starting armor set.\r\n" );
       write_class_file( cl );
       return;
@@ -6833,7 +6833,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "legwear" ) )
    {
-      Class->legwear = atoi( argument.c_str(  ) );
+      Class->legwear = std::stoi( argument );
       ch->print( "Starting legwear set.\r\n" );
       write_class_file( cl );
       return;
@@ -6841,7 +6841,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "headwear" ) )
    {
-      Class->headwear = atoi( argument.c_str(  ) );
+      Class->headwear = std::stoi( argument );
       ch->print( "Starting headwear set.\r\n" );
       write_class_file( cl );
       return;
@@ -6849,7 +6849,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "armwear" ) )
    {
-      Class->armwear = atoi( argument.c_str(  ) );
+      Class->armwear = std::stoi( argument );
       ch->print( "Starting armwear set.\r\n" );
       write_class_file( cl );
       return;
@@ -6857,7 +6857,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "footwear" ) )
    {
-      Class->footwear = atoi( argument.c_str(  ) );
+      Class->footwear = std::stoi( argument );
       ch->print( "Starting footwear set.\r\n" );
       write_class_file( cl );
       return;
@@ -6865,7 +6865,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "shield" ) )
    {
-      Class->shield = atoi( argument.c_str(  ) );
+      Class->shield = std::stoi( argument );
       ch->print( "Starting shield set.\r\n" );
       write_class_file( cl );
       return;
@@ -6873,7 +6873,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "held" ) )
    {
-      Class->held = atoi( argument.c_str(  ) );
+      Class->held = std::stoi( argument );
       ch->print( "Starting held item set.\r\n" );
       write_class_file( cl );
       return;
@@ -6881,7 +6881,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "basethac0" ) )
    {
-      Class->base_thac0 = atoi( argument.c_str(  ) );
+      Class->base_thac0 = std::stoi( argument );
       ch->print( "Base Thac0 set.\r\n" );
       write_class_file( cl );
       return;
@@ -6889,7 +6889,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "thac0gain" ) )
    {
-      Class->thac0_gain = atof( argument.c_str(  ) );
+      Class->thac0_gain = std::stof( argument );
       ch->print( "Thac0gain set.\r\n" );
       write_class_file( cl );
       return;
@@ -6897,7 +6897,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "hpmin" ) )
    {
-      Class->hp_min = atoi( argument.c_str(  ) );
+      Class->hp_min = std::stoi( argument );
       ch->print( "Min HP gain set.\r\n" );
       write_class_file( cl );
       return;
@@ -6905,7 +6905,7 @@ CMDF( do_setclass )
 
    if( !str_cmp( arg2, "hpmax" ) )
    {
-      Class->hp_max = atoi( argument.c_str(  ) );
+      Class->hp_max = std::stoi( argument );
       ch->print( "Max HP gain set.\r\n" );
       write_class_file( cl );
       return;
@@ -7573,7 +7573,7 @@ CMDF( do_setrace )
       ch->print( "  mana_regen hp_regen\r\n" );
       return;
    }
-   if( is_number( arg1 ) && ( ra = atoi( arg1.c_str(  ) ) ) >= 0 && ra < MAX_RACE )
+   if( is_number( arg1 ) && ( ra = std::stoi( arg1 ) ) >= 0 && ra < MAX_RACE )
       race = race_table[ra];
    else
    {

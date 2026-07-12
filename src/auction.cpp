@@ -312,7 +312,7 @@ void load_aucvaults( void )
       if( filename.empty() || filename[0] == '.' || filename == "sales.dat" )
          continue;
 
-      read_aucvault( AUC_DIR, filename.c_str() );
+      read_aucvault( AUC_DIR, filename );
    }
 }
 
@@ -1336,7 +1336,7 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
       return;
    }
 
-   int minbid = atoi( argument.c_str(  ) );
+   int minbid = std::stoi( argument );
 
    if( minbid < 1 )
    {

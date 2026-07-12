@@ -176,7 +176,7 @@ void delete_realm( char_data * ch, realm_data * realm )
    if( std::filesystem::remove( filename ) )
    {
       ch->print_fmt( "&RRealm data for {} has been destroyed.\r\n", realmname );
-      log_printf( "Realm data for {} has been destroyed by {}.", realmname.c_str(  ), ch->name.c_str() );
+      log_printf( "Realm data for {} has been destroyed by {}.", realmname, ch->name );
    }
 }
 
@@ -599,7 +599,7 @@ CMDF( do_setrealm )
 
    if( !str_cmp( arg2, "board" ) )
    {
-      realm->board = atoi( argument.c_str(  ) );
+      realm->board = std::stoi( argument );
       ch->print( "Done.\r\n" );
       save_realm( realm );
       return;

@@ -537,7 +537,7 @@ void hotboot_recover( void )
             {
                if( !d->compressStart(  ) )
                {
-                  log_printf( "{}: Error restarting compression for {} on desc {}", __func__, playername.c_str(), d->descriptor );
+                  log_printf( "{}: Error restarting compression for {} on desc {}", __func__, playername, d->descriptor );
                   d->can_compress = false;
                   d->is_compressing = false;
                }

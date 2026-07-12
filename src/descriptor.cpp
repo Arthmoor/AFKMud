@@ -1123,7 +1123,7 @@ bool descriptor_data::pager_output(  )
          return true;
       }
 
-      this->write( pagelines[x].c_str(  ) );
+      this->write( pagelines[x] );
       this->pageindex = x + 1;
    }
 
@@ -1156,7 +1156,7 @@ void descriptor_data::send_greeting(  )
 
       if( !content.empty() )
       {
-         send_color( content.c_str() );
+         send_color( content );
       }
    }
 }
@@ -3359,7 +3359,7 @@ CMDF( do_message )
       {
          if( is_number( arg2 ) )
          {
-            type = atoi( arg2.c_str() );
+            type = std::stoi( arg2 );
 
             if( type > MAX_MSG )
             {

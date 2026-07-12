@@ -1210,7 +1210,7 @@ CMDF( do_cedit )
 
    if( !str_cmp( arg2, "level" ) )
    {
-      int level = atoi( argument.c_str(  ) );
+      int level = std::stoi( argument );
 
       if( level < 0 || level > ch->get_trust(  ) )
       {
@@ -1329,7 +1329,7 @@ CMDF( do_restrict )
          ch->print( "Level must be numeric.\r\n" );
          return;
       }
-      level = atoi( argument.c_str(  ) );
+      level = std::stoi( argument );
    }
    level = umax( umin( ch->get_trust(  ), level ), 0 );
 
@@ -1802,7 +1802,7 @@ CMDF( do_wizhelp )
       return;
    }
 
-   curr_lvl = atoi( argument.c_str(  ) );
+   curr_lvl = std::stoi( argument );
 
    if( curr_lvl < LEVEL_IMMORTAL || curr_lvl > MAX_LEVEL )
    {

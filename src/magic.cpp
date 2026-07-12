@@ -3065,7 +3065,7 @@ SPELLF( spell_word_of_recall )
 
    else
    {
-      target = atoi( arg3.c_str(  ) );
+      target = std::stoi( arg3 );
 
       if( target < 0 || target >= MAX_BEACONS )
       {
@@ -6162,7 +6162,7 @@ CMDF( do_beacon )
 
    if( !str_cmp( arg, "clear" ) )
    {
-      a = atoi( argument.c_str(  ) );
+      a = std::stoi( argument );
 
       if( a < 0 || a >= MAX_BEACONS )
       {

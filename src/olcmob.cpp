@@ -160,8 +160,8 @@ CMDF( do_mcopy )
       return;
    }
 
-   ovnum = atoi( arg1.c_str(  ) );
-   cvnum = atoi( argument.c_str(  ) );
+   ovnum = std::stoi( arg1 );
+   cvnum = std::stoi( argument );
 
    if( ch->get_trust(  ) < LEVEL_GREATER )
    {
@@ -1172,7 +1172,7 @@ void medit_parse( descriptor_data * d, std::string & arg )
             victim->pIndexData->spec_fun = victim->spec_fun;
             victim->pIndexData->spec_funname = victim->spec_funname;
          }
-         olc_log( d->character, "Changes spec_func to {}", !victim->spec_funname.empty(  )? victim->spec_funname.c_str(  ) : "None" );
+         olc_log( d->character, "Changes spec_func to {}", !victim->spec_funname.empty() ? victim->spec_funname : "None" );
          break;
 
       default:

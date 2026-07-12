@@ -221,7 +221,7 @@ CMDF( do_split )
       return;
    }
 
-   int amount = atoi( argument.c_str(  ) );
+   int amount = std::stoi( argument );
 
    if( amount < 0 )
    {
@@ -2139,7 +2139,7 @@ CMDF( do_journal )
       pages = journal->value[0];
       if( is_number( arg2 ) )
       {
-         anum = atoi( arg2.c_str() );
+         anum = std::stoi( arg2 );
       }
 
       if( pages < anum )

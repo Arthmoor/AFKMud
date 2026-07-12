@@ -187,7 +187,7 @@ int number_argument( std::string_view argument, std::string & arg )
    }
 
    pdot = argument.substr( 0, x );
-   number = atoi( pdot.c_str(  ) );
+   number = std::stoi( pdot );
    arg = argument.substr( x + 1, argument.length(  ) );
    return number;
 }
@@ -696,26 +696,24 @@ bool is_number( std::string_view arg )
 }
 
 // I r lazy and just want a good way to output the contents of the various string arrays.
-const char *print_array_string( const char *flagarray[], size_t arraySize )
+std::string print_array_string( const char *flagarray[], size_t arraySize )
 {
-   static std::string s;
+   std::string s;
    int columns = 0;
-
-   s.clear();
 
    for( size_t i = 0; i < arraySize; ++i )
    {
       s.append( flagarray[i] );
 
       if( !( ++columns % 6 ) )
-         s.append( "\r\n" );
+         s += "\r\n";
       else
          s.append( 1, '\t' );
    }
    strip_tspace(s); // get rid of final space
 
    if( !( columns % 6 ) )
-      s.append( "\r\n" );
+      s += "\r\n";
 
-   return s.c_str();
+   return s;
 }

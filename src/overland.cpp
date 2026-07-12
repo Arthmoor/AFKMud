@@ -2955,8 +2955,8 @@ CMDF( do_coords )
       return;
    }
 
-   x = atoi( arg.c_str(  ) );
-   y = atoi( argument.c_str(  ) );
+   x = std::stoi( arg );
+   y = std::stoi( argument );
 
    if( !is_valid_x( x ) )
    {
@@ -3341,7 +3341,7 @@ CMDF( do_mapedit )
          return;
       }
 
-      vnum = atoi( argument.c_str( ) );
+      vnum = std::stoi( argument );
 
       if( !( room = get_room_index( vnum ) ) )
       {

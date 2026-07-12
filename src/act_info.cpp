@@ -2077,7 +2077,7 @@ CMDF( do_oldwhere )
 
             ch->pager_fmt( "&[people]{:<13}  ", victim->name );
             if( victim->CAN_PKILL(  ) && victim->pcdata->clan && victim->pcdata->clan->clan_type != CLAN_GUILD )
-               ch->pager_fmt( "{:<18}\t", victim->pcdata->clan->badge.c_str(  ) );
+               ch->pager_fmt( "{:<18}\t", victim->pcdata->clan->badge );
             else if( victim->CAN_PKILL(  ) )
                ch->pager( "(&wUnclanned&[people])\t" );
             else
@@ -2189,7 +2189,7 @@ CMDF( do_wimpy )
    else if( argument.empty(  ) )
       wimpy = ( int )ch->max_hit / 5;
    else
-      wimpy = atoi( argument.c_str(  ) );
+      wimpy = std::stoi( argument );
 
    if( wimpy < 0 )
    {
@@ -2579,7 +2579,7 @@ CMDF( do_pager )
       ch->print( "Set page pausing to how many lines?\r\n" );
       return;
    }
-   ch->pcdata->pagerlen = atoi( argument.c_str(  ) );
+   ch->pcdata->pagerlen = std::stoi( argument );
    if( ch->pcdata->pagerlen < 5 )
       ch->pcdata->pagerlen = 5;
    ch->print_fmt( "Page pausing set to {} lines.\r\n", ch->pcdata->pagerlen );

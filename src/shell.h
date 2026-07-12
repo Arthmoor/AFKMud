@@ -89,10 +89,6 @@ class shell_cmd
    {
       return _name;
    }
-   const char *get_cname(  )
-   {
-      return _name.c_str(  );
-   }
 
    void set_func_name( std::string_view name )
    {
@@ -103,12 +99,6 @@ class shell_cmd
       if( _func_name.empty(  ) )
          return "";
       return _func_name;
-   }
-   const char *get_func_cname(  )
-   {
-      if( _func_name.empty(  ) )
-         return "";
-      return _func_name.c_str(  );
    }
 
    void set_position( std::string_view pos )

@@ -117,7 +117,7 @@ CMDF( do_mudexec )
       char *p;
       char *arg = pl;
 
-      strlcpy( arg, argument.c_str(  ), MIL );
+      strlcpy( arg, argument.c_str(), MIL );
 #ifdef USEGLOB
       glob_t g;
 #else
@@ -179,17 +179,17 @@ CMDF( do_mudexec )
          while( !isspace( *p ) && *p )
             ++p;
       }
-      p = argument.c_str(  );
+      p = argument.c_str();
       argv = calloc( argc + 1, sizeof( char * ) );
 
       argc = 0;
-      argv[argc] = strtok( argument.c_str(  ), " " );
+      argv[argc] = strtok( argument.c_str(), " " );
       while( ( argv[++argc] = strtok( nullptr, " " ) ) != nullptr );
 
       execvp( argv[0], argv );
 #endif
 
-      fprintf( stderr, "Shell process: %s failed!\n", argument.c_str(  ) );
+      fprintf( stderr, "Shell process: %s failed!\n", argument.c_str() );
       perror( "mudexec" );
       std::exit( EXIT_SUCCESS );
    }
@@ -827,7 +827,7 @@ CMDF( do_grep )
       buf = std::format( "grep -n {}", argument );  /* Line numbers are somewhat important */
 
 #ifdef USEGLOB
-   do_mudexec( ch, buf.c_str() );
+   do_mudexec( ch, buf );
 #else
    command_pipe( ch, buf.c_str() );
 #endif
@@ -1075,7 +1075,7 @@ void shellcommands( char_data * ch, short curr_lvl )
    {
       if( cmd->get_level(  ) == curr_lvl )
       {
-         ch->pager_fmt( "{:<12}", cmd->get_cname(  ) );
+         ch->pager_fmt( "{:<12}", cmd->get_name(  ) );
          if( ++col % 6 == 0 )
             ch->pager( "\r\n" );
       }
@@ -1151,8 +1151,8 @@ CMDF( do_shelledit )
    if( arg2.empty(  ) || !str_cmp( arg2, "show" ) )
    {
       ch->print_fmt( "Command:   {}\r\nLevel:     {}\r\nPosition:  {}\r\nLog:       {}\r\nFunc Name: {}\r\nFlags:     {}\r\n",
-                  command->get_cname(  ), command->get_level(  ), npc_position[command->get_position(  )], log_flag[command->get_log(  )],
-                  command->get_func_cname(  ), bitset_string( command->flags, cmd_flags ) );
+                  command->get_name(  ), command->get_level(  ), npc_position[command->get_position(  )], log_flag[command->get_log(  )],
+                  command->get_func_name(  ), bitset_string( command->flags, cmd_flags ) );
       return;
    }
 
@@ -1180,7 +1180,7 @@ CMDF( do_shelledit )
 
    if( !str_cmp( arg2, "level" ) )
    {
-      short level = atoi( argument.c_str(  ) );
+      short level = std::stoi( argument );
 
       command->set_level( level );
       ch->print( "Command level updated.\r\n" );

@@ -597,7 +597,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
       for( x = 0; x < MAX_OBJ_VALUE; ++x )
          stream << std::format( " {}", obj->value[x] );
       stream << "\n";
-      stream << std::format( "Sockets      {} {} {}\n", !obj->socket[0].empty() ? obj->socket[0].c_str() : "None", !obj->socket[1].empty() ? obj->socket[1].c_str() : "None", obj->socket[2].empty() ? obj->socket[2].c_str() : "None" );
+      stream << std::format( "Sockets      {} {} {}\n", !obj->socket[0].empty() ? obj->socket[0] : "None", !obj->socket[1].empty() ? obj->socket[1] : "None", obj->socket[2].empty() ? obj->socket[2] : "None" );
 
       switch ( obj->item_type )
       {
@@ -646,7 +646,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
          }
          else
             stream << std::format( "AffectData   '{}' {} {} {} {}\n",
-                     skill_table[af->type]->name.c_str(), af->duration,
+                     skill_table[af->type]->name, af->duration,
                      ( ( af->location == APPLY_WEAPONSPELL
                          || af->location == APPLY_WEARSPELL
                          || af->location == APPLY_REMOVESPELL
@@ -678,7 +678,7 @@ void fwrite_mobile( char_data * mob, std::ofstream & stream, bool shopmob )
    if( !mob->isnpc() )
       return;
 
-   stream << std::format( "%s", shopmob ? "#SHOP\n" : "#MOBILE\n" );
+   stream << std::format( "{}", shopmob ? "#SHOP\n" : "#MOBILE\n" );
    stream << std::format( "Vnum    {}\n", mob->pIndexData->vnum );
    stream << std::format( "Version {}\n", SAVEVERSION );
    stream << std::format( "Level   {}\n", mob->level );
@@ -2385,7 +2385,6 @@ void load_corpses( void )
 
       strArea = std::format( "{}{}", CORPSE_DIR, filename );
       std::ifstream stream( std::filesystem::path{strArea} );
-      fprintf( stderr, "Corpse -> %s\n", strArea.c_str() );
       if( !stream.is_open() )
       {
          bug( "{}: Unable to open corpse file {} for reading.", __func__, strArea );

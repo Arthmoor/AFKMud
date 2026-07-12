@@ -1635,7 +1635,7 @@ void obj_identify_output( char_data * ch, obj_data * obj )
    if( ch->level >= LEVEL_IMMORTAL )
       ch->print_fmt( "Vnum: {}\r\n", obj->pIndexData->vnum );
    ch->print_fmt( "Keywords: {}\r\n", obj->name );
-   ch->print_fmt( "Type: {}\r\n", obj->item_type_name(  ).c_str(  ) );
+   ch->print_fmt( "Type: {}\r\n", obj->item_type_name() );
    ch->print_fmt( "Wear Flags : {}\r\n", bitset_string( obj->wear_flags, w_flags ) );
    ch->print_fmt( "Layers     : {}\r\n", obj->pIndexData->layers );
    ch->print_fmt( "Extra Flags: {}\r\n", bitset_string( obj->extra_flags, o_flags ) );

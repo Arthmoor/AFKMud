@@ -3050,8 +3050,8 @@ CMDF( do_setweather )
       return;
    }
 
-   x = atoi( arg.c_str() );
-   y = atoi( arg2.c_str() );
+   x = std::stoi( arg );
+   y = std::stoi( arg2 );
 
    // Array overrun corrected here on 12/13/2024 - https://github.com/Arthmoor/SmaugFUSS/issues/5
    if( x < 0 || x >= WEATHER_SIZE_X )
@@ -3077,7 +3077,7 @@ CMDF( do_setweather )
          return;
       }
 
-      value = get_climate( arg4.c_str() );
+      value = get_climate( arg4 );
 
       if( value < 0 || value > MAX_CLIMATE )
          ch->print_fmt( "Unknown flag: {}\r\n", arg4);
@@ -3097,7 +3097,7 @@ CMDF( do_setweather )
          return;
       }
 
-      value = get_hemisphere( arg4.c_str() );
+      value = get_hemisphere( arg4 );
 
       if( value < 0 || value > HEMISPHERE_MAX )
          ch->print_fmt( "Unknown flag: {}\r\n", arg4 );
@@ -3138,8 +3138,8 @@ CMDF( do_showweather )
       return;
    }
 
-   x = atoi( arg.c_str() );
-   y = atoi( arg2.c_str() );
+   x = std::stoi( arg );
+   y = std::stoi( arg2 );
 
    if( x < 0 || x > WEATHER_SIZE_X - 1 )
    {

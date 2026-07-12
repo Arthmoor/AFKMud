@@ -1248,7 +1248,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          switch ( vd->type )
          {
             case vtSTR:
-               return mprog_seval( vd->varstring.c_str(), opr, rval, mob );
+               return mprog_seval( vd->varstring, opr, rval, mob );
 
             case vtINT:
                return mprog_veval( vd->vardata, opr, atoi( rval ), mob );
@@ -1355,7 +1355,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
       {
          if( chkchar->isnpc(  ) || chkchar->desc->hostname.empty(  ) )
             return false;
-         return mprog_seval( chkchar->desc->hostname.c_str(  ), opr, rval, mob );
+         return mprog_seval( chkchar->desc->hostname, opr, rval, mob );
       }
 
       if( !str_cmp( chck, "areamulti" ) )
@@ -1416,7 +1416,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
       {
          if( chkchar->isnpc(  ) || !chkchar->pcdata->clan )
             return false;
-         return mprog_seval( chkchar->pcdata->clan->name.c_str(  ), opr, rval, mob );
+         return mprog_seval( chkchar->pcdata->clan->name, opr, rval, mob );
       }
 
       /*
@@ -1479,7 +1479,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
 
          if( !( temp = get_clan( rval ) ) )
             return false;
-         if( mprog_seval( chkchar->name, opr, temp->leader.c_str(  ), mob ) )
+         if( mprog_seval( chkchar->name, opr, temp->leader, mob ) )
             return true;
          else
             return false;
@@ -1494,7 +1494,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
 
          if( !( temp = get_clan( rval ) ) )
             return false;
-         if( mprog_seval( chkchar->name, opr, temp->number1.c_str(  ), mob ) )
+         if( mprog_seval( chkchar->name, opr, temp->number1, mob ) )
             return true;
          else
             return false;
@@ -1509,7 +1509,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
 
          if( !( temp = get_clan( rval ) ) )
             return false;
-         if( mprog_seval( chkchar->name, opr, temp->number2.c_str(  ), mob ) )
+         if( mprog_seval( chkchar->name, opr, temp->number2, mob ) )
             return true;
          else
             return false;
@@ -1519,14 +1519,14 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
       {
          if( !IS_DEVOTED( chkchar ) )
             return false;
-         return mprog_seval( chkchar->pcdata->deity->name.c_str(  ), opr, rval, mob );
+         return mprog_seval( chkchar->pcdata->deity->name, opr, rval, mob );
       }
 
       if( !str_cmp( chck, "guild" ) )
       {
          if( !IS_GUILDED( chkchar ) )
             return false;
-         return mprog_seval( chkchar->pcdata->clan->name.c_str(  ), opr, rval, mob );
+         return mprog_seval( chkchar->pcdata->clan->name, opr, rval, mob );
       }
 
       if( !str_cmp( chck, "clantype" ) )
