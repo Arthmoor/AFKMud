@@ -88,7 +88,7 @@ void init_supermob( void );
  */
 time_info_data time_info;
 extern const char *alarm_section;
-extern obj_data *extracted_obj_queue;
+extern struct extracted_obj_data *extracted_obj_queue;
 extern struct extracted_char_data *extracted_char_queue;
 
 int cur_qobjs;
