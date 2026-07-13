@@ -148,7 +148,7 @@ int open_queue( void )
    return 1;
 }
 
-void mud_send_message( const std::string arg )
+void mud_send_message( const std::string & arg )
 {
    struct mud_msgbuf qbuf;
    int x;
@@ -157,7 +157,7 @@ void mud_send_message( const std::string arg )
       return;
 
    // This one needs to stay here.
-   snprintf( qbuf.mtext, MAX_MSGBUF_LENGTH, "%s", arg );
+   snprintf( qbuf.mtext, MAX_MSGBUF_LENGTH, "%s", arg.c_str() );
    for( x = 0; other_ports[x] != -1; ++x )
    {
       if( other_ports[x] == mud_port )
