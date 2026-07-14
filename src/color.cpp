@@ -215,7 +215,7 @@ void reset_colors( char_data * ch )
          std::ifstream stream( filename );
          if( !stream.is_open() )
          {
-            memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
+            std::memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
             return;
          }
 
@@ -239,7 +239,7 @@ void reset_colors( char_data * ch )
          return;
       }
       else
-         memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
+         std::memcpy( &ch->pcdata->colors, &default_set, sizeof( default_set ) );
    }
    else
       log_printf( "{}: Attempting to reset NPC colors: {}", __func__, ch->short_descr );
@@ -853,9 +853,9 @@ int color_strlen( std::string_view src )
       {
          size_t consumed = 0;
 
-         // We don't need a buffer, just the skip count
-         // You can adjust colorcode to return just the skip count if needed
-         std::string translation = colorcode( src.substr(i), nullptr, consumed );
+         // We don't need a buffer, just the skip count.
+         // You can adjust colorcode to return just the skip count if needed.
+         [[maybe_unused]] std::string translation = colorcode( src.substr(i), nullptr, consumed );
 
          if( consumed > 0 )
          {

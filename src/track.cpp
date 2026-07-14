@@ -43,7 +43,7 @@ char_data *scan_for_vic( char_data *, exit_data *, std::string_view );
 void stop_hating( char_data * );
 void stop_hunting( char_data * );
 void stop_fearing( char_data * );
-int IsHumanoid( char_data * );
+int IsHumanoid( const char_data * );
 
 struct bfs_data
 {
@@ -120,7 +120,7 @@ void clean_room_queue( void )
    room_queue = nullptr;
 }
 
-int find_first_step( room_index * src, room_index * target, int maxdist )
+int find_first_step( room_index * src, const room_index * target, int maxdist )
 {
    if( !src || !target )
    {
@@ -417,7 +417,7 @@ void hunt_vic( char_data * ch )
     * make sure the char still exists 
     */
    bool found = false;
-   for( auto* tmp : charlist )
+   for( const auto* tmp : charlist )
    {
       if( ch->hunting->who == tmp )
       {
@@ -523,7 +523,7 @@ void hunt_vic( char_data * ch )
          found_prey( ch, ch->hunting->who );
       else
       {
-         char_data *vch;
+         const char_data *vch;
 
          /*
           * perform a ranged attack if possible 

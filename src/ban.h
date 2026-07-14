@@ -50,8 +50,8 @@ class IPADDR
       decimal_t _decimal = 0;
 
    public:
-      IPADDR( const std::string & ip );
-      IPADDR( decimal_t d );
+      explicit IPADDR( const std::string & ip );
+      explicit IPADDR( decimal_t d );
 
       const decimal_t & decimal() const;
 
@@ -67,7 +67,7 @@ class CIDR
    IPADDR::decimal_t _upper = 0;
 
  public:
-   CIDR( const std::string & cidr );
+   explicit CIDR( const std::string & cidr );
    CIDR(){ };
 
    bool overlaps( const CIDR & ) const;

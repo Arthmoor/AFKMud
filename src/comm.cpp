@@ -436,11 +436,11 @@ static void SigUser2( int signum )
 #ifdef MULTIPORT
 static void SigChld( int signum )
 {
-   int pid, status;
+   int status;
 
    while( 1 )
    {
-      pid = waitpid( WAIT_ANY, &status, WNOHANG );
+      int pid = waitpid( WAIT_ANY, &status, WNOHANG );
       if( pid < 0 )
          break;
 

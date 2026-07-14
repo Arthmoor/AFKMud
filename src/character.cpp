@@ -51,7 +51,7 @@ void stop_fearing( char_data * );
 void free_fight( char_data * );
 void queue_extracted_char( char_data *, bool );
 room_index *check_room( char_data *, room_index * );
-void update_room_reset( char_data *, bool );
+void update_room_reset( const char_data *, bool );
 void add_morph_effects( char_data * );
 void do_unmorph( char_data * );
 bool NOT_AUTHED( char_data * );
@@ -84,6 +84,7 @@ pc_data::pc_data(  )
    this->one = ROOM_VNUM_TEMPLE;
    this->lasthost = "Unknown-Host";
    this->logon = current_time;
+   std::memcpy( &this->colors, &default_set, sizeof( default_set ) );
 }
 
 /*
@@ -265,13 +266,11 @@ void char_data::print_room( std::string_view txt )
 
 void char_data::pager( std::string_view txt )
 {
-   char_data *ch;
-
    if( !txt.empty(  ) && this->desc )
    {
       descriptor_data *d = this->desc;
 
-      ch = d->original ? d->original : d->character;
+      char_data *ch = d->original ? d->original : d->character;
       if( !ch->has_pcflag( PCFLAG_PAGERON ) )
       {
          if( ch->desc )
@@ -294,11 +293,7 @@ void char_data::set_color( short AType )
       return;
 
    this->desc->write_to_buffer( color_str( AType ) );
-   if( !this->desc )
-   {
-      bug( "{}: nullptr descriptor after WTB! CH: {}", __func__, !this->name.empty() ? this->name : "Unknown?!?" );
-      return;
-   }
+
    this->desc->pagecolor = this->pcdata->colors[AType];
 }
 
@@ -311,11 +306,7 @@ void char_data::set_pager_color( short AType )
       return;
 
    this->desc->pager( color_str( AType ) );
-   if( !this->desc )
-   {
-      bug( "{}: nullptr descriptor after WTP! CH: {}", __func__, !this->name.empty() ? this->name : "Unknown?!?" );
-      return;
-   }
+
    this->desc->pagecolor = this->pcdata->colors[AType];
 }
 
@@ -1120,7 +1111,7 @@ int char_data::can_carry_w(  )
  */
 void char_data::equip( obj_data * obj, int iWear )
 {
-   obj_data *otmp;
+   const obj_data *otmp;
 
    if( ( otmp = this->get_eq( iWear ) ) != nullptr && ( !otmp->pIndexData->layers || !obj->pIndexData->layers ) )
    {
@@ -1238,7 +1229,7 @@ void char_data::unequip( obj_data * obj )
 /*
  * Apply only affected and RIS on a char
  */
-void char_data::aris_affect( affect_data * paf )
+void char_data::aris_affect( const affect_data * paf )
 {
    int location = paf->location % REVERSE_APPLY;
 
@@ -1388,7 +1379,7 @@ void char_data::update_aris(  )
    /*
     * Add in effect from spells 
     */
-   affect_data *af;
+   const affect_data *af;
    std::list<affect_data *>::iterator paf;
    for( paf = this->affects.begin(  ); paf != this->affects.end(  ); ++paf )
    {
@@ -1920,7 +1911,7 @@ void char_data::affect_modify( affect_data * paf, bool fAdd )
 /*
  * Give an affect to a char.
  */
-void char_data::affect_to_char( affect_data * paf )
+void char_data::affect_to_char( const affect_data * paf )
 {
    affect_data *paf_new;
 
@@ -1979,7 +1970,7 @@ void char_data::affect_strip( int sn )
  */
 bool char_data::is_affected( int sn )
 {
-   for( auto* af : this->affects )
+   for( const auto* af : this->affects )
    {
       if( af->type == sn )
          return true;
@@ -2015,9 +2006,6 @@ void char_data::affect_join( affect_data * paf )
  */
 void char_data::showaffect( affect_data * paf )
 {
-   std::string buf;
-   int i;
-
    if( !paf )
    {
       bug( "{}: nullptr paf", __func__ );
@@ -2026,6 +2014,8 @@ void char_data::showaffect( affect_data * paf )
 
    if( paf->location != APPLY_NONE && ( paf->modifier != 0 || paf->rismod.any(  ) ) )
    {
+      std::string buf;
+
       switch ( paf->location )
       {
          default:
@@ -2048,7 +2038,7 @@ void char_data::showaffect( affect_data * paf )
          case APPLY_SUSCEPTIBLE:
          case APPLY_ABSORB:
             buf = std::format( "&wAffects: &B{:15}&w by &B", a_types[paf->location] );
-            for( i = 0; i < MAX_RIS_FLAG; ++i )
+            for( int i = 0; i < MAX_RIS_FLAG; ++i )
                if( paf->rismod.test( i ) )
                {
                   buf.append( " " );
@@ -2119,12 +2109,12 @@ void char_data::set_numattacks(  )
 
 int char_data::char_ego(  )
 {
-   int p_ego, tmp;
+   int p_ego;
 
    if( !this->isnpc(  ) )
    {
       p_ego = this->level;
-      tmp = ( ( this->get_curr_int(  ) + this->get_curr_wis(  ) + this->get_curr_cha(  ) + this->get_curr_lck(  ) ) / 4 );
+      int tmp = ( ( this->get_curr_int(  ) + this->get_curr_wis(  ) + this->get_curr_cha(  ) + this->get_curr_lck(  ) ) / 4 );
       tmp = tmp - 17;
       p_ego += tmp;
    }
@@ -2195,7 +2185,7 @@ void char_data::remove_timer( short type )
    extract_timer( chtimer );
 }
 
-bool char_data::in_hard_range( area_data * tarea )
+bool char_data::in_hard_range( const area_data * tarea )
 {
    if( this->is_immortal(  ) )
       return true;
@@ -2260,7 +2250,7 @@ void char_data::worsen_mental_state( int mod )
  */
 void char_data::from_room(  )
 {
-   obj_data *obj;
+   const obj_data *obj;
 
    if( !this->in_room )
    {
@@ -2320,7 +2310,7 @@ void char_data::from_room(  )
  */
 bool char_data::to_room( room_index * pRoomIndex )
 {
-   obj_data *obj;
+   const obj_data *obj;
 
    // Ok, asshole code, lets see you get past this!
    if( !pRoomIndex || !get_room_index( pRoomIndex->vnum ) )
@@ -2397,7 +2387,7 @@ bool char_data::to_room( room_index * pRoomIndex )
     */
    if( pRoomIndex->flags.test( ROOM_TELEPORT ) && pRoomIndex->tele_delay > 0 )
    {
-      for( auto* teleport2 : teleportlist )
+      for( const auto* teleport2 : teleportlist )
       {
          if( teleport2->room == pRoomIndex )
             return true;
@@ -2475,7 +2465,7 @@ const std::string PERS( char_data * ch, char_data * looker, bool from )
    return "Someone";
 }
 
-int IsHumanoid( char_data * ch )
+int IsHumanoid( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2571,7 +2561,7 @@ int IsRideable( char_data * ch )
       return false;
 }
 
-int IsUndead( char_data * ch )
+int IsUndead( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2592,7 +2582,7 @@ int IsUndead( char_data * ch )
    }
 }
 
-int IsLycanthrope( char_data * ch )
+int IsLycanthrope( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2603,7 +2593,7 @@ int IsLycanthrope( char_data * ch )
    }
 }
 
-int IsDiabolic( char_data * ch )
+int IsDiabolic( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2618,7 +2608,7 @@ int IsDiabolic( char_data * ch )
    }
 }
 
-int IsReptile( char_data * ch )
+int IsReptile( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2662,7 +2652,7 @@ int HasHands( char_data * ch )
    return false;
 }
 
-int IsPerson( char_data * ch )
+int IsPerson( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2692,7 +2682,7 @@ int IsPerson( char_data * ch )
    }
 }
 
-int IsDragon( char_data * ch )
+int IsDragon( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2713,7 +2703,7 @@ int IsDragon( char_data * ch )
    }
 }
 
-int IsGiantish( char_data * ch )
+int IsGiantish( const char_data * ch )
 {
    switch ( ch->race )
    {
@@ -2740,7 +2730,7 @@ int IsGiantish( char_data * ch )
    }
 }
 
-int IsGiant( char_data * ch )
+int IsGiant( const char_data * ch )
 {
    if( !ch )
       return false;
@@ -2816,10 +2806,11 @@ void race_bodyparts( char_data * ch )
       ch->set_bpart( PART_HANDS );
 }
 
-/* Brought over from DOTD code, caclulates such things as the number of
-   attacks a PC gets, as well as monk barehand damage and some other
-   RIS flags - Samson 4-6-99 
-*/
+/*
+ * Brought over from DOTD code, calculates such things as the number of
+ * attacks a PC gets, as well as monk barehand damage and some other
+ * RIS flags - Samson 4-6-99
+ */
 void char_data::ClassSpecificStuff(  )
 {
    if( this->isnpc(  ) )
@@ -3205,7 +3196,7 @@ void die_follower( char_data * ch )
  * follow in a loop through an exit leading back into the same room
  * (Which exists in many maze areas) - Thoric
  */
-bool circle_follow( char_data * ch, char_data * victim )
+bool circle_follow( const char_data * ch, char_data * victim )
 {
    char_data *tmp;
 
@@ -3358,7 +3349,7 @@ void char_data::extract( bool fPull )
       if( fPull && RQueue->Type == relMSET_ON )
       {
          if( this == RQueue->Subject )
-            ( ( char_data * ) RQueue->Actor )->pcdata->dest_buf = nullptr;
+            ( static_cast<char_data*>(RQueue->Actor) )->pcdata->dest_buf = nullptr;
          else if( this != RQueue->Actor )
             continue;
          relationlist.remove( RQueue );
@@ -3550,7 +3541,7 @@ void char_data::extract( bool fPull )
 /*
  * hunting, hating and fearing code - Thoric
  */
-bool is_hunting( char_data * ch, char_data * victim )
+bool is_hunting( const char_data * ch, const char_data * victim )
 {
    if( !ch->hunting || ch->hunting->who != victim )
       return false;
@@ -3558,7 +3549,7 @@ bool is_hunting( char_data * ch, char_data * victim )
    return true;
 }
 
-bool is_hating( char_data * ch, char_data * victim )
+bool is_hating( const char_data * ch, const char_data * victim )
 {
    if( !ch->hating || ch->hating->who != victim )
       return false;
@@ -3566,7 +3557,7 @@ bool is_hating( char_data * ch, char_data * victim )
    return true;
 }
 
-bool is_fearing( char_data * ch, char_data * victim )
+bool is_fearing( const char_data * ch, const char_data * victim )
 {
    if( !ch->fearing || ch->fearing->who != victim )
       return false;
@@ -3819,7 +3810,7 @@ std::bitset<MAX_ACT_FLAG> char_data::get_actflags(  )
    return this->actflags;
 }
 
-void char_data::set_actflags( std::bitset<MAX_ACT_FLAG> bits )
+void char_data::set_actflags( const std::bitset<MAX_ACT_FLAG> & bits )
 {
    try
    {
@@ -3896,7 +3887,7 @@ std::bitset<MAX_RIS_FLAG> char_data::get_immunes(  )
    return this->immune;
 }
 
-void char_data::set_immunes( std::bitset<MAX_RIS_FLAG> bits )
+void char_data::set_immunes( const std::bitset<MAX_RIS_FLAG> & bits )
 {
    try
    {
@@ -3949,7 +3940,7 @@ std::bitset<MAX_RIS_FLAG> char_data::get_noimmunes(  )
    return this->no_immune;
 }
 
-void char_data::set_noimmunes( std::bitset<MAX_RIS_FLAG> bits )
+void char_data::set_noimmunes( const std::bitset<MAX_RIS_FLAG> & bits )
 {
    try
    {
@@ -4026,7 +4017,7 @@ std::bitset<MAX_RIS_FLAG> char_data::get_resists(  )
    return this->resistant;
 }
 
-void char_data::set_resists( std::bitset<MAX_RIS_FLAG> bits )
+void char_data::set_resists( const std::bitset<MAX_RIS_FLAG> & bits )
 {
    try
    {
@@ -4079,7 +4070,7 @@ std::bitset<MAX_RIS_FLAG> char_data::get_noresists(  )
    return this->no_resistant;
 }
 
-void char_data::set_noresists( std::bitset<MAX_RIS_FLAG> bits )
+void char_data::set_noresists( const std::bitset<MAX_RIS_FLAG> & bits )
 {
    try
    {
@@ -4156,7 +4147,7 @@ std::bitset<MAX_RIS_FLAG> char_data::get_susceps(  )
    return this->susceptible;
 }
 
-void char_data::set_susceps( std::bitset<MAX_RIS_FLAG> bits )
+void char_data::set_susceps( const std::bitset<MAX_RIS_FLAG> & bits )
 {
    try
    {
@@ -4209,7 +4200,7 @@ std::bitset<MAX_RIS_FLAG> char_data::get_nosusceps(  )
    return this->no_susceptible;
 }
 
-void char_data::set_nosusceps( std::bitset<MAX_RIS_FLAG> bits )
+void char_data::set_nosusceps( const std::bitset<MAX_RIS_FLAG> & bits )
 {
    try
    {
@@ -4286,7 +4277,7 @@ std::bitset<MAX_RIS_FLAG> char_data::get_absorbs(  )
    return this->absorb;
 }
 
-void char_data::set_absorbs( std::bitset<MAX_RIS_FLAG> bits )
+void char_data::set_absorbs( const std::bitset<MAX_RIS_FLAG> & bits )
 {
    try
    {
@@ -4363,7 +4354,7 @@ std::bitset<MAX_ATTACK_TYPE> char_data::get_attacks(  )
    return this->attacks;
 }
 
-void char_data::set_attacks( std::bitset<MAX_ATTACK_TYPE> bits )
+void char_data::set_attacks( const std::bitset<MAX_ATTACK_TYPE> & bits )
 {
    try
    {
@@ -4375,7 +4366,7 @@ void char_data::set_attacks( std::bitset<MAX_ATTACK_TYPE> bits )
    }
 }
 
-void char_data::set_file_attacks( std::ifstream & stream )
+void char_data::set_attacks_file( std::ifstream & stream )
 {
    try
    {
@@ -4440,7 +4431,7 @@ std::bitset<MAX_DEFENSE_TYPE> char_data::get_defenses(  )
    return this->defenses;
 }
 
-void char_data::set_defenses( std::bitset<MAX_DEFENSE_TYPE> bits )
+void char_data::set_defenses( const std::bitset<MAX_DEFENSE_TYPE> & bits )
 {
    try
    {
@@ -4452,7 +4443,7 @@ void char_data::set_defenses( std::bitset<MAX_DEFENSE_TYPE> bits )
    }
 }
 
-void char_data::set_file_defenses( std::ifstream & stream )
+void char_data::set_defenses_file( std::ifstream & stream )
 {
    try
    {
@@ -4517,7 +4508,7 @@ std::bitset<MAX_AFFECTED_BY> char_data::get_aflags(  )
    return this->affected_by;
 }
 
-void char_data::set_aflags( std::bitset<MAX_AFFECTED_BY> bits )
+void char_data::set_aflags( const std::bitset<MAX_AFFECTED_BY> & bits )
 {
    try
    {
@@ -4594,7 +4585,7 @@ std::bitset<MAX_AFFECTED_BY> char_data::get_noaflags(  )
    return this->no_affected_by;
 }
 
-void char_data::set_noaflags( std::bitset<MAX_AFFECTED_BY> bits )
+void char_data::set_noaflags( const std::bitset<MAX_AFFECTED_BY> & bits )
 {
    try
    {
@@ -4677,7 +4668,7 @@ std::bitset < MAX_BPART > char_data::get_bparts(  )
    return this->body_parts;
 }
 
-void char_data::set_bparts( std::bitset<MAX_BPART> bits )
+void char_data::set_bparts( const std::bitset<MAX_BPART> & bits )
 {
    try
    {
@@ -4984,7 +4975,7 @@ std::bitset<LANG_UNKNOWN> char_data::get_langs(  )
    return speaks;
 }
 
-void char_data::set_langs( std::bitset<LANG_UNKNOWN> bits )
+void char_data::set_langs( const std::bitset<LANG_UNKNOWN> & bits )
 {
    try
    {

@@ -69,7 +69,7 @@ std::string resolve_address( std::string_view address )
    return std::string( address ); // Fail: return original IP.
 }
 
-int main( int argc, char* argv[] )
+int main( int argc, const char* argv[] )
 {
    if( argc != 2 )
    {

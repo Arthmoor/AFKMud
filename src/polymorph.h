@@ -138,28 +138,28 @@ class char_morph
    std::bitset<MAX_RIS_FLAG> immune;            // Immunities added.
    std::bitset<MAX_RIS_FLAG> absorb;            // Absorbs added.
    int timer = -1;                              // Timer for how long it lasts.
-   short ac;
-   short cha;
-   short con;
+   short ac = 0;
+   short cha = 0;
+   short con = 0;
    short damroll = 0;
-   short dex;
-   short dodge;
+   short dex = 0;
+   short dodge = 0;
    short hit = 0;
    short hitroll = 0;
-   short inte;
-   short lck;
+   short inte = 0;
+   short lck = 0;
    short mana = 0;
    short move = 0;
-   short parry;
-   short saving_breath;
-   short saving_para_petri;
-   short saving_poison_death;
-   short saving_spell_staff;
-   short saving_wand;
-   short str;
-   short tumble;
-   short wis;
-   bool cast_allowed;   /* Casting allowed whilst morphed */
+   short parry = 0;
+   short saving_breath = 0;
+   short saving_para_petri = 0;
+   short saving_poison_death = 0;
+   short saving_spell_staff = 0;
+   short saving_wand = 0;
+   short str = 0;
+   short tumble = 0;
+   short wis = 0;
+   bool cast_allowed = false;   /* Casting allowed whilst morphed */
 };
 
 int do_morph_char( char_data *, morph_data * );

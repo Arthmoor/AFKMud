@@ -81,11 +81,10 @@ void char_data::stop_editing(  )
    desc->connected = CON_PLAYING;
 }
 
-void char_data::start_editing( std::string data )
+void char_data::start_editing( const std::string & data )
 {
    editor_data *edit;
    short lines, size, lpos;
-   char c;
 
    if( !desc )
    {
@@ -112,7 +111,7 @@ void char_data::start_editing( std::string data )
    {
       for( ;; )
       {
-         c = data[size++];
+         char c = data[size++];
          if( c == '\0' )
          {
             edit->line[lines][lpos] = '\0';
@@ -127,7 +126,15 @@ void char_data::start_editing( std::string data )
          }
          else
             edit->line[lines][lpos++] = c;
-         if( lines >= max_buf_lines || size > MSL )
+
+         if( lines >= max_buf_lines )
+         {
+            lines = max_buf_lines - 1;
+            edit->line[lines][80] = '\0';
+            break;
+         }
+
+         if( size > MSL )
          {
             edit->line[lines][lpos] = '\0';
             break;
@@ -174,13 +181,13 @@ std::string char_data::copy_buffer(  )
 /*
  * Simple but nice and handy line editor. - Thoric
  */
-void char_data::edit_buffer( std::string & argument )
+void char_data::edit_buffer( const std::string & argument )
 {
    descriptor_data *d;
    editor_data *edit;
    std::string cmd;
    char buf[MIL];
-   int x, line;
+   int line;
    bool esave = false;
 
    if( !( d = desc ) )
@@ -249,8 +256,7 @@ void char_data::edit_buffer( std::string & argument )
 
       if( !str_cmp( cmd, "r" ) )
       {
-         std::string word1, word2, sptr, lwptr;
-         int lineln;
+         std::string word1, word2, sptr;
 
          sptr = one_argument( argument, word1 );
          sptr = one_argument( sptr, word1 );
@@ -271,12 +277,12 @@ void char_data::edit_buffer( std::string & argument )
          }
 
          print_fmt( "Replacing all occurrences of {} with {}...\r\n", word1, word2 );
-         for( x = 0; x < edit->numlines; ++x )
+         for( int x = 0; x < edit->numlines; ++x )
          {
-            lwptr = edit->line[x];
+            std::string lwptr = edit->line[x];
             string_replace( lwptr, word1, word2 );
 
-            lineln = strlcpy( buf, lwptr.c_str(  ), MIL );
+            int lineln = strlcpy( buf, lwptr.c_str(  ), MIL );
             if( lineln > 79 )
                buf[80] = '\0';
 
@@ -297,11 +303,11 @@ void char_data::edit_buffer( std::string & argument )
       if( !str_cmp( cmd, "f" ) )
       {
          char temp_buf[MSL + max_buf_lines];
-         int ep, old_p, end_mark, p = 0;
+         int old_p, end_mark, p = 0;
 
          pager( "Reformatting...\r\n" );
 
-         for( x = 0; x < edit->numlines; ++x )
+         for( int x = 0; x < edit->numlines; ++x )
          {
             strlcpy( temp_buf + p, edit->line[x], MSL + max_buf_lines - p );
             p += strlen( edit->line[x] );
@@ -327,8 +333,8 @@ void char_data::edit_buffer( std::string & argument )
             if( p > end_mark )
                p = end_mark;
 
-            ep = 0;
-            for( x = old_p; x < p; ++x )
+            int ep = 0;
+            for( int x = old_p; x < p; ++x )
             {
                edit->line[edit->on_line][ep] = temp_buf[x];
                ++ep;
@@ -367,7 +373,7 @@ void char_data::edit_buffer( std::string & argument )
                print( "Out of range.\r\n> " );
             else
             {
-               for( x = ++edit->numlines; x > line; --x )
+               for( int x = ++edit->numlines; x > line; --x )
                   strlcpy( edit->line[x], edit->line[x - 1], 81 );
                strlcpy( edit->line[line], "", 81 );
                print( "Line inserted.\r\n> " );
@@ -400,7 +406,7 @@ void char_data::edit_buffer( std::string & argument )
                   print( "Line deleted.\r\n> " );
                   return;
                }
-               for( x = line; x < ( edit->numlines - 1 ); ++x )
+               for( int x = line; x < ( edit->numlines - 1 ); ++x )
                   strlcpy( edit->line[x], edit->line[x + 1], 81 );
                strlcpy( edit->line[edit->numlines--], "", 81 );
                if( edit->on_line > edit->numlines )
@@ -444,7 +450,7 @@ void char_data::edit_buffer( std::string & argument )
          else
          {
             print( "------------------\r\n" );
-            for( x = 0; x < edit->numlines; ++x )
+            for( int x = 0; x < edit->numlines; ++x )
             {
                /*
                 * Quixadhal - We cannot use ch_printf here, or we can't see

@@ -187,7 +187,7 @@ void fread_liquid( liquid_data *liq, std::ifstream & stream, int file_ver )
          stream >> liq->mod[COND_DRUNK] >> liq->mod[COND_FULL] >> liq->mod[COND_THIRST];
 
          if( file_ver < 3 )
-            std::string temp = fread_line( stream, '\n' );
+            fread_to_eol( stream );
       }
       else if( key == "End" )
          return;
@@ -992,7 +992,7 @@ CMDF( do_setmixture )
 liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
 {
    std::list<mixture_data *>::iterator imix;
-   mixture_data *mix = nullptr;
+   const mixture_data *mix = nullptr;
    bool mix_found = false;
 
    for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )
@@ -1030,7 +1030,7 @@ liquid_data *liq_can_mix( obj_data * iObj, obj_data * tObj )
 liquid_data *liqobj_can_mix( obj_data * iObj, obj_data * oLiq )
 {
    std::list<mixture_data *>::iterator imix;
-   mixture_data *mix = nullptr;
+   const mixture_data *mix = nullptr;
    bool mix_found = false;
 
    for( imix = mixlist.begin(  ); imix != mixlist.end(  ); ++imix )

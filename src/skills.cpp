@@ -61,8 +61,8 @@ void death_cry( char_data * );
 void group_gain( char_data *, char_data * );
 ch_ret one_hit( char_data *, char_data *, int );
 ch_ret check_room_for_traps( char_data *, int );
-int IsGiant( char_data * );
-int IsDragon( char_data * );
+int IsGiant( const char_data * );
+int IsDragon( const char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 void save_classes(  );
 void save_races(  );
@@ -477,9 +477,8 @@ bool string_sort::operator(  ) ( std::string_view left, std::string_view right )
 
 // Used to find skills using their prefix
 find__skill_prefix::find__skill_prefix( char_data * p_actor, std::string_view p_value )
+   : value( p_value ), actor( p_actor )
 {
-   actor = p_actor;
-   value = p_value;
 }
 
 bool find__skill_prefix::operator(  ) ( std::pair < std::string_view, int > compare )
@@ -498,9 +497,8 @@ bool find__skill_prefix::operator(  ) ( std::pair < std::string_view, int > comp
 
 // Used to find skills using the exact name.
 find__skill_exact::find__skill_exact( char_data * p_actor, std::string_view p_value )
+   : value( p_value ), actor( p_actor )
 {
-   actor = p_actor;
-   value = p_value;
 }
 
 bool find__skill_exact::operator(  ) ( std::pair < std::string_view, int > compare )
@@ -571,7 +569,7 @@ int search_skill_exact( SKILL_INDEX index, std::string_view key, char_data * act
    return fnd->second;
 }
 
-int search_skill( SKILL_INDEX index, std::string_view key )
+int search_skill( const SKILL_INDEX & index, std::string_view key )
 {
    int sn;
 
@@ -580,7 +578,7 @@ int search_skill( SKILL_INDEX index, std::string_view key )
    return search_skill_prefix( index, key );
 }
 
-int search_skill( SKILL_INDEX index, std::string_view key, char_data * actor )
+int search_skill( const SKILL_INDEX & index, std::string_view key, char_data * actor )
 {
    int sn;
 
@@ -635,34 +633,6 @@ int find_lore( char_data * ch, std::string_view name, bool know )
       return search_skill( skill_table__lore, name );
    else
       return search_skill( skill_table__lore, name, ch );
-}
-
-/*
- * Lookup a skill by name, only stopping at skills the player has.
- */
-int ch_slookup( char_data * ch, std::string_view name )
-{
-   int sn;
-
-   sn = skill_lookup( name );
-   // does this skill even exist?
-   if( sn == -1 )
-      return -1;
-
-   // Make sure that:
-   // (a) ch knows this skill
-   // and, (b) ch's level is high enough
-   if( ch->isnpc(  ) )
-      return sn;
-   if( ch->pcdata->learned[sn] > 0 && ( ch->level >= skill_table[sn]->skill_level[ch->Class] || ch->level >= skill_table[sn]->race_level[ch->race] ) )
-   {
-      return sn;
-   }
-   else
-   {
-      // nope... ch doesn't have this skill.
-      return -1;
-   }
 }
 
 /*
@@ -756,7 +726,7 @@ CMDF( do_slotlookup )
  */
 void remap_slot_numbers( void )
 {
-   skill_type *skill;
+   const skill_type *skill;
 
    log_string( "Remapping slots to sns..." );
 
@@ -1229,12 +1199,6 @@ skill_type *fread_skill( std::ifstream & stream, int version )
                break;
             }
 
-            if( key == "Dice" )
-            {
-               skill->dice = fread_line( stream );
-               break;
-            }
-
             if( key == "Diechar" )
             {
                skill->die_char = fread_line( stream );
@@ -1657,10 +1621,9 @@ void free_skills( void )
       deleteptr( disease_table[hash] );
 }
 
-/*
- * Dummy function - Unused parameter should be left alone, as-is.
- */
-void skill_notfound( char_data * ch, std::string argument )
+// Dummy function - Unused parameter should be left alone, as-is.
+// cppcheck-suppress passedByValueCallback
+void skill_notfound( char_data * ch, [[maybe_unused]] std::string argument )
 {
    ch->print( "Huh?\r\n" );
 }
@@ -1675,9 +1638,8 @@ void skill_notfound( char_data * ch, std::string argument )
  */
 void char_data::learn_racials( int sn )
 {
-   int adept, gain, sklvl;
+   int sklvl = skill_table[sn]->race_level[race];
 
-   sklvl = skill_table[sn]->race_level[race];
    if( sklvl == 0 )
       sklvl = level;
 
@@ -1686,7 +1648,7 @@ void char_data::learn_racials( int sn )
 
    if( number_percent(  ) > pcdata->learned[sn] / 2 )
    {
-      adept = skill_table[sn]->race_adept[race];
+      int adept = skill_table[sn]->race_adept[race];
 
       if( pcdata->learned[sn] < adept )
       {
@@ -1697,7 +1659,7 @@ void char_data::learn_racials( int sn )
 
          if( pcdata->learned[sn] == adept )  /* fully learned! */
          {
-            gain = sklvl * 1000;
+            int gain = sklvl * 1000;
             if( Class == CLASS_MAGE )
                gain = gain * 2;
             print_fmt( "&WYou are now an adept of {}! You gain {} bonus experience!\r\n", skill_table[sn]->name, gain );
@@ -1709,9 +1671,7 @@ void char_data::learn_racials( int sn )
 
 void char_data::learn_from_failure( int sn )
 {
-   int adept, gain, lchance, sklvl;
-
-   lchance = number_range( 1, 2 );
+   int lchance = number_range( 1, 2 );
 
    if( lchance == 2 )   /* Time to cut into the speed of advancement a bit */
       return;
@@ -1733,7 +1693,7 @@ void char_data::learn_from_failure( int sn )
          return;
    }
 
-   sklvl = skill_table[sn]->skill_level[Class];
+   int sklvl = skill_table[sn]->skill_level[Class];
    if( sklvl == 0 )
       sklvl = 1;
 
@@ -1742,7 +1702,7 @@ void char_data::learn_from_failure( int sn )
 
    if( number_percent(  ) > pcdata->learned[sn] / 2 )
    {
-      adept = GET_ADEPT( sn );
+      int adept = GET_ADEPT( sn );
       if( pcdata->learned[sn] < adept )
       {
          if( skill_table[sn]->type == SKILL_COMBAT )
@@ -1755,7 +1715,7 @@ void char_data::learn_from_failure( int sn )
 
          if( pcdata->learned[sn] == adept )  /* fully learned! */
          {
-            gain = sklvl * 1000;
+            int gain = sklvl * 1000;
 
             if( Class == CLASS_MAGE )
                gain = gain * 2;
@@ -2142,7 +2102,7 @@ bool check_ability( char_data * ch, std::string_view command, std::string_view a
                ch->print( "You can't do that to another player!\r\n" );
                return true;
             }
-            vo = ( void * )victim;
+            vo = static_cast<void *>( victim );
             break;
 
          case TAR_CHAR_DEFENSIVE:
@@ -2159,12 +2119,12 @@ bool check_ability( char_data * ch, std::string_view command, std::string_view a
                ch->print( "You can't target yourself!\r\n" );
                return true;
             }
-            vo = ( void * )victim;
+            vo = static_cast<void *>( victim );
             break;
 
          case TAR_CHAR_SELF:
             victim = ch;
-            vo = ( void * )ch;
+            vo = static_cast<void *>( ch );
             break;
 
          case TAR_OBJ_INV:
@@ -2173,7 +2133,7 @@ bool check_ability( char_data * ch, std::string_view command, std::string_view a
                ch->print( "You can't find that.\r\n" );
                return true;
             }
-            vo = ( void * )obj;
+            vo = static_cast<void *>( obj );
             break;
       }
 
@@ -2205,10 +2165,7 @@ bool check_ability( char_data * ch, std::string_view command, std::string_view a
          return true;
 
       if( retcode == rSPELL_FAILED )
-      {
          ch->learn_from_failure( sn );
-         retcode = rNONE;
-      }
 
       if( skill_table[sn]->target == TAR_CHAR_OFFENSIVE && victim != ch && !victim->char_died(  ) )
       {
@@ -2367,7 +2324,7 @@ bool check_skill( char_data * ch, std::string_view command, std::string_view arg
                ch->print( "You can't do that to another player!\r\n" );
                return true;
             }
-            vo = ( void * )victim;
+            vo = static_cast<void *>( victim );
             break;
 
          case TAR_CHAR_DEFENSIVE:
@@ -2384,12 +2341,12 @@ bool check_skill( char_data * ch, std::string_view command, std::string_view arg
                ch->print( "You can't target yourself!\r\n" );
                return true;
             }
-            vo = ( void * )victim;
+            vo = static_cast<void *>( victim );
             break;
 
          case TAR_CHAR_SELF:
             victim = ch;
-            vo = ( void * )ch;
+            vo = static_cast<void *>( ch );
             break;
 
          case TAR_OBJ_INV:
@@ -2398,7 +2355,7 @@ bool check_skill( char_data * ch, std::string_view command, std::string_view arg
                ch->print( "You can't find that.\r\n" );
                return true;
             }
-            vo = ( void * )obj;
+            vo = static_cast<void *>( obj );
             break;
       }
 
@@ -2430,10 +2387,7 @@ bool check_skill( char_data * ch, std::string_view command, std::string_view arg
          return true;
 
       if( retcode == rSPELL_FAILED )
-      {
          ch->learn_from_failure( sn );
-         retcode = rNONE;
-      }
 
       if( skill_table[sn]->target == TAR_CHAR_OFFENSIVE && victim != ch && !victim->char_died(  ) )
       {
@@ -4630,7 +4584,7 @@ CMDF( do_rescue )
    set_fighting( fch, ch );
 }
 
-void kick_messages( char_data * ch, char_data * victim, int dam, ch_ret rcode )
+void kick_messages( char_data * ch, const char_data * victim, int dam, ch_ret rcode )
 {
    int i;
 
@@ -5526,7 +5480,7 @@ CMDF( do_aid )
 
 int mount_ego_check( char_data * ch, char_data * horse )
 {
-   int ride_ego, drag_ego, align, check;
+   int ride_ego, drag_ego, check;
 
    if( ch->isnpc(  ) )
       return -5;
@@ -5541,7 +5495,7 @@ int mount_ego_check( char_data * ch, char_data * horse )
 
       if( ch->is_affected( gsn_dragon_ride ) )
          ride_ego += ( ( ch->get_curr_int(  ) + ch->get_curr_wis(  ) ) / 2 );
-      align = ch->alignment - horse->alignment;
+      int align = ch->alignment - horse->alignment;
       if( align < 0 )
          align = -align;
       align /= 100;

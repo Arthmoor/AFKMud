@@ -50,7 +50,7 @@ void unset_chandler(  );
 void build_wizinfo(  );
 void save_sysdata(  );
 void write_race_file( int );
-int calc_thac0( char_data *, char_data *, int );   /* For mstat */
+int calc_thac0( char_data *, const char_data *, int );   /* For mstat */
 CMDF( do_oldwhere );
 CMDF( do_help );
 CMDF( do_mfind );
@@ -2316,7 +2316,7 @@ void objinvoke( char_data * ch, std::string & argument )
    ch->print_fmt( "&Y(&W#{} &Y- &W{} &Y- &Wlvl {}&Y)\r\n", pObjIndex->vnum, pObjIndex->name, obj->level );
 }
 
-void mobinvoke( char_data * ch, std::string & argument )
+void mobinvoke( char_data * ch, const std::string & argument )
 {
    mob_index *pMobIndex;
    char_data *victim;
@@ -2360,7 +2360,7 @@ void mobinvoke( char_data * ch, std::string & argument )
 
    if( ch->get_trust(  ) < LEVEL_DEMI )
    {
-      area_data *pArea;
+      const area_data *pArea;
 
       if( ch->isnpc(  ) )
       {
@@ -5062,7 +5062,7 @@ const std::string name_expand( char_data * ch )
     * ... and back to ->people it is folks! -- Samson
     */
    int count = 1;
-   for( auto* rch : ch->in_room->people )
+   for( const auto* rch : ch->in_room->people )
    {
       if( rch == ch )
          continue;
@@ -6258,33 +6258,21 @@ bool load_class_file( std::string_view fname )
                Class->affected <<= 1;
          }
          else
-         {
-            std::string temp = fread_line( stream );
-
-            flag_string_set( temp, Class->affected, aff_flags );
-         }
+            flag_set( stream, Class->affected, aff_flags );
       }
       else if( key == "Resist" )
       {
          if( file_ver < 1 )
             stream >> Class->resist;
          else
-         {
-            std::string temp = fread_line( stream );
-
-            flag_string_set( temp, Class->resist, ris_flags );
-         }
+            flag_set( stream, Class->resist, ris_flags );
       }
       else if( key == "Suscept" )
       {
          if( file_ver < 1 )
             stream >> Class->suscept;
          else
-         {
-            std::string temp = fread_line( stream );
-
-            flag_string_set( temp, Class->suscept, ris_flags );
-         }
+            flag_set( stream, Class->suscept, ris_flags );
       }
       else if( key == "Skill" )
       {
@@ -6310,8 +6298,8 @@ bool load_class_file( std::string_view fname )
          if( cl < 0 || cl >= MAX_CLASS )
          {
             bug( "{}: Title -- Class bad/not found ({})", __func__, cl );
-            std::string temp = fread_line( stream );
-            temp = fread_line( stream );
+            fread_line( stream );
+            fread_line( stream );
          }
          else if( tlev < MAX_LEVEL + 1 )
          {

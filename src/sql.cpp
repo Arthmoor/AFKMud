@@ -63,14 +63,6 @@ std::string MySQLDatabase::get_error()
    return mysql_error( &conn );
 }
 
-std::string MySQLDatabase::escape( std::string_view input )
-{
-   std::vector<char> buffer( input.length() * 2 + 1 );
-   auto size = mysql_real_escape_string( &conn, buffer.data(), input.data(), input.length() );
-
-   return std::string( buffer.data(), size );
-}
-
 int MySQLDatabase::execute( std::string_view sql )
 {
    return mysql_real_query( &conn, sql.data(), sql.length() );

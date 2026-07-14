@@ -1044,9 +1044,8 @@ obj_data *generate_gem( short level )
 
 void obj_data::weapongen(  )
 {
-   affect_data *paf;
    std::string eflags, flag;
-   int v8, v9, v10, ovalue;
+   int v8, v9, v10;
    bool protoflag = false;
 
    if( item_type != ITEM_WEAPON )
@@ -1096,7 +1095,7 @@ void obj_data::weapongen(  )
    while( !eflags.empty(  ) )
    {
       eflags = one_argument( eflags, flag );
-      ovalue = get_oflag( flag );
+      int ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
          bug( "{}: Unknown object extraflag: {}", __func__, flag );
       else
@@ -1112,8 +1111,10 @@ void obj_data::weapongen(  )
       affects.remove( aff );
       deleteptr( aff );
       --top_affect;
-      continue;
    }
+
+   wear_flags.set( ITEM_WIELD );
+   wear_flags.set( ITEM_TAKE );
 
    if( protoflag )
    {
@@ -1124,18 +1125,9 @@ void obj_data::weapongen(  )
 
          pIndexData->affects.remove( aff );
          deleteptr( aff );
-         continue;
       }
-   }
 
-   wear_flags.set( ITEM_WIELD );
-   wear_flags.set( ITEM_TAKE );
-
-   /*
-    * And now to adjust the index for the new settings, if needed. 
-    */
-   if( protoflag )
-   {
+      // And now to adjust the index for the new settings, if needed.
       pIndexData->weight = weight;
       pIndexData->value[0] = value[0];
       pIndexData->value[1] = value[1];
@@ -1152,7 +1144,7 @@ void obj_data::weapongen(  )
    {
       extra_flags.set( ITEM_MAGIC );
 
-      paf = new affect_data;
+      affect_data *paf = new affect_data;
       paf->type = -1;
       paf->duration = -1;
       paf->location = APPLY_SAVING_SPELL; /* Save vs Spell */
@@ -1190,7 +1182,7 @@ void obj_data::weapongen(  )
 void obj_data::armorgen(  )
 {
    std::string eflags, flag;
-   int v3, v4, ovalue;
+   int v3, v4;
    bool protoflag = false;
 
    if( item_type != ITEM_ARMOR )
@@ -1247,7 +1239,7 @@ void obj_data::armorgen(  )
    while( !eflags.empty(  ) )
    {
       eflags = one_argument( eflags, flag );
-      ovalue = get_oflag( flag );
+      int ovalue = get_oflag( flag );
       if( ovalue < 0 || ovalue >= MAX_ITEM_FLAG )
          bug( "{}: Unknown object extraflag: {}", __func__, flag );
       else
@@ -1263,7 +1255,6 @@ void obj_data::armorgen(  )
       affects.remove( aff );
       deleteptr( aff );
       --top_affect;
-      continue;
    }
 
    if( protoflag )
@@ -1275,15 +1266,9 @@ void obj_data::armorgen(  )
 
          pIndexData->affects.remove( aff );
          deleteptr( aff );
-         continue;
       }
-   }
 
-   /*
-    * And now to adjust the index for the new settings, if needed. 
-    */
-   if( protoflag )
-   {
+      // And now to adjust the index for the new settings, if needed.
       pIndexData->weight = weight;
       pIndexData->value[0] = value[0];
       pIndexData->value[1] = value[1];
@@ -1370,14 +1355,12 @@ short num_sockets( short level )
 // This determines what material an armor or weapon is made of
 short choose_material( short level )
 {
-   short mval;
-
    /*
     * Hey look, if it takes more than 50000 iterations to find something.... 
     */
    for( int x = 0; x < 50000; ++x )
    {
-      mval = number_range( 1, TMAT_MAX - 1 );
+      short mval = number_range( 1, TMAT_MAX - 1 );
       if( materials[mval].minlevel <= level && materials[mval].maxlevel >= level )
          return mval;
    }
@@ -1388,14 +1371,12 @@ short choose_material( short level )
 // This determines what type of armor is generated
 short choose_armor( short level )
 {
-   short mval;
-
    /*
     * Hey look, if it takes more than 50000 iterations to find something.... 
     */
    for( int x = 0; x < 50000; ++x )
    {
-      mval = number_range( 1, TATP_MAX - 1 );
+      short mval = number_range( 1, TATP_MAX - 1 );
       if( armor_type[mval].minlevel <= level && armor_type[mval].maxlevel >= level )
          return mval;
    }
@@ -1428,12 +1409,12 @@ void make_scroll( obj_data * newitem )
 {
    runeword_data *runeword = nullptr;
    std::string name = "Empty", desc = "Empty";
-   short value = 0, pick2 = 0;
+   short value = 0;
 
    // Curse you Rabbit! Look what you've done!
    if( newitem->level <= ( LEVEL_AVATAR * 0.25 ) )
    {
-      pick2 = number_range( 1, 8 );
+      short pick2 = number_range( 1, 8 );
 
       switch ( pick2 )
       {
@@ -1486,7 +1467,7 @@ void make_scroll( obj_data * newitem )
    }
    else if( newitem->level <= ( LEVEL_AVATAR * 0.75 ) )
    {
-      pick2 = number_range( 1, 8 );
+      short pick2 = number_range( 1, 8 );
 
       switch ( pick2 )
       {
@@ -1540,7 +1521,7 @@ void make_scroll( obj_data * newitem )
    }
    else if( newitem->level <= LEVEL_AVATAR )
    {
-      pick2 = number_range( 1, 8 );
+      short pick2 = number_range( 1, 8 );
 
       switch ( pick2 )
       {
@@ -1629,12 +1610,12 @@ void make_scroll( obj_data * newitem )
 void make_potion( obj_data * newitem )
 {
    std::string name = "Empty", desc = "Empty";
-   short value = 0, pick2 = 0;
+   short value = 0;
 
    // Curse you Rabbit! Look what you've done!
    if( newitem->level <= ( LEVEL_AVATAR * 0.25 ) )
    {
-      pick2 = number_range( 1, 8 );
+      short pick2 = number_range( 1, 8 );
 
       switch ( pick2 )
       {
@@ -1687,7 +1668,7 @@ void make_potion( obj_data * newitem )
    }
    else if( newitem->level <= ( LEVEL_AVATAR * 0.75 ) )
    {
-      pick2 = number_range( 1, 8 );
+      short pick2 = number_range( 1, 8 );
 
       switch ( pick2 )
       {
@@ -1740,7 +1721,7 @@ void make_potion( obj_data * newitem )
    }
    else if( newitem->level <= LEVEL_AVATAR )
    {
-      pick2 = number_range( 1, 6 );
+      short pick2 = number_range( 1, 6 );
 
       switch ( pick2 )
       {
@@ -1797,12 +1778,12 @@ void make_potion( obj_data * newitem )
 void make_wand( obj_data * newitem )
 {
    std::string name = "Empty", desc = "Empty";
-   short value = 0, pick2 = 0;
+   short value = 0;
 
    // Curse you Rabbit! Look what you've done!
    if( newitem->level <= ( LEVEL_AVATAR * 0.25 ) )
    {
-      pick2 = number_range( 1, 4 );
+      short pick2 = number_range( 1, 4 );
 
       switch ( pick2 )
       {
@@ -1835,7 +1816,7 @@ void make_wand( obj_data * newitem )
    }
    else if( newitem->level <= ( LEVEL_AVATAR * 0.75 ) )
    {
-      pick2 = number_range( 1, 4 );
+      short pick2 = number_range( 1, 4 );
 
       switch ( pick2 )
       {
@@ -1868,7 +1849,7 @@ void make_wand( obj_data * newitem )
    }
    else if( newitem->level <= LEVEL_AVATAR )
    {
-      pick2 = number_range( 1, 4 );
+      short pick2 = number_range( 1, 4 );
 
       switch ( pick2 )
       {
@@ -1950,7 +1931,7 @@ void make_weapon( obj_data * newitem )
    newitem->weapongen(  );
 }
 
-obj_data *generate_item( area_data * area, short level )
+obj_data *generate_item( const area_data * area, short level )
 {
    obj_data *newitem = nullptr;
    short pick = number_range( 1, 100 );
@@ -2061,7 +2042,7 @@ int make_gold( short level, char_data * ch )
 }
 
 // A slightly butchered way for resets to pick out random junk too
-obj_data *generate_random( reset_data * pReset, char_data * mob )
+obj_data *generate_random( const reset_data * pReset, char_data * mob )
 {
    obj_data *newobj = nullptr;
    short picker = pReset->arg1;
@@ -2153,7 +2134,7 @@ void generate_treasure( char_data * ch, obj_data * corpse )
 {
    int tchance;
    short level = corpse->level;
-   area_data *area = ch->in_room->area;
+   const area_data *area = ch->in_room->area;
 
    /*
     * Rolling for the initial check to see if we should be generating anything at all 

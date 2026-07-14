@@ -482,7 +482,7 @@ ch_ret process_shipexit( char_data * ch, short x, short y, int dir )
    room_index *from_room;
    ship_data *ship = ch->on_ship;
    ch_ret retcode;
-   continent_data *from_cont;
+   const continent_data *from_cont;
    short fx, fy;
 
    from_room = ch->in_room;
@@ -713,15 +713,13 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
 {
    ship_data *ship = ch->on_ship;
    ch_ret retcode;
-   short door;
-   int newx, newy, move;
 
    retcode = rNONE;
 
    if( ch->has_pcflag( PCFLAG_ONMAP ) || ch->has_actflag( ACT_ONMAP ) )
    {
-      newx = ch->map_x;
-      newy = ch->map_y;
+      int newx = ch->map_x;
+      int newy = ch->map_y;
 
       switch ( direction )
       {
@@ -773,7 +771,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       return rSTOP;
    }
 
-   door = pexit->vdir;
+   short door = pexit->vdir;
 
    /*
     * Overland Map stuff - Samson 7-31-99 
@@ -899,7 +897,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
    {
       int count = 0;
 
-      for( auto* shp : shiplist )
+      for( const auto* shp : shiplist )
       {
          if( shp->room == to_room->vnum )
             ++count;
@@ -913,7 +911,7 @@ ch_ret move_ship( char_data * ch, exit_data * pexit, int direction )
       }
    }
 
-   move = sect_show[in_room->sector_type].move;
+   int move = sect_show[in_room->sector_type].move;
 
    if( ship->fuel < move && !ch->is_immortal(  ) )
    {

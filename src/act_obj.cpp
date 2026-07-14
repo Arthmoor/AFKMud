@@ -1386,7 +1386,7 @@ bool can_dual( char_data * ch )
  * (Layered clothing support)
  */
 // FIX ME - The entire layering system is seriously screwed up
-bool can_layer( char_data * ch, obj_data * obj, short wear_loc )
+bool can_layer( const char_data * ch, const obj_data * obj, short wear_loc )
 {
    short bitlayers = 0;
    short objlayers = obj->pIndexData->layers;
@@ -1503,7 +1503,7 @@ bool can_wear_obj( const char_data * ch, const obj_data * obj )
 void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
 {
    obj_data *tmpobj = nullptr;
-   int bit, tmp;
+   int bit;
    std::bitset<MAX_BPART> body_parts;
 
    if( obj->extra_flags.test( ITEM_PERSONAL ) && str_cmp( ch->name, obj->owner ) )
@@ -1578,6 +1578,7 @@ void wear_obj( char_data * ch, obj_data * obj, bool fReplace, int wear_bit )
    }
    else
    {
+      int tmp;
       for( bit = -1, tmp = 1; tmp < MAX_WEAR_FLAG; ++tmp )
       {
          if( obj->wear_flags.test( tmp ) )

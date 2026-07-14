@@ -58,4 +58,4 @@ struct variable_data
    int timer = 0;                                   // Expiry timer
 };
 
-variable_data *get_tag( char_data *, std::string_view, int );
+variable_data *get_tag( const char_data *, std::string_view, int );

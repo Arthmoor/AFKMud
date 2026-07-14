@@ -117,7 +117,7 @@ void check_switch( char_data * ch )
 
 int check_command_level( std::string_view arg, int check )
 {
-   cmd_type *cmd = find_command( arg );
+   const cmd_type *cmd = find_command( arg );
 
    if( !cmd )
       return LEVEL_IMMORTAL;
@@ -441,7 +441,7 @@ void interpret( char_data * ch, std::string argument )
    found = false;
    if( ch->substate == SUB_REPEATCMD )
    {
-      DO_FUN *fun;
+      const DO_FUN *fun;
 
       if( !( fun = ch->last_cmd ) )
       {
@@ -577,7 +577,7 @@ void interpret( char_data * ch, std::string argument )
          cmd->fileHandle = dlopen( filename.c_str(), RTLD_NOW );
          if( ( error = dlerror(  ) ) == nullptr )
          {
-            cmd->do_fun = ( DO_FUN * ) ( dlsym( cmd->fileHandle, cmd->fun_name.c_str(  ) ) );
+            cmd->do_fun = reinterpret_cast<DO_FUN *>( dlsym( cmd->fileHandle, cmd->fun_name.c_str(  ) ) );
             cmd->flags.set( CMD_LOADED );
          }
          else
@@ -764,7 +764,7 @@ void interpret( char_data * ch, std::string argument )
       std::string tmpargument = argument;
       std::string tmparg;
 
-      tmpargument = one_argument( tmpargument, tmparg );
+      one_argument( tmpargument, tmparg );
 
       if( !str_cmp( tmparg, "Samson" ) )
       {

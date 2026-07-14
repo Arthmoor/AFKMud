@@ -229,14 +229,12 @@ bool is_valid_ip( const std::string & ipaddress )
 bool is_valid_cidr( const std::string & cidr )
 {
    std::string::size_type x;
-   std::string ipaddress, cidr_string;
-   int cidr_int;
 
    if( ( x = cidr.find( '/' ) ) != std::string::npos && x > 0 )
    {
-      ipaddress = cidr.substr( 0, x );
-      cidr_string = cidr.substr( x + 1, cidr.length(  ) );
-      cidr_int = std::stoi( cidr_string );
+      std::string ipaddress = cidr.substr( 0, x );
+      std::string cidr_string = cidr.substr( x + 1, cidr.length(  ) );
+      int cidr_int = std::stoi( cidr_string );
 
       if( !is_valid_ip( ipaddress ) )
          return false;
@@ -299,7 +297,7 @@ bool is_ip_match( const std::string & ipaddress, const std::string & stored_ip )
    return false;
 }
 
-void send_ban_notice( descriptor_data *d, ban_data *ban )
+void send_ban_notice( descriptor_data *d, const ban_data *ban )
 {
    // Permanent check
    if( ban->expires == PERMANENT_BAN )

@@ -53,7 +53,7 @@ SPELLF( spell_remove_curse );
 void start_hunting( char_data *, char_data * );
 void start_hating( char_data *, char_data * );
 void set_fighting( char_data *, char_data * );
-int IsUndead( char_data * );
+int IsUndead( const char_data * );
 void wear_obj( char_data *, obj_data *, bool, int );
 void damage_obj( obj_data * );
 
@@ -94,7 +94,7 @@ void load_specfuns( void )
 /* Simple validation function to be sure a function can be used on mobs */
 bool validate_spec_fun( std::string_view name )
 {
-   for( auto& specfun : speclist )
+   for( const auto& specfun : speclist )
    {
       if( !str_cmp( specfun, name ) )
          return true;
@@ -821,7 +821,7 @@ void sayhello( char_data * ch, char_data * t )
          case 10:
          {
             std::string buf2;
-            WeatherCell *cell = getWeatherCell( ch->in_room->area );
+            const WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
                buf2 = "evening";
@@ -898,7 +898,7 @@ void sayhello( char_data * ch, char_data * t )
          case 10:
          {
             std::string buf2;
-            WeatherCell *cell = getWeatherCell( ch->in_room->area );
+            const WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
             if( time_info.hour < sysdata->hoursunrise )
                buf2 = "evening";
@@ -944,7 +944,7 @@ void greet_people( char_data * ch )
    }
 }
 
-bool callforhelp( char_data * ch, SPEC_FUN * spec )
+bool callforhelp( char_data * ch, const SPEC_FUN * spec )
 {
    short count = 0;
 

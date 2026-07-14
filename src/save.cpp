@@ -51,7 +51,7 @@ board_data *get_board( char_data *, std::string_view );
 void fwrite_morph_data( char_data *, std::ofstream & );
 void fread_morph_data( char_data *, std::ifstream & );
 void fread_variable( char_data *, std::ifstream & );
-void fwrite_variables( char_data *, std::ofstream & );
+void fwrite_variables( const char_data *, std::ofstream & );
 std::string default_fprompt( char_data * );
 std::string default_prompt( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
@@ -129,19 +129,15 @@ void char_data::de_equip(  )
       {
          if( char_ego(  ) >= obj->ego )
          {
+            bool found_slot = false;
             for( int x = 0; x < MAX_LAYERS; ++x )
             {
-               if( x == MAX_LAYERS )
-               {
-                  bug( "{}: {} had on more than {} layers of clothing in one location ({}): {}", __func__, name, MAX_LAYERS, obj->wear_loc, obj->name );
-                  break;
-               }
-
                if( isnpc(  ) )
                {
                   if( !mob_save_equipment[obj->wear_loc][x] )
                   {
                      mob_save_equipment[obj->wear_loc][x] = obj;
+                     found_slot = true;
                      break;
                   }
                }
@@ -150,9 +146,15 @@ void char_data::de_equip(  )
                   if( !save_equipment[obj->wear_loc][x] )
                   {
                      save_equipment[obj->wear_loc][x] = obj;
+                     found_slot = true;
                      break;
                   }
                }
+            }
+
+            if( !found_slot )
+            {
+               bug( "{}: {} had on more than {} layers of clothing in one location ({}): {}", __func__, name, MAX_LAYERS, obj->wear_loc, obj->name );
             }
          }
          unequip( obj );
@@ -539,12 +541,12 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
       if( obj->wear_flags != obj->pIndexData->wear_flags )
          stream << std::format( "WearFlags    {}~\n", bitset_string( obj->wear_flags, w_flags ) );
 
-      short wear, wear_loc = -1, x;
+      short wear_loc = -1;
       if( ch )
       {
-         for( wear = 0; wear < MAX_WEAR; ++wear )
+         for( short wear = 0; wear < MAX_WEAR; ++wear )
          {
-            for( x = 0; x < MAX_LAYERS; ++x )
+            for( short x = 0; x < MAX_LAYERS; ++x )
             {
                if( ch->isnpc(  ) )
                {
@@ -594,7 +596,7 @@ void fwrite_obj( char_data * ch, std::list<obj_data *> source, clan_data * clan,
       stream << std::format( "Oyear        {}\n", obj->year );
       stream << std::format( "Coordinates  {} {}\n", obj->map_x, obj->map_y );
       stream << "Values      ";
-      for( x = 0; x < MAX_OBJ_VALUE; ++x )
+      for( short x = 0; x < MAX_OBJ_VALUE; ++x )
          stream << std::format( " {}", obj->value[x] );
       stream << "\n";
       stream << std::format( "Sockets      {} {} {}\n", !obj->socket[0].empty() ? obj->socket[0] : "None", !obj->socket[1].empty() ? obj->socket[1] : "None", obj->socket[2].empty() ? obj->socket[2] : "None" );
@@ -1404,7 +1406,7 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       }
       else if( key == "Board_Data" )
       {
-         board_data *board = nullptr;
+         const board_data *board = nullptr;
 
          std::string word = fread_word( stream );
          if( !( board = get_board( nullptr, word ) ) )
@@ -1432,7 +1434,7 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
          bool found = false;
          std::string zonename = fread_line( stream );
 
-         for( auto* tarea : arealist )
+         for( const auto* tarea : arealist )
          {
             if( !str_cmp( tarea->name, zonename ) )
             {
@@ -2274,11 +2276,8 @@ bool load_char_obj( descriptor_data * d, std::string_view name, bool preload, bo
 
    if( !found )
    {
-      if( d )
-      {
-         if( d->msp_detected )
-            ch->set_pcflag( PCFLAG_MSP );
-      }
+      if( d->msp_detected )
+         ch->set_pcflag( PCFLAG_MSP );
       ch->name = name;
    }
    else

@@ -38,7 +38,7 @@
 #include "roomindex.h"
 #include "smaugaffect.h"
 
-bool check_pets( char_data *, mob_index * );
+bool check_pets( const char_data *, const mob_index * );
 room_index *recall_room( char_data * );
 void bind_follower( char_data *, char_data *, int, int );
 
@@ -357,19 +357,18 @@ void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
       }
       else if( key == "Classes" )
       {
-         std::string Class, flag;
-         int value;
-
-         Class = fread_line( stream );
+         std::string Class = fread_line( stream );
 
          if( !str_cmp( Class, "all" ) )
             deity->class_allowed.reset(  );
          else
          {
+            std::string flag;
+
             while( !Class.empty() )
             {
                Class = one_argument( Class, flag );
-               value = get_pc_class( flag );
+               int value = get_pc_class( flag );
                if( value < 0 || value > MAX_CLASS )
                   bug( "Unknown PC Class: {}", flag );
                else
@@ -382,19 +381,18 @@ void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
          /*
           * Cleaned up way to handle deity races - Samson 5-17-04
           */
-         std::string race, flag;
-         int value;
-
-         race = fread_line( stream );
+         std::string race = fread_line( stream );
 
          if( !str_cmp( race, "all" ) )
             deity->race_allowed.reset(  );
          else
          {
+            std::string flag;
+
             while( !race.empty() )
             {
                race = one_argument( race, flag );
-               value = get_pc_race( flag );
+               int value = get_pc_race( flag );
                if( value < 0 || value > MAX_PC_RACE )
                   bug( "Unknown PC Race: {}", flag );
                else

@@ -485,7 +485,7 @@ CMDF( do_instazone )
    ch->print( "Area resets installed.\r\n" );
 }
 
-reset_data *find_oreset( room_index * room, std::string_view oname )
+reset_data *find_oreset( const room_index * room, std::string_view oname )
 {
    obj_index *pobj;
    std::string arg;
@@ -823,9 +823,9 @@ CMDF( do_reset )
 }
 
 // Update the mobile resets to let it know to reset it again.
-void update_room_reset( char_data * ch, bool setting )
+void update_room_reset( const char_data * ch, bool setting )
 {
-   room_index *room;
+   const room_index *room;
    int nfind = 0;
 
    if( !ch )

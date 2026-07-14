@@ -152,7 +152,7 @@ struct sect_color_type
 extern std::list<continent_data *> continent_list;
 
 continent_data *find_continent_by_name( std::string_view );
-continent_data *find_continent_by_room( room_index * );
+continent_data *find_continent_by_room( const room_index * );
 continent_data *find_continent_by_room_vnum( int );
 continent_data *pick_random_continent( void );
 ch_ret process_exit( char_data *, short, short, int, bool );

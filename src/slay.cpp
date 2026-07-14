@@ -101,10 +101,10 @@ void load_slays( )
       }
       else if( current_slay )
       {
-         char delim = '~';
+         unsigned char delim = '~';
 
          if( file_ver == 1 )
-            delim = (char)0xA2; // This was a stupid idea and it needs to be undone now.
+            delim = HIDDEN_TILDE; // This was a stupid idea and it needs to be undone now.
 
          if( key == "Type" ) current_slay->set_type( fread_line( stream, '\n' ) );
          else if( key == "Owner" ) current_slay->set_owner( fread_line( stream, '\n' ) );

@@ -385,13 +385,11 @@ auth_data *get_auth_name( std::string_view name )
 
 void add_to_auth( char_data * ch )
 {
-   auth_data *new_name;
-
-   if( ( new_name = get_auth_name( ch->name ) ) != nullptr )
+   if( get_auth_name( ch->name ) != nullptr )
       return;
    else
    {
-      new_name = new auth_data;
+      auth_data *new_name = new auth_data;
       new_name->name = ch->name;
       new_name->state = AUTH_ONLINE;   /* Just entered the game */
       authlist.push_back( new_name );
@@ -859,7 +857,6 @@ CMDF( do_mpapplyb )
 void auth_update( void )
 {
    int level;
-   bool found_imm = false; /* Is at least 1 immortal on? */
    bool found_hit = false; /* was at least one found? */
 
    if( ( level = check_command_level( "authorize", MAX_LEVEL ) ) == -1 )
@@ -878,6 +875,8 @@ void auth_update( void )
 
    if( found_hit )
    {
+      bool found_imm = false; /* Is at least 1 immortal on? */
+
       for( auto* d : dlist )
       {
          if( d->connected == CON_PLAYING && d->character && d->character->is_immortal(  ) && d->character->level >= level )

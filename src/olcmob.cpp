@@ -69,7 +69,7 @@ std::string specmenu[100];
 
 /* Function prototypes */
 void medit_disp_menu( descriptor_data * );
-int calc_thac0( char_data *, char_data *, int );
+int calc_thac0( char_data *, const char_data *, int );
 void cleanup_olc( descriptor_data * );
 int mob_xp( char_data * );
 bool can_mmodify( char_data *, char_data * );
@@ -229,7 +229,7 @@ void spec_menu( void )
 
    specmenu[0] = "None";
 
-   for( auto& spec : speclist )
+   for( const auto& spec : speclist )
    {
       ++j;
       specmenu[j] = spec;
@@ -262,7 +262,7 @@ void medit_disp_spec( descriptor_data * d )
  */
 void medit_disp_ris( descriptor_data * d )
 {
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
 
@@ -311,7 +311,7 @@ void medit_disp_ris( descriptor_data * d )
  */
 void medit_disp_attack_menu( descriptor_data * d )
 {
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_ATTACK_TYPE; ++i )
@@ -325,7 +325,7 @@ void medit_disp_attack_menu( descriptor_data * d )
  */
 void medit_disp_defense_menu( descriptor_data * d )
 {
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_DEFENSE_TYPE; ++i )
@@ -339,7 +339,7 @@ void medit_disp_defense_menu( descriptor_data * d )
 
 void medit_disp_mob_flags( descriptor_data * d )
 {
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( d->character->pcdata->dest_buf );
    int columns = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -357,7 +357,7 @@ void medit_disp_mob_flags( descriptor_data * d )
 
 void medit_disp_aff_flags( descriptor_data * d )
 {
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( d->character->pcdata->dest_buf );
    int i, columns = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -373,7 +373,7 @@ void medit_disp_aff_flags( descriptor_data * d )
       std::string buf;
 
       for( i = 0; i < 32; ++i )
-         if( IS_SET( d->character->tempnum, 1 << i ) )
+         if( IS_SET( d->character->tempnum, 1U << i ) )
          {
             buf += " ";
             buf += aff_flags[i];
@@ -387,7 +387,7 @@ void medit_disp_aff_flags( descriptor_data * d )
 
 void medit_disp_parts( descriptor_data * d )
 {
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( d->character->pcdata->dest_buf );
    int columns = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -435,7 +435,7 @@ void medit_disp_races( descriptor_data * d )
 void medit_disp_menu( descriptor_data * d )
 {
    char_data *ch = d->character;
-   char_data *mob = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *mob = static_cast<char_data *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    ch->print_fmt( "&w-- Mob Number:  [&c{}&w]\r\n", mob->pIndexData->vnum );
@@ -477,7 +477,7 @@ void medit_disp_menu( descriptor_data * d )
  */
 CMDF( do_medit_reset )
 {
-   char_data *victim = ( char_data * ) ch->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( ch->pcdata->dest_buf );
 
    switch ( ch->substate )
    {
@@ -513,7 +513,7 @@ CMDF( do_medit_reset )
 
 void medit_parse( descriptor_data * d, std::string & arg )
 {
-   char_data *victim = ( char_data * ) d->character->pcdata->dest_buf;
+   char_data *victim = static_cast<char_data *>( d->character->pcdata->dest_buf );
    int number = 0;
    std::string arg1;
 

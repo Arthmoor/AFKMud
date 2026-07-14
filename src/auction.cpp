@@ -346,7 +346,7 @@ void save_aucvault( char_data * ch, std::string_view aucmob )
       bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
-char_data *find_auctioneer( char_data * ch )
+char_data *find_auctioneer( const char_data * ch )
 {
    for( auto* auc : ch->in_room->people )
    {
@@ -509,7 +509,7 @@ int parsebet( const int currentbet, const char *s )
 }
 
 /* put an item on auction, or see the stats on the current item or bet */
-void bid( char_data * ch, char_data * buyer, std::string_view argument )
+void place_bid( char_data * ch, char_data * buyer, std::string_view argument )
 {
    obj_data *obj;
    std::string arg, arg1, arg2;
@@ -533,8 +533,6 @@ void bid( char_data * ch, char_data * buyer, std::string_view argument )
    {
       if( auction->item != nullptr )
       {
-         obj = auction->item;
-
          /*
           * show item data here 
           */
@@ -778,7 +776,7 @@ void init_auction( void )
 void clear_auction( void )
 {
    if( auction->item )
-      bid( supermob, nullptr, "stop" );
+      place_bid( supermob, nullptr, "stop" );
 }
 
 CMDF( do_bid )
@@ -789,18 +787,18 @@ CMDF( do_bid )
    {
       if( argument.empty(  ) )
       {
-         bid( ch, nullptr, "" );
+         place_bid( ch, nullptr, "" );
          return;
       }
 
       if( !str_cmp( argument, "stop" ) )
       {
-         bid( ch, nullptr, "stop" );
+         place_bid( ch, nullptr, "stop" );
          return;
       }
    }
    buf = "bid " + argument;
-   bid( ch, nullptr, buf );
+   place_bid( ch, nullptr, buf );
 }
 
 CMDF( do_identify )
@@ -1251,7 +1249,7 @@ void auction_buy( char_data * ch, char_data * auc, std::string_view argument )
    save_aucvault( auc, auc->short_descr );
 
    buf << obj->name << " " << obj->bid;
-   bid( auc, ch, buf.str(  ) );
+   place_bid( auc, ch, buf.str(  ) );
 }
 
 void auction_sell( char_data * ch, char_data * auc, std::string & argument )
@@ -1344,7 +1342,7 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
       return;
    }
 
-   for( auto* sobj : aucvault->objects )
+   for( const auto* sobj : aucvault->objects )
    {
       if( sobj && sobj->pIndexData->vnum == obj->pIndexData->vnum )
       {
@@ -1354,7 +1352,7 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
    }
 
    short sellcount = 0;
-   for( auto* sobj2 : aucvault->objects )
+   for( const auto* sobj2 : aucvault->objects )
    {
       if( sobj2 && !str_cmp( sobj2->seller, ch->name ) )
          ++sellcount;
@@ -1389,7 +1387,7 @@ void auction_sell( char_data * ch, char_data * auc, std::string & argument )
 void sweep_house( room_index * aucroom )
 {
    char_data *aucmob;
-   room_index *aucvault;
+   const room_index *aucvault;
    bool found = false;
 
    if( !( aucmob = find_auctioneer( supermob ) ) )

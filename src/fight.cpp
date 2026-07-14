@@ -66,9 +66,9 @@ bool check_tumble( char_data *, char_data * );
 void trip( char_data *, char_data * );
 room_index *check_room( char_data *, room_index * );
 void unbind_follower( char_data *, char_data * );
-int IsUndead( char_data * );
-int IsDragon( char_data * );
-int IsGiantish( char_data * );
+int IsUndead( const char_data * );
+int IsDragon( const char_data * );
+int IsGiantish( const char_data * );
 void stop_hunting( char_data * );
 void start_hunting( char_data *, char_data * );
 void start_hating( char_data *, char_data * );
@@ -370,7 +370,7 @@ CMDF( do_ageattack )
  */
 bool is_attack_supressed( char_data * ch )
 {
-   timer_data *chtimer;
+   const timer_data *chtimer;
 
    if( ch->isnpc(  ) )
       return false;
@@ -522,7 +522,7 @@ CMDF( do_gfighting )
 /*
  * Weapon types, haus
  */
-int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int & gsn_ptr )
+int weapon_prof_bonus_check( char_data * ch, const obj_data * wield, int & gsn_ptr )
 {
    int bonus = 0;
 
@@ -585,17 +585,17 @@ int weapon_prof_bonus_check( char_data * ch, obj_data * wield, int & gsn_ptr )
  * Calculate to hit armor Class 0 versus armor.
  * Rewritten by Dwip, 5-11-01
  */
-int calc_thac0( char_data * ch, char_data * victim, int dist )
+int calc_thac0( char_data * ch, const char_data * victim, int dist )
 {
-   int base_thac0, tenacity_adj;
-   float thac0, thac0_gain;
+   int tenacity_adj;
+   float thac0;
 
    if( ch->isnpc(  ) && ( ch->mobthac0 < 21 || !class_table[ch->Class] ) )
       thac0 = ch->mobthac0;
    else
    {
-      base_thac0 = class_table[ch->Class]->base_thac0;   /* This is thac0_00 right now */
-      thac0_gain = class_table[ch->Class]->thac0_gain;
+      int base_thac0 = class_table[ch->Class]->base_thac0;   /* This is thac0_00 right now */
+      float thac0_gain = class_table[ch->Class]->thac0_gain;
       /*
        * thac0_gain is a new thing replacing thac0_32 in the classfiles.
        * *  It needs to be calced and set for all classes, but shouldn't be overly hard. 
@@ -662,6 +662,12 @@ bool check_illegal_pk( char_data * ch, char_data * victim )
 
 bool is_safe( char_data * ch, char_data * victim )
 {
+   if( !victim )  /* Gonna find this is_safe crash bug -Blod */
+   {
+      bug( "{}: {} opponent does not exist!", __func__, ch->name );
+      return true;
+   }
+
    if( victim->char_died(  ) || ch->char_died(  ) )
       return true;
 
@@ -670,12 +676,6 @@ bool is_safe( char_data * ch, char_data * victim )
     */
    if( ch->who_fighting(  ) == ch )
       return false;
-
-   if( !victim )  /*Gonna find this is_safe crash bug -Blod */
-   {
-      bug( "{}: {} opponent does not exist!", __func__, ch->name );
-      return true;
-   }
 
    if( !victim->in_room )
    {
@@ -805,7 +805,7 @@ void align_zap( char_data * ch )
  * Reformulated by Samson on 3-12-98. Lets hope this crap works better
  * than what came stock! Thanks to Sillymud for the ratio formula.
  */
-double RatioExp( char_data * gch, char_data * victim, double xp )
+double RatioExp( const char_data * gch, const char_data * victim, double xp )
 {
    double ratio, fexp, chlevel = gch->level, viclevel = victim->level, tempexp = victim->exp;
 
@@ -889,7 +889,7 @@ int xp_compute( char_data * gch, char_data * victim )
    Not sure exactly where or how it was derived, but it worked well
    enough for Sillymud, so why not here? :P Samson - 5-15-98 */
 /* This has been modified to calculate based on what the mob_xp function tells it to use - Samson 5-18-01 */
-int calculate_mob_exp( char_data * mob, int exp_flags )
+int calculate_mob_exp( const char_data * mob, int exp_flags )
 {
    int base, phit, sab;
 
@@ -1478,10 +1478,10 @@ void group_gain( char_data * ch, char_data * victim )
       members = 1;
    }
 
-   char_data *lch = ch->leader ? ch->leader : ch;
+   const char_data *lch = ch->leader ? ch->leader : ch;
    for( ich = ch->in_room->people.begin(  ); ich != ch->in_room->people.end(  ); )
    {
-      char_data *gch = ( *ich );
+      char_data *gch = *ich;
       ++ich;
       int xpmod = 1;
 
@@ -1518,7 +1518,7 @@ void group_gain( char_data * ch, char_data * victim )
  * Added code to produce different messages based on weapon type - FB
  * Added better bug message so you can track down the bad dt's -Shaddai
  */
-void dam_message( char_data * ch, char_data * victim, double dam, unsigned int dt, obj_data * obj )
+void dam_message( char_data * ch, char_data * victim, double dam, unsigned int dt, const obj_data * obj )
 {
    std::string buf1, buf2, buf3;
    const char *vs;
@@ -1606,7 +1606,6 @@ void dam_message( char_data * ch, char_data * victim, double dam, unsigned int d
       else
       {
          bug( "{}: bad dt {}d from {} in {}.", __func__, dt, ch->name, ch->in_room->vnum );
-         dt = TYPE_HIT;
          attack = attack_table[0];
       }
       buf1 = std::format( "$n's poisoned {} {} $N{}", attack, vp, punct );
@@ -1944,11 +1943,9 @@ void check_killer( char_data * ch, char_data * victim )
          ch->mana = ch->max_mana;
          ch->move = ch->max_move;
          victim->update_pos(  );
-         if( victim != ch )
-         {
-            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into $n.", ch, victim->name.c_str(), nullptr, TO_ROOM );
-            act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into you.", ch, victim->name.c_str(), nullptr, TO_CHAR );
-         }
+         act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into $n.", ch, victim->name.c_str(), nullptr, TO_ROOM );
+         act( AT_MAGIC, "Bolts of blue energy rise from the corpse, seeping into you.", ch, victim->name.c_str(), nullptr, TO_CHAR );
+
          if( victim->pcdata->clan )
          {
             if( ch->level < ( LEVEL_AVATAR * 0.1 ) )
@@ -2650,13 +2647,9 @@ double damage_risa( char_data * victim, double dam, int dt )
  */
 ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
 {
-   short dameq, maxdam, dampmod;
-   bool npcvict, loot;
-   obj_data *damobj;
-   ch_ret retcode;
-   int init_gold, new_gold, gold_diff;
-
-   retcode = rNONE;
+   short maxdam;
+   bool npcvict;
+   ch_ret retcode = rNONE;
 
    if( !ch )
    {
@@ -2904,6 +2897,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       /*
        * Check control panel settings and modify damage
        */
+      short dampmod = 0;
       if( ch->isnpc(  ) )
       {
          if( npcvict )
@@ -2931,8 +2925,8 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       /*
        * get a random body eq part 
        */
-      dameq = number_range( WEAR_LIGHT, WEAR_TAIL );
-      damobj = victim->get_eq( dameq );
+      short dameq = number_range( WEAR_LIGHT, WEAR_TAIL );
+      obj_data *damobj = victim->get_eq( dameq );
       if( damobj )
       {
          if( dam > damobj->get_resistance(  ) && number_bits( 1 ) == 0 )
@@ -3095,6 +3089,7 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
       if( !victim->isnpc(  ) && victim->pcdata->clan )
          update_roster( victim );
 
+      bool loot;
       if( ch->in_room == victim->in_room )
          loot = legal_loot( ch, victim );
       else
@@ -3110,19 +3105,17 @@ ch_ret damage( char_data * ch, char_data * victim, double dam, int dt )
           */
          if( ch->has_pcflag( PCFLAG_AUTOGOLD ) || ch->has_pcflag( PCFLAG_AUTOLOOT ) )
          {
-            init_gold = ch->gold;
+            int init_gold = ch->gold;
             interpret( ch, "get coins corpse" );
-            new_gold = ch->gold;
-            gold_diff = ( new_gold - init_gold );
+            int new_gold = ch->gold;
+            int gold_diff = ( new_gold - init_gold );
             if( ch->has_pcflag( PCFLAG_GUILDSPLIT ) && ch->pcdata->clan && ch->pcdata->clan->bank )
             {
-               int split = 0;
-
                if( gold_diff > 0 )
                {
                   float xx = ( float )( ch->pcdata->clan->tithe ) / 100;
                   float pct = ( float )( gold_diff ) * xx;
-                  split = ( int )( gold_diff - pct );
+                  int split = ( int )( gold_diff - pct );
 
                   ch->pcdata->clan->balance += split;
                   save_clan( ch->pcdata->clan );
@@ -3200,7 +3193,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
 {
    obj_data *wield;
    double vic_ac, dam;
-   int thac0, plusris, diceroll, attacktype, cnt, prof_bonus, prof_gsn = -1;
+   int thac0, plusris, diceroll, prof_bonus, prof_gsn = -1;
    ch_ret retcode = rNONE;
 
    /*
@@ -3229,16 +3222,14 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
 
    used_weapon = wield;
 
+   /*
+    * Lets hope this works, the called function here defaults out to gsn_pugilism, and since
+    * every Class can learn it, this should theoretically make it advance with use now
+    */
    if( wield )
       prof_bonus = weapon_prof_bonus_check( ch, wield, prof_gsn );
    else
       prof_bonus = 0;
-
-   /*
-    * Lets hope this works, the called function here defaults out to gsn_pugilism, and since
-    * every Class can learn it, this should theoretically make it advance with use now 
-    */
-   prof_bonus = weapon_prof_bonus_check( ch, wield, prof_gsn );
 
    if( prof_bonus < 0 && ch->level <= 5 ) // Give the lowbies a break!
       prof_bonus = 0;
@@ -3247,7 +3238,8 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    {
       if( ch->fighting && dt == TYPE_UNDEFINED && ch->isnpc(  ) && ch->has_attacks(  ) )
       {
-         cnt = 0;
+         int attacktype = 0;
+         int cnt = 0;
          for( ;; )
          {
             attacktype = number_range( 0, 6 );
@@ -3561,7 +3553,7 @@ ch_ret one_hit( char_data * ch, char_data * victim, int dt )
    }
    if( wield )
    {
-      for( auto* af : wield->affects )
+      for( const auto* af : wield->affects )
       {
          if( af->location == APPLY_RACE_SLAYER )
          {

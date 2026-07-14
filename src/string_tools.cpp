@@ -31,70 +31,46 @@
 #include "mud.h"
 
 // Pick off one argument from a string and return the rest.
-std::string one_argument( std::string_view argument, std::string & first )
+std::string_view one_argument( std::string_view argument, std::string & first )
 {
-   std::string::size_type start, stop, stop2;
-   char find;
-
    // Init
-   start = 0;
+   first.clear();
 
-   // Make sure first is clean
-   first.clear(  );
-
-   // Empty?
-   if( argument.empty(  ) )
+   // Strip leading spaces.
+   size_t start = argument.find_first_not_of( ' ' );
+   if( start == std::string_view::npos )
       return "";
 
-   // Strip leading spaces
-   if( argument.front() == ' ' )
-   {
-      start = argument.find_first_not_of( ' ' );
-
-      // Empty?
-      if( start == argument.npos )
-         return "";
-   }
+   argument.remove_prefix( start );
 
    // Quotes or space?
-   switch ( argument[start] )
+   char find = ' ';
+   if( argument.front() == '\'' || argument.front() == '\"' )
    {
-      case '\'':
-         find = '\'';
-         ++start;
-         break;
-
-      case '\"':
-         find = '\"';
-         ++start;
-         break;
-
-      default:
-         find = ' ';
+      find = argument.front();
+      argument.remove_prefix( 1 );
    }
 
    // Find end of argument.
-   stop = argument.find_first_of( find, start );
+   size_t stop = argument.find_first_of( find );
 
-   // Empty leftovers?
-   if( stop == argument.npos )
+   // If no end delimiter found, the whole rest is the argument.
+   if( stop == std::string_view::npos )
    {
-      first = argument.substr( start );
+      first = argument;
       return "";
    }
 
-   // Update first
-   first = argument.substr( start, ( stop - start ) );
+   // Extract argument.
+   first = argument.substr( 0, stop );
 
-   // Strip leading spaces from leftovers
-   stop2 = argument.find_first_not_of( ' ', stop + 1 );
+   // The remainder starts after the stop character.
+   std::string_view leftovers = argument.substr( stop + 1 );
 
-   // Empty leftovers?
-   if( stop2 == argument.npos )
-      return "";
+   // Strip leading spaces from leftovers.
+   size_t stop2 = leftovers.find_first_not_of( ' ' );
 
-   // Return leftovers.
-   return std::string{argument.substr( stop2 )};
+   return ( stop2 == std::string_view::npos ) ? "" : leftovers.substr( stop2 );
 }
 
 /*
@@ -104,7 +80,7 @@ std::string one_argument( std::string_view argument, std::string & first )
  *
  * Rewritten by Xorith
  */
-std::string one_argument2( std::string arg, std::string & newArg )
+std::string one_argument2( const std::string & arg, std::string & newArg )
 {
    std::string retValue = "";
 
@@ -272,7 +248,6 @@ bool str_cmp( std::string_view astr, std::string_view bstr )
 // Returns true if astr isn't a prefix of bstr.
 // Returns false if it is.
 // If that's confusing, that's how this function's traditional usage has always been.
-// Thanks to Justice for providing this.
 bool str_prefix( std::string_view astr, std::string_view bstr )
 {
    if( astr.size() > bstr.size() )
@@ -290,9 +265,9 @@ bool str_prefix( std::string_view astr, std::string_view bstr )
  */
 bool str_infix( std::string_view astr, std::string_view bstr )
 {
-   if( bstr.find( astr ) != std::string::npos )
-      return false;
-   return true;
+   auto it = std::ranges::search( bstr, astr, []( unsigned char a, unsigned char b ) { return std::tolower( a ) == std::tolower( b ); } );
+
+   return it.empty();
 }
 
 /*
@@ -301,10 +276,11 @@ bool str_infix( std::string_view astr, std::string_view bstr )
  */
 bool str_suffix( std::string_view astr, std::string_view bstr )
 {
-   if( astr.length() <= bstr.length() && !str_cmp( astr, bstr.substr( bstr.length() - astr.length() ) ) )
-      return false;
-   else
+   // If the suffix is longer, it definitely can't be a suffix.
+   if( astr.length() > bstr.length() )
       return true;
+
+   return !str_cmp( astr, bstr.substr( bstr.length() - astr.length() ) );
 }
 
 // Son, you just got promoted. You are now what hasname in editor.cpp is calling.
@@ -329,7 +305,7 @@ bool is_name2_prefix( std::string_view str, std::string namelist )
  * to be selected by specifying an empty list l*ike -, '', "", ', " etc,
  * example: ofind -, c loc ''  - Luc 08/2000
  */
-bool nifty_is_name_prefix( std::string str, std::string namelist )
+bool nifty_is_name_prefix( std::string str, const std::string & namelist )
 {
    std::string name;
    bool valid = false;
@@ -370,11 +346,12 @@ void strip_lspace( std::string & line )
 // Strips off trailing spaces in strings.
 void strip_tspace( std::string & line )
 {
-   std::string::size_type space;
+   auto space = line.find_last_not_of( " \t" );
 
-   space = line.find_last_not_of( " \t" );
-   if( space != std::string::npos )
-      line = line.substr( 0, space + 1 );
+   if( space == std::string::npos )
+      line.clear();
+   else
+      line.resize( space + 1 );
 }
 
 // Strip both leading and trailing spaces from a string.
@@ -503,13 +480,13 @@ std::string capitalize( std::string_view str )
 // Returns a lowercase string.
 void strlower( std::string & str )
 {
-   std::transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::tolower );
+   std::transform( str.begin(  ), str.end(  ), str.begin(  ), static_cast<int(*)(int)>( std::tolower ) );
 }
 
 // Returns an uppercase string.
 void strupper( std::string & str )
 {
-   std::transform( str.begin(  ), str.end(  ), str.begin(  ), ( int ( * )( int ) )std::toupper );
+   std::transform( str.begin(  ), str.end(  ), str.begin(  ), static_cast<int(*)(int)>( std::toupper ) );
 }
 
 // These two replace the old LOWER and UPPER macros. These are almost always used in file reads.
@@ -553,7 +530,10 @@ const char *aoran( std::string_view str )
    else
       temp = std::format( "a {}", str );
 
-   return temp.c_str();
+   // The ugly things we must do when something insists on being const char*
+   static char result[MSL];
+   strlcpy( result, temp.c_str(), MSL );
+   return result;
 }
 
 /*
@@ -562,7 +542,7 @@ const char *aoran( std::string_view str )
  */
 void smash_tilde( std::string & str )
 {
-   string_replace( str, "~", "-" );
+   std::replace( str.begin(), str.end(), '~', '-' );
 }
 
 /*
@@ -574,7 +554,7 @@ void hide_tilde( std::string & str )
    if( str.find( '~' ) == std::string::npos )
       return;
 
-   string_replace( str, "~", ( char * )HIDDEN_TILDE );
+   std::replace( str.begin(), str.end(), '~', static_cast<char>( HIDDEN_TILDE ) );
 }
 
 const std::string show_tilde( const std::string & str )
@@ -584,7 +564,7 @@ const std::string show_tilde( const std::string & str )
    if( str.find( HIDDEN_TILDE ) == std::string::npos )
       return newstr;
 
-   string_replace( newstr, ( char * )HIDDEN_TILDE, "~" );   // <-- Stupid C++ making me use ugly casting.
+   std::replace( newstr.begin(), newstr.end(), static_cast<char>( HIDDEN_TILDE ), '~' );
    return newstr;
 }
 
@@ -648,29 +628,19 @@ void string_replace( std::string & src, std::string_view find, std::string_view 
       return;
    }
 
-   size_t pos = src.find( find );
-   if( pos == std::string::npos )
-      return;
-
-   if( replace.empty() )
-   {
-      string_erase( src, find );
-      return;
-   }
-
    std::string result;
-   result.reserve( src.size() + ( replace.size() > find.size() ? (src.size() / 2) : 0 ) );
+   result.reserve( src.size() );
 
    size_t last_pos = 0;
+   size_t pos;
    while( ( pos = src.find( find, last_pos ) ) != std::string::npos )
    {
       result.append( src, last_pos, pos - last_pos );
       result.append( replace );
       last_pos = pos + find.size();
    }
-   result.append( src, last_pos, std::string_view::npos );
-
-   src = std::move( result );
+   result.append( src, last_pos, std::string::npos );
+   src.swap( result );
 }
 
 /*

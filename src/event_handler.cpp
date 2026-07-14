@@ -62,7 +62,7 @@ int reboot_counter;
 /* Replaces violence_update */
 void ev_violence( void *data )
 {
-   char_data *ch = ( char_data * ) data;
+   char_data *ch = static_cast<char_data *>( data );
 
    if( !ch )
    {
@@ -442,7 +442,7 @@ void ev_area_reset( void *data )
 {
    area_data *area;
 
-   area = ( area_data * ) data;
+   area = static_cast<area_data *>( data );
 
    if( !area->resetmsg.empty() )
    {
@@ -565,7 +565,7 @@ void ev_reboot_count( void *data )
 
 void ev_skyship( void *data )
 {
-   char_data *ch = ( char_data * ) data;
+   char_data *ch = static_cast<char_data *>( data );
 
    if( !ch )
       return;

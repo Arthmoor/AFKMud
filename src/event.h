@@ -39,8 +39,7 @@ struct event_info
 };
 
 void add_event( time_t when, void ( *callback ) ( void * ), void *data );
-void cancel_event( void ( *callback ) ( void * ), void * );
-event_info *find_event( void ( *callback ) ( void * ), void * );
+void cancel_event( void ( *const callback ) ( void * ), const void * );
 void ev_violence( void * );
 void ev_area_reset( void * );
 void ev_auction( void * );

@@ -116,16 +116,17 @@ void save_quotes( void )
    num_quotes = q;
 }
 
-/** Function: load_quotes
-  * Descr   : Determines how many (if any) quote files are located within
-  *           QUOTE_DIR, for later use by "do_quotes".
-  * Returns : (void)
-  * Syntax  : (none)
-  * Written : v1.0 12/97
-  * Author  : Gary McNickle <gary@dharvest.com>
-  *
-  * Completely rewritten by Samson so it can be OLC'able. 10-15-03
-  */
+/*
+ * Function: load_quotes
+ * Descr   : Determines how many (if any) quote files are located within
+ *           QUOTE_DIR, for later use by "do_quotes".
+ * Returns : (void)
+ * Syntax  : (none)
+ * Written : v1.0 12/97
+ * Author  : Gary McNickle <gary@dharvest.com>
+ *
+ * Completely rewritten by Samson so it can be OLC'able. 10-15-03
+ */
 void load_quotes( void )
 {
    std::filesystem::path filename = std::format( "{}{}", SYSTEM_DIR, QUOTE_FILE );
@@ -792,10 +793,12 @@ CMDF( do_pfiles )
       return;
    }
 
-   std::string arg1 = one_argument( argument, arg1 );
+   std::string arg1;
+   one_argument( argument, arg1 );
    if( !str_cmp( arg1, "restore" ) )
    {
-      std::string arg2 = one_argument( argument, arg2 );
+      std::string arg2;
+      one_argument( argument, arg2 );
 
       if( !sysdata->LOCKDOWN )
       {
@@ -830,7 +833,6 @@ void check_pfiles( time_t reset )
     */
    if( reset == 255 && new_pfile_time_t > current_time )
    {
-      reset = 0;  /* Call me paranoid, but it might be meaningful later on */
       log_string( "Counting pfiles....." );
       pfile_scan( true );
       return;

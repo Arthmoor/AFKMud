@@ -50,7 +50,7 @@ bool in_arena( char_data * );
 void start_hunting( char_data *, char_data * );
 void start_hating( char_data *, char_data * );
 int recall( char_data *, int );
-bool circle_follow( char_data *, char_data * );
+bool circle_follow( const char_data *, char_data * );
 void add_follower( char_data *, char_data * );
 void stop_follower( char_data * );
 morph_data *find_morph( char_data *, std::string_view, bool );
@@ -59,8 +59,8 @@ ch_ret check_room_for_traps( char_data *, int );
 room_index *recall_room( char_data * );
 bool beacon_check( char_data *, room_index * );
 void bind_follower( char_data *, char_data *, int, int );
-int IsUndead( char_data * );
-int IsDragon( char_data * );
+int IsUndead( const char_data * );
+int IsDragon( const char_data * );
 
 bool EqWBits( const char_data * ch, int bit )
 {
@@ -297,7 +297,7 @@ void say_spell( char_data* ch, int sn )
    std::string_view msg_masked = is_bard ? "$n plays a song." : std::format( "$n utters the words, '{}'.", spell_words );
    std::string_view msg_clear = is_bard ? std::format( "$n plays the song, '{}'.", skill->name ) : std::format( "$n utters the words, '{}'.", skill->name );
 
-   for( auto* rch : ch->in_room->people )
+   for( const auto* rch : ch->in_room->people )
    {
       if( rch != ch && is_same_char_map( ch, rch ) )
          act( AT_MAGIC, (ch->Class == rch->Class) ? msg_clear.data() : msg_masked.data(), ch, nullptr, rch, TO_VICT );
@@ -612,11 +612,9 @@ bool saves_spell_staff( int level, char_data * victim )
  */
 bool process_spell_components( char_data * ch, int sn )
 {
-   skill_type *skill = get_skilltype( sn );
+   const skill_type *skill = get_skilltype( sn );
    std::string comp = skill->components;
    std::string check, arg;
-   bool consume, fail, found;
-   int val, value;
    obj_data *obj;
    std::list<obj_data *>::iterator iobj;
 
@@ -629,9 +627,8 @@ bool process_spell_components( char_data * ch, int sn )
    while( !comp.empty() )
    {
       comp = one_argument( comp, arg );
-      consume = true;
-      fail = found = false;
-      val = -1;
+      bool consume = true, fail = false, found = false;
+      int val = -1;
       switch ( arg[1] )
       {
          default:
@@ -673,7 +670,7 @@ bool process_spell_components( char_data * ch, int sn )
              * reserve '*', '(' and ')' for v6, v7 and v8   
              */
       }
-      value = std::stoi( check );
+      int value = std::stoi( check );
       obj = nullptr;
       switch ( to_upper( arg[0] ) )
       {
@@ -839,7 +836,7 @@ void *locate_targets( char_data * ch, const std::string & arg, int sn )
 {
    char_data *victim = nullptr;
    obj_data *obj = nullptr;
-   skill_type *skill = get_skilltype( sn );
+   const skill_type *skill = get_skilltype( sn );
    void *vo = nullptr;
 
    switch ( skill->target )
@@ -939,7 +936,7 @@ void *locate_targets( char_data * ch, const std::string & arg, int sn )
             ch->print( "You cannot cast that on another player!\r\n" );
             return &pAbort;
          }
-         vo = ( void * )victim;
+         vo = static_cast<void *>( victim );
          break;
 
       case TAR_CHAR_DEFENSIVE:
@@ -965,7 +962,7 @@ void *locate_targets( char_data * ch, const std::string & arg, int sn )
                ch->print( "You can't cast this on yourself!\r\n" );
             return &pAbort;
          }
-         vo = ( void * )victim;
+         vo = static_cast<void *>( victim );
          break;
 
       case TAR_CHAR_SELF:
@@ -975,7 +972,7 @@ void *locate_targets( char_data * ch, const std::string & arg, int sn )
                ch->print( "You cannot cast this spell on another.\r\n" );
             return &pAbort;
          }
-         vo = ( void * )ch;
+         vo = static_cast<void *>( ch );
          break;
 
       case TAR_OBJ_INV:
@@ -992,7 +989,7 @@ void *locate_targets( char_data * ch, const std::string & arg, int sn )
                ch->print( "You are not carrying that.\r\n" );
             return &pAbort;
          }
-         vo = ( void * )obj;
+         vo = static_cast<void *>( obj );
          break;
    }
    return vo;
@@ -1653,13 +1650,13 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
 
          if( ch != victim && is_safe( ch, victim ) )
             return rNONE;
-         vo = ( void * )victim;
+         vo = static_cast<void *>( victim );
          break;
 
       case TAR_CHAR_DEFENSIVE:
          if( victim == nullptr )
             victim = ch;
-         vo = ( void * )victim;
+         vo = static_cast<void *>( victim );
 
          if( SPELL_FLAG( skill, SF_NOMOB ) && victim->isnpc() )
          {
@@ -1675,7 +1672,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
          break;
 
       case TAR_CHAR_SELF:
-         vo = ( void * )ch;
+         vo = static_cast<void *>( ch );
          if( skill->type != SKILL_HERB && ch->has_immune( RIS_MAGIC ) )
          {
             immune_casting( skill, ch, victim, nullptr );
@@ -1689,7 +1686,7 @@ ch_ret obj_cast_spell( int sn, int level, char_data * ch, char_data * victim, ob
             ch->print( "You can't do that.\r\n" );
             return rNONE;
          }
-         vo = ( void * )obj;
+         vo = static_cast<void *>( obj );
          break;
    }
    retcode = ( *skill->spell_fun ) ( sn, level, ch, vo );
@@ -4191,7 +4188,7 @@ SPELLF( spell_spiral_blast )
  */
 bool check_save( int sn, int level, char_data * ch, char_data * victim )
 {
-   skill_type *skill = get_skilltype( sn );
+   const skill_type *skill = get_skilltype( sn );
    bool saved = false;
 
    if( SPELL_FLAG( skill, SF_PKSENSITIVE ) && !ch->isnpc(  ) && !victim->isnpc(  ) )

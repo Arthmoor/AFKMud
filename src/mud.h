@@ -84,47 +84,47 @@ typedef bool SPEC_FUN( char_data * ch );
  * It seems to have once been related to the number of pulses per second but does not appear bound to that now due to having been quadrupled.
  * It also has no need to be a define vs a proper constant value.
  */
-constexpr float DUR_CONV = 93.333333333333333333333333; /* Original value: 23.333333333333333333333333... - Quadrupled for time changes */
+constexpr float DUR_CONV = 93.333333333333333333333333; // Original value: 23.333333333333333333333333... - Quadrupled for time changes.
 
 /*
  * Hidden tilde char generated with alt155 on the number pad.
- * The code blocks the use of these symbols by default, so this should be quite safe. Samson 3-14-04
+ * The code blocks the use of these symbols by default, so this should be quite safe. -- Samson 3-14-04
  */
-constexpr char HIDDEN_TILDE = '\xa2';
+constexpr unsigned char HIDDEN_TILDE = 0xA2;
 
 // 32bit bitvector defines
-constexpr int BV00 = ( 1 << 0 );
-constexpr int BV01 = ( 1 << 1 );
-constexpr int BV02 = ( 1 << 2 );
-constexpr int BV03 = ( 1 << 3 );
-constexpr int BV04 = ( 1 << 4 );
-constexpr int BV05 = ( 1 << 5 );
-constexpr int BV06 = ( 1 << 6 );
-constexpr int BV07 = ( 1 << 7 );
-constexpr int BV08 = ( 1 << 8 );
-constexpr int BV09 = ( 1 << 9 );
-constexpr int BV10 = ( 1 << 10 );
-constexpr int BV11 = ( 1 << 11 );
-constexpr int BV12 = ( 1 << 12 );
-constexpr int BV13 = ( 1 << 13 );
-constexpr int BV14 = ( 1 << 14 );
-constexpr int BV15 = ( 1 << 15 );
-constexpr int BV16 = ( 1 << 16 );
-constexpr int BV17 = ( 1 << 17 );
-constexpr int BV18 = ( 1 << 18 );
-constexpr int BV19 = ( 1 << 19 );
-constexpr int BV20 = ( 1 << 20 );
-constexpr int BV21 = ( 1 << 21 );
-constexpr int BV22 = ( 1 << 22 );
-constexpr int BV23 = ( 1 << 23 );
-constexpr int BV24 = ( 1 << 24 );
-constexpr int BV25 = ( 1 << 25 );
-constexpr int BV26 = ( 1 << 26 );
-constexpr int BV27 = ( 1 << 27 );
-constexpr int BV28 = ( 1 << 28 );
-constexpr int BV29 = ( 1 << 29 );
-constexpr int BV30 = ( 1 << 30 );
-constexpr int BV31 = ( 1 << 31 );
+constexpr int BV00 = ( 1U << 0 );
+constexpr int BV01 = ( 1U << 1 );
+constexpr int BV02 = ( 1U << 2 );
+constexpr int BV03 = ( 1U << 3 );
+constexpr int BV04 = ( 1U << 4 );
+constexpr int BV05 = ( 1U << 5 );
+constexpr int BV06 = ( 1U << 6 );
+constexpr int BV07 = ( 1U << 7 );
+constexpr int BV08 = ( 1U << 8 );
+constexpr int BV09 = ( 1U << 9 );
+constexpr int BV10 = ( 1U << 10 );
+constexpr int BV11 = ( 1U << 11 );
+constexpr int BV12 = ( 1U << 12 );
+constexpr int BV13 = ( 1U << 13 );
+constexpr int BV14 = ( 1U << 14 );
+constexpr int BV15 = ( 1u << 15 );
+constexpr int BV16 = ( 1U << 16 );
+constexpr int BV17 = ( 1U << 17 );
+constexpr int BV18 = ( 1U << 18 );
+constexpr int BV19 = ( 1U << 19 );
+constexpr int BV20 = ( 1U << 20 );
+constexpr int BV21 = ( 1U << 21 );
+constexpr int BV22 = ( 1U << 22 );
+constexpr int BV23 = ( 1U << 23 );
+constexpr int BV24 = ( 1U << 24 );
+constexpr int BV25 = ( 1U << 25 );
+constexpr int BV26 = ( 1U << 26 );
+constexpr int BV27 = ( 1U << 27 );
+constexpr int BV28 = ( 1U << 28 );
+constexpr int BV29 = ( 1U << 29 );
+constexpr int BV30 = ( 1U << 30 );
+constexpr int BV31 = ( 1U << 31 );
 // 32 USED! DO NOT ADD MORE! SB
 
 /*
@@ -138,7 +138,7 @@ enum log_types
 
 /*
  * Return types for move_char, damage, greet_trigger, etc, etc
- * Added by Thoric to get rid of bugs
+ * Added by Thoric to get rid of bugs.
  */
 enum ret_types
 {
@@ -277,8 +277,8 @@ extern short gsn_dragon_ride;
  // Extra description data for a room or object.
 struct extra_descr_data
 {
-   std::string keyword; // Keyword in look/examine
-   std::string desc;    // What to see
+   std::string keyword; // Keyword in look/examine.
+   std::string desc;    // What to see.
 };
 
 #include "mudcfg.h" // Contains definitions specific to your mud - will not be covered by patches. Samson 3-14-04
@@ -586,7 +586,7 @@ class system_data
      system_data(  );
     ~system_data(  );
 
-   void *dlHandle;                               // libdl System Handle - Trax
+   void *dlHandle = nullptr;                     // libdl System Handle - Trax
    std::bitset<SV_MAX> save_flags;               // Toggles for saving conditions.
    std::string time_of_max;                      // Time of max ever.
    std::string mud_name;                         // Name of mud.
@@ -863,7 +863,7 @@ ch_ret damage( char_data *, char_data *, double, int );
 
 // handler.cpp
 long exp_level( int );
-obj_data *get_obj_list( char_data *, std::string_view, std::list<obj_data *> );
+obj_data *get_obj_list( char_data *, std::string_view, const std::list<obj_data *> & );
 ch_ret check_for_trap( char_data *, obj_data *, int );
 ch_ret spring_trap( char_data *, obj_data * );
 obj_data *find_obj( char_data *, std::string, bool );
@@ -889,7 +889,7 @@ void rset_supermob( room_index * );
 void release_supermob( void );
 
 // overland.cpp
-bool is_same_char_map( char_data *, char_data * );
+bool is_same_char_map( const char_data *, const char_data * );
 bool is_same_obj_map( char_data *, obj_data * );
 void fix_maps( char_data *, char_data * );
 void enter_map( char_data *, exit_data *, int, int, std::string_view );
@@ -946,14 +946,14 @@ std::string strip_crlf( std::string_view );
 void strip_whitespace( std::string & );
 bool is_number( std::string_view );
 int number_argument( std::string_view, std::string & );
-std::string one_argument( std::string_view, std::string & );
+std::string_view one_argument( std::string_view, std::string & );
 std::string invert_string( std::string_view );
 const std::string escape_formatting( std::string );
 void string_erase( std::string &, char );
 void string_erase( std::string &, std::string_view );
 void string_replace( std::string &, std::string_view, std::string_view );
 std::string print_array_string( const char *flagarray[], size_t );
-bool nifty_is_name_prefix( std::string, std::string );
+bool nifty_is_name_prefix( std::string, const std::string & );
 bool is_name2_prefix( std::string_view, std::string );
 
 // tables.cpp
@@ -979,7 +979,7 @@ void bug( std::format_string<Args...> fmt, Args&&... args )
 }
 
 // This used to be the old ext_flagstring converted to C++ and using strings so it can't overflow the temporary buffer.
-template < size_t N > std::string bitset_string( std::bitset < N > bits, const char *flagarray[] )
+template < size_t N > std::string bitset_string( const std::bitset < N > & bits, const char *flagarray[] )
 {
    std::string s;
 
@@ -1034,7 +1034,7 @@ template < size_t N > void flag_string_set( std::string & original, std::bitset 
    }
 }
 
-template < class N > extra_descr_data * get_extra_descr( std::string_view name, N * target )
+template < class N > extra_descr_data * get_extra_descr( std::string_view name, const N * target )
 {
    for( auto* ed : target->extradesc )
    {

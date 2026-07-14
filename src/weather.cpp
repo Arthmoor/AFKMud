@@ -155,7 +155,7 @@ bool DropsBelowThreshold( int initial, int delta, int threshold )
 void WeatherMessage( const char *txt, int x, int y )
 {
 
-   for( auto* pArea : arealist )
+   for( const auto* pArea : arealist )
    {
       if( pArea->weatherx == x && pArea->weathery == y )
       {
@@ -185,7 +185,7 @@ void ApplyDeltaChanges( void )
       for( x = 0; x < WEATHER_SIZE_X; x++ )
       {
          WeatherCell *cell = &weatherMap[x][y];
-         WeatherCell *delta = &weatherDelta[x][y];
+         const WeatherCell *delta = &weatherDelta[x][y];
 
          if( isTorrentialDownpour( getPrecip( cell ) ) )
          {
@@ -390,7 +390,7 @@ void ApplyDeltaChanges( void )
             else if( ExceedsThreshold( cell->precipitation, delta->precipitation, 50 ) 
                && ExceedsThreshold( cell->temperature, delta->temperature, 32 ) )
                if( isStormy( getEnergy( cell ) ) )
-                  WeatherMessage( "&BThe steady snow increases in intensity as it changes over to a pouring rain.&D\r\n&YLightning streaks accross the sky and thunder booms shaking the ground.&D\r\n", x, y );
+                  WeatherMessage( "&BThe steady snow increases in intensity as it changes over to a pouring rain.&D\r\n&YLightning streaks across the sky and thunder booms shaking the ground.&D\r\n", x, y );
                else
                   WeatherMessage( "&BThe steady snow increases in intensity as it changes over to a pouring rain.&D\r\n", x, y );
             else
@@ -815,8 +815,8 @@ void CalculateCellToCellChanges( void )
    {
       for( x = 0; x < WEATHER_SIZE_X; x++ )
       {
-         WeatherCell *cell = &weatherMap[x][y];    //  Weather cell
-         WeatherCell *delta = &weatherDelta[x][y]; //  Where we accumulate the changes to apply
+         const WeatherCell *cell = &weatherMap[x][y];    //  Weather cell.
+         WeatherCell *delta = &weatherDelta[x][y]; //  Where we accumulate the changes to apply.
 
          /*
          *  Here we force the system to take day/night into account
@@ -833,27 +833,27 @@ void CalculateCellToCellChanges( void )
          else
             delta->humidity += number_range( 0, 3 );
 
-         //  Humidity and pressure can affect the precipitation level
+         //  Humidity and pressure can affect the precipitation level.
          int humidityAndPressure = ( cell->humidity + cell->pressure );
          if( ( humidityAndPressure / 2 ) >= 60 )
-            delta->precipitation	+= ( cell->humidity / 10 );
-         else if( ( humidityAndPressure / 2 ) < 60 && ( humidityAndPressure / 2 ) > 40 )
-            delta->precipitation	+= number_range( -2, 2 );
-         else if( ( humidityAndPressure / 2 ) <= 40 )
-            delta->precipitation	-= ( cell->humidity / 5 );
+            delta->precipitation += ( cell->humidity / 10 );
+         else if( ( humidityAndPressure / 2 ) > 40 )
+            delta->precipitation += number_range( -2, 2 );
+         else
+            delta->precipitation -= ( cell->humidity / 5 );
 
-         //  Humidity and precipitation can affect the cloud cover
+         //  Humidity and precipitation can affect the cloud cover.
          int humidityAndPrecip = ( cell->humidity + cell->precipitation );
          if( ( humidityAndPrecip / 2 ) >= 60 )
-            delta->cloudcover	-= ( cell->humidity / 10 );
-         else if( ( humidityAndPrecip / 2 ) < 60 && ( humidityAndPrecip / 2 ) > 40 )
-            delta->cloudcover	+= number_range( -2, 2 );
-         else if( ( humidityAndPrecip / 2 ) <= 40 )
-            delta->cloudcover	+= ( cell->humidity / 5 );
+            delta->cloudcover -= ( cell->humidity / 10 );
+         else if( ( humidityAndPrecip / 2 ) > 40 )
+            delta->cloudcover += number_range( -2, 2 );
+         else
+            delta->cloudcover += ( cell->humidity / 5 );
 
          int totalPressure = cell->pressure;
          int numPressureCells = 1;
-         //  Changes applied based on what is going on in adjacent cells
+         //  Changes applied based on what is going on in adjacent cells.
          int dx, dy;
          for( dy = -1; dy <= 1; ++dy )
          {
@@ -872,7 +872,7 @@ void CalculateCellToCellChanges( void )
                if( ny < 0 || ny >= WEATHER_SIZE_Y )
                   continue;
 
-               WeatherCell *neighborCell = &weatherMap[nx][ny];
+               const WeatherCell *neighborCell = &weatherMap[nx][ny];
                WeatherCell *neighborDelta = &weatherDelta[nx][ny];
 
                /*
@@ -930,9 +930,9 @@ void CalculateCellToCellChanges( void )
          */
          if( cell->precipitation >= 70 ) 
             delta->pressure -= ( cell->pressure / 2 );
-         else if( cell->precipitation < 70 && cell->precipitation > 30 )
+         else if( cell->precipitation > 30 )
             delta->pressure += number_range( -5, 5 );
-         else if( cell->precipitation <= 30 )
+         else
             delta->pressure += ( cell->pressure / 2 );
       }
    }
@@ -953,7 +953,7 @@ void EnforceClimateConditions( void )
    {
       for( x = 0; x < WEATHER_SIZE_X; x++ )
       {
-         WeatherCell *cell = &weatherMap[x][y];    //  Weather cell
+         const WeatherCell *cell = &weatherMap[x][y];    //  Weather cell
          WeatherCell *delta = &weatherDelta[x][y];
 
          if( cell->climate == CLIMATE_RAINFOREST )  
@@ -2417,7 +2417,7 @@ bool load_weathermap( void )
  * Weather Utility Functions
  * Designed to attempt to emulate encapsulation.
  */
-WeatherCell *getWeatherCell( area_data *pArea )
+WeatherCell *getWeatherCell( const area_data *pArea )
 {
    return &weatherMap[pArea->weatherx][pArea->weathery];
 }
@@ -2503,16 +2503,16 @@ void DecreaseWindY( WeatherCell *cell, int change )
 }
 
 /* Cloud cover Information */
-int getCloudCover( WeatherCell *cell )
+int getCloudCover( const WeatherCell *cell )
 {
-   return cell->cloudcover; 
+   return cell->cloudcover;
 }
 
 bool isExtremelyCloudy( int cloudCover )
 {
    if( cloudCover > 80 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2520,7 +2520,7 @@ bool isModeratelyCloudy( int cloudCover )
 {
    if( cloudCover > 60 && cloudCover <= 80 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2541,16 +2541,16 @@ bool isCloudy( int cloudCover )
 }
 
 /* Temperature Information */
-int getTemp( WeatherCell *cell )
+int getTemp( const WeatherCell *cell )
 {
-   return cell->temperature; 
+   return cell->temperature;
 }
 
 bool isSwelteringHeat( int temp )
 {
    if( temp > 90 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2558,7 +2558,7 @@ bool isVeryHot( int temp )
 {
    if( temp > 80 && temp <= 90 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2582,7 +2582,7 @@ bool isTemperate( int temp )
 {
    if( temp > 50 && temp <= 60 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2606,7 +2606,7 @@ bool isCold( int temp )
 {
    if( temp > 20 && temp <= 30 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2630,7 +2630,7 @@ bool isReallyCold( int temp )
 {
    if( temp > -10 && temp <= 0 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2651,30 +2651,30 @@ bool isExtremelyCold( int temp )
 }
 
 /* Energy Information */
-int getEnergy( WeatherCell *cell )
+int getEnergy( const WeatherCell *cell )
 {
-   return cell->energy; 
+   return cell->energy;
 }
 
 bool isStormy( int energy )
 {
    if( energy > 50 )
       return true;
-   else 
+   else
       return false;
 }
 
 /* Pressure Information */
-int getPressure( WeatherCell *cell )
+int getPressure( const WeatherCell *cell )
 {
-   return cell->pressure; 
+   return cell->pressure;
 }
 
 bool isHighPressure( int pressure )
 {
    if( pressure > 50 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2687,16 +2687,16 @@ bool isLowPressure( int pressure )
 }
 
 /* Humidity Information */
-int getHumidity( WeatherCell *cell )
+int getHumidity( const WeatherCell *cell )
 {
-   return cell->humidity; 
+   return cell->humidity;
 }
 
 bool isExtremelyHumid( int humidity )
 {
    if( humidity > 80 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2704,7 +2704,7 @@ bool isModeratelyHumid( int humidity )
 {
    if( humidity > 60 && humidity < 80 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2725,16 +2725,16 @@ bool isHumid( int humidity )
 }
 
 /* Precipitation Information */
-int getPrecip( WeatherCell *cell )
+int getPrecip( const WeatherCell *cell )
 {
-   return cell->precipitation; 
+   return cell->precipitation;
 }
 
 bool isTorrentialDownpour( int precip )
 {
    if( precip > 90 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2742,7 +2742,7 @@ bool isRainingCatsAndDogs( int precip )
 {
    if( precip > 80 && precip <= 90 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2766,7 +2766,7 @@ bool isDownpour( int precip )
 {
    if( precip > 50 && precip <= 60 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2790,7 +2790,7 @@ bool isRainingLightly( int precip )
 {
    if( precip > 20 && precip <= 30 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2811,16 +2811,16 @@ bool isMisting( int precip )
 }
 
 /* WindX Information */
-int getWindX( WeatherCell *cell )
+int getWindX( const WeatherCell *cell )
 {
-   return cell->windSpeedX; 
+   return cell->windSpeedX;
 }
 
 bool isCalmWindE( int windx )
 {
    if( windx > 0 && windx <= 10 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2828,7 +2828,7 @@ bool isBreezyWindE( int windx )
 {
    if( windx > 10 && windx <= 20 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2868,7 +2868,7 @@ bool isCalmWindW( int windx )
 {
    if( windx < 0 && windx >= -10 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2876,7 +2876,7 @@ bool isBreezyWindW( int windx )
 {
    if( windx < -10 && windx >= -20 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2913,16 +2913,16 @@ bool isGaleForceWindW( int windx )
 }
 
 /* WindY Information */
-int getWindY( WeatherCell *cell )
+int getWindY( const WeatherCell *cell )
 {
-   return cell->windSpeedY; 
+   return cell->windSpeedY;
 }
 
 bool isCalmWindN( int windy )
 {
    if( windy > 0 && windy <= 10 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2930,7 +2930,7 @@ bool isBreezyWindN( int windy )
 {
    if( windy > 10 && windy <= 20 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2970,7 +2970,7 @@ bool isCalmWindS( int windy )
 {
    if( windy < 0 && windy >= -10 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -2978,7 +2978,7 @@ bool isBreezyWindS( int windy )
 {
    if( windy < -10 && windy >= -20 )
       return true;
-   else 
+   else
       return false;
 }
 
@@ -3012,7 +3012,7 @@ bool isGaleForceWindS( int windy )
       return true;
    else
       return false;
-} 
+}
 
 CMDF( do_setweather )
 {

@@ -80,10 +80,10 @@ int find_translation( int vnum, const std::vector<renumber_data>& r_data )
    return NOT_FOUND;
 }
 
-void translate_exits( char_data * ch, area_data * area, renumber_areas * r_area )
+void translate_exits( char_data * ch, const area_data * area, const renumber_areas * r_area )
 {
    int new_vnum;
-   room_index *room;
+   const room_index *room;
    int old_vnum;
 
    for( int i = area->low_vnum; i <= area->hi_vnum; ++i )
@@ -227,7 +227,7 @@ void translate_reset( reset_data * reset, renumber_areas * r_data )
       bug( "{}: Invalid reset '{}' found.", __func__, reset->command );
 }
 
-void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_area, bool verbose )
+void translate_objvals( char_data * ch, const area_data * area, const renumber_areas * r_area, bool verbose )
 {
    int i, new_vnum;
    obj_index *obj;
@@ -281,7 +281,7 @@ void translate_objvals( char_data * ch, area_data * area, renumber_areas * r_are
    }
 }
 
-void warn_in_prog( char_data * ch, int low, int high, std::string_view where, int vnum, mud_prog_data * mprog, renumber_areas * r_area )
+void warn_in_prog( char_data * ch, int low, int high, std::string_view where, int vnum, mud_prog_data * mprog, const renumber_areas * r_area )
 {
    std::string_view text{mprog->comlist};
 
@@ -319,7 +319,7 @@ void warn_in_prog( char_data * ch, int low, int high, std::string_view where, in
    }
 }
 
-void warn_progs( char_data * ch, int low, int high, area_data * area, renumber_areas * r_area )
+void warn_progs( char_data * ch, int low, int high, const area_data * area, const renumber_areas * r_area )
 {
    room_index *room;
    obj_index *obj;
@@ -605,14 +605,13 @@ void renumber_area( char_data * ch, area_data * area, renumber_areas * r_area, b
 std::vector<renumber_data> gather_one_list( short type, int low, int high, int new_base, bool fill_gaps, int *max_vnum )
 {
    std::vector<renumber_data> r_data;
-   bool found;
    int i, highest, cur_vnum;
 
    cur_vnum = new_base;
    highest = -1;
    for( i = low; i <= high; ++i )
    {
-      found = false;
+      bool found = false;
       switch ( type )
       {
          default:
@@ -648,7 +647,7 @@ std::vector<renumber_data> gather_one_list( short type, int low, int high, int n
 }
 
 /* this function actually gathers all the renumber data for an area */
-renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_gaps )
+renumber_areas *gather_renumber_data( const area_data * area, int new_base, bool fill_gaps )
 {
    int max;
 
@@ -669,7 +668,7 @@ renumber_areas *gather_renumber_data( area_data * area, int new_base, bool fill_
    return r_area.release();
 }
 
-bool check_vnums( char_data * ch, area_data * tarea, renumber_areas * r_area )
+bool check_vnums( char_data * ch, const area_data * tarea, const renumber_areas * r_area )
 {
    if( !r_area )
    {

@@ -35,7 +35,7 @@
 #include "mudprog_loader.h"
 #include "shops.h"
 
-int race_bodyparts( char_data * );
+void race_bodyparts( char_data * );
 int mob_xp( char_data * );
 
 std::map<int, mob_index *> mob_index_table;
@@ -66,12 +66,8 @@ mob_index::~mob_index(  )
          ch->extract( true );
       else if( ch->substate == SUB_MPROG_EDIT && ch->pcdata->dest_buf )
       {
-         std::list<mud_prog_data *>::iterator mpg;
-
-         for( mpg = mudprogs.begin(  ); mpg != mudprogs.end(  ); )
+         for( const auto* mp : mudprogs )
          {
-            mud_prog_data *mp = *mpg;
-
             if( mp == ch->pcdata->dest_buf )
             {
                ch->print( "Your victim has departed.\r\n" );

@@ -52,7 +52,7 @@ variable_data::~variable_data(  )
 /*
  * Return the specified tag from a character
  */
-variable_data *get_tag( char_data * ch, std::string_view tag, int vnum )
+variable_data *get_tag( const char_data * ch, std::string_view tag, int vnum )
 {
    for( auto* vd : ch->variables )
    {
@@ -483,7 +483,7 @@ CMDF( do_mprmflag )
    }
 }
 
-void fwrite_variables( char_data * ch, std::ofstream & stream )
+void fwrite_variables( const char_data * ch, std::ofstream & stream )
 {
    for( auto* vd : ch->variables )
    {

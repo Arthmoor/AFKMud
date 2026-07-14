@@ -26,6 +26,8 @@
  *                         MUDProg Template Loader                          *
  ****************************************************************************/
 
+#pragma once
+
 template < class N > void fread_afk_mudprog( std::ifstream & stream, mud_prog_data * mprg, N * prog_target )
 {
    std::string key;

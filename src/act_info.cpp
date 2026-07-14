@@ -142,7 +142,7 @@ void look_sky( char_data * ch )
 {
    std::string buf;
    int starpos, sunpos, moonpos, moonphase, i, linenum;
-   WeatherCell *cell = getWeatherCell( ch->in_room->area );
+   const WeatherCell *cell = getWeatherCell( ch->in_room->area );
 
    ch->pager( "You gaze up towards the heavens and see:\r\n" );
 
@@ -495,7 +495,7 @@ void show_char_to_char_0( char_data * victim, char_data * ch, int num )
 
    buf.append( ch->color_str( AT_PERSON ) );
 
-   timer_data *timer;
+   const timer_data *timer;
    if( ( timer = victim->get_timerptr( TIMER_DO_FUN ) ) != nullptr )
    {
       if( timer->do_fun == do_cast )

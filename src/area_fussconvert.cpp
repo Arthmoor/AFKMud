@@ -45,7 +45,7 @@ extern int top_affect;
 extern int top_shop;
 extern int top_repair;
 
-bool check_area_conflict( area_data *, int, int );
+bool check_area_conflict( const area_data *, int, int );
 void fread_afk_exit( std::ifstream &, room_index * );
 extra_descr_data *fread_afk_exdesc( std::ifstream & );
 
@@ -751,15 +751,11 @@ void fread_fuss_mobile( std::ifstream & stream, area_data * tarea )
       }
       else if( key == "Speaking" )
       {
-         std::string speaking, flag;
-         int value;
+         std::string speaking = fread_line( stream );
+         int value = get_langnum( speaking );
 
-         speaking = fread_line( stream );
-
-         speaking = one_argument( speaking, flag );
-         value = get_langnum( flag );
          if( value < 0 || value >= LANG_UNKNOWN )
-            bug( "Unknown speaking language: {}", flag );
+            bug( "Unknown speaking language: {}", speaking );
          else
             pMobIndex->speaking = value;
 

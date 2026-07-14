@@ -68,7 +68,7 @@ void add_to_wizinfo( std::string_view name, wizinfo_data * wiz )
 
    for( wizinfo = wizinfolist.begin(  ); wizinfo != wizinfolist.end(  ); ++wizinfo )
    {
-      wizinfo_data *w = *wizinfo;
+      const wizinfo_data *w = *wizinfo;
 
       if( w->name >= name )
       {

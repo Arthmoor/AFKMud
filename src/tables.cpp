@@ -38,15 +38,14 @@ std::list<lang_data *> langlist;
 
 SPEC_FUN *m_spec_lookup( std::string_view name )
 {
-   void *funHandle;
-   const char *error;
-
    // Perform the symbol lookup
-   funHandle = dlsym( sysdata->dlHandle, name.data() );
+   void *funHandle = dlsym( sysdata->dlHandle, name.data() );
 
    // Check the returned error if this came back NULL
    if( funHandle == NULL )
    {
+      const char *error;
+
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
@@ -63,15 +62,14 @@ SPEC_FUN *m_spec_lookup( std::string_view name )
 
 SPELL_FUN *spell_function( std::string_view name )
 {
-   void *funHandle;
-   const char *error;
-
    // Perform the symbol lookup
-   funHandle = dlsym( sysdata->dlHandle, name.data() );
+   void *funHandle = dlsym( sysdata->dlHandle, name.data() );
 
    // Check the returned error if this came back NULL
    if( funHandle == NULL )
    {
+      const char *error;
+
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {
@@ -88,15 +86,14 @@ SPELL_FUN *spell_function( std::string_view name )
 
 DO_FUN *skill_function( std::string_view name )
 {
-   void *funHandle;
-   const char *error;
-
    // Perform the symbol lookup
-   funHandle = dlsym( sysdata->dlHandle, name.data() );
+   void *funHandle = dlsym( sysdata->dlHandle, name.data() );
 
    // Check the returned error if this came back NULL
    if( funHandle == NULL )
    {
+      const char *error;
+
       // Grab the error message and report it.
       if( ( error = dlerror() ) != NULL )
       {

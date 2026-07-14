@@ -281,10 +281,9 @@ bool read_board_list( void )
 
    board_files.clear();
 
-   std::string line;
    while( !stream.eof() )
    {
-      line = fread_line( stream );
+      std::string line = fread_line( stream );
 
       if( line.empty() )
          continue;
@@ -439,7 +438,7 @@ void write_note( note_data * pnote, std::ofstream & stream )
       return;
    }
 
-   if( pnote->type < NOTE_BOARD && pnote->type > NOTE_OLCMAP )
+   if( pnote->type < NOTE_BOARD || pnote->type > NOTE_OLCMAP )
       bug( "{}: Invalid note type passed: {}", __func__, pnote->type );
 
    auto date_stamp = std::chrono::system_clock::to_time_t( pnote->date_stamp );
@@ -509,7 +508,7 @@ bool write_board_list( void )
       return false;
    }
 
-   for( auto* board : bdlist )
+   for( const auto* board : bdlist )
    {
       stream << board->filename << "~\n";
    }
@@ -743,7 +742,7 @@ board_data *get_board_by_name( std::string_view name )
 }
 
 // This will get a board by object. This will not get a global board as global boards are noted with a 0 objvnum.
-board_data *get_board_by_obj( obj_data * obj )
+board_data *get_board_by_obj( const obj_data * obj )
 {
    for( auto* board : bdlist )
    {
@@ -784,9 +783,9 @@ board_data *get_board( char_data * ch, std::string_view name )
 }
 
 // This will find a board on an object in the character's current room.
-board_data *find_board( char_data * ch )
+board_data *find_board( const char_data * ch )
 {
-   for( auto* obj : ch->in_room->objects )
+   for( const auto* obj : ch->in_room->objects )
    {
       board_data *board;
 
@@ -796,7 +795,7 @@ board_data *find_board( char_data * ch )
    return nullptr;
 }
 
-board_chardata *get_chboard( char_data * ch, std::string_view board_name )
+board_chardata *get_chboard( const char_data * ch, std::string_view board_name )
 {
    for( auto* board : ch->pcdata->boarddata )
    {
@@ -875,10 +874,8 @@ void note_remove( board_data * board, note_data * pnote )
 
 int unread_notes( char_data * ch, board_data * board )
 {
-   board_chardata *chboard;
    int count = 0;
-
-   chboard = get_chboard( ch, board->name );
+   const board_chardata *chboard = get_chboard( ch, board->name );
 
    for( auto* note : board->nlist )
    {
@@ -892,11 +889,11 @@ int unread_notes( char_data * ch, board_data * board )
    return count;
 }
 
-int total_replies( board_data * board )
+int total_replies( const board_data * board )
 {
    int count = 0;
 
-   for( auto* note : board->nlist )
+   for( const auto* note : board->nlist )
    {
       count += note->reply_count;
    }
@@ -956,7 +953,7 @@ void check_boards( void )
 
 void board_announce( char_data * ch, board_data * board, note_data * pnote )
 {
-   board_chardata *chboard;
+   const board_chardata *chboard;
 
    for( auto* d : dlist )
    {
@@ -988,8 +985,6 @@ void board_announce( char_data * ch, board_data * board, note_data * pnote )
 
 void note_to_char( char_data * ch, note_data * pnote, board_data * board, short id )
 {
-   int count = 1;
-
    if( pnote == nullptr )
    {
       bug( "{}: null pnote!", __func__ );
@@ -1033,6 +1028,7 @@ void note_to_char( char_data * ch, note_data * pnote, board_data * board, short 
    ch->print_fmt( "&[board2]{}&D\r\n", !pnote->text.empty() ? pnote->text : "--Error--" );
    if( !pnote->rlist.empty(  ) )
    {
+      int count = 1;
       for( auto* reply : pnote->rlist )
       {
          ch->print( "\r\n&[board]------------------------------------------------------------------------------&D\r\n" );
@@ -2878,7 +2874,7 @@ project_data *get_project_by_number( int pnum )
    return nullptr;
 }
 
-note_data *get_log_by_number( project_data * pproject, int pnum )
+note_data *get_log_by_number( const project_data * pproject, int pnum )
 {
    int pcount = 1;
 

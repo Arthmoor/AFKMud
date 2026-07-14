@@ -93,8 +93,8 @@ class mob_index
    short weight = 0;                            // How heavy is it in pounds? 0 triggers an autocalc.
    short race = RACE_HUMAN;                     // What race the mob is.
    short Class = CLASS_WARRIOR;                 // What class the mob is.
-   short hitroll;                               // D&D thing I don't remember.
-   short damroll;                               // D&D thing I don't remember.
+   short hitroll = 0;                           // D&D thing I don't remember.
+   short damroll = 0;                           // D&D thing I don't remember.
    short perm_str = 13;                         // The mob's permanent strength stat.
    short perm_int = 13;                         // The mob's permanent intelligence stat.
    short perm_wis = 13;                         // The mob's permanent wisdom stat.

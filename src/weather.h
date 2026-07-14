@@ -120,7 +120,7 @@ bool load_weathermap( void );
 int get_hemisphere( char *type );
 int get_climate( char *type );
 
-WeatherCell *getWeatherCell( area_data *pArea );
+WeatherCell *getWeatherCell( const area_data *pArea );
 
 void IncreaseTemp( WeatherCell *cell, int change );
 void DecreaseTemp( WeatherCell *cell, int change );
@@ -139,14 +139,14 @@ void DecreaseWindX( WeatherCell *cell, int change );
 void IncreaseWindY( WeatherCell *cell, int change );
 void DecreaseWindY( WeatherCell *cell, int change );
 
-int getCloudCover( WeatherCell *cell );
-int getTemp( WeatherCell *cell );
-int getEnergy( WeatherCell *cell );
-int getPressure( WeatherCell *cell );
-int getHumidity( WeatherCell *cell );
-int getPrecip( WeatherCell *cell );
-int getWindX( WeatherCell *cell );
-int getWindY( WeatherCell *cell );
+int getCloudCover( const WeatherCell *cell );
+int getTemp( const WeatherCell *cell );
+int getEnergy( const WeatherCell *cell );
+int getPressure( const WeatherCell *cell );
+int getHumidity( const WeatherCell *cell );
+int getPrecip( const WeatherCell *cell );
+int getWindX( const WeatherCell *cell );
+int getWindY( const WeatherCell *cell );
 
 bool isExtremelyCloudy( int cloudCover );
 bool isModeratelyCloudy( int cloudCover );

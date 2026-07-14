@@ -223,11 +223,11 @@ class char_data
    int can_carry_w(  );
    void equip( obj_data *, int );
    void unequip( obj_data * );
-   void aris_affect( affect_data * );
+   void aris_affect( const affect_data * );
    void update_aris(  );
    void modify_skill( int, int, bool );
    void affect_modify( affect_data *, bool );
-   void affect_to_char( affect_data * );
+   void affect_to_char( const affect_data * );
    void affect_remove( affect_data * );
    void affect_strip( int );
    bool is_affected( int );
@@ -240,7 +240,7 @@ class char_data
    void add_timer( short, short, DO_FUN *, int );
    void extract_timer( timer_data * );
    void remove_timer( short );
-   bool in_hard_range( area_data * );
+   bool in_hard_range( const area_data * );
    void better_mental_state( int );
    void worsen_mental_state( int );
    void from_room(  );
@@ -276,11 +276,11 @@ class char_data
    void update_pos(  );
    char_data *who_fighting(  );
    void stop_fighting( bool );
-   void start_editing( std::string );
+   void start_editing( const std::string & );
    void stop_editing(  );
    std::string copy_buffer(  );
    void set_editor_desc( std::string_view );
-   void edit_buffer( std::string & );
+   void edit_buffer( const std::string & );
    void note_attach( int );
    bool can_charm(  );
    void learn_from_failure( int );
@@ -297,7 +297,7 @@ class char_data
    void toggle_actflag( int );
    bool has_actflags(  );
    std::bitset<MAX_ACT_FLAG> get_actflags(  );
-   void set_actflags( std::bitset<MAX_ACT_FLAG> );
+   void set_actflags( const std::bitset<MAX_ACT_FLAG> & );
    void set_actflags_file( std::ifstream & );
 
    bool has_immune( int );
@@ -306,14 +306,14 @@ class char_data
    void toggle_immune( int );
    bool has_immunes(  );
    std::bitset<MAX_RIS_FLAG> get_immunes(  );
-   void set_immunes( std::bitset<MAX_RIS_FLAG> );
+   void set_immunes( const std::bitset<MAX_RIS_FLAG> & );
    void set_immunes_file( std::ifstream & );
 
    bool has_noimmune( int );
    void set_noimmune( int );
    bool has_noimmunes(  );
    std::bitset<MAX_RIS_FLAG> get_noimmunes(  );
-   void set_noimmunes( std::bitset<MAX_RIS_FLAG> );
+   void set_noimmunes( const std::bitset<MAX_RIS_FLAG> & );
    void set_noimmunes_file( std::ifstream & );
 
    bool has_resist( int );
@@ -322,14 +322,14 @@ class char_data
    void toggle_resist( int );
    bool has_resists(  );
    std::bitset<MAX_RIS_FLAG> get_resists(  );
-   void set_resists( std::bitset<MAX_RIS_FLAG> );
+   void set_resists( const std::bitset<MAX_RIS_FLAG> & );
    void set_resists_file( std::ifstream & );
 
    bool has_noresist( int );
    void set_noresist( int );
    bool has_noresists(  );
    std::bitset<MAX_RIS_FLAG> get_noresists(  );
-   void set_noresists( std::bitset<MAX_RIS_FLAG> );
+   void set_noresists( const std::bitset<MAX_RIS_FLAG> & );
    void set_noresists_file( std::ifstream & );
 
    bool has_suscep( int );
@@ -338,14 +338,14 @@ class char_data
    void toggle_suscep( int );
    bool has_susceps(  );
    std::bitset<MAX_RIS_FLAG> get_susceps(  );
-   void set_susceps( std::bitset<MAX_RIS_FLAG> );
+   void set_susceps( const std::bitset<MAX_RIS_FLAG> & );
    void set_susceps_file( std::ifstream & );
 
    bool has_nosuscep( int );
    void set_nosuscep( int );
    bool has_nosusceps(  );
    std::bitset<MAX_RIS_FLAG> get_nosusceps(  );
-   void set_nosusceps( std::bitset<MAX_RIS_FLAG> );
+   void set_nosusceps( const std::bitset<MAX_RIS_FLAG> & );
    void set_nosusceps_file( std::ifstream & );
 
    bool has_absorb( int );
@@ -354,7 +354,7 @@ class char_data
    void toggle_absorb( int );
    bool has_absorbs(  );
    std::bitset<MAX_RIS_FLAG> get_absorbs(  );
-   void set_absorbs( std::bitset< MAX_RIS_FLAG> );
+   void set_absorbs( const std::bitset< MAX_RIS_FLAG> & );
    void set_absorbs_file( std::ifstream & );
 
    bool has_attack( int );
@@ -363,8 +363,8 @@ class char_data
    void toggle_attack( int );
    bool has_attacks(  );
    std::bitset<MAX_ATTACK_TYPE> get_attacks(  );
-   void set_attacks( std::bitset<MAX_ATTACK_TYPE> );
-   void set_file_attacks( std::ifstream & );
+   void set_attacks( const std::bitset<MAX_ATTACK_TYPE> & );
+   void set_attacks_file( std::ifstream & );
 
    bool has_defense( int );
    void set_defense( int );
@@ -372,8 +372,8 @@ class char_data
    void toggle_defense( int );
    bool has_defenses(  );
    std::bitset<MAX_DEFENSE_TYPE> get_defenses(  );
-   void set_defenses( std::bitset<MAX_DEFENSE_TYPE> );
-   void set_file_defenses( std::ifstream & );
+   void set_defenses( const std::bitset<MAX_DEFENSE_TYPE> & );
+   void set_defenses_file( std::ifstream & );
 
    bool has_aflag( int );
    void set_aflag( int );
@@ -381,7 +381,7 @@ class char_data
    void toggle_aflag( int );
    bool has_aflags(  );
    std::bitset<MAX_AFFECTED_BY> get_aflags(  );
-   void set_aflags( std::bitset<MAX_AFFECTED_BY> );
+   void set_aflags( const std::bitset<MAX_AFFECTED_BY> & );
    void set_aflags_file( std::ifstream & );
 
    bool has_noaflag( int );
@@ -390,7 +390,7 @@ class char_data
    void toggle_noaflag( int );
    bool has_noaflags(  );
    std::bitset<MAX_AFFECTED_BY> get_noaflags(  );
-   void set_noaflags( std::bitset<MAX_AFFECTED_BY> );
+   void set_noaflags( const std::bitset<MAX_AFFECTED_BY> & );
    void set_noaflags_file( std::ifstream & );
 
    bool has_bpart( int );
@@ -399,7 +399,7 @@ class char_data
    void toggle_bpart( int );
    bool has_bparts(  );
    std::bitset<MAX_BPART> get_bparts(  );
-   void set_bparts( std::bitset<MAX_BPART> );
+   void set_bparts( const std::bitset<MAX_BPART> & );
    void set_bparts_file( std::ifstream & );
    void set_bodypart_where_names( );
 
@@ -417,7 +417,7 @@ class char_data
    void toggle_lang( int );
    bool has_langs(  );
    std::bitset<LANG_UNKNOWN> get_langs(  );
-   void set_langs( std::bitset<LANG_UNKNOWN> );
+   void set_langs( const std::bitset<LANG_UNKNOWN> & );
    void set_langs_file( std::ifstream & );
 
    bool isnpc(  )

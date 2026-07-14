@@ -513,7 +513,7 @@ short player_count( void )
 {
    short count = 0;
 
-   for( auto* d : dlist )
+   for( const auto* d : dlist )
    {
       if( d->connected >= CON_PLAYING )
          ++count;

@@ -230,7 +230,7 @@ void check_clan_storeroom( char_data * ch )
 void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
 {
    std::list < clan_data * >::iterator cl;
-   clan_data *clan = nullptr;
+   const clan_data *clan = nullptr;
    bool cfound = false;
 
    if( ch->isnpc(  ) )
@@ -252,7 +252,7 @@ void check_clan_shop( char_data * ch, char_data * victim, obj_data * obj )
       ch->print_fmt( "{} says 'I cannot accept this from you.'\r\n", victim->short_descr );
       ch->print_fmt( "{} hands {} back to you.\r\n", victim->short_descr, obj->short_descr );
       obj->from_char(  );
-      obj = obj->to_char( ch );
+      obj->to_char( ch );
       ch->save(  );
       return;
    }
@@ -437,7 +437,7 @@ void write_clan_list( void )
       bug( "{}: Error occurred after closing {}: ", __func__, filename.string(), std::strerror(errno) );
 }
 
-void fwrite_memberlist( std::ofstream & stream, clan_data * clan )
+void fwrite_memberlist( std::ofstream & stream, const clan_data * clan )
 {
    for( auto* member : clan->memberlist )
    {

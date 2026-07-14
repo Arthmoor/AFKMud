@@ -212,7 +212,7 @@ std::string sha256_crypt( const std::string & input )
 
    SHA256 ctx = SHA256();
    ctx.init();
-   ctx.update( (unsigned char*)input.c_str(), input.length() );
+   ctx.update( reinterpret_cast<const unsigned char*>( input.c_str() ), input.length() );
    ctx.final( digest );
 
    buf[2 * SHA256::DIGEST_SIZE] = 0;

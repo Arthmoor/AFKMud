@@ -101,7 +101,7 @@ class obj_data
    std::string seller;                          // Who put the item up for auction?
    std::string buyer;                           // Who made the final bid on the item?
    std::string socket[3];                       // Name of rune/gem the item has in each socket - Samson 3-31-02
-   int value[MAX_OBJ_VALUE];                    // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
+   int value[MAX_OBJ_VALUE]{0};                 // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
    int bid = 0;                                 // What was the amount of the final bid on auction?
    int mpactnum = 0;                            // Mudprogs
    int ego = -2;                                // The ego level the object has. This is used to determine whether a player can use or keep this object long term. -2 triggers an autocalc function.
@@ -121,9 +121,9 @@ class obj_data
    unsigned short mpscriptpos = 0;              // Something to do with Mudprogs.
 };
 
-obj_data *get_objtype( char_data *, short );
+obj_data *get_objtype( const char_data *, short );
 void obj_identify_output( char_data *, obj_data * );
-void show_list_to_char( char_data *, std::list<obj_data *>, bool, bool );
+void show_list_to_char( char_data *, const std::list<obj_data *> &, bool, bool );
 void fwrite_obj( char_data *, std::list<obj_data *>, clan_data *, std::ofstream &, int, bool );
 void fread_obj( char_data *, std::ifstream &, short );
 obj_data *group_obj( obj_data * obj, obj_data * obj2 );

@@ -64,7 +64,7 @@ void auction_value( char_data *, char_data *, std::string_view );
 bool can_wear_obj( const char_data *, const obj_data * );
 bool can_mmodify( char_data *, char_data * );
 void bind_follower( char_data *, char_data *, int, int );
-char_data *find_auctioneer( char_data * );
+char_data *find_auctioneer( const char_data * );
 
 std::list<shop_data *> shoplist;
 std::list<repair_data *> repairlist;
@@ -78,7 +78,7 @@ void mprog_sell_trigger( char_data *, char_data *, obj_data * );
  * Local functions
  */
 int get_cost( char_data *, char_data *, obj_data *, bool );
-int get_repaircost( char_data *, obj_data * );
+int get_repaircost( const char_data *, const obj_data * );
 
 void save_shop( char_data * mob )
 {
@@ -503,7 +503,7 @@ char_data *find_fixer( char_data * ch )
 
 int get_cost( char_data * ch, char_data * keeper, obj_data * obj, bool fBuy )
 {
-   shop_data *pShop;
+   const shop_data *pShop;
    int cost;
    int profitmod;
 
@@ -550,9 +550,9 @@ int get_cost( char_data * ch, char_data * keeper, obj_data * obj, bool fBuy )
    return cost;
 }
 
-int get_repaircost( char_data * keeper, obj_data * obj )
+int get_repaircost( const char_data * keeper, const obj_data * obj )
 {
-   repair_data *rShop;
+   const repair_data *rShop;
    int cost;
    int itype;
    bool found;
@@ -2077,7 +2077,7 @@ CMDF( do_repairshops )
    don't forget to declare it - Minas */
 
 /* Finds banker mobs in a room. */
-char_data *find_banker( char_data * ch )
+char_data *find_banker( const char_data * ch )
 {
    for( auto* banker : ch->in_room->people )
    {

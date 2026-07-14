@@ -50,7 +50,7 @@ void validate_treasure_settings( area_data * );
 void load_mobiles( area_data * tarea, std::ifstream & stream )
 {
    mob_index *pMobIndex;
-   int x1, x2, x3, x4, x5, x6, x7, value;
+   int x1, x2, x3, x4, x5, x6, x7;
    std::string flag;
 
    if( !tarea )
@@ -194,11 +194,10 @@ void load_mobiles( area_data * tarea, std::ifstream & stream )
       flag_set( stream, pMobIndex->speaks, lang_names );
 
       std::string speaking = fread_line( stream );
+      int value = get_langnum( speaking );
 
-      speaking = one_argument( speaking, flag );
-      value = get_langnum( flag );
       if( value < 0 || value >= LANG_UNKNOWN )
-         bug( "Unknown speaking language: {}", flag );
+         bug( "Unknown speaking language: {}", speaking );
       else
          pMobIndex->speaking = value;
 
@@ -279,7 +278,6 @@ void load_mobiles( area_data * tarea, std::ifstream & stream )
 void load_objects( area_data * tarea, std::ifstream & stream )
 {
    obj_index *pObjIndex;
-   char letter;
    int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
 
    if( !tarea )
@@ -299,7 +297,7 @@ void load_objects( area_data * tarea, std::ifstream & stream )
       int vnum = 0, value;
       bool tmpBootDb, oldobj;
 
-      letter = fread_letter( stream );
+      char letter = fread_letter( stream );
       if( letter != '#' )
       {
          bug( "{}: # not found.", __func__ );

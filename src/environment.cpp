@@ -184,7 +184,7 @@ void environment_actual_update( void )
       atx = ch->map_x;
       aty = ch->map_y;
 
-      for( auto* en : envlist )
+      for( const auto* en : envlist )
       {
          if( distance( atx, aty, en->map_x, en->map_y ) > en->radius )
             continue;

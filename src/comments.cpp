@@ -394,13 +394,11 @@ void pc_data::fread_comment( std::ifstream & stream )
 /* Function kept for backwards compatibility */
 void pc_data::fread_old_comment( std::ifstream & stream )
 {
-   note_data *pcnote;
-
    log_string( "Starting comment conversion..." );
    std::string key;
    while( stream >> key )
    {
-      pcnote = new note_data;
+      note_data *pcnote = new note_data;
 
       if( key == "sender" )
          fread_string( pcnote->sender, stream );
@@ -411,7 +409,7 @@ void pc_data::fread_old_comment( std::ifstream & stream )
       if( key == "to" )
          fread_to_eol( stream );
 
-      if( "subject" )
+      if( key == "subject" )
          fread_string( pcnote->subject, stream );
 
       if( key == "text" )

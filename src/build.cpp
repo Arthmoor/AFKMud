@@ -331,7 +331,7 @@ std::string flag_string( int bitvector, const char *flagarray[] )
 
    for( int x = 0; x < 32; ++x )
    {
-      if( IS_SET( bitvector, ( 1 << x ) ) )
+      if( IS_SET( bitvector, ( 1U << x ) ) )
       {
          if( flagarray[x] && flagarray[x][0] != '\0' )
          {
@@ -405,7 +405,7 @@ void RelCreate( relation_type tp, void *actor, void *subject )
  * Relations created to fix a crash bug with oset on and rset on
  * code by: gfinello@mail.karmanet.it
  */
-void RelDestroy( relation_type tp, void *actor, void *subject )
+void RelDestroy( relation_type tp, const void *actor, const void *subject )
 {
    if( tp < relMSET_ON || tp > relOSET_ON )
    {
@@ -440,7 +440,7 @@ void RelDestroy( relation_type tp, void *actor, void *subject )
 bool can_rmodify( char_data * ch, room_index * room )
 {
    int vnum = room->vnum;
-   area_data *pArea;
+   const area_data *pArea;
 
    if( ch->isnpc(  ) )
       return false;
@@ -470,7 +470,7 @@ bool can_rmodify( char_data * ch, room_index * room )
 bool can_omodify( char_data * ch, obj_data * obj )
 {
    int vnum = obj->pIndexData->vnum;
-   area_data *pArea;
+   const area_data *pArea;
 
    if( ch->isnpc(  ) )
       return false;
@@ -500,7 +500,7 @@ bool can_omodify( char_data * ch, obj_data * obj )
 bool can_mmodify( char_data * ch, char_data * mob )
 {
    int vnum;
-   area_data *pArea;
+   const area_data *pArea;
 
    if( mob == ch )
       return true;
@@ -6495,7 +6495,7 @@ CMDF( do_rpedit )
  *  Last modified Feb. 24 1999
  *  Mystaric
  */
-void mpcopy( mud_prog_data * source, mud_prog_data * destination )
+void mpcopy( const mud_prog_data * source, mud_prog_data * destination )
 {
    destination->type = source->type;
    destination->triggered = source->triggered;
@@ -7033,7 +7033,7 @@ CMDF( do_makerooms )
    ch->print_fmt( "{} rooms created.\r\n", room_count );
 }
 
-bool check_area_conflict( area_data * area, int low_range, int hi_range )
+bool check_area_conflict( const area_data * area, int low_range, int hi_range )
 {
    if( low_range < area->low_vnum && area->low_vnum < hi_range )
       return true;
@@ -7053,7 +7053,7 @@ bool check_area_conflict( area_data * area, int low_range, int hi_range )
 // Runs the entire list, easier to call in places that have to check them all
 bool check_area_conflicts( int lo, int hi )
 {
-   for( auto* area : arealist )
+   for( const auto* area : arealist )
    {
       if( check_area_conflict( area, lo, hi ) )
          return true;

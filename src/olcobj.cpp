@@ -71,7 +71,6 @@ extern const char *liquid_types[];
 
 void medit_disp_aff_flags( descriptor_data * );
 void medit_disp_ris( descriptor_data * );
-int get_traptype( const std::string & );
 bool can_omodify( char_data *, obj_data * );
 
 /* Internal functions */
@@ -708,7 +707,7 @@ CMDF( do_ocopy )
 /* For container flags */
 void oedit_disp_container_flags_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_CONT_FLAG; ++i )
@@ -721,7 +720,7 @@ void oedit_disp_container_flags_menu( descriptor_data * d )
 /* For furniture flags */
 void oedit_disp_furniture_flags_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int i = 0; i < MAX_FURNFLAG; ++i )
@@ -736,7 +735,7 @@ void oedit_disp_furniture_flags_menu( descriptor_data * d )
  */
 void oedit_disp_lever_flags_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    for( int counter = 0; counter < MAX_TRIGFLAG; ++counter )
@@ -749,7 +748,7 @@ void oedit_disp_lever_flags_menu( descriptor_data * d )
  */
 void oedit_disp_layer_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
 
    d->olc->mode  = OEDIT_LAYERS;
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -769,7 +768,7 @@ void oedit_disp_layer_menu( descriptor_data * d )
 /* For extra descriptions */
 void oedit_disp_extradesc_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    std::list<extra_descr_data *>::iterator ed;
    extra_descr_data *edesc;
    int count = 0;
@@ -806,7 +805,7 @@ void oedit_disp_extradesc_menu( descriptor_data * d )
 
 void oedit_disp_extra_choice( descriptor_data * d )
 {
-   extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
+   extra_descr_data *ed = static_cast<extra_descr_data *>( d->character->pcdata->spare_ptr );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->print_fmt( "&g1&w) Keyword: &O{}\r\n", ed->keyword );
@@ -820,7 +819,7 @@ void oedit_disp_extra_choice( descriptor_data * d )
 /* Ask for *which* apply to edit and prompt for some other options */
 void oedit_disp_prompt_apply_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    std::list<affect_data *>::iterator paf;
    int counter = 0;
 
@@ -1020,7 +1019,7 @@ void oedit_disp_traptype_menu( descriptor_data * d )
  */
 void oedit_disp_trapflags( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    int col = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -1093,7 +1092,7 @@ void oedit_disp_spells_menu( descriptor_data * d )
 /* object value 0 */
 void oedit_disp_val0_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_0;
 
    switch ( obj->item_type )
@@ -1156,7 +1155,7 @@ void oedit_disp_val0_menu( descriptor_data * d )
 /* object value 1 */
 void oedit_disp_val1_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_1;
 
    switch ( obj->item_type )
@@ -1233,7 +1232,7 @@ void oedit_disp_val1_menu( descriptor_data * d )
 /* object value 2 */
 void oedit_disp_val2_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_2;
 
    switch ( obj->item_type )
@@ -1276,7 +1275,7 @@ void oedit_disp_val2_menu( descriptor_data * d )
 /* object value 3 */
 void oedit_disp_val3_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_3;
 
    switch ( obj->item_type )
@@ -1316,7 +1315,7 @@ void oedit_disp_val3_menu( descriptor_data * d )
 /* object value 4 */
 void oedit_disp_val4_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_4;
 
    switch ( obj->item_type )
@@ -1359,7 +1358,7 @@ void oedit_disp_val4_menu( descriptor_data * d )
 /* object value 5 */
 void oedit_disp_val5_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_5;
 
    switch ( obj->item_type )
@@ -1392,7 +1391,7 @@ void oedit_disp_val5_menu( descriptor_data * d )
 /* object value 6 */
 void oedit_disp_val6_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_6;
 
    switch ( obj->item_type )
@@ -1409,7 +1408,7 @@ void oedit_disp_val6_menu( descriptor_data * d )
 /* object value 7 */
 void oedit_disp_val7_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_7;
 
    switch ( obj->item_type )
@@ -1426,7 +1425,7 @@ void oedit_disp_val7_menu( descriptor_data * d )
 /* object value 8 */
 void oedit_disp_val8_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_8;
 
    switch ( obj->item_type )
@@ -1443,7 +1442,7 @@ void oedit_disp_val8_menu( descriptor_data * d )
 /* object value 9 */
 void oedit_disp_val9_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_9;
 
    switch ( obj->item_type )
@@ -1460,7 +1459,7 @@ void oedit_disp_val9_menu( descriptor_data * d )
 /* object value 10 */
 void oedit_disp_val10_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    d->olc->mode  = OEDIT_VALUE_10;
 
    switch ( obj->item_type )
@@ -1492,7 +1491,7 @@ void oedit_disp_type_menu( descriptor_data * d )
 /* object extra flags */
 void oedit_disp_extra_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    int col = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -1510,7 +1509,7 @@ void oedit_disp_extra_menu( descriptor_data * d )
  */
 void oedit_disp_wear_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   const obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    int col = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -1529,7 +1528,7 @@ void oedit_disp_wear_menu( descriptor_data * d )
 /* display main menu */
 void oedit_disp_menu( descriptor_data * d )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
 
    /*
     * Ominous looking ANSI code of some sort - perhaps there's some way to use this elsewhere ? 
@@ -1568,7 +1567,7 @@ void oedit_disp_menu( descriptor_data * d )
  ***************************************************************************/
 void edit_object_affect( descriptor_data * d, int number )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
+   obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
    int count = 0;
    std::list<affect_data *>::iterator paf;
 
@@ -1728,10 +1727,10 @@ CMDF( do_oedit_reset )
  */
 void oedit_parse( descriptor_data * d, std::string & arg )
 {
-   obj_data *obj = ( obj_data * ) d->character->pcdata->dest_buf;
-   affect_data *paf = ( affect_data * ) d->character->pcdata->spare_ptr;
+   obj_data *obj = static_cast<obj_data *>( d->character->pcdata->dest_buf );
+   affect_data *paf = static_cast<affect_data *>( d->character->pcdata->spare_ptr );
    affect_data *npaf;
-   extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
+   extra_descr_data *ed = static_cast<extra_descr_data *>( d->character->pcdata->spare_ptr );
    std::string arg1;
    int number = 0, max_val, min_val, value;
    /*

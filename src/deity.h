@@ -70,8 +70,8 @@ class deity_data
    short srecall = 0;                     // Amount of favor needed to supplicate for a recall.
    short smount = 0;                      // Amount of favor needed to supplicate for a mount - Added by Tarl 24 Feb 02
    short sminion = 0;                     // Amount of favor needed to supplicate for a minion - Added by Tarl 24 Feb 02
-   short spell[3];                        // Spells added to the player at each favor level - Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04
-   short sspell[3];                       // Favor levels needed to acquire the deity's spells - Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04
+   short spell[3]{0};                     // Spells added to the player at each favor level - Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04
+   short sspell[3]{0};                    // Favor levels needed to acquire the deity's spells - Added by Tarl 24 Mar 02 - Consolidated by Samson 12/19/04
    short flee = 0;                        // Base favor adjustment for fleeing from NPCs.
    short flee_npcrace[3]{0};              // Specific larger favor adjustments for fleeing from specific NPC races - Consolidated by Samson 12/19/04
    short flee_npcfoe[3]{0};               // Specific larger favor adjustments for feeling from specific NPC races designated as enemies - Consolidated by Samson 12/19/04

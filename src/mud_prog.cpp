@@ -193,7 +193,7 @@ mpsleep_data::~mpsleep_data(  )
  *    else
  *    if there is a sibling then visit the sibling
  */
-static bool carryingvnum_visit( char_data * ch, std::list<obj_data *> source, int vnum )
+static bool carryingvnum_visit( char_data * ch, const std::list<obj_data *> & source, int vnum )
 {
    for( auto* obj : source )
    {
@@ -585,7 +585,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
 
-      mob_index *m_index = get_mob_index( vnum );
+      const mob_index *m_index = get_mob_index( vnum );
 
       if( !m_index )
          world_count = 0;
@@ -657,7 +657,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
 
-      mob_index *m_index = get_mob_index( vnum );
+      const mob_index *m_index = get_mob_index( vnum );
 
       if( !m_index )
          lhsvl = 0;
@@ -678,7 +678,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
 
    if( !str_cmp( chck, "timeskilled" ) )
    {
-      mob_index *pMob;
+      const mob_index *pMob;
 
       if( chkchar )
          pMob = chkchar->pIndexData;
@@ -694,7 +694,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
    if( !str_cmp( chck, "objinworld" ) )
    {
       int vnum = atoi( cvar );
-      obj_index *p_index;
+      const obj_index *p_index;
 
       if( vnum < 1 || vnum > sysdata->maxvnum )
       {
@@ -732,14 +732,14 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
       std::list<obj_data *>::iterator iobj;
       for( iobj = mob->carrying.begin(  ); iobj != mob->carrying.end(  ); ++iobj )
       {
-         obj_data *pObj = *iobj;
+         const obj_data *pObj = *iobj;
 
          if( pObj->pIndexData->vnum == vnum )
             lhsvl += pObj->count;
       }
       for( iobj = mob->in_room->objects.begin(  ); iobj != mob->in_room->objects.end(  ); ++iobj )
       {
-         obj_data *pObj = ( *iobj );
+         const obj_data *pObj = *iobj;
 
          if( pObj->pIndexData->vnum == vnum )
             lhsvl += pObj->count;
@@ -773,13 +773,15 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
       std::list<obj_data *>::iterator iobj;
       for( iobj = mob->carrying.begin(  ); iobj != mob->carrying.end(  ); ++iobj )
       {
-         obj_data *pObj = *iobj;
+         const obj_data *pObj = *iobj;
+
          if( pObj->pIndexData->vnum == type )
             lhsvl += pObj->count;
       }
       for( iobj = mob->in_room->objects.begin(  ); iobj != mob->in_room->objects.end(  ); ++iobj )
       {
-         obj_data *pObj = *iobj;
+         const obj_data *pObj = *iobj;
+
          if( pObj->pIndexData->vnum == type )
             lhsvl += pObj->count;
       }
@@ -804,7 +806,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
       lhsvl = 0;
-      for( auto* pObj : mob->in_room->objects )
+      for( const auto* pObj : mob->in_room->objects )
       {
          if( pObj->pIndexData->vnum == vnum )
             lhsvl += pObj->count;
@@ -835,7 +837,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
       }
       lhsvl = 0;
 
-      for( auto* pObj : mob->in_room->objects )
+      for( const auto* pObj : mob->in_room->objects )
       {
          if( pObj->pIndexData->vnum == type )
             lhsvl += pObj->count;
@@ -861,7 +863,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
       lhsvl = 0;
-      for( auto* pObj : mob->carrying )
+      for( const auto* pObj : mob->carrying )
       {
          if( pObj->pIndexData->vnum == vnum )
             lhsvl += pObj->count;
@@ -889,7 +891,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
       lhsvl = 0;
-      for( auto* pObj : mob->carrying )
+      for( const auto* pObj : mob->carrying )
       {
          if( pObj->pIndexData->vnum == type )
             lhsvl += pObj->count;
@@ -915,7 +917,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
       lhsvl = 0;
-      for( auto* pObj : mob->carrying )
+      for( const auto* pObj : mob->carrying )
       {
          if( pObj->wear_loc != WEAR_NONE && pObj->pIndexData->vnum == vnum )
             lhsvl += pObj->count;
@@ -945,7 +947,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
       lhsvl = 0;
-      for( auto* pObj : mob->carrying )
+      for( const auto* pObj : mob->carrying )
       {
          if( pObj->wear_loc != WEAR_NONE && pObj->pIndexData->vnum == type )
             lhsvl += pObj->count;
@@ -971,7 +973,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
       lhsvl = 0;
-      for( auto* pObj : mob->carrying )
+      for( const auto* pObj : mob->carrying )
       {
          if( pObj->wear_loc == WEAR_NONE && pObj->pIndexData->vnum == vnum )
             lhsvl += pObj->count;
@@ -1001,7 +1003,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          return BERR;
       }
       lhsvl = 0;
-      for( auto* pObj : mob->carrying )
+      for( const auto* pObj : mob->carrying )
       {
          if( pObj->wear_loc == WEAR_NONE && pObj->pIndexData->vnum == type )
             lhsvl += pObj->count;
@@ -1150,11 +1152,9 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
        */
       if( !str_cmp( chck, "hasabit" ) )
       {
-         int number;
-
          if( is_number( rval ) )
          {
-            number = atoi( rval );
+            int number = atoi( rval );
 
             if( chkchar->abits.find( number ) == chkchar->abits.end(  ) )
                return mprog_veval( 0, opr, 1, mob );
@@ -1170,14 +1170,12 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
        */
       if( !str_cmp( chck, "hasqbit" ) )
       {
-         int number;
-
          if( chkchar->isnpc(  ) )
             return mprog_veval( 0, opr, 1, mob );
 
          if( is_number( rval ) )
          {
-            number = atoi( rval );
+            int number = atoi( rval );
 
             if( chkchar->pcdata->qbits.find( number ) == chkchar->pcdata->qbits.end(  ) )
                return mprog_veval( 0, opr, 1, mob );
@@ -1426,7 +1424,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
       {
          int i = 0;
 
-         for( auto* tobj : chkchar->carrying )
+         for( const auto* tobj : chkchar->carrying )
          {
             ++i;
 
@@ -1444,7 +1442,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
          if( !is_number( rval ) )
             return false;
 
-         for( auto* tobj : chkchar->carrying )
+         for( const auto* tobj : chkchar->carrying )
          {
             if( chkchar == tobj->carried_by && tobj->wear_loc > -1 && tobj->pIndexData->vnum == atoi( rval ) )
                return true;
@@ -2513,13 +2511,12 @@ void mpsleep_update( void )
 {
    std::list<mpsleep_data *>::iterator tmpmpsleep;
    mpsleep_data *mpsleep;
-   bool delete_it;
 
    for( tmpmpsleep = sleeplist.begin(  ); tmpmpsleep != sleeplist.end(  ); )
    {
       mpsleep = *tmpmpsleep;
       ++tmpmpsleep;
-      delete_it = false;
+      bool delete_it = false;
 
       if( mpsleep->mob )
          delete_it = mpsleep->mob->char_died(  );
@@ -3105,11 +3102,9 @@ void mprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
 
 void mprog_time_check( char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {
-   bool trigger_time;
-
    for( auto* mprg : mob->pIndexData->mudprogs )
    {
-      trigger_time = ( time_info.hour == std::stoi( mprg->arglist ) );
+      bool trigger_time = ( time_info.hour == std::stoi( mprg->arglist ) );
 
       if( !trigger_time )
       {
@@ -3129,7 +3124,7 @@ void mprog_time_check( char_data * mob, char_data * actor, obj_data * obj, char_
 // A much simpler version than the old mess - Samson 8/2/05
 void mob_act_add( char_data * mob )
 {
-   for( auto* ch : mob_act_list )
+   for( const auto* ch : mob_act_list )
    {
       if( ch == mob )
          return;
@@ -3147,11 +3142,10 @@ void mob_act_add( char_data * mob )
  */
 void mprog_act_trigger( std::string_view buf, char_data * mob, char_data * ch, obj_data * obj, char_data * victim, obj_data * target )
 {
-   mprog_act_list *tmp_act;
-   bool found = false;
-
    if( mob->isnpc(  ) && HAS_PROG( mob->pIndexData, ACT_PROG ) )
    {
+      bool found = false;
+
       /*
        * Don't let a mob trigger itself, nor one instance of a mob trigger another instance. 
        */
@@ -3161,7 +3155,7 @@ void mprog_act_trigger( std::string_view buf, char_data * mob, char_data * ch, o
       /*
        * make sure this is a matching trigger 
        */
-      for( auto* mprg : mob->pIndexData->mudprogs )
+      for( const auto* mprg : mob->pIndexData->mudprogs )
       {
          if( mprg->type == ACT_PROG && mprog_keyword_check( buf, mprg->arglist ) )
          {
@@ -3172,7 +3166,7 @@ void mprog_act_trigger( std::string_view buf, char_data * mob, char_data * ch, o
       if( !found )
          return;
 
-      tmp_act = new mprog_act_list;
+      mprog_act_list *tmp_act = new mprog_act_list;
       tmp_act->buf = buf;
       tmp_act->ch = ch;
       tmp_act->obj = obj;
@@ -3190,12 +3184,12 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
 
    if( HAS_PROG( actor->in_room, KEYWORD_PROG ) )
    {
-      for( auto* mprg : actor->in_room->mudprogs )
+      for( const auto* mprg : actor->in_room->mudprogs )
       {
          if( actor->char_died(  ) )
             return rValue;
 
-         if( ( mprg->type = KEYWORD_PROG ) && ( !str_cmp( mprg->arglist, txt ) ) )
+         if( mprg->type == KEYWORD_PROG && !str_cmp( mprg->arglist, txt ) )
          {
             rset_supermob( actor->in_room );
             mprog_driver( mprg->comlist, supermob, actor, nullptr, nullptr, nullptr, false );
@@ -3218,12 +3212,12 @@ bool mprog_keyword_trigger( std::string_view txt, char_data * actor )
          if( actor->isnpc(  ) && actor->pIndexData == vmob->pIndexData )
             continue;
 
-         for( auto* mprg : vmob->pIndexData->mudprogs )
+         for( const auto* mprg : vmob->pIndexData->mudprogs )
          {
             if( actor->char_died(  ) )
                return rValue;
 
-            if( ( mprg->type == KEYWORD_PROG ) && ( !str_cmp( mprg->arglist, txt ) ) )
+            if( mprg->type == KEYWORD_PROG && !str_cmp( mprg->arglist, txt ) )
             {
                mprog_driver( mprg->comlist, vmob, actor, nullptr, nullptr, nullptr, false );
                rValue = true;
@@ -3438,8 +3432,6 @@ void mprog_fight_trigger( char_data * mob, char_data * ch )
 
 void mprog_give_trigger( char_data * mob, char_data * ch, obj_data * obj )
 {
-   std::string buf;
-
    if( mob->isnpc(  ) && mob->can_see( ch, false ) && HAS_PROG( mob->pIndexData, GIVE_PROG ) )
    {
       /*
@@ -3451,6 +3443,7 @@ void mprog_give_trigger( char_data * mob, char_data * ch, obj_data * obj )
 
       for( auto* mprg : mob->pIndexData->mudprogs )
       {
+         std::string buf;
          one_argument( mprg->arglist, buf );
 
          if( mprg->type == GIVE_PROG && ( !str_cmp( obj->name, mprg->arglist ) || !str_cmp( "all", buf ) ) )
@@ -3464,22 +3457,20 @@ void mprog_give_trigger( char_data * mob, char_data * ch, obj_data * obj )
 
 void mprog_sell_trigger( char_data * mob, char_data * ch, obj_data * obj )
 {
-   std::string buf;
-   int s_vnum;
-
    if( mob->isnpc(  ) && mob->can_see( ch, false ) && HAS_PROG( mob->pIndexData, SELL_PROG ) )
    {
       if( ch->isnpc(  ) && ch->pIndexData == mob->pIndexData )
          return;
 
-      for( auto * mprg : mob->pIndexData->mudprogs )
+      for( const auto * mprg : mob->pIndexData->mudprogs )
       {
+         std::string buf;
          one_argument( mprg->arglist, buf );
 
          if( !is_number( buf ) )
             continue;
 
-         s_vnum = std::stoi( buf );
+         int s_vnum = std::stoi( buf );
 
          if( mprg->type == SELL_PROG && ( ( s_vnum == obj->pIndexData->vnum ) || ( s_vnum == 0 ) ) )
          {
@@ -3586,7 +3577,7 @@ void mprog_hitprcnt_trigger( char_data * mob, char_data * ch )
 {
    if( mob->isnpc(  ) && HAS_PROG( mob->pIndexData, HITPRCNT_PROG ) )
    {
-      for( auto* mprg : mob->pIndexData->mudprogs )
+      for( const auto* mprg : mob->pIndexData->mudprogs )
       {
          if( mprg->type == HITPRCNT_PROG && ( 100 * mob->hit / mob->max_hit ) < std::stoi( mprg->arglist ) )
          {
@@ -3789,18 +3780,16 @@ void set_supermob( obj_data * obj )
     */
    supermob->chardesc = std::format( "Object #{}", obj->pIndexData->vnum );
 
-   if( room != nullptr )
+   supermob->from_room(  );
+   if( !supermob->to_room( room ) )
+      log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
+
+   if( obj->extra_flags.test( ITEM_ONMAP ) )
    {
-      supermob->from_room(  );
-      if( !supermob->to_room( room ) )
-         log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
-      if( obj->extra_flags.test( ITEM_ONMAP ) )
-      {
-         supermob->set_actflag( ACT_ONMAP );
-         supermob->continent = obj->continent;
-         supermob->map_x = obj->map_x;
-         supermob->map_y = obj->map_y;
-      }
+      supermob->set_actflag( ACT_ONMAP );
+      supermob->continent = obj->continent;
+      supermob->map_x = obj->map_x;
+      supermob->map_y = obj->map_y;
    }
 }
 
@@ -3823,7 +3812,7 @@ bool oprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
 {
    bool executed = false;
 
-   for( auto* mprg : obj->pIndexData->mudprogs )
+   for( const auto* mprg : obj->pIndexData->mudprogs )
    {
       if( mprg->type == type && ( number_percent(  ) <= std::stoi( mprg->arglist ) ) )
       {
@@ -4125,7 +4114,7 @@ void rprog_percent_check( char_data * mob, char_data * actor, obj_data * obj, ch
    if( !mob->in_room )
       return;
 
-   for( auto* mprg : mob->in_room->mudprogs )
+   for( const auto* mprg : mob->in_room->mudprogs )
    {
       if( mprg->type == type && number_percent(  ) <= std::stoi( mprg->arglist ) )
       {
@@ -4272,13 +4261,11 @@ void rprog_random_trigger( char_data * ch )
    }
 }
 
-void rprog_time_check( char_data * mob, char_data * actor, obj_data * obj, room_index * room, int type )
+void rprog_time_check( char_data * mob, char_data * actor, obj_data * obj, const room_index * room, int type )
 {
-   bool trigger_time;
-
    for( auto* mprg : room->mudprogs )
    {
-      trigger_time = ( time_info.hour == std::stoi( mprg->arglist ) );
+      bool trigger_time = ( time_info.hour == std::stoi( mprg->arglist ) );
 
       if( !trigger_time )
       {
@@ -4323,16 +4310,16 @@ void rprog_hour_trigger( char_data * ch )
 **************************************************************************/
 void mprog_month_check( char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {
-   for( auto* mprg : mob->pIndexData->mudprogs )
+   for( const auto* mprg : mob->pIndexData->mudprogs )
    {
       if( mprg->type == type && time_info.month == std::stoi( mprg->arglist ) )
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
    }
 }
 
-void rprog_month_check( char_data * mob, char_data * actor, obj_data * obj, room_index * room, int type )
+void rprog_month_check( char_data * mob, char_data * actor, obj_data * obj, const room_index * room, int type )
 {
-   for( auto* mprg : room->mudprogs )
+   for( const auto* mprg : room->mudprogs )
    {
       if( mprg->type == type && time_info.month == std::stoi( mprg->arglist ) )
          mprog_driver( mprg->comlist, mob, actor, obj, nullptr, nullptr, false );
@@ -4341,7 +4328,7 @@ void rprog_month_check( char_data * mob, char_data * actor, obj_data * obj, room
 
 void oprog_month_check( char_data * mob, char_data * actor, obj_data * obj, char_data * victim, obj_data * target, int type )
 {
-   for( auto* mprg : obj->pIndexData->mudprogs )
+   for( const auto* mprg : obj->pIndexData->mudprogs )
    {
       if( mprg->type == type && time_info.month == std::stoi( mprg->arglist ) )
          mprog_driver( mprg->comlist, mob, actor, obj, victim, target, false );
@@ -4400,7 +4387,7 @@ void progbug( std::string_view str, char_data * mob )
 // A much simpler version than the old mess - Samson 8/2/05
 void room_act_add( room_index * room )
 {
-   for( auto* rpd : room_act_list )
+   for( const auto* rpd : room_act_list )
    {
       if( rpd == room )
          return;
@@ -4433,7 +4420,7 @@ void room_act_update( void )
 // A much simpler version than the old mess - Samson 8/2/05
 void obj_act_add( obj_data * obj )
 {
-   for( auto* opd : obj_act_list )
+   for( const auto* opd : obj_act_list )
    {
       if( opd == obj )
          return;

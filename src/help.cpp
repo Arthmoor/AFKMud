@@ -235,7 +235,7 @@ help_data *get_help( char_data * ch, std::string argument )
          argall.append( 1, ' ' );
       argall.append( argone );
    }
-   std::transform( argall.begin(), argall.end(), argall.begin(), (int(*)(int)) std::toupper );
+   std::transform( argall.begin(), argall.end(), argall.begin(), static_cast<int(*)(int)>( std::toupper ) );
 
    for( auto* pHelp : helplist )
    {

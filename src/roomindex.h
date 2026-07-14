@@ -41,8 +41,8 @@ class reset_data
      reset_data(  );
 
    std::list<reset_data *> resets;   // Child resets associated with this reset
-   obj_data *resetobj;
-   char command;
+   obj_data *resetobj = nullptr;
+   char command = '\0';
    // Attention at the keyboard: Don't go setting these back to shorts. Charlana.are will drain your soul!
    // Cause, ya know, this shit loads vnums all over the place and you'll break stuff. Badly.
    int arg1 = 0;
@@ -115,7 +115,7 @@ class room_index
    void rprog_read_programs( std::ifstream & );
    bool is_dark( char_data * );
    bool is_private(  );
-   void room_affect( affect_data *, bool );
+   void room_affect( const affect_data *, bool );
    reset_data *add_reset( char, int, int, int, int, int, int, int, int, int, int, int );
    void reset(  );
    void wipe_coord_resets( short, short );
@@ -146,7 +146,7 @@ class room_index
    int weight = 0;                              // Current amount of weight present in the room. - Taken from Smaug 1.8
    int max_weight = 100000;                     // Limit for how much weight the room can hold.  - Taken from Smaug 1.8
    int mpactnum = 0;                            // Mudprogs
-   unsigned short mpscriptpos;                  // Mudprogs
+   unsigned short mpscriptpos = 0;              // Mudprogs
    short baselight = 0;                         // Preset light amount in this room.
    short light = 0;                             // Modified amount of light in the room.
    short sector_type = 0;                       // What type of terrain this room is set to.
@@ -183,7 +183,7 @@ bool CAN_GO( const T* x, int door )
    if( !x || !x->in_room )
       return false;
 
-   auto exit = x->in_room->get_exit( door );
+   auto pexit = x->in_room->get_exit( door );
 
-   return exit != nullptr && exit->to_room != nullptr && !IS_EXIT_FLAG( exit, EX_CLOSED );
+   return pexit != nullptr && pexit->to_room != nullptr && !IS_EXIT_FLAG( pexit, EX_CLOSED );
 }

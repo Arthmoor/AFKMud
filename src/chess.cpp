@@ -118,7 +118,7 @@ bool IS_BLACK( int x )
    return false;
 }
 
-bool SAME_COLOR( game_board_data * board, int x1, int y1, int x2, int y2 )
+bool SAME_COLOR( const game_board_data * board, int x1, int y1, int x2, int y2 )
 {
    if( IS_WHITE( board->board[x1][y1] ) && IS_WHITE( board->board[x2][y2] ) )
       return true;
@@ -158,26 +158,24 @@ std::string print_big_board( game_board_data * board )
    return retbuf;
 }
 
-bool find_piece( game_board_data * board, int *x, int *y, int piece )
+bool find_piece( const game_board_data *board, int *x, int *y, int piece )
 {
-   int a, b;
-
-   for( a = 0; a < 8; ++a )
+   for( int a = 0; a < 8; ++a )
    {
-      for( b = 0; b < 8; ++b )
+      for( int b = 0; b < 8; ++b )
+      {
          if( board->board[a][b] == piece )
-            break;
-      if( board->board[a][b] == piece )
-         break;
+         {
+            *x = a;
+            *y = b;
+            return true;
+         }
+      }
    }
-   *x = a;
-   *y = b;
-   if( board->board[a][b] == piece )
-      return true;
    return false;
 }
 
-bool king_in_check( game_board_data * board, int piece )
+bool king_in_check( const game_board_data * board, int piece )
 {
    int x = 0, y = 0, l, m;
 
@@ -736,7 +734,7 @@ void free_all_chess_games( void )
    }
 }
 
-void send_to_opp( std::string_view arg, char_data * ch, char_data * opp )
+void send_to_opp( std::string_view arg, const char_data * ch, char_data * opp )
 {
    if( opp )
    {

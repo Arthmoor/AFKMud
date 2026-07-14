@@ -23,7 +23,7 @@
  * Original DikuMUD code by: Hans Staerfeldt, Katja Nyboe, Tom Madsen,      *
  * Michael Seifert, and Sebastian Hammer.                                   *
  ****************************************************************************
- *                  Internal server shell command module                    *
+ *                  Internal Server Shell Command Module                    *
  ****************************************************************************/
 
 /* Comment out this define if the child processes throw segfaults */
@@ -37,6 +37,7 @@
 #endif
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include "mud.h"
 #include "commands.h"
 #include "descriptor.h"
@@ -196,7 +197,7 @@ CMDF( do_mudexec )
    else if( pid < 2 )
    {
       ch->print( "Process fork failed.\r\n" );
-      std::cerr << "Shell process: fork failed!\n" );
+      std::cerr << "Shell process: fork failed!\n";
       return;
    }
    else

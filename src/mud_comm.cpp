@@ -2873,9 +2873,7 @@ CMDF( do_mp_slay )
  */
 ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
 {
-   short dameq;
    bool npcvict;
-   obj_data *damobj;
 
    if( !ch )
    {
@@ -2924,8 +2922,8 @@ ch_ret simple_damage( char_data * ch, char_data * victim, double dam, int dt )
       /*
        * get a random body eq part 
        */
-      dameq = number_range( WEAR_LIGHT, WEAR_EYES );
-      damobj = victim->get_eq( dameq );
+      short dameq = number_range( WEAR_LIGHT, WEAR_EYES );
+      obj_data *damobj = victim->get_eq( dameq );
       if( damobj )
       {
          if( dam > damobj->get_resistance(  ) )
@@ -3773,15 +3771,13 @@ char_data *make_doppleganger( char_data * ch )
 }
 
 /* Equip the doppleganger with everything the PC has - Samson 10-11-99 */
-void equip_doppleganger( char_data * ch, char_data * mob )
+void equip_doppleganger( const char_data * ch, char_data * mob )
 {
    for( auto* obj : ch->carrying )
    {
-      obj_data *newobj;
-
       if( obj->wear_loc != WEAR_NONE )
       {
-         newobj = obj->clone(  );
+         obj_data *newobj = obj->clone(  );
          newobj->extra_flags.set( ITEM_DEATHROT );
          newobj->to_char( mob );
       }
@@ -3859,8 +3855,8 @@ void name_stamp_stats( char_data * ch )
 void setup_newbie( char_data * ch, bool NEWLOGIN )
 {
    obj_data *obj;
-   obj_index *objcheck;
-   race_type *race;
+   const obj_index *objcheck;
+   const race_type *race;
 
    int iLang;
 

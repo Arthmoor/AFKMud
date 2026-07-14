@@ -104,7 +104,6 @@ void save_bits( void )
 /* Load the abits and qbits */
 void load_oldbits( void )
 {
-   std::filesystem::path buf;
    int mode = 0, number = -1;
    std::string desc;
 
@@ -236,8 +235,7 @@ void set_abit( char_data * ch, int number )
    if( abits.find( number ) == abits.end(  ) )
       return;
 
-   if( ch->abits.find( number ) != ch->abits.end(  ) )
-      ch->abits[number] = abits[number];
+   ch->abits.try_emplace( number, abits[number] );
 }
 
 /* Add a qbit to a character */
@@ -249,8 +247,7 @@ void set_qbit( char_data * ch, int number )
    if( qbits.find( number ) == qbits.end(  ) )
       return;
 
-   if( ch->pcdata->qbits.find( number ) == ch->pcdata->qbits.end(  ) )
-      ch->pcdata->qbits[number] = qbits[number];
+   ch->pcdata->qbits.try_emplace( number, qbits[number] );
 }
 
 /* Take an abit off a character */

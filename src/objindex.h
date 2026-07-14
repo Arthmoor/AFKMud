@@ -58,7 +58,7 @@ class obj_index
    std::string objdesc;                         // Long description seen when the object is in a room.
    std::string action_desc;                     // Message displayed when someone interacts with the object. Not fully supported in code.
    std::string socket[3];                       // Name of rune/gem the item has in each socket - Samson 3-31-02
-   int value[MAX_OBJ_VALUE];                    // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
+   int value[MAX_OBJ_VALUE]{0};                 // Various values and flags based on the object type - Raised to 11 by Samson on 12-14-02
    int vnum = 0;                                // Vnum of the objindex. Must be unique.
    int cost = 0;                                // Base cost of the object when sold in shops.
    int ego = -2;                                // The ego level the object has. This is used to determine whether a player can use or keep this object long term. -2 triggers an autocalc function.

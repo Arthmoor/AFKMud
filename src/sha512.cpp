@@ -204,13 +204,13 @@ void SHA512::final(unsigned char *digest)
     }
 }
 
-std::string sha512(std::string input)
+std::string sha512( const std::string & input )
 {
     unsigned char digest[SHA512::DIGEST_SIZE];
     memset(digest,0,SHA512::DIGEST_SIZE);
     SHA512 ctx = SHA512();
     ctx.init();
-    ctx.update((unsigned char*)input.c_str(), input.length());
+    ctx.update( reinterpret_cast<const unsigned char*>( input.c_str() ), input.length());
     ctx.final(digest);
 
     char buf[2*SHA512::DIGEST_SIZE+1];

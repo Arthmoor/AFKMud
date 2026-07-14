@@ -174,7 +174,7 @@ void read_obj_file( int vnum )
             supermob->map_y = tobj->map_y;
          }
          tobj->from_char(  );
-         tobj = tobj->to_room( room, supermob );
+         tobj->to_room( room, supermob );
          supermob->unset_actflag( ACT_ONMAP );
          supermob->continent = nullptr;
          supermob->map_x = -1;
@@ -208,7 +208,6 @@ void load_obj_files( )
 
 void load_world( void )
 {
-   int done = 0;
    bool mobfile = false;
 
    std::filesystem::path file1 = std::format( "{}{}", SYSTEM_DIR, MOB_FILE );
@@ -222,6 +221,7 @@ void load_world( void )
 
    if( mobfile )
    {
+      int done = 0;
       set_alarm( 30 );
       log_string( "World state: loading mobs" );
       while( done == 0 )

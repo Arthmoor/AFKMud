@@ -54,7 +54,7 @@ std::list < area_data * >area_vsort;
 
 int recall( char_data *, int );
 void save_sysdata(  );
-bool check_area_conflict( area_data *, int, int );
+bool check_area_conflict( const area_data *, int, int );
 void web_arealist(  );
 area_data *fread_smaugfuss_area( std::ifstream & );
 bool load_oldafk_area( std::ifstream &, area_data *, int );
@@ -193,7 +193,7 @@ void area_data::sort_name(  )
 {
    for( auto iarea = area_nsort.begin(); iarea != area_nsort.end(); ++iarea )
    {
-      area_data* area = *iarea;
+      const area_data* area = *iarea;
 
       if( this->name < area->name )
       {
@@ -212,7 +212,7 @@ void area_data::sort_vnums(  )
 {
    for( auto iarea = area_vsort.begin(); iarea != area_vsort.end(); ++iarea )
    {
-      area_data *area = *iarea;
+      const area_data *area = *iarea;
 
       if( low_vnum < area->low_vnum )
       {
@@ -742,15 +742,11 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
       }
       else if( key == "Speaking" )
       {
-         std::string speaking, flag;
-         int value;
+         std::string speaking = fread_line( stream );
+         int value = get_langnum( speaking );
 
-         speaking = fread_line( stream );
-
-         speaking = one_argument( speaking, flag );
-         value = get_langnum( flag );
          if( value < 0 || value >= LANG_UNKNOWN )
-            bug( "Unknown speaking language: {}", flag );
+            bug( "Unknown speaking language: {}", speaking );
          else
             pMobIndex->speaking = value;
 
@@ -1482,7 +1478,7 @@ bool mprog_write_prog( std::ofstream & stream, mud_prog_data * mprog )
    return false;
 }
 
-void save_reset_level( std::ofstream & stream, std::list<reset_data *> source, const int level )
+void save_reset_level( std::ofstream & stream, const std::list<reset_data *> & source, const int level )
 {
    int spaces = level * 2;
 
@@ -2327,9 +2323,9 @@ CMDF( do_astat )
 }
 
 /* check other areas for a conflict while ignoring the current area */
-bool check_for_area_conflicts( area_data * carea, int lo, int hi )
+bool check_for_area_conflicts( const area_data * carea, int lo, int hi )
 {
-   for( auto* area: arealist )
+   for( const auto* area: arealist )
    {
       if( area != carea && check_area_conflict( area, lo, hi ) )
          return true;

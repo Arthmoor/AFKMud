@@ -523,7 +523,7 @@ void pullorpush( char_data * ch, obj_data * obj, bool pull )
    {
       int flags = 0;
 
-      if( !( room = get_room_index( obj->value[1] ) ) )
+      if( !( get_room_index( obj->value[1] ) ) )
       {
          bug( "{}: obj points to invalid room {}", __func__, obj->value[1] );
          return;

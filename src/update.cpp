@@ -56,9 +56,9 @@ void calc_season(  );   /* Samson - See calendar.cpp */
 void room_act_update(  );
 void obj_act_update(  );
 void mpsleep_update(  );
-bool is_fearing( char_data *, char_data * );
+bool is_fearing( const char_data *, const char_data * );
 void raw_kill( char_data *, char_data * );
-bool is_hating( char_data *, char_data * );
+bool is_hating( const char_data *, const char_data * );
 void check_attacker( char_data *, char_data * );
 int get_terrain( short, short, short );
 bool map_wander( char_data *, short, short, short );
@@ -162,7 +162,7 @@ int mana_gain( char_data * ch )
 
 int hit_gain( char_data * ch )
 {
-   int gain = 0, dam = 0;
+   int gain = 0;
 
    if( ch->isnpc(  ) )
       gain = 8;
@@ -193,8 +193,8 @@ int hit_gain( char_data * ch )
 
    if( ch->has_aflag( AFF_POISON ) )
    {
-      gain = 0;
-      dam = number_range( 10, 32 );
+      int dam = number_range( 10, 32 );
+
       if( ch->race == RACE_HALFLING )
          dam = number_range( 1, 20 );
       damage( ch, ch, dam, gsn_poison );
@@ -1267,7 +1267,7 @@ void char_update( void )
 
       if( !ch->char_died(  ) )
       {
-         obj_data *arrow = nullptr;
+         const obj_data *arrow = nullptr;
          int dam = 0;
 
          if( ( arrow = ch->get_eq( WEAR_LODGE_RIB ) ) != nullptr )
@@ -1902,7 +1902,7 @@ void char_check( void )
          if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->has_aflag( AFF_FLOATING ) )
          {
             bool boat = false;
-            for( auto* obj : ch->carrying )
+            for( const auto* obj : ch->carrying )
             {
                if( obj->item_type == ITEM_BOAT )
                {
@@ -1921,11 +1921,9 @@ void char_check( void )
 
                if( !ch->is_immortal(  ) )
                {
-                  int mov, dam;
-
                   if( ch->move > 0 )
                   {
-                     mov = number_range( ch->max_move / 20, ch->max_move / 5 );
+                     int mov = number_range( ch->max_move / 20, ch->max_move / 5 );
                      mov = umax( 1, mov );
 
                      if( ch->move - mov < 0 )
@@ -1938,7 +1936,7 @@ void char_check( void )
                   }
                   else
                   {
-                     dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
+                     int dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
                      dam = umax( 1, dam );
 
                      if( number_bits( 3 ) == 0 )
@@ -1962,7 +1960,7 @@ void char_check( void )
          {
             bool boat = false;
 
-            for( auto* obj : ch->carrying )
+            for( const auto* obj : ch->carrying )
             {
                if( obj->item_type == ITEM_BOAT )
                {
@@ -1981,11 +1979,9 @@ void char_check( void )
 
                if( ch->level < LEVEL_IMMORTAL )
                {
-                  int mov, dam;
-
                   if( ch->move > 0 )
                   {
-                     mov = number_range( ch->max_move / 20, ch->max_move / 5 );
+                     int mov = number_range( ch->max_move / 20, ch->max_move / 5 );
                      mov = umax( 1, mov );
 
                      if( !ch->isnpc(  ) && number_percent(  ) < ch->pcdata->learned[gsn_swim] )
@@ -2007,7 +2003,7 @@ void char_check( void )
                   }
                   else
                   {
-                     dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
+                     int dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
                      dam = umax( 1, dam );
 
                      if( number_bits( 3 ) == 0 )
@@ -2035,7 +2031,7 @@ void char_check( void )
          if( !ch->has_aflag( AFF_FLYING ) && !ch->has_aflag( AFF_FLOATING ) && !ch->has_aflag( AFF_AQUA_BREATH ) && !ch->mount )
          {
             bool boat = false;
-            for( auto* obj : ch->carrying )
+            for( const auto* obj : ch->carrying )
             {
                if( obj->item_type == ITEM_BOAT )
                {
@@ -2054,11 +2050,9 @@ void char_check( void )
 
                if( !ch->is_immortal(  ) )
                {
-                  int mov, dam;
-
                   if( ch->move > 0 )
                   {
-                     mov = number_range( ch->max_move / 20, ch->max_move / 5 );
+                     int mov = number_range( ch->max_move / 20, ch->max_move / 5 );
                      mov = umax( 1, mov );
 
                      if( ch->move - mov < 0 )
@@ -2071,7 +2065,7 @@ void char_check( void )
                   }
                   else
                   {
-                     dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
+                     int dam = number_range( ch->max_hit / 20, ch->max_hit / 5 );
                      dam = umax( 1, dam );
 
                      if( number_bits( 3 ) == 0 )
@@ -2181,7 +2175,7 @@ void aggr_update( void )
           */
          if( ch->has_attack( ATCK_BACKSTAB ) )
          {
-            obj_data *obj;
+            const obj_data *obj;
 
             if( !ch->mount && ( obj = ch->get_eq( WEAR_WIELD ) ) != nullptr && ( obj->value[4] == WEP_DAGGER ) && !victim->fighting && victim->hit >= victim->max_hit )
             {
@@ -2266,7 +2260,6 @@ void time_update( void )
 {
    int n = number_bits( 2 );
    const char *echo = NULL;
-   int echo_color = AT_GREY;
 
    ++time_info.hour;
 
@@ -2278,10 +2271,12 @@ void time_update( void )
    {
       for( auto* d : dlist )
       {
-         WeatherCell *cell = getWeatherCell( d->character->in_room->area );
+         const WeatherCell *cell = getWeatherCell( d->character->in_room->area );
 
          if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && !is_indoor_sector( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
          {
+            int echo_color = AT_GREY;
+
             if( time_info.hour == sysdata->hourdaybegin )
             {
                const char *echo_strings[4] = {
@@ -2377,6 +2372,8 @@ void time_update( void )
    {
       time_info.hour = 0;
       ++time_info.day;
+      RandomizeCells();
+
       /*
        * Sweep old crap from auction houses on daily basis - Samson 11-1-99 
        */

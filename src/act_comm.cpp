@@ -37,7 +37,7 @@
 #include "roomindex.h"
 
 bool is_inolc( descriptor_data * );
-board_data *find_board( char_data * );
+board_data *find_board( const char_data * );
 board_data *get_board( char_data *, std::string_view );
 const std::string MORPHNAME( char_data * );
 const std::string MORPHPERS( char_data *, char_data *, bool );
@@ -1294,9 +1294,9 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
    const char *his_her[] = { "its", "his", "her", "its" };
    std::string buf;
    bool should_upper = false;
-   char_data *vch = ( char_data * ) arg2;
-   obj_data *obj1 = ( obj_data * ) arg1;
-   obj_data *obj2 = ( obj_data * ) arg2;
+   char_data *vch = const_cast<char_data*>(static_cast<const char_data*>(arg2));
+   obj_data *obj1 = const_cast<obj_data*>(static_cast<const obj_data *>(arg1));
+   obj_data *obj2 = const_cast<obj_data*>(static_cast<const obj_data *>(arg2));
 
    if( format.empty(  ) )
    {
@@ -1355,7 +1355,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
 
             case 't':
                if( arg1 != nullptr )
-                  buf.append( ( char * )arg1 );
+                  buf.append( const_cast<char *>(static_cast<const char *>(arg1)) );
                else
                {
                   bug( "{}: bad $t.", __func__ );
@@ -1365,7 +1365,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
 
             case 'T':
                if( arg2 != nullptr )
-                  buf.append( ( char * )arg2 );
+                  buf.append( const_cast<char *>(static_cast<const char *>(arg2)) );
                else
                {
                   bug( "{}: bad $T.", __func__ );
@@ -1472,7 +1472,7 @@ std::string act_string( std::string_view format, char_data * to, char_data * ch,
                break;
 
             case 'd':
-               if( !arg2 || ( ( char * )arg2 )[0] == '\0' )
+               if( !arg2 || ( const_cast<char *>(static_cast<const char *>(arg2)) )[0] == '\0' )
                   buf.append( "door" );
                else
                {

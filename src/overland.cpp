@@ -974,18 +974,6 @@ continent_data *find_continent_by_name( std::string_view name )
    return nullptr;
 }
 
-// Used in OLC when creating a map and associating an area file with it.
-continent_data *find_continent_by_areafile( std::string_view name )
-{
-   for( auto* continent : continent_list )
-   {
-      if( !str_cmp( name, continent->areafile ) )
-         return continent;
-   }
-
-   return nullptr;
-}
-
 // Used in OLC when creating a map and associating a png file with it.
 continent_data *find_continent_by_pngfile( std::string_view name )
 {
@@ -999,11 +987,11 @@ continent_data *find_continent_by_pngfile( std::string_view name )
 }
 
 // Find a map based on what continent a room is part of, via it's area.
-continent_data *find_continent_by_room( room_index * room )
+continent_data *find_continent_by_room( const room_index * room )
 {
    std::list<area_data *>::iterator a;
    std::list<continent_data *>::iterator c;
-   area_data *area;
+   const area_data *area;
    bool foundarea = false;
 
    for( a = arealist.begin(  ); a != arealist.end(  ); ++a )
@@ -1157,7 +1145,7 @@ double calc_angle( short chX, short chY, short lmX, short lmY, double *ipDistan 
 /* Will return true or false if ch and victim are in the same map room
  * Used in a LOT of places for checks
  */
-bool is_same_char_map( char_data * ch, char_data * victim )
+bool is_same_char_map( const char_data * ch, const char_data * victim )
 {
    if( victim->continent != ch->continent || victim->map_x != ch->map_x || victim->map_y != ch->map_y )
       return false;
@@ -1924,7 +1912,7 @@ void new_map_to_char( char_data * ch, short startx, short starty, short endx, sh
          }
 
          // Process pre-cached ships
-         for( auto* ship : tile_entities.ships )
+         for( const auto* ship : tile_entities.ships )
          {
             if( x == ship->map_x && y == ship->map_y )
             {
@@ -1984,7 +1972,6 @@ void display_map( char_data * ch )
 {
    landmark_data *landmark = nullptr;
    landing_data *landing = nullptr;
-   room_index *toroom;
    short startx, starty, endx, endy, sector;
    int mod = sysdata->mapsize;
 
@@ -1992,7 +1979,7 @@ void display_map( char_data * ch )
    {
       bug( "{} -> {}:{}: Player {} on invalid map! Moving them to Bywater recall room.", __func__, __FILE__, __LINE__, ch->name );
       ch->print( "&RYou were found on an invalid map and have been moved to the recall room in Bywater.\r\n" );
-      toroom = get_room_index( ROOM_VNUM_ALTAR );
+      room_index *toroom = get_room_index( ROOM_VNUM_ALTAR );
       leave_map( ch, nullptr, toroom );
       return;
    }
@@ -2009,9 +1996,7 @@ void display_map( char_data * ch )
    }
    else
    {
-      obj_data *light;
-
-      light = ch->get_eq( WEAR_LIGHT );
+      const obj_data *light = ch->get_eq( WEAR_LIGHT );
 
       if( time_info.hour == sysdata->hoursunrise || time_info.hour == sysdata->hoursunset )
          mod = 4;
@@ -2201,8 +2186,8 @@ void map_scan( char_data * ch )
    if( !ch )
       return;
 
-   obj_data *light = ch->get_eq( WEAR_LIGHT );
-   WeatherCell *cell = getWeatherCell( ch->continent->area );
+   const obj_data *light = ch->get_eq( WEAR_LIGHT );
+   const WeatherCell *cell = getWeatherCell( ch->continent->area );
 
    if( time_info.hour == sysdata->hoursunrise || time_info.hour == sysdata->hoursunset )
       mod = 4;
@@ -2387,7 +2372,7 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
    }
 
    bool boat = false;
-   for( auto* obj : ch->carrying )
+   for( const auto* obj : ch->carrying )
    {
       if( obj->item_type == ITEM_BOAT )
       {
@@ -2403,7 +2388,7 @@ ch_ret process_exit( char_data * ch, short x, short y, int dir, bool running )
       boat = true;   /* Cheap hack, but hey, imms need a break on this one :P */
 
    room_index *from_room = ch->in_room;
-   continent_data *from_continent = ch->continent;
+   const continent_data *from_continent = ch->continent;
    int sector = ch->continent->get_terrain( x, y );
    short fx = ch->map_x, fy = ch->map_y;
 
@@ -3054,15 +3039,13 @@ int continent_data::floodfill( short xcoord, short ycoord, short fill, char terr
  */
 int continent_data::unfloodfill( void )
 {
-   char terr;  /* terr to undo */
-
    if( undohead == 0x0 )
       return ( 0 );
 
    undocurr = undohead;
    do
    {
-      terr = this->get_terrain( undocurr->xcoord, undocurr->ycoord );
+      char terr = this->get_terrain( undocurr->xcoord, undocurr->ycoord );
       this->putterr( undocurr->xcoord, undocurr->ycoord, undocurr->prevterr );
       undocurr->prevterr = terr;
       undocurr = undocurr->next;

@@ -217,7 +217,7 @@ CMDF( do_run )
 ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bool running )
 {
    room_index *in_room, *to_room, *from_room;
-   std::string txt, dtxt;
+   std::string txt;
    ch_ret retcode;
    short door;
    bool drunk = false, brief = false;
@@ -978,7 +978,7 @@ ch_ret move_char( char_data * ch, exit_data * pexit, int fall, int direction, bo
                txt = "arrives";
          }
       }
-      dtxt = rev_exit( door );
+      std::string dtxt = rev_exit( door );
       if( !running )
       {
          if( ch->mount )
@@ -1467,7 +1467,7 @@ CMDF( do_close )
  * If you want a feature like having immortals always have a key... you'll
  * need to code in a generic key, and make sure extract_obj doesn't extract it
  */
-obj_data *has_key( char_data * ch, int key )
+obj_data *has_key( const char_data * ch, int key )
 {
    for( auto* obj : ch->carrying )
    {
@@ -2752,9 +2752,8 @@ CMDF( do_leave )
  */
 ch_ret pullcheck( char_data * ch, int pulse )
 {
-   room_index *room;
+   room_index *room = nullptr;
    bool move = false, moveobj = true, showroom = true;
-   int resistance;
    const char *tochar = nullptr, *toroom = nullptr, *objmsg = nullptr;
    const char *destrm = nullptr, *destob = nullptr;
    std::string dtxt = "somewhere";
@@ -2796,7 +2795,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
       bool found = false;
       for( iexit = room->exits.begin(  ); iexit != room->exits.end(  ); ++iexit )
       {
-         exit_data *pexit = *iexit;
+         const exit_data *pexit = *iexit;
 
          if( pexit->pull && pexit->to_room )
          {
@@ -3017,9 +3016,9 @@ ch_ret pullcheck( char_data * ch, int pulse )
       case PULL_VORTEX:
          tochar = "You are sucked into a swirling vortex of colors!";
          toroom = "$n is sucked into a swirling vortex of colors!";
-         toroom = "$n appears from a swirling vortex of colors!";
+         destrm = "$n appears from a swirling vortex of colors!";
          objmsg = "$p is sucked into a swirling vortex of colors!";
-         objmsg = "$p appears from a swirling vortex of colors!";
+         destob = "$p appears from a swirling vortex of colors!";
          break;
       case PULL_HOTAIR:
          tochar = "A blast of hot air blows you $T!";
@@ -3056,7 +3055,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
             toroom = "$n is pulled $T.";
             destrm = "$n is pulled in from $T.";
             objmsg = "$p is pulled $T.";
-            objmsg = "$p is pulled in from $T.";
+            destob = "$p is pulled in from $T.";
          }
          else
          {
@@ -3064,7 +3063,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
             toroom = "$n is pushed $T.";
             destrm = "$n is pushed in from $T.";
             objmsg = "$p is pushed $T.";
-            objmsg = "$p is pushed in from $T.";
+            destob = "$p is pushed in from $T.";
          }
          break;
    }
@@ -3129,7 +3128,7 @@ ch_ret pullcheck( char_data * ch, int pulse )
          if( obj->extra_flags.test( ITEM_BURIED ) || !obj->wear_flags.test( ITEM_TAKE ) )
             continue;
 
-         resistance = obj->get_weight(  );
+         int resistance = obj->get_weight(  );
          if( obj->extra_flags.test( ITEM_METAL ) )
             resistance = ( resistance * 6 ) / 5;
          switch ( obj->item_type )

@@ -55,9 +55,9 @@ struct dns_data
    dns_data(  );
    ~dns_data(  );
 
-   std::string ip;                              // The IP address of the client.
-   std::string name;                            // The resolved DNS address of the client.
-   std::chrono::system_clock::time_point time;  // ...
+   std::string ip;                                    // The IP address of the client.
+   std::string name;                                  // The resolved DNS address of the client.
+   std::chrono::system_clock::time_point time = {};   // When the IP will expire out of the cache.
 };
 
 int newdesc;
@@ -149,7 +149,7 @@ void update_trdata( int type, int size )
       tr_in += size;
    else if( type == 2 )
       tr_out += size;
-   else if( type == 3 )
+   else
       tr_saved += size;
 }
 
@@ -555,10 +555,6 @@ bool descriptor_data::write( std::string_view text )
    size_t length = text.size();
    size_t mccpsaved = length;
 
-   // Won't send more then it has to so make sure we check if its under length.
-   if( mccpsaved > length )
-      mccpsaved = length;
-
    // Lambda to encapsulate the repetitive non-blocking send logic.
    auto send_chunk = [this]( const char* data, size_t len ) -> int
    {
@@ -945,7 +941,7 @@ void descriptor_data::read_from_buffer( )
          cmd_type* cmd = nullptr;
          std::string c_str = this->incomm, arg;
 
-         c_str = one_argument( c_str, arg );
+         one_argument( c_str, arg );
          cmd = find_command( arg );
 
          if( !cmd && this->character && this->character->pcdata->alias_map.contains( arg ) )
@@ -954,7 +950,7 @@ void descriptor_data::read_from_buffer( )
             if( !al->second.empty() )
             {
                std::string d = al->second, arg2;
-               d = one_argument( d, arg2 );
+               one_argument( d, arg2 );
                cmd = find_command( arg2 );
             }
          }
@@ -1217,7 +1213,6 @@ void descriptor_data::show_stats( char_data * ch )
 
 dns_data::dns_data(  )
 {
-   time = std::chrono::system_clock::time_point{};
 }
 
 dns_data::~dns_data(  )
@@ -1392,8 +1387,8 @@ void descriptor_data::process_dns(  )
    {
       /*
        * The resolver will only return 2 error states, described in the string comparisons here.
-       * If either of these come back from it, do not add it to the cache, and do not set the host on the descriptior to it either.
-       * The descriptor's IP will have alredy been set by default before the resolver was called.
+       * If either of these come back from it, do not add it to the cache, and do not set the host on the descriptor to it either.
+       * The descriptor's IP will have already been set by default before the resolver was called.
        */
       if( str_cmp( address, "bad.resolver.call" ) && str_cmp( address, "somehow.has.no.ip?" ) )
       {
@@ -1507,7 +1502,7 @@ void new_descriptor( int new_desc )
    set_alarm( 20 );
    alarm_section = "new_descriptor: accept";
 
-   int desc = accept4( new_desc, ( struct sockaddr * )&sock, &size, SOCK_NONBLOCK | SOCK_CLOEXEC );
+   int desc = accept4( new_desc, reinterpret_cast<struct sockaddr *>(&sock), &size, SOCK_NONBLOCK | SOCK_CLOEXEC );
 
    if( desc < 0 )
    {
@@ -1526,7 +1521,7 @@ void new_descriptor( int new_desc )
    descriptor_data *dnew = new descriptor_data;
    dnew->init(  );
 
-   if( getnameinfo( ( struct sockaddr * )&sock, size, host_buf, sizeof( host_buf ), NULL, 0, NI_NUMERICHOST ) == 0 )
+   if( getnameinfo( reinterpret_cast<struct sockaddr *>(&sock), size, host_buf, sizeof( host_buf ), NULL, 0, NI_NUMERICHOST ) == 0 )
    {
       /*
        * If using a dual-stack socket, IPv4 addresses often appear as
@@ -1688,7 +1683,7 @@ void descriptor_data::prompt(  )
    auto* ch = character;
    auto* och = original ? original : character;
 
-   std::string_view cprompt;
+   std::string cprompt;
 
    if( !ch->has_pcflag( PCFLAG_HELPSTART ) )
       cprompt = "&w[Type HELP START]";
@@ -1879,7 +1874,6 @@ void descriptor_data::prompt(  )
 void close_socket( descriptor_data * d, bool force )
 {
    char_data *ch;
-   auth_data *old_auth;
 
    if( d->ipid != -1 )
    {
@@ -1938,7 +1932,7 @@ void close_socket( descriptor_data * d, bool force )
       /*
        * Link dead auth -- Rantic 
        */
-      old_auth = get_auth_name( ch->name );
+      auth_data *old_auth = get_auth_name( ch->name );
       if( old_auth != nullptr && old_auth->state == AUTH_ONLINE )
       {
          old_auth->state = AUTH_LINK_DEAD;
@@ -2910,7 +2904,7 @@ void descriptor_data::nanny( std::string & argument )
                   else
                   {
                      obj = obj->to_room( donate, ch );
-                     obj->extra_flags.test( ITEM_DONATION );
+                     obj->extra_flags.set( ITEM_DONATION );
                   }
                }
             }
@@ -2923,9 +2917,8 @@ void descriptor_data::nanny( std::string & argument )
           */
       case CON_PRIZENAME:
       {
-         obj_data *prize;
+         obj_data *prize = static_cast<obj_data *>( ch->pcdata->spare_ptr );
 
-         prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
             bug( "{}: Prize object turned nullptr somehow!", __func__ );
@@ -2977,9 +2970,8 @@ void descriptor_data::nanny( std::string & argument )
 
       case CON_CONFIRMPRIZENAME:
       {
-         obj_data *prize;
+         obj_data *prize = static_cast<obj_data *>( ch->pcdata->spare_ptr );
 
-         prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
             bug( "{} Prize object turned nullptr somehow!", __func__ );
@@ -3024,9 +3016,8 @@ void descriptor_data::nanny( std::string & argument )
 
       case CON_PRIZEKEY:
       {
-         obj_data *prize;
+         obj_data *prize = static_cast<obj_data *>( ch->pcdata->spare_ptr );
 
-         prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
             bug( "{}: Prize object turned nullptr somehow!", __func__ );
@@ -3063,9 +3054,8 @@ void descriptor_data::nanny( std::string & argument )
 
       case CON_CONFIRMPRIZEKEY:
       {
-         obj_data *prize;
+         obj_data *prize = static_cast<obj_data *>( ch->pcdata->spare_ptr );
 
-         prize = ( obj_data * ) ch->pcdata->spare_ptr;
          if( !prize )
          {
             bug( "{}: Prize object turned nullptr somehow!", __func__ );

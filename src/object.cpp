@@ -90,7 +90,7 @@ obj_data::~obj_data(  )
       if( RQueue->Type == relOSET_ON )
       {
          if( this == RQueue->Subject )
-            ( ( char_data * ) RQueue->Actor )->pcdata->dest_buf = nullptr;
+            ( static_cast<char_data *>( RQueue->Actor ) )->pcdata->dest_buf = nullptr;
          else
             continue;
          relationlist.remove( RQueue );
@@ -122,10 +122,8 @@ void extract_all_objs(  )
 void obj_data::fall( bool through )
 {
    exit_data *pexit;
-   room_index *to;
    static int fall_count;
    static bool is_falling; /* Stop loops from the call to obj_to_room()  -- Altrag */
-   bool destroyobj;
 
    if( !in_room || is_falling )
       return;
@@ -141,7 +139,7 @@ void obj_data::fall( bool through )
    if( in_room->flags.test( ROOM_NOFLOOR ) && CAN_GO( this, DIR_DOWN ) && !extra_flags.test( ITEM_MAGIC ) )
    {
       pexit = in_room->get_exit( DIR_DOWN );
-      to = pexit->to_room;
+      room_index *to = pexit->to_room;
 
       if( through )
          ++fall_count;
@@ -209,7 +207,7 @@ void obj_data::fall( bool through )
          /*
           * Damage objects 
           */
-         destroyobj = false;
+         bool destroyobj = false;
          switch ( item_type )
          {
             case ITEM_WEAPON:
@@ -369,7 +367,7 @@ const std::string obj_data::format_to_char( char_data * ch, bool fShort, int num
          {
             bool showdot = false;
 
-            for( auto* obj : contents )
+            for( const auto* obj : contents )
             {
                if( ( obj->item_type == ITEM_TRAP && ch->has_aflag( AFF_DETECTTRAPS ) ) || obj->item_type != ITEM_TRAP )
                {
@@ -396,7 +394,7 @@ const std::string obj_data::format_to_char( char_data * ch, bool fShort, int num
          {
             bool showdot = false;
 
-            for( auto* obj : contents )
+            for( const auto* obj : contents )
             {
                if( ( obj->item_type == ITEM_TRAP && ch->has_aflag( AFF_DETECTTRAPS ) ) || obj->item_type != ITEM_TRAP )
                {
@@ -560,7 +558,7 @@ const std::string hallucinated_object( int ms, bool fShort )
    return "Whoa!!!";
 }
 
-void show_list_to_char( char_data * ch, std::list<obj_data *> source, bool fShort, bool fShowNothing )
+void show_list_to_char( char_data * ch, const std::list<obj_data *> & source, bool fShort, bool fShowNothing )
 {
    std::map<obj_data *, int> objmap;
    int ms;
@@ -584,7 +582,7 @@ void show_list_to_char( char_data * ch, std::list<obj_data *> source, bool fShor
 
    std::map<obj_data *, int>::iterator mobj;
    objmap.clear(  );
-   std::list<obj_data *>::iterator iobj;
+   std::list<obj_data *>::const_iterator iobj;
    for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
    {
       obj_data *obj = *iobj;
@@ -891,14 +889,14 @@ void obj_data::from_room(  )
    std::list<affect_data *>::iterator paf;
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
-      affect_data *af = *paf;
+      const affect_data *af = *paf;
 
       room->room_affect( af, false );
    }
 
    for( paf = pIndexData->affects.begin(  ); paf != pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = *paf;
+      const affect_data *af = *paf;
 
       room->room_affect( af, false );
    }
@@ -933,13 +931,13 @@ obj_data *obj_data::to_room( room_index * pRoomIndex, char_data * ch )
 
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
-      affect_data *af = *paf;
+      const affect_data *af = *paf;
       pRoomIndex->room_affect( af, true );
    }
 
    for( paf = pIndexData->affects.begin(  ); paf != pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = *paf;
+      const affect_data *af = *paf;
       pRoomIndex->room_affect( af, true );
    }
 
@@ -1172,7 +1170,7 @@ bool obj_data::is_trapped(  )
    if( contents.empty(  ) )
       return false;
 
-   for( auto* obj : contents )
+   for( const auto* obj : contents )
    {
       if( obj->item_type == ITEM_TRAP )
          return true;
@@ -1200,7 +1198,7 @@ obj_data *obj_data::get_trap(  )
  * Return a pointer to the first object of a certain type found that
  * a player is carrying/wearing
  */
-obj_data *get_objtype( char_data * ch, short type )
+obj_data *get_objtype( const char_data * ch, short type )
 {
    for( auto* obj : ch->carrying )
    {
@@ -1447,7 +1445,7 @@ bool obj_data::empty( obj_data * destobj, room_index * destroom )
 
 void obj_data::remove_portal(  )
 {
-   room_index *fromRoom, *toRoom;
+   room_index *fromRoom;
 
    if( !( fromRoom = in_room ) )
    {
@@ -1478,8 +1476,8 @@ void obj_data::remove_portal(  )
    if( pexit->vdir != DIR_PORTAL )
       bug( "{}: exit in dir {} != DIR_PORTAL", __func__, pexit->vdir );
 
-   if( !( toRoom = pexit->to_room ) )
-      bug( "{}: toRoom is nullptr", __func__ );
+   if( !pexit->to_room )
+      bug( "{}: pexit->to_room is nullptr", __func__ );
 
    fromRoom->extract_exit( pexit );
 }
@@ -1512,7 +1510,7 @@ bool obj_data::in_magic_container(  )
  */
 void obj_data::make_scraps(  )
 {
-   obj_data *scraps, *tmpobj;
+   obj_data *scraps;
    char_data *ch = nullptr;
 
    separate(  );
@@ -1546,6 +1544,8 @@ void obj_data::make_scraps(  )
 
    if( carried_by )
    {
+      obj_data *tmpobj;
+
       act( AT_OBJECT, "$p falls to the ground in scraps!", carried_by, this, nullptr, TO_CHAR );
       if( this == carried_by->get_eq( WEAR_WIELD ) && ( tmpobj = carried_by->get_eq( WEAR_DUAL_WIELD ) ) != nullptr )
          tmpobj->wear_loc = WEAR_WIELD;
@@ -1589,7 +1589,7 @@ int obj_data::hitroll(  )
 
    for( paf = pIndexData->affects.begin(  ); paf != pIndexData->affects.end(  ); ++paf )
    {
-      affect_data *af = *paf;
+      const affect_data *af = *paf;
 
       if( af->location == APPLY_HITROLL || af->location == APPLY_HITNDAM )
          tohit += af->modifier;
@@ -1597,7 +1597,7 @@ int obj_data::hitroll(  )
 
    for( paf = affects.begin(  ); paf != affects.end(  ); ++paf )
    {
-      affect_data *af = *paf;
+      const affect_data *af = *paf;
 
       if( af->location == APPLY_HITROLL || af->location == APPLY_HITNDAM )
          tohit += af->modifier;

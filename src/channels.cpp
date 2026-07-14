@@ -38,7 +38,7 @@
 std::string translate( int, std::string_view, std::string_view );
 #if !defined(__CYGWIN__)
 #ifdef MULTIPORT
-void mud_message( char_data *, mud_channel *, const std::string & );
+void mud_message( char_data *, mud_channel *, std::string_view );
 #endif
 #endif
 
@@ -734,18 +734,17 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
 
    for( auto* vch : pclist )
    {
-      /*
-       * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002 
-       */
-      bool mapped = false;
-      int origx = -1, origy = -1;
-      continent_data *orig_cont;
-
       if( vch == ch || !vch->desc )
          continue;
 
       if( vch->desc->connected == CON_PLAYING && hasname( vch->pcdata->chan_listen, channel->name ) )
       {
+         /*
+          * Hackish solution to stop that damned "someone chat" bug - Matarael 17.3.2002
+          */
+         bool mapped = false;
+         int origx = -1, origy = -1;
+         continent_data *orig_cont;
          std::string sbuf = argument;
          std::string lbuf;  /* invis level string + buf */
 
@@ -841,14 +840,14 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
          {
             buf = std::format( "&[{}]$n {}s '$t&[{}]'", channel->colorname, channel->name, channel->colorname );
             lbuf.append( buf );
-            act( AT_PLAIN, lbuf.c_str(), ch, sbuf.c_str(  ), vch, TO_VICT );
+            act( AT_PLAIN, lbuf, ch, sbuf.c_str(), vch, TO_VICT );
          }
 
          if( emote )
          {
             buf = std::format( "&W[&[{}]{}&W] &[{}]$n $t", channel->colorname, capitalize( channel->name ), channel->colorname );
             lbuf.append( buf );
-            act( AT_PLAIN, lbuf.c_str(), ch, sbuf.c_str(  ), vch, TO_VICT );
+            act( AT_PLAIN, lbuf, ch, sbuf.c_str(), vch, TO_VICT );
          }
 
          if( social )

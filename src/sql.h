@@ -46,7 +46,6 @@ class MySQLDatabase
    MySQLDatabase( const MySQLDatabase & ) = delete;
    MySQLDatabase & operator=( const MySQLDatabase & ) = delete;
 
-   std::string escape( std::string_view );
    int execute( std::string_view );
    bool ping();
    std::string get_error();

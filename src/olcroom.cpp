@@ -274,9 +274,9 @@ void process_olc_log( char_data * ch, std::string_view message )
       return;
    }
 
-   room_index *room = ( room_index * ) ch->pcdata->dest_buf;
-   obj_data *obj = ( obj_data * ) ch->pcdata->dest_buf;
-   char_data *victim = ( char_data * ) ch->pcdata->dest_buf;
+   room_index *room = static_cast<room_index *>( ch->pcdata->dest_buf );
+   obj_data *obj = static_cast<obj_data *>( ch->pcdata->dest_buf );
+   char_data *victim = static_cast<char_data *>( ch->pcdata->dest_buf );
 
    if( ch->desc->connected == CON_REDIT )
       log_printf_plus( LOG_BUILD, sysdata->build_level, "OLCLog: {} ROOM({}): {}", ch->name, room->vnum, message );
@@ -304,7 +304,7 @@ void process_olc_log( char_data * ch, std::string_view message )
  */
 void redit_disp_extradesc_prompt_menu( descriptor_data * d )
 {
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
+   const room_index *room = static_cast<room_index *>( d->character->pcdata->dest_buf );
    int counter = 0;
 
    for( auto* edesc : room->extradesc )
@@ -315,12 +315,12 @@ void redit_disp_extradesc_prompt_menu( descriptor_data * d )
 
 void redit_disp_extradesc_menu( descriptor_data * d )
 {
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
-   int count = 0;
+   room_index *room = static_cast<room_index *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    if( !room->extradesc.empty(  ) )
    {
+      int count = 0;
       for( auto* edesc : room->extradesc )
          d->character->print_fmt( "&g{}&w) Keyword: &O{}\r\n", ++count, edesc->keyword );
 
@@ -338,7 +338,7 @@ void redit_disp_extradesc_menu( descriptor_data * d )
 /* For exits */
 void redit_disp_exit_menu( descriptor_data * d )
 {
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
+   room_index *room = static_cast<room_index *>( d->character->pcdata->dest_buf );
    int cnt = 0;
 
    d->olc->mode = REDIT_EXIT_MENU;
@@ -362,7 +362,7 @@ void redit_disp_exit_menu( descriptor_data * d )
 void redit_disp_exit_edit( descriptor_data * d )
 {
    std::string flags;
-   exit_data *pexit = ( exit_data * ) d->character->pcdata->spare_ptr;
+   exit_data *pexit = static_cast<exit_data *>( d->character->pcdata->spare_ptr );
 
    for( int i = 0; i < MAX_EXFLAG; ++i )
    {
@@ -397,7 +397,7 @@ void redit_disp_exit_dirs( descriptor_data * d )
 /* For exit flags */
 void redit_disp_exit_flag_menu( descriptor_data * d )
 {
-   exit_data *pexit = ( exit_data * ) d->character->pcdata->spare_ptr;
+   exit_data *pexit = static_cast<exit_data *>( d->character->pcdata->spare_ptr );
    std::string buf1;
    int i;
 
@@ -425,7 +425,7 @@ void redit_disp_exit_flag_menu( descriptor_data * d )
 /* For room flags */
 void redit_disp_flag_menu( descriptor_data * d )
 {
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
+   const room_index *room = static_cast<room_index *>( d->character->pcdata->dest_buf );
    int columns = 0;
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
@@ -460,7 +460,7 @@ void redit_disp_sector_menu( descriptor_data * d )
 /* the main menu */
 void redit_disp_menu( descriptor_data * d )
 {
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
+   room_index *room = static_cast<room_index *>( d->character->pcdata->dest_buf );
 
    d->write_to_buffer( "50\x1B[;H\x1B[2J" );
    d->character->print_fmt( "&w-- Room number : [&c{}&w]      Room area: [&c{:<30.30}&w]\r\n"
@@ -485,7 +485,7 @@ void redit_disp_menu( descriptor_data * d )
    d->olc->mode = REDIT_MAIN_MENU;
 }
 
-extra_descr_data *redit_find_extradesc( room_index * room, int number )
+extra_descr_data *redit_find_extradesc( const room_index * room, int number )
 {
    int count = 0;
 
@@ -499,7 +499,7 @@ extra_descr_data *redit_find_extradesc( room_index * room, int number )
 
 CMDF( do_redit_reset )
 {
-   room_index *room = ( room_index * ) ch->pcdata->dest_buf;
+   room_index *room = static_cast<room_index *>( ch->pcdata->dest_buf );
    extra_descr_data *ed = ( extra_descr_data * ) ch->pcdata->spare_ptr;
 
    switch ( ch->substate )
@@ -572,11 +572,10 @@ CMDF( do_redit_reset )
 
 void redit_parse( descriptor_data * d, std::string & arg )
 {
-   room_index *room = ( room_index * ) d->character->pcdata->dest_buf;
+   room_index *room = static_cast<room_index *>( d->character->pcdata->dest_buf );
    room_index *tmp;
-   exit_data *pexit = ( exit_data * ) d->character->pcdata->spare_ptr;
-   extra_descr_data *ed = ( extra_descr_data * ) d->character->pcdata->spare_ptr;
-   std::string arg1;
+   exit_data *pexit = static_cast<exit_data *>( d->character->pcdata->spare_ptr );
+   extra_descr_data *ed = static_cast<extra_descr_data *>( d->character->pcdata->spare_ptr );
    int number = 0;
 
    switch ( d->olc->mode )
@@ -697,6 +696,8 @@ void redit_parse( descriptor_data * d, std::string & arg )
          }
          else
          {
+            std::string arg1;
+
             while( !arg.empty(  ) )
             {
                arg = one_argument( arg, arg1 );

@@ -41,7 +41,7 @@ int morph_vnum = 0;
  * Local functions
  */
 void copy_morph( morph_data *, morph_data * );
-void unmorph_all( morph_data * );
+void unmorph_all( const morph_data * );
 CMDF( do_morphstat );
 
 char_morph::char_morph(  )
@@ -905,7 +905,7 @@ void setup_morph_vnum( void )
 {
    int vnum = morph_vnum;
 
-   for( auto* morph : morphlist )
+   for( const auto* morph : morphlist )
    {
       if( morph->vnum > vnum )
          vnum = morph->vnum;
@@ -2156,7 +2156,7 @@ int do_morph_char( char_data * ch, morph_data * morph )
  */
 void do_unmorph( char_data * ch )
 {
-   char_morph *morph;
+   const char_morph *morph;
 
    if( !( morph = ch->morph ) )
       return;
@@ -2243,7 +2243,6 @@ void copy_morph( morph_data * morph, morph_data * temp )
    morph->sex = temp->sex;
    morph->timefrom = temp->timefrom;
    morph->timeto = temp->timeto;
-   morph->timefrom = temp->timefrom;
    morph->dayfrom = temp->dayfrom;
    morph->dayto = temp->dayto;
    morph->pkill = temp->pkill;
@@ -2337,7 +2336,7 @@ CMDF( do_morphcreate )
    ch->print_fmt( "Morph {} created with vnum {}.\r\n", morph->name, morph->vnum );
 }
 
-void unmorph_all( morph_data * morph )
+void unmorph_all( const morph_data * morph )
 {
    for( auto* vch : pclist )
    {

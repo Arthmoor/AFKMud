@@ -50,7 +50,7 @@ void name_generator( std::string & );
 void pick_name( std::string &, std::filesystem::path );
 void fix_exits(  );
 
-obj_data *generate_random( reset_data *, char_data * );
+obj_data *generate_random( const reset_data *, char_data * );
 void mprog_percent_check( char_data *, char_data *, obj_data *, char_data *, obj_data *, int );
 
 const char *dir_name[] = {
@@ -125,7 +125,7 @@ room_index::~room_index(  )
       }
       else if( ch->substate == SUB_ROOM_EXTRA && ch->pcdata->dest_buf )
       {
-         for( auto* ed : extradesc )
+         for( const auto* ed : extradesc )
          {
             if( ed == ch->pcdata->dest_buf )
             {
@@ -390,31 +390,13 @@ void room_index::clean_room(  )
    max_weight = 10000;
 }
 
-/*
- * (prelude...) This is going to be fun... NOT!
- * (conclusion) QSort is f*cked!
- */
-int exit_comp( exit_data ** xit1, exit_data ** xit2 )
-{
-   int d1, d2;
-
-   d1 = ( *xit1 )->vdir;
-   d2 = ( *xit2 )->vdir;
-
-   if( d1 < d2 )
-      return -1;
-   if( d1 > d2 )
-      return 1;
-   return 0;
-}
-
 void room_index::randomize_exits( short maxdir )
 {
    int nexits, /* maxd, */ d1, count, door;  /* Maxd unused */
    int vdirs[MAX_REXITS];
 
    nexits = 0;
-   for( auto* pexit : exits )
+   for( const auto* pexit : exits )
       vdirs[nexits++] = pexit->vdir;
 
    for( int d0 = 0; d0 < nexits; ++d0 )
@@ -471,7 +453,7 @@ exit_data *room_index::make_exit( room_index * to_room, short door )
    std::list<exit_data *>::iterator iexit;
    for( iexit = exits.begin(  ); iexit != exits.end(  ); ++iexit )
    {
-      exit_data *texit = *iexit;
+      const exit_data *texit = *iexit;
 
       if( door < texit->vdir )
       {
@@ -754,15 +736,12 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string &
       std::string arg3;
 
       argument = one_argument( argument, arg3 );
-      if( loc == APPLY_AFFECT )
-      {
-         value = get_aflag( arg3 );
+      value = get_aflag( arg3 );
 
-         if( value < 0 || value >= MAX_AFFECTED_BY )
-            ch->print_fmt( "Unknown affect: {}\r\n", arg3 );
-         else
-            found = true;
-      }
+      if( value < 0 || value >= MAX_AFFECTED_BY )
+         ch->print_fmt( "Unknown affect: {}\r\n", arg3 );
+      else
+         found = true;
    }
    else if( loc == APPLY_RESISTANT || loc == APPLY_IMMUNE || loc == APPLY_SUSCEPTIBLE || loc == APPLY_ABSORB )
    {
@@ -815,7 +794,7 @@ void room_index::olc_add_affect( char_data * ch, bool indexaffect, std::string &
    ch->print( "Room affect added.\r\n" );
 }
 
-void room_index::room_affect( affect_data * paf, bool fAdd )
+void room_index::room_affect( const affect_data * paf, bool fAdd )
 {
    if( fAdd )
    {
@@ -893,7 +872,7 @@ void room_index::clean_resets(  )
    resets.clear(  );
 }
 
-int generate_itemlevel( area_data * pArea, obj_index * pObjIndex )
+int generate_itemlevel( const area_data * pArea, const obj_index * pObjIndex )
 {
    int olevel;
    int min = umax( pArea->low_soft_range, 1 );
@@ -935,11 +914,11 @@ int generate_itemlevel( area_data * pArea, obj_index * pObjIndex )
 /*
  * Count occurrences of an obj in a list.
  */
-int count_obj_list( reset_data * pReset, obj_index * pObjIndex, std::list<obj_data *> source )
+int count_obj_list( const reset_data * pReset, const obj_index * pObjIndex, const std::list<obj_data *> & source )
 {
    int nMatch = 0;
 
-   for( auto* obj : source )
+   for( const auto* obj : source )
    {
       if( obj->pIndexData == pObjIndex )
       {
@@ -959,7 +938,7 @@ int count_obj_list( reset_data * pReset, obj_index * pObjIndex, std::list<obj_da
  * Find some object with a given index data.
  * Used by area-reset 'P', 'T' and 'H' commands.
  */
-obj_data *get_obj_type( obj_index * pObjIndex )
+obj_data *get_obj_type( const obj_index * pObjIndex )
 {
    for( auto* obj : objlist )
    {
@@ -970,7 +949,7 @@ obj_data *get_obj_type( obj_index * pObjIndex )
 }
 
 /* Find an object in a room so we can check it's dependents. Used by 'O' resets. */
-obj_data *get_obj_room( obj_index * pObjIndex, room_index * pRoomIndex )
+obj_data *get_obj_room( const obj_index * pObjIndex, const room_index * pRoomIndex )
 {
    for( auto* obj : pRoomIndex->objects )
    {
@@ -1071,7 +1050,7 @@ reset_data *room_index::add_reset( char letter, int arg1, int arg2, int arg3, in
 /* Setup put nesting levels, regardless of whether or not the resets will actually reset, or if they're bugged. */
 void room_index::renumber_put_resets(  )
 {
-   reset_data *lastobj = nullptr;
+   const reset_data *lastobj = nullptr;
 
    for( auto* pReset : resets )
    {
@@ -1118,7 +1097,8 @@ void room_index::reset(  )
    obj_data *obj, *lastobj, *to_obj;
    room_index *pRoomIndex = nullptr;
    mob_index *pMobIndex = nullptr;
-   obj_index *pObjIndex = nullptr, *pObjToIndex;
+   obj_index *pObjIndex = nullptr;
+   const obj_index *pObjToIndex;
    exit_data *pexit;
    int level = 0, num, lastnest, onreset = 0;
 

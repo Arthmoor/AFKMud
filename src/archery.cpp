@@ -76,9 +76,9 @@ Additional portions by Samson.
 #include "roomindex.h"
 #include "smaugaffect.h"
 
-int weapon_prof_bonus_check( char_data *, obj_data *, int & );
+int weapon_prof_bonus_check( char_data *, const obj_data *, int & );
 SPELLF( spell_attack );
-int calc_thac0( char_data *, char_data *, int );
+int calc_thac0( char_data *, const char_data *, int );
 double ris_damage( char_data *, double, int );
 bool is_safe( char_data *, char_data * );
 bool check_illegal_pk( char_data *, char_data * );
@@ -99,7 +99,7 @@ obj_data *find_quiver( char_data * ch )
    return nullptr;
 }
 
-obj_data *find_projectile( char_data * ch, obj_data * quiver )
+obj_data *find_projectile( char_data * ch, const obj_data * quiver )
 {
    for( auto* obj : quiver->contents )
    {
@@ -754,9 +754,8 @@ ch_ret ranged_got_target( char_data * ch, char_data * victim, obj_data * weapon,
  */
 char_data *scan_for_vic( char_data * ch, exit_data * pexit, std::string_view name )
 {
-   char_data *victim;
-   room_index *was_in_room;
-   short dist, dir;
+   room_index *was_in_room = nullptr;
+   short dist;
    short max_dist = 8;
 
    if( ch->has_aflag( AFF_BLIND ) || !pexit )
@@ -773,6 +772,8 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, std::string_view nam
 
    for( dist = 1; dist <= max_dist; )
    {
+      char_data *victim = nullptr;
+
       if( IS_EXIT_FLAG( pexit, EX_CLOSED ) )
          break;
 
@@ -826,7 +827,7 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, std::string_view nam
       if( dist >= max_dist )
          break;
 
-      dir = pexit->vdir;
+      short dir = pexit->vdir;
       if( !( pexit = ch->in_room->get_exit( dir ) ) )
          break;
    }
@@ -843,7 +844,7 @@ char_data *scan_for_vic( char_data * ch, exit_data * pexit, std::string_view nam
  */
 ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, obj_data * projectile, short dt, short range )
 {
-   std::string arg, arg1, temp;
+   std::string arg, temp;
 
    if( !argument.empty(  ) && argument[0] == '\'' )
    {
@@ -852,7 +853,6 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
    }
 
    argument = one_argument( argument, arg );
-   argument = one_argument( argument, arg1 );
 
    if( arg.empty(  ) )
    {
@@ -942,9 +942,9 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
    }
 
    char_data *vch = nullptr;
-   if( pexit && !arg1.empty(  ) )
+   if( pexit && !argument.empty(  ) )
    {
-      if( !( vch = scan_for_vic( ch, pexit, arg1 ) ) )
+      if( !( vch = scan_for_vic( ch, pexit, argument ) ) )
       {
          ch->print( "You cannot see your target.\r\n" );
          return rNONE;
@@ -976,7 +976,7 @@ ch_ret ranged_attack( char_data * ch, std::string argument, obj_data * weapon, o
          ch->print( "You can't do that!\r\n" );
          return rNONE;
       }
-      if( vch && is_safe( ch, vch ) )
+      if( is_safe( ch, vch ) )
          return rNONE;
    }
 

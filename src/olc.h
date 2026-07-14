@@ -508,10 +508,10 @@ class olc_data
  public:
      olc_data(  );
 
-   int mode;                              // What level of the menu you're in.
-   int number;                            // Usually the Vnum of whichever mob/obj/room is being worked on.
-   bool value;                            // Used as a toggle for editing affect_data.
-   bool changed;                          // Whether or not something has changed while working in the menus.
+   int mode = 0;         // What level of the menu you're in.
+   int number = 0;       // Usually the Vnum of whichever mob/obj/room is being worked on.
+   bool value = 0;       // Used as a toggle for editing affect_data.
+   bool changed = false; // Whether or not something has changed while working in the menus.
 };
 
 /*. Add/Remove save list types	.*/

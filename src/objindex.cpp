@@ -59,7 +59,7 @@ obj_index::~obj_index(  )
    {
       if( ch->substate == SUB_OBJ_EXTRA && ch->pcdata->dest_buf )
       {
-         for( auto* ed : extradesc )
+         for( const auto* ed : extradesc )
          {
             if( ed == ch->pcdata->dest_buf )
             {
@@ -72,7 +72,7 @@ obj_index::~obj_index(  )
       }
       else if( ch->substate == SUB_MPROG_EDIT && ch->pcdata->dest_buf )
       {
-         for( auto* mp : mudprogs )
+         for( const auto* mp : mudprogs )
          {
             if( mp == ch->pcdata->dest_buf )
             {
@@ -752,7 +752,7 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
       pObjIndex->limit = cObjIndex->limit;
       pObjIndex->extradesc = cObjIndex->extradesc;
 
-      for( auto* ed : cObjIndex->extradesc )
+      for( const auto* ed : cObjIndex->extradesc )
       {
          extra_descr_data *ned = new extra_descr_data;
 
@@ -762,7 +762,7 @@ obj_index *make_object( int vnum, int cvnum, const std::string & name, area_data
          ++top_ed;
       }
 
-      for( auto* af : cObjIndex->affects )
+      for( const auto* af : cObjIndex->affects )
       {
          affect_data *paf = new affect_data;
 

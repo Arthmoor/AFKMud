@@ -58,24 +58,23 @@ const std::array<unsigned char, 6> start_msp_str = { IAC, SB, TELOPT_MSP, IAC, S
 // Begin MCCP Information
 bool descriptor_data::process_compressed( )
 {
-   int iStart = 0, nBlock, nWrite, len;
-
    if( !mccp->out_compress )
       return true;
 
    /*
     * Try to write out some data..
     */
-   len = mccp->out_compress->next_out - mccp->out_compress_buf;
+   int len = mccp->out_compress->next_out - mccp->out_compress_buf;
 
    if( len > 0 )
    {
       /*
        * we have some data to write
        */
+      int iStart, nWrite;
       for( iStart = 0; iStart < len; iStart += nWrite )
       {
-         nBlock = umin( len - iStart, 4096 );
+         int nBlock = umin( len - iStart, 4096 );
 
          if( ( nWrite = send( descriptor, mccp->out_compress_buf + iStart, nBlock, 0 ) ) < 0 )
          {

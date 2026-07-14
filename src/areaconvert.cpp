@@ -42,7 +42,7 @@
 bool area_failed;
 int dotdcheck;
 
-bool check_area_conflict( area_data *, int, int );
+bool check_area_conflict( const area_data *, int, int );
 
 const char *stock_act[] = {
    "npc", "sentinel", "scavenger", "r1", "r2", "aggressive", "stayarea",
@@ -587,7 +587,6 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
          else  /* A SmaugWiz zone */
          {
             std::string speaking, flag;
-            int value;
 
             stream >> x1 >> x2 >> x3 >> x4 >> x5;
             {
@@ -630,7 +629,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
             while( !speaking.empty() )
             {
                speaking = one_argument( speaking, flag );
-               value = get_langnum( flag );
+               int value = get_langnum( flag );
                if( value == -1 )
                   bug( "Unknown speaking language: {}", flag );
                else
@@ -1245,14 +1244,12 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
       std::istringstream( ln ) >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9;
       {
          std::string roomflags, flag;
-         int value;
-
          roomflags = flag_string( x2, stock_rflags );
 
          while( roomflags[0] != '\0' )
          {
             roomflags = one_argument( roomflags, flag );
-            value = get_rflag( flag );
+            int value = get_rflag( flag );
             if( value < 0 || value >= ROOM_MAX )
                bug( "Unsupported room flag dropped: {}", flag );
             else
@@ -1387,9 +1384,6 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
 
          else if( letter == 'D' )
          {
-            exit_data *pexit;
-            int locks;
-
             stream >> door;
             if( door < 0 || door > DIR_SOMEWHERE )
             {
@@ -1399,7 +1393,7 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
             }
             else
             {
-               pexit = pRoomIndex->make_exit( nullptr, door );
+               exit_data *pexit = pRoomIndex->make_exit( nullptr, door );
                fread_string( pexit->exitdesc, stream );
                fread_string( pexit->keyword, stream );
                pexit->flags.reset(  );
@@ -1408,7 +1402,7 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
                std::getline( stream, ln );
                std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
 
-               locks = x1;
+               int locks = x1;
                pexit->key = x2;
                pexit->vnum = x3;
                pexit->vdir = door;
@@ -1429,14 +1423,13 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
                   default:
                   {
                      std::string oldexits, flag;
-                     int value;
 
                      oldexits = flag_string( locks, stock_ex_flags );
 
                      while( !oldexits.empty() )
                      {
                         oldexits = one_argument( oldexits, flag );
-                        value = get_exflag( flag );
+                        int value = get_exflag( flag );
                         if( value < 0 || value >= MAX_EXFLAG )
                            bug( "Unsupported exit flag dropped: {}", flag );
                         else
@@ -1797,8 +1790,8 @@ void load_strepairs( std::ifstream & stream )
 void load_stock_area_file( const std::string & filename, bool manual )
 {
    area_data *tarea = nullptr;
-   std::chrono::system_clock::time_point umod = std::chrono::system_clock::time_point::min();
    std::filesystem::path target_path = manual ? std::filesystem::path( AREA_CONVERT_DIR ) / filename : std::filesystem::path( filename );
+   std::chrono::system_clock::time_point umod;
 
    fpArea.open( target_path );
    if( !fpArea.is_open() )
@@ -1958,9 +1951,8 @@ void load_stock_area_file( const std::string & filename, bool manual )
       else if( !str_cmp( word, "FLAGS" ) )
       {
          std::string aflags, flag;
-         int x1, x2, value;
+         int x1 = 0, x2 = 0;
 
-         x1 = x2 = 0;
          std::string ln;
          std::getline( fpArea, ln );
          std::istringstream( ln ) >> x1 >> x2;
@@ -1970,7 +1962,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          while( !aflags.empty() )
          {
             aflags = one_argument( aflags, flag );
-            value = get_areaflag( flag );
+            int value = get_areaflag( flag );
             if( value < 0 || value >= AFLAG_MAX )
                bug( "Unsupported area flag dropped: {}", flag );
             else
@@ -1994,13 +1986,13 @@ void load_stock_area_file( const std::string & filename, bool manual )
             std::exit( EXIT_FAILURE );
          }
 
-         std::string dummy = fread_line( fpArea );
+         fread_line( fpArea );
 
          // Climate values are no longer used with the new weather code.
       }
       else if( !str_cmp( word, "NEIGHBOR" ) )
       {
-         std::string dummy = fread_line( fpArea );
+         fread_line( fpArea );
 
          // This section is no longer used with the new weather code.
       }

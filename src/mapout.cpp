@@ -67,9 +67,9 @@
 
 struct map_data   /* contains per-room data */
 {
-   int vnum;   // Which map this room belongs to
+   int vnum;   // Which map this room belongs to.
    int x;      // Horizontal coordinate.
-   int y;      // Vertical coordinate/
+   int y;      // Vertical coordinate.
    char entry; // Code that shows up on map.
 };
 
@@ -124,27 +124,6 @@ map_index *make_new_map_index( int vnum )
    }
    map_list.push_back( mindex );
    return mindex;
-}
-
-char count_lines( char *txt )
-{
-   int i;
-   char *c;
-   std::string buf;
-
-   if( !txt )
-      return '0';
-
-   i = 1;
-   for( c = txt; *c != '\0'; ++c )
-      if( *c == '\n' )
-         ++i;
-
-   if( i > 9 )
-      return '+';
-
-   buf = std::format( "{}", i );
-   return ( buf[0] );
 }
 
 map_index *get_map_index( int vnum )
@@ -355,7 +334,6 @@ const std::vector<DirRule> dir_rules = {
 void map_to_rooms( char_data* ch, map_index* m_index )
 {
    map_index* m_ptr = nullptr;
-   map_index* tmp;
    static map_stuff rmap[49][78];
 
    if( ch->pcdata->map_buffer.empty() )
@@ -371,6 +349,8 @@ void map_to_rooms( char_data* ch, map_index* m_index )
    {
       for( int i = ch->pcdata->low_vnum; i <= ch->pcdata->hi_vnum; ++i )
       {
+         const map_index* tmp = nullptr;
+
          if( !( tmp = get_map_index(i) ) )
          {
             m_ptr = make_new_map_index(i);
@@ -480,7 +460,7 @@ void map_to_rooms( char_data* ch, map_index* m_index )
    }
 }
 
-int num_rooms_avail( char_data * ch )
+int num_rooms_avail( const char_data * ch )
 {
    int i, n;
 

@@ -62,7 +62,7 @@ void add_event( time_t when, void ( *callback ) ( void * ), void *data )
 
    for( auto it = eventlist.begin(); it != eventlist.end(); ++it )
    {
-      event_info *cur = *it;
+      const event_info *cur = *it;
 
       if( cur->when > e->when )
       {
@@ -73,7 +73,7 @@ void add_event( time_t when, void ( *callback ) ( void * ), void *data )
    eventlist.push_back( e );
 }
 
-void cancel_event( void ( *callback ) ( void * ), void *data )
+void cancel_event( void ( *const callback ) ( void * ), const void *data )
 {
    for( auto it = eventlist.begin(  ); it != eventlist.end(  ); )
    {
@@ -89,16 +89,6 @@ void cancel_event( void ( *callback ) ( void * ), void *data )
       else if( ev->callback == callback && data == nullptr )
          free_event( ev );
    }
-}
-
-event_info *find_event( void ( *callback ) ( void * ), void *data )
-{
-   for( auto* ev : eventlist )
-   {
-      if( ev->callback == callback && ev->data == data )
-         return ev;
-   }
-   return nullptr;
 }
 
 void run_events( std::chrono::system_clock::time_point newtime )

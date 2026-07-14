@@ -257,7 +257,7 @@ CMDF( do_quit )
 
 /* Checks room to see if an Innkeeper mob is present
    Code courtesy of the Smaug mailing list - Installed by Samson */
-char_data *find_innkeeper( char_data * ch )
+char_data *find_innkeeper( const char_data * ch )
 {
    for( auto* innkeeper : ch->in_room->people )
    {
@@ -617,7 +617,7 @@ void adjust_pfile( const std::string & name )
       }
    }
 
-   room_index *temproom, *original;
+   room_index *temproom;
    if( !( temproom = get_room_index( ROOM_VNUM_RAREUPDATE ) ) )
    {
       bug( "{}: Error in rare item adjustment, temporary loading room is missing!", __func__ );
@@ -635,7 +635,7 @@ void adjust_pfile( const std::string & name )
       load_char_obj( d, name, false, false );
       charlist.push_back( d->character );
       pclist.push_back( d->character );
-      original = d->character->in_room;
+      room_index *original = d->character->in_room;
       if( !d->character->to_room( temproom ) )
          log_printf( "char_to_room: {}:{}, line {}.", __FILE__, __func__, __LINE__ );
       ch = d->character;   /* Hopefully this will work, if not, we're SOL */
@@ -704,6 +704,7 @@ int scan_pfiles( std::string_view dirname, std::string_view filename, bool updat
    std::string key;
    while( stream >> key )
    {
+      obj_index *pObjIndex = nullptr;
       if( key == "End" )
          break;
       else if( key == "#OBJECT" )
@@ -711,7 +712,6 @@ int scan_pfiles( std::string_view dirname, std::string_view filename, bool updat
          while( stream >> key )
          {
             int vnum = 0, counter = 1;
-            obj_index *pObjIndex = nullptr;
 
             if( key == "End" )
                break;
@@ -767,18 +767,25 @@ void corpse_scan( std::string_view filename )
    std::string key;
    while( stream >> key )
    {
-      int vnum = 0, counter = 1;
       obj_index *pObjIndex = nullptr;
 
       if( key == "End" )
          break;
-      else if( key == "#OBJECT" )
+
+      if( key == "#OBJECT" )
       {
+         int vnum = 0, counter = 1;
+         stream >> key;
          if( key == "End" )
             break;
-         else if( key == "Count" )
+
+         if( key == "Count" )
+         {
             stream >> counter;
-         else if( key == "Ovnum" )
+            stream >> key;
+         }
+
+         if( key == "Ovnum" )
          {
             stream >> vnum;
 
@@ -797,8 +804,6 @@ void corpse_scan( std::string_view filename )
                }
             }
          }
-         else
-            fread_to_eol( stream );
       }
       else
          fread_to_eol( stream );

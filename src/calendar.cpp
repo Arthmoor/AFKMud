@@ -40,36 +40,35 @@ extern std::chrono::system_clock::time_point new_pfile_time_t;
 
 struct tzone_type
 {
-   std::string_view display_label; // e.g., "Pacific US"
    std::string_view iana_id;       // e.g., "America/Los_Angeles"
 };
 
 inline constexpr std::array<tzone_type, 25> tzone_table = {{
-   {"Eniwetok",             "Pacific/Kwajalein"},
-   {"Samoa",                "Pacific/Samoa"},
-   {"Hawaii",               "Pacific/Honolulu"},
-   {"Alaska",               "America/Anchorage"},
-   {"Pacific US",           "America/Los_Angeles"},
-   {"Mountain US",          "America/Denver"},
-   {"Central US",           "America/Chicago"},
-   {"Eastern US",           "America/New_York"},
-   {"Atlantic Canada",      "America/Halifax"},
-   {"Brazil/Argentina",     "America/Sao_Paulo"},
-   {"Mid-Atlantic",         "Atlantic/South_Georgia"},
-   {"Cape Verde",           "Atlantic/Cape_Verde"},
-   {"Greenwich Mean Time",  "Etc/UTC"},
-   {"Berlin, Rome",         "Europe/Berlin"},
-   {"Israel, Cairo",        "Africa/Cairo"},
-   {"Moscow, Kuwait",       "Europe/Moscow"},
-   {"Abu Dhabi, Muscat",    "Asia/Dubai"},
-   {"Islamabad, Karachi",   "Asia/Karachi"},
-   {"Almaty, Dhaka",        "Asia/Almaty"},
-   {"Bangkok, Jakarta",     "Asia/Bangkok"},
-   {"Hong Kong, Beijing",   "Asia/Shanghai"},
-   {"Tokyo, Osaka",         "Asia/Tokyo"},
-   {"Sydney, Melbourne",    "Australia/Sydney"},
-   {"Magadan, Solomon Is.", "Asia/Magadan"},
-   {"Fiji, Auckland",       "Pacific/Auckland"}
+   {"Pacific/Kwajalein"},
+   {"Pacific/Samoa"},
+   {"Pacific/Honolulu"},
+   {"America/Anchorage"},
+   {"America/Los_Angeles"},
+   {"America/Denver"},
+   {"America/Chicago"},
+   {"America/New_York"},
+   {"America/Halifax"},
+   {"America/Sao_Paulo"},
+   {"Atlantic/South_Georgia"},
+   {"Atlantic/Cape_Verde"},
+   {"Etc/UTC"},
+   {"Europe/Berlin"},
+   {"Africa/Cairo"},
+   {"Europe/Moscow"},
+   {"Asia/Dubai"},
+   {"Asia/Karachi"},
+   {"Asia/Almaty"},
+   {"Asia/Bangkok"},
+   {"Asia/Shanghai"},
+   {"Asia/Tokyo"},
+   {"Australia/Sydney"},
+   {"Asia/Magadan"},
+   {"Pacific/Auckland"}
 }};
 
 std::string convert_old_timezone( int t_zone )
@@ -92,22 +91,6 @@ const std::chrono::time_zone* get_tz( const std::string & iana_name )
    {
       return std::chrono::current_zone(); // Timezone was invalid, fall back to server local time.
    }
-}
-
-int tzone_lookup( const std::string & arg )
-{
-   for( int i = 0; i < static_cast<int>( tzone_table.size() ); ++i )
-   {
-      if( !str_cmp( arg, tzone_table[i].display_label.data() ) )
-         return i;
-   }
-
-   for( int i = 0; i < static_cast<int>( tzone_table.size() ); ++i )
-   {
-      if( hasname( tzone_table[i].iana_id.data(), arg ) )
-         return i;
-   }
-   return -1;
 }
 
 CMDF( do_timezone )

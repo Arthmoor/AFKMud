@@ -137,9 +137,9 @@ const std::string how_good( int percent )
    return buf;
 }
 
-bool check_pets( char_data * ch, mob_index * pet )
+bool check_pets( const char_data * ch, const mob_index * pet )
 {
-   for( auto* mob : ch->pets )
+   for( const auto* mob : ch->pets )
    {
       if( mob->pIndexData->vnum == pet->vnum )
          return true;
@@ -1193,7 +1193,6 @@ int afk_who( char_data * ch )
 {
    std::vector<char_data *> players;
    std::vector<char_data *> immortals;
-   std::vector<char_data *>::iterator iplr;
    int pcount = 0;
 
    if( !ch )
@@ -1203,10 +1202,6 @@ int afk_who( char_data * ch )
    }
 
    std::string s1 = ch->color_str( AT_WHO );
-   std::string s2 = ch->color_str( AT_WHO2 );
-   std::string s3 = ch->color_str( AT_WHO3 );
-   std::string s4 = ch->color_str( AT_WHO4 );
-   std::string s5 = ch->color_str( AT_WHO5 );
    std::string s6 = ch->color_str( AT_WHO6 );
    std::string s7 = ch->color_str( AT_WHO7 );
 

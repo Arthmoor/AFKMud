@@ -75,7 +75,8 @@ int urange( int mincheck, int check, int maxcheck )
    return std::clamp( check, mincheck, maxcheck );
 }
 
-/* - Thoric
+/*
+ * - Thoric
  * Return how much experience is required for ch to get to a certain level
  */
 long exp_level( int level )
@@ -158,17 +159,14 @@ bool obj_data::extracted(  )
 /*
  * Find an obj in a list.
  */
-obj_data *get_obj_list( char_data * ch, std::string_view argument, std::list<obj_data *> source )
+obj_data *get_obj_list( char_data * ch, std::string_view argument, const std::list<obj_data *> & source )
 {
    std::string arg;
-   std::list<obj_data *>::iterator iobj;
-
    int number = number_argument( argument, arg );
    int count = 0;
-   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
-   {
-      obj_data *obj = *iobj;
 
+   for( auto* obj : source )
+   {
       if( ch->can_see_obj( obj, false ) && hasname( obj->name, arg ) )
          if( ( count += obj->count ) >= number )
             return obj;
@@ -180,13 +178,11 @@ obj_data *get_obj_list( char_data * ch, std::string_view argument, std::list<obj
     * Added by Narn, Sept/96
     */
    count = 0;
-   for( iobj = source.begin(  ); iobj != source.end(  ); ++iobj )
+   for( auto* obj2 : source )
    {
-      obj_data *obj = *iobj;
-
-      if( ch->can_see_obj( obj, false ) && nifty_is_name_prefix( arg, obj->name ) )
-         if( ( count += obj->count ) >= number )
-            return obj;
+      if( ch->can_see_obj( obj2, false ) && nifty_is_name_prefix( arg, obj2->name ) )
+         if( ( count += obj2->count ) >= number )
+            return obj2;
    }
    return nullptr;
 }
@@ -319,7 +315,7 @@ obj_data *find_obj( char_data * ch, std::string argument, bool carryonly )
    argument = one_argument( argument, arg2 );
 
    if( !str_cmp( arg2, "from" ) && !argument.empty(  ) )
-      argument = one_argument( argument, arg2 );
+      one_argument( argument, arg2 );
 
    if( arg2.empty(  ) )
    {
