@@ -2029,7 +2029,16 @@ CMDF( do_mpoload )
       /*
        * New feature from Thoric.
        */
-      timer = std::stoi( argument );
+      if( !argument.empty() )
+      {
+         if( !is_number( argument ) )
+         {
+            progbugf( ch, "Mpoload - Bad timer syntax: {}", argument );
+            return;
+         }
+         timer = std::stoi( argument );
+      }
+
       if( timer < 0 )
       {
          progbugf( ch, "Mpoload - Bad timer {}", timer );
