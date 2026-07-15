@@ -57,8 +57,8 @@ void save_sysdata(  );
 bool check_area_conflict( const area_data *, int, int );
 void web_arealist(  );
 area_data *fread_smaugfuss_area( std::ifstream & );
-bool load_oldafk_area( std::ifstream &, area_data *, int );
-CMDF( do_areaconvert );
+bool load_oldafk_area( std::ifstream &, area_data * );
+bool load_stock_area_file( std::ifstream &, area_data *, bool );
 
 area_data::area_data(  )
 {
@@ -1218,20 +1218,21 @@ area_data *fread_afk_area( std::ifstream & stream )
    return tarea;
 }
 
-void process_sorting( area_data * tarea, bool isproto )
+void process_sorting( area_data * tarea, bool isproto, bool shoud_display )
 {
    tarea->sort_name(  );
    tarea->sort_vnums(  );
    if( isproto )
       tarea->flags.set( AFLAG_PROTOTYPE );
-   log_printf( "{:<20}: Version {:<3} Vnums: {:5} - {:<5}", tarea->filename, tarea->version, tarea->low_vnum, tarea->hi_vnum );
+   if( shoud_display )
+      log_printf( "{:<20}: Version {:<3} Vnums: {:5} - {:<5}", tarea->filename, tarea->version, tarea->low_vnum, tarea->hi_vnum );
    if( tarea->low_vnum < 0 || tarea->hi_vnum < 0 )
       log_printf( "{:<20}: Bad Vnum Range", tarea->filename );
    if( tarea->author.empty() )
       tarea->author = "AFKMud";
 }
 
-void load_area_file( const std::string & filename, bool isproto )
+void load_area_file( const std::string & filename, bool isproto, bool manual )
 {
    area_data *tarea = nullptr;
 
@@ -1266,7 +1267,10 @@ void load_area_file( const std::string & filename, bool isproto )
       fpArea.close();
 
       if( tarea )
-         process_sorting( tarea, isproto );
+      {
+         top_area++;
+         process_sorting( tarea, isproto, true );
+      }
       return;
    }
 
@@ -1281,17 +1285,34 @@ void load_area_file( const std::string & filename, bool isproto )
       fpArea.close();
 
       if( tarea )
-         process_sorting( tarea, isproto );
+      {
+         top_area++;
+         process_sorting( tarea, isproto, true );
+      }
       return;
    }
+
+   bool valid_version_found = false;
 
    // Found #AREA, let the process begin!
    if( word == "AREA" )
    {
       tarea = create_area();
-
       tarea->filename = filename;
       tarea->name = fread_line( fpArea );
+
+      word = fread_word( fpArea );
+      if( word == "#VERSION" )
+      {
+         fpArea >> tarea->version;
+         valid_version_found = true;
+      }
+      else if( word == "#AUTHOR" )
+      {
+         tarea->author = fread_line( fpArea );
+         tarea->version = 0; // For the distributed stock set, this field is not written, so assume 0.
+         valid_version_found = true;
+      }
    }
    else
    {
@@ -1302,119 +1323,87 @@ void load_area_file( const std::string & filename, bool isproto )
          fpArea >> temp;
          if( temp >= 1000 )
          {
-            fpArea.close();
-            do_areaconvert( nullptr, filename );
-            return;
-         }
+            word = fread_word( fpArea );
 
-         bug( "{}: Invalid header at start of area file: {}", __func__, word );
-         if( fBootDb )
-            std::exit( EXIT_FAILURE );
-         else
-         {
-            fpArea.close();
-            return;
-         }
-      }
+            if( word == "#AREA" )
+            {
+               tarea = create_area();
 
-      bug( "{}: Invalid header at start of area file: {}", __func__, word );
-      if( fBootDb )
-         std::exit( EXIT_FAILURE );
-      else
-      {
-         fpArea.close();
-         return;
+               tarea->name = fread_line( fpArea );
+               tarea->filename = filename;
+               tarea->version = temp;
+               valid_version_found = true;
+            }
+         }
       }
    }
 
-   for( ;; )
+   if( !valid_version_found )
    {
-      if( !fpArea.is_open() )  /* Should only happen if a stock conversion takes place */
-         return;
-
-      if( fread_letter( fpArea ) != '#' )
-      {
-         bug( "{}: # not found {}", __func__, tarea->filename );
+      // Did not find #AREA or #VERSION at start, the file is DOA.
+      bug( "{}: Invalid header at start of area file: {}", __func__, word );
+      if( fBootDb )
          std::exit( EXIT_FAILURE );
-      }
+      fpArea.close();
+      if( tarea )
+         deleteptr( tarea );
+      return;
+   }
 
-      word = fread_word( fpArea );
+   // First check: Stock Smaug area file.
+   if( tarea->version <= 3 || tarea->version >= 1000 )
+   {
+      log_string( "Smaug 1.02a, 1.4a, 1.8b, or SmaugWiz 2.02 area encountered. Attempting to pass to Stock Area Converter." );
 
-      if( word[0] == '$' )
-         break;
-
-      else if( word == "VERSION" )
+      if( !load_stock_area_file( fpArea, tarea, false ) )
       {
-         int aversion;
-         fpArea >> aversion;
-
-         if( aversion <= 3 )
-         {
-            log_string( "Smaug 1.02a, 1.4a, or 1.8b area encountered. Attempting to pass to Area Converter." );
-            fpArea.close();
-            deleteptr( tarea );
-            --top_area;
-            do_areaconvert( nullptr, filename );
-            return;
-         }
-
-         if( aversion == 1000 )
-         {
-            log_string( "SmaugWiz 2.02 area encountered. Attempting to pass to Area Converter." );
-            fpArea.close();
-            deleteptr( tarea );
-            do_areaconvert( nullptr, filename );
-            return;
-         }
-
-         // AFKMud 1.x files only went up to version 20. Anything higher is invalid.
-         // This is gonna become a problem for old areas if RoD ever releases another version of SMAUG and they bump their area version past 3.
-         if( aversion > 3 && aversion <= 20 )
-         {
-            bool oldafk_fail = load_oldafk_area( fpArea, tarea, aversion );
-
-            if( !oldafk_fail )
-               break;
-            else
-            {
-               bug( "{}: Bad conversion from AFKMud 1.x format. Cannot continue.", __func__ );
-               if( fBootDb )
-                  std::exit( EXIT_FAILURE );
-               else
-               {
-                  fpArea.close();
-               }
-            }
-            return;
-         }
-
-         bug( "{}: {}:{} - Bad version header. Format conversion failed.", __func__, word, aversion );
+         bug( "{}: Bad conversion from Smaug 1.02a, 1.4a, 1.8b, or SmaugWiz 2.02 format. Cannot continue.", __func__ );
          if( fBootDb )
             std::exit( EXIT_FAILURE );
          else
          {
             fpArea.close();
-            return;
+            if( tarea )
+               deleteptr( tarea );
          }
       }
-      else
+   }
+   else if( tarea->version > 3 && tarea->version <= 20 )
+   {
+      // AFKMud 1.x files only went up to version 20. Anything higher is invalid.
+      // This is gonna become a problem for old areas if RoD ever releases another version of SMAUG and they bump their area version past 3.
+      log_string( "AFKMud 1.x area encountered. Attempting to pass to old AFK Area Converter." );
+
+      if( !load_oldafk_area( fpArea, tarea ) )
       {
-         bug( "{}: {} bad section name {}", __func__, tarea->filename, word );
+         bug( "{}: Bad conversion from AFKMud 1.x format. Cannot continue.", __func__ );
          if( fBootDb )
             std::exit( EXIT_FAILURE );
          else
          {
             fpArea.close();
-            return;
+            if( tarea )
+               deleteptr( tarea );
          }
       }
+   }
+   // Captured version number is invalid, which must assume the rest of the file is too.
+   else
+   {
+      bug( "{}: Bad version number in area header. Cannot continue. Filename: {}", __func__, filename );
+      if( fBootDb )
+         std::exit( EXIT_FAILURE );
+      if( tarea )
+         deleteptr( tarea );
    }
    fpArea.close();
 
    if( tarea )
-      process_sorting( tarea, isproto );
-   else
-      log_printf( "({})", filename );
+   {
+      top_area++;
+      process_sorting( tarea, isproto, false );
+   }
+   return;
 }
 
 void fwrite_afk_affect( std::ofstream & stream, affect_data * af )

@@ -528,7 +528,7 @@ void load_buildlist( void )
       set_alarm( AREA_FILE_ALARM );
       alarm_section = "load_buildlist: read prototype area files";
 
-      load_area_file( full_path.string(), true );
+      load_area_file( full_path.string(), true, false );
    }
 }
 
@@ -1143,7 +1143,7 @@ void boot_db( bool fCopyOver )
 
          set_alarm( AREA_FILE_ALARM );
          alarm_section = "boot_db: read area files";
-         load_area_file( strArea, false );
+         load_area_file( strArea, false, false );
          set_alarm( 0 );
       }
       stream.close();

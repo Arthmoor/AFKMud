@@ -137,9 +137,10 @@ const char *stock_lang_names[] = {
    "r25", "r26", "r27", "r28", "r29", "r30", "r31"
 };
 
+// NOTE: The "feed" flag translates most closely to our "age" flag, which is the only difference in this table. -- Samson 7/14/2026
 const char *stock_attack_flags[] = {
    "bite", "claws", "tail", "sting", "punch", "kick", "trip", "bash", "stun",
-   "gouge", "backstab", "feed", "drain", "firebreath", "frostbreath",
+   "gouge", "backstab", "age", "drain", "firebreath", "frostbreath",
    "acidbreath", "lightnbreath", "gasbreath", "poison", "nastypoison", "gaze",
    "blindness", "causeserious", "earthquake", "causecritical", "curse",
    "flamestrike", "harm", "fireball", "colorspray", "weaken", "r1"
@@ -177,7 +178,7 @@ const char *stock_sect[] = {
 /*
  * Read an extended bitvector from a file. - Thoric
  */
-EXT_BV fread_bitvector( std::ifstream & stream )
+EXT_BV fread_bitvector( std::istream & stream )
 {
    EXT_BV ret{0};
    int x = 0;
@@ -190,11 +191,17 @@ EXT_BV fread_bitvector( std::ifstream & stream )
       if( x < XBI )
          ret.bits[x] = num;
       ++x;
-      if( stream.get(c) && c != '&' )
+
+      if( stream.get(c) )
       {
-         stream.putback(c);
-         break;
+         if( c != '&' )
+         {
+            stream.putback(c);
+            break;
+         }
       }
+      else
+         break;
    }
    return ret;
 }
@@ -223,6 +230,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
    mob_index *pMobIndex;
    int dummyval = 0;        // For skipping unwanted numericals.
    int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0;
+   std::string ln;
 
    if( !tarea )
    {
@@ -505,6 +513,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
        * Back to meaningful values.
        */
       stream >> pMobIndex->sex;
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
       if( letter != 'S' && letter != 'C' && letter != 'D' && letter != 'Z' && letter != 'V' )
       {
@@ -515,13 +524,17 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
 
       if( letter == 'C' || letter == 'D' || letter == 'Z' || letter == 'V' ) /* Realms complex mob  -Thoric */
       {
-         stream >> pMobIndex->perm_str >> pMobIndex->perm_int >> pMobIndex->perm_wis >> pMobIndex->perm_dex;
-         stream >> pMobIndex->perm_con >> pMobIndex->perm_cha >> pMobIndex->perm_lck;
-         stream >> pMobIndex->saving_poison_death >> pMobIndex->saving_wand >> pMobIndex->saving_para_petri >> pMobIndex->saving_breath >> pMobIndex->saving_spell_staff;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> pMobIndex->perm_str >> pMobIndex->perm_int >> pMobIndex->perm_wis >> pMobIndex->perm_dex >> pMobIndex->perm_con >> pMobIndex->perm_cha >> pMobIndex->perm_lck;
+
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> pMobIndex->saving_poison_death >> pMobIndex->saving_wand >> pMobIndex->saving_para_petri >> pMobIndex->saving_breath >> pMobIndex->saving_spell_staff;
 
          if( tarea->version < AREA_SMAUGWIZ_VERSION )   /* Standard Smaug up to version 3 */
          {
-            stream >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7;
+            x1 = x2 = x3 = x4 = x5 = x6 = x7 = 0;
+            std::getline( stream, ln );
+            std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7;
             {
                std::string srace, sclass;
 
@@ -556,31 +569,31 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
 
             {
                std::string speaks, speaking, flag;
-               int value;
 
                speaks = flag_string( x5, stock_lang_names );
 
                while( !speaks.empty() )
                {
                   speaks = one_argument( speaks, flag );
-                  value = get_langnum( flag );
+                  int value = get_langnum( flag );
                   if( value == -1 )
                      bug( "Unsupported speaks flag dropped: {}", flag );
                   else
                      pMobIndex->speaks.set( value );
                }
 
+               // Get rid of "common" from the speaking list, unless that's all they have.
+               x6 = umax( 1, x6 - 1 );
                speaking = flag_string( x6, stock_lang_names );
+               int newspeaking = get_langnum( speaking );
 
-               while( !speaking.empty() )
+               if( newspeaking < 0 || newspeaking >= LANG_UNKNOWN )
                {
-                  speaking = one_argument( speaking, flag );
-                  value = get_langnum( flag );
-                  if( value == -1 )
-                     bug( "Unsupported speaking flag dropped: {}", flag );
-                  else
-                     pMobIndex->speaking = value;
+                  bug( "{}: Unsupported speaking language: {}. Setting to common.", __func__, speaking );
+                  pMobIndex->speaking = LANG_COMMON;
                }
+               else
+                  pMobIndex->speaking = newspeaking;
             }
             pMobIndex->numattacks = ( float )x7;
          }  /* End of standard Smaug zone */
@@ -588,7 +601,9 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
          {
             std::string speaking, flag;
 
-            stream >> x1 >> x2 >> x3 >> x4 >> x5;
+            x1 = x2 = x3 = x4 = x5 = 0;
+            std::getline( stream, ln );
+            std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5;
             {
                std::string srace, sclass;
 
@@ -631,7 +646,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
                speaking = one_argument( speaking, flag );
                int value = get_langnum( flag );
                if( value == -1 )
-                  bug( "Unknown speaking language: {}", flag );
+                  bug( "{}: Unknown speaking language: {}", __func__, flag );
                else
                   pMobIndex->speaking = value;
             }
@@ -647,13 +662,15 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
          else
             pMobIndex->gold = 0;
 
-         stream >> pMobIndex->hitroll >> pMobIndex->damroll >> pMobIndex->body_parts >> pMobIndex->resistant >> pMobIndex->immune >> pMobIndex->susceptible;
+         std::getline( stream, ln );
+         std::istringstream iss(ln);
+         iss >> pMobIndex->hitroll >> pMobIndex->damroll >> pMobIndex->body_parts >> pMobIndex->resistant >> pMobIndex->immune >> pMobIndex->susceptible;
          {
             std::string attacks, defenses, flag;
             EXT_BV temp;
             int value;
 
-            temp = fread_bitvector( stream );
+            temp = fread_bitvector( iss );
             attacks = ext_flag_string( temp, stock_attack_flags );
 
             while( !attacks.empty() )
@@ -666,7 +683,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
                   pMobIndex->attacks.set( value );
             }
 
-            temp = fread_bitvector( stream );
+            temp = fread_bitvector( iss );
             defenses = ext_flag_string( temp, stock_defense_flags );
 
             while( !defenses.empty() )
@@ -684,7 +701,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
             fread_to_eol( stream );
 
          if( letter == 'Z' )
-            stream >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval >> dummyval;
+            fread_to_eol( stream );
 
          if( letter == 'D' && dotdcheck )
          {
@@ -722,7 +739,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
 
          if( letter == '#' )
          {
-            stream .putback( letter );
+            stream.putback( letter );
             break;
          }
 
@@ -749,6 +766,7 @@ void load_stmobiles( area_data * tarea, std::ifstream & stream, bool manual )
          ++top_mob_index;
       }
    }
+   stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 }
 
 void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
@@ -867,18 +885,23 @@ void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
       pObjIndex->short_descr = fread_line( stream );
       pObjIndex->objdesc = fread_line( stream );
       pObjIndex->action_desc = fread_line( stream );
-
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
       pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
       {
          std::string sotype, eflags, wflags, flag;
          EXT_BV temp;
          int value, o_type;
 
-         stream >> o_type;
+         x1 = x2 = x3 = 0;
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream iss(ln);
+
+         iss >> o_type;
          sotype = stock_o_types[o_type];
          pObjIndex->item_type = get_otype( sotype );
 
-         temp = fread_bitvector( stream );
+         temp = fread_bitvector( iss );
          eflags = ext_flag_string( temp, stock_oflags );
 
          while( eflags[0] != '\0' )
@@ -891,7 +914,7 @@ void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
                pObjIndex->extra_flags.set( value );
          }
 
-         stream >> x1;
+         iss >> x1;
          wflags = flag_string( x1, stock_wflags );
 
          while( wflags[0] != '\0' )
@@ -904,18 +927,19 @@ void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
                pObjIndex->wear_flags.set( value );
          }
 
-         std::string ln;
-         std::getline( stream, ln );
-
-         x2 = x3 = 0;
-         std::istringstream( ln ) >> x2 >> x3;
+         iss >> x2 >> x3;
          pObjIndex->layers = x2;
          pObjIndex->level = x3; // Smaug 1.8b v2 or v3
       }
 
       if( tarea->version < AREA_SMAUGWIZ_VERSION )
       {
-         stream >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
+         x1 = x2 = x3 = x4 = x5 = x6 = 0;
+
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
+
          pObjIndex->value[0] = x1;
          pObjIndex->value[1] = x2;
          pObjIndex->value[2] = x3;
@@ -923,10 +947,14 @@ void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
          pObjIndex->value[4] = x5;
          pObjIndex->value[5] = x6;
 
-         stream >> pObjIndex->weight;
+         x1 = x2 = x3 = 0;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x1 >> x2 >> x3;
+
+         pObjIndex->weight = x1;
          pObjIndex->weight = umax( 1, pObjIndex->weight );
-         stream >> pObjIndex->cost;
-         stream >> pObjIndex->ego;
+         pObjIndex->cost = x2;
+         pObjIndex->ego = x3;
 
          if( pObjIndex->ego >= sysdata->minego )
          {
@@ -940,9 +968,10 @@ void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
       }
       else
       {
+         x1 = x2 = x3 = x4 = x5 = x6 = 0;
+
          std::string ln;
          std::getline( stream, ln );
-         x1 = x2 = x3 = x4 = x5 = x6 = 0;
          std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
 
          pObjIndex->value[0] = x1;
@@ -982,14 +1011,20 @@ void load_stobjects( area_data * tarea, std::ifstream & stream, bool manual )
 
       if( tarea->version == AREA_SMAUGWIZ_VERSION )
       {
+         x1 = x2 = x3 = 0;
+
          while( !isdigit( letter = fread_letter( stream ) ) )
             fread_to_eol( stream );
          stream.putback( letter );
 
-         stream >> pObjIndex->weight;
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x1 >> x2 >> x3;
+
+         pObjIndex->weight = x1;
          pObjIndex->weight = umax( 1, pObjIndex->weight );
-         stream >> pObjIndex->cost;
-         stream >> pObjIndex->ego;
+         pObjIndex->cost = x2;
+         pObjIndex->ego = x3;
 
          if( pObjIndex->ego >= sysdata->minego )
          {
@@ -1237,11 +1272,13 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
       }
       pRoomIndex->name = fread_line( stream );
       pRoomIndex->roomdesc = fread_line( stream );
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
-      x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = 0;
+      x1 = x2 = x3 = x4 = x5 = x6 = 0;
+      x7 = 100000;
       std::string ln;
       std::getline( stream, ln );
-      std::istringstream( ln ) >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9;
+      std::istringstream( ln ) >> x2 >> x3 >> x4 >> x5 >> x6 >> x7;
       {
          std::string roomflags, flag;
          roomflags = flag_string( x2, stock_rflags );
@@ -1256,13 +1293,18 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
                pRoomIndex->flags.set( value );
          }
 
+         if( x3 < 0 || x3 >= SECT_MAX )
+         {
+            bug( "Out of range sector type detected for room {}: {}. Setting to indoors.", vnum, x3 );
+            x3 = SECT_INDOORS;
+         }
          pRoomIndex->sector_type = get_sectypes( stock_sect[x3] );
          pRoomIndex->winter_sector = -1;
       }
       pRoomIndex->tele_delay = x4;
       pRoomIndex->tele_vnum = x5;
       pRoomIndex->tunnel = x6;
-      pRoomIndex->max_weight = x7 ? x7 : 100000;
+      pRoomIndex->max_weight = x7;
       pRoomIndex->baselight = 0;
       pRoomIndex->light = 0;
 
@@ -1287,14 +1329,17 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
          {
             exit_data *pexit;
             char letter2;
-            int extra, arg1, arg2, arg3, arg4;
+            int extra = 0, arg1 = 0, arg2 = 0, arg3 = 0, arg4 = 0;
+
+            x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = 0;
+
 
             letter2 = fread_letter( stream );
-            stream >> extra >> arg1 >> arg2 >> arg3;
+            std::getline( stream, ln );
+            std::istringstream( ln ) >> extra >> arg1 >> arg2 >> arg3 >> arg4;
+
             if( letter2 == 'G' || letter2 == 'R' )
                arg4 = 0;
-            else
-               stream >> arg4;
             fread_to_eol( stream );
 
             ++count;
@@ -1385,6 +1430,7 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
          else if( letter == 'D' )
          {
             stream >> door;
+            stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
             if( door < 0 || door > DIR_SOMEWHERE )
             {
                bug( "{}: vnum {} has bad door number {}.", __func__, vnum, door );
@@ -1399,6 +1445,7 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
                pexit->flags.reset(  );
 
                x1 = x2 = x3 = x4 = x5 = x6 = 0;
+               stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
                std::getline( stream, ln );
                std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
 
@@ -1447,6 +1494,7 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
             fread_string( ed->desc, stream );
             pRoomIndex->extradesc.push_back( ed );
             ++top_ed;
+            stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
          }
          else if( letter == 'A' )   // This section was added in SmaugFUSS 1.8
          {
@@ -1787,151 +1835,67 @@ void load_strepairs( std::ifstream & stream )
    }
 }
 
-void load_stock_area_file( const std::string & filename, bool manual )
+bool load_stock_area_file( std::ifstream & stream, area_data *tarea, bool manual )
 {
-   area_data *tarea = nullptr;
-   std::filesystem::path target_path = manual ? std::filesystem::path( AREA_CONVERT_DIR ) / filename : std::filesystem::path( filename );
-   std::chrono::system_clock::time_point umod;
-
-   fpArea.open( target_path );
-   if( !fpArea.is_open() )
-   {
-      bug( "{}: Error locating file: {}. Not present in conversion directory.", __func__, target_path.string() );
-      return;
-   }
+   std::filesystem::path target_path = manual ? std::filesystem::path( AREA_CONVERT_DIR ) / tarea->filename : std::filesystem::path( tarea->filename );
 
    auto ftime = std::filesystem::last_write_time( target_path );
-   umod = std::chrono::clock_cast<std::chrono::system_clock>( ftime );
+   std::chrono::system_clock::time_point umod = std::chrono::clock_cast<std::chrono::system_clock>( ftime );
 
-   if( fread_letter( fpArea ) != '#' )
-   {
-      if( fBootDb )
-      {
-         bug( "{}: No # found at start of area file.", __func__ );
-         std::exit( EXIT_FAILURE );
-      }
-      else
-      {
-         log_printf( "{}: No # found at start of area file {}", __func__, filename );
-         return;
-      }
-   }
-
-   std::string word = fread_word( fpArea );
-
-   if( !str_cmp( word, "AREA" ) )
-   {
-      tarea = create_area(  );
-      tarea->name = fread_line( fpArea );
-      tarea->author = "Unknown";
-      tarea->filename = strArea;
-      tarea->version = 0;
-   }
-   else if( !str_cmp( word, "VERSION" ) )
-   {
-      int temp;
-      fpArea >> temp;
-
-      if( temp >= AREA_SMAUGWIZ_VERSION )
-      {
-         word = fread_word( fpArea );
-         if( !str_cmp( word, "#AREA" ) )
-         {
-            tarea = create_area(  );
-            fread_string( tarea->name, fpArea );
-            tarea->author = "Unknown";
-            tarea->filename = strArea;
-            tarea->version = temp;
-         }
-         else
-         {
-            area_failed = true;
-            fpArea.close();
-            log_printf( "{}: Invalid header at start of area file {}", __func__, filename );
-            return;
-         }
-      }
-   }
-   else
-   {
-      area_failed = true;
-      fpArea.close();
-      log_printf( "{}: Invalid header at start of area file {}", __func__, filename );
-      return;
-   }
    dotdcheck = 0;
    int dummyval = 0;
+   area_failed = false;
+   std::string word;
+   char letter;
 
    for( ;; )
    {
       if( manual && area_failed )
+         return false;
+
+      letter = fread_letter( stream );
+
+      if( letter != '#' )
       {
-         fpArea.close();
-         return;
+         bug( "{}: # not found. Actual letter seen: {}. ({})", __func__, letter, tarea->filename );
+         return false;
       }
 
-      if( fread_letter( fpArea ) != '#' )
-      {
-         log_printf( "{}: # not found. {}", __func__, tarea->filename );
-         return;
-      }
-
-      word = fread_word( fpArea );
+      word = fread_word( stream );
+      strip_whitespace( word );
 
       if( word[0] == '$' )
          break;
-      else if( !str_cmp( word, "VERSION" ) )
-      {
-         int area_version;
-         fpArea >> area_version;
-
-         if( ( area_version < 0 || area_version > AREA_STOCK_VERSION ) && area_version != AREA_SMAUGWIZ_VERSION )
-         {
-            area_failed = true;
-            bug( "{}: Version {} in {} is non-stock area format. Unable to process.", __func__, area_version, filename );
-            if( !manual )
-            {
-               shutdown_mud( "Non-standard area format" );
-               std::exit( EXIT_FAILURE );
-            }
-            deleteptr( tarea );
-            --top_area;
-            return;
-         }
-
-         if( area_version == 2 )
-            log_string( "------ Warning: Encountered Smaug 1.8b Version 2 format. Proceeding with unknown results. ------" );
-         tarea->version = area_version;
-
-         log_printf( "&Y{}: Format version {} detected.", tarea->filename, tarea->version );
-      }
       // Skip the helps as we no longer support them embedded in area files
       else if( !str_cmp( word, "HELPS" ) )
       {
          std::string key, text;
 
-         fpArea >> dummyval;
-         fread_string( key, fpArea );
+         stream >> dummyval;
+         fread_string( key, stream );
          if( key[0] == '$' )
             continue;
-         fread_string( text, fpArea );
+         fread_string( text, stream );
          if( text.empty() )
             continue;
       }
       else if( !str_cmp( word, "AUTHOR" ) )
       {
-         tarea->author = fread_line( fpArea );
+         tarea->author = fread_line( stream );
       }
       else if( !str_cmp( word, "CREDITS" ) ) /* Smaug 1.8b v3 format */
       {
-         tarea->credits = fread_line( fpArea );
+         tarea->credits = fread_line( stream );
       }
       else if( !str_cmp( word, "RANGES" ) )
       {
-         fpArea >> tarea->low_soft_range >> tarea->hi_soft_range >> tarea->low_hard_range >> tarea->hi_hard_range;
+         std::string ln;
+         stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> tarea->low_soft_range >> tarea->hi_soft_range >> tarea->low_hard_range >> tarea->hi_hard_range;
 
-         char ln = fread_letter( fpArea );
-         if( ln != '$' )
+         char dollar = fread_letter( stream );
+         if( dollar != '$' )
          {
             bug( "{}: No $ found after ranges. Invalid format. Unable to process.", __func__ );
             if( !manual )
@@ -1940,13 +1904,12 @@ void load_stock_area_file( const std::string & filename, bool manual )
                std::exit( EXIT_FAILURE );
             }
             deleteptr( tarea );
-            --top_area;
-            return;
+            return false;
          }
       }
       else if( !str_cmp( word, "RESETMSG" ) )
       {
-         tarea->resetmsg = fread_line( fpArea );
+         tarea->resetmsg = fread_line( stream );
       }
       else if( !str_cmp( word, "FLAGS" ) )
       {
@@ -1954,7 +1917,8 @@ void load_stock_area_file( const std::string & filename, bool manual )
          int x1 = 0, x2 = 0;
 
          std::string ln;
-         std::getline( fpArea, ln );
+         stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+         std::getline( stream, ln );
          std::istringstream( ln ) >> x1 >> x2;
 
          aflags = flag_string( x1, stock_area_flags );
@@ -1975,7 +1939,7 @@ void load_stock_area_file( const std::string & filename, bool manual )
          /*
           * Not that these values are used anymore, but hey. 
           */
-         fpArea >> dummyval >> dummyval;
+         fread_to_eol( stream );
       }
       else if( !str_cmp( word, "CLIMATE" ) )
       {
@@ -1986,28 +1950,28 @@ void load_stock_area_file( const std::string & filename, bool manual )
             std::exit( EXIT_FAILURE );
          }
 
-         fread_line( fpArea );
+         fread_line( stream );
 
          // Climate values are no longer used with the new weather code.
       }
       else if( !str_cmp( word, "NEIGHBOR" ) )
       {
-         fread_line( fpArea );
+         fread_line( stream );
 
          // This section is no longer used with the new weather code.
       }
       else if( !str_cmp( word, "MOBILES" ) )
-         load_stmobiles( tarea, fpArea, manual );
+         load_stmobiles( tarea, stream, manual );
       else if( !str_cmp( word, "OBJECTS" ) )
-         load_stobjects( tarea, fpArea, manual );
+         load_stobjects( tarea, stream, manual );
       else if( !str_cmp( word, "RESETS" ) )
-         load_stresets( tarea, fpArea );
+         load_stresets( tarea, stream );
       else if( !str_cmp( word, "ROOMS" ) )
-         load_strooms( tarea, fpArea, manual );
+         load_strooms( tarea, stream, manual );
       else if( !str_cmp( word, "SHOPS" ) )
-         load_stshops( fpArea );
+         load_stshops( stream );
       else if( !str_cmp( word, "REPAIRS" ) )
-         load_strepairs( fpArea );
+         load_strepairs( stream );
       else if( !str_cmp( word, "SPECIALS" ) )
       {
          bool done = false;
@@ -2016,10 +1980,9 @@ void load_stock_area_file( const std::string & filename, bool manual )
          {
             mob_index *pMobIndex = nullptr;
             std::string temp;
-            char letter;
             int vnum = 0;
 
-            switch ( letter = fread_letter( fpArea ) )
+            switch ( letter = fread_letter( stream ) )
             {
                default:
                   bug( "{}: letter '{}' not *MORS.", __func__, letter );
@@ -2035,9 +1998,9 @@ void load_stock_area_file( const std::string & filename, bool manual )
                   break;
 
                case 'M':
-                  fpArea >> vnum;
+                  stream >> vnum;
                   pMobIndex = get_mob_index( vnum );
-                  temp = fread_word( fpArea );
+                  temp = fread_word( stream );
                   if( !pMobIndex )
                   {
                      bug( "{}: 'M': Invalid mob vnum!", __func__ );
@@ -2055,36 +2018,36 @@ void load_stock_area_file( const std::string & filename, bool manual )
             }
             if( done )
                break;
-            fread_to_eol( fpArea );
+            fread_to_eol( stream );
          }
       }
       else if( !str_cmp( word, "SPELLLIMIT" ) )  /* Skip, AFKMud doesn't have this */
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       else if( !str_cmp( word, "DERIVATIVES" ) )   /* Chronicles tag, safe to skip */
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       else if( !str_cmp( word, "NAMEFORMAT" ) ) /* Chronicles tag, safe to skip */
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       else if( !str_cmp( word, "DESCFORMAT" ) ) /* Chronicles tag, safe to skip */
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       else if( !str_cmp( word, "PLANE" ) )   /* DOTD 2.3.6 tag, safe to skip */
       {
          ++dotdcheck;
-         fpArea >> dummyval;
+         stream >> dummyval;
       }
       else if( !str_cmp( word, "CURRENCY" ) )   /* DOTD 2.3.6 tag, safe to skip */
       {
          ++dotdcheck;
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       }
       else if( !str_cmp( word, "HIGHECONOMY" ) )   /* DOTD 2.3.6 tag, safe to skip */
       {
          ++dotdcheck;
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       }
       else if( !str_cmp( word, "LOWECONOMY" ) ) /* DOTD 2.3.6 tag, safe to skip */
       {
          ++dotdcheck;
-         fread_to_eol( fpArea );
+         fread_to_eol( stream );
       }
       else
       {
@@ -2095,18 +2058,12 @@ void load_stock_area_file( const std::string & filename, bool manual )
             std::exit( EXIT_FAILURE );
          }
          else
-         {
-            fpArea.close();
-            return;
-         }
+            return false;
       }
    }
-   fpArea.close();
 
    if( tarea )
    {
-      tarea->sort_name(  );
-      tarea->sort_vnums(  );
       if( tarea->version == 0 && !dotdcheck )
          log_printf( "{:<20}: Converted Smaug 1.02a Zone  Vnums: {:5} - {:<5}", tarea->filename, tarea->low_vnum, tarea->hi_vnum );
       else if( tarea->version == 1 && !dotdcheck )
@@ -2126,9 +2083,11 @@ void load_stock_area_file( const std::string & filename, bool manual )
          tarea->creation_date = umod;
       if( tarea->install_date == std::chrono::system_clock::time_point{} )
          tarea->install_date = umod;
+      return true;
    }
-   else
-      log_printf( "({})", filename );
+
+   log_printf( "({})", target_path.string() );
+   return false;
 }
 
 /*
@@ -2172,13 +2131,7 @@ CMDF( do_areaconvert )
    else
       manual = false;
 
-   if( !argument.empty(  ) && !str_cmp( argument, "forceload" ) )
-   {
-      forced = true;
-      load_area_file( strArea, false );
-   }
-   else
-      load_stock_area_file( arg, manual );
+   load_area_file( strArea, false, manual );
 
    if( ch )
    {

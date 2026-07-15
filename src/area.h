@@ -99,7 +99,7 @@ area_data *create_area(  );
 void write_area_list(  );
 area_data *get_area( std::string_view ); /* FB */
 area_data *find_area( std::string_view );
-void load_area_file( const std::string &, bool );
+void load_area_file( const std::string &, bool, bool );
 
 extern std::list<area_data *> arealist;
 extern std::list<area_data *> area_nsort;

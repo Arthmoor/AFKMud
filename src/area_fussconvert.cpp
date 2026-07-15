@@ -37,6 +37,7 @@
 #include "mud_prog.h"
 #include "mudprog_loader.h"
 #include "objindex.h"
+#include "raceclass.h"
 #include "roomindex.h"
 #include "shops.h"
 
@@ -141,6 +142,24 @@ const char *fuss_r_flags[] = {
    "logspeech", "prototype", "noteleport", "noscry", "cave", "cavern", "nobeacon",
    "auction", "map", "forge", "guildinn", "isolated", "watchtower",
    "noquit", "telenofly", "_track_", "noyell", "nowhere", "notrack"
+};
+
+// NOTE: The "feed" flag translates most closely to our "age" flag, which is the only difference in this table. -- Samson 7/14/2026
+const char *fuss_attack_flags[] = {
+   "bite", "claws", "tail", "sting", "punch", "kick", "trip", "bash", "stun",
+   "gouge", "backstab", "feed", "drain", "firebreath", "frostbreath",
+   "acidbreath", "lightnbreath", "gasbreath", "poison", "nastypoison", "gaze",
+   "blindness", "causeserious", "earthquake", "causecritical", "curse",
+   "flamestrike", "harm", "fireball", "colorspray", "weaken", "spiralblast"
+};
+
+const char *fuss_lang_names[] = {
+   "common", "elvish", "dwarven", "pixie",
+   "ogre", "orcish", "trollese", "rodent",
+   "insectoid", "mammal", "reptile",
+   "dragon", "spiritual", "magical",
+   "goblin", "god", "ancient", "halfling",
+   "clan", "gith", "gnomish"
 };
 
 int get_fuss_sectypes( std::string_view sector )
@@ -563,6 +582,7 @@ void fread_fuss_mobile( std::ifstream & stream, area_data * tarea )
    std::string key;
    while( stream >> key )
    {
+      std::string race_word; // Declared here so it can be captured for use in language processing.
       if( key == "Vnum" )
       {
          bool tmpBootDb = fBootDb;
@@ -638,13 +658,14 @@ void fread_fuss_mobile( std::ifstream & stream, area_data * tarea )
          pMobIndex->chardesc = fread_line( stream );
       else if( key == "Race" )
       {
-         std::string race_word = fread_line( stream );
+         race_word = fread_line( stream );
          short race = get_fuss_npc_race( race_word );
 
          if( race < 0 || race >= MAX_NPC_RACE )
          {
             bug( "{}: vnum {}: Mob has invalid race: {} Defaulting to monster.", __func__, pMobIndex->vnum, race_word );
             race = get_npc_race( "monster" );
+            race_word = "monster";
          }
 
          pMobIndex->race = race;
@@ -752,13 +773,30 @@ void fread_fuss_mobile( std::ifstream & stream, area_data * tarea )
       else if( key == "Speaking" )
       {
          std::string speaking = fread_line( stream );
-         int value = get_langnum( speaking );
 
-         if( value < 0 || value >= LANG_UNKNOWN )
-            bug( "Unknown speaking language: {}", speaking );
+         // FUSS areas can incorrectly contain multiple languages being spoken at the same time. This is a best case recovery attempt.
+         if( speaking.contains( " " ) )
+         {
+            // Apparently some FUSS NPCs have their language set to their race name?
+            int value = get_langnum( race_word );
+            if( value >= 0 || value < LANG_UNKNOWN )
+                pMobIndex->speaking = value;
+            else
+            {
+               bug( "{}: Unable to recover speaking language from NPC. Setting to common. (String in file: {})", __func__, speaking );
+               pMobIndex->speaking = LANG_COMMON;
+            }
+         }
          else
-            pMobIndex->speaking = value;
+         {
+            int value = get_langnum( speaking );
 
+            if( value < 0 || value >= LANG_UNKNOWN )
+               bug( "Unknown speaking language: {}", speaking );
+            else
+               pMobIndex->speaking = value;
+         }
+         // If nothing managed to happen in the above, set common.
          if( !pMobIndex->speaking )
             pMobIndex->speaking = LANG_COMMON;
       }
@@ -771,7 +809,7 @@ void fread_fuss_mobile( std::ifstream & stream, area_data * tarea )
       else if( key == "Suscept" )
          flag_set( stream, pMobIndex->susceptible, ris_flags );
       else if( key == "Attacks" )
-         flag_set( stream, pMobIndex->attacks, attack_flags );
+         flag_set( stream, pMobIndex->attacks, fuss_attack_flags );
       else if( key == "Defenses" )
          flag_set( stream, pMobIndex->defenses, defense_flags );
       else if( key == "ShopData" )

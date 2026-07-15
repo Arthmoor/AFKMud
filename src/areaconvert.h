@@ -53,7 +53,7 @@ struct extended_bitvector
    unsigned int bits[XBI]; /* Needs to be unsigned to compile in Redhat 6 - Samson */
 };
 
-EXT_BV fread_bitvector( std::ifstream & );
+EXT_BV fread_bitvector( std::istream & );
 std::string ext_flag_string( const EXT_BV & bitvector, const char * const flagarray[] );
 
 extern int top_affect;

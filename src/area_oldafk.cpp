@@ -126,7 +126,7 @@ void load_mobiles( area_data * tarea, std::ifstream & stream )
       pMobIndex->short_descr = fread_line( stream );
       pMobIndex->long_descr = fread_line( stream );
       pMobIndex->chardesc = fread_line( stream );
-
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
       if( !pMobIndex->chardesc.empty() )
       {
          if( str_prefix( "namegen", pMobIndex->chardesc ) )
@@ -143,14 +143,14 @@ void load_mobiles( area_data * tarea, std::ifstream & stream )
       pMobIndex->pShop = nullptr;
       pMobIndex->rShop = nullptr;
 
-      std::string ln;
-      std::getline( stream, ln );
-
       x1 = x2 = x3 = x4 = x5 = 0;
       x6 = 150;
       x7 = 100;
       float x8 = 0;
 
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+      std::string ln;
+      std::getline( stream, ln );
       std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8;
 
       pMobIndex->alignment = x1;
@@ -173,12 +173,9 @@ void load_mobiles( area_data * tarea, std::ifstream & stream )
       if( tarea->version < 17 && pMobIndex->gold > 0 )
          pMobIndex->gold = -1;
 
-      stream >> pMobIndex->level;
-      stream >> pMobIndex->mobthac0;
-      stream >> pMobIndex->ac;
+      stream >> pMobIndex->level >> pMobIndex->mobthac0 >> pMobIndex->ac >> pMobIndex->hitplus;
       pMobIndex->hitnodice = pMobIndex->level;
       pMobIndex->hitsizedice = 8;
-      stream >> pMobIndex->hitplus;
       stream >> pMobIndex->damnodice;
       /*
        * 'd' 
@@ -190,6 +187,7 @@ void load_mobiles( area_data * tarea, std::ifstream & stream )
        */
       fread_letter( stream );
       stream >> pMobIndex->damplus;
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
       flag_set( stream, pMobIndex->speaks, lang_names );
 
@@ -353,6 +351,7 @@ void load_objects( area_data * tarea, std::ifstream & stream )
       pObjIndex->short_descr = fread_line( stream );
       pObjIndex->objdesc = fread_line( stream );
       pObjIndex->action_desc = fread_line( stream );
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
       pObjIndex->objdesc[0] = to_upper( pObjIndex->objdesc[0] );
 
@@ -366,10 +365,12 @@ void load_objects( area_data * tarea, std::ifstream & stream )
 
       flag_set( stream, pObjIndex->extra_flags, o_flags );
       flag_set( stream, pObjIndex->wear_flags, w_flags );
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
       // Magic Flags
       // These things were never used, but will leave this here to allow it to get ignored if it's been inserted.
       fread_line( stream );
+      stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
       x1 = x2 = x3 = x4 = x5 = x6 = x7 = x8 = x9 = x10 = x11 = 0;
       std::string ln;
@@ -696,11 +697,11 @@ void load_resets( area_data * tarea, std::ifstream & stream )
             else
                pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
 
-            if( arg4 != -1 )
+            if( arg4 != -2 )
                boot_log( "{}: {} ({}) 'M': arg4 is now ignored.", __func__, tarea->filename, count );
-            if( arg5 != -1 && !is_valid_x( arg5 ) )
+            if( arg5 != -2 && !is_valid_x( arg5 ) )
                boot_log( "{}: {} ({}) 'M': X coordinate {} is out of range.", __func__, tarea->filename, count, arg5 );
-            if( arg6 != -1 && !is_valid_y( arg6 ) )
+            if( arg6 != -2 && !is_valid_y( arg6 ) )
                boot_log( "{}: {} ({}) 'M': Y coordinate {} is out of range.", __func__, tarea->filename, count, arg6 );
             break;
 
@@ -717,11 +718,11 @@ void load_resets( area_data * tarea, std::ifstream & stream )
                else
                   pRoomIndex->add_reset( letter, arg1, arg2, arg3, arg4, arg5, arg6, arg7, -2, -2, -2, -2 );
             }
-            if( arg4 != -1 )
+            if( arg4 != -2 )
                boot_log( "{}: {} ({}) 'O': arg4 is now ignored.", __func__, tarea->filename, count );
-            if( arg5 != -1 && !is_valid_x( arg5 ) )
+            if( arg5 != -2 && !is_valid_x( arg5 ) )
                boot_log( "{}: {} ({}) 'O': X coordinate {} is out of range.", __func__, tarea->filename, count, arg5 );
-            if( arg6 != -1 && !is_valid_y( arg6 ) )
+            if( arg6 != -2 && !is_valid_y( arg6 ) )
                boot_log( "{}: {} ({}) 'O': Y coordinate {} is out of range.", __func__, tarea->filename, count, arg6 );
             break;
 
@@ -937,10 +938,10 @@ void load_rooms( area_data * tarea, std::ifstream & stream )
 
       if( area_number > 0 )
       {
+         x1 = x2 = x3 = x4 = 0;
+
          std::string ln;
          std::getline( stream, ln );
-
-         x1 = x2 = x3 = x4 = 0;
          std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4;
 
          pRoomIndex->tele_delay = x1;
@@ -1034,11 +1035,11 @@ void load_rooms( area_data * tarea, std::ifstream & stream )
                fread_string( pexit->keyword, stream );
 
                flag_set( stream, pexit->flags, ex_flags );
-
-               std::string ln;
-               std::getline( stream, ln );
+               stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
                x1 = x2 = x3 = x4 = x5 = x6 = 0;
+               std::string ln;
+               std::getline( stream, ln );
                std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6;
 
                pexit->key = x1;
@@ -1146,15 +1147,13 @@ void load_repairs( std::ifstream & stream )
 }
 
 // Return true for failure, false if ok at end.
-bool load_oldafk_area( std::ifstream & stream, area_data *tarea, int area_version )
+bool load_oldafk_area( std::ifstream & stream, area_data *tarea )
 {
    if( !tarea )
    {
       bug( "{}: Bad area pointer passed!", __func__ );
-      return true;
+      return false;
    }
-
-   tarea->version = area_version;
 
    for( ;; )
    {
@@ -1165,6 +1164,7 @@ bool load_oldafk_area( std::ifstream & stream, area_data *tarea, int area_versio
       }
 
       std::string word = fread_word( stream );
+      strip_whitespace( word );
 
       if( word[0] == '$' )
          break;
@@ -1191,9 +1191,13 @@ bool load_oldafk_area( std::ifstream & stream, area_data *tarea, int area_versio
       }
       else if( !str_cmp( word, "RANGES" ) )
       {
-         stream >> tarea->low_soft_range >> tarea->hi_soft_range >> tarea->low_hard_range >> tarea->hi_hard_range;
-         char ln = fread_letter( stream );
-         if( ln != '$' )
+         std::string ln;
+         stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> tarea->low_soft_range >> tarea->hi_soft_range >> tarea->low_hard_range >> tarea->hi_hard_range;
+
+         char dollar = fread_letter( stream );
+         if( dollar != '$' )
          {
             bug( "{}: No $ found after ranges. Invalid format. Unable to process.", __func__ );
             shutdown_mud( "Non-standard area format" );
@@ -1214,6 +1218,7 @@ bool load_oldafk_area( std::ifstream & stream, area_data *tarea, int area_versio
       }
       else if( !str_cmp( word, "FLAGS" ) )
       {
+         stream.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
          flag_set( stream, tarea->flags, area_flags );
       }
       else if( !str_cmp( word, "CONTINENT" ) )
@@ -1234,8 +1239,9 @@ bool load_oldafk_area( std::ifstream & stream, area_data *tarea, int area_versio
       else if( !str_cmp( word, "COORDS" ) )
       {
          short x, y;
-
-         stream >> x >> y;
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x >> y;
 
          if( !is_valid_x( x ) )
          {
@@ -1355,8 +1361,13 @@ bool load_oldafk_area( std::ifstream & stream, area_data *tarea, int area_versio
       else
       {
          bug( "{}: {} bad section name {}", __func__, tarea->filename, word );
-         return true;
+         fread_to_eol( stream );
       }
+   }
+   if( tarea )
+   {
+      log_printf( "{:<20}: Converted AFKMud 1.x Zone  Vnums: {:5} - {:<5} [Version {}]", tarea->filename, tarea->low_vnum, tarea->hi_vnum, tarea->version );
+      return true;
    }
    return false;
 }
