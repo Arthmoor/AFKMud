@@ -404,6 +404,11 @@ bool mprog_veval( int lhs, std::string_view opr, int rhs, char_data * mob )
 
 constexpr int MAX_IF_ARGS = 6;
 
+static inline bool isoperator( char c )
+{
+   return( c == '=' || c == '<' || c == '>' || c == '!' || c == '&' || c == '|' );
+}
+
 /*
  * This function performs the evaluation of the if checks.  It is
  * here that you can add any ifchecks which you so desire. Hopefully
@@ -424,6 +429,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
    char *argv[MAX_IF_ARGS];
    const char *rval = "";
    char *p = buf;
+   char *q;
    int argc = 0;
    std::list<char_data *>::iterator ich;
    std::list<descriptor_data *>::iterator ds;
@@ -431,111 +437,100 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
    obj_data *chkobj = nullptr;
    int lhsvl, rhsvl = 0, lang;
 
+   // Alas this putrid mess of pointer puke has to stay or the whole system breaks down.
+   memset( argv, 0, sizeof(argv) );
    opr[0] = '\0';
 
-   if( ifcheck.empty() || ifcheck.size() >= MSL )
+   if( ifcheck.empty() || ifcheck.size() >= sizeof(buf) )
    {
       progbug( "Ifcheck null or too long.", mob );
       return BERR;
    }
+   std::memcpy( buf, ifcheck.data(), ifcheck.size() );
+   buf[ifcheck.size()] = '\0';
 
    /*
     * New parsing by Thoric to allow for multiple arguments inside the
     * brackets, ie: if leveldiff($n, $i) > 10
-    * It's also smaller, cleaner and probably faster
+    * It's also smaller, cleaner and probably faster.
     */
-   memcpy( buf, ifcheck.data(), ifcheck.size() );
-   buf[ifcheck.size()] = '\0';
-
-   std::string_view sv(buf);
-
-   size_t start = sv.find_first_not_of( " \t\r\n" );
-   if( start == std::string_view::npos )
+   while( isspace( *p ) )
+      ++p;
+   argv[argc++] = p;
+   while( isalnum( *p ) )
+      ++p;
+   while( isspace( *p ) )
+      *p++ = '\0';
+   if( *p != '(' )
    {
-      progbug( "Ifcheck error - there was only whitespace.", mob );
+      progbug( "Ifcheck Syntax error (missing left bracket)", mob );
       return BERR;
    }
 
-   size_t name_end = sv.find_first_of( " \t(", start );
-   if( name_end == std::string_view::npos )
-   {
-      progbug( "Ifcheck syntax error - missing left parenthesis.", mob );
-      return BERR;
-   }
-
-   buf[name_end] = '\0';
-   argv[argc++] = &buf[start];
-
-   size_t paren = sv.find( '(', name_end );
-   if( paren == std::string_view::npos )
-   {
-      progbug( "Ifcheck Syntax error - missing left parenthesis.", mob );
-      return BERR;
-   }
-
-   p = &buf[paren + 1];
+   *p++ = '\0';
 
    /*
-    * Need to check for spaces or if name( $n ) isn't legal --Shaddai 
+    * Need to check for spaces or if name( $n ) isn't legal --Shaddai
     */
-   std::string_view inside_parens = sv.substr( paren + 1, sv.find( ')' ) - paren - 1 );
-   size_t arg_start = 0;
-   while( arg_start < inside_parens.size() && argc < MAX_IF_ARGS )
+   while( isspace( *p ) )
+      *p++ = '\0';
+   for( ;; )
    {
-      // Trim leading space
-      arg_start = inside_parens.find_first_not_of( " \t", arg_start );
-      if( arg_start == std::string_view::npos )
-         break;
-
-      // Find the end of this argument (comma or end of string)
-      size_t end = inside_parens.find( ',', arg_start );
-      std::string_view arg = ( end == std::string_view::npos ) ? inside_parens.substr( arg_start ) : inside_parens.substr( arg_start, end - arg_start );
-
-      // Trim trailing space from the argument.
-      arg = arg.substr( 0, arg.find_last_not_of( " \t" ) + 1 );
-
-      // Copy to buffer to keep legacy argv working.
-      size_t len = std::min( arg.size(), (size_t)MIL - 1 );
-      memcpy( p, arg.data(), len );
-      buf[p - buf + len] = '\0';
       argv[argc++] = p;
-      p += len + 1; // Move p forward
-
-      if( end == std::string_view::npos )
-         break;
-      arg_start = end + 1;
-   }
-
-   std::string_view op_view;
-
-   size_t close_paren = sv.find( ')' );
-   if( close_paren != std::string_view::npos )
-   {
-      std::string_view rem = sv.substr( close_paren + 1 );
-
-      size_t op_start = rem.find_first_not_of( " \t" );
-      if( op_start != std::string_view::npos )
+      while( *p == '$' || isalnum( *p ) || *p == ':' )
+         ++p;
+      while( isspace( *p ) )
+         *p++ = '\0';
+      switch ( *p )
       {
-         size_t op_end = rem.find_first_of( " \t", op_start );
-         op_view = rem.substr( op_start, op_end - op_start );
-
-         size_t copy_len = std::min( op_view.size(), (size_t)MIL - 1 );
-         memcpy( opr, op_view.data(), copy_len );
-         opr[copy_len] = '\0';
-
-         if( op_end != std::string_view::npos )
+         case ',':
+            *p++ = '\0';
+            while( isspace( *p ) )
+               *p++ = '\0';
+         if( argc >= MAX_IF_ARGS )
          {
-            std::string_view rval_view = rem.substr( op_end );
-            size_t rval_start = rval_view.find_first_not_of( " \t" );
-            rval = ( rval_start != std::string_view::npos ) ? rval_view.data() + rval_start : "";
+            while( *p && *p != ')' )
+               ++p;
+            if( *p )
+               *p++ = '\0';
+            while( isspace( *p ) )
+               *p++ = '\0';
+            goto doneargs;
          }
+         break;
+
+         case ')':
+            *p++ = '\0';
+            while( isspace( *p ) )
+               *p++ = '\0';
+         goto doneargs;
+
+         default:
+            progbug( "Ifcheck Syntax warning (missing right bracket)", mob );
+            goto doneargs;
       }
    }
 
-   const char *chck = argv[0] ? argv[0] : "";
-   const char *cvar = argv[1] ? argv[1] : "";
+   doneargs:
+   q = p;
+   while( isoperator( *p ) )
+      ++p;
+   strncpy( opr, q, p - q );
+   opr[p - q] = '\0';
+   while( isspace( *p ) )
+      *p++ = '\0';
+   rval = p;
+   /*
+    * while ( *p && !isspace(*p) ) ++p;
+    */
+   while( *p )
+      ++p;
+   *p = '\0';
 
-   progbugf( mob, "DEBUG: Arg0={}, Arg1={}, Opr={}, RVal={}", argv[0], argv[1], opr, rval );
+   const char *chck = argv[0];
+   const char *cvar = argv[1];
+
+   // log_printf( "DEBUG: Arg0: {}, Arg1: {}, Opr: {}, RVal: {}", argv[0] ? argv[0] : "null", argv[1] ? argv[1] : "null", opr, rval );
 
    /*
     * chck contains check, cvar is the variable in the (), opr is the
