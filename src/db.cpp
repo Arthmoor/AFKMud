@@ -1568,9 +1568,9 @@ std::string demangle( const std::string & name )
 void generate_backtrace( void )
 {
    std::stacktrace trace = std::stacktrace::current();
-   std::ostringstream lines;
+   std::string lines;
 
-   lines << std::endl << "Obtained " << trace.size() << " stack frames:" << std::endl << std::endl;
+   lines = std::format( "Obtained {} stack frames:\n\n", trace.size() );
 
    for( const auto& frame : trace )
    {
@@ -1583,9 +1583,9 @@ void generate_backtrace( void )
          file_name = frame.source_file();
 
       std::string func_name = demangle( frame.description() );
-      lines << frame.description() << " -> " << file_name << ":" << frame.source_line() << std::endl;
+      lines.append( std::format( "{:<32} -> {}:{}\n", frame.description(), file_name, frame.source_line() ) );
    }
-   log_string( lines.str( ) );
+   log_string( lines );
 }
 #endif
 
@@ -1594,9 +1594,9 @@ void generate_backtrace( void )
  *
  * In the function call for this, you can specify the following:
  *
- * __func__ The function name where "bug" was called from.    Type = *char, uses %s formatting.
- * __FILE__ The source code file where "bug" was called from. Type = *char, uses %s formatting.
- * __LINE__ The line of the file where "bug" was called from. Type = int,   uses %d formatting.
+ * __func__ The function name where "bug" was called from.
+ * __FILE__ The source code file where "bug" was called from.
+ * __LINE__ The line of the file where "bug" was called from.
  *
  * Example:
  *
@@ -1608,6 +1608,7 @@ void process_bug( std::string_view text )
 {
    log_printf_plus( LOG_DEBUG, LEVEL_IMMORTAL, "[*****] BUG: {}", text );
 
+   // I know, I know. A global file stream? Really? It's the only way to get it to report the filename being read AND what line the error was on.
    if( fpArea.is_open() )
    {
       std::streampos current_pos = fpArea.tellg();
