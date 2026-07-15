@@ -44,7 +44,7 @@ class race_type
    std::bitset<MAX_ATTACK_TYPE> attacks;
    std::bitset<MAX_DEFENSE_TYPE> defenses;
    std::bitset<MAX_BPART> body_parts;              // Bodyparts this race has.
-   std::bitset<LANG_UNKNOWN> language;             // Default racial language - can have multiples
+   std::bitset<LANG_UNKNOWN> language;             // Default racial language - can have multiples.
    std::bitset<MAX_RIS_FLAG> resist;               // Bugfix: Samson 5-7-99
    std::bitset<MAX_RIS_FLAG> suscept;              // Bugfix: Samson 5-7-99
    std::bitset<MAX_CLASS> allowed_classes;         // Flags for allowed classes.

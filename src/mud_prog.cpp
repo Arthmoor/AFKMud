@@ -437,7 +437,7 @@ int mprog_do_ifcheck( std::string_view ifcheck, char_data * mob, char_data * act
    obj_data *chkobj = nullptr;
    int lhsvl, rhsvl = 0, lang;
 
-   // Alas this putrid mess of pointer puke has to stay or the whole system breaks down.
+   // Alas, this putrid mess of pointer puke has to stay or the whole system breaks down.
    memset( argv, 0, sizeof(argv) );
    opr[0] = '\0';
 

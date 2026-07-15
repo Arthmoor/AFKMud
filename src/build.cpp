@@ -2441,10 +2441,15 @@ CMDF( do_mset )
          return;
       }
 
-      argument = one_argument( argument, arg3 );
-      value = get_langnum( arg3 );
+      if( argument.contains( " " ) )
+      {
+         ch->print( "You can only specify one language to speak at a time.\r\n" );
+         return;
+      }
+
+      value = get_langnum( argument );
       if( value < 0 || value >= LANG_UNKNOWN )
-         ch->print_fmt( "Unknown language: {}\r\n", arg3 );
+         ch->print_fmt( "Unknown language: {}\r\n", argument );
       else
          victim->speaking = value;
       if( victim->has_actflag( ACT_PROTOTYPE ) )
