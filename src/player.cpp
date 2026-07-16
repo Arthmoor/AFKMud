@@ -1818,7 +1818,7 @@ CMDF( do_score )
    ch->print_fmt( "{}Class: {}{:<15.15} {}Movement : {}{:5}{}/{}{:5}      {}Autoloot {}({}{}{})\r\n",
                   s2, s3, capitalize( npc_class[ch->Class] ), s2, s3, ch->move, s1, s4, ch->max_move, s2, s1, s3, ch->has_pcflag( PCFLAG_AUTOLOOT ) ? "X" : " ", s1 );
 
-   ch->print_fmt( "{}Align: {}{:<15} {}To Hit   : {}{}{:<9}       {}Autosac  {}({}{}{})\r\n",
+   ch->print_fmt( "{}Align: {}{:<15} {}To Hit   : {}{}{:<9}        {}Autosac  {}({}{}{})\r\n",
                   s2, s3, ch->alignment, s2, s3, ch->GET_HITROLL(  ) > 0 ? "+" : "", ch->GET_HITROLL(  ), s2, s1, s3, ch->has_pcflag( PCFLAG_AUTOSAC ) ? "X" : " ", s1 );
 
    if( ch->level < 10 )
