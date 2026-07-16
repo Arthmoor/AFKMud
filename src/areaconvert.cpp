@@ -1278,8 +1278,10 @@ void load_strooms( area_data * tarea, std::ifstream & stream, bool manual )
       x7 = 100000;
       std::string ln;
       std::getline( stream, ln );
-      std::istringstream( ln ) >> x2 >> x3 >> x4 >> x5 >> x6 >> x7;
+      std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7;
       {
+         // x1 is a static value of 0 in all cases.
+
          std::string roomflags, flag;
          roomflags = flag_string( x2, stock_rflags );
 
@@ -1950,13 +1952,13 @@ bool load_stock_area_file( std::ifstream & stream, area_data *tarea, bool manual
             std::exit( EXIT_FAILURE );
          }
 
-         fread_line( stream );
+         fread_to_eol( stream );
 
          // Climate values are no longer used with the new weather code.
       }
       else if( !str_cmp( word, "NEIGHBOR" ) )
       {
-         fread_line( stream );
+         fread_to_eol( stream );
 
          // This section is no longer used with the new weather code.
       }
