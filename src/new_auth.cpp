@@ -200,9 +200,9 @@ void free_all_auths( void )
    for( auto it = authlist.begin(  ); it != authlist.end(  ); )
    {
       auth_data *auth = *it;
+      ++it;
 
       deleteptr( auth );
-      it = authlist.erase( it );
    }
 }
 
