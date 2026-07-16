@@ -2463,7 +2463,7 @@ endif~
 Progtype  speech_prog~
 Arglist   p ranger~
 Comlist   if level($n) == 1
-mpmset 0.$n class rogue
+mpmset 0.$n class ranger
 mptrlook 0.$n 120
 mpat 0.$n mpforce 0.$n bounce
 endif~
