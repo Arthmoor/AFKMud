@@ -331,32 +331,6 @@ void init_supermob( void )
 }
 
 /*
- * Used to get sequential lines of a multi line string (separated by "\r\n")
- * Thus it's like one_argument(), but a trifle different. It is destructive
- * to the multi line string argument, and thus clist must not be shared.
- */
-std::string_view mprog_next_command( std::string_view clist )
-{
-   // Find the end of the current line.
-   size_t pos = clist.find_first_of( "\n\r" );
-
-   if (pos == std::string_view::npos)
-   {
-      // No newline found, we are at the end.
-      return std::string_view();
-   }
-
-   // Calculate the start of the next line, skipping the newline/carriage return character(s)
-   size_t start_next = pos;
-   while( start_next < clist.size() && ( clist[start_next] == '\n' || clist[start_next] == '\r' ) )
-   {
-      start_next++;
-   }
-
-   return clist.substr( start_next );
-}
-
-/*
  * These two functions do the basic evaluation of ifcheck operators.
  *  It is important to note that the string operations are not what
  *  you probably expect.  Equality is exact and division is substring.
