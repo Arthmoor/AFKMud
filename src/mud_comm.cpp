@@ -78,12 +78,14 @@ CMDF( do_mpmset )
    if( !can_use_mprog( ch ) )
       return;
 
+   log_printf( "Raw Argument: {}", argument );
    smash_tilde( argument );
 
    argument = one_argument( argument, arg1 );
    argument = one_argument( argument, arg2 );
    arg3 = argument;
 
+   log_printf( "arg1: {} - arg2: {} - arg3: {}", arg1, arg2, arg3 );
    if( arg1.empty(  ) )
    {
       progbug( "MpMset: no args", ch );
@@ -119,144 +121,8 @@ CMDF( do_mpmset )
       maxattr = 18;
    }
 
-   value = is_number( arg3 ) ? std::stoi( arg3 ) : -1;
-   if( std::stoi( arg3 ) < -1 && value == -1 )
-      value = std::stoi( arg3 );
-
-   if( !str_cmp( arg2, "str" ) )
-   {
-      if( value < minattr || value > maxattr )
-      {
-         progbug( "MpMset: Invalid str", ch );
-         return;
-      }
-      victim->perm_str = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "int" ) )
-   {
-      if( value < minattr || value > maxattr )
-      {
-         progbug( "MpMset: Invalid int", ch );
-         return;
-      }
-      victim->perm_int = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "wis" ) )
-   {
-      if( value < minattr || value > maxattr )
-      {
-         progbug( "MpMset: Invalid wis", ch );
-         return;
-      }
-      victim->perm_wis = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "dex" ) )
-   {
-      if( value < minattr || value > maxattr )
-      {
-         progbug( "MpMset: Invalid dex", ch );
-         return;
-      }
-      victim->perm_dex = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "con" ) )
-   {
-      if( value < minattr || value > maxattr )
-      {
-         progbug( "MpMset: Invalid con", ch );
-         return;
-      }
-      victim->perm_con = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "cha" ) )
-   {
-      if( value < minattr || value > maxattr )
-      {
-         progbug( "MpMset: Invalid cha", ch );
-         return;
-      }
-      victim->perm_cha = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "lck" ) )
-   {
-      if( value < minattr || value > maxattr )
-      {
-         progbug( "MpMset: Invalid lck", ch );
-         return;
-      }
-      victim->perm_lck = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "sav1" ) )
-   {
-      if( value < -30 || value > 30 )
-      {
-         progbug( "MpMset: Invalid sav1", ch );
-         return;
-      }
-      victim->saving_poison_death = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "sav2" ) )
-   {
-      if( value < -30 || value > 30 )
-      {
-         progbug( "MpMset: Invalid sav2", ch );
-         return;
-      }
-      victim->saving_wand = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "sav3" ) )
-   {
-      if( value < -30 || value > 30 )
-      {
-         progbug( "MpMset: Invalid sav3", ch );
-         return;
-      }
-      victim->saving_para_petri = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "sav4" ) )
-   {
-      if( value < -30 || value > 30 )
-      {
-         progbug( "MpMset: Invalid sav4", ch );
-         return;
-      }
-      victim->saving_breath = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "sav5" ) )
-   {
-      if( value < -30 || value > 30 )
-      {
-         progbug( "MpMset: Invalid sav5", ch );
-         return;
-      }
-      victim->saving_spell_staff = value;
-      return;
-   }
-
    /*
-    * Modified to allow mobs to set by name instead of number - Samson 7-30-98 
+    * Modified to allow mobs to set by name instead of number - Samson 7-30-98
     */
    if( !str_cmp( arg2, "sex" ) || !str_cmp( arg2, "gender" ) )
    {
@@ -287,14 +153,12 @@ CMDF( do_mpmset )
    }
 
    /*
-    * Modified to allow mudprogs to set PC Class/race during new creation process 
-    * Samson - 7-30-98 
+    * Modified to allow mudprogs to set PC Class/race during new creation process
+    * Samson - 7-30-98
     */
    if( !str_cmp( arg2, "Class" ) )
    {
       value = get_npc_class( arg3 );
-      if( value < 0 )
-         value = std::stoi( arg3 );
 
       if( !victim->isnpc(  ) )
       {
@@ -324,9 +188,9 @@ CMDF( do_mpmset )
 
    if( !str_cmp( arg2, "race" ) )
    {
+      log_printf( "In race check, arg3: {}", arg3 );
       value = get_npc_race( arg3 );
-      if( value < 0 )
-         value = std::stoi( arg3 );
+
       if( !victim->isnpc(  ) )
       {
          if( value < 0 || value >= MAX_RACE )
@@ -337,221 +201,13 @@ CMDF( do_mpmset )
          victim->race = value;
          return;
       }
-      if( victim->isnpc(  ) )
+
+      if( value < 0 || value >= MAX_NPC_RACE )
       {
-         if( value < 0 || value >= MAX_NPC_RACE )
-         {
-            progbug( "MpMset: Invalid npc race", ch );
-            return;
-         }
-         victim->race = value;
+         progbug( "MpMset: Invalid npc race", ch );
          return;
       }
-   }
-
-   if( !str_cmp( arg2, "armor" ) )
-   {
-      if( value < -300 || value > 300 )
-      {
-         progbug( "MpMset: Bad AC value", ch );
-         return;
-      }
-      victim->armor = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "level" ) )
-   {
-      if( !victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set pc level", ch );
-         return;
-      }
-
-      if( value < 0 || value > LEVEL_AVATAR + 5 )
-      {
-         progbug( "MpMset: Invalid npc level", ch );
-         return;
-      }
-      victim->level = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "numattacks" ) )
-   {
-      if( !victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set pc numattacks", ch  );
-         return;
-      }
-
-      if( value < 0 || value > 20 )
-      {
-         progbug( "MpMset: Invalid npc numattacks", ch );
-         return;
-      }
-      victim->numattacks = ( float )( value );
-      return;
-   }
-
-   if( !str_cmp( arg2, "gold" ) )
-   {
-      victim->gold = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "hitroll" ) )
-   {
-      victim->hitroll = urange( 0, value, 85 );
-      return;
-   }
-
-   if( !str_cmp( arg2, "damroll" ) )
-   {
-      victim->damroll = urange( 0, value, 65 );
-      return;
-   }
-
-   if( !str_cmp( arg2, "hp" ) )
-   {
-      if( value < 1 || value > 32700 )
-      {
-         progbug( "MpMset: Invalid hp", ch );
-         return;
-      }
-      victim->max_hit = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "mana" ) )
-   {
-      if( value < 0 || value > 30000 )
-      {
-         progbug( "MpMset: Invalid mana", ch );
-         return;
-      }
-      victim->max_mana = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "move" ) )
-   {
-      if( value < 0 || value > 30000 )
-      {
-         progbug( "MpMset: Invalid move", ch );
-         return;
-      }
-      victim->max_move = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "practice" ) )
-   {
-      if( victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set npc practice", ch );
-         return;
-      }
-      if( value < 0 || value > 500 )
-      {
-         progbug( "MpMset: Invalid practice", ch );
-         return;
-      }
-      victim->pcdata->practice = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "align" ) )
-   {
-      if( value < -1000 || value > 1000 )
-      {
-         progbug( "MpMset: Invalid align", ch );
-         return;
-      }
-      victim->alignment = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "favor" ) )
-   {
-      if( victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set npc favor", ch );
-         return;
-      }
-
-      if( value < -2500 || value > 2500 )
-      {
-         progbug( "MpMset: Invalid pc favor", ch );
-         return;
-      }
-
-      victim->pcdata->favor = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "mentalstate" ) )
-   {
-      if( value < -100 || value > 100 )
-      {
-         progbug( "MpMset: Invalid mentalstate", ch );
-         return;
-      }
-      victim->mental_state = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "thirst" ) )
-   {
-      if( victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set npc thirst", ch );
-         return;
-      }
-
-      if( value < 0 || value > 100 )
-      {
-         progbug( "MpMset: Invalid pc thirst", ch );
-         return;
-      }
-
-      victim->pcdata->condition[COND_THIRST] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "drunk" ) )
-   {
-      if( victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set npc drunk", ch );
-         return;
-      }
-
-      if( value < 0 || value > 100 )
-      {
-         progbug( "MpMset: Invalid pc drunk", ch );
-         return;
-      }
-
-      victim->pcdata->condition[COND_DRUNK] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "full" ) )
-   {
-      if( victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set npc full", ch );
-         return;
-      }
-
-      if( value < 0 || value > 100 )
-      {
-         progbug( "MpMset: Invalid pc full", ch );
-         return;
-      }
-
-      victim->pcdata->condition[COND_FULL] = value;
+      victim->race = value;
       return;
    }
 
@@ -931,40 +587,6 @@ CMDF( do_mpmset )
       return;
    }
 
-   if( !str_cmp( arg2, "pos" ) )
-   {
-      if( !victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set pc pos", ch );
-         return;
-      }
-
-      if( value < 0 || value > POS_STANDING )
-      {
-         progbug( "MpMset: Invalid pos", ch );
-         return;
-      }
-      victim->position = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "defpos" ) )
-   {
-      if( !victim->isnpc(  ) )
-      {
-         progbug( "MpMset: can't set pc defpos", ch );
-         return;
-      }
-
-      if( value < 0 || value > POS_STANDING )
-      {
-         progbug( "MpMset: Invalid defpos", ch );
-         return;
-      }
-      victim->defposition = value;
-      return;
-   }
-
    if( !str_cmp( arg2, "speaks" ) )
    {
       if( argument.empty(  ) )
@@ -1014,6 +636,386 @@ CMDF( do_mpmset )
          victim->speaking = value;
       return;
    }
+
+   if( !is_number( arg3 ) )
+   {
+      progbug( "MpMset: arg3 is not a number.", ch );
+      return;
+   }
+
+   value = std::stoi( arg3 );
+
+   if( !str_cmp( arg2, "str" ) )
+   {
+      if( value < minattr || value > maxattr )
+      {
+         progbug( "MpMset: Invalid str", ch );
+         return;
+      }
+      victim->perm_str = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "int" ) )
+   {
+      if( value < minattr || value > maxattr )
+      {
+         progbug( "MpMset: Invalid int", ch );
+         return;
+      }
+      victim->perm_int = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "wis" ) )
+   {
+      if( value < minattr || value > maxattr )
+      {
+         progbug( "MpMset: Invalid wis", ch );
+         return;
+      }
+      victim->perm_wis = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "dex" ) )
+   {
+      if( value < minattr || value > maxattr )
+      {
+         progbug( "MpMset: Invalid dex", ch );
+         return;
+      }
+      victim->perm_dex = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "con" ) )
+   {
+      if( value < minattr || value > maxattr )
+      {
+         progbug( "MpMset: Invalid con", ch );
+         return;
+      }
+      victim->perm_con = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "cha" ) )
+   {
+      if( value < minattr || value > maxattr )
+      {
+         progbug( "MpMset: Invalid cha", ch );
+         return;
+      }
+      victim->perm_cha = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "lck" ) )
+   {
+      if( value < minattr || value > maxattr )
+      {
+         progbug( "MpMset: Invalid lck", ch );
+         return;
+      }
+      victim->perm_lck = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "sav1" ) )
+   {
+      if( value < -30 || value > 30 )
+      {
+         progbug( "MpMset: Invalid sav1", ch );
+         return;
+      }
+      victim->saving_poison_death = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "sav2" ) )
+   {
+      if( value < -30 || value > 30 )
+      {
+         progbug( "MpMset: Invalid sav2", ch );
+         return;
+      }
+      victim->saving_wand = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "sav3" ) )
+   {
+      if( value < -30 || value > 30 )
+      {
+         progbug( "MpMset: Invalid sav3", ch );
+         return;
+      }
+      victim->saving_para_petri = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "sav4" ) )
+   {
+      if( value < -30 || value > 30 )
+      {
+         progbug( "MpMset: Invalid sav4", ch );
+         return;
+      }
+      victim->saving_breath = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "sav5" ) )
+   {
+      if( value < -30 || value > 30 )
+      {
+         progbug( "MpMset: Invalid sav5", ch );
+         return;
+      }
+      victim->saving_spell_staff = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "armor" ) )
+   {
+      if( value < -300 || value > 300 )
+      {
+         progbug( "MpMset: Bad AC value", ch );
+         return;
+      }
+      victim->armor = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "level" ) )
+   {
+      if( !victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set pc level", ch );
+         return;
+      }
+
+      if( value < 0 || value > LEVEL_AVATAR + 5 )
+      {
+         progbug( "MpMset: Invalid npc level", ch );
+         return;
+      }
+      victim->level = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "numattacks" ) )
+   {
+      if( !victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set pc numattacks", ch  );
+         return;
+      }
+
+      if( value < 0 || value > 20 )
+      {
+         progbug( "MpMset: Invalid npc numattacks", ch );
+         return;
+      }
+      victim->numattacks = ( float )( value );
+      return;
+   }
+
+   if( !str_cmp( arg2, "gold" ) )
+   {
+      victim->gold = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "hitroll" ) )
+   {
+      victim->hitroll = urange( 0, value, 85 );
+      return;
+   }
+
+   if( !str_cmp( arg2, "damroll" ) )
+   {
+      victim->damroll = urange( 0, value, 65 );
+      return;
+   }
+
+   if( !str_cmp( arg2, "hp" ) )
+   {
+      if( value < 1 || value > 32700 )
+      {
+         progbug( "MpMset: Invalid hp", ch );
+         return;
+      }
+      victim->max_hit = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "mana" ) )
+   {
+      if( value < 0 || value > 30000 )
+      {
+         progbug( "MpMset: Invalid mana", ch );
+         return;
+      }
+      victim->max_mana = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "move" ) )
+   {
+      if( value < 0 || value > 30000 )
+      {
+         progbug( "MpMset: Invalid move", ch );
+         return;
+      }
+      victim->max_move = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "practice" ) )
+   {
+      if( victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set npc practice", ch );
+         return;
+      }
+      if( value < 0 || value > 500 )
+      {
+         progbug( "MpMset: Invalid practice", ch );
+         return;
+      }
+      victim->pcdata->practice = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "align" ) )
+   {
+      if( value < -1000 || value > 1000 )
+      {
+         progbug( "MpMset: Invalid align", ch );
+         return;
+      }
+      victim->alignment = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "favor" ) )
+   {
+      if( victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set npc favor", ch );
+         return;
+      }
+
+      if( value < -2500 || value > 2500 )
+      {
+         progbug( "MpMset: Invalid pc favor", ch );
+         return;
+      }
+
+      victim->pcdata->favor = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "mentalstate" ) )
+   {
+      if( value < -100 || value > 100 )
+      {
+         progbug( "MpMset: Invalid mentalstate", ch );
+         return;
+      }
+      victim->mental_state = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "thirst" ) )
+   {
+      if( victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set npc thirst", ch );
+         return;
+      }
+
+      if( value < 0 || value > 100 )
+      {
+         progbug( "MpMset: Invalid pc thirst", ch );
+         return;
+      }
+
+      victim->pcdata->condition[COND_THIRST] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "drunk" ) )
+   {
+      if( victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set npc drunk", ch );
+         return;
+      }
+
+      if( value < 0 || value > 100 )
+      {
+         progbug( "MpMset: Invalid pc drunk", ch );
+         return;
+      }
+
+      victim->pcdata->condition[COND_DRUNK] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "full" ) )
+   {
+      if( victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set npc full", ch );
+         return;
+      }
+
+      if( value < 0 || value > 100 )
+      {
+         progbug( "MpMset: Invalid pc full", ch );
+         return;
+      }
+
+      victim->pcdata->condition[COND_FULL] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "pos" ) )
+   {
+      if( !victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set pc pos", ch );
+         return;
+      }
+
+      if( value < 0 || value > POS_STANDING )
+      {
+         progbug( "MpMset: Invalid pos", ch );
+         return;
+      }
+      victim->position = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "defpos" ) )
+   {
+      if( !victim->isnpc(  ) )
+      {
+         progbug( "MpMset: can't set pc defpos", ch );
+         return;
+      }
+
+      if( value < 0 || value > POS_STANDING )
+      {
+         progbug( "MpMset: Invalid defpos", ch );
+         return;
+      }
+      victim->defposition = value;
+      return;
+   }
    progbugf( ch, "MpMset: Invalid field: {}", arg2 );
 }
 
@@ -1050,79 +1052,6 @@ CMDF( do_mposet )
       return;
    }
    obj->separate(  );
-   value = std::stoi( arg3 );
-
-   if( !str_cmp( arg2, "value0" ) || !str_cmp( arg2, "v0" ) )
-   {
-      obj->value[0] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value1" ) || !str_cmp( arg2, "v1" ) )
-   {
-      obj->value[1] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value2" ) || !str_cmp( arg2, "v2" ) )
-   {
-      obj->value[2] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value3" ) || !str_cmp( arg2, "v3" ) )
-   {
-      obj->value[3] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value4" ) || !str_cmp( arg2, "v4" ) )
-   {
-      obj->value[4] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value5" ) || !str_cmp( arg2, "v5" ) )
-   {
-      if( obj->item_type == ITEM_CORPSE_PC )
-      {
-         progbug( "MpOset: Attempting to alter skeleton value for corpse", ch );
-         return;
-      }
-
-      obj->value[5] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value6" ) || !str_cmp( arg2, "v6" ) )
-   {
-      obj->value[6] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value7" ) || !str_cmp( arg2, "v7" ) )
-   {
-      obj->value[7] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value8" ) || !str_cmp( arg2, "v8" ) )
-   {
-      obj->value[8] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value9" ) || !str_cmp( arg2, "v9" ) )
-   {
-      obj->value[9] = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "value10" ) || !str_cmp( arg2, "v10" ) )
-   {
-      obj->value[10] = value;
-      return;
-   }
 
    if( !str_cmp( arg2, "type" ) )
    {
@@ -1187,30 +1116,6 @@ CMDF( do_mposet )
       return;
    }
 
-   if( !str_cmp( arg2, "level" ) )
-   {
-      obj->level = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "weight" ) )
-   {
-      obj->weight = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "cost" ) )
-   {
-      obj->cost = value;
-      return;
-   }
-
-   if( !str_cmp( arg2, "timer" ) )
-   {
-      obj->timer = value;
-      return;
-   }
-
    if( !str_cmp( arg2, "name" ) )
    {
       obj->name = arg3;
@@ -1226,7 +1131,7 @@ CMDF( do_mposet )
       }
 
       /*
-       * Feature added by Narn, Apr/96 
+       * Feature added by Narn, Apr/96
        * * If the item is not proto, add the word 'rename' to the keywords
        * * if it is not already there.
        */
@@ -1402,6 +1307,7 @@ CMDF( do_mposet )
     *                  -Thoric
     */
    tmp = -1;
+   value = 0;
    switch ( obj->item_type )
    {
       default:
@@ -1424,70 +1330,70 @@ CMDF( do_mposet )
          }
          if( !str_cmp( arg2, "condition" ) )
             tmp = 0;
-         break;
+      break;
 
       case ITEM_ARMOR:
          if( !str_cmp( arg2, "condition" ) )
             tmp = 3;
-         if( !str_cmp( arg2, "ac" ) )
-            tmp = 1;
-         break;
+      if( !str_cmp( arg2, "ac" ) )
+         tmp = 1;
+      break;
 
       case ITEM_SALVE:
          if( !str_cmp( arg2, "slevel" ) )
             tmp = 0;
-         if( !str_cmp( arg2, "maxdoses" ) )
-            tmp = 1;
-         if( !str_cmp( arg2, "doses" ) )
-            tmp = 2;
-         if( !str_cmp( arg2, "delay" ) )
-            tmp = 3;
-         if( !str_cmp( arg2, "spell1" ) )
-            tmp = 4;
-         if( !str_cmp( arg2, "spell2" ) )
-            tmp = 5;
-         if( tmp >= 4 && tmp <= 5 )
-            value = skill_lookup( arg3 );
-         break;
+      if( !str_cmp( arg2, "maxdoses" ) )
+         tmp = 1;
+      if( !str_cmp( arg2, "doses" ) )
+         tmp = 2;
+      if( !str_cmp( arg2, "delay" ) )
+         tmp = 3;
+      if( !str_cmp( arg2, "spell1" ) )
+         tmp = 4;
+      if( !str_cmp( arg2, "spell2" ) )
+         tmp = 5;
+      if( tmp >= 4 && tmp <= 5 )
+         value = skill_lookup( arg3 );
+      break;
 
       case ITEM_SCROLL:
       case ITEM_POTION:
       case ITEM_PILL:
          if( !str_cmp( arg2, "slevel" ) )
             tmp = 0;
-         if( !str_cmp( arg2, "spell1" ) )
-            tmp = 1;
-         if( !str_cmp( arg2, "spell2" ) )
-            tmp = 2;
-         if( !str_cmp( arg2, "spell3" ) )
-            tmp = 3;
-         if( tmp >= 1 && tmp <= 3 )
-            value = skill_lookup( arg3 );
-         break;
+      if( !str_cmp( arg2, "spell1" ) )
+         tmp = 1;
+      if( !str_cmp( arg2, "spell2" ) )
+         tmp = 2;
+      if( !str_cmp( arg2, "spell3" ) )
+         tmp = 3;
+      if( tmp >= 1 && tmp <= 3 )
+         value = skill_lookup( arg3 );
+      break;
 
       case ITEM_STAFF:
       case ITEM_WAND:
          if( !str_cmp( arg2, "slevel" ) )
             tmp = 0;
-         if( !str_cmp( arg2, "spell" ) )
-         {
-            tmp = 3;
-            value = skill_lookup( arg3 );
-         }
-         if( !str_cmp( arg2, "maxcharges" ) )
-            tmp = 1;
-         if( !str_cmp( arg2, "charges" ) )
-            tmp = 2;
-         break;
+      if( !str_cmp( arg2, "spell" ) )
+      {
+         tmp = 3;
+         value = skill_lookup( arg3 );
+      }
+      if( !str_cmp( arg2, "maxcharges" ) )
+         tmp = 1;
+      if( !str_cmp( arg2, "charges" ) )
+         tmp = 2;
+      break;
 
       case ITEM_CONTAINER:
          if( !str_cmp( arg2, "capacity" ) )
             tmp = 0;
-         if( !str_cmp( arg2, "cflags" ) )
-            tmp = 1;
-         if( !str_cmp( arg2, "key" ) )
-            tmp = 2;
-         break;
+      if( !str_cmp( arg2, "cflags" ) )
+         tmp = 1;
+      if( !str_cmp( arg2, "key" ) )
+         tmp = 2;
+      break;
 
       case ITEM_SWITCH:
       case ITEM_LEVER:
@@ -1506,6 +1412,108 @@ CMDF( do_mposet )
       return;
    }
 
+   if( !is_number( arg3 ) )
+   {
+      progbug( "MpOset: arg3 is not a number.", ch );
+      return;
+   }
+   value = std::stoi( arg3 );
+
+   if( !str_cmp( arg2, "value0" ) || !str_cmp( arg2, "v0" ) )
+   {
+      obj->value[0] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value1" ) || !str_cmp( arg2, "v1" ) )
+   {
+      obj->value[1] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value2" ) || !str_cmp( arg2, "v2" ) )
+   {
+      obj->value[2] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value3" ) || !str_cmp( arg2, "v3" ) )
+   {
+      obj->value[3] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value4" ) || !str_cmp( arg2, "v4" ) )
+   {
+      obj->value[4] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value5" ) || !str_cmp( arg2, "v5" ) )
+   {
+      if( obj->item_type == ITEM_CORPSE_PC )
+      {
+         progbug( "MpOset: Attempting to alter skeleton value for corpse", ch );
+         return;
+      }
+
+      obj->value[5] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value6" ) || !str_cmp( arg2, "v6" ) )
+   {
+      obj->value[6] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value7" ) || !str_cmp( arg2, "v7" ) )
+   {
+      obj->value[7] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value8" ) || !str_cmp( arg2, "v8" ) )
+   {
+      obj->value[8] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value9" ) || !str_cmp( arg2, "v9" ) )
+   {
+      obj->value[9] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "value10" ) || !str_cmp( arg2, "v10" ) )
+   {
+      obj->value[10] = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "level" ) )
+   {
+      obj->level = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "weight" ) )
+   {
+      obj->weight = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "cost" ) )
+   {
+      obj->cost = value;
+      return;
+   }
+
+   if( !str_cmp( arg2, "timer" ) )
+   {
+      obj->timer = value;
+      return;
+   }
    progbugf( ch, "MpOset: Invalid field: {}", arg2 );
 }
 
@@ -1604,7 +1612,8 @@ const std::string mprog_type_to_name( int type )
    }
 }
 
-/* A trivial rehack of do_mstat.  This doesn't show all the data, but just
+/*
+ * A trivial rehack of do_mstat.  This doesn't show all the data, but just
  * enough to identify the mob and give its basic condition.  It does however,
  * show the MUDprograms which are set.
  */
