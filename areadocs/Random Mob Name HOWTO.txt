@@ -3,19 +3,18 @@ Random Mobile Names HOWTO
 Version 0.1
 Written by Tarl
 
-One of the additions we have made to the stock smaug codebase is the ability to 
-allow mobiles to have random names. This document aims to describe the methods 
+One of the additions we have made to the stock smaug codebase is the ability to
+allow mobiles to have random names. This document aims to describe the methods
 required to configure this on your copy of the AFKMud codebase.
 
-Random mobile names will require code alterations, as well as the creation of 
+Random mobile names will require code alterations, as well as the creation of
 one or more files, the format of which will be described later.
 
 Code Alterations:
 
 In the AFKMud codebase, under the src directory you'll see the file roomindex.cpp
 
-On approximately line 1149 you will see the following code snippet.
-
+On approximately line 1171 you will see the following code snippet.
 
             /*
              * Added by Tarl 4 Dec 02 so that if a mob is 'flagged' namegen in
@@ -97,7 +96,7 @@ Most of the following instructions are documented as comments in the code, so fe
 here if the code instructions are sufficient for you.
 
 In order to add a new random mobile name section, you need to edit the if check shown above, and add a similar
-option that is suitable for you. Please note that this string is required to start with namegen_ 
+option that is suitable for you. Please note that this string is required to start with namegen_
 An example of adding a new section called namegen_example is shown below:
 
             if( namegenCheckString.find( "namegen_gr" ) != std::string::npos )
@@ -160,7 +159,7 @@ Any number (greater then zero) of word-parts can be contained between each of th
 are required, or your MUD will most likely crash. :)
 
 The word-parts are formed into names by randomly selecting one from each section. Based on the example file above, some sample names that
-can be formed include: Abaeb, Adarebwyn, etc. (Obviously these aren't terribly good names, but it is somewhat of a limited example. A real 
+can be formed include: Abaeb, Adarebwyn, etc. (Obviously these aren't terribly good names, but it is somewhat of a limited example. A real
 file would have many more combinations.)
 
 This file should be located in the system/ directory.
@@ -178,9 +177,9 @@ descriptions of the mobile will be replaced with the mobiles new name.
 
 That's it for the mobile setup section.
 
-You should now have randomly named mobiles in your MUD. 
+You should now have randomly named mobiles in your MUD.
 
-Thank you for using the AFKMud codebase, and if you have any problems with either the codebase, or these directions, please feel free to 
+Thank you for using the AFKMud codebase, and if you have any problems with either the codebase, or these directions, please feel free to
 post on the forums located via https://smaugmuds.afkmods.com/
 
 Tarl.

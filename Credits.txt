@@ -1,12 +1,12 @@
-AFKMud: Alsherok Game Code Release - Version 1.8: December 2006
----------------------------------------------------------------
+AFKMud: Alsherok Game Code Release - Version 3.0.0: July 2026
+-------------------------------------------------------------
 
 Credits
 -------
 
 The following snippets have been added to this code
-over the years. If We've managed to miss somethig you know we used, tell
-us. We've lost track of alot of things over time and we don't want to
+over the years. If We've managed to miss something you know we used, tell
+us. We've lost track of a lot of things over time and we don't want to
 leave anyone out.
 
 All authors credited here have given their authorization for their

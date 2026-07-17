@@ -62,7 +62,7 @@ let us know what changes to include and we'll try and see to it they show up in 
 CPU, Memory, and Storage Requirements
 =====================================
 
-AFKMud is on the large side due to the sheer number of features included. You will need to take this into consideration first, before ever even thinking about where to host it. Count on somewhere around 100 MB in drive space usage once the code is compiled. This will obviously get larger as you build content for your world.
+AFKMud is on the large side due to the sheer number of features included. You will need to take this into consideration first, before ever even thinking about where to host it. Count on somewhere around 300 MB in drive space usage once the code is compiled. This will obviously get larger as you build content for your world.
 
 RAM usage should expect to hover around 30 MB on a moderately sized world. This is assuming approximately 9,000 rooms and 3 1000x1000 overland maps.
 
@@ -135,13 +135,13 @@ This feature has been removed from the codebase.
 Installing and Using the Code
 =============================
 
-It should be fairly a straightforward process to install the MUD. It is assumed you already know enough about unpacking files and working with Linux/CYGWIN.
+It should be fairly a straightforward process to install the MUD. It is assumed you already know enough about unpacking files and working with Linux, WSL (Windows Subsystem for Linux), or CYGWIN. If you must use a Windows system, the WSL is preferred over CYGWIN since the WSL is essentially a full Linux environment.
 
 1. Unpack the archive in whatever folder you will be working in. It will default to creating an "afkmud" directory. Change the name of this as you see fit.
 
 2. Compiling
 
-On a Linux or CYGWIN based system:
+On a Linux, WSL, or CYGWIN based system:
 
 Change to the afkmud/src directory and type: make
 
@@ -172,7 +172,7 @@ You can change the default port the MUD operates on by editing the startup.sh sc
 First Immortal
 ==============
 
-A pfile named "Admin" is included, with password "admin". Use this account to log in for the first time. You should then rename this player to something else and CHANGE THE PASSWORD.
+A pfile named "Admin" is included, with password "admin". Use this account to log in for the first time. You should then rename this player to something else and CHANGE THE PASSWORD. You can do this once you log on by using the "newpass" command.
 
 Alternatively, connect a new player and use the Admin player to advance the new one. When this is done, be sure to DELETE the Admin player.
 
