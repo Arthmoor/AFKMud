@@ -68,6 +68,7 @@ class pc_data
    void fwrite_comments( std::ofstream & );
    void fread_comment( std::ifstream & );
    void fread_old_comment( std::ifstream & );
+   void init_recall_rooms( );
 
    class area_data *area = nullptr;                      // For the area a PC has been assigned to build.
    class clan_data *clan = nullptr;                      // What clan, guild, or order they are a member of.

@@ -49,6 +49,7 @@ void check_pfiles( time_t );
 void update_connhistory( descriptor_data *, int );
 void show_stateflags( char_data * );
 void quotes( char_data * );
+void set_rented_room( char_data * );
 
 /* Removes rare items the player cannot maintain. */
 void rare_purge( char_data * ch, obj_data * obj )
@@ -126,10 +127,7 @@ void char_leaving( char_data * ch, int howleft )
    ch->pcdata->camp = howleft;
 
    if( howleft == 0 )   /* Rented at an inn */
-   {
-      if( !str_cmp( ch->in_room->area->continent->name, "One" ) )
-         ch->pcdata->one = ch->in_room->vnum;
-   }
+      set_rented_room( ch );
 
    /*
     * Get 'em dismounted until we finish mount saving -- Blodkai, 4/97 

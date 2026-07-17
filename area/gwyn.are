@@ -6,7 +6,7 @@ Author          Raine/Karangi~
 Vnums           2850 2949
 Continent       One~
 Coordinates     911 932
-Dates           0 0
+Dates           938736000 938736000
 Ranges          0 10 0 115
 ResetMsg        Glittering sparkles of divine favour shower over everyone...~
 ResetFreq       5
@@ -357,7 +357,7 @@ Comlist   say In wandering the Lands, you will need to adhere to some RULES.~
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   RULES~
+Arglist   rules~
 Comlist   say We do not have many rules. But what we have, we enforce strictly.
 say Basically they involve SPAM, MULTIPLAYING, BUGS, and character SHARING,
 say As well as aggressive SUMMONING, GROUPING and COURTESY.~
@@ -453,7 +453,7 @@ Affected  detect_invis detect_hidden sanctuary truesight~
 Bodyparts head heart~
 #MUDPROG
 Progtype  speech_prog~
-Arglist   PAGER~
+Arglist   pager~
 Comlist   say This toggles page pausing on long scrolls.~
 #ENDPROG
 
@@ -485,13 +485,13 @@ Comlist   say This allows to you have a prompt.~
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   ANSI~
+Arglist   ANSI ansi~
 Comlist   say This lets you receive ANSI color sequences.~
 #ENDPROG
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   RIP~
+Arglist   RIP rip~
 Comlist   say This involves your ability to see RIP graphics.
 say If you type CONFIG +RIP, you will not see them.
 say If you type CONFIG -RIP, you will be able to see them.~
@@ -555,7 +555,7 @@ Comlist   say Setting +NOBEEP will prevent other players from beeping you.~
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   DRAG~
+Arglist   drag~
 Comlist   say This allows other players to drag you if you are incapacitated.
 say If you set CONFIG -DRAG, they will not be able to do so.~
 #ENDPROG
@@ -669,7 +669,7 @@ say You may ask me about any of these.~
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   SCORE~
+Arglist   score~
 Comlist   say Typing SCORE will allow you to see your character statistics.
 say Only you will see the display listed.
 say If you wish to let others see your character's health, you can type REPORT.
@@ -707,7 +707,7 @@ say For further information, type HELP LEVEL.~
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   PRACTICE~
+Arglist   practice~
 Comlist   say Merely typing PRACTICE will call up a display showing your current ability
 say level in all the skills and spells available to you.
 say Only you will see the display, and you may do this at any point.
@@ -736,7 +736,7 @@ say For more information, type HELP EXITS.~
 
 #MUDPROG
 Progtype  speech_prog~
-Arglist   COMPARE~
+Arglist   compare~
 Comlist   say This allows you to compare two objects in your inventory.
 say To do this, type COMPARE <object 1> <object 2>.
 say It will help you distinguish the better of the two.
@@ -3808,7 +3808,7 @@ DefPos    standing~
 Short     A statue of Meia~
 Long      An elegant statue of Meia stands watch over you.~
 Desc      This is a white marble statue of Lady Meia, the Goddess of Knowledge and
-Learning. She sppears as a beautiful young maiden with eyes full of depth
+Learning. She appears as a beautiful young maiden with eyes full of depth
 and intelligence. In her delicate hands is a large tome.~
 Nattacks  0.000000
 Stats1    0 0 0 0 150 100
@@ -4297,7 +4297,7 @@ Vnum      2870
 Keywords  book tome rules abecedarium~
 Type      trash~
 Short     Rules of Conduct~
-Long      A leather tome entitled "rules of conduct" lies here.~
+Long      A leather tome entitled "Rules of Conduct" lies here.~
 Flags     donated~
 WFlags    take~
 Values    0 0 0 0 0 0 0 0 0 0 0
@@ -4445,7 +4445,7 @@ Vnum      2874
 Keywords  plate armour abecedarium~
 Type      armor~
 Short     Abecedarium plate armour~
-Long      A piece of plate armor with the abecedarium symbol engraved into it lies here.~
+Long      A piece of plate armor with the Abecedarium symbol engraved into it lies here.~
 Flags     donated~
 WFlags    take body~
 Values    2 2 0 0 0 0 0 0 0 0 0
@@ -4524,7 +4524,7 @@ Vnum      2878
 Keywords  staff abecedarium~
 Type      weapon~
 Short     An Abecedarium staff~
-Long      A sturdy staff with the abecedarium symbol engraved on its tip lies here.~
+Long      A sturdy staff with the Abecedarium symbol engraved on its tip lies here.~
 Flags     magic donated~
 WFlags    take wield~
 Values    12 1 6 4 11 0 0 0 0 0 0
@@ -4545,7 +4545,7 @@ Vnum      2879
 Keywords  axe abecedarium~
 Type      weapon~
 Short     An Abecedarium axe~
-Long      A small axe with the abecedarium symbol engraved on its haft lies here.~
+Long      A small axe with the Abecedarium symbol engraved on its haft lies here.~
 Flags     magic anticleric antimage antirogue antibard antidruid antimonk antinecro~
 WFlags    take wield~
 Values    12 2 6 3 9 0 0 0 0 0 0
@@ -4590,7 +4590,7 @@ Vnum      2881
 Keywords  spear abecedarium~
 Type      weapon~
 Short     An Abecedarium spear~
-Long      A spear with the abecedarium symbol engraved on its shaft lies here.~
+Long      A spear with the Abecedarium symbol engraved on its shaft lies here.~
 Flags     magic anticleric antimage donated antinecro~
 WFlags    take wield~
 Values    12 3 3 7 10 0 0 0 0 0 0
@@ -4645,7 +4645,7 @@ Values    0 3 0 0 0 0 0 0 0 0 0
 Stats     2 1 -2 9999 0 None None None
 AffData armor -3 -1 -1 0
 #EXDESC
-ExDescKey    prize kargynt abecedarium~
+ExDescKey    chains prize kargynt abecedarium~
 ExDesc       This is one of the various pieces of armour available in the Lands. As
 you journey onward, you will find better equipment, but for now the
 Abecedarium armour will have to do.~
@@ -4658,7 +4658,7 @@ Vnum      2884
 Keywords  leather breastplate breast plate abecedarium~
 Type      armor~
 Short     A leather Abecedarium breastplate~
-Long      A leather breastplate branded with the abecedarium symbol has been laid here.~
+Long      A leather breastplate branded with the Abecedarium symbol has been laid here.~
 Flags     organic antimage donated antimonk antinecro~
 WFlags    take body~
 Values    2 2 0 2 2 0 0 0 0 0 0
@@ -4677,7 +4677,7 @@ Vnum      2885
 Keywords  leather leggings abecedarium~
 Type      armor~
 Short     A pair of Abecedarium leggings~
-Long      A pair of leggings engraved with the abecedarium symbol lies here.~
+Long      A pair of leggings engraved with the Abecedarium symbol lies here.~
 Flags     organic antimage donated antimonk antinecro~
 WFlags    take legs~
 Values    2 2 0 2 2 0 0 0 0 0 0
@@ -4696,7 +4696,7 @@ Vnum      2886
 Keywords  leather sleeves abecedarium~
 Type      armor~
 Short     A pair of Abecedarium sleeves~
-Long      A pair of sleeves engraved with the abecedarium symbol lies here.~
+Long      A pair of sleeves engraved with the Abecedarium symbol lies here.~
 Flags     organic antimage donated antimonk antinecro~
 WFlags    take arms~
 Values    2 2 0 2 2 0 0 0 0 0 0
@@ -4715,7 +4715,7 @@ Vnum      2887
 Keywords  leather helmet abecedarium~
 Type      armor~
 Short     An Abecedarium helmet~
-Long      A leather helmet engraved with the abecedarium symbol lies here.~
+Long      A leather helmet engraved with the Abecedarium symbol lies here.~
 Flags     organic antimage donated antinecro~
 WFlags    take head~
 Values    2 2 0 2 2 0 0 0 0 0 0
@@ -4734,7 +4734,7 @@ Vnum      2888
 Keywords  leather boots abecedarium~
 Type      armor~
 Short     A pair of Abecedarium boots~
-Long      A pair of boots engraved with the abecedarium symbol lies here.~
+Long      A pair of boots engraved with the Abecedarium symbol lies here.~
 Flags     organic antimage donated antimonk antinecro~
 WFlags    take feet~
 Values    2 2 0 2 2 0 0 0 0 0 0
@@ -4753,7 +4753,7 @@ Vnum      2889
 Keywords  chainmail chain mail hauberk abecedarium~
 Type      armor~
 Short     An Abecedarium chainmail hauberk~
-Long      A chainmail hauberk engraved with the abecedarium symbol lies here.~
+Long      A chainmail hauberk engraved with the Abecedarium symbol lies here.~
 Flags     metal antimage donated antidruid antimonk antinecro~
 WFlags    take body~
 Values    5 5 0 5 1 0 0 0 0 0 0
@@ -4772,7 +4772,7 @@ Vnum      2890
 Keywords  chainmail chain mail coif abecedarium~
 Type      armor~
 Short     An Abecedarium chainmail coif~
-Long      A chainmail coif engraved with the abecedarium symbol lies here.~
+Long      A chainmail coif engraved with the Abecedarium symbol lies here.~
 Flags     metal antimage donated antidruid antimonk antinecro~
 WFlags    take head~
 Values    5 5 0 5 1 0 0 0 0 0 0
@@ -4791,7 +4791,7 @@ Vnum      2891
 Keywords  chainmail chain mail leggings abecedarium~
 Type      armor~
 Short     A pair of Abecedarium chainmail leggings~
-Long      A pair of chainmail leggings engraved with the abecedarium symbol lies here.~
+Long      A pair of chainmail leggings engraved with the Abecedarium symbol lies here.~
 Flags     metal antimage donated antidruid antimonk antinecro~
 WFlags    take legs~
 Values    5 5 0 5 1 0 0 0 0 0 0
@@ -4810,7 +4810,7 @@ Vnum      2892
 Keywords  chainmail chain mail sleeves abecedarium~
 Type      armor~
 Short     A pair of Abecedarium chainmail sleeves~
-Long      A pair of chainmail sleeves engraved with the abecedarium symbol lies here.~
+Long      A pair of chainmail sleeves engraved with the Abecedarium symbol lies here.~
 Flags     metal antimage donated antidruid antimonk antinecro~
 WFlags    take arms~
 Values    5 5 0 5 1 0 0 0 0 0 0
@@ -4829,7 +4829,7 @@ Vnum      2893
 Keywords  wooden shield abecedarium~
 Type      armor~
 Short     A wooden Abecedarium shield~
-Long      A wooden shield engraved with the abecedarium symbol lies here.~
+Long      A wooden shield engraved with the Abecedarium symbol lies here.~
 Flags     antimage donated antimonk antinecro~
 WFlags    take shield~
 Values    7 7 0 14 13 0 0 0 0 0 0
@@ -4848,7 +4848,7 @@ Vnum      2894
 Keywords  long sword longsword abecedarium~
 Type      weapon~
 Short     An Abecedarium longsword~
-Long      A longsword engraved with the abecedarium symbol lies here.~
+Long      A longsword engraved with the Abecedarium symbol lies here.~
 Flags     magic anticleric antimage donated antidruid antimonk antinecro~
 WFlags    take wield~
 Values    10 2 5 1 1 0 0 0 0 0 0
@@ -4867,7 +4867,7 @@ Vnum      2895
 Keywords  shortsword short sword abecedarium~
 Type      weapon~
 Short     An Abecedarium shortsword~
-Long      A shortsword engraved with the abecedarium symbol lies here.~
+Long      A shortsword engraved with the Abecedarium symbol lies here.~
 Flags     metal magic anticleric antimage donated antidruid antimonk antinecro~
 WFlags    take wield~
 Values    10 2 4 6 1 0 0 0 0 0 0
@@ -4886,7 +4886,7 @@ Vnum      2896
 Keywords  mace abecedarium~
 Type      weapon~
 Short     An Abecedarium mace~
-Long      A mace engraved with the abecedarium symbol lies here.~
+Long      A mace engraved with the Abecedarium symbol lies here.~
 Flags     magic antimage antirogue donated~
 WFlags    take wield~
 Values    10 2 5 4 5 0 0 0 0 0 0
@@ -4905,7 +4905,7 @@ Vnum      2897
 Keywords  quarterstaff staff abecedarium~
 Type      weapon~
 Short     An Abecedarium quarterstaff~
-Long      A quarterstaff engraved with the abecedarium symbol lies here.~
+Long      A quarterstaff engraved with the Abecedarium symbol lies here.~
 Flags     magic donated~
 WFlags    take wield~
 Values    10 2 4 4 11 0 0 0 0 0 0
@@ -4924,7 +4924,7 @@ Vnum      2898
 Keywords  sickle abecedarium~
 Type      weapon~
 Short     An Abecedarium sickle~
-Long      A sickle engraved with the abecedarium symbol on its shaft lies here.~
+Long      A sickle engraved with the Abecedarium symbol on its shaft lies here.~
 Flags     magic anticleric antimage antirogue donated antimonk~
 WFlags    take wield~
 Values    10 2 5 1 11 0 0 0 0 0 0
@@ -4943,7 +4943,7 @@ Vnum      2900
 Keywords  wand abecedarium~
 Type      wand~
 Short     An Abecedarium wand~
-Long      A wand engraved with the abecedarium symbol on its shaft lies here.~
+Long      A wand engraved with the Abecedarium symbol on its shaft lies here.~
 Flags     magic anticleric antirogue antiwarrior antibard antidruid antimonk~
 WFlags    take hold~
 Values    5 5 5 -1 0 0 0 0 0 0 0
@@ -4964,7 +4964,7 @@ Vnum      2901
 Keywords  robe abecedarium~
 Type      armor~
 Short     An Abecedarium robe~
-Long      A thick robe with the abecedarium symbol sewn onto its sleeves lies here.~
+Long      A thick robe with the Abecedarium symbol sewn onto its sleeves lies here.~
 WFlags    take body~
 Values    2 2 0 0 0 0 0 0 0 0 0
 Stats     1 0 -2 0 0 None None None

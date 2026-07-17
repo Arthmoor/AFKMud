@@ -29,6 +29,7 @@
 /* This file will not be covered by future patches. Any specific code you don't
  * want changed later should go here.
  */
+#include <fstream>
 #include "mud.h"
 #include "area.h"
 #include "clans.h"
@@ -106,4 +107,61 @@ room_index *recall_room( char_data * ch )
 bool beacon_check( char_data * ch, room_index * beacon )
 {
    return true;
+}
+
+// List of recall room definitions. Should match the data for set_rented_room, save_rented_rooms, and load_rented_rooms.
+void pc_data::init_recall_rooms( void )
+{
+   this->one = ROOM_VNUM_TEMPLE;
+}
+
+void set_initial_recall_room( char_data * ch )
+{
+   ch->pcdata->one = ROOM_VNUM_TEMPLE;
+}
+
+void show_towngate_destinations( char_data * ch )
+{
+   ch->print( "Where do you wish to go??\r\n" );
+   ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!\r\n" );
+}
+
+room_index *set_towngate_destination_room( std::string_view target )
+{
+   room_index *room = nullptr;
+
+   // Someone needs to add some room VNUMs here cause the spell won't work without them.
+   // Example of how the thing should work:
+
+   // if( !str_cmp( target_name, "bywater" ) )
+   //   room = get_room_index( 7035 );
+   return room;
+}
+
+void set_rented_room( char_data * ch )
+{
+   if( !str_cmp( ch->in_room->area->continent->name, "One" ) )
+      ch->pcdata->one = ch->in_room->vnum;
+}
+
+// This MUST match the number of rooms you assign in load_rented_rooms or shit will break!
+void save_rented_rooms( char_data * ch, std::ofstream & stream )
+{
+   stream << std::format( "RentRooms    {}\n", ch->pcdata->one );
+}
+
+void load_rented_rooms( char_data * ch, std::ifstream & stream )
+{
+   // Ten for now, but can be expanded as needed. Just make sure you also alter save_rented_rooms to match the number of rooms you need.
+   int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, x10 = 0;
+   std::string ln;
+   std::getline( stream, ln );
+   std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9 >> x10;
+
+   ch->pcdata->one = x1;
+}
+
+void speech_tricks( char_data * ch, std::string & argument )
+{
+   // Nothing here yet.
 }

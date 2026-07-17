@@ -58,6 +58,7 @@ void stop_hunting( char_data * );
 void stop_fearing( char_data * );
 void add_to_auth( char_data * );
 void advance_level( char_data * );
+void set_initial_recall_room( char_data * );
 
 bool can_use_mprog( char_data * ch )
 {
@@ -3920,10 +3921,7 @@ void setup_newbie( char_data * ch, bool NEWLOGIN )
    ch->pcdata->age = 17;
    ch->pcdata->age_bonus = 0;
 
-   /*
-    * Set recall point - Samson 5-13-01
-    */
-   ch->pcdata->one = ROOM_VNUM_TEMPLE;
+   set_initial_recall_room( ch );
 
    ch->max_hit = 10;
    ch->hit = ch->max_hit;

@@ -188,15 +188,13 @@ void load_ships( void )
 
    int file_ver = 0;
    ship_data *ship = nullptr;
+
    std::string key;
-
-   stream >> key;
-   if( key == "#VERSION" )
-     stream >> file_ver;
-
    while( stream >> key )
    {
-      if( key == "#SHIP" )
+      if( key == "#VERSION" )
+         stream >> file_ver;
+      else if( key == "#SHIP" )
          ship = new ship_data;
       else if( key == "Name" )
          ship->name = fread_line( stream, '\n' );
@@ -246,7 +244,10 @@ void load_ships( void )
          shiplist.push_back( ship );
       }
       else
+      {
          log_printf( "{}: Bad line in ships file: {}", __func__, key );
+         fread_to_eol( stream );
+      }
    }
    stream.close(  );
 }

@@ -400,7 +400,10 @@ void load_continent( std::string_view continent_file )
          continent_list.push_back( continent );
       }
       else
+      {
          log_printf( "{}: Bad line in continent file: {}", __func__, key );
+         fread_to_eol( stream );
+      }
    }
    stream.close(  );
 }
@@ -462,7 +465,10 @@ void validate_overland_data( void )
    if( error_count == 0 )
       log_string( "Overland map data validated with no errors." );
    else
+   {
       log_string( "Overland map data has invalid settings that need to be corrected. See the above bug messages." );
+      std::exit( EXIT_FAILURE );
+   }
 }
 
 // 1: Initial version.

@@ -569,58 +569,38 @@ void fread_afk_areadata( std::ifstream & stream, area_data * tarea )
 void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
 {
    mob_index *pMobIndex = nullptr;
-   bool oldmob = false;
+   std::string ln;
 
    std::string key;
    while( stream >> key )
    {
       if( key == "Vnum" )
       {
-         bool tmpBootDb = fBootDb;
-         fBootDb = false;
-
          int vnum;
          stream >> vnum;
 
+         bool tempBootDb = fBootDb;
+         fBootDb = false; // Otherwise the log will fill up with bogus reports of bad vnums since this one obviously doesn't exist yet.
          if( get_mob_index( vnum ) )
          {
-            if( tmpBootDb )
-            {
-               fBootDb = tmpBootDb;
-               bug( "{}: vnum {} duplicated.", __func__, vnum );
-
-               // Try to recover, read to end of duplicated mobile and then bail out
-               for( ;; )
-               {
-                  stream >> key;
-                  if( key == "#ENDMOBILE" || stream.eof() )
-                     return;
-               }
-            }
-            else
-            {
-               pMobIndex = get_mob_index( vnum );
-               log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning mobile: {}", vnum );
-               pMobIndex->clean_mob(  );
-               oldmob = true;
-            }
+            bug( "{}: Duplicate VNUM {} while reading mobiles for {}. This is a fatal error.", __func__, vnum, tarea->filename );
+            shutdown_mud( "Duplicate VNUM error." );
+            std::exit( EXIT_FAILURE );
          }
          else
          {
             pMobIndex = new mob_index;
             pMobIndex->clean_mob(  );
          }
+         fBootDb = tempBootDb;
+
          pMobIndex->vnum = vnum;
          pMobIndex->area = tarea;
-         fBootDb = tmpBootDb;
 
-         if( fBootDb )
-         {
-            if( !tarea->low_vnum )
-               tarea->low_vnum = vnum;
-            if( vnum > tarea->hi_vnum )
-               tarea->hi_vnum = vnum;
-         }
+         if( !tarea->low_vnum )
+            tarea->low_vnum = vnum;
+         if( vnum > tarea->hi_vnum )
+            tarea->hi_vnum = vnum;
       }
       else if( key == "Keywords" )
          pMobIndex->player_name = fread_line( stream );
@@ -707,6 +687,7 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
       else if( key == "Desc" )
       {
          pMobIndex->chardesc = fread_line( stream );
+         strip_whitespace( pMobIndex->chardesc );
 
          if( !pMobIndex->chardesc.empty() )
          {
@@ -718,7 +699,8 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
          stream >> pMobIndex->numattacks;
       else if( key == "Stats1" )
       {
-         stream >> pMobIndex->alignment >> pMobIndex->gold >> pMobIndex->height >> pMobIndex->weight >> pMobIndex->max_move >> pMobIndex->max_mana;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> pMobIndex->alignment >> pMobIndex->gold >> pMobIndex->height >> pMobIndex->weight >> pMobIndex->max_move >> pMobIndex->max_mana;
 
          if( pMobIndex->max_move < 1 )
             pMobIndex->max_move = 150;
@@ -728,7 +710,8 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
       }
       else if( key == "Stats2" )
       {
-         stream >> pMobIndex->level >> pMobIndex->mobthac0 >> pMobIndex->ac >> pMobIndex->hitplus >> pMobIndex->damnodice >> pMobIndex->damsizedice >> pMobIndex->damplus;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> pMobIndex->level >> pMobIndex->mobthac0 >> pMobIndex->ac >> pMobIndex->hitplus >> pMobIndex->damnodice >> pMobIndex->damsizedice >> pMobIndex->damplus;
 
          pMobIndex->hitnodice = pMobIndex->level;
          pMobIndex->hitsizedice = 8;
@@ -776,15 +759,18 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
          int iTrade;
          shop_data *pShop = new shop_data;
 
+         std::getline( stream, ln );
+         std::istringstream iss(ln);
+
          pShop->keeper = pMobIndex->vnum;
          for( iTrade = 0; iTrade < MAX_TRADE; ++iTrade )
-            stream >> pShop->buy_type[iTrade];
+            iss >> pShop->buy_type[iTrade];
 
-         stream >> pShop->profit_buy >> pShop->profit_sell;
+         iss >> pShop->profit_buy >> pShop->profit_sell;
          pShop->profit_buy = urange( pShop->profit_sell + 5, pShop->profit_buy, 1000 );
          pShop->profit_sell = urange( 0, pShop->profit_sell, pShop->profit_buy - 5 );
 
-         stream >> pShop->open_hour >> pShop->close_hour;
+         iss >> pShop->open_hour >> pShop->close_hour;
 
          pMobIndex->pShop = pShop;
          shoplist.push_back( pShop );
@@ -795,11 +781,14 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
          int iFix;
          repair_data *rShop = new repair_data;
 
+         std::getline( stream, ln );
+         std::istringstream iss(ln);
+
          rShop->keeper = pMobIndex->vnum;
          for( iFix = 0; iFix < MAX_FIX; ++iFix )
-            stream >> rShop->fix_type[iFix];
+            iss >> rShop->fix_type[iFix];
 
-         stream >> rShop->profit_fix >> rShop->shop_type >> rShop->open_hour >> rShop->close_hour;
+         iss >> rShop->profit_fix >> rShop->shop_type >> rShop->open_hour >> rShop->close_hour;
 
          pMobIndex->rShop = rShop;
          repairlist.push_back( rShop );
@@ -814,12 +803,9 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
       }
       else if( key == "#ENDMOBILE" )
       {
-         if( !oldmob )
-         {
-            mob_index_table.insert( std::map<int, mob_index *>::value_type( pMobIndex->vnum, pMobIndex ) );
-            tarea->mobs.push_back( pMobIndex );
-            ++top_mob_index;
-         }
+         mob_index_table.insert( std::map<int, mob_index *>::value_type( pMobIndex->vnum, pMobIndex ) );
+         tarea->mobs.push_back( pMobIndex );
+         ++top_mob_index;
          return;
       }
       else
@@ -833,57 +819,38 @@ void fread_afk_mobile( std::ifstream & stream, area_data * tarea )
 void fread_afk_object( std::ifstream & stream, area_data * tarea )
 {
    obj_index *pObjIndex = nullptr;
-   bool oldobj = false;
+   std::string ln;
 
    std::string key;
    while( stream >> key )
    {
       if( key == "Vnum" )
       {
-         bool tmpBootDb = fBootDb;
-         fBootDb = false;
          int vnum;
          stream >> vnum;
 
+         bool tempBootDb = fBootDb;
+         fBootDb = false; // Otherwise the log will fill up with bogus reports of bad vnums since this one obviously doesn't exist yet.
          if( get_obj_index( vnum ) )
          {
-            if( tmpBootDb )
-            {
-               fBootDb = tmpBootDb;
-               bug( "{}: vnum {} duplicated.", __func__, vnum );
-
-               // Try to recover, read to end of duplicated object and then bail out
-               for( ;; )
-               {
-                  stream >> key;
-                  if( key == "#ENDOBJECT" || stream.eof() )
-                     return;
-               }
-            }
-            else
-            {
-               pObjIndex = get_obj_index( vnum );
-               log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning object: {}", vnum );
-               pObjIndex->clean_obj(  );
-               oldobj = true;
-            }
+            bug( "{}: Duplicate VNUM {} while reading objects for {}. This is a fatal error.", __func__, vnum, tarea->filename );
+            shutdown_mud( "Duplicate VNUM error." );
+            std::exit( EXIT_FAILURE );
          }
          else
          {
             pObjIndex = new obj_index;
-            pObjIndex->clean_obj(  );
+            pObjIndex->clean_obj( );
          }
+         fBootDb = tempBootDb;
+
          pObjIndex->vnum = vnum;
          pObjIndex->area = tarea;
-         fBootDb = tmpBootDb;
 
-         if( fBootDb )
-         {
-            if( !tarea->low_vnum )
-               tarea->low_vnum = vnum;
-            if( vnum > tarea->hi_vnum )
-               tarea->hi_vnum = vnum;
-         }
+         if( !tarea->low_vnum )
+            tarea->low_vnum = vnum;
+         if( vnum > tarea->hi_vnum )
+            tarea->hi_vnum = vnum;
       }
       else if( key == "Keywords" )
          pObjIndex->name = fread_line( stream );
@@ -911,8 +878,10 @@ void fread_afk_object( std::ifstream & stream, area_data * tarea )
          flag_set( stream, pObjIndex->wear_flags, w_flags );
       else if( key == "Values" )
       {
-         int x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11;
-         stream >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9 >> x10 >> x11;
+         int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, x10 = 0, x11 = 0;
+
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5 >> x6 >> x7 >> x8 >> x9 >> x10 >> x11;
 
          if( x1 == 0 && ( pObjIndex->item_type == ITEM_WEAPON || pObjIndex->item_type == ITEM_MISSILE_WEAPON ) )
          {
@@ -940,7 +909,6 @@ void fread_afk_object( std::ifstream & stream, area_data * tarea )
       }
       else if( key == "Stats" )
       {
-         std::string ln;
          std::getline( stream, ln );
 
          int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0;
@@ -1012,12 +980,9 @@ void fread_afk_object( std::ifstream & stream, area_data * tarea )
       }
       else if( key == "#ENDOBJECT" )
       {
-         if( !oldobj )
-         {
-            obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
-            tarea->objects.push_back( pObjIndex );
-            ++top_obj_index;
-         }
+         obj_index_table.insert( std::map<int, obj_index *>::value_type( pObjIndex->vnum, pObjIndex ) );
+         tarea->objects.push_back( pObjIndex );
+         ++top_obj_index;
          return;
       }
       else
@@ -1031,58 +996,37 @@ void fread_afk_object( std::ifstream & stream, area_data * tarea )
 void fread_afk_room( std::ifstream & stream, area_data * tarea )
 {
    room_index *pRoomIndex = nullptr;
-   bool oldroom = false;
 
    std::string key;
    while( stream >> key )
    {
       if( key == "Vnum" )
       {
-         bool tmpBootDb = fBootDb;
-         fBootDb = false;
-
          int vnum;
          stream >> vnum;
 
+         bool tempBootDb = fBootDb;
+         fBootDb = false; // Otherwise the log will fill up with bogus reports of bad vnums since this one obviously doesn't exist yet.
          if( get_room_index( vnum ) )
          {
-            if( tmpBootDb )
-            {
-               fBootDb = tmpBootDb;
-               bug( "{}: vnum {} duplicated.", __func__, vnum );
-
-               // Try to recover, read to end of duplicated room and then bail out
-               for( ;; )
-               {
-                  stream >> key;
-                  if( key == "#ENDROOM" || stream.eof() )
-                     return;
-               }
-            }
-            else
-            {
-               pRoomIndex = get_room_index( vnum );
-               log_printf_plus( LOG_BUILD, sysdata->build_level, "Cleaning room: {}", vnum );
-               pRoomIndex->clean_room(  );
-               oldroom = true;
-            }
+            bug( "{}: Duplicate VNUM {} while reading rooms for {}. This is a fatal error.", __func__, vnum, tarea->filename );
+            shutdown_mud( "Duplicate VNUM error." );
+            std::exit( EXIT_FAILURE );
          }
          else
          {
             pRoomIndex = new room_index;
-            pRoomIndex->clean_room(  );
+            pRoomIndex->clean_room( );
          }
+         fBootDb = tempBootDb;
+
          pRoomIndex->vnum = vnum;
          pRoomIndex->area = tarea;
-         fBootDb = tmpBootDb;
 
-         if( fBootDb )
-         {
-            if( !tarea->low_vnum )
-               tarea->low_vnum = vnum;
-            if( vnum > tarea->hi_vnum )
-               tarea->hi_vnum = vnum;
-         }
+         if( !tarea->low_vnum )
+            tarea->low_vnum = vnum;
+         if( vnum > tarea->hi_vnum )
+            tarea->hi_vnum = vnum;
 
          if( !pRoomIndex->resets.empty(  ) )
          {
@@ -1128,8 +1072,10 @@ void fread_afk_room( std::ifstream & stream, area_data * tarea )
          flag_set( stream, pRoomIndex->flags, r_flags );
       else if( key == "Stats" )
       {
-         int x1, x2, x3, x4, x5;
-         stream >> x1 >> x2 >> x3 >> x4 >> x5;
+         int x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0;
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x1 >> x2 >> x3 >> x4 >> x5;
 
          pRoomIndex->tele_delay = x1;
          pRoomIndex->tele_vnum = x2;
@@ -1171,12 +1117,9 @@ void fread_afk_room( std::ifstream & stream, area_data * tarea )
          pRoomIndex->load_reset( stream, true );
       else if( key == "#ENDROOM" )
       {
-         if( !oldroom )
-         {
-            room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
-            tarea->rooms.push_back( pRoomIndex );
-            ++top_room;
-         }
+         room_index_table.insert( std::map<int, room_index *>::value_type( pRoomIndex->vnum, pRoomIndex ) );
+         tarea->rooms.push_back( pRoomIndex );
+         ++top_room;
          return;
       }
       else

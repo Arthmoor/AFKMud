@@ -506,10 +506,7 @@ void fread_pfile( std::ifstream & stream, time_t tdiff, const std::filesystem::p
       else if( key == "Name" )
          name = fread_line( stream );
       else if( key == "PCFlags" )
-      {
-         std::string flags = fread_line( stream );
-         flag_string_set( flags, pact, pc_flags );
-      }
+         flag_set( stream, pact, pc_flags );
       else if( key == "Status" )
       {
          stream >> level;

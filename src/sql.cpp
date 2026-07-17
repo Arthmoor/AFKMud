@@ -96,28 +96,3 @@ void close_db( )
 {
    db.reset( );
 }
-
-/*
- * Modernized safe query.
- * Replaces the legacy va_list/sprintf implementation.
- */
-int mysql_safe_query( std::string_view fmt, auto&&... args )
-{
-   if( !db )
-   {
-      bug( "{}: DB not initialized.", __func__ );
-      return -1;
-   }
-
-   try
-   {
-      std::string query = std::vformat( fmt, std::make_format_args( args... ) );
-
-      return db->execute( query );
-   }
-   catch( const std::exception & e )
-   {
-      bug( "{}: Formatting error: {}", __func__, e.what() );
-      return -1;
-   }
-}

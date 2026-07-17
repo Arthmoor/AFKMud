@@ -645,7 +645,7 @@ bool load_systemdata( void )
 
    static const std::unordered_map<std::string, std::function<void()>> loaders = {
       { "Version",        [&](){ stream >> file_ver; } },
-      { "Mudname",        [&](){ sysdata->mud_name = fread_line( stream ); } },
+      { "MudName",        [&](){ sysdata->mud_name = fread_line( stream ); } },
       { "Password",       [&](){ sysdata->password = fread_line( stream ); } },
       { "Dbserver",       [&](){ sysdata->dbserver = fread_line( stream ); } },
       { "Dbname",         [&](){ sysdata->dbname = fread_line( stream ); } },

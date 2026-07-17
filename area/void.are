@@ -6,12 +6,12 @@ Author          AFKMud~
 Vnums           11000 11999
 Continent       Immortal~
 Coordinates     0 0
-Dates           1009872000 1009872000
+Dates           873331200 873331200
 Ranges          100 115 0 115
 ResetMsg        A loud voice booms: Cycle complete. Restarting sequence.~
 ResetFreq       180
 Flags           nocamp noastral noportal norecall nosummon noscry noteleport nobeacon~
-Treasure        100 0 0 0 20 50 60 75
+Treasure        20 74 85 93 20 50 60 75
 WeatherCoords   0 0
 
 #ENDAREADATA

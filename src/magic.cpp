@@ -61,6 +61,8 @@ bool beacon_check( char_data *, room_index * );
 void bind_follower( char_data *, char_data *, int, int );
 int IsUndead( const char_data * );
 int IsDragon( const char_data * );
+void show_towngate_destinations( char_data * );
+room_index *set_towngate_destination_room( std::string_view );
 
 bool EqWBits( const char_data * ch, int bit )
 {
@@ -5229,8 +5231,7 @@ SPELLF( spell_group_towngate )
 
    if( target_name.empty(  ) )
    {
-      ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
+      show_towngate_destinations( ch );
       return rSPELL_FAILED;
    }
 
@@ -5240,16 +5241,12 @@ SPELLF( spell_group_towngate )
       return rSPELL_FAILED;
    }
 
-   // Someone needs to add some room VNUMs here cause the spell won't work without them.
-   // Example of how the thing should work:
-
-   // if( !str_cmp( target_name, "bywater" ) )
-   //   room = get_room_index( 7035 );
+   room = set_towngate_destination_room( target_name );
 
    if( !room )
    {
-      ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
+      ch->print_fmt( "'{}' is not a valid location.\r\n\r\n", target_name );
+      show_towngate_destinations( ch );
       return rSPELL_FAILED;
    }
 
@@ -5298,8 +5295,7 @@ SPELLF( spell_towngate )
 
    if( target_name.empty(  ) )
    {
-      ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
+      show_towngate_destinations( ch );
       return rSPELL_FAILED;
    }
 
@@ -5309,16 +5305,12 @@ SPELLF( spell_towngate )
       return rSPELL_FAILED;
    }
 
-   // Someone needs to add some room VNUMs here cause the spell won't work without them.
-   // Example of how the thing should work:
-
-   // if( !str_cmp( target_name, "bywater" ) )
-   //   room = get_room_index( 7035 );
+   room = set_towngate_destination_room( target_name );
 
    if( !room )
    {
-      ch->print( "Where do you wish to go??\r\n" );
-      ch->print( "NO DESTINATIONS HAVE BEEN PROVIDED YET!!!!\r\n" );
+      ch->print_fmt( "'{}' is not a valid location.\r\n\r\n", target_name );
+      show_towngate_destinations( ch );
       return rSPELL_FAILED;
    }
 

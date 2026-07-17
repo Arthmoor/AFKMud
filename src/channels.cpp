@@ -36,6 +36,7 @@
 #include "roomindex.h"
 
 std::string translate( int, std::string_view, std::string_view );
+void speech_tricks( char_data *, std::string & );
 #if !defined(__CYGWIN__)
 #ifdef MULTIPORT
 void mud_message( char_data *, mud_channel *, std::string_view );
@@ -644,6 +645,9 @@ void send_tochannel( char_data * ch, mud_channel * channel, std::string & argume
 
    // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
    strip_whitespace( argument );
+
+   // Any other effects on the spoken line should be done in this function in mudcfg.cpp
+   speech_tricks( ch, argument );
 
    std::string arg, word;
    char_data *victim = nullptr;

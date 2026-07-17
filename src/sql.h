@@ -42,19 +42,42 @@ class MySQLDatabase
    MySQLDatabase( const std::string &, const std::string &, const std::string &, const std::string & );
    ~MySQLDatabase();
 
-   // Copying is not allowed
+   // Copying is not allowed.
    MySQLDatabase( const MySQLDatabase & ) = delete;
    MySQLDatabase & operator=( const MySQLDatabase & ) = delete;
 
    int execute( std::string_view );
    bool ping();
    std::string get_error();
+   MYSQL* get_conn( )
+   {
+      return &conn;
+   }
 };
 
 extern std::unique_ptr<MySQLDatabase> db;
 
-/* mudsql.c */
 void init_mysql(  );
 void close_db(  );
-int mysql_safe_query( std::string_view, auto&&... );
 void login_log( char_data *, int );
+
+inline int mysql_safe_query( std::string_view fmt, auto&&... args )
+{
+   if( !db )
+   {
+      bug( "{}: DB not initialized.", __func__ );
+      return -1;
+   }
+
+   try
+   {
+      std::string query = std::vformat( fmt, std::make_format_args( args... ) );
+      return db->execute( query );
+   }
+   catch( const std::exception & e )
+   {
+      bug( "{}: Formatting error: {}", __func__, e.what() );
+      return -1;
+   }
+}
+

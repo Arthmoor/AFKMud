@@ -730,7 +730,7 @@ void show_char_to_char_1( char_data * victim, char_data * ch )
             act( AT_PLAIN, "You see nothing special about $M.", ch, nullptr, victim, TO_CHAR );
       }
       else
-         ch->print( victim->chardesc );
+         ch->print_fmt( "{}\r\n\r\n", victim->chardesc );
    }
    else
    {

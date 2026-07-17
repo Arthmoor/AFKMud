@@ -178,6 +178,17 @@ mpsleep_data::~mpsleep_data(  )
    sleeplist.remove( this );
 }
 
+void free_mpsleep_data( void )
+{
+   for( auto it = sleeplist.begin(); it != sleeplist.end(); )
+   {
+      mpsleep_data *sleep = *it;
+      ++it;
+
+      deleteptr( sleep );
+   }
+}
+
 /*
  * Recursive function used by the carryingvnum ifcheck.
  * It loops thru all objects belonging to a char (in nested containers)

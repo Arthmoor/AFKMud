@@ -115,6 +115,7 @@ void free_boards(  );
 void free_teleports(  );
 void close_all_areas(  );
 void free_prog_actlists(  );
+void free_mpsleep_data( );
 void free_questbits(  );
 void free_projects(  );
 void free_specfuns(  );
@@ -925,6 +926,9 @@ void cleanup_memory( void )
 
    std::cerr << "Mudprog act lists.\n";
    free_prog_actlists(  );
+
+   std::cerr << "MPSleep Data\n";
+   free_mpsleep_data( );
 
    std::cerr << "Abit/Qbit Data.\n";
    free_questbits(  );

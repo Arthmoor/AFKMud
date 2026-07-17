@@ -61,6 +61,8 @@ affect_data *fread_afk_affect( std::ifstream & );
 bool is_valid_wear_loc( char_data *, int );
 void restore_map_buffer( char_data * );
 std::string convert_old_timezone( int );
+void save_rented_rooms( char_data *, std::ofstream & );
+void load_rented_rooms( char_data *, std::ifstream & );
 
 class mud_channel;
 mud_channel *find_channel( std::string_view );
@@ -297,7 +299,7 @@ void fwrite_char( char_data * ch, std::ofstream & stream )
    /*
     * Recall code update to recall to last inn rented at - Samson 12-20-00 
     */
-   stream << std::format( "RentRooms    {}\n", ch->pcdata->one );
+   save_rented_rooms( ch, stream );
 
    if( ch->has_bparts( )  )
       stream << std::format( "BodyParts    {}~\n", bitset_string( ch->get_bparts(  ), part_flags ) );
@@ -895,6 +897,7 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
    int max_colors = 0;  /* Color code */
    int max_beacons = 0; /* Beacon spell */
    file_ver = 0;
+   std::string ln;
 
    std::string key;
    while( stream >> key )
@@ -1004,13 +1007,17 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       }
       else if( key == "Status" )
       {
-         stream >> ch->level >> ch->gold >> ch->exp >> ch->height >> ch->weight >> ch->spellfail >> ch->mental_state;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->level >> ch->gold >> ch->exp >> ch->height >> ch->weight >> ch->spellfail >> ch->mental_state;
 
          if( preload )
             return;
       }
       else if( key == "Status2" )
-         stream >> ch->style >> ch->pcdata->practice >> ch->alignment >> ch->pcdata->favor >> ch->hitroll >> ch->damroll >> ch->armor >> ch->wimpy;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->style >> ch->pcdata->practice >> ch->alignment >> ch->pcdata->favor >> ch->hitroll >> ch->damroll >> ch->armor >> ch->wimpy;
+      }
       else if( key == "Configs" )
       {
          int old_timezone = -1;
@@ -1018,7 +1025,8 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
          if( file_ver < 24 )
          {
             int dummyval, vnum = 0;
-            stream >> ch->pcdata->pagerlen >> dummyval >> dummyval >> dummyval >> old_timezone >> ch->wait >> dummyval >> vnum;
+            std::getline( stream, ln );
+            std::istringstream( ln ) >> ch->pcdata->pagerlen >> dummyval >> dummyval >> dummyval >> old_timezone >> ch->wait >> dummyval >> vnum;
 
             room_index *temp = get_room_index( vnum );
 
@@ -1049,19 +1057,22 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
          }
          else if( file_ver == 24 )
          {
-            stream >> ch->pcdata->pagerlen >> old_timezone >> ch->wait;
+            std::getline( stream, ln );
+            std::istringstream( ln ) >> ch->pcdata->pagerlen >> old_timezone >> ch->wait;
 
             ch->pcdata->timezone_name = convert_old_timezone( old_timezone );
          }
          else
          {
-            stream >> ch->pcdata->pagerlen >> ch->wait;
+            std::getline( stream, ln );
+            std::istringstream( ln ) >> ch->pcdata->pagerlen >> ch->wait;
          }
       }
       else if( key == "Motd" )
       {
          time_t motd, imotd;
-         stream >> motd >> imotd;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> motd >> imotd;
 
          ch->pcdata->motd = std::chrono::system_clock::from_time_t( motd );
          ch->pcdata->imotd = std::chrono::system_clock::from_time_t( imotd );
@@ -1070,14 +1081,21 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       {
          time_t played;
 
-         stream >> ch->pcdata->age_bonus >> ch->pcdata->day >> ch->pcdata->month >> ch->pcdata->year >> played;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->pcdata->age_bonus >> ch->pcdata->day >> ch->pcdata->month >> ch->pcdata->year >> played;
 
          ch->pcdata->played = std::chrono::hours{played};
       }
       else if( key == "HpManaMove" )
-         stream >> ch->hit >> ch->max_hit >> ch->mana >> ch->max_mana >> ch->move >> ch->max_move;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->hit >> ch->max_hit >> ch->mana >> ch->max_mana >> ch->move >> ch->max_move;
+      }
       else if( key == "Regens" )
-         stream >> ch->hit_regen >> ch->mana_regen >> ch->move_regen;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->hit_regen >> ch->mana_regen >> ch->move_regen;
+      }
       else if( key == "Position" )
       {
          int position = get_npc_position( fread_line( stream ) );
@@ -1122,10 +1140,8 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       }
       else if( key == "Coordinates" )
       {
-         stream >> ch->map_x >> ch->map_y;
-
-         if( file_ver < 24 )
-            fread_to_eol( stream );
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->map_x >> ch->map_y;
 
          if( !ch->has_pcflag( PCFLAG_ONMAP ) )
          {
@@ -1135,15 +1151,19 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
          }
       }
       else if( key == "SavingThrows" )
-         stream >> ch->saving_poison_death >> ch->saving_wand >> ch->saving_para_petri >> ch->saving_breath >> ch->saving_spell_staff;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->saving_poison_death >> ch->saving_wand >> ch->saving_para_petri >> ch->saving_breath >> ch->saving_spell_staff;
+      }
       else if( key == "RentData" )
       {
-         int dummyval;
+         int dummyval = 0;
 
-         stream >> ch->pcdata->balance >> ch->pcdata->daysidle >> dummyval >> dummyval >> ch->pcdata->camp;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->pcdata->balance >> ch->pcdata->daysidle >> dummyval >> dummyval >> ch->pcdata->camp;
       }
       else if( key == "RentRooms" )
-         stream >> ch->pcdata->one;
+         load_rented_rooms( ch, stream );
       else if( key == "BodyParts" )
          ch->set_bparts_file( stream );
       else if( key == "AffectFlags" )
@@ -1165,7 +1185,10 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       else if( key == "Absorb" )
          ch->set_absorbs_file( stream );
       else if( key == "KillInfo" )
-         stream >> ch->pcdata->pkills >> ch->pcdata->pdeaths >> ch->pcdata->mkills >> ch->pcdata->mdeaths >> ch->pcdata->illegal_pk;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->pcdata->pkills >> ch->pcdata->pdeaths >> ch->pcdata->mkills >> ch->pcdata->mdeaths >> ch->pcdata->illegal_pk;
+      }
       else if( key == "PTimer" )
       {
          int ptimer;
@@ -1175,15 +1198,22 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       }
       else if( key == "AttrPerm" )
       {
-         stream >> ch->perm_str >> ch->perm_int >> ch->perm_wis >> ch->perm_dex >> ch->perm_con >> ch->perm_cha >> ch->perm_lck;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->perm_str >> ch->perm_int >> ch->perm_wis >> ch->perm_dex >> ch->perm_con >> ch->perm_cha >> ch->perm_lck;
 
          if( ch->perm_lck == 0 )
             ch->perm_lck = 13;
       }
       else if( key == "AttrMod" )
-         stream >> ch->mod_str >> ch->mod_int >> ch->mod_wis >> ch->mod_dex >> ch->mod_con >> ch->mod_cha >> ch->mod_lck;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->mod_str >> ch->mod_int >> ch->mod_wis >> ch->mod_dex >> ch->mod_con >> ch->mod_cha >> ch->mod_lck;
+      }
       else if( key == "Condition" )
-         stream >> ch->pcdata->condition[0] >> ch->pcdata->condition[1] >> ch->pcdata->condition[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->pcdata->condition[0] >> ch->pcdata->condition[1] >> ch->pcdata->condition[2];
+      }
       else if( key == "ImmRealm" )
          ch->pcdata->realm_name = fread_line( stream );
       else if( key == "Bamfin" )
@@ -1194,7 +1224,8 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       {
          time_t restore_time;
 
-         stream >> ch->trust >> restore_time >> ch->pcdata->wizinvis >> ch->pcdata->low_vnum >> ch->pcdata->hi_vnum;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ch->trust >> restore_time >> ch->pcdata->wizinvis >> ch->pcdata->low_vnum >> ch->pcdata->hi_vnum;
 
          ch->pcdata->restore_time = std::chrono::system_clock::from_time_t( restore_time );
       }
@@ -1380,21 +1411,27 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
          stream >> max_colors;
       else if( key == "Colors" )
       {
+         std::getline( stream, ln );
+         std::istringstream iss(ln);
+
          /*
           * Load color values - Samson 9-29-98
           */
          for( int x = 0; x < max_colors; ++x )
-            stream >> ch->pcdata->colors[x];
+            iss >> ch->pcdata->colors[x];
       }
       else if( key == "MaxBeacons" )
          stream >> max_beacons;
       else if( key == "Beacons" )
       {
+         std::getline( stream, ln );
+         std::istringstream iss(ln);
+
          /*
           * Load beacons - Samson 9-29-98
           */
          for( int x = 0; x < max_beacons; ++x )
-            stream >> ch->pcdata->beacon[x];
+            iss >> ch->pcdata->beacon[x];
       }
       else if( key == "Alias" )
       {
@@ -1408,11 +1445,13 @@ void fread_char( char_data * ch, std::ifstream & stream, bool preload, bool copy
       {
          const board_data *board = nullptr;
 
-         std::string word = fread_word( stream );
-         if( !( board = get_board( nullptr, word ) ) )
+         std::string name;
+         fread_string( name, stream );
+
+         if( !( board = get_board( nullptr, name ) ) )
          {
-            log_printf( "Player {} has board {} which apparently doesn't exist?", ch->name, word );
-            ch->print_fmt( "Warning: the board {} no longer exists.\r\n", word );
+            log_printf( "Player {} has board {} which apparently doesn't exist?", ch->name, name );
+            ch->print_fmt( "Warning: the board {} no longer exists.\r\n", name );
             fread_to_eol( stream );
          }
 
@@ -1623,8 +1662,7 @@ void fread_obj( char_data * ch, std::ifstream & stream, short os_type )
    fVnum = false; // We can't assume this - what if Vnum isn't written to the file? Crashy crashy is what. - Pulled from Smaug 1.8
    iNest = 0;
 
-   std::string key;
-   std::string temp;
+   std::string key, temp, ln;
    while( stream >> key )
    {
       if( key == "Version" )
@@ -1719,20 +1757,17 @@ void fread_obj( char_data * ch, std::ifstream & stream, short os_type )
          stream >> obj->year;
       else if( key == "Coords" || key == "Coordinates" )
       {
-         stream >> obj->map_x;
-         stream >> obj->map_y;
-
-         if( obj_file_ver < 24 )
-            fread_to_eol( stream );
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> obj->map_x >> obj->map_y;
       }
       else if( key == "Values" )
       {
-         std::string line = fread_line( stream, '\n' );
-         std::stringstream ss(line);
+         std::getline( stream, ln );
+         std::stringstream iss(ln);
 
          for( int x = 0; x < MAX_OBJ_VALUE; ++x )
          {
-            if( !( ss >> obj->value[x] ) )
+            if( !( iss >> obj->value[x] ) )
                obj->value[x] = 0;
          }
 
@@ -1964,7 +1999,7 @@ void fread_obj( char_data * ch, std::ifstream & stream, short os_type )
          fread_to_eol( stream );
       }
    } // End while loop
-   bug( "{}: Fell through to bottom. Possible corrupted file.", __func__ );
+   bug( "{}: Fell through to bottom. Possible corrupted file. Key: {}", __func__, key );
 }
 
 /*
@@ -1974,7 +2009,7 @@ void fread_obj( char_data * ch, std::ifstream & stream, short os_type )
 char_data *fread_mobile( std::ifstream & stream, bool shopmob, bool hotboot )
 {
    char_data *mob = nullptr;
-   std::string word, key;
+   std::string word, key, ln;
    int inroom = 0;
    room_index *pRoomIndex = nullptr;
    mob_index *pMobIndex = nullptr;
@@ -2060,11 +2095,8 @@ char_data *fread_mobile( std::ifstream & stream, bool shopmob, bool hotboot )
       }
       else if( key == "Coordinates" )
       {
-         stream >> mob->map_x;
-         stream >> mob->map_y;
-
-         if( mob_file_ver < 24 )
-            fread_to_eol( stream );
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> mob->map_x >> mob->map_y;
       }
       else if( key == "Name" )
          mob->name = fread_line( stream );
@@ -2075,7 +2107,10 @@ char_data *fread_mobile( std::ifstream & stream, bool shopmob, bool hotboot )
       else if( key == "Description" )
          mob->chardesc = fread_line( stream );
       else if( key == "HpManaMove" )
-         stream >> mob->hit >> mob->max_hit >> mob->mana >> mob->max_mana >> mob->move >> mob->max_move;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> mob->hit >> mob->max_hit >> mob->mana >> mob->max_mana >> mob->move >> mob->max_move;
+      }
       else if( key == "Position" )
          stream >> mob->position;
       else if( key == "ActFlags" )

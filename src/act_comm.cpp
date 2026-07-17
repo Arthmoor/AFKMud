@@ -41,6 +41,7 @@ board_data *find_board( const char_data * );
 board_data *get_board( char_data *, std::string_view );
 const std::string MORPHNAME( char_data * );
 const std::string MORPHPERS( char_data *, char_data *, bool );
+void speech_tricks( char_data *, std::string & );
 
 std::string NAME( char_data * ch )
 {
@@ -275,7 +276,10 @@ CMDF( do_say )
    }
 
    // Adaptation of Smaug 1.8b feature. Stop whitespace abuse now!
-   strip_spaces( argument );
+   strip_whitespace( argument );
+
+   // Any other effects on the spoken line should be done in this function in mudcfg.cpp
+   speech_tricks( ch, argument );
 
    std::bitset < MAX_ACT_FLAG > actflags = ch->get_actflags(  );
    if( ch->isnpc(  ) )
