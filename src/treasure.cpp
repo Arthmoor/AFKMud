@@ -333,7 +333,7 @@ void load_runewords( void )
    rwordlist.clear(  );
    runeword_data *rword = nullptr;
 
-   std::string key;
+   std::string key, ln;
    while( stream >> key )
    {
       if( key == "#RWORD" )
@@ -354,13 +354,25 @@ void load_runewords( void )
       else if( key == "Rune3" )
          rword->set_rune3( fread_line( stream, '\n' ) );
       else if( key == "Stat1" )
-         stream >> rword->stat1[0] >> rword->stat1[1];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> rword->stat1[0] >> rword->stat1[1];
+      }
       else if( key == "Stat2" )
-         stream >> rword->stat2[0] >> rword->stat2[1];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> rword->stat2[0] >> rword->stat2[1];
+      }
       else if( key == "Stat3" )
-         stream >> rword->stat3[0] >> rword->stat3[1];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> rword->stat3[0] >> rword->stat3[1];
+      }
       else if( key == "Stat4" )
-         stream >> rword->stat4[0] >> rword->stat4[1];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> rword->stat4[0] >> rword->stat4[1];
+      }
       else if( key == "End" )
       {
          bool found = false;
@@ -400,7 +412,7 @@ void load_runes( void )
    runelist.clear();
 
    rune_data *rune = nullptr;
-   std::string key;
+   std::string key, ln;
    while( stream >> key )
    {
       if( key == "#RUNE" )
@@ -415,9 +427,15 @@ void load_runes( void )
          rune->set_rarity( value );
       }
       else if( key == "Stat1" )
-         stream >> rune->stat1[0] >> rune->stat1[1];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> rune->stat1[0] >> rune->stat1[1];
+      }
       else if( key == "Stat2" )
-         stream >> rune->stat2[0] >> rune->stat2[1];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> rune->stat2[0] >> rune->stat2[1];
+      }
       else if( key == "End" )
       {
          bool found = false;

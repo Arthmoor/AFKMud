@@ -1252,12 +1252,7 @@ skill_type *fread_skill( std::ifstream & stream, int version )
                if( version < 4 )
                   stream >> skill->flags;
                else
-               {
-                  std::string flags;
-
-                  flags = fread_line( stream );
-                  flag_string_set( flags, skill->flags, spell_flag );
-               }
+                  flag_set( stream, skill->flags, spell_flag );
                break;
             }
             break;

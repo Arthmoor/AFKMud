@@ -226,8 +226,12 @@ void reset_colors( char_data * ch )
                stream >> max_colors;
             else if( key == "Colors" )
             {
+               std::string ln;
+               std::getline( stream, ln );
+               std::istringstream iss(ln);
+
                for( int x = 0; x < max_colors; ++x )
-                  stream >> ch->pcdata->colors[x];
+                  iss >> ch->pcdata->colors[x];
             }
             else if( key == "End" )
             {

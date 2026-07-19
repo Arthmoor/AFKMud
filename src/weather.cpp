@@ -2352,14 +2352,9 @@ void fread_cell( std::ifstream &stream, int x, int y, int file_ver )
       }
       else if( key == "State" )
       {
-         stream >> cell->cloudcover
-         >> cell->energy
-         >> cell->humidity
-         >> cell->precipitation
-         >> cell->pressure
-         >> cell->temperature
-         >> cell->windSpeedX
-         >> cell->windSpeedY;
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> cell->cloudcover >> cell->energy >> cell->humidity >> cell->precipitation >> cell->pressure >> cell->temperature >> cell->windSpeedX >> cell->windSpeedY;
       }
       else
       {
@@ -2382,7 +2377,7 @@ bool load_weathermap( void )
       return false;
    }
 
-   std::string key;
+   std::string key, ln;
    stream >> key;
 
    if( key == "#VERSION" )
@@ -2398,7 +2393,8 @@ bool load_weathermap( void )
    {
       if( key == "#CELL" )
       {
-         stream >> x >> y;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> x >> y;
          fread_cell( stream, x, y, file_ver );
       }
       else if( key == "#END" )

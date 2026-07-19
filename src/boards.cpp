@@ -238,10 +238,7 @@ void read_note( note_data * note, int file_ver, std::ifstream & stream )
          if( file_ver < 1 )
             stream >> note->flags;
          else
-         {
-            std::string flags = fread_line( stream );
-            flag_string_set( flags, note->flags, note_flags );
-         }
+            flag_set( stream, note->flags, note_flags );
       }
       else if( key == "Expire" )
       {
@@ -373,10 +370,7 @@ void load_boards( void )
             if( file_ver < 1 )
                stream >> board->flags;
             else
-            {
-               std::string flags = fread_line( stream );
-               flag_string_set( flags, board->flags, board_flags );
-            }
+               flag_set( stream, board->flags, board_flags );
          }
          else if( key == "Readers" )
             board->readers = fread_line( stream );

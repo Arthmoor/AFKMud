@@ -184,10 +184,9 @@ void fread_liquid( liquid_data *liq, std::ifstream & stream, int file_ver )
          stream >> liq->vnum;
       else if( key == "Mod" )
       {
-         stream >> liq->mod[COND_DRUNK] >> liq->mod[COND_FULL] >> liq->mod[COND_THIRST];
-
-         if( file_ver < 3 )
-            fread_to_eol( stream );
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> liq->mod[COND_DRUNK] >> liq->mod[COND_FULL] >> liq->mod[COND_THIRST];
       }
       else if( key == "End" )
          return;
@@ -289,19 +288,25 @@ void save_mixtures( void )
 /* read the mixtures into the structure -Nopey */
 void fread_mixture( mixture_data *mix, std::ifstream & stream )
 {
-   std::string key;
+   std::string key, ln;
    while( stream >> key )
    {
       if( key == "Name" )
          mix->name = fread_line( stream );
       else if( key == "Data" )
-         stream >> mix->data[0] >> mix->data[1] >> mix->data[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> mix->data[0] >> mix->data[1] >> mix->data[2];
+      }
       else if( key == "Object" )
          stream >> mix->object;
       else if( key == "Into" )
          stream >> mix->data[2];
       else if( key == "With" )
-         stream >> mix->data[0] >> mix->data[1];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> mix->data[0] >> mix->data[1];
+      }
       else if( key == "End" )
          return;
       else

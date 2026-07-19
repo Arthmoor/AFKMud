@@ -200,7 +200,7 @@ CMDF( do_savedeities )
 /* Adjani, versions, with help from the ever-patient Xorith. 1-31-04 */
 void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
 {
-   std::string key;
+   std::string key, ln;
    while( stream >> key )
    {
       if( key == "Filename" )
@@ -216,17 +216,29 @@ void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
       else if( key == "Flee" )
          stream >> deity->flee;
       else if( key == "Flee_npcraces" )
-         stream >> deity->flee_npcrace[0] >> deity->flee_npcrace[1] >> deity->flee_npcrace[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->flee_npcrace[0] >> deity->flee_npcrace[1] >> deity->flee_npcrace[2];
+      }
       else if( key == "Flee_npcfoes" )
-         stream >> deity->flee_npcfoe[0] >> deity->flee_npcfoe[1] >> deity->flee_npcfoe[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->flee_npcfoe[0] >> deity->flee_npcfoe[1] >> deity->flee_npcfoe[2];
+      }
       else if( key == "Kill" )
          stream >> deity->kill;
       else if( key == "Kill_magic" )
          stream >> deity->kill_magic;
       else if( key == "Kill_npcraces" )
-         stream >> deity->kill_npcrace[0] >> deity->kill_npcrace[1] >> deity->kill_npcrace[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->kill_npcrace[0] >> deity->kill_npcrace[1] >> deity->kill_npcrace[2];
+      }
       else if( key == "Kill_npcfoes" )
-         stream >> deity->kill_npcfoe[0] >> deity->kill_npcfoe[1] >> deity->kill_npcfoe[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->kill_npcfoe[0] >> deity->kill_npcfoe[1] >> deity->kill_npcfoe[2];
+      }
       else if( key == "Sac" )
          stream >> deity->sac;
       else if( key == "Bury_corpse" )
@@ -242,9 +254,15 @@ void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
       else if( key == "Die" )
          stream >> deity->die;
       else if( key == "Die_npcraces" )
-         stream >> deity->die_npcrace[0] >> deity->die_npcrace[1] >> deity->die_npcrace[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->die_npcrace[0] >> deity->die_npcrace[1] >> deity->die_npcrace[2];
+      }
       else if( key == "Die_npcfoes" )
-         stream >> deity->die_npcfoe[0] >> deity->die_npcfoe[1] >> deity->die_npcfoe[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->die_npcfoe[0] >> deity->die_npcfoe[1] >> deity->die_npcfoe[2];
+      }
       else if( key == "Spell_aid" )
          stream >> deity->spell_aid;
       else if( key == "Dig_corpse" )
@@ -493,15 +511,30 @@ void fread_deity( deity_data * deity, std::ifstream & stream, int file_ver )
          deity->npcfoe[2] = npcfoe3;
       }
       else if( key == "Susceptnums" )
-         stream >> deity->susceptnum[0] >> deity->susceptnum[1] >>  deity->susceptnum[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->susceptnum[0] >> deity->susceptnum[1] >>  deity->susceptnum[2];
+      }
       else if( key =="Elementnums" )
-         stream >> deity->elementnum[0] >> deity->elementnum[1] >> deity->elementnum[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->elementnum[0] >> deity->elementnum[1] >> deity->elementnum[2];
+      }
       else if( key == "Affectednums" )
-         stream >> deity->affectednum[0] >> deity->affectednum[1] >> deity->affectednum[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->affectednum[0] >> deity->affectednum[1] >> deity->affectednum[2];
+      }
       else if( key == "Spells" ) // Added by Tarl 24 Mar 02
-         stream >> deity->spell[0] >> deity->spell[1] >> deity->spell[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->spell[0] >> deity->spell[1] >> deity->spell[2];
+      }
       else if( key == "Sspells" ) // Added by Tarl 24 Mar 02
-         stream >> deity->sspell[0] >> deity->sspell[1] >> deity->sspell[2];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> deity->sspell[0] >> deity->sspell[1] >> deity->sspell[2];
+      }
       else if( key == "Objstat" )
          stream >> deity->objstat;
       else if( key == "Recallroom" ) // Samson

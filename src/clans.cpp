@@ -600,7 +600,7 @@ void fread_clan( std::ifstream & stream, clan_data * clan )
 {
    int file_ver = 0;
 
-   std::string key;
+   std::string key, ln;
    while( stream >> key )
    {
       if( key == "Version" )
@@ -630,9 +630,15 @@ void fread_clan( std::ifstream & stream, clan_data * clan )
       else if( key == "Badge" )
          clan->badge = fread_line( stream );
       else if( key == "PKills" )
-         stream >> clan->pkills[0] >> clan->pkills[1] >> clan->pkills[2] >> clan->pkills[3] >> clan->pkills[4] >> clan->pkills[5] >> clan->pkills[6] >> clan->pkills[7] >> clan->pkills[8] >> clan->pkills[9];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> clan->pkills[0] >> clan->pkills[1] >> clan->pkills[2] >> clan->pkills[3] >> clan->pkills[4] >> clan->pkills[5] >> clan->pkills[6] >> clan->pkills[7] >> clan->pkills[8] >> clan->pkills[9];
+      }
       else if( key == "PDeaths" )
-         stream >> clan->pdeaths[0] >> clan->pdeaths[1] >> clan->pdeaths[2] >> clan->pdeaths[3] >> clan->pdeaths[4] >> clan->pdeaths[5] >> clan->pdeaths[6] >> clan->pdeaths[7] >> clan->pdeaths[8] >> clan->pdeaths[9];
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> clan->pdeaths[0] >> clan->pdeaths[1] >> clan->pdeaths[2] >> clan->pdeaths[3] >> clan->pdeaths[4] >> clan->pdeaths[5] >> clan->pdeaths[6] >> clan->pdeaths[7] >> clan->pdeaths[8] >> clan->pdeaths[9];
+      }
       else if( key == "MKills" )
          stream >> clan->mkills;
       else if( key == "MDeaths" )

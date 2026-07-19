@@ -223,12 +223,19 @@ void load_ships( void )
       else if( key == "Coordinates" && file_ver < 1 )
       {
          int eat;
-         stream >> eat; // Eat this first one.
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream iss(ln);
+         iss >> eat; // Eat this first one.
 
-         stream >> ship->map_x >> ship->map_y;
+         iss >> ship->map_x >> ship->map_y;
       }
       else if( key == "Coordinates" && file_ver >= 1 )
-         stream >> ship->map_x >> ship->map_y;
+      {
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> ship->map_x >> ship->map_y;
+      }
       else if( key == "End" )
       {
          // Normalize values in case of funkiness in the files.

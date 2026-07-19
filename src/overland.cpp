@@ -274,7 +274,11 @@ void continent_data::fread_landing_site( std::ifstream & stream )
    while( stream >> key )
    {
       if( key == "Coordinates" )
-         stream >> landing_site->map_x >> landing_site->map_y;
+      {
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> landing_site->map_x >> landing_site->map_y;
+      }
       else if( key == "Area" )
          landing_site->area = fread_line( stream, '\n' );
       else if( key == "Cost" )
@@ -285,7 +289,10 @@ void continent_data::fread_landing_site( std::ifstream & stream )
          return;
       }
       else
+      {
          bug( "{}: {} - Bad line reading landing sites: {}", __func__, this->name, key );
+         fread_to_eol( stream );
+      }
    }
 
    bug( "{}: Filestream reached premature EOF reading landing sites for continent {} - FATAL ERROR: Aborting file read.", __func__, this->name );
@@ -301,7 +308,11 @@ void continent_data::fread_landmark( std::ifstream & stream )
    while( stream >> key )
    {
       if( key == "Coordinates" )
-         stream >> landmark->map_x >> landmark->map_y >> landmark->distance;
+      {
+         std::string ln;
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> landmark->map_x >> landmark->map_y >> landmark->distance;
+      }
       else if( key == "Description" )
          landmark->description = fread_line( stream, '\n' );
       else if( key == "Isdesc" )
@@ -312,7 +323,10 @@ void continent_data::fread_landmark( std::ifstream & stream )
          return;
       }
       else
+      {
          bug( "{}: {} - Bad line reading landmarks: {}", __func__, this->name, key );
+         fread_to_eol( stream );
+      }
    }
 
    bug( "{} -> {}:{}: Filestream reached premature EOF reading landmarks for continent {} - FATAL ERROR: Aborting file read.", __func__,  __FILE__, __LINE__, this->name );
@@ -324,15 +338,21 @@ void continent_data::fread_mapexit( std::ifstream & stream )
 {
    mapexit_data *mexit = new mapexit_data;
 
-   std::string key;
+   std::string key, ln;
    while( stream >> key )
    {
       if( key == "ToMap" )
          stream >> mexit->tomap;
       else if( key == "Here" )
-         stream >> mexit->herex >> mexit->herey;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> mexit->herex >> mexit->herey;
+      }
       else if( key == "There" )
-         stream >> mexit->therex >> mexit->therey;
+      {
+         std::getline( stream, ln );
+         std::istringstream( ln ) >> mexit->therex >> mexit->therey;
+      }
       else if( key == "Vnum" )
          stream >> mexit->vnum;
       else if( key == "Prevsector" )
@@ -343,7 +363,10 @@ void continent_data::fread_mapexit( std::ifstream & stream )
          return;
       }
       else
+      {
          bug( "{}: {} - Bad line reading map exits: {}", __func__, this->name, key );
+         fread_to_eol( stream );
+      }
    }
 
    bug( "{} -> {}:{}: Filestream reached premature EOF reading map exits for continent {} - FATAL ERROR: Aborting file read.", __func__, __FILE__, __LINE__, this->name );
