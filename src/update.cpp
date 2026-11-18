@@ -2271,6 +2271,12 @@ void time_update( void )
    {
       for( auto* d : dlist )
       {
+         /*
+          * Descriptors still in login or character creation have no character or room yet.
+          */
+         if( d->connected != CON_PLAYING || !d->character || !d->character->in_room )
+            continue;
+
          const WeatherCell *cell = getWeatherCell( d->character->in_room->area );
 
          if( d->connected == CON_PLAYING && d->character->IS_OUTSIDE(  ) && !is_indoor_sector( d->character->in_room->sector_type ) && d->character->IS_AWAKE(  ) )
