@@ -2113,10 +2113,20 @@ void aggr_update( void )
           */
          continue;
 
-      for( auto it2 = wch->in_room->people.begin(  ); it2 != wch->in_room->people.end(  ); )
+      /*
+       * If an aggressor's attack kills wch, wch is moved to the death room. Remember the room being walked so the
+       * iterators are always compared against the same container.
+       */
+      room_index *aggr_room = wch->in_room;
+
+      for( auto it2 = aggr_room->people.begin(  ); it2 != aggr_room->people.end(  ); )
       {
          char_data *victim = nullptr;
          int count = 0;
+
+         if( wch->char_died(  ) || wch->in_room != aggr_room )
+            break;
+
          char_data *ch = *it2;
          ++it2;
 
@@ -2140,7 +2150,7 @@ void aggr_update( void )
           *
           * Depending on flags set, the mob may attack another mob
           */
-         for( auto it3 = wch->in_room->people.begin(  ); it3 != wch->in_room->people.end(  ); )
+         for( auto it3 = aggr_room->people.begin(  ); it3 != aggr_room->people.end(  ); )
          {
             char_data *vch = *it3;
             ++it3;
