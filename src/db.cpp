@@ -553,7 +553,7 @@ void save_sysdata( void )
 
       stream << "#SYSTEM\n";
       stream << std::format( "Version        {}\n", SYSFILEVER );
-      stream << std::format( "Mudname        {}~\n", sysdata->mud_name );
+      stream << std::format( "MudName        {}~\n", sysdata->mud_name );
 
       if( !sysdata->password.empty() )
          stream << std::format( "Password       {}~\n", sysdata->password );
