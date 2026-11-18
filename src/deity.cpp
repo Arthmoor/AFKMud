@@ -1771,13 +1771,13 @@ CMDF( do_showdeity )
    ch->print_fmt( "Die_npcraces:  {:<5} {:<5} {:<7} ", deity->die_npcrace[0], deity->die_npcrace[1], deity->die_npcrace[2] );
    ch->print_fmt( "Die_npcfoes:   {:<5} {:<5} {:<5} \r\n\r\n", deity->die_npcfoe[0], deity->die_npcfoe[1], deity->die_npcfoe[2] );
    ch->print_fmt( "Kill_magic: {:<10} Sac:        {:<10} Bury_corpse: {:<10} \r\n", deity->kill_magic, deity->sac, deity->bury_corpse );
-   ch->print_fmt( "Dig_corpse: {:<10} Flee:       {:<10} Kill:        {:<10} \r\n", deity->flee, deity->kill, deity->dig_corpse );
+   ch->print_fmt( "Dig_corpse: {:<10} Flee:       {:<10} Kill:        {:<10} \r\n", deity->dig_corpse, deity->flee, deity->kill );
    ch->print_fmt( "Die:        {:<10} Steal:      {:<10} Backstab:    {:<10} \r\n", deity->die, deity->steal, deity->backstab );
    ch->print_fmt( "Aid:        {:<10} Aid_spell:  {:<10} Spell_aid:   {:<10} \r\n", deity->aid, deity->aid_spell, deity->spell_aid );
    ch->print_fmt( "Object:     {:<10} Object2:    {:<10} Avatar:      {:<10} \r\n", deity->deityobj, deity->deityobj2, deity->avatar );
    ch->print_fmt( "Mount:      {:<10} Minion:     {:<10} Scorpse:     {:<10} \r\n", deity->mount, deity->minion, deity->scorpse );
    ch->print_fmt( "Savatar:    {:<10} Smount:     {:<10} Sminion:     {:<10} \r\n", deity->savatar, deity->smount, deity->sminion );
-   ch->print_fmt( "Sdeityobj:  {:<10} Sdeityobj2: {:<10} Srecall:     {:<10} \r\n", deity->sdeityobj, deity->sdeityobj, deity->srecall );
+   ch->print_fmt( "Sdeityobj:  {:<10} Sdeityobj2: {:<10} Srecall:     {:<10} \r\n", deity->sdeityobj, deity->sdeityobj2, deity->srecall );
    ch->print_fmt( "Recallroom: {:<10} Objstat:    {:<10} Worshippers: {:<10} \r\n", deity->recallroom, deity->objstat, deity->worshippers );
 }
 
