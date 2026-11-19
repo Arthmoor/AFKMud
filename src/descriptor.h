@@ -37,10 +37,10 @@ constexpr int MAX_INBUF_SIZE = 4096;
 constexpr int TELOPT_COMPRESS2 = 86;
 constexpr int COMPRESS_BUF_SIZE = 8192; // Can no longer rely on being equal to MSL since that is being phased out.
 
-extern const std::array<unsigned char, 4> echo_off_str;
-extern const std::array<unsigned char, 4> will_compress2_str;
-extern const std::array<unsigned char, 6> start_compress2_str;
-extern const std::array<unsigned char, 4> will_msp_str;
+extern const std::array<unsigned char, 3> echo_off_str;
+extern const std::array<unsigned char, 3> will_compress2_str;
+extern const std::array<unsigned char, 5> start_compress2_str;
+extern const std::array<unsigned char, 3> will_msp_str;
 
 struct mccp_data
 {

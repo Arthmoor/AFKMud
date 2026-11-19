@@ -49,7 +49,7 @@ std::string default_prompt( char_data * );
 bool check_parse_name( std::string, bool );
 
 extern int num_logins;
-extern const std::array<unsigned char, 4> echo_off_str;
+extern const std::array<unsigned char, 3> echo_off_str;
 
 bool exists_player( std::string_view name )
 {
