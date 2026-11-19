@@ -2283,7 +2283,7 @@ void save_weathermap( void )
       return;
    }
 
-   stream << std::format( "#VERSION \n\n", WEATHER_VERSION );
+   stream << std::format( "#VERSION {}\n\n", WEATHER_VERSION );
 
    for( y = 0; y < WEATHER_SIZE_Y; y++ )
    {
