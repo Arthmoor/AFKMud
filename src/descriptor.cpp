@@ -547,10 +547,59 @@ bool write_to_descriptor_old( int desc, std::string_view text )
  * This function handles both compressed and uncompressed sending.
  * Updated to run with the block checks by Orion... if it doesn't work, blame him.;P -Orion
  */
+/*
+ * Every line break that reaches a client must be CR LF. Help files, area files and similar data files store lines with a bare LF, and
+ * clients that do not add the CR themselves (PuTTY, browser clients) show such text as a staircase, each line starting where the last
+ * one ended. Linux telnet adds the CR on its own, which hides the problem. A lone LF, or LF followed by CR, becomes CR LF; a lone CR
+ * is left alone.
+ */
+static bool needs_crlf_fix( std::string_view text )
+{
+   for( size_t i = 0; i < text.size(); ++i )
+   {
+      if( text[i] == '\n' && ( i == 0 || text[i - 1] != '\r' ) )
+         return true;
+      if( text[i] == '\n' && i + 1 < text.size() && text[i + 1] == '\r' )
+         return true;
+   }
+   return false;
+}
+
+static std::string fix_crlf( std::string_view text )
+{
+   std::string out;
+   out.reserve( text.size() + text.size() / 16 );
+   for( size_t i = 0; i < text.size(); ++i )
+   {
+      const char c = text[i];
+      if( c == '\r' && i + 1 < text.size() && text[i + 1] == '\n' )
+      {
+         out += "\r\n";
+         ++i;
+      }
+      else if( c == '\n' )
+      {
+         out += "\r\n";
+         if( i + 1 < text.size() && text[i + 1] == '\r' )
+            ++i;
+      }
+      else
+         out += c;
+   }
+   return out;
+}
+
 bool descriptor_data::write( std::string_view text )
 {
    if( text.empty() )
       return true;
+
+   std::string crlf_fixed;
+   if( needs_crlf_fix( text ) )
+   {
+      crlf_fixed = fix_crlf( text );
+      text = crlf_fixed;
+   }
 
    size_t length = text.size();
    size_t mccpsaved = length;
