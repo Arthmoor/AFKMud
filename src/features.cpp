@@ -50,10 +50,10 @@
 #include "mud_prog.h"
 #include "roomindex.h"
 
-const std::array<unsigned char, 4> will_compress2_str = { IAC, WILL, TELOPT_COMPRESS2, '\0' };
-const std::array<unsigned char, 6> start_compress2_str = { IAC, SB, TELOPT_COMPRESS2, IAC, SE, '\0' };
-const std::array<unsigned char, 4> will_msp_str = { IAC, WILL, TELOPT_MSP, '\0' };
-const std::array<unsigned char, 6> start_msp_str = { IAC, SB, TELOPT_MSP, IAC, SE, '\0' };
+const std::array<unsigned char, 3> will_compress2_str = { IAC, WILL, TELOPT_COMPRESS2 };
+const std::array<unsigned char, 5> start_compress2_str = { IAC, SB, TELOPT_COMPRESS2, IAC, SE };
+const std::array<unsigned char, 3> will_msp_str = { IAC, WILL, TELOPT_MSP };
+const std::array<unsigned char, 5> start_msp_str = { IAC, SB, TELOPT_MSP, IAC, SE };
 
 // Begin MCCP Information
 bool descriptor_data::process_compressed( )

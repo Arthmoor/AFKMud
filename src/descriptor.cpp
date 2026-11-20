@@ -110,13 +110,13 @@ constexpr unsigned char TERMINAL_TYPE = 0x18;
 constexpr unsigned char SEND          = 0x01;
 
 const std::array<unsigned char, 4> term_call_back_str = { IAC, SB, TERMINAL_TYPE, IS };
-const std::array<unsigned char, 7> req_termtype_str = { IAC, SB, TERMINAL_TYPE, SEND, IAC, SE, '\0' };
-const std::array<unsigned char, 4> do_term_type = { IAC, DO, TERMINAL_TYPE, '\0' };
+const std::array<unsigned char, 6> req_termtype_str = { IAC, SB, TERMINAL_TYPE, SEND, IAC, SE };
+const std::array<unsigned char, 3> do_term_type = { IAC, DO, TERMINAL_TYPE };
 
 /* Terminal detection stuff end */
 
-const std::array<unsigned char, 4> echo_off_str = { IAC, WILL, TELOPT_ECHO, '\0' };
-const std::array<unsigned char, 4> echo_on_str = { IAC, WONT, TELOPT_ECHO, '\0' };
+const std::array<unsigned char, 3> echo_off_str = { IAC, WILL, TELOPT_ECHO };
+const std::array<unsigned char, 3> echo_on_str = { IAC, WONT, TELOPT_ECHO };
 
 long tr_saved;
 long tr_in;
