@@ -590,12 +590,19 @@ int calc_thac0( char_data * ch, const char_data * victim, int dist )
    int tenacity_adj;
    float thac0;
 
-   if( ch->isnpc(  ) && ( ch->mobthac0 < 21 || !class_table[ch->Class] ) )
+   /*
+    * NPC classes (blacksmith, healer, etc) are numbered from MAX_CLASS up, but class_table only has MAX_CLASS entries, so
+    * indexing it with an NPC class reads past the end of the array. The old !class_table[ch->Class] test never protected
+    * against that. Mobs whose class has no class_table entry use the warrior values.
+    */
+   const int thac0_class = ( ch->Class >= 0 && ch->Class < MAX_CLASS && class_table[ch->Class] ) ? ch->Class : CLASS_WARRIOR;
+
+   if( ch->isnpc(  ) && ch->mobthac0 < 21 )
       thac0 = ch->mobthac0;
    else
    {
-      int base_thac0 = class_table[ch->Class]->base_thac0;   /* This is thac0_00 right now */
-      float thac0_gain = class_table[ch->Class]->thac0_gain;
+      int base_thac0 = class_table[thac0_class]->base_thac0;   /* This is thac0_00 right now */
+      float thac0_gain = class_table[thac0_class]->thac0_gain;
       /*
        * thac0_gain is a new thing replacing thac0_32 in the classfiles.
        * *  It needs to be calced and set for all classes, but shouldn't be overly hard. 
